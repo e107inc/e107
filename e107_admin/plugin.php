@@ -520,6 +520,13 @@ class plugin_ui extends e_admin_ui
 
 		function pullPage()
 		{
+			if(defined('e_TOKEN') && empty($this->getQuery('e-token')))
+			{
+				e107::getMessage()->addError(defset('EPL_ADLAN_REFUSED_PULL_TOKEN_MISSING', 'Invalid Token'));
+				$this->redirectAction('list');
+				return null;
+			}
+
 			$id = $this->getQuery('path');
 
 			if(!e107::isInstalled($id))
@@ -1285,7 +1292,7 @@ class plugin_online_ui extends e_admin_ui
 					<div><small class="text-muted"><i class="fa fa-user"></i> {AUTHOR} <i>{DATE}</i></small> <span class="pull-right">&nbsp; {OPTIONS}</span></div>
 					</td></tr>
 					</table>
-					
+
 				</div>';
 
 			$this->perPage = 180;

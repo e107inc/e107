@@ -10,6 +10,8 @@ e107 has two decades of history, and many live sites run skins, plugins, and con
 
 - **Rendered HTML should not change without a reason.**  Silent changes to tag names, attribute shapes, or default class lists break legacy skins invisibly on upgrade.  If your change must alter observable HTML, flag the BC tradeoff in the PR and propose a path: changelog note, opt-in preference, deprecation window.
 - **PHP compatibility.**  e107 v2 targets PHP 5.6 as the minimum.  New code should also run without warnings or notices through the latest version of PHP.  Fixing existing warnings or fatals on modern PHP is welcome work.
+
+  What lands in the repository is PHP 5.6 source, and a [Rector](https://getrector.com/) gate keeps it that way: CI re-runs the downgrade over your branch and fails if it still has anything to rewrite.  So write whichever you prefer.  Use modern syntax and let the tooling downgrade it, or write 5.6-style directly; both are fine.  If the gate fails, run `e107_tests/_tools/rector/bin/rector-downgrade` and commit what it changes.
 - **Test what you change.**  A regression fix should come with a failing test that the fix turns green.  A new feature should come with at least one test covering the happy path.  See [`e107_tests/`](../e107_tests/) for the existing suite.
 - **Stick to the scope of your fix.**  Bug fixes don't need surrounding cleanup.  One-shot operations don't need helpers.  If you spot something else worth fixing, file an issue or open a separate PR.
 - **Write commit messages that explain *why*.**  The diff already shows *what*.  Reference the issue with `Fixes #N` or `Closes #N` so it closes on merge.

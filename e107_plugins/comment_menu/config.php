@@ -35,7 +35,7 @@ if (isset($_POST['update_menu']))
 		$temp['comment_caption'] = array();
 	}
 
-	
+
 	$tp = e107::getParser();
 	foreach($_POST as $key=>$value)
 	{
@@ -56,7 +56,7 @@ if (isset($_POST['update_menu']))
 	{
 		$temp['comment_title'] = 0;
 	}
-	
+
 	$menu_config->setPref($temp);
 
 	if($menu_config->save(false))

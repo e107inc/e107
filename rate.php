@@ -18,9 +18,17 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 if(!e_AJAX_REQUEST) // Legacy method. 
 {	
 	$qs = explode("^", str_replace('&amp;', '&', e_QUERY));
+	$rate = (int) varset($qs[3]);
 	
-	if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1 || strpos($qs[2], '://') !== false)
+	if (!$qs[0] || USER == FALSE || $rate > 10 || $rate < 1 || strpos($qs[2], '://') !== false)
 	{
+		e107::redirect();
+		exit;
+	}
+	
+	if(defined('e_TOKEN') && empty($_GET['e-token']))
+	{
+		e107::getMessage()->addError(defset('RATELAN_REFUSED_TOKEN_MISSING', 'Vote refused.'), 'default', true);
 		e107::redirect();
 		exit;
 	}
@@ -28,7 +36,6 @@ if(!e_AJAX_REQUEST) // Legacy method.
 	$table = $tp -> toDB($qs[0]);
 	$itemid = (int) $qs[1];
 	$returnurl = $tp -> toDB($qs[2]);
-	$rate = (int) $qs[3];
 	e107::getRate()->submitVote($table,$itemid,$rate);
 	e107::redirect($returnurl);
 	exit;

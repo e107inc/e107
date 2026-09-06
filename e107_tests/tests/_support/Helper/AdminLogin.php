@@ -4,6 +4,7 @@ namespace Helper;
 use Codeception\Exception\ModuleException;
 use Codeception\Lib\Interfaces\Web;
 use Codeception\Module as CodeceptionModule;
+use Test\Poll;
 
 /**
  * Shared admin-login helper for the e107 Codeception suites.
@@ -57,19 +58,8 @@ class AdminLogin extends CodeceptionModule
 	}
 
 	/**
-	 * Wait for text to turn up anywhere in the page source.
-	 *
-	 * WebDriver's own waitForText() resolves `//body` once and then polls
-	 * getText() on that one handle. The click that gets us here submits a
-	 * form, so the document is replaced while the wait is still running and
-	 * the handle stops belonging to it. Chrome reports that as UnknownError
-	 * "Node with given id does not belong to the document", and the condition
-	 * only knows to swallow StaleElementReferenceException, so the wait dies
-	 * rather than looking again. Reproduced about one run in three, on Chrome
-	 * 149 locally and 150 in CI.
-	 *
-	 * Reading the page source takes no element handle at all, so there is
-	 * nothing left to go stale.
+	 * Waits for text to turn up in the page source, which unlike waitForText()
+	 * holds no element handle across the form submit.
 	 *
 	 * @param mixed  $browser browser module, already resolved
 	 * @param string $marker  text to wait for
@@ -78,29 +68,22 @@ class AdminLogin extends CodeceptionModule
 	 */
 	private function waitForTextInSource($browser, $marker, $timeout)
 	{
-		$deadline = microtime(true) + $timeout;
-
-		do
+		$arrived = Poll::until(function () use ($browser, $marker)
 		{
 			try
 			{
-				if (strpos((string) $browser->grabPageSource(), $marker) !== false)
-				{
-					return;
-				}
+				return strpos((string) $browser->grabPageSource(), $marker) !== false;
 			}
 			catch (\Exception $e)
 			{
-				// The document was swapped out mid-read. Look again.
+				return false;
 			}
+		}, $timeout);
 
-			usleep(200000);
+		if (!$arrived)
+		{
+			$browser->see($marker);
 		}
-		while (microtime(true) < $deadline);
-
-		// Nothing arrived in time. Let the module report it, so the failure
-		// carries its own screenshot and page dump.
-		$browser->see($marker);
 	}
 
 	/**

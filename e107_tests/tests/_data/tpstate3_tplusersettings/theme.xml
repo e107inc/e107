@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="TP State 3 Template Usersettings" version="1.0" date="2026-09-05" compatibility="2.0">
+	<author name="e107 Inc" email="nospam@e107.org" url="https://e107.org" />
+	<summary>Fixture theme declaring no framework library, with a v1 user settings template</summary>
+	<description>Fixture theme declaring no framework library, with a v1 user settings template</description>
+	<category>generic</category>
+	<layouts>
+		<layout name='default' title='Default' default='true' />
+	</layouts>
+</e107Theme>

@@ -34,7 +34,6 @@ class ForumPermCacheInvalidationCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->haveForumPluginInstalled();
 		$I->havePluginInstalled('rss_menu');
 

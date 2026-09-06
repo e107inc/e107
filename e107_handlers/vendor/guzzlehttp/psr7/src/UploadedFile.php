@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use InvalidArgumentException;
@@ -11,7 +9,7 @@ use RuntimeException;
 
 class UploadedFile implements UploadedFileInterface
 {
-    private const ERROR_MAP = [
+    const ERROR_MAP = [
         UPLOAD_ERR_OK => 'UPLOAD_ERR_OK',
         UPLOAD_ERR_INI_SIZE => 'UPLOAD_ERR_INI_SIZE',
         UPLOAD_ERR_FORM_SIZE => 'UPLOAD_ERR_FORM_SIZE',
@@ -59,13 +57,17 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * @param StreamInterface|string|resource $streamOrFile
+     * @param int|null $size
+     * @param string|null $clientFilename
+     * @param string|null $clientMediaType
+     * @param int $errorStatus
      */
     public function __construct(
         $streamOrFile,
-        ?int $size,
-        int $errorStatus,
-        ?string $clientFilename = null,
-        ?string $clientMediaType = null
+        $size,
+        $errorStatus,
+        $clientFilename = null,
+        $clientMediaType = null
     ) {
         $this->setError($errorStatus);
         $this->size = $size;
@@ -83,8 +85,9 @@ class UploadedFile implements UploadedFileInterface
      * @param StreamInterface|string|resource $streamOrFile
      *
      * @throws InvalidArgumentException
+     * @return void
      */
-    private function setStreamOrFile($streamOrFile): void
+    private function setStreamOrFile($streamOrFile)
     {
         if (is_string($streamOrFile)) {
             $this->file = $streamOrFile;
@@ -101,10 +104,12 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * @throws InvalidArgumentException
+     * @return void
+     * @param int $error
      */
-    private function setError(int $error): void
+    private function setError($error)
     {
-        if (!isset(UploadedFile::ERROR_MAP[$error])) {
+        if (!array_key_exists($error, UploadedFile::ERROR_MAP)) {
             throw new InvalidArgumentException(
                 'Invalid error status for UploadedFile'
             );
@@ -113,28 +118,36 @@ class UploadedFile implements UploadedFileInterface
         $this->error = $error;
     }
 
-    private static function isStringNotEmpty($param): bool
+    /**
+     * @return bool
+     */
+    private static function isStringNotEmpty($param)
     {
         return is_string($param) && false === empty($param);
     }
 
     /**
      * Return true if there is no upload error
+     * @return bool
      */
-    private function isOk(): bool
+    private function isOk()
     {
         return $this->error === UPLOAD_ERR_OK;
     }
 
-    public function isMoved(): bool
+    /**
+     * @return bool
+     */
+    public function isMoved()
     {
         return $this->moved;
     }
 
     /**
      * @throws RuntimeException if is moved or not ok
+     * @return void
      */
-    private function validateActive(): void
+    private function validateActive()
     {
         if (false === $this->isOk()) {
             throw new RuntimeException(\sprintf('Cannot retrieve stream due to upload error (%s)', self::ERROR_MAP[$this->error]));
@@ -145,7 +158,10 @@ class UploadedFile implements UploadedFileInterface
         }
     }
 
-    public function getStream(): StreamInterface
+    /**
+     * @return \Psr\Http\Message\StreamInterface
+     */
+    public function getStream()
     {
         $this->validateActive();
 
@@ -159,7 +175,10 @@ class UploadedFile implements UploadedFileInterface
         return new LazyOpenStream($file, 'r+');
     }
 
-    public function moveTo($targetPath): void
+    /**
+     * @return void
+     */
+    public function moveTo($targetPath)
     {
         $this->validateActive();
 
@@ -189,22 +208,34 @@ class UploadedFile implements UploadedFileInterface
         }
     }
 
-    public function getSize(): ?int
+    /**
+     * @return int|null
+     */
+    public function getSize()
     {
         return $this->size;
     }
 
-    public function getError(): int
+    /**
+     * @return int
+     */
+    public function getError()
     {
         return $this->error;
     }
 
-    public function getClientFilename(): ?string
+    /**
+     * @return string|null
+     */
+    public function getClientFilename()
     {
         return $this->clientFilename;
     }
 
-    public function getClientMediaType(): ?string
+    /**
+     * @return string|null
+     */
+    public function getClientMediaType()
     {
         return $this->clientMediaType;
     }

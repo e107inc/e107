@@ -10,7 +10,7 @@
 
 namespace e107\Shims;
 
-class StrptimeTest extends \Codeception\Test\Unit
+class StrptimeTest extends \Test\Unit
 {
 	public function testStrptimeDefault()
 	{

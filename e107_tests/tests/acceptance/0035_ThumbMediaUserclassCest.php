@@ -655,7 +655,6 @@ class ThumbMediaUserclassCest
 		ob_start();
 		imagepng($image);
 		$png = ob_get_clean();
-		imagedestroy($image);
 
 		return $png;
 	}
@@ -714,7 +713,6 @@ class ThumbMediaUserclassCest
 
 		if($width !== strlen(self::SECRET_MEMBER)) // every sentinel is this long
 		{
-			imagedestroy($image);
 
 			return null;
 		}
@@ -737,7 +735,6 @@ class ThumbMediaUserclassCest
 			}
 		}
 
-		imagedestroy($image);
 
 		return $text;
 	}
@@ -818,6 +815,7 @@ class ThumbMediaUserclassCest
 // Fixture for 0040_ThumbMediaUserclassCest. Removed again in the Cest's _after().
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 \$act = isset(\$_GET['act']) ? \$_GET['act'] : '';

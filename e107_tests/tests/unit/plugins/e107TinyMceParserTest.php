@@ -9,7 +9,7 @@
 	 */
 
 
-	class e107TinyMceParserTest extends \Codeception\Test\Unit
+	class e107TinyMceParserTest extends \Test\Unit
 	{
 
 		/** @var e107TinyMceParser $tm */

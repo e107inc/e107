@@ -39,7 +39,6 @@ class ForumListParentClassCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->haveForumPluginInstalled();
 		$I->havePluginInstalled('list_new');
 		$I->havePluginPrefs('list_new', $this->listPrefs());

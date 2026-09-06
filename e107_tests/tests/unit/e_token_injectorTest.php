@@ -7,6 +7,8 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
+use e107\Reflection\ReflectionMethod;
+
 /**
  * Coverage for GHSA-72q5-94gw-prww.
  *
@@ -14,8 +16,9 @@
  * cosmetic one: writing into a textarea corrupts what the operator saves, and
  * writing into an off-site form hands the session's CSRF token to a third party.
  */
-class e_token_injectorTest extends \Codeception\Test\Unit
+class e_token_injectorTest extends \Test\Unit
 {
+
 	const TOKEN = 'abcdef0123456789abcdef0123456789';
 
 	private $hosts = array('example.com');
@@ -230,7 +233,6 @@ class e_token_injectorTest extends \Codeception\Test\Unit
 	public function testNonHtmlResponsesAreSkipped()
 	{
 		$method = new ReflectionMethod('e_token_injector', 'isHtmlResponse');
-		$method->setAccessible(true);
 
 		$mimetype = ini_get('default_mimetype');
 

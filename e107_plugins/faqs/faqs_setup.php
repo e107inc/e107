@@ -23,7 +23,7 @@ class faqs_setup
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-		
+
 		$faqRows = array(
 			array(
 				'faq_id'        => 1,
@@ -95,7 +95,7 @@ class faqs_setup
 /*	
 	function uninstall_options()
 	{
-	
+
 	}
 
 

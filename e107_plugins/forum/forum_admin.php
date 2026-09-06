@@ -93,7 +93,7 @@ e107::css('inline',"
 			if(E107_DEBUG_LEVEL > 0)
 			{
 				$this->adminMenu['opt3'] = array('divider'=>true);
-				$this->adminMenu['main/update'] = array('caption'=>"Redo v1.x Forum Upgrade", 'perm'=>0, 'uri'=>'{e_PLUGIN}forum/forum_update.php');
+				$this->adminMenu['main/update'] = array('caption'=>"Redo v1.x Forum Upgrade", 'perm'=>0, 'uri'=>'{e_PLUGIN}forum/forum_update.php?e-token='.defset('e_TOKEN'));
 			}
 		}
 	}

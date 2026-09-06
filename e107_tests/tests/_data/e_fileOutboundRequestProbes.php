@@ -65,6 +65,40 @@ class E107P3RecordingFile extends e_file
 
 
 /**
+ * Drives the two resolvers behind resolveHostname() separately, so the state a
+ * Windows host is intermittently in (PHP's own resolver silent, the operating
+ * system's answering) can be put to the policy on any platform.
+ */
+class E107P3SplitResolverFile extends e_file
+{
+	/** @var string[]|null what PHP's own resolver answers, null to let it run */
+	public $dnsRecords = null;
+
+	/** @var string[]|null what the system resolver answers, null to let it run */
+	public $systemRecords = null;
+
+	/**
+	 * @param string $host
+	 * @return string[] as e_file::resolveHostname()
+	 */
+	public function addressesFor($host)
+	{
+		return $this->resolveHostname($host);
+	}
+
+	protected function dnsRecordAddresses($host)
+	{
+		return ($this->dnsRecords === null) ? parent::dnsRecordAddresses($host) : $this->dnsRecords;
+	}
+
+	protected function systemResolverAddresses($host)
+	{
+		return ($this->systemRecords === null) ? parent::systemResolverAddresses($host) : $this->systemRecords;
+	}
+}
+
+
+/**
  * Substitutes the name lookup and the libcurl version, so the pin can be
  * asserted exactly without the suite depending on live DNS or on the version
  * of libcurl the container happens to ship.

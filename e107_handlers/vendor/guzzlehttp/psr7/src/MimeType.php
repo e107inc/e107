@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 final class MimeType
 {
-    private const MIME_TYPES = [
+    const MIME_TYPES = [
         '1km' => 'application/vnd.1000minds.decision-model+xml',
         '3dml' => 'text/vnd.in3d.3dml',
         '3ds' => 'image/x-3ds',
@@ -1241,8 +1239,10 @@ final class MimeType
      * Determines the mimetype of a file by looking at its extension.
      *
      * @see https://raw.githubusercontent.com/jshttp/mime-db/master/db.json
+     * @return string|null
+     * @param string $filename
      */
-    public static function fromFilename(string $filename): ?string
+    public static function fromFilename($filename)
     {
         return self::fromExtension(pathinfo($filename, PATHINFO_EXTENSION));
     }
@@ -1251,9 +1251,11 @@ final class MimeType
      * Maps a file extensions to a mimetype.
      *
      * @see https://raw.githubusercontent.com/jshttp/mime-db/master/db.json
+     * @return string|null
+     * @param string $extension
      */
-    public static function fromExtension(string $extension): ?string
+    public static function fromExtension($extension)
     {
-        return self::MIME_TYPES[strtolower($extension)] ?? null;
+        return array_key_exists(strtolower($extension), self::MIME_TYPES) ? self::MIME_TYPES[strtolower($extension)] : null;
     }
 }

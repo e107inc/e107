@@ -464,7 +464,7 @@ class links_admin_ui extends e_admin_ui
 
 				e107::getMessage()->addDebug(print_a($insert_array,true));
 
-				if($sql2->createQueryBuilder()->insert('links')->valuesTyped($insert_array, $sql2->getFieldDefs('links')['_FIELD_TYPES'])->execute())
+				if($sql2->createQueryBuilder()->insert('links')->valuesTyped($insert_array)->execute())
 				{
 					$message = LAN_CREATED." ({$name})[!br!]";
 					$mes->addSuccess(LAN_CREATED." ({$name})");
@@ -823,18 +823,17 @@ class links_admin_form_ui extends e_admin_form_ui
 	{
 		if($mode == 'read' || $mode == 'link_id') // read = display mode, link_id = actual absolute URL
 		{
-			$owner = $this->getController()->getListModel()->get('link_owner');
-			$sef =  $this->getController()->getListModel()->get('link_sefurl');
-
-			if($curVal[0] !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
+			if(substr($curVal, 0, 1) !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
 			{
 				$curVal = '{e_BASE}'.$curVal;
 			}
 
-			if(!empty($owner) && !empty($sef))
+			$opt = ($mode == 'read') ? array('mode'=>'raw') : array();
+			$sefUrl = sitelinks::sefUrl($this->getController()->getListModel()->getData(), $opt);
+
+			if(!empty($sefUrl))
 			{
-				$opt = ($mode == 'read') ? array('mode'=>'raw') : array();
-				$curVal = e107::url($owner,$sef, null, $opt);
+				$curVal = $sefUrl;
 			}
 			else
 			{
@@ -849,18 +848,15 @@ class links_admin_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{
-			$owner = $this->getController()->getModel()->get('link_owner');
-			$sef =  $this->getController()->getModel()->get('link_sefurl');
+			$sefUrl = sitelinks::sefUrl($this->getController()->getModel()->getData());
 
-			if(!empty($owner) && !empty($sef))
+			if(!empty($sefUrl))
 			{
-
-				$text = str_replace(e_HTTP,'',e107::url($owner,$sef)); // dynamically created.
+				$text = (strpos($sefUrl, e_HTTP) === 0) ? (string) substr($sefUrl, strlen(e_HTTP)) : $sefUrl;
 				$text .= $this->hidden('link_url',$curVal);
 				$text .= " <span class='label label-warning'>".LAN_AUTO_GENERATED."</span>";
 
 				return $text;
-
 			}
 
 			return $this->text('link_url', $curVal, 255,  array('size'=>'xxlarge'));

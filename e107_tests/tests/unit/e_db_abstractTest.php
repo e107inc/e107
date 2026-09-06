@@ -8,8 +8,9 @@
  *
  */
 
-abstract class e_db_abstractTest extends \Codeception\Test\Unit
+abstract class e_db_abstractTest extends \Test\Unit
 {
+
 	/** @var e_db */
 	protected $db;
 	protected $dbConfig = array();
@@ -95,6 +96,23 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * A refused connection records the driver error number rather than the SQLSTATE; before PHP 7.3.22 and 7.4.10 the exception carries no errorInfo at all and the number is only in its code, which is why {@see e_db_pdo::_errorNumber()} reads both.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/5993
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusedConnectionRecordsTheDriverErrorNumber()
+	{
+		$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], 'wrong password');
+
+		$this->assertFalse($result, 'precondition: the connection has to be refused');
+		$this->assertSame(1045, $this->db->getLastErrorNumber(),
+			'a refused connection has to report the driver error number');
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'a refused connection has to report the driver error text');
+	}
+
 	public function testDatabase()
 	{
 		$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
@@ -109,6 +127,66 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertTrue($result);
 		$this->assertEquals("`".$this->dbConfig["mySQLdefaultdb"]."`.".\Helper\Unit::E107_MYSQL_PREFIX,
 			$this->db->mySQLPrefix);
+	}
+
+	/**
+	 * @dataProvider refusalsRaisedBeforeTheServerIsAsked
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusalRaisedBeforeTheServerIsAskedRecordsAnErrorNumber($method, $args)
+	{
+		$this->db->resetLastError();
+
+		call_user_func_array(array($this->db, $method), $args);
+
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			$method.'() refuses before the server sees anything, which the contract spells -1');
+		$this->assertStringContainsString($method, $this->db->getLastErrorText(),
+			$method.'() has to say which operation refused, and name itself correctly');
+	}
+
+	/**
+	 * One case per refusal the shared trait raises without asking the server, so a revert run reds each of them separately rather than stopping at the first.
+	 *
+	 * @return array
+	 */
+	public function refusalsRaisedBeforeTheServerIsAsked()
+	{
+		$hostile = 'user; DROP TABLE x';
+
+		return array(
+			'truncate'         => array('truncate', array($hostile)),
+			'truncate empty'   => array('truncate', array('')),
+			'isEmpty'          => array('isEmpty', array($hostile)),
+			'copyRow table'    => array('copyRow', array($hostile, '*', 'user_id = 1')),
+			'copyRow fields'   => array('copyRow', array('core_media_cat', 'media_cat_id; DROP TABLE x', 'media_cat_id = 1')),
+			'copyRow no where' => array('copyRow', array('', '*', '')),
+			'copyTable'        => array('copyTable', array($hostile, 'tmp')),
+			'dropTable'        => array('dropTable', array($hostile)),
+			'max'              => array('max', array($hostile, 'user_id')),
+			'field'            => array('field', array($hostile, 'user_id')),
+			'index'            => array('index', array($hostile, 'PRIMARY')),
+			'selectTree empty' => array('selectTree', array('', 'x', 'y', 'z')),
+			'selectTree table' => array('selectTree', array($hostile, 'parent', 'id', 'order')),
+			'insert'           => array('insert', array('user', array('_FIELD_TYPES' => array('user_id' => 'int')))),
+			'replace'          => array('replace', array('user', array('_FIELD_TYPES' => array('user_id' => 'int')))),
+			'update'           => array('update', array('user', array('_FIELD_TYPES' => array('user_id' => 'int')))),
+		);
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusedDatabaseSelectionRecordsTheDriverErrorNumber()
+	{
+		$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+
+		$this->assertFalse($this->db->database('missing_database'),
+			'precondition: the database selection has to be refused');
+		$this->assertSame(1049, $this->db->getLastErrorNumber(),
+			'a refused database selection has to report the driver error number');
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'a refused database selection has to report the driver error text');
 	}
 
 	public function testDb_Mark_Time()
@@ -618,11 +696,93 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertFalse($db->selectTree($hostile, 'p', 'i', 'o'));
 		$this->assertFalse($db->selectTree('tmp', 'p)`; DROP FUNCTION x', 'i', 'o'));
 
+		// the write entry points return false for a malformed statement too, so the
+		// -1 error number is what separates a refusal from a driver error here
+		foreach(array('insert', 'replace', 'update') as $method)
+		{
+			$db->resetLastError();
+			$this->assertFalse($db->$method($hostile, array('tmp_ip' => 'x')),
+				$method.'() must refuse a hostile table identifier');
+			$this->assertSame(-1, $db->getLastErrorNumber(),
+				$method.'() must refuse before the driver sees the statement');
+			$this->assertStringContainsString($method, $db->getLastErrorText(),
+				$method.'() must name itself in the refusal');
+		}
+
 		// valid identifiers behave exactly as before
 		$this->assertFalse($db->isEmpty('user'));
 		$this->assertTrue($db->field('user', 'user_name'));
 		$this->assertTrue($db->index('user', 'PRIMARY'));
 		$this->assertGreaterThanOrEqual(1, (int) $db->max('user', 'user_id'));
+	}
+
+	/**
+	 * select(), count(), delete() and fields() interpolate the table name unquoted into FROM, DELETE FROM or SHOW COLUMNS FROM, so a table name outside the identifier grammar has to fail closed on both backends.
+	 */
+	public function testCrudEntryPointsRejectHostileTableIdentifier()
+	{
+		$db = $this->db;
+
+		// every payload here is one an unguarded backend runs as SQL, and none of
+		// them changes a row
+		$this->assertFalse($db->select('user WHERE 1 = 1 -- ', 'user_id'),
+			'select() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->count('user WHERE 1 = 1 -- '),
+			'count() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->delete('user WHERE 1 = 0 -- '),
+			'delete() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->fields('user WHERE 1 = 1 -- '),
+			'fields() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->fields('user', MPREFIX.'user WHERE 1 = 1 -- '),
+			'fields() must refuse a hostile prefix as well as a hostile table');
+
+		// valid identifiers behave exactly as before
+		$this->assertNotFalse($db->select('user', 'user_id', 'user_id = 1'),
+			'select() must still accept a plain table identifier');
+		$this->assertSame(1, (int) $db->count('user', '(*)', 'user_id = 1'),
+			'count() must still accept a plain table identifier');
+		$this->assertNotFalse($db->fields('user'),
+			'fields() must still accept a plain table identifier');
+		$this->assertNotFalse($db->fields('user', MPREFIX),
+			'fields() must still accept an explicit table prefix');
+		$this->assertNotFalse($db->fields(' user '),
+			'fields() must use the name it validated, not the untrimmed argument');
+		$this->assertSame(
+			1,
+			(int) $db->count("SELECT COUNT(*) FROM `".MPREFIX."user` WHERE user_id = 1", 'generic'),
+			"count() 'generic' raw-query escape hatch must still work"
+		);
+	}
+
+	/**
+	 * @dataProvider entryPointsGuardingTheTableIdentifier
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusedTableIdentifierRecordsAnErrorNumber($method, $table)
+	{
+		$this->db->resetLastError();
+
+		$this->assertFalse($this->db->$method($table),
+			$method.'() has to refuse a hostile table identifier');
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			$method.'() refuses before the server sees anything, which the contract spells -1');
+		$this->assertStringContainsString($method, $this->db->getLastErrorText(),
+			$method.'() has to say which operation refused, and name itself correctly');
+	}
+
+	/**
+	 * One case per entry point, so a revert run reds each of them separately rather than stopping at the first.
+	 *
+	 * @return array
+	 */
+	public function entryPointsGuardingTheTableIdentifier()
+	{
+		return array(
+			'select' => array('select', 'user WHERE 1 = 1 -- '),
+			'count'  => array('count', 'user WHERE 1 = 1 -- '),
+			'delete' => array('delete', 'user WHERE 1 = 0 -- '),
+			'fields' => array('fields', 'user WHERE 1 = 1 -- '),
+		);
 	}
 
 	public function testEscapeDeprecationNoticeOncePerCallSite()
@@ -1240,12 +1400,24 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'missing ','generic');
 		$this->assertFalse($result);
 	}
-	/*
-			public function testClose()
-			{
+	public function testCloseEndsTheServerConnectionWithAResultOutstanding()
+	{
+		$id = (int) $this->db->retrieve('SELECT CONNECTION_ID()');
+		$this->assertGreaterThan(0, $id);
+		$this->assertNotFalse($this->db->select('user', 'user_id', 'user_id > 0'));
 
-			}
-	*/
+		$this->db->close();
+
+		$probe = e107::getDb();
+		$this->assertNotSame($id, (int) $probe->retrieve('SELECT CONNECTION_ID()'), 'the probe must not be the connection under test');
+
+		$gone = \Test\Poll::until(function () use ($probe, $id)
+		{
+			return !$probe->retrieve('SELECT ID FROM information_schema.PROCESSLIST WHERE ID = ' . $id, false);
+		}, 2);
+
+		$this->assertTrue($gone, "server connection $id survived close()");
+	}
 
 	public function testDelete()
 	{
@@ -1558,12 +1730,157 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 			}
 	*/
+	/**
+	 * Both backends answer with the MySQL error number. The PDO driver used to
+	 * store PDOException::getCode(), which is the SQLSTATE, so a caller
+	 * comparing against a MySQL number never matched on a PDO install.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/5993
+	 */
 	public function testGetLastErrorNumber()
 	{
 		$this->db->select('doesnt_exists');
 		$result = $this->db->getLastErrorNumber();
-		$this->assertEquals("42S02", $result);
+		$this->assertSame(1146, $result);
 	}
+
+	/**
+	 * A duplicate-key insert is the number callers actually branch on, as
+	 * featurebox's admin_config.php does with 1062 to explain which layout is
+	 * already taken. On PDO that comparison saw the SQLSTATE '23000'.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/5993
+	 */
+	public function testDuplicateKeyReportsTheMysqlErrorNumber()
+	{
+		$table = MPREFIX.'test_duplicate_key';
+
+		$this->db->dropTable('test_duplicate_key');
+
+		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.$table.'` (`id` INT NOT NULL, PRIMARY KEY (`id`))'),
+			'precondition: the table has to be created, or the insert below fails for the wrong reason');
+
+		$this->assertSame(1, $this->db->execute('INSERT INTO `'.$table.'` (`id`) VALUES (1)'),
+			'precondition: the first insert has to land');
+
+		$this->assertFalse($this->db->execute('INSERT INTO `'.$table.'` (`id`) VALUES (1)'),
+			'a duplicate key has to come back as a failed query');
+		$this->assertSame(1062, $this->db->getLastErrorNumber(),
+			'a duplicate key has to report ER_DUP_ENTRY, not the SQLSTATE');
+
+		$this->db->dropTable('test_duplicate_key');
+	}
+
+	/**
+	 * The map a typed write consults to stand in for a null it was handed.
+	 * Wider than '_NOTNULL', which carries only the NOT NULL columns declaring no
+	 * DEFAULT; narrower than the column list, since a nullable column is one a
+	 * caller may legitimately want NULL in. The AUTO_INCREMENT column is out
+	 * because the server already reads a null there as "assign one", and a
+	 * stand-in of 0 would hand back an id of 0 under NO_AUTO_VALUE_ON_ZERO.
+	 */
+	public function testGetNotNullDefaultsReadsTheTableAsItStands()
+	{
+		$table = 'test_notnull_defaults';
+
+		$this->db->dropTable($table);
+
+		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
+			.'`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,'
+			.'`with_default` VARCHAR(20) NOT NULL DEFAULT \'x\','
+			.'`spaced_default` VARCHAR(20) NOT NULL DEFAULT \'not assigned\','
+			.'`no_default` TEXT NOT NULL,'
+			.'`nullable_col` VARCHAR(20) NULL,'
+			.'PRIMARY KEY (`id`))'),
+			'precondition: the fixture table has to exist');
+
+		$this->assertSame(
+			array('with_default' => 'x', 'spaced_default' => 'not assigned', 'no_default' => ''),
+			$this->db->getNotNullDefaults($table)
+		);
+
+		$this->db->dropTable($table);
+	}
+
+	/**
+	 * The reason the map is not cached. Nothing clears e_CACHE_DB when db_verify
+	 * repairs a column or an update routine adds one, so a definition written
+	 * before the DDL would miss a NOT NULL column added since, and every typed
+	 * write binding a null for it would fail 1048 for as long as the file
+	 * survived.
+	 */
+	public function testGetNotNullDefaultsFollowsAColumnAddedAfterTheDefinitionWasCached()
+	{
+		$table = 'test_notnull_after_ddl';
+
+		$this->db->dropTable($table);
+		@unlink(e_CACHE_DB.$table.'.php');
+
+		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
+			.'`id` INT(10) UNSIGNED NOT NULL,'
+			.'PRIMARY KEY (`id`))'),
+			'precondition: the fixture table has to exist');
+
+		$this->assertNotFalse($this->db->getFieldDefs($table),
+			'precondition: the definition has to be on record before the table changes');
+
+		$this->assertNotFalse($this->db->execute('ALTER TABLE `'.MPREFIX.$table.'` ADD `body` TEXT NOT NULL'),
+			'precondition: the column has to be added behind the definition\'s back');
+
+		$this->assertSame(array('id' => '', 'body' => ''), $this->db->getNotNullDefaults($table));
+
+		@unlink(e_CACHE_DB.$table.'.php');
+		$this->db->dropTable($table);
+	}
+
+	public function testGetNotNullDefaultsIsEmptyForATableThatIsNotThere()
+	{
+		$this->assertSame(array(), $this->db->getNotNullDefaults('e107_tests_no_such_table'));
+	}
+
+	/**
+	 * The round trip #6104 turned on: a create form leaves a field off the page,
+	 * the absent $_POST key reaches the row as null, and the server rejects a
+	 * single-row INSERT of NULL into a NOT NULL column whatever the sql_mode.
+	 * The nullable column in the same row is the control: it still gets NULL.
+	 */
+	public function testATypedInsertStandsInForANullTheColumnCannotHold()
+	{
+		$table = 'test_typed_null_insert';
+
+		$this->db->dropTable($table);
+		@unlink(e_CACHE_DB.$table.'.php');
+
+		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
+			.'`id` INT(10) UNSIGNED NOT NULL,'
+			.'`body` TEXT NOT NULL,'
+			.'`note` VARCHAR(20) NULL,'
+			.'PRIMARY KEY (`id`))'),
+			'precondition: the fixture table has to exist');
+
+		$this->assertNotFalse(
+			$this->db->createQueryBuilder()->insert($table)
+				->valuesTyped(array('id' => 1, 'body' => null, 'note' => null))->execute(),
+			'a typed insert has to land: '.$this->db->getLastErrorText()
+		);
+
+		$row = $this->db->createQueryBuilder()->select('body', 'note')->from($table)->where('id', 1)->fetchRow();
+
+		$this->assertSame('', $row['body'], 'the NOT NULL column takes its stand-in');
+		$this->assertNull($row['note'], 'the nullable column still takes SQL NULL');
+
+		$this->assertFalse(
+			$this->db->createQueryBuilder()->insert($table)
+				->values(array('id' => 2, 'body' => null))->execute(),
+			'values() is the literal path and has to keep binding the null'
+		);
+		$this->assertSame(0, (int) $this->db->createQueryBuilder()->from($table)->where('id', 2)->count(),
+			'the row carrying the literal null must not have landed');
+
+		@unlink(e_CACHE_DB.$table.'.php');
+		$this->db->dropTable($table);
+	}
+
 
 	public function testGetLastErrorText()
 	{
@@ -1605,6 +1922,50 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 			'a query that succeeded must not still be reporting the previous failure');
 		$this->assertSame('', $this->db->getLastErrorText());
 	}
+
+	/**
+	 * A statement with nothing in it has to come back false, the way any refused
+	 * query does. It must never escape as an error the caller cannot catch.
+	 *
+	 * PHP 8's PDO answers an empty statement with a ValueError and a non-string
+	 * one with a TypeError. Neither descends from PDOException, so neither was
+	 * caught by the driver, and db_verify handing one through took the whole
+	 * request down: every admin whose database update reached that point got a
+	 * blank HTTP 500 instead of a report.
+	 *
+	 * @see https://github.com/e107inc/e107/discussions/5904
+	 */
+	public function testAnEmptyStatementIsRefusedRatherThanFatal()
+	{
+		$empties = array(
+			'an empty string'      => '',
+			'whitespace only'      => "  \n\t ",
+		);
+
+		foreach($empties as $label => $query)
+		{
+			$this->assertFalse($this->db->gen($query),
+				"gen() has to refuse ".$label);
+			$this->assertFalse($this->db->execute($query),
+				"execute() has to refuse ".$label);
+		}
+
+		// With parameters, execute() takes the prepared path and wraps the
+		// statement in an array. An empty one fails the PREPARE branch and
+		// lands in the plain-string path, where the array itself is the
+		// argument that blows up.
+		$this->assertFalse($this->db->execute('', array('user_id' => 1)),
+			'execute() has to refuse an empty prepared statement');
+
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			'a refused statement carries no driver number, which the contract spells -1');
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'a refused statement has to say why it was refused');
+
+		// The guard rejects nothing that was working before.
+		$this->assertNotFalse($this->db->select('user', 'user_id', '`user_id` = 1'),
+			'a real query still has to run');
+	}
 	/*
 			public function testGetLastQuery()
 			{
@@ -1636,6 +1997,82 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		);
 
 		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetFieldDefsIsFalseForATableWithNoDefinition()
+	{
+		$this->assertFalse($this->db->getFieldDefs('e107_tests_no_such_table'));
+	}
+
+	public function testGetFieldDefsRebuildsACacheFileThatWasReadHalfWritten()
+	{
+		$file = e_CACHE_DB . 'plugin.php';
+		$whole = $this->db->getFieldDefs('plugin');
+		$this->assertNotEmpty($whole);
+
+		$backup = is_file($file) ? file_get_contents($file) : null;
+		$this->assertNotNull($backup, 'reading the definition should have left a cache file to tear');
+
+		try
+		{
+			file_put_contents($file, substr($backup, 0, (int) (strlen($backup) / 2)));
+
+			$fresh = $this->makeDb();
+			$fresh->__construct();
+
+			$this->assertEquals($whole, $fresh->getFieldDefs('plugin'), 'a torn cache file was memoised instead of rebuilt');
+			$this->assertEquals($whole, e107::unserialize(file_get_contents($file)), 'the rebuild did not rewrite the torn file');
+		}
+		finally
+		{
+			file_put_contents($file, $backup);
+		}
+	}
+
+	/**
+	 * {@see e_db_pdo::loadTableDef()} writes a zero-byte file for a table its
+	 * definition file leaves untyped.
+	 */
+	public function testGetFieldDefsKeepsAZeroByteCacheFileAsAnUntypedTable()
+	{
+		$file = e_CACHE_DB . 'plugin.php';
+		$this->db->getFieldDefs('plugin');
+		$backup = is_file($file) ? file_get_contents($file) : null;
+		$this->assertNotNull($backup);
+
+		try
+		{
+			file_put_contents($file, '');
+
+			$fresh = $this->makeDb();
+			$fresh->__construct();
+
+			$this->assertSame(array(), $fresh->getFieldDefs('plugin'));
+			clearstatcache();
+			$this->assertSame(0, filesize($file), 'an untyped table was treated as a torn cache and rebuilt');
+		}
+		finally
+		{
+			file_put_contents($file, $backup);
+		}
+	}
+
+	public function testGetFieldTypesIsTheFieldTypesMapAlone()
+	{
+		$this->assertSame($this->db->getFieldDefs('plugin')['_FIELD_TYPES'], $this->db->getFieldTypes('plugin'));
+	}
+
+	/**
+	 * A typed insert into a table with no definition on record binds every
+	 * column as a string, as the array-form insert() always has, and fails on
+	 * the missing table rather than on the missing definition.
+	 */
+	public function testGetFieldTypesIsEmptyForATableWithNoDefinition()
+	{
+		$types = $this->db->getFieldTypes('e107_tests_no_such_table');
+
+		$this->assertSame(array(), $types);
+		$this->assertFalse($this->db->createQueryBuilder()->insert('e107_tests_no_such_table')->valuesTyped(array('id' => 1), $types)->execute());
 	}
 
 

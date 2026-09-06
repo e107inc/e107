@@ -2,7 +2,7 @@
 
 
 
-class e_userpermsTest extends \Codeception\Test\Unit
+class e_userpermsTest extends \Test\Unit
 {
 
 	/** @var e_userperms */

@@ -9,7 +9,7 @@
  */
 
 
-class e_fileTest extends \Codeception\Test\Unit
+class e_fileTest extends \Test\Unit
 {
 
 	/** @var e_file  */
@@ -847,7 +847,7 @@ class e_fileTest extends \Codeception\Test\Unit
 				foreach($test as $mime=>$ext)
 				{
 					$actual = $this->fl->getFileExtension($mime);
-		
+
 					self::assertSame($ext, $actual);
 				}	
 			}

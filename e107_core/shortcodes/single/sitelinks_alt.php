@@ -183,13 +183,24 @@ class sitelinks_alt
 		
 		static function render_sub($linklist, $id, $params, $icon)
 		{
+			return self::render_sub_level($linklist, $id, $params, $icon, array());
+		}
+
+		/**
+		 * @param array $ancestors keys of the menus already open above this one
+		 * @return string|null
+		 */
+		private static function render_sub_level($linklist, $id, $params, $icon, $ancestors)
+		{
 			$tp = e107::getParser();
 
 			if(!isset($linklist['sub_'.$id]) || !is_array($linklist['sub_'.$id]))
 			{
 				return null;
 			}
-			
+
+			$ancestors[] = 'sub_'.$id;
+
 			$text = "<div id='l_".$id."' class='menu' onmouseover=\"menuMouseover(event)\">";
 
 
@@ -227,8 +238,14 @@ class sitelinks_alt
 					}
 				
 				}
-				if (isset($linklist['sub_'.$sub['link_id']])) // Has Children.
-				{ 
+				// Inferred, not recorded: a plugin bucket whose rows carry a parent id equal to this menu's own id still reads as one of ours.
+				$from_links_table = isset($sub['link_parent']) && (int) $sub['link_parent'] === (int) $id;
+				$has_children = $from_links_table
+					&& !in_array('sub_'.$sub['link_id'], $ancestors, true)
+					&& isset($linklist['sub_'.$sub['link_id']]);
+
+				if ($has_children) // Has Children.
+				{
 					$sub_ids[] = $sub['link_id'];
 					$text .= self::adnav_main($subname, $sub['link_url'], $sub_icon, 'l_'.$sub['link_id'], $params, $sub['link_open']);
 				}
@@ -244,7 +261,7 @@ class sitelinks_alt
 			{
 				foreach ($sub_ids as $sub_id)
 				{
-					$text .= self::render_sub($linklist, $sub_id, $params, $icon);
+					$text .= self::render_sub_level($linklist, $sub_id, $params, $icon, $ancestors);
 				}
 			}
 			

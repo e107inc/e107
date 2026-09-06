@@ -77,13 +77,25 @@ class contact_front
 		}
 
 
-		$LAYOUT = str_replace(
+		$LAYOUT = e107::getParser()->parseTemplate($LAYOUT, true, e107::getScBatch('contact'));
+
+		echo str_replace(
 			['{---CONTACT-FORM---}', '{---CONTACT-INFO---}'],
 			[$form, $info],
 			$LAYOUT
 		);
+	}
 
-		echo e107::getParser()->parseTemplate($LAYOUT, true, e107::getScBatch('contact'));
+	/**
+	 * A visitor's words, every tag stripped and every brace encoded through the mail template parse.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function textForTheEmail($text)
+	{
+		return str_replace(array('{', '}'), array('&#123;', '&#125;'),
+			e107::getParser()->filter($text));
 	}
 
 	/**
@@ -195,7 +207,7 @@ class contact_front
 		$sender_name = $tp->toEmail($_POST['author_name'], true, 'RAWTEXT');
 		$sender = check_email($_POST['email_send']);
 		$subject = $tp->toEmail($_POST['subject'], true, 'RAWTEXT');
-		$body = nl2br($tp->toEmail(strip_tags($_POST['body']), true, 'RAWTEXT'));
+		$body = nl2br($this->textForTheEmail($_POST['body']));
 
 		$email_copy = !empty($_POST['email_copy']) ? 1 : 0;
 
@@ -237,6 +249,8 @@ class contact_front
 				<tr>
 				<td>IP:</td><td>" . e107::getIPHandler()->getIP(true) . "</td></tr>";
 
+			$body .= "<tr><td>" . LAN_EMAIL . ":</td><td>" . $tp->toEmail($sender, true, 'RAWTEXT') . "</td></tr>";
+
 			if(USER)
 			{
 				$body .= "<tr><td>User:</td><td>#" . USERID . " " . USERNAME . "</td></tr>";
@@ -265,7 +279,7 @@ class contact_front
 			{
 				foreach($_POST as $k => $v)
 				{
-					$body .= "<tr><td>" . $k . ":</td><td>" . $tp->toEmail($v, true, 'RAWTEXT') . "</td></tr>";
+					$body .= "<tr><td>" . $this->textForTheEmail($k) . ":</td><td>" . $this->textForTheEmail($v) . "</td></tr>";
 				}
 			}
 

@@ -125,13 +125,13 @@ class ChaCha20 extends Salsa20
             sodium_crypto_aead_chacha20poly1305_encrypt(...$params) :
             sodium_crypto_aead_chacha20poly1305_ietf_encrypt(...$params);
         if (!$this->usePoly1305) {
-            return substr($ciphertext, 0, strlen($plaintext));
+            return (string) substr($ciphertext, 0, strlen($plaintext));
         }
 
-        $newciphertext = substr($ciphertext, 0, strlen($plaintext));
+        $newciphertext = (string) substr($ciphertext, 0, strlen($plaintext));
 
         $this->newtag = $this->usingGeneratedPoly1305Key && strlen($this->nonce) == 12 ?
-            substr($ciphertext, strlen($plaintext)) :
+            (string) substr($ciphertext, strlen($plaintext)) :
             $this->poly1305($newciphertext);
 
         return $newciphertext;
@@ -172,7 +172,7 @@ class ChaCha20 extends Salsa20
             sodium_crypto_aead_chacha20poly1305_encrypt(...$params) :
             sodium_crypto_aead_chacha20poly1305_ietf_encrypt(...$params);
 
-        return substr($plaintext, 0, strlen($ciphertext));
+        return (string) substr($plaintext, 0, strlen($ciphertext));
     }
 
     /**

@@ -250,7 +250,7 @@ class e_online
 				else
 				{
 					$dbg->logTime('Go online (insert) Line: '.__LINE__);
-					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query, $sql->getFieldDefs('online')['_FIELD_TYPES'])->execute();
+					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query)->execute();
 					$dbg->logTime('Go online (after insert) Line: '.__LINE__);
 				}
 
@@ -294,7 +294,7 @@ class e_online
 				}
 				else
 				{	// New visitor
-					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query, $sql->getFieldDefs('online')['_FIELD_TYPES'])->execute();
+					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query)->execute();
 				}
 			}
 
@@ -360,7 +360,7 @@ class e_online
 					{
 
 						$row['online_bot'] = $this->isBot($row['online_agent']);
-				
+
 						// Sort into usable format and add bot field. 
 						$user = array(
 							'user_location'		=> $row['online_location'],
@@ -375,13 +375,14 @@ class e_online
 							'online_user_id'	=> $row['online_user_id'],
 							'user_language'     => $row['online_language']
 						);	
-		
+
 						if($row['online_user_id'] != 0 )
 						{
 							$vals = explode('.', $row['online_user_id'], 2);
 							$user['user_id'] = $vals[0];
 							$user['user_name'] = $vals[1];
-							$member_list .= "<a href='".SITEURL."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
+							$uparams = array('id' => $vals[0], 'name' => $vals[1]);
+							$member_list .= "<a href='".e107::getUrl()->create('user/profile/view', $uparams)."'>{$vals[1]}</a> ";
 							$listuserson[$row['online_user_id']] = $row['online_location'];
 
 							$this->users[] = $user;
@@ -394,8 +395,8 @@ class e_online
 							$user['user_name'] = 'guest';		// Maybe should just be an empty string?
 							$this->guests[] = $user;	
 						}
-						
-						
+
+
 					}
 				}
 				if(!defined('TOTAL_ONLINE'))
@@ -444,7 +445,7 @@ class e_online
 	private function updateOnline($sql, array $columns, $where, $limit = null)
 	{
 		$qb = $sql->createQueryBuilder()->update('online');
-		$fieldTypes = $sql->getFieldDefs('online')['_FIELD_TYPES'];
+		$fieldTypes = $sql->getFieldTypes('online');
 
 		foreach($columns as $column => $value)
 		{

@@ -19,4 +19,9 @@ foreach ([
 		$params = array_replace_recursive($params, Yaml::parse(file_get_contents($absolute_config_path)));
 }
 
+if (!empty($params['app_path']))
+{
+	$params['app_path'] = rtrim($params['app_path'], '/\\') . '/';
+}
+
 return $params;

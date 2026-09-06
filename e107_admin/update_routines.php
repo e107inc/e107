@@ -77,7 +77,7 @@ if (!$dont_check_update)
 				$fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';  // DEPRECATED - left for BC only. 
 				if (is_readable($fname)) include_once($fname);
 			}
-			
+
 			$fname = e_PLUGIN.$path.'/'.$path.'_setup.php';
 			if (is_readable($fname))
 			{
@@ -93,7 +93,7 @@ if (!$dont_check_update)
 	{
 		$dbupdate['test_code'] = 'Test update routine';
 	}
-	
+
 	// set 'master' to true to prevent other upgrades from running before it is complete.
 
 	$LAN_UPDATE_4 = deftrue('LAN_UPDATE_4',"Update from [x] to [y]"); // in case language-pack hasn't been upgraded.
@@ -105,7 +105,7 @@ if (!$dont_check_update)
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
 
 	$dbupdate['20x_to_latest'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x', $e107info['e107_version'])), 'message'=> null, 'hide_when_complete'=>false);
-	
+
 
 
 	// always run these last.
@@ -459,7 +459,7 @@ function update_check()
 		{
 			 $update_needed = TRUE;
 		}
-	
+
 
 	//	$e107cache->set_sys('nq_admin_updatecheck', time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
 	}
@@ -669,6 +669,59 @@ function update_core_database($type = '')
 
 		}
 
+		$genericIndexes = array();
+		if($sql->gen("SHOW INDEX FROM `".MPREFIX."generic`"))
+		{
+			while($row = $sql->fetch())
+			{
+				$genericIndexes[$row['Key_name']] = true;
+			}
+		}
+
+		if(!isset($genericIndexes['gen_type_ip']) || !isset($genericIndexes['gen_type_ts']))
+		{
+			if($just_check)
+			{
+				return update_needed("The failed-login table is missing the indexes the auto-ban counter reads.");
+			}
+
+			if(!isset($genericIndexes['gen_type_ip']))
+			{
+				$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type_ip` (`gen_type`,`gen_ip`);");
+			}
+			if(!isset($genericIndexes['gen_type_ts']))
+			{
+				$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type_ts` (`gen_type`,`gen_datestamp`);");
+			}
+		}
+
+		if(empty($pref['ban_durations_login_default_applied']))
+		{
+			if(empty($pref['ban_durations'][eIPHandler::BAN_TYPE_LOGINS]))
+			{
+				if($just_check)
+				{
+					return update_needed("Failed-login bans never expire on this site.");
+				}
+
+				$durations = varset($pref['ban_durations'], array());
+				foreach(banlistManager::getValidReasonList() as $banType)
+				{
+					if(!isset($durations[$banType])) { $durations[$banType] = 0; }
+				}
+				$durations[eIPHandler::BAN_TYPE_LOGINS] = 1;
+
+				e107::getConfig()->set('ban_durations', $durations);
+				e107::getLog()->addEvent(4, __FILE__, "UPDATE", 'LAN_UPDATE',
+					"Failed-login bans were set to never expire; given a one-hour duration.", false, LOG_TO_ROLLING);
+			}
+
+			if(!$just_check)
+			{
+				e107::getConfig()->set('ban_durations_login_default_applied', 1)->save(false, true, false);
+			}
+		}
+
 		if(!isset($pref['admin_navbar_debug']))
 		{
 			if($just_check)
@@ -679,19 +732,6 @@ function update_core_database($type = '')
 			e107::getConfig()->set('admin_navbar_debug',255)->save(false,true,false);
 
 		}
-
-		if(!isset($pref['lan_global_list']['news']))
-		{
-			if($just_check)
-			{
-				return update_needed("News is missing from global lan list. ");
-			}
-
-			$plgClass = e107::getPlugin();
-			$plgClass->plugFolder = 'news';
-			$plgClass->XmlLanguageFiles('refresh');
-		}
-
 
 		if(!$sql->createQueryBuilder()->select('media_cat_id')->from('core_media_cat')->where('media_cat_category', '_icon_svg')->setMaxResults(1)->fetchRow())
 		{
@@ -745,6 +785,17 @@ function update_core_database($type = '')
 			}
 
 			e107::getConfig()->remove('flood_protect')->save(false,true,false);
+		}
+
+
+		if(isset($pref['lan_global_list']))
+		{
+			if ($just_check)
+			{
+				return update_needed("The global language list is now derived, so its old pref needs to be removed.");
+			}
+
+			e107::getConfig()->remove('lan_global_list')->save(false,true,false);
 		}
 
 
@@ -809,6 +860,50 @@ function update_core_database($type = '')
 
 			$captchaConfig->save(false, false, false);
 			$log->addDebug('CAPTCHA preferences added.');
+		}
+
+
+		// Session rows still keyed by the raw session id.
+		require_once(e_HANDLER.'session_handler.php');
+
+		$sessionHashed = 0;
+		$sessionSeen = 0;
+		$sessionSkipped = 0;
+
+		while($sessionLegacy = $sql->createQueryBuilder()
+			->select('session_id')->from('session')
+			->whereNotLike('session_id', e_session_db::KEY_ALGO.'$%')
+			->orderBy('session_id')
+			->setFirstResult($sessionSkipped)
+			->setMaxResults($just_check ? 1 : 200)
+			->fetchAll())
+		{
+			if($just_check)
+			{
+				return update_needed('Stored session ids need to be hashed.');
+			}
+
+			foreach($sessionLegacy as $sessionRow)
+			{
+				$sessionSeen++;
+
+				if($sql->createQueryBuilder()->update('session')
+					->set('session_id', e_session_db::storageKey($sessionRow['session_id']))
+					->where('session_id', $sessionRow['session_id'])
+					->execute())
+				{
+					$sessionHashed++;
+				}
+				else
+				{
+					$sessionSkipped++;
+				}
+			}
+		}
+
+		if($sessionSeen)
+		{
+			$log->addDebug('Stored session ids hashed: '.$sessionHashed.' of '.$sessionSeen);
 		}
 
 
@@ -1714,7 +1809,7 @@ function update_706_to_800($type='')
 			{
 				$log->addDebug("core-media-cat `media_cat_nick` field removed.");
 			}
-			
+
 	//		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_category`, `media_cat_title`, `media_cat_diz`, `media_cat_class`, `media_cat_image`, `media_cat_order`) VALUES
 	//		(0, 'gallery', 'gallery_1', 'Gallery 1', 'Visible to the public at /gallery.php', 0, '', 0);
 	///		";
@@ -1788,7 +1883,7 @@ function update_706_to_800($type='')
 		
 		foreach($e107_core_media_cat as $insert)
 		{
-			$sql->createQueryBuilder()->insert('core_media_cat')->valuesTyped($insert, $sql->getFieldDefs('core_media_cat')['_FIELD_TYPES'])->execute();
+			$sql->createQueryBuilder()->insert('core_media_cat')->valuesTyped($insert)->execute();
 		}
 		
 		
@@ -1945,7 +2040,7 @@ function update_706_to_800($type='')
 	
 	if (!$just_check)  // Running the Upgrade Process. 
 	{
-			
+
 		if(!is_array($pref['sitetheme_layouts']) || !vartrue($pref['sitetheme_deflayout']))
 		{
 			$th = e107::getSingleton('themeHandler');
@@ -1959,10 +2054,10 @@ function update_706_to_800($type='')
 				$log->addDebug("Couldn't update SiteTheme prefs");	
 			}
 		}
-		
+
 		$log->toFile('upgrade_v1_to_v2'); 
-		
-		
+
+
 		if ($do_save)
 		{
 		//	save_prefs();
@@ -2038,7 +2133,7 @@ function update_70x_to_706($type='')
       // a vouched index fragment so the emitted key stays exactly as before.
       if(!$sql->schema()->addIndex('plugin', Index::raw(SqlFragment::raw("UNIQUE (`plugin_path`)"))))
 	  {
-		$mesg = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?plugin'>".ADLAN_145."</a>.";
+		$mesg = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?mode=plugin_scan&amp;e-token=".defset('e_TOKEN')."'>".ADLAN_145."</a>.";
         //$ns -> tablerender(LAN_ERROR,$mes);
         e107::getMessage()->add($mesg, E_MESSAGE_ERROR);
        	catch_error($sql);

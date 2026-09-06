@@ -9,8 +9,9 @@
 	 */
 
 
-	class e_dateTest extends \Codeception\Test\Unit
+	class e_dateTest extends \Test\Unit
 	{
+
 		/** @var e_date  */
 		protected $dateObj;
 

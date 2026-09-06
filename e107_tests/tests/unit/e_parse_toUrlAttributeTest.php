@@ -23,7 +23,7 @@
  * through cleanHtml() on a whole HTML string, not on a bare URL, and a deny list
  * is the wrong shape for a scheme test in any case.
  */
-class e_parse_toUrlAttributeTest extends \Codeception\Test\Unit
+class e_parse_toUrlAttributeTest extends \Test\Unit
 {
 	/** @var e_parse */
 	private $tp;

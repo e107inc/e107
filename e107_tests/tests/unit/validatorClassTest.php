@@ -1,7 +1,7 @@
 <?php
 
 
-	class validatorClassTest extends \Codeception\Test\Unit
+	class validatorClassTest extends \Test\Unit
 	{
 
 		/** @var validatorClass */
@@ -239,5 +239,26 @@
 
 
 
+
+
+		/** Two spellings of one number are two different passwords, on every form whose confirmation goes through the validator. */
+		public function testTwoSpellingsOfOneNumberAreNotAMatchingPasswordPair()
+		{
+
+			$definitions = e107::getUserSession()->userVettingInfo;
+
+			$mistyped = array('password1' => '0123456789', 'password2' => '123456789');
+			$result = validatorClass::validateFields($mistyped, $definitions, true);
+
+			$this->assertSame(ERR_PASSWORDS_DIFFERENT, varset($result['errors']['user_password']),
+				'"0123456789" and "123456789" are two different passwords, so the confirmation must not match.');
+
+			$matching = array('password1' => '0123456789', 'password2' => '0123456789');
+			$result = validatorClass::validateFields($matching, $definitions, true);
+
+			$this->assertArrayNotHasKey('user_password', $result['errors'],
+				'Two boxes holding the same string are still a match.');
+
+		}
 
 	}

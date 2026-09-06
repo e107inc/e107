@@ -238,6 +238,7 @@ if($p8act === 'newsfeed' || $p8act === 'newsfeedstale')
 
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 
 $sql = e107::getDb();
 
@@ -329,6 +330,7 @@ switch($p8act)
 
 	case 'adminfeed':
 	case 'addonsfeed':
+		$_GET['e-token'] = defset('e_TOKEN');
 		require_once(e_ADMIN.'boot.php');
 		// boot.php exits inside each feed branch, so reaching here means the
 		// branch was never entered.

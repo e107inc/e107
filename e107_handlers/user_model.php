@@ -256,7 +256,7 @@ class e_user_model extends e_admin_model
 	 */
 	final public function checkAdminPwchangeToken($value)
 	{
-		return hash_equals(md5((string) $this->getAdminPwchange()), (string) $value);
+		return is_string($value) && hash_equals(md5((string) $this->getAdminPwchange()), $value);
 	}
 
 	/**
@@ -817,8 +817,8 @@ class e_user_model extends e_admin_model
 		// revised - don't call extended object, no permission checks, just return joined user data
 		$ret = $this->getData();
 		// $ret = array_merge($this->getExtendedModel()->getExtendedData(), $this->getData());
-		if ($ret['user_perms'] == '0.') $ret['user_perms'] = '0';
-		$ret['user_baseclasslist'] = $ret['user_class'];
+		if (varset($ret['user_perms']) == '0.') $ret['user_perms'] = '0';
+		$ret['user_baseclasslist'] = varset($ret['user_class']);
 		$ret['user_class'] = $this->getRealClassList(true); // identity data; never the emulation overlay (#5745)
 		return $ret;
 	}
@@ -964,7 +964,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. getSingatureValue($default, $system = false, $rawExtended);
@@ -1001,7 +1001,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. setSingatureValue($value, $system = false);
@@ -1045,7 +1045,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. getSingatureValue($default, $system = true, $rawExtended);
@@ -1081,7 +1081,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. setSingatureValue($value, $system = true);
@@ -1899,13 +1899,12 @@ class e_user extends e_user_model
 	/**
 	 * Core-session key holding the user id whose permissions are being
 	 * emulated in the admin area (issue #5745). Stored server-side via
-	 * e107::getSession() regardless of the 'user_tracking' pref.
+	 * {@see e107::getSession()}.
 	 */
 	const EMULATE_SESSION_KEY = 'emulate';
 
 	private $_session_data = null;
 	private $_session_key = null;
-	private $_session_type = null;
 	private $_session_error = false;
 
 	private $_parent_id = false;
@@ -2045,8 +2044,8 @@ class e_user extends e_user_model
 		if($this->isUser()) return true;
 		
 		$userlogin = new userlogin();
-		$userlogin->login($xup, '', 'provider', false, true);
-		
+		$userlogin->loginProvider($xup);
+
 		$userdata  = $userlogin->getUserData();
 
 		if(defset('E107_DEBUG_LEVEL', 0) > 0)
@@ -2077,16 +2076,7 @@ class e_user extends e_user_model
 		) return false;
 
 		$key = $this->_session_key.'_as';
-
-		if('session' == $this->_session_type)
-		{
-			$_SESSION[$key] = $user_id;
-		}
-		elseif('cookie' == $this->_session_type)
-		{
-			$_COOKIE[$key] = $user_id;
-			cookie($key, $user_id);
-		}
+		$_SESSION[$key] = $user_id;
 
 		// TODO - lan
 		e107::getLog()->add('Head Admin used Login As feature', 'Head Admin [#'.$this->getId().'] '.$this->getName().' logged in user account #'.$user_id);
@@ -2322,7 +2312,7 @@ class e_user extends e_user_model
 			}
 
 			// we have a match
-			if(md5($udata['user_password']) == $upw)
+			if(hash_equals(md5($udata['user_password']), (string) $upw))
 			{
 				// set current user data
 				$this->setData($udata);
@@ -2504,13 +2494,9 @@ class e_user extends e_user_model
 		$id = false;
 		$key = $this->_session_key.'_as';
 
-		if('session' == $this->_session_type && isset($_SESSION[$key]) && !empty($_SESSION[$key]))
+		if(!empty($_SESSION[$key]))
 		{
 			$id = $_SESSION[$key];
-		}
-		elseif('cookie' == $this->_session_type && isset($_COOKIE[$key]) && !empty($_COOKIE[$key]))
-		{
-			$id = $_COOKIE[$key];
 		}
 
 		if(!empty($id) && is_numeric($id)) return intval($id);
@@ -2528,15 +2514,10 @@ class e_user extends e_user_model
 		{
 			$this->_session_data = null;
 			$this->_session_key = e107::getPref('cookie_name', 'e107cookie');
-			$this->_session_type = e107::getPref('user_tracking', 'session');
-			
-			if('session' == $this->_session_type && isset($_SESSION[$this->_session_key]) && !empty($_SESSION[$this->_session_key]))
+
+			if(!empty($_SESSION[$this->_session_key]))
 			{
 				$this->_session_data = &$_SESSION[$this->_session_key];
-			}
-			elseif('cookie' == $this->_session_type && isset($_COOKIE[$this->_session_key]) && !empty($_COOKIE[$this->_session_key]))
-			{
-				$this->_session_data = &$_COOKIE[$this->_session_key];
 			}
 		}
 

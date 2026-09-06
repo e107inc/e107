@@ -10,8 +10,9 @@
  * and the underlying e107::_extractLanConstantsFromSource() tokeniser
  * — added for issue #5653 (Undefined constant LAN_112 in fpw_template.php).
  */
-class e107RequireLegacyTemplateTest extends \Codeception\Test\Unit
+class e107RequireLegacyTemplateTest extends \Test\Unit
 {
+
 	/** @var string[] */
 	protected $tempFiles = array();
 
@@ -216,8 +217,10 @@ class e107RequireLegacyTemplateTest extends \Codeception\Test\Unit
 	public function testRequireReusesCacheOnSecondCall()
 	{
 		// Indirect check: second call with same path should still work (and
-		// for templates with no LAN_*, must not emit warnings).
-		$body = "<?php\n\$GLOBALS['__test_cached'] = (\$GLOBALS['__test_cached'] ?? 0) + 1;\n";
+		// for templates with no LAN_*, must not emit warnings). The body
+		// uses isset()-ternary rather than ?? because PHP 5.6 has to parse
+		// the templated source on require, and ?? is a parse error there.
+		$body = "<?php\n\$GLOBALS['__test_cached'] = (isset(\$GLOBALS['__test_cached']) ? \$GLOBALS['__test_cached'] : 0) + 1;\n";
 		$path = $this->writeTempTemplate('cached.php', $body);
 
 		e107::requireLegacyTemplate($path);
@@ -228,16 +231,19 @@ class e107RequireLegacyTemplateTest extends \Codeception\Test\Unit
 		unset($GLOBALS['__test_cached']);
 	}
 
-	// --- fpw_template.php regression for #5653 -----------------------------
+	// --- v1 template regression for #5653 ---------------------------------
 
-	public function testFpwLegacyTemplateScanFindsLan112()
+	/** The shape the shipped legacy fpw template had when it fataled: numbered LAN names beside current ones, all read as bare constants. */
+	public function testLegacyTemplateScanFindsLan112()
 	{
-		$path = realpath(__DIR__ . '/../../../e107_core/templates/legacy/fpw_template.php');
-		if (!$path || !is_readable($path))
-		{
-			$this->markTestSkipped('fpw_template.php not found at expected legacy path');
-		}
+		$body = "<?php\n"
+			."\$FPW_TABLE = \"<td>\".LAN_05.\"</td>\";\n"
+			."\$FPW_TABLE .= \"<td>\".LAN_FPW1.\"</td>\";\n"
+			."\$FPW_TABLE .= \"<td>\".LAN_112.\"</td>\";\n";
+		$path = $this->writeTempTemplate('lan112.php', $body);
+
 		$names = e107::_extractLanConstantsFromSource(file_get_contents($path));
+
 		$this->assertContains('LAN_05', $names);
 		$this->assertContains('LAN_FPW1', $names);
 		$this->assertContains('LAN_112', $names, 'The very constant that fataled in issue #5653 must be detected');

@@ -51,15 +51,18 @@ $oblev_before_start = ob_get_level();
 // B: Remove all output buffering
 //
 if(!isset($_E107) || !is_array($_E107)) { $_E107 = array(); }
-if(isset($_E107['cli'], $_SERVER["HTTP_USER_AGENT"]) && !isset($_E107['debug']))
+if(!empty($_E107['cli']) && (PHP_SAPI === "cli-server"
+	|| !empty($_SERVER['REQUEST_METHOD'])
+	|| !empty($_SERVER['HTTP_HOST'])
+	|| !empty($_SERVER['SERVER_PROTOCOL'])))
 {
-	exit();
+	exit(1);
 }
 
-if (PHP_MAJOR_VERSION < 8)
+if (version_compare(PHP_VERSION, '5.6', '<'))
 {
 	echo "Configuration Error. Check error log for details.";
-    error_log('PHP 8 or higher is required. Current version: ' . PHP_VERSION);
+    error_log('PHP 5.6 or higher is required. Current version: ' . PHP_VERSION);
     exit();
 }
 
@@ -229,7 +232,7 @@ else // New e107_config.php format. v2.4+
 {
 	$e107_paths = $config['paths'];
 	$sql_info = $config['database'];
-	$E107_CONFIG = $config['other'] ?? [];
+	$E107_CONFIG = isset($config['other']) ? $config['other'] : [];
 
 	if(isset($sql_info['defaultdb']))
 	{
@@ -312,7 +315,6 @@ $sql->db_SetErrorReporting(false);
 $dbg->logTime('SQL Connect');
 
 $merror=$sql->db_Connect($sql_info['server'], $sql_info['user'], $sql_info['password'], varset($sql_info['db'], $sql_info['db']));
-unset($sql_info);
 // create after the initial connection.
 //DEPRECATED, BC, call the method only when needed
 $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
@@ -326,15 +328,16 @@ if(!isset($_E107['no_log']))
 }
 	if($merror === 'e1')
 	{
-		message_handler('CRITICAL_ERROR', 6, ': generic, ', 'class2.php');
-		exit;
+		error_log('e107: unable to connect to the database server '.$sql_info['server'].' as '.$sql_info['user'].': '.$sql->getLastErrorText().'. Check the database settings in e107_config.php.');
+		$e107->renderConfigurationIssue();
 	}
 
 	if ($merror === 'e2')
 	{
-		message_handler("CRITICAL_ERROR", 7, ': generic, ', 'class2.php');
-		exit;
+		error_log('e107: connected to the database server '.$sql_info['server'].' but the database '.$sql_info['db'].' could not be selected: '.$sql->getLastErrorText().'. Check the database name in e107_config.php.');
+		$e107->renderConfigurationIssue();
 	}
+unset($sql_info);
 
 //
 // K: Load compatability mode.
@@ -376,10 +379,14 @@ $dbg->logTime('Load Core Prefs');
 
 
 // Check core preferences
-//FIXME - message_handler is dying after message_handler(CRITICAL_ERROR) call
 e107::getConfig()->load(); // extra load, required if mysql handler already called e107::getConfig()
 if(!e107::getConfig()->hasData())
 {
+	if(!$sql->isTable('core'))
+	{
+		error_log('e107: no e107 tables were found in the database '.e107::getMySQLConfig('defaultdb').' with the table prefix '.e107::getMySQLConfig('prefix').'. For a new site, remove e107_config.php and open install.php; for an existing site, check the database name and table prefix in e107_config.php.');
+		$e107->renderConfigurationIssue();
+	}
 
 	// Core prefs error - admin log
 	e107::getLog()->add('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING);
@@ -391,7 +398,7 @@ if(!e107::getConfig()->hasData())
 		e107::getConfig()->loadData(e107::getConfig('core_backup')->getPref(), false)
 			->save(false, true);
 
-		message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
+		error_log('e107: the core preferences were empty and have been restored from the automatic backup.');
 	}
 	else
 	{
@@ -401,11 +408,8 @@ if(!e107::getConfig()->hasData())
 			// Core could not restore from automatic backup. Execution halted.
 			e107::getLog()->add('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL);
 
-			message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
-			// No old system, so point in the direction of resetcore :(
-			message_handler('CRITICAL_ERROR', 4, __LINE__, __FILE__); //this will never appear till message_handler() is fixed
-
-			exit;
+			error_log('e107: the core preferences are empty and the database holds no automatic backup of them. Restore the database from a backup.');
+			$e107->renderConfigurationIssue();
 		}
 
 // resurrect core from old prefs
@@ -477,7 +481,7 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 
 	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
 	{
-   		if(substr(e_REQUEST_URL, 7, 4) === 'www.' || substr(e_REQUEST_URL, 8, 4) === 'www.')
+   		if((string) substr(e_REQUEST_URL, 7, 4) === 'www.' || (string) substr(e_REQUEST_URL, 8, 4) === 'www.')
 		{
 			$self = e_REQUEST_URL;
 			//if(e_QUERY){ $self .= '?'.e_QUERY; }
@@ -578,17 +582,7 @@ if(!isset($_E107['no_lan']))
 
 	$dbg->logTime('Include Global Plugin Language Files');
 
-	if(isset($pref['lan_global_list']))
-	{
-		foreach($pref['lan_global_list'] as $path)
-		{
-			if(e107::plugLan($path, 'global', true) === false)
-			{
-				e107::plugLan($path, 'global');
-			}
-
-		}
-	}
+	e107\Language\GlobalLanguageList::loadAll();
 }
 
 if(!isset($_E107['no_session']))
@@ -817,7 +811,7 @@ $e107 = e107::getInstance();		// Is this needed now?
 $dbg->logTime('IP Handler and Ban Check');
 e107::getIPHandler()->ban();
 
-if(USER && !isset($_E107['no_forceuserupdate']) && $_SERVER['QUERY_STRING'] !== 'logout' && varset($pref['force_userupdate']))
+if(USER && !isset($_E107['no_forceuserupdate']) && !logout_requested() && varset($pref['force_userupdate']))
 {
 	if(isset($currentUser) && force_userupdate($currentUser))
 	{
@@ -853,7 +847,7 @@ $dbg->logTime('Login/logout/ban/tz');
 
 if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 {
-	e107::getUser()->login($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge']), false);
+	e107::getUser()->login(varset($_POST['username']), varset($_POST['userpass']), (int) varset($_POST['autologin']), varset($_POST['hashchallenge']), false);
 //	e107_require_once(e_HANDLER.'login.php');
 //	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
 }
@@ -861,7 +855,11 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 
 
 // e_QUERY not defined in single entry mod
-if (($_SERVER['QUERY_STRING'] === 'logout'))
+if (logout_refused())
+{
+	e107::getMessage()->addError(defset('LAN_LOGOUT_REFUSED_TOKEN_MISSING', 'You have not been logged out, because that link carried no security token. Use the logout link in this site\'s own menu rather than a bookmark or a link on another site.'));
+}
+elseif (logout_requested())
 {
 	if (USER)
 	{
@@ -888,14 +886,7 @@ if (($_SERVER['QUERY_STRING'] === 'logout'))
 
 	// first model logout and session destroy..
 	e107::getUser()->logout();
-	
-	// it might be removed soon
-	if ($pref['user_tracking'] === 'session')
-	{
-		session_destroy();
-		$_SESSION[e_COOKIE]='';
-		// @TODO: Need to destroy the session cookie as well (not done by session_destroy()
-	}
+
 	cookie(e_COOKIE, '', (time() - 2592000));
 
 	if($prev) // allow scripts to set the logged out URL via setPreviousUrl()
@@ -1215,9 +1206,9 @@ function check_email($email)
 	{
 		return $email;	
 	}
-	
+
 	return false; 
-	
+
 	// return preg_match("/^([_a-zA-Z0-9-+]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+)(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,6})$/" , $email) ? $email : false;
 }
 
@@ -1272,7 +1263,7 @@ function check_class($var, $userclass = null, $uid = 0)
 			if ($v[0] === '-')
 			{
 				$invert = true;
-				$v = substr($v, 1);
+				$v = (string) substr($v, 1);
 			}
 			$v = $e107->user_class->ucGetClassIDFromName($v);
 		}
@@ -1849,7 +1840,8 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 //
 /**
  *
- * generic function for retaining values across pages. ie. cookies or sessions.
+ * generic function for retaining values across pages. The value is kept in the
+ * session; the cookie parameters are ignored since v2.3.12.
  * @deprecated Use e107::getUserSession()->makeUserCookie($userData, $autologin); instead.
  * @param $name
  * @param $value
@@ -1864,26 +1856,7 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 	//$userData = ['user_name
 //	e107::getUserSession()->makeUserCookie($userData, $autologin);
 
-	global $pref;
-	if ($pref['user_tracking'] === 'session')
-	{
-		$_SESSION[$name] = $value;
-	}
-	else
-	{
-		if((empty($domain) && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
-		{
-			$domain = (e_DOMAIN !== false) ? ".".e_DOMAIN : "";
-		}
-
-		if(defined('e_MULTISITE_MATCH'))
-		{
-			$path = '/';
-		}
-		
-		eShims::setcookie($name, $value, $expire, $path, $domain, $secure, true);
-		$_COOKIE[$name] = $value;
-	}
+	$_SESSION[$name] = $value;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1975,6 +1948,26 @@ function include_lan($path, $force = false)
 	return e107::includeLan($path, $force);
 }
 
+
+
+/**
+ * @return boolean true when the query string asks core to log the current user out
+ */
+function logout_requested()
+{
+	$query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+
+	return ($query === 'logout' || strpos($query, 'logout&') === 0);
+}
+
+
+/**
+ * @return boolean true when that logout arrived without the e-token core's own links carry
+ */
+function logout_refused()
+{
+	return (logout_requested() && defined('e_TOKEN') && empty($_GET['e-token']));
+}
 
 
 /**
@@ -2125,6 +2118,48 @@ class error_handler
 
 
 	/**
+	 * Whether the debug level asks for this diagnostic even when the caller silenced it.
+	 *
+	 * @param int $type
+	 * @return bool
+	 */
+	private function debugWants($type)
+	{
+		if($type === E_USER_DEPRECATED)
+		{
+			return $this->deftrue('E107_DBG_DEPRECATED');
+		}
+
+		return $this->deftrue('E107_DBG_ALLERRORS');
+	}
+
+
+	/**
+	 * Whether the @ operator was holding error reporting down when this diagnostic was raised.
+	 *
+	 * PHP 7 and earlier drop the level to zero. PHP 8 masks it down to the error
+	 * classes @ cannot silence, so a level already inside that set comes back
+	 * unchanged and the operator leaves nothing to read.
+	 *
+	 * @param int $type
+	 * @return bool
+	 */
+	private function isSilenced($type)
+	{
+		$level = error_reporting();
+
+		if($level === 0)
+		{
+			return true;
+		}
+
+		$unsilenceable = E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_PARSE;
+
+		return $level === $unsilenceable && !($level & $type);
+	}
+
+
+	/**
 	 * @param $type
 	 * @param $message
 	 * @param $file
@@ -2134,6 +2169,11 @@ class error_handler
 	 */
 	function handle_error($type, $message, $file, $line, $context = null) {
 		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
+
+		if(!$startup_error && $this->isSilenced($type) && !$this->debugWants($type))
+		{
+			return;
+		}
 
 		switch($type)
 		{
@@ -2413,7 +2453,7 @@ class e_http_header
 		
 	// $this->setHeader("Cache-Control: must-revalidate", true); 
 		 
-		if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout' && $canCache && !deftrue('e_NOCACHE'))
+		if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' && !logout_requested() && $canCache && !deftrue('e_NOCACHE'))
 		{
 			// header("Cache-Control: must-revalidate", true);	
 			if(e107::getPref('site_page_expires')) // TODO - allow per page

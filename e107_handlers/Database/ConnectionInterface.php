@@ -433,7 +433,7 @@ use PDOStatement;
 		 *
 		 * <code>
 		 * e107::getDb()->schema()->addColumn('user_extended', 'user_twitter',
-		 *     Column::define('VARCHAR', 255)->notNull()->default(''));
+		 *     Column::define('VARCHAR', 255)->notNull()->defaultValue(''));
 		 * </code>
 		 *
 		 * @return SchemaBuilder
@@ -512,6 +512,38 @@ use PDOStatement;
 		 * @return array|false
 		 */
 		public function getFieldDefs($tableName);
+
+		/**
+		 * The '_FIELD_TYPES' map alone, for {@see QueryBuilder::valuesTyped()}
+		 * and its siblings. Empty when no definition is on record for the table,
+		 * which is how the array-form CRUD has always proceeded without one:
+		 * every column then binds as 'string'.
+		 *
+		 * @param string $tableName Logical table name.
+		 * @return array column => field-type token
+		 */
+		public function getFieldTypes($tableName);
+
+		/**
+		 * The stand-in value for every NOT NULL column of a table: its declared
+		 * DEFAULT, or '' where it declares none. A typed write
+		 * ({@see QueryBuilder::valuesTyped()} and its siblings) puts this in place of
+		 * a null the caller had no value for, since a column declared NOT NULL
+		 * cannot hold one.
+		 *
+		 * Read from the table as it stands rather than from a cached definition,
+		 * which outlives the DDL that changes it. AUTO_INCREMENT columns are left
+		 * out: the server already reads a null there as "assign one". Empty for a
+		 * table that cannot be read.
+		 *
+		 * Wider than the '_NOTNULL' map {@see ConnectionInterface::getFieldDefs()}
+		 * returns, which carries only the NOT NULL columns that declare no DEFAULT,
+		 * and which this does not touch.
+		 *
+		 * @param string $tableName Logical table name.
+		 * @return array column => stand-in value
+		 */
+		public function getNotNullDefaults($tableName);
 
 
 		/**
@@ -624,7 +656,8 @@ use PDOStatement;
 
 
 		/**
-		 * Driver error number of the last operation; 0 when there was none.
+		 * Driver error number of the last operation; 0 when there was none, and
+		 * -1 when the error carries no driver number.
 		 *
 		 * @return int
 		 */

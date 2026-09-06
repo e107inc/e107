@@ -1,7 +1,7 @@
 <?php
 
 
-class redirectionTest extends \Codeception\Test\Unit
+class redirectionTest extends \Test\Unit
 {
 
 	/** @var redirection */
@@ -231,6 +231,34 @@ class redirectionTest extends \Codeception\Test\Unit
 		foreach($notCapturable as $url)
 		{
 			self::assertFalse($this->rd->isCapturable($url), "Expected NOT capturable: $url");
+		}
+	}
+
+	/**
+	 * A logout link now carries an e-token, so the query string it arrives on is
+	 * no longer the bare word the exception list held.
+	 */
+	public function testIsCapturableRefusesATokenisedLogout()
+	{
+		$rd = $this->make('redirection', array('query_exceptions' => array('logout')));
+		$serverBackup = $_SERVER;
+
+		try
+		{
+			unset($_SERVER['HTTP_SEC_FETCH_DEST']);
+
+			$_SERVER['QUERY_STRING'] = 'logout';
+			self::assertFalse($rd->isCapturable('/index.php?logout'), 'a bare logout must not be capturable');
+
+			$_SERVER['QUERY_STRING'] = 'logout&e-token=abc123';
+			self::assertFalse($rd->isCapturable('/index.php?logout&e-token=abc123'), 'a tokenised logout must not be capturable either');
+
+			$_SERVER['QUERY_STRING'] = 'logoutlist';
+			self::assertTrue($rd->isCapturable('/index.php?logoutlist'), 'a query that merely begins with the word is not the exception');
+		}
+		finally
+		{
+			$_SERVER = $serverBackup;
 		}
 	}
 
@@ -491,6 +519,54 @@ class redirectionTest extends \Codeception\Test\Unit
 		// With no token present, there is no destination.
 		unset($_POST[redirection::LOGIN_DEST_FIELD], $_COOKIE[redirection::LOGIN_DEST_COOKIE]);
 		self::assertFalse($this->rd->getLoginDestination());
+	}
+
+	/**
+	 * Discussion #6005: a destination captured from an administrator bounce is handed
+	 * back to an administrator and to nobody else. Without this, the next person to
+	 * log in on that browser inherits it and lands on the admin login form while
+	 * being logged in perfectly well.
+	 */
+	public function testAdminOnlyDestinationIsRefusedForANonAdmin()
+	{
+		$token = $this->rd->getLoginDestinationToken('/e107_admin/users.php', redirection::LOGIN_DEST_TTL, true);
+		self::assertNotSame('', $token);
+
+		$_POST[redirection::LOGIN_DEST_FIELD] = $token;
+
+		self::assertFalse($this->rd->getLoginDestination(false));
+		self::assertSame('/e107_admin/users.php', $this->rd->getLoginDestination(true));
+
+		unset($_POST[redirection::LOGIN_DEST_FIELD]);
+	}
+
+	public function testOrdinaryDestinationIsRefusedToNobody()
+	{
+		$token = $this->rd->getLoginDestinationToken('/news.php?extend.1');
+		self::assertNotSame('', $token);
+
+		$_POST[redirection::LOGIN_DEST_FIELD] = $token;
+		self::assertSame('/news.php?extend.1', $this->rd->getLoginDestination(false));
+
+		unset($_POST[redirection::LOGIN_DEST_FIELD]);
+	}
+
+	/**
+	 * The per-request token cache is keyed by URL, so the marking has to be part of
+	 * that key or the same admin page asked for twice comes back unmarked.
+	 */
+	public function testTheAdminMarkingSurvivesTheTokenCache()
+	{
+		$plain  = $this->rd->getLoginDestinationToken('/e107_admin/users.php');
+		$marked = $this->rd->getLoginDestinationToken('/e107_admin/users.php', redirection::LOGIN_DEST_TTL, true);
+
+		$_POST[redirection::LOGIN_DEST_FIELD] = $plain;
+		self::assertSame('/e107_admin/users.php', $this->rd->getLoginDestination(false));
+
+		$_POST[redirection::LOGIN_DEST_FIELD] = $marked;
+		self::assertFalse($this->rd->getLoginDestination(false));
+
+		unset($_POST[redirection::LOGIN_DEST_FIELD]);
 	}
 
 	/**

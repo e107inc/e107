@@ -163,8 +163,8 @@ abstract class Random
                     throw new \RuntimeException(__CLASS__ . ' requires at least one symmetric cipher be loaded');
             }
 
-            $crypto->setKey(substr($key, 0, $crypto->getKeyLength() >> 3));
-            $crypto->setIV(substr($iv, 0, $crypto->getBlockLength() >> 3));
+            $crypto->setKey((string) substr($key, 0, $crypto->getKeyLength() >> 3));
+            $crypto->setIV((string) substr($iv, 0, $crypto->getBlockLength() >> 3));
             $crypto->enableContinuousBuffer();
         }
 
@@ -186,7 +186,7 @@ abstract class Random
             $result .= $r;
         }
 
-        return substr($result, 0, $length);
+        return (string) substr($result, 0, $length);
     }
 
     /**

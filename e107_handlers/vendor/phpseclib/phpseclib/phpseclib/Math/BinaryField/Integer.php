@@ -250,10 +250,10 @@ class Integer extends Base
 
         $m = $length >> 1;
 
-        $x1 = substr($x, 0, -$m);
-        $x0 = substr($x, -$m);
-        $y1 = substr($y, 0, -$m);
-        $y0 = substr($y, -$m);
+        $x1 = (string) substr($x, 0, -$m);
+        $x0 = (string) substr($x, -$m);
+        $y1 = (string) substr($y, 0, -$m);
+        $y0 = (string) substr($y, -$m);
 
         $z2 = self::polynomialMultiply($x1, $y1);
         $z0 = self::polynomialMultiply($x0, $y0);

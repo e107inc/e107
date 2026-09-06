@@ -51,15 +51,14 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 				$this->use_imagecode = e107::getConfig()->get('logcode');
 				$this->sec = e107::getSecureImg();
-				$this->usernameLabel = '';
-				$this->allowEmailLogin = $pref['allowEmailLogin'];
+				$this->allowEmailLogin = varset($pref['allowEmailLogin'], 0);
 
-				if($pref['allowEmailLogin']==1)
+				if($this->allowEmailLogin==1)
 				{
 					$this->usernameLabel = LAN_LOGINMENU_49;
 				}
 
-				if($pref['allowEmailLogin']==2)
+				if($this->allowEmailLogin==2)
 				{
 					$this->usernameLabel = LAN_LOGINMENU_50;
 				}
@@ -185,19 +184,6 @@ e107::getLanguage()->bcDefs($bcDefs);
 				return "<input class='button btn btn-default btn-secondary login' type='submit' name='userlogin' id='userlogin' value='".LAN_LOGIN."' />";
 			}
 
-			function sc_lm_rememberme($parm='')
-			{
-				$pref = e107::getPref();
-				if($parm == "hidden"){
-					return "<input type='hidden' name='autologin' id='autologin' value='1' />";
-				}
-				if(varset($pref['user_tracking']) !== "session")
-				{
-					return "<label for='autologin'><input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "".LAN_LOGINMENU_6."</label>");
-				}
-				return '';
-			}
-
 			function sc_lm_signup_link($parm='')
 			{
 				$pref = e107::getPref();
@@ -316,12 +302,12 @@ e107::getLanguage()->bcDefs($bcDefs);
 			function sc_lm_logout($parm='')
 			{
 			$text = ($parm) ? $parm : LAN_LOGOUT;
-			return '<a class="login_menu_link logout" id="login_menu_link_logout" href="'.e_HTTP.'index.php?logout">'.$text.'</a>';
+			return '<a class="login_menu_link logout" id="login_menu_link_logout" href="'.e_HTTP.'index.php?logout&amp;e-token='.defset('e_TOKEN').'">'.$text.'</a>';
 			}
 
 			function sc_lm_logout_href($parm='')
 			{
-			return e_HTTP.'index.php?logout';
+			return e_HTTP.'index.php?logout&amp;e-token='.defset('e_TOKEN');
 			}
 
 			function sc_lm_external_links($parm='')
@@ -397,7 +383,9 @@ e107::getLanguage()->bcDefs($bcDefs);
 					return '';
 				}
 
-				return $tp->parseTemplate($LOGIN_MENU_STATS, true, $this);
+				$ret = $tp->parseTemplate($LOGIN_MENU_STATS, true, $this);
+
+				return trim($ret) === '' ? '' : $ret;
 			}
 
 			function sc_lm_new_news($parm='')

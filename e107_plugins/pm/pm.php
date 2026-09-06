@@ -32,11 +32,6 @@
 		exit;
 	}
 
-	if(vartrue($_POST['keyword']))
-	{
-		pm_user_lookup();
-	}
-
 	e107::css('pm', 'pm.css');
 	require_once(e_PLUGIN . 'pm/pm_class.php');
 	require_once(e_PLUGIN . 'pm/pm_func.php');
@@ -66,7 +61,9 @@
 		define("PM_DELETE_ICON", "<img src='" . e_PLUGIN_ABS . "pm/images/mail_delete.png'  alt='" . LAN_DELETE . "' class='icon S16' />");
 	}
 
-	$qs = explode('.', e_QUERY);
+	list($pmRoute) = explode('&', e_QUERY, 2);
+
+	$qs = explode('.', $pmRoute);
 	$action = varset($qs[0], 'inbox');
 	if(!$action)
 	{
@@ -89,6 +86,15 @@
 	}*/
 
 	$pm_proc_id = intval(varset($qs[1], 0));
+
+	$pmIsPost = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+
+	if(!$pmIsPost && pm_actionNeedsToken($action) && defined('e_TOKEN') && empty($_GET['e-token']))
+	{
+		e107::getMessage()->addError(defset('LAN_PM_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+		$action = 'inbox';
+		$pm_proc_id = 0;
+	}
 
 	//$pm_prefs = $sysprefs->getArray('pm_prefs');
 
@@ -638,17 +644,31 @@
 
 				$maxsize = intval($this->pmPrefs['attach_size']) * 1024;
 
-				if(is_array($_FILES['file_userfile']))
+				$attached = array();
+
+				if(isset($_FILES['file_userfile']['name']) && is_array($_FILES['file_userfile']['name']))
 				{
-					$file_userfile = $_FILES['file_userfile'];
-					foreach(array_keys($file_userfile['size']) as $fid)
+					foreach($_FILES['file_userfile']['name'] as $fid => $name)
 					{
-						if($maxsize > 0 && $file_userfile['size'][$fid] > $maxsize)
+						$size = $_FILES['file_userfile']['size'][$fid];
+
+						if(strlen($name) && ($maxsize < 1 || $size <= $maxsize))
 						{
-							$msg .= str_replace("{FILENAME}", $file_userfile['name'][$fid], LAN_PM_62) . "<br />";
-							$file_userfile['size'][$fid] = 0;
+							$attached[$fid] = $name;
+							$totalsize += $size;
+
+							continue;
 						}
-						$totalsize += $file_userfile['size'][$fid];
+
+						if(strlen($name))
+						{
+							$msg .= str_replace("{FILENAME}", $name, LAN_PM_62) . "<br />";
+						}
+
+						foreach(array_keys($_FILES['file_userfile']) as $part)
+						{
+							unset($_FILES['file_userfile'][$part][$fid]);
+						}
 					}
 				}
 
@@ -671,19 +691,23 @@
 				}
 
 
-				if(!empty($_POST['uploaded']))
+				if(!empty($attached))
 				{
 					if(check_class($this->pmPrefs['attach_class']))
 					{
-						$sendVars['uploaded'] = $this->processAttachments();
+						$uploaded = $this->processAttachments();
 
-						foreach($sendVars['uploaded'] as $var)
+						if(is_array($uploaded))
 						{
-							if(!empty($var['message']))
-							{
-								$msg .= $var['message'] . "<br />";
-							}
+							$sendVars['uploaded'] = $uploaded;
 
+							foreach($uploaded as $var)
+							{
+								if(!empty($var['message']))
+								{
+									$msg .= $var['message'] . "<br />";
+								}
+							}
 						}
 					}
 					else
@@ -722,11 +746,6 @@
 		 */
 		function processAttachments()
 		{
-			if(!$this->protectStoredAttachments())
-			{
-				e107::getLog()->add('PM_ADM_11', $this->attachmentRoot(), E_LOG_WARNING);
-			}
-
 			if(!$this->protectAttachmentPaths(USERID))
 			{
 				e107::getLog()->add('PM_ADM_12', $this->attachmentDir(USERID), E_LOG_WARNING);
@@ -771,34 +790,6 @@
 
 		}
 
-	}
-
-
-	/**
-	 *    Look up users matching a keyword, output a list of those found
-	 *    Direct echo
-	 */
-	function pm_user_lookup()
-	{
-		$sql = e107::getDb();
-
-		$tp = e107::getParser();
-
-		$qb = $sql->createQueryBuilder();
-		$rows = $qb->select('user_id', 'user_name')->from('user')
-			->where($qb->expr()->regexp('user_name', '^' . $tp->filter($_POST['keyword'], 'w')))
-			->fetchEach();
-
-		$u = array();
-		echo '[';
-		foreach($rows as $row)
-		{
-			$u[] = "{\"caption\":\"" . $row['user_name'] . "\",\"value\":" . $row['user_id'] . "}";
-		}
-
-		echo implode(",", $u);
-		echo ']';
-		exit;
 	}
 
 

@@ -10,7 +10,12 @@ $parm['layout'] = !empty($parm['layout']) ? $parm['layout'] : $parm['type'];
 
 require_once(e_CORE."shortcodes/single/navigation.php");
         
-$text = navigation_shortcode($parm);        
+$text = navigation_shortcode($parm);
+
+if($text === '')
+{
+	return;
+}
 
 $caption = isset($parm['caption'][e_LANGUAGE]) ? $parm['caption'][e_LANGUAGE] : LAN_PLUGIN_NAVIGATION_NAME;
 

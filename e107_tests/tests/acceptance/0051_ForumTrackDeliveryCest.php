@@ -101,7 +101,6 @@ class ForumTrackDeliveryCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->haveForumPluginInstalled();
 		$I->haveForumCsrfMode(2);
 		$I->haveForumMailDryRun(true);

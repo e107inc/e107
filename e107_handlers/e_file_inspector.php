@@ -324,7 +324,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
         foreach ($this->existingInsecureDirectories as $existingInsecureDirectory)
         {
             $existingInsecureDirectory .= '/';
-            if (substr($absolutePath, 0, strlen($existingInsecureDirectory)) === $existingInsecureDirectory) return true;
+            if ((string) substr($absolutePath, 0, strlen($existingInsecureDirectory)) === $existingInsecureDirectory) return true;
         }
         return false;
     }
@@ -344,7 +344,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
             $defaultDir = $this->defaultDirsCache[$dirType];
             if ($customDir === $defaultDir) continue;
 
-            if (substr($path, 0, strlen($customDir)) === $customDir)
+            if ((string) substr($path, 0, strlen($customDir)) === $customDir)
                 $path = $defaultDir . substr($path, strlen($customDir));
         }
         return $path;
@@ -364,7 +364,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
             $defaultDir = $this->defaultDirsCache[$dirType];
             if ($customDir === $defaultDir) continue;
 
-            if (substr($path, 0, strlen($defaultDir)) === $defaultDir)
+            if ((string) substr($path, 0, strlen($defaultDir)) === $defaultDir)
                 $path = $customDir . substr($path, strlen($defaultDir));
         }
         return $path;
@@ -414,4 +414,86 @@ abstract class e_file_inspector implements e_file_inspector_interface
     {
         return realpath(e_BASE . $path);
     }
+}
+
+/**
+ * Percentage a running File Inspector scan has reported, for the admin page to poll.
+ *
+ * Held in the core `tmp` table, which class2.php clears of anything older than five
+ * minutes, so a figure that is not refreshed within that window is gone.
+ */
+class e_file_inspector_progress
+{
+	const TMP_KEY_PREFIX = 'fileinspector-progress-';
+	const COMPLETE = 100;
+
+	/** @var string */
+	private $key;
+
+	/**
+	 * @param int $ownerId user whose scan this tracks
+	 */
+	public function __construct($ownerId)
+	{
+		$this->key = self::TMP_KEY_PREFIX . (int) $ownerId;
+	}
+
+	/**
+	 * @param int $percent
+	 * @return void
+	 */
+	public function record($percent)
+	{
+		$percent = (int) $percent;
+
+		if($percent >= self::COMPLETE)
+		{
+			$this->discard();
+			return;
+		}
+
+		$sql = e107::getDb();
+
+		if($sql->createQueryBuilder()->select('tmp_ip')->from('tmp')->where('tmp_ip', $this->key)->fetchRow())
+		{
+			$sql->createQueryBuilder()->update('tmp')
+				->set('tmp_time', time())->set('tmp_info', (string) $percent)
+				->where('tmp_ip', $this->key)
+				->execute();
+
+			return;
+		}
+
+		$sql->createQueryBuilder()->insert('tmp')->values(array(
+			'tmp_ip'   => $this->key,
+			'tmp_time' => time(),
+			'tmp_info' => (string) $percent,
+		))->execute();
+	}
+
+	/**
+	 * @return int percentage the scan last reported, or {@see e_file_inspector_progress::COMPLETE} when no scan is on record
+	 */
+	public function percentComplete()
+	{
+		$row = e107::getDb()->createQueryBuilder()
+			->select('tmp_info')->from('tmp')
+			->where('tmp_ip', $this->key)
+			->fetchRow();
+
+		if(empty($row) || !strlen($row['tmp_info']))
+		{
+			return self::COMPLETE;
+		}
+
+		return (int) $row['tmp_info'];
+	}
+
+	/**
+	 * @return void
+	 */
+	public function discard()
+	{
+		e107::getDb()->createQueryBuilder()->delete('tmp')->where('tmp_ip', $this->key)->execute();
+	}
 }

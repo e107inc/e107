@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_tohtml_linkwordsTest extends \Codeception\Test\Unit
+	class e_tohtml_linkwordsTest extends \Test\Unit
 	{
 
 		/** @var e_tohtml_linkwords */

@@ -1,78 +1,58 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 if (!defined("USER_WIDTH"))
 {
 	define("USER_WIDTH", "width:97%");
 }
 
+$required = "<span class='required'><!-- empty --></span>";
 
-// global $usersettings_shortcodes, $pref;
-
-
-$sc_style['CUSTOMTITLE']['pre'] 		= "<tr>
+$USERSETTINGS_WRAPPER['edit']['CUSTOMTITLE'] = "<tr>
 											<td style='width:40%' class='forumheader3'>".LAN_USER_04.":</td>
-											<td style='width:60%' class='forumheader2'>\n";
-$sc_style['CUSTOMTITLE']['post'] 		= "</td></tr>\n";
+											<td style='width:60%' class='forumheader2'>\n{---}</td></tr>\n";
 
-$sc_style['PASSWORD1']['pre'] 			= "<tr>
+$USERSETTINGS_WRAPPER['edit']['PASSWORD1'] = "<tr>
 											<td style='width:40%' class='forumheader3'>".LAN_USET_24."</td>
-											<td style='width:60%' class='forumheader2'>\n";
-$sc_style['PASSWORD1']['post'] 			= "</td></tr>\n";
+											<td style='width:60%' class='forumheader2'>\n{---}</td></tr>\n";
 
-
-$sc_style['PASSWORD2']['pre'] 			= "<tr>
+$USERSETTINGS_WRAPPER['edit']['PASSWORD2'] = "<tr>
 											<td style='width:40%' class='forumheader3'>".LAN_USET_25."</td>
-											<td style='width:60%' class='forumheader2'>\n";
-$sc_style['PASSWORD2']['post'] 			= "</td></tr>\n";
+											<td style='width:60%' class='forumheader2'>\n{---}</td></tr>\n";
 
+$USERSETTINGS_WRAPPER['edit']['PASSWORD_LEN'] = "<br /><span class='smalltext'>  (".LAN_USER_78." {---} ".LAN_USER_79.")</span>";
 
-$sc_style['PASSWORD_LEN']['pre'] 		= "<br /><span class='smalltext'>  (".LAN_USER_78." ";
-$sc_style['PASSWORD_LEN']['post'] 		= " ".LAN_USER_79.")</span>";
-
-$sc_style['USERCLASSES']['pre'] 		= "<tr>
-											<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_76.":".req(e107::getPref('signup_option_class'))."
+$USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = "<tr>
+											<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_76.":".((int) e107::getPref('signup_option_class') === 2 ? $required : '')."
 											<br /><span class='smalltext'>".LAN_USER_73."</span>
 											</td>
-											<td style='width:60%' class='forumheader2'>";
-$sc_style['USERCLASSES']['post'] 		= "</td></tr>\n";
+											<td style='width:60%' class='forumheader2'>{---}</td></tr>\n";
 
-$sc_style['AVATAR_UPLOAD']['pre'] 		= "<tr>
+$USERSETTINGS_WRAPPER['edit']['AVATAR_UPLOAD'] = "<tr>
 											<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USET_26."<br /></td>
-											<td style='width:60%' class='forumheader2'>\n";
-$sc_style['AVATAR_UPLOAD']['post'] 		= "</td></tr>\n";
+											<td style='width:60%' class='forumheader2'>\n{---}</td></tr>\n";
 
-
-$sc_style['PHOTO_UPLOAD']['pre'] 		= "<tr>
+$USERSETTINGS_WRAPPER['edit']['PHOTO_UPLOAD'] = "<tr>
 											<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USER_06."</td>
-											<td style='width:60%' class='forumheader2'><span class='smalltext'>\n";
-$sc_style['PHOTO_UPLOAD']['post'] 		= "</span></td></tr>";
+											<td style='width:60%' class='forumheader2'><span class='smalltext'>\n{---}</span></td></tr>";
 
-
-$sc_style['USERNAME']['pre'] 			= "<tr>
+$USERSETTINGS_WRAPPER['edit']['USERNAME'] = "<tr>
 											<td style='width:40%' class='forumheader3'>".LAN_USER_01."</td>
-											<td style='width:60%' class='forumheader2'>\n";
+											<td style='width:60%' class='forumheader2'>\n{---}</td</tr>";
 
-$sc_style['USERNAME']['post'] 			= "</td</tr>";
-
-
-$sc_style['LOGINNAME']['pre'] 			= "<tr>
+$USERSETTINGS_WRAPPER['edit']['LOGINNAME'] = "<tr>
 											<td style='width:40%' class='forumheader3'>".LAN_USER_81."</td>
-											<td style='width:60%' class='forumheader2'>\n";
-$sc_style['LOGINNAME']['post'] 			= "</td></tr>\n";
+											<td style='width:60%' class='forumheader2'>\n{---}</td></tr>\n";
 
+$USERSETTINGS_WRAPPER['edit']['SIGNATURE'] = "<tr><td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_71.((int) e107::getPref('signup_option_signature') === 2 ? $required : '')."</td>
+											<td style='width:60%' class='forumheader2'>{---}";
 
-$sc_style['SIGNATURE']['pre']			= "<tr><td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_71.req(e107::getPref('signup_option_signature'))."</td>
-											<td style='width:60%' class='forumheader2'>";
+$USERSETTINGS_WRAPPER['edit']['SIGNATURE_HELP'] = "{---}</td></tr>";
 
-//$sc_style['SIGNATURE']['pre']			= "<tr><td style='width:40%;vertical-align:top' class='forumheader3'></td>
-			//								<td style='width:60%' class='forumheader2'>";
+$USERSETTINGS_TEMPLATE['extended-category'] = "<tr><td colspan='2' class='forumheader'>{CATNAME}</td></tr>";
 
-// $sc_style['SIGNATURE_HELP']['pre']		= "</td></tr>";											\
-$sc_style['SIGNATURE_HELP']['post']		= "</td></tr>";
-
-
-$USER_EXTENDED_CAT 						= "<tr><td colspan='2' class='forumheader'>{CATNAME}</td></tr>";
-$USEREXTENDED_FIELD 					= "<tr>
+$USERSETTINGS_TEMPLATE['extended-field'] = "<tr>
 											<td style='width:40%' class='forumheader3'>
 											{FIELDNAME}
 											</td>
@@ -82,20 +62,9 @@ $USEREXTENDED_FIELD 					= "<tr>
 											</tr>
 											";
 
+$USERSETTINGS_TEMPLATE['required-field'] = "{FIELDNAME} <span class='required'><!-- emtpy --></span>";
 
-
-
-$REQUIRED_FIELD 						= "{FIELDNAME} <span class='required'><!-- emtpy --></span>";
-
-// After Saving has occurred.
-$USERSETTINGS_MESSAGE 					= "{MESSAGE}";
-$USERSETTINGS_MESSAGE_CAPTION 			= LAN_OK;
-$USERSETTINGS_EDIT_CAPTION 				= LAN_USET_39; 	// 'Update User Settings'
-
-
-
-
-$USERSETTINGS_EDIT = "
+$USERSETTINGS_TEMPLATE['edit'] = "
 <div style='text-align:center'>
 	<table style='".USER_WIDTH."' class='table fborder adminform'>
     	<colgroup span='2'>
@@ -109,7 +78,7 @@ $USERSETTINGS_EDIT = "
 	{LOGINNAME}
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_USER_60.req(!e107::getPref('disable_emailcheck'))."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_USER_60.(e107::getPref('disable_emailcheck') ? '' : $required)."</td>
 	<td style='width:60%' class='forumheader2'>
 	{EMAIL}
 	</td>
@@ -133,7 +102,7 @@ $USERSETTINGS_EDIT = "
 	</tr>
 	
 	<tr>
-	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USER_07.req(e107::getPref('signup_option_image'))."</td>
+	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USER_07.((int) e107::getPref('signup_option_image') === 2 ? $required : '')."</td>
 	<td style='width:60%' class='forumheader2'>
 	{AVATAR_REMOTE}
 	</td>
@@ -156,4 +125,3 @@ $USERSETTINGS_EDIT = "
 	</div>
 	</div>
 	";
-

@@ -124,7 +124,7 @@ class ForumFixture extends CodeceptionModule
 		$this->haveForumProbe();
 
 		$browser = $this->browser();
-		$browser->amOnPage('/'.self::PROBE_FILE.'?'.$query);
+		$browser->amOnPage('/'.self::PROBE_FILE.'?'.ProbeGuard::query().'&'.$query);
 
 		$body = $browser->grabPageSource();
 
@@ -185,8 +185,8 @@ class ForumFixture extends CodeceptionModule
 	 *
 	 * Not optional. 0023's teardown removes the preference, and it is the highest
 	 * numbered Cest with shuffle off, so anything after it inherits an unset
-	 * value. Unset resolves to the recommended mode, which reads no token and
-	 * wants a Sec-Fetch-Site header PhpBrowser never sends.
+	 * value. Pin the mode this fixture needs rather than depend on whatever the
+	 * recommendation happens to be in this release.
 	 *
 	 * @param int|string $mode a csrf_enforce value, or 'default' to remove it
 	 */
@@ -196,14 +196,13 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
-	 * e107 bans an address after fifty requests and localhost is exempt, but the
-	 * client address inside the container is the bridge. Without this the suite
-	 * bans itself part way through and every later response comes back empty,
-	 * which reads as pages that do not exist.
+	 * Empty the forum's report throttle, which is scoped per reporter and gives
+	 * every guest one shared bucket, so a report left by an earlier test would
+	 * otherwise refuse the next one.
 	 */
-	public function resetForumFloodProtection()
+	public function resetForumReportThrottle()
 	{
-		$this->probe('act=flood');
+		$this->probe('act=reports');
 	}
 
 	/**
@@ -231,15 +230,23 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
-	 * Write a core preference, or remove it when $value is null.
+	 * Write a core preference, or remove it when $value is null, and hand back
+	 * the value it replaced so the caller can put it back.
+	 *
+	 * A name under url_config/ also clears the router's compiled rule cache,
+	 * without which the next request would go on assembling URLs through the
+	 * profile the site was on before the call.
 	 *
 	 * @param string $name
 	 * @param string|int|null $value
+	 * @return string the replaced value, empty when the pref was unset
 	 */
 	public function haveSitePref($name, $value = null)
 	{
-		$this->probe('act=pref&name='.urlencode($name)
+		$body = $this->probe('act=pref&name='.urlencode($name)
 			.'&value='.urlencode($value === null ? '' : (string) $value));
+
+		return preg_match('/^PROBE_PREF_WAS (.*)$/m', $body, $matches) ? $matches[1] : '';
 	}
 
 	/**
@@ -695,6 +702,7 @@ class ForumFixture extends CodeceptionModule
 // Fixture for the forum Cests. Written per suite, removed in _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';
@@ -733,13 +741,9 @@ switch($act)
 		echo "PROBE_OK mode\n";
 		break;
 
-	case 'flood':
-		e107::getDb()->delete('online');
-		e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
-		// Reports are throttled per reporter, and guests share one bucket, so
-		// a report left by an earlier test would throttle the next one.
+	case 'reports':
 		e107::getDb()->delete('generic', "gen_type = 'reported_post'");
-		echo "PROBE_OK flood\n";
+		echo "PROBE_OK reports\n";
 		break;
 
 	case 'attachdir':
@@ -832,9 +836,11 @@ switch($act)
 
 	case 'pref':
 		$config = e107::getConfig();
-		if($_GET['value'] === '') { $config->remove($_GET['name']); }
+		echo "PROBE_PREF_WAS ".(string) $config->getPref($_GET['name'])."\n";
+		if($_GET['value'] === '') { $config->removePref($_GET['name']); }
 		else { $config->setPref($_GET['name'], $_GET['value']); }
 		$config->save(false, true, false);
+		if(strpos($_GET['name'], 'url_config/') === 0) { eRouter::clearCache(); }
 		echo "PROBE_OK pref\n";
 		break;
 

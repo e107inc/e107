@@ -93,15 +93,15 @@ abstract class AbstractAdapter implements AdapterInterface
      * Common adapters constructor.
      *
      * @param array $config
-     * @param HttpClientInterface $httpClient
-     * @param StorageInterface $storage
-     * @param LoggerInterface $logger
+     * @param \Hybridauth\HttpClient\HttpClientInterface|null $httpClient
+     * @param \Hybridauth\Storage\StorageInterface|null $storage
+     * @param \Hybridauth\Logger\LoggerInterface|null $logger
      */
     public function __construct(
         $config = [],
-        ?HttpClientInterface $httpClient = null,
-        ?StorageInterface $storage = null,
-        ?LoggerInterface $logger = null
+        $httpClient = null,
+        $storage = null,
+        $logger = null
     ) {
         $this->providerId = (new \ReflectionClass($this))->getShortName();
 
@@ -249,8 +249,9 @@ abstract class AbstractAdapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
+     * @param \Hybridauth\HttpClient\HttpClientInterface|null $httpClient
      */
-    public function setHttpClient(?HttpClientInterface $httpClient = null)
+    public function setHttpClient($httpClient = null)
     {
         $this->httpClient = $httpClient ?: new HttpClient();
 
@@ -269,8 +270,9 @@ abstract class AbstractAdapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
+     * @param \Hybridauth\Storage\StorageInterface|null $storage
      */
-    public function setStorage(?StorageInterface $storage = null)
+    public function setStorage($storage = null)
     {
         $this->storage = $storage ?: new Session();
     }
@@ -285,8 +287,9 @@ abstract class AbstractAdapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
+     * @param \Hybridauth\Logger\LoggerInterface|null $logger
      */
-    public function setLogger(?LoggerInterface $logger = null)
+    public function setLogger($logger = null)
     {
         $this->logger = $logger ?: new Logger(
             $this->config->get('debug_mode'),

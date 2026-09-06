@@ -90,6 +90,8 @@ return [
     'DOWLAN_129' => "leave blank if not using mirrors",
     'DOWLAN_130' => "Add another mirror",
     'DOWLAN_131' => "Select local file",
+    'DOWLAN_LOCAL_PATH' => "Or a path inside the downloads directory",
+    'DOWLAN_LOCAL_PATH_NOT_FOUND' => "No file of that name is in the downloads directory, so nothing was saved. Check the path against the downloads directory and submit the download again.",
     'DOWLAN_132' => "Please enter mirror to use, then address to download and filesize",
     'DOWLAN_133' => "Mirror updated in database",
     'DOWLAN_134' => "Mirror saved in database",

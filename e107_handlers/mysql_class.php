@@ -38,24 +38,24 @@ if(defined('MYSQL_LIGHT'))
 	if(is_array($config) && !empty($config['database'])) // New e107_config.php format. v2.4+
 	{
 		$dbInfo = $config['database'];
-		define('MPREFIX', $dbInfo['prefix'] ?? '');
+		define('MPREFIX', isset($dbInfo['prefix']) ? $dbInfo['prefix'] : '');
 		$sql = new db;
 		$sql->db_Connect(
-			$dbInfo['server']   ?? '',
-			$dbInfo['user']     ?? '',
-			$dbInfo['password'] ?? '',
-			$dbInfo['db']       ?? ''
+			isset($dbInfo['server']) ? $dbInfo['server'] : '',
+			isset($dbInfo['user']) ? $dbInfo['user'] : '',
+			isset($dbInfo['password']) ? $dbInfo['password'] : '',
+			isset($dbInfo['db']) ? $dbInfo['db'] : ''
 		);
 	}
 	else // old e107_config.php format with legacy globals.
 	{
-		define('MPREFIX', $mySQLprefix ?? '');
+		define('MPREFIX', isset($mySQLprefix) ? $mySQLprefix : '');
 		$sql = new db;
 		$sql->db_Connect(
-			$mySQLserver   ?? '',
-			$mySQLuser     ?? '',
-			$mySQLpassword ?? '',
-			$mySQLdefaultdb ?? ''
+			isset($mySQLserver) ? $mySQLserver : '',
+			isset($mySQLuser) ? $mySQLuser : '',
+			isset($mySQLpassword) ? $mySQLpassword : '',
+			isset($mySQLdefaultdb) ? $mySQLdefaultdb : ''
 		);
 	}
 }
@@ -75,10 +75,10 @@ elseif(defined('E107_INSTALL'))
 	e107::getInstance()->initInstallSql($sql_info);
 	$sql = new db;
 	$sql->db_Connect(
-		$sql_info['server']   ?? ($sql_info['mySQLserver']   ?? ''),
-		$sql_info['user']     ?? ($sql_info['mySQLuser']     ?? ''),
-		$sql_info['password'] ?? ($sql_info['mySQLpassword'] ?? ''),
-		$sql_info['db']       ?? ($sql_info['mySQLdefaultdb'] ?? '')
+		isset($sql_info['server']) ? $sql_info['server'] : (isset($sql_info['mySQLserver']) ? $sql_info['mySQLserver'] : ''),
+		isset($sql_info['user']) ? $sql_info['user'] : (isset($sql_info['mySQLuser']) ? $sql_info['mySQLuser'] : ''),
+		isset($sql_info['password']) ? $sql_info['password'] : (isset($sql_info['mySQLpassword']) ? $sql_info['mySQLpassword'] : ''),
+		isset($sql_info['db']) ? $sql_info['db'] : (isset($sql_info['mySQLdefaultdb']) ? $sql_info['mySQLdefaultdb'] : '')
 	);
 }
 else
@@ -202,6 +202,7 @@ class e_db_mysql implements e_db
 
 		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 		{
+			$this->mySQLlastErrNum = mysqli_connect_errno();
 			$this->mySQLlastErrText = mysqli_connect_error();
 			return false;
 		}
@@ -253,6 +254,8 @@ class e_db_mysql implements e_db
 
 		if (!@mysqli_select_db($this->mySQLaccess, $database))
 		{
+			$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
+			$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
 			return false;
 		}
 
@@ -344,6 +347,23 @@ class e_db_mysql implements e_db
 		$this->_getMySQLaccess();
 
 		$this->stringifyFetch = false;
+
+		// Refuse a statement there is nothing to run, the same way the PDO driver
+		// does, so the two answer a caller identically (#5904). @mysqli_query()
+		// already returns false for an empty string, but an array whose PREPARE
+		// is empty or absent fails the branch below and reaches mysqli_query() as
+		// an array, which is a TypeError the @ does not suppress.
+		$statement = is_array($query)
+			? (isset($query['PREPARE']) ? $query['PREPARE'] : null)
+			: $query;
+
+		if(!is_string($statement) || trim($statement) === '')
+		{
+			$this->mySQLlastErrText = 'Empty or non-string query passed to '.__FUNCTION__.'()';
+			$this->mySQLlastErrNum = -1;
+
+			return false;
+		}
 
 		$b = microtime();
 
@@ -616,10 +636,9 @@ class e_db_mysql implements e_db
 
 		// Fail closed if the table name is not a plain identifier - it is always
 		// interpolated unquoted into the FROM clause below.
-		if($this->_safeIdentifier($table) === false)
+		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			$this->dbError('select() invalid table identifier');
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$table = $this->hasLanguage($table);
@@ -749,13 +768,13 @@ class e_db_mysql implements e_db
 					break;
 
 					case 'num':
-					case 2; // MYSQL_NUM: // 2
+					case 2: // MYSQL_NUM: // 2
 						$type = MYSQL_NUM;
 					break;
 
 					default:
 					case 'assoc':
-					case 1; //: // 1
+					case 1: //: // 1
 						$type = MYSQL_ASSOC;
 					break;
 				}
@@ -794,10 +813,9 @@ class e_db_mysql implements e_db
 		// $fields === 'generic' is the documented raw-SQL escape hatch ($table holds
 		// the full query); every other path interpolates $table unquoted into FROM,
 		// so validate it as a plain identifier and fail closed otherwise.
-		if ($fields != 'generic' && $this->_safeIdentifier($table) === false)
+		if ($fields != 'generic' && ($table = $this->_safeIdentifier($table)) === false)
 		{
-			$this->dbError('count() invalid table identifier');
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$table = $this->hasLanguage($table);
@@ -871,10 +889,9 @@ class e_db_mysql implements e_db
 
 		// Fail closed if the table name is not a plain identifier - it is always
 		// interpolated unquoted into the DELETE statement below.
-		if($this->_safeIdentifier($table) === false)
+		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			$this->dbError('delete() invalid table identifier');
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$table = $this->hasLanguage($table);
@@ -1114,10 +1131,10 @@ class e_db_mysql implements e_db
 	 */
 	public function fields($table, $prefix = '', $retinfo = false)
 	{
-		// $table becomes a SQL identifier (cannot be bound); validate it like field().
-		if(($table = $this->_safeIdentifier($table)) === false)
+		if(($table = $this->_safeIdentifier($table)) === false
+			|| ($prefix != '' && ($prefix = $this->_safeIdentifier($prefix, true)) === false))
 		{
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$this->_getMySQLaccess();
@@ -1285,7 +1302,7 @@ class e_db_mysql implements e_db
 				$length = strlen($prefix);
 				while($rows = $this->fetch('num'))
 				{
-					$table[] = substr($rows[0],$length);
+					$table[] = (string) substr($rows[0],$length);
 				}
 			}
 			return $table;
@@ -1361,6 +1378,7 @@ class e_db_mysql implements e_db
 	 */
 	function backup($table='*', $file='', $options=null)
 	{
+		$this->mySQLlastErrNum = -1;
 		$this->mySQLlastErrText = "PDO is required to use the mysql backup() method";
 		return false;
 	}
@@ -1373,13 +1391,19 @@ class e_db_mysql implements e_db
 	*/
 	function dbError($from)
 	{
-		$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
-		$this->mySQLlastErrText = '';
-		if ($this->mySQLlastErrNum == 0)
+		if ($this->mySQLlastErrNum === 0)
 		{
-			return '';
+			$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
+
+			if ($this->mySQLlastErrNum === 0)
+			{
+				$this->mySQLlastErrText = '';
+				return '';
+			}
+
+			$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);		// Get the error text.
 		}
-		$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);		// Get the error text.
+
 		if ($this->mySQLerror == TRUE)
 		{
 			message_handler('ADMIN_MESSAGE', '<b>mySQL Error!</b> Function: '.$from.'. ['.$this->mySQLlastErrNum.' - '.$this->mySQLlastErrText.']', __LINE__, __FILE__);
@@ -1512,15 +1536,29 @@ class e_db_mysql implements e_db
 	{
 		if (!isset($this->dbFieldDefs[$tableName]))
 		{
+			$cached = null;
 			if (is_readable(e_CACHE_DB.$tableName.'.php'))
 			{
-				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php');
-				if ($temp !== FALSE)
+				$temp = @file_get_contents(e_CACHE_DB.$tableName.'.php');
+				$tableIsUntyped = ($temp === '');
+				if ($tableIsUntyped)
+				{
+					$cached = array();
+				}
+				elseif ($temp !== FALSE)
 				{
 					$typeDefs = e107::unserialize($temp);
-					unset($temp);
-					$this->dbFieldDefs[$tableName] = $typeDefs;
+					if (!empty($typeDefs))
+					{
+						$cached = $typeDefs;
+					}
 				}
+				unset($temp);
+			}
+
+			if ($cached !== null)
+			{
+				$this->dbFieldDefs[$tableName] = $cached;
 			}
 			else
 			{		// Need to try and find a table definition
@@ -1584,7 +1622,7 @@ class e_db_mysql implements e_db
 
 					$fileData = e107::serialize($typeDefs[$tableName], false);
 
-					if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
+					if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $fileData))
 					{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
 						$result = false;
 					}
@@ -1624,7 +1662,7 @@ class e_db_mysql implements e_db
 		$this->dbFieldDefs[$tableName] = $outDefs;
 		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
 
-		if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
+		if (FALSE === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $toSave))
 		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
 			$mes = e107::getMessage();
 			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.

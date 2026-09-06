@@ -116,10 +116,10 @@ class signup_shortcodes extends e_shortcode
 		switch ($type)
 		{
 			case "login":
-				$lan_plugin_social_xup = LAN_PLUGIN_SOCIAL_XUP_SIGNUP;
+				$lan_plugin_social_xup = defset('LAN_PLUGIN_SOCIAL_XUP_SIGNUP', "Sign-in with your [x] account");
 				break;
 			case "signup":
-				$lan_plugin_social_xup = LAN_PLUGIN_SOCIAL_XUP_REG;
+				$lan_plugin_social_xup = defset('LAN_PLUGIN_SOCIAL_XUP_REG', "Register with your [x] account");
 				break;
 		}
 
@@ -147,8 +147,8 @@ class signup_shortcodes extends e_shortcode
 				else
 					$button = "<span title='" . $tp->lanVars($lan_plugin_social_xup, $p) . "'>$p</span>";
 
-				$callback_url = e107::getUserProvider($p)->generateCallbackUrl(e_REQUEST_URL);
-				$text .= " <a title='" . $tp->lanVars($lan_plugin_social_xup, $p) . " ' role='button' class='signup-xup $class' href='$callback_url'>$button</a> ";
+				$login_url = e107::getUserProvider($p)->generateLoginUrl(e_REQUEST_URL);
+				$text .= " <a title='" . $tp->lanVars($lan_plugin_social_xup, $p) . " ' role='button' class='signup-xup $class' href='$login_url'>$button</a> ";
 			}
 			//TODO different icon options. see: http://zocial.smcllns.com/
 		}
@@ -682,10 +682,12 @@ class signup_shortcodes extends e_shortcode
 				$adminMsg .= "<div class='form-group'><b>".LAN_SIGNUP_114."</b></div>";
 			}
 
+			$token = defined('e_TOKEN') ? "&amp;e-token=".e_TOKEN : "";
+
 			$adminMsg .= "<div class='form-group form-inline'>
 			<a class='btn btn-warning btn-danger btn-sm' href='".e_SELF."?preview'>".LAN_SIGNUP_115."</a>
 			<a class='btn btn-error btn-danger btn-sm' href='".e_SELF."?preview.aftersignup'>".LAN_SIGNUP_116."</a>
-			<a class='btn btn-error btn-danger btn-sm e-tip' href='".e_SELF."?test' title=\"".e107::getParser()->lanVars(LAN_SIGNUP_118,USEREMAIL)."\">".LAN_SIGNUP_117."</a>
+			<a class='btn btn-error btn-danger btn-sm e-tip' href='".e_SELF."?test".$token."' title=\"".e107::getParser()->lanVars(LAN_SIGNUP_118,USEREMAIL)."\">".LAN_SIGNUP_117."</a>
 			</div>
 			";
 

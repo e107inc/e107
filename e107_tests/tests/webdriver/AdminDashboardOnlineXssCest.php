@@ -131,7 +131,7 @@ class AdminDashboardOnlineXssCest
 	 */
 	private function seedOnlineRow(\WebDriverTester $I, $agent, $location)
 	{
-		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=online'
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?'.\Helper\ProbeGuard::query().'&p8=online'
 			.'&agent='.urlencode(base64_encode($agent))
 			.'&loc='.urlencode(base64_encode($location)));
 		$I->see('P8_OK online');

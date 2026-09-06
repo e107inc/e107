@@ -54,17 +54,17 @@ class Hybridauth
 
     /**
      * @param array|string $config Array with configuration or Path to PHP file that will return array
-     * @param HttpClientInterface $httpClient
-     * @param StorageInterface $storage
-     * @param LoggerInterface $logger
+     * @param \Hybridauth\HttpClient\HttpClientInterface|null $httpClient
+     * @param \Hybridauth\Storage\StorageInterface|null $storage
+     * @param \Hybridauth\Logger\LoggerInterface|null $logger
      *
      * @throws InvalidArgumentException
      */
     public function __construct(
         $config,
-        ?HttpClientInterface $httpClient = null,
-        ?StorageInterface $storage = null,
-        ?LoggerInterface $logger = null
+        $httpClient = null,
+        $storage = null,
+        $logger = null
     ) {
         if (is_string($config) && file_exists($config)) {
             $config = include $config;
@@ -162,7 +162,7 @@ class Hybridauth
             throw new InvalidArgumentException('Unknown Provider.');
         }
 
-        $enabled = $providersConfig[$name]['enabled'] ?? false;
+        $enabled = isset($providersConfig[$name]['enabled']) ? $providersConfig[$name]['enabled'] : false;
         if (!$enabled) {
             throw new UnexpectedValueException('Disabled Provider.');
         }

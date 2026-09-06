@@ -67,9 +67,14 @@ class ThemeHandlerFrontEndCest
 	 * Emitted by e107::getFile()->unzipArchive(), which themeUpload() reaches
 	 * once it is past its own guard.
 	 *
-	 * @see e107_handlers/file_class.php
+	 * A submission carrying no file part arrives with no file name at all and is
+	 * refused before the archive is opened. This is the prefix that refusal
+	 * shares with the one for an archive ZipArchive cannot open, whose own half
+	 * of the message names the reason.
+	 *
+	 * @see e_file::unzipArchive()
 	 */
-	const ARCHIVE_HANDLER_MARKER = "Couldn't detect the root folder in the zip.";
+	const ARCHIVE_HANDLER_MARKER = "Couldn't open the archive.";
 
 	public function _before(AcceptanceTester $I)
 	{
@@ -414,6 +419,7 @@ class ThemeHandlerFrontEndCest
 // Fixture for 0042_ThemeHandlerFrontEndCest. Removed again in the Cest's _after().
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 \$core = e107::getConfig('core');

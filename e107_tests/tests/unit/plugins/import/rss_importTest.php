@@ -8,8 +8,9 @@
  *
  */
 
-class rss_importTest extends \Codeception\Test\Unit
+class rss_importTest extends \Test\Unit
 {
+
 	/** 2x2 PNG, so getimagesize() has something real to report. */
 	const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAC0lEQVQImWNgQAYAAA4AAbGa6gYAAAAASUVORK5CYII=';
 
