@@ -207,6 +207,7 @@ class e_menu
 		}
 
 		$ret = array();
+		$id = 1;
 		
 		foreach($mpref[$layout] as $area=>$v)
 		{
@@ -214,18 +215,11 @@ class e_menu
 					
 			foreach($v as $val)
 			{
-				$class = (int)$val['class'];
-				
-				if(!check_class($class))
-				{
-					continue;	
-				}
-				
 				$ret[$area][] = array(
-					'menu_id'		=> $c,
+					'menu_id'		=> $id++,
 					'menu_name'		=> $val['name'],
 					'menu_location'	=> $area,
-					'menu_class'	=> $class,
+					'menu_class'	=> (int) $val['class'],
 					'menu_order'	=> $c,
 					'menu_pages'	=> $val['pages'],
 					'menu_path'		=> $val['path'],
@@ -417,7 +411,7 @@ class e_menu
 
 		if(!defined('PREVIEWTHEME'))
 		{
-			$cacheData = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
+			$cacheData = e107::getCache()->retrieve_sys("menus_".md5(e_LANGUAGE.$menu_layout_field));
 			$menu_data = e107::unserialize($cacheData);
 		}
 
@@ -430,8 +424,7 @@ class e_menu
 		{
 			$qb = $sql->createQueryBuilder()
 				->select('*')->from('menus')
-				->where('menu_location', '>', 0)
-				->whereIn('menu_class', explode(',', USERCLASS_LIST));
+				->where('menu_location', '>', 0);
 
 			if(!defined('PREVIEWTHEME'))
 			{
@@ -447,9 +440,12 @@ class e_menu
 			
 			$menu_data['menu_area'] = $eMenuArea;
 
-			$menuData = e107::serialize($menu_data,'json');
+			if(!defined('PREVIEWTHEME'))
+			{
+				$menuData = e107::serialize($menu_data,'json');
 
-			e107::getCache()->set_sys('menus_'.USERCLASS_LIST.'_'.md5(e_LANGUAGE.$menu_layout_field), $menuData);
+				e107::getCache()->set_sys('menus_'.md5(e_LANGUAGE.$menu_layout_field), $menuData);
+			}
 			
 		}
 		else
@@ -501,7 +497,19 @@ class e_menu
 
 
 	/**
-	 * Check visibility of a menu against URL
+	 * A blank menu_class is no restriction, the way the Menu Manager's list reads it.
+	 *
+	 * @param array|false $row menu or page data, false when the page query found none
+	 * @return bool
+	 */
+	private function classAllows($row)
+	{
+		return empty($row['menu_class']) || check_class($row['menu_class']);
+	}
+
+
+	/**
+	 * Check visibility of a menu against the current user's classes and the URL.
 	 *
 	 * @param array $row menu data
 	 * @return boolean
@@ -515,9 +523,9 @@ class e_menu
 			return $this->_visibility_cache[$iD];
 		}
 
-		$show_menu = TRUE;
+		$show_menu = $this->classAllows($row);
 		$tp = e107::getParser();
-		if($row['menu_pages'])
+		if($show_menu && $row['menu_pages'])
 		{
 			list ($listtype, $listpages) = explode("-", $row['menu_pages'], 2);
 			$pagelist = explode("|", $listpages);
@@ -690,7 +698,7 @@ class e_menu
 			}
 			$page = $sql->fetch();
 			
-			if(!empty($page['menu_class']) && !check_class($page['menu_class']))
+			if(!$this->classAllows($page))
 			{
 				echo "\n<!-- Menu not rendered due to userclass settings -->\n";
 				return null;
