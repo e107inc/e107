@@ -33,13 +33,17 @@ abstract class E107Base extends Base
      * Lives here rather than on Acceptance because the webdriver suite writes
      * probe files too; both suites reach the same app the same way.
      *
+     * A fixture that boots e107 in the docroot goes through
+     * {@see ProbeGuard::contain()} first, which refuses one that reserved no
+     * room for the guard.
+     *
      * @param string $relative_path path relative to the app root
      * @param string $contents
      * @return void
      */
     public function writeAppFile($relative_path, $contents)
     {
-        $this->deployer->writeAppFile($relative_path, $contents);
+        $this->deployer->writeAppFile($relative_path, ProbeGuard::contain($relative_path, $contents));
     }
 
     /**
@@ -51,6 +55,27 @@ abstract class E107Base extends Base
     public function deleteAppFile($relative_path)
     {
         $this->deployer->unlinkAppFile($relative_path);
+    }
+
+    /**
+     * Empty the tables e107 counts requests in and records an auto-ban in.
+     *
+     * @return void
+     */
+    public function resetFloodProtection()
+    {
+        try
+        {
+            $dbh = $this->getDbModule()->_getDbh();
+
+            $dbh->exec('DELETE FROM `'.self::E107_MYSQL_PREFIX.'online`');
+            $dbh->exec('DELETE FROM `'.self::E107_MYSQL_PREFIX.'banlist` '
+                .'WHERE `banlist_bantype` IN (2, -2)');
+        }
+        catch (\PDOException $e)
+        {
+            return;
+        }
     }
 
     public function _beforeSuite($settings = [])

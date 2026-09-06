@@ -73,15 +73,14 @@ class auth_login extends alt_auth_base
 
 		if (!function_exists('ldap_connect'))
 		{
-			return AUTH_NORESOURCE;
+			return;
 		}
 
 		if (!$this->connect())
 		{
-			return AUTH_NOCONNECT;
+			return;
 		}
 		$this->Available = TRUE;
-		return AUTH_SUCCESS;
 	}
 
 

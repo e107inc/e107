@@ -71,10 +71,10 @@ class e_db_pdo implements e_db
 		$config =  e107::getMySQLConfig();
 
 
-		$this->mySQLserver      = $config['mySQLserver'] ?? '';
-		$this->mySQLuser        = $config['mySQLuser'] ?? '';
-		$this->mySQLpassword    = $config['mySQLpassword'] ?? '';
-		$this->mySQLdefaultdb   = $config['mySQLdefaultdb'] ?? '';
+		$this->mySQLserver      = isset($config['mySQLserver']) ? $config['mySQLserver'] : '';
+		$this->mySQLuser        = isset($config['mySQLuser']) ? $config['mySQLuser'] : '';
+		$this->mySQLpassword    = isset($config['mySQLpassword']) ? $config['mySQLpassword'] : '';
+		$this->mySQLdefaultdb   = isset($config['mySQLdefaultdb']) ? $config['mySQLdefaultdb'] : '';
 		$this->mySQLport        = varset($config['port'], 3306);
 		$this->mySQLPrefix      = varset($config['mySQLprefix'], 'e107_');
 
@@ -144,7 +144,7 @@ class e_db_pdo implements e_db
 		catch(PDOException $ex)
 		{
 			$this->mySQLlastErrText = $ex->getMessage();
-			$this->mySQLlastErrNum = $ex->getCode();
+			$this->mySQLlastErrNum = $this->_errorNumber($ex);
 			$this->dbg->log($this->mySQLlastErrText);
 			return false;
 		}
@@ -201,7 +201,7 @@ class e_db_pdo implements e_db
 		catch (PDOException $e)
 		{
 			$this->mySQLlastErrText = $e->getMessage();
-			$this->mySQLlastErrNum = $e->getCode();
+			$this->mySQLlastErrNum = $this->_errorNumber($e);
 			return false;
 	    }
 
@@ -296,6 +296,28 @@ class e_db_pdo implements e_db
 
 		$this->resetLastError();
 
+		// PDO raises a ValueError on an empty statement and a TypeError on one that
+		// is not a string. Neither descends from PDOException, so neither is caught
+		// below, and a caller that would have read back false instead loses the
+		// whole request to an uncaught fatal (#5904). Every caller here already
+		// tests the return value, so answer them the way a refused query does.
+		//
+		// Both shapes need checking. A bare empty string reaches PDO::query()
+		// directly; an array whose PREPARE is empty or absent fails the branch
+		// below and lands in the string path, where preg_match() is handed an
+		// array and raises a TypeError of its own.
+		$statement = is_array($query)
+			? (isset($query['PREPARE']) ? $query['PREPARE'] : null)
+			: $query;
+
+		if(!is_string($statement) || trim($statement) === '')
+		{
+			$this->mySQLlastErrText = 'Empty or non-string query passed to '.__FUNCTION__.'()';
+			$this->mySQLlastErrNum = -1;
+
+			return false;
+		}
+
 		$b = microtime();
 
 
@@ -308,7 +330,12 @@ class e_db_pdo implements e_db
 			{
 				foreach($query['BIND'] as $k=>$v)
 				{
-					$prep->bindValue(':'.$k, $v['value'], $v['type']);
+					// A PARAM_NULL bind must carry a null value: PHP's modern
+					// PDO discards the value and sends SQL NULL either way,
+					// but PHP 5's pdo_mysql sends whatever value it was
+					// handed, silently un-nulling the bind.
+					$value = ($v['type'] === PDO::PARAM_NULL) ? null : $v['value'];
+					$prep->bindValue(':'.$k, $value, $v['type']);
 				}
 			}
 
@@ -323,7 +350,7 @@ class e_db_pdo implements e_db
 			{
 				$sQryRes = false;
 				$this->mySQLlastErrText = $ex->getMessage();
-				$this->mySQLlastErrNum = $ex->getCode();
+				$this->mySQLlastErrNum = $this->_errorNumber($ex);
 			}
 		}
 		else
@@ -350,7 +377,7 @@ class e_db_pdo implements e_db
 			{
 				$sQryRes = false;
 				$this->mySQLlastErrText = $ex->getMessage();
-				$this->mySQLlastErrNum = $ex->getCode();
+				$this->mySQLlastErrNum = $this->_errorNumber($ex);
 			}
 		}
 
@@ -436,6 +463,10 @@ class e_db_pdo implements e_db
 	{
 		$this->_notifyDeprecated('select', 'Use the query builder: $sql->createQueryBuilder()->select(...)->from(\'table\')->where(...)->fetchAll().');
 
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$table = $this->hasLanguage($table);
 
@@ -550,13 +581,13 @@ class e_db_pdo implements e_db
 				break;
 
 				case 'num':
-				case 2; // MYSQL_NUM: // 2
+				case 2: // MYSQL_NUM: // 2
 					$type = PDO::FETCH_NUM;
 				break;
 
 				default:
 				case 'assoc':
-				case 1; // MYSQL_ASSOC // 1
+				case 1: // MYSQL_ASSOC // 1
 					$type =  PDO::FETCH_ASSOC;
 				break;
 		}
@@ -593,6 +624,11 @@ class e_db_pdo implements e_db
 	function count($table, $fields = '(*)', $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		$this->_notifyDeprecated('count', 'Use the query builder: $sql->createQueryBuilder()->selectCount()->from(\'table\')->where(...)->fetchOne().');
+
+		if ($fields != 'generic' && ($table = $this->_safeIdentifier($table)) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$table = $this->hasLanguage($table);
 
@@ -643,14 +679,17 @@ class e_db_pdo implements e_db
 	 * Example :<br />
 	 * <code>$sql->db_Close();</code>
 	 *
+	 * Releases the last result set as well; a PDOStatement keeps its
+	 * connection alive, so nothing fetched before close() is readable after it.
+	 *
 	 * @access public
 	 * @return void
 	 */
 	function close()
 	{
-		$this->_getMySQLaccess();
 		$this->traffic->BumpWho('db Close', 1);
-		$this->mySQLaccess = null; // correct way to do it when using shared links.
+		$this->mySQLresult = null;
+		$this->mySQLaccess = null;
 		$this->dbError('dbClose');
 	}
 
@@ -667,6 +706,11 @@ class e_db_pdo implements e_db
 	function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		$this->_notifyDeprecated('delete', 'Use the query builder: $sql->createQueryBuilder()->delete(\'table\')->where(...)->execute().');
+
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
@@ -899,7 +943,11 @@ class e_db_pdo implements e_db
 	 */
 	public function fields($table, $prefix = '', $retinfo = false)
 	{
-
+		if(($table = $this->_safeIdentifier($table)) === false
+			|| ($prefix != '' && ($prefix = $this->_safeIdentifier($prefix, true)) === false))
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$this->_getMySQLaccess();
 
@@ -974,7 +1022,7 @@ class e_db_pdo implements e_db
 	 */
 	protected function _escape($data)
 	{
-		return substr($this->quoteStringLiteral($data), 1, -1);
+		return (string) substr($this->quoteStringLiteral($data), 1, -1);
 	}
 
 	/**
@@ -1068,7 +1116,7 @@ class e_db_pdo implements e_db
 				$length = strlen($prefix);
 				while($rows = $this->fetch('num'))
 				{
-					$table[] = substr($rows[0],$length);
+					$table[] = (string) substr($rows[0],$length);
 				}
 			}
 			return $table;
@@ -1209,6 +1257,7 @@ class e_db_pdo implements e_db
 		catch (\Exception $e)
 		{
 			$this->mySQLlastErrText = 'mysqldump-php error: ' .$e->getMessage();
+			$this->mySQLlastErrNum = $this->_errorNumber($e);
 		    return false;
 		}
 
@@ -1244,6 +1293,27 @@ class e_db_pdo implements e_db
 		return $from." :: ".$this->mySQLlastErrText;
 
 
+	}
+
+
+	/**
+	 * MySQL error number behind a PDO exception, matching what {@see e_db_mysql} records; -1 when the error carries no driver number.
+	 *
+	 * Before PHP 7.3.22 and 7.4.10 (php-src bug #64705) a connection failure sets no errorInfo and puts the errno in the exception code as an int, while a SQLSTATE always arrives there as a string, so the test is is_int() and never is_numeric(): SQLSTATE values such as '23000' are all digits.
+	 *
+	 * @param Exception $ex
+	 * @return int
+	 */
+	private function _errorNumber($ex)
+	{
+		if(isset($ex->errorInfo[1]) && (int) $ex->errorInfo[1] !== 0)
+		{
+			return (int) $ex->errorInfo[1];
+		}
+
+		$code = $ex->getCode();
+
+		return (is_int($code) && $code !== 0) ? $code : -1;
 	}
 
 
@@ -1310,15 +1380,29 @@ class e_db_pdo implements e_db
 	{
 		if (!isset($this->dbFieldDefs[$tableName]))
 		{
+			$cached = null;
 			if (is_readable(e_CACHE_DB.$tableName.'.php'))
 			{
-				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php');
-				if ($temp !== false)
+				$temp = @file_get_contents(e_CACHE_DB.$tableName.'.php');
+				$tableIsUntyped = ($temp === '');
+				if ($tableIsUntyped)
+				{
+					$cached = array();
+				}
+				elseif ($temp !== false)
 				{
 					$typeDefs = e107::unserialize($temp);
-					unset($temp);
-					$this->dbFieldDefs[$tableName] = $typeDefs;
+					if (!empty($typeDefs))
+					{
+						$cached = $typeDefs;
+					}
 				}
+				unset($temp);
+			}
+
+			if ($cached !== null)
+			{
+				$this->dbFieldDefs[$tableName] = $cached;
 			}
 			else
 			{		// Need to try and find a table definition
@@ -1382,7 +1466,7 @@ class e_db_pdo implements e_db
 
 					$fileData = e107::serialize($typeDefs[$tableName], false);
 
-					if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
+					if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $fileData))
 					{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
 
 					}
@@ -1422,7 +1506,7 @@ class e_db_pdo implements e_db
 		$this->dbFieldDefs[$tableName] = $outDefs;
 		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
 
-		if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
+		if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $toSave))
 		{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
 			$mes = e107::getMessage();
 			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.

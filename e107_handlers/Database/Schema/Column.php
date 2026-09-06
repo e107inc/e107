@@ -30,7 +30,7 @@ use InvalidArgumentException;
  * Column or a SqlFragment; a bare string is rejected.
  *
  * <code>
- * Column::define('VARCHAR', 255)->notNull()->default('');
+ * Column::define('VARCHAR', 255)->notNull()->defaultValue('');
  * // => VARCHAR(255) NOT NULL DEFAULT ''
  *
  * Column::define('INT', 10)->unsigned()->notNull()->autoIncrement();
@@ -218,7 +218,7 @@ final class Column
 	 * @param mixed $value
 	 * @return $this
 	 */
-	public function default($value)
+	public function defaultValue($value)
 	{
 		$this->hasDefault = true;
 		$this->defaultToken = $this->_renderDefaultValue($value);

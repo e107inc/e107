@@ -3,7 +3,7 @@
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  */
 
-class news_classTest extends \Codeception\Test\Unit
+class news_classTest extends \Test\Unit
 {
 	/** @var news */
 	protected $news;

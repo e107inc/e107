@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use Psr\Http\Message\StreamInterface;
@@ -31,15 +29,18 @@ final class LimitStream implements StreamInterface
      */
     public function __construct(
         StreamInterface $stream,
-        int $limit = -1,
-        int $offset = 0
+        $limit = -1,
+        $offset = 0
     ) {
         $this->stream = $stream;
         $this->setLimit($limit);
         $this->setOffset($offset);
     }
 
-    public function eof(): bool
+    /**
+     * @return bool
+     */
+    public function eof()
     {
         // Always return true if the underlying stream is EOF
         if ($this->stream->eof()) {
@@ -56,8 +57,9 @@ final class LimitStream implements StreamInterface
 
     /**
      * Returns the size of the limited subset of data
+     * @return int|null
      */
-    public function getSize(): ?int
+    public function getSize()
     {
         if (null === ($length = $this->stream->getSize())) {
             return null;
@@ -70,8 +72,9 @@ final class LimitStream implements StreamInterface
 
     /**
      * Allow for a bounded seek on the read limited stream
+     * @return void
      */
-    public function seek($offset, $whence = SEEK_SET): void
+    public function seek($offset, $whence = SEEK_SET)
     {
         if ($whence !== SEEK_SET || $offset < 0) {
             throw new \RuntimeException(sprintf(
@@ -94,8 +97,9 @@ final class LimitStream implements StreamInterface
 
     /**
      * Give a relative tell()
+     * @return int
      */
-    public function tell(): int
+    public function tell()
     {
         return $this->stream->tell() - $this->offset;
     }
@@ -106,8 +110,9 @@ final class LimitStream implements StreamInterface
      * @param int $offset Offset to seek to and begin byte limiting from
      *
      * @throws \RuntimeException if the stream cannot be seeked.
+     * @return void
      */
-    public function setOffset(int $offset): void
+    public function setOffset($offset)
     {
         $current = $this->stream->tell();
 
@@ -131,13 +136,17 @@ final class LimitStream implements StreamInterface
      *
      * @param int $limit Number of bytes to allow to be read from the stream.
      *                   Use -1 for no limit.
+     * @return void
      */
-    public function setLimit(int $limit): void
+    public function setLimit($limit)
     {
         $this->limit = $limit;
     }
 
-    public function read($length): string
+    /**
+     * @return string
+     */
+    public function read($length)
     {
         if ($this->limit === -1) {
             return $this->stream->read($length);

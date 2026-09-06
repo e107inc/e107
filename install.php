@@ -1667,7 +1667,7 @@ return [
 
 		if(varset($_POST['pass1']) || !vartrue($this->previous_steps['admin']['password']))
 		{
-			if($_POST['pass1'] != $_POST['pass2'])
+			if(varset($_POST['pass1'], '') !== varset($_POST['pass2'], ''))
 			{
 				$this->required['pass1'] = LANINS_049; // passwords don't match.
 			}
@@ -2352,18 +2352,6 @@ return [
 		// Set prefs, save
 		e107::getConfig()->setPref($this->previous_steps['prefs']);
 
-		// csrf_enforce is normally left unset so the site follows e107's
-		// recommendation and moves with it. The one case where that is the wrong
-		// thing to hand a new site is decided in e_session, where it can be
-		// tested; see e_session::installTimeMode().
-		$csrfInstallMode = e_session::installTimeMode($_SERVER);
-
-		if($csrfInstallMode !== null)
-		{
-			e107::getConfig()->set('csrf_enforce', $csrfInstallMode);
-			installLog::add('Installing browser sent no Sec-Fetch-Site; csrf_enforce pinned to '.$csrfInstallMode);
-		}
-
 		e107::getConfig()->save(FALSE,TRUE, FALSE); // save preferences made during install.
 		installLog::add('Core prefs set to install choices');
 
@@ -2547,7 +2535,7 @@ return [
 		{
 			$this->previous_steps['language'] = $_POST['language'];
 		}		
-		
+
 		if(!isset($this->previous_steps['language']))
 		{
 			$this->previous_steps['language'] = "English";
@@ -3017,11 +3005,11 @@ function create_tables_unattended()
 	if(is_array($config) && !empty($config['database'])) // New e107_config.php format. v2.4+
 	{
 		$dbInfo = $config['database'];
-		$mySQLserver    = $dbInfo['server']   ?? null;
-		$mySQLuser      = $dbInfo['user']     ?? null;
-		$mySQLpassword  = $dbInfo['password'] ?? null;
-		$mySQLdefaultdb = $dbInfo['db']       ?? null;
-		$mySQLprefix    = $dbInfo['prefix']   ?? null;
+		$mySQLserver    = isset($dbInfo['server']) ? $dbInfo['server'] : null;
+		$mySQLuser      = isset($dbInfo['user']) ? $dbInfo['user'] : null;
+		$mySQLpassword  = isset($dbInfo['password']) ? $dbInfo['password'] : null;
+		$mySQLdefaultdb = isset($dbInfo['db']) ? $dbInfo['db'] : null;
+		$mySQLprefix    = isset($dbInfo['prefix']) ? $dbInfo['prefix'] : null;
 	}
 
 	//If mysql info not set, config file is not created properly

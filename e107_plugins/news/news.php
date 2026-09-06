@@ -57,6 +57,7 @@ class news_front
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_comment.php');		// Temporary
+		e107::plugLan('news', 'global');
 
 		$this->pref = e107::getPref();
 
@@ -69,7 +70,7 @@ class news_front
 
 		if(isset($NEWSHEADER))
 		{
-			return false;
+			return;
 		}
 
 		$this->nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
@@ -82,8 +83,6 @@ class news_front
 		$this->setPagination();
 		$this->detect();
 		$this->setBreadcrumb();
-
-		return null;
 	}
 
 
@@ -436,13 +435,17 @@ class news_front
 				case 'all':
 				case 'tag':
 				case 'author':
-					$this->from = (int) ($_GET['page'] - 1)  * NEWSLIST_LIMIT;
+					$perPage = NEWSLIST_LIMIT;
 					break;
 
 				default:
-					$this->from = (int) ($_GET['page'] - 1)  * ITEMVIEW;
+					$perPage = ITEMVIEW;
 			}
 
+			$page = is_numeric($_GET['page']) ? $_GET['page'] : 1;
+			$offset = max(0, (int) ($page - 1)) * $perPage;
+
+			$this->from = min($offset, PHP_INT_MAX);
 		}
 
 		$this->addDebug('FROM', $this->from);
@@ -615,8 +618,8 @@ class news_front
 			case "month":
 				$item = intval($this->subAction).'20000101';
 				$year = substr($item, 0, 4);
-				$month = substr($item, 4,2);
-				$day = substr($item, 6, 2);
+				$month = (string) substr($item, 4,2);
+				$day = (string) substr($item, 6, 2);
 
 				$unix = strtotime($year.'-'.$month.'-'.$day);
 
@@ -1619,13 +1622,13 @@ class news_front
 			case "day" :
 				$item = $tp -> toDB($this->subAction).'20000101';
 				$year = substr($item, 0, 4);
-				$month = substr($item, 4,2);
+				$month = (string) substr($item, 4,2);
 
 
 
 				if ($this->action == 'day')
 				{
-					$day = substr($item, 6, 2);
+					$day = (string) substr($item, 6, 2);
 					$lastday = $day;
 					$startdate = mktime(0, 0, 0, $month, $day, $year);
 				}

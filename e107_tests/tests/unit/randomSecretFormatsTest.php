@@ -16,7 +16,7 @@
  * back through preg_replace("#[\W_]#", "", ...) before the comparison, so a
  * widened alphabet would silently break redemption rather than fail loudly.
  */
-class randomSecretFormatsTest extends \Codeception\Test\Unit
+class randomSecretFormatsTest extends \Test\Unit
 {
 	/** @var UserHandler */
 	private $usr;
@@ -136,7 +136,7 @@ class randomSecretFormatsTest extends \Codeception\Test\Unit
 
 		$this->assertSame(4, strlen($value));
 		$this->assertSame('ab', substr($value, 0, 2));
-		$this->assertSame(1, preg_match('/^[0-9]{2}$/', substr($value, 2)));
+		$this->assertSame(1, preg_match('/^[0-9]{2}$/', (string) substr($value, 2)));
 	}
 
 	/**
@@ -154,7 +154,7 @@ class randomSecretFormatsTest extends \Codeception\Test\Unit
 
 		$this->assertSame(6, strlen($value));
 		$this->assertDrawnFrom(substr($value, 0, 2), self::ALPHA);
-		$this->assertSame(1, preg_match('/^[0-9]{4}$/', substr($value, 2)));
+		$this->assertSame(1, preg_match('/^[0-9]{4}$/', (string) substr($value, 2)));
 	}
 
 	public function testConsecutiveCallsDiffer()

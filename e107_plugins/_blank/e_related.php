@@ -47,7 +47,7 @@ class _blank_related // include plugin-folder in the name.
 					'image'			=> '{e_PLUGIN}_blank/images/image.png'
 				);
 			}
-			
+
 			return $items;
 	    }
 	//	elseif(ADMIN)

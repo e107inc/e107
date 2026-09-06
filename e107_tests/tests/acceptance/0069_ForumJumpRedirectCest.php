@@ -59,10 +59,6 @@ class ForumJumpRedirectCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		// Every request in this file arrives from the same bridge address and
-		// e107 bans one after 50 in a window.
-		$I->resetForumFloodProtection();
-
 		$I->haveForumPluginInstalled();
 		$this->ids = $I->haveForumStructure();
 		$I->purgeForumPermCache();

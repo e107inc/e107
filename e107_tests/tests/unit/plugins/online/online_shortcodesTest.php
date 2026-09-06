@@ -31,8 +31,9 @@
  * assertion that some tag is absent would pass on a payload that never carried
  * one.
  */
-class online_shortcodesTest extends \Codeception\Test\Unit
+class online_shortcodesTest extends \Test\Unit
 {
+
 	/** @var online_shortcodes */
 	protected $sc;
 

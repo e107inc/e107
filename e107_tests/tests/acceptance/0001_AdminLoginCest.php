@@ -105,6 +105,7 @@ class AdminLoginCest
 			'cpage.php?mode=page&action=prefs',
 			'credits.php',
 			'cron.php',
+			'cron.php?mode=main&action=setup',
 			'db.php',
 			'db.php?mode=backup',
 			'db.php?mode=convert_to_utf8',

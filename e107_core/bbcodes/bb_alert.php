@@ -38,7 +38,9 @@ class bb_alert extends e_bb_base
 
 		if(!empty($parm))
 		{
-			$style = "alert alert-".$parm;
+			// One variant name. A class list here would reach Bootstrap's positioning utilities.
+			$variant = eHelper::secureClassAttr($parm);
+			$style = preg_match('#\s#', $variant) ? "alert alert-info" : "alert alert-".$variant;
 		}
 		else
 		{

@@ -46,8 +46,8 @@ class list_chatbox_menu
 		{
 			while($row = $this->parent->e107->sql->fetch())
 			{
-				$cb_id = substr($row['cb_nick'] , 0, strpos($row['cb_nick'] , "."));
-				$cb_nick = substr($row['cb_nick'] , (strpos($row['cb_nick'] , ".")+1));
+				$cb_id = (string) substr($row['cb_nick'] , 0, strpos($row['cb_nick'] , "."));
+				$cb_nick = (string) substr($row['cb_nick'] , (strpos($row['cb_nick'] , ".")+1));
 				$cb_message = ($row['cb_blocked'] ? CHATBOX_L6 : str_replace("<br />", " ", $tp->toHTML($row['cb_message'])));
 		//	$rowheading = $this->parent->parse_heading($cb_message);
 

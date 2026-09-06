@@ -83,7 +83,7 @@ class banner_shortcodes extends e_shortcode
 			return "<a href='" . e_HTTP . 'banner.php?' . $row['banner_id'] . "' rel='external'>" . BANNERLAN_39 . "</a>";
 		}
 
-		$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
+		$fileext1 = (string) substr(strrchr($row['banner_image'], '.'), 1);
 
 		$sql->createQueryBuilder()->update('banner')
 			->increment('banner_impressions', 1)

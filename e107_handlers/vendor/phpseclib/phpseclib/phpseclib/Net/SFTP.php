@@ -967,7 +967,7 @@ class SFTP extends SSH2
         $response = $this->get_sftp_packet();
         switch ($this->packet_type) {
             case NET_SFTP_HANDLE:
-                $handle = substr($response, 4);
+                $handle = (string) substr($response, 4);
                 break;
             case NET_SFTP_STATUS:
                 $this->logError($response);
@@ -1120,7 +1120,7 @@ class SFTP extends SSH2
                 // http://tools.ietf.org/html/draft-ietf-secsh-filexfer-13#section-9.2
                 // since 'handle' is the last field in the SSH_FXP_HANDLE packet, we'll just remove the first four bytes that
                 // represent the length of the string and leave it at that
-                $handle = substr($response, 4);
+                $handle = (string) substr($response, 4);
                 break;
             case NET_SFTP_STATUS:
                 // presumably SSH_FX_NO_SUCH_FILE or SSH_FX_PERMISSION_DENIED
@@ -1606,7 +1606,7 @@ class SFTP extends SSH2
         $response = $this->get_sftp_packet();
         switch ($this->packet_type) {
             case NET_SFTP_HANDLE:
-                return $this->close_handle(substr($response, 4));
+                return $this->close_handle((string) substr($response, 4));
             case NET_SFTP_STATUS:
                 $this->logError($response);
                 break;
@@ -1776,7 +1776,7 @@ class SFTP extends SSH2
 
         $packet = Strings::packSSH2('s', $filename);
         $packet .= $this->version >= 4 ?
-            pack('a*Ca*', substr($attr, 0, 4), NET_SFTP_TYPE_UNKNOWN, substr($attr, 4)) :
+            pack('a*Ca*', substr($attr, 0, 4), NET_SFTP_TYPE_UNKNOWN, (string) substr($attr, 4)) :
             $attr;
         $this->send_sftp_packet(NET_SFTP_SETSTAT, $packet);
 
@@ -2201,7 +2201,7 @@ class SFTP extends SSH2
         $response = $this->get_sftp_packet();
         switch ($this->packet_type) {
             case NET_SFTP_HANDLE:
-                $handle = substr($response, 4);
+                $handle = (string) substr($response, 4);
                 break;
             case NET_SFTP_STATUS:
                 $this->logError($response);
@@ -2276,7 +2276,7 @@ class SFTP extends SSH2
                     break;
                 }
             } else {
-                $temp = isset($fp) ? fread($fp, $sftp_packet_size) : substr($data, $sent, $sftp_packet_size);
+                $temp = isset($fp) ? fread($fp, $sftp_packet_size) : (string) substr($data, $sent, $sftp_packet_size);
                 if ($temp === false || $temp === '') {
                     break;
                 }
@@ -2437,7 +2437,7 @@ class SFTP extends SSH2
         $response = $this->get_sftp_packet();
         switch ($this->packet_type) {
             case NET_SFTP_HANDLE:
-                $handle = substr($response, 4);
+                $handle = (string) substr($response, 4);
                 break;
             case NET_SFTP_STATUS: // presumably SSH_FX_NO_SUCH_FILE or SSH_FX_PERMISSION_DENIED
                 $this->logError($response);
@@ -2511,7 +2511,7 @@ class SFTP extends SSH2
 
                 switch ($this->packet_type) {
                     case NET_SFTP_DATA:
-                        $temp = substr($response, 4);
+                        $temp = (string) substr($response, 4);
                         $offset += strlen($temp);
                         if ($local_file === false) {
                             $content .= $temp;
@@ -3686,7 +3686,7 @@ class SFTP extends SSH2
         $response = $this->get_sftp_packet();
         switch ($this->packet_type) {
             case NET_SFTP_HANDLE:
-                $oldhandle = substr($response, 4);
+                $oldhandle = (string) substr($response, 4);
                 break;
             case NET_SFTP_STATUS: // presumably SSH_FX_NO_SUCH_FILE or SSH_FX_PERMISSION_DENIED
                 $this->logError($response);
@@ -3714,7 +3714,7 @@ class SFTP extends SSH2
         $response = $this->get_sftp_packet();
         switch ($this->packet_type) {
             case NET_SFTP_HANDLE:
-                $newhandle = substr($response, 4);
+                $newhandle = (string) substr($response, 4);
                 break;
             case NET_SFTP_STATUS:
                 $this->logError($response);

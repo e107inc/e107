@@ -25,7 +25,10 @@ class core_system_xup_controller extends eController
 	 */
 	private $social_login_config_manager;
 
-	public function __construct(eRequest $request, eResponse $response = null)
+	/**
+     * @param \eResponse|null $response
+     */
+    public function __construct(eRequest $request, $response = null)
 	{
 		parent::__construct($request, $response);
 		require_once(e_PLUGIN."social/includes/social_login_config.php");
@@ -53,17 +56,79 @@ class core_system_xup_controller extends eController
 		if($allow && vartrue($_GET['provider']))
 		{
 			$provider = e107::getUserProvider($_GET['provider']);
-			try
+			$tokenless = empty($_GET['e-token']);
+
+			if($tokenless && deftrue('e_TOKEN') && $provider->loginNeedsToken())
 			{
-				$provider->login($this->backUrl, true, false); // redirect to test page is expected, if true - redirect to SITEURL
+				e107::getMessage()->addError(defset('LAN_XUP_REFUSED_TOKEN_MISSING', 'That sign-in was not started, because the link carried no security token.'), 'default', true);
 			}
-			catch (Exception $e)
+			elseif($tokenless && self::askedForByAnotherSiteInTheBackground())
 			{
-				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
+				e107::getMessage()->addError(defset('LAN_XUP_REFUSED_NOT_A_NAVIGATION', 'That sign-in was not started, because another site asked for it in the background rather than sending you here.'), 'default', true);
+			}
+			else
+			{
+				try
+				{
+					$provider->login($this->backUrl, true, false); // redirect to test page is expected, if true - redirect to SITEURL
+				}
+				catch (Exception $e)
+				{
+					e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
+				}
 			}
 		}
 		
 		e107::getRedirect()->redirect(true === $this->backUrl ? SITEURL : $this->backUrl);
+	}
+
+	/**
+	 * Has the browser said another site asked for this request, and asked for it
+	 * as something other than a page to show the visitor?
+	 *
+	 * The five OpenID providers put nothing in the session on their way out, so
+	 * {@see e_user_provider::loginNeedsToken()} cannot tell a sign-in that began
+	 * here from one another site asked for, and a token cannot stand in for it:
+	 * this address is also the address those providers return the visitor to,
+	 * and the only marker of that returning leg, openid_mode, sits in the query
+	 * string where a forger writes it as easily as a provider does. What is left
+	 * over is a forced login, in which a session still holding a profile from an
+	 * earlier sign-in is signed back in by a request the visitor never made.
+	 *
+	 * What a forger cannot write is the browser's own account of the request.
+	 * Sec-Fetch-Site is a forbidden header name, so no document can set it, and
+	 * Sec-Fetch-Dest says what the response was asked for. An image, a script or
+	 * a fetch() started by a page on another site is neither a sign-in a visitor
+	 * asked for nor a provider bringing one back, because both of those are
+	 * top-level navigations, so refusing that combination leaves both legitimate
+	 * legs untouched.
+	 *
+	 * A cross-site navigation to a document is deliberately let through: every
+	 * genuine OpenID return is one, and refusing or interrupting it would cost a
+	 * click on every sign-in to defend against an attacker who has to move the
+	 * visitor's own window, which the visitor watches happen.
+	 *
+	 * A client that sends no fetch metadata has said nothing, which is not the
+	 * same as saying it came from elsewhere, so it is let through the way
+	 * {@see e_core_session::attest()} lets it through.
+	 *
+	 * @return bool
+	 */
+	private static function askedForByAnotherSiteInTheBackground()
+	{
+		if(empty($_SERVER['HTTP_SEC_FETCH_SITE']) || empty($_SERVER['HTTP_SEC_FETCH_DEST']))
+		{
+			return false;
+		}
+
+		$site = strtolower(trim($_SERVER['HTTP_SEC_FETCH_SITE']));
+
+		if($site === 'same-origin' || $site === 'none')
+		{
+			return false;
+		}
+
+		return strtolower(trim($_SERVER['HTTP_SEC_FETCH_DEST'])) !== 'document';
 	}
 
 	public function actionTest()
@@ -87,7 +152,14 @@ class core_system_xup_controller extends eController
 		
 		if(isset($_GET['logout']))
 		{
-			e107::getUser()->logout();
+			if(defined('e_TOKEN') && empty($_GET['e-token']))
+			{
+				echo e107::getMessage()->addError(defset('LAN_LOGOUT_REFUSED_TOKEN_MISSING', "You have not been logged out, because that link carried no security token. Use the logout link in this site's own menu rather than a bookmark or a link on another site."))->render();
+			}
+			else
+			{
+				e107::getUser()->logout();
+			}
 		}
 		
 		$profileData = null;
@@ -114,16 +186,13 @@ class core_system_xup_controller extends eController
 		{
 			if($var['enabled'] == 1)
 			{
-				$testLoginUrl = e107::getUrl()->create('system/xup/login', [
-					'provider' => $key,
-					'back' => $testUrl,
-				]);
+				$testLoginUrl = e107::getUserProvider($key)->generateLoginUrl($testUrl);
 
 				echo '<h4>'.$key.'</h4>';
 				echo '<div><a class="btn btn-default btn-secondary" href="'.$testLoginUrl.'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_10, array('x'=>$key)).'</a></div>';
 			}
 		}
 		
-			echo '<br /><br /><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/test?logout=true').'">'.LAN_XUP_ERRM_12.'</a>';
+			echo '<br /><br /><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/test', ['logout' => 'true', 'e-token' => defset('e_TOKEN')]).'">'.LAN_XUP_ERRM_12.'</a>';
 	}
 }

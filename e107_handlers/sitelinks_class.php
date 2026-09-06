@@ -24,6 +24,9 @@ class sitelinks
 	var $eSubLinkLevel = 0;
 	var $sefList = array();
 
+	/** @var array keys of the submenus {@see sitelinks::subLink()} is inside right now */
+	private $openSubLinks = array();
+
 	const LINK_DISPLAY_FLAT     = 1;
 	const LINK_DISPLAY_MENU     = 2;
 	const LINK_DISPLAY_OTHER    = 3;
@@ -273,7 +276,7 @@ class sitelinks
 		{
 			foreach($this->eLinkList['head_menu'] as $link)
 			{
-				if(!count($this->eLinkList['sub_' . $link['link_id']]))
+				if(empty($this->eLinkList['sub_' . $link['link_id']]))
 				{
 					$text .= $this->makeLink($link, '', $style, $css_class);
 				}
@@ -326,37 +329,80 @@ class sitelinks
 			return null;
 		}
 
-		$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid]));
-						
-		foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
- 		{
-			if($this->hilite($val['link_url'],TRUE)== TRUE || $sub['link_expand'] == FALSE)
-         	{
-         		$substyle = "block"; // previously (non-W3C compliant): compact
-          		break;
-        	}
-			else
-			{
-				$substyle = "none";
-			}
-		}
+		$openBelow = $this->openSubLinks;
+		$this->openSubLinks[] = $main_linkid;
+		// getlinks() builds these keys as 'sub_'.<id>; a different shape there reads as parent 0 here.
+		$parent_id = (int) substr($main_linkid, strlen('sub_'));
 
-		$text = "";
-		$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='d_sublink'>\n";
-
-		foreach ($this->eLinkList[$main_linkid] as $sub)
+		try
 		{
-			$id = (!empty($sub['link_id'])) ? "sub_".$sub['link_id'] : 'sub_0';
-			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id]));
-			$class = "sublink-level-".($level+1);
-			$class .= ($css_class) ? " ".$css_class : "";
-			$class .= ($aSubStyle['sublinkclass']) ? " ".$aSubStyle['sublinkclass'] : ""; // backwards compatible
-			$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
-			$text .= $this->subLink($id,$aSubStyle,$css_class,($level+1));				
+			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid]));
+						
+			foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
+	 		{
+				if($this->hilite($val['link_url'],TRUE)== TRUE || $sub['link_expand'] == FALSE)
+	         	{
+	         		$substyle = "block"; // previously (non-W3C compliant): compact
+	          		break;
+	        	}
+				else
+				{
+					$substyle = "none";
+				}
+			}
+
+			$text = "";
+			$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='d_sublink'>\n";
+
+			foreach ($this->eLinkList[$main_linkid] as $sub)
+			{
+				$id = (!empty($sub['link_id'])) ? "sub_".$sub['link_id'] : 'sub_0';
+				// Inferred, not recorded: a plugin bucket whose rows carry a parent id equal to this sitelink's own id still reads as one of ours.
+				$from_links_table = isset($sub['link_parent']) && (int) $sub['link_parent'] === $parent_id;
+				$has_children = $from_links_table
+					&& !in_array($id, $this->openSubLinks, true)
+					&& isset($this->eLinkList[$id])
+					&& is_array($this->eLinkList[$id]);
+				$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && $has_children);
+				$class = "sublink-level-".($level+1);
+				$class .= ($css_class) ? " ".$css_class : "";
+				$class .= ($aSubStyle['sublinkclass']) ? " ".$aSubStyle['sublinkclass'] : ""; // backwards compatible
+				$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
+
+				if($has_children)
+				{
+					$text .= $this->subLink($id,$aSubStyle,$css_class,($level+1));
+				}
+			}
+
+			$text .= "\n</div>\n\n";
+
+			return $text;
+		}
+		finally
+		{
+			$this->openSubLinks = $openBelow;
+		}
+	}
+
+
+	/**
+	 * Resolve the SEF URL a sitelink row names, or '' when it names none and when the route does not resolve
+	 *
+	 * @param array $linkInfo a sitelink row, read for its link_owner and link_sefurl
+	 * @param array $options as {@see e107::url()} takes them
+	 * @return string
+	 */
+	public static function sefUrl($linkInfo, $options = array())
+	{
+		if(empty($linkInfo['link_owner']) || empty($linkInfo['link_sefurl']))
+		{
+			return '';
 		}
 
-		$text .= "\n</div>\n\n";
-		return $text;	
+		$sefUrl = e107::url($linkInfo['link_owner'], $linkInfo['link_sefurl'], array(), $options);
+
+		return !empty($sefUrl) ? $sefUrl : '';
 	}
 
 
@@ -374,20 +420,22 @@ class sitelinks
 		// Start with an empty link
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
 		$highlighted = FALSE;
-		
+
 		if(!isset($style['linkstart_hilite'])) // Notice removal
 		{
 			$style['linkstart_hilite'] = "";	
 		}
-		
+
 		if(!isset($style['linkclass_hilite']))
 		{
 			$style['linkclass_hilite'] = "";	
 		}
 
-		if(!empty($linkInfo['link_sefurl']) && !empty($linkInfo['link_owner']))
+		$sefUrl = self::sefUrl($linkInfo);
+
+		if(!empty($sefUrl))
 		{
-			$linkInfo['link_url'] = e107::url($linkInfo['link_owner'],$linkInfo['link_sefurl']) ; //  $linkInfo['link_sefurl'];
+			$linkInfo['link_url'] = $sefUrl;
 		}
 
 
@@ -410,19 +458,19 @@ class sitelinks
 		{
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
 		}
-		elseif($linkInfo['link_url'][0] !== '/' && strpos($linkInfo['link_url'],'http') !== 0)
+		elseif(substr($linkInfo['link_url'], 0, 1) !== '/' && strpos($linkInfo['link_url'],'http') !== 0)
 		{
 			$linkInfo['link_url'] = e_HTTP.ltrim($linkInfo['link_url'],'/');
 		}
 		// By default links are not highlighted.
-		
+
 		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand'])
 		{
 			// $href = " href=\"javascript:expandit('sub_".$linkInfo['link_id']."')\"";
 			$css_class .= " e-expandit";
 		}
-		
-		
+
+
 		$linkstart = $style['linkstart'];
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
 		$linkadd = ($css_class) ? " class='".$style['linkclass'].$css_class."'" : $linkadd;
@@ -477,7 +525,7 @@ class sitelinks
 		{
 			$linkstart = preg_replace('/\<img.*\>/si', '', $linkstart);
 			$linkstart .= $tp->toIcon($linkInfo['link_button'],array('legacy'=> "{e_IMAGE}icons/"));
-			
+
 		/*	if($linkInfo['link_button'][0]=='{')
 			{
 				$linkstart .= "<img src='".$tp->replaceConstants($linkInfo['link_button'],'abs')."' alt='' style='vertical-align:middle' />";	
@@ -709,6 +757,16 @@ class sitelinks
 class e_navigation
 {
 	/**
+	 * Marks an admin side-navigation link that switches an in-page panel instead of loading a page.
+	 *
+	 * {@see e_navigation::admin()} applies it to entries that supply no `link` and own no `sub`, a subset of the
+	 * entries it gives an `#anchor` URL to. An entry that brings its own `link` has its behaviour attached elsewhere.
+	 *
+	 * Consumed by `e107_web/js/core/admin.jquery.js`.
+	 */
+	const ADMIN_PANE_LINK_CLASS = 'e-nav-pane';
+
+	/**
 	 * @var array Admin link structure
 	 */
 	var $admin_cat = array();
@@ -873,11 +931,17 @@ class e_navigation
 	function adminCats()
 	{
 		$tp = e107::getParser();
-		
+
 		if(count($this->admin_cat))
 		{
 			 return $this->admin_cat;
 		}
+
+		// Every title below is an ADLAN_CL_* constant. Deep-linked admin
+		// includes reach here without auth.php's language load having run,
+		// and an undefined constant is a notice-and-wrong-label on PHP 5,
+		// an uncaught Error on PHP 8. Load the file this method depends on.
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		
 		$pref = e107::getPref();
 		
@@ -1037,13 +1101,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
         }
 
 
-		
+
 		$this->setIconArray();	
-		
-			
+
+
 		if($mode === 'sub')
 		{
-				
+
 				//FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
 				/*
 				 * Info about sublinks array structure
@@ -1062,16 +1126,16 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, defset('E_16_MANAGE'), defset('E_32_MANAGE'));
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, defset('E_16_CREATE'), defset('E_32_CREATE'));
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, LAN_PREFS, 'H', 3, defset('E_16_SETTINGS'), defset('E_32_SETTINGS'));
-				
+
 				return $array_sub_functions;
 		}
-		
-		
+
+
 			//FIXME array structure suitable for e_admin_menu (NOW admin() below) - see shortcodes/admin_navigation.php
 			//TODO find out where is used $array_functions elsewhere, refactor it
-		
+
 			//XXX DO NOT EDIT without first checking perms in user_handler.php !!!!
-			
+
 		$array_functions = $this->adminLinksArray();
 
 		if($mode === 'legacy')
@@ -1083,12 +1147,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
     	$array_functions_assoc = $this->convert_core_icons($newarray);
 
 
-        
+
        if($mode === 'core') // Core links only.
         {          
             return $array_functions_assoc;          
         }
-            
+
         $merged = array_merge($array_functions_assoc, $this->pluginLinks($E_16_PLUGMANAGER, "array"));
         $sorted = multiarray_sort($merged,'title'); // this deleted the e-xxxx and p-xxxxx keys. 
         return $this->restoreKeys($sorted); // we restore the keys with this. 
@@ -1230,8 +1294,6 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		$arr = array();
 
-		$pref = e107::getPref();
-
 		foreach($data as $path=>$ver)
 		{
 
@@ -1240,7 +1302,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				continue;
 			}
 
-			if(!empty($pref['lan_global_list']) && !in_array($path, $pref['lan_global_list']))
+			if(!e107\Language\GlobalLanguageList::has($path))
 			{
 				e107::loadLanFiles($path, 'admin');
 			}
@@ -1475,7 +1537,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$temp = varset($tmpl[$tmplateKey]);
 			}
 
-			$replace['LINK_ID'] = $e107_vars[$act]['link_id'] ?? $rid;
+			$replace['LINK_ID'] = isset($e107_vars[$act]['link_id']) ? $e107_vars[$act]['link_id'] : $rid;
 			$replace['LINK_CARET'] = !empty($e107_vars[$act]['link_caret']) ? '<i class="caret-icon fa fa-chevron-down fa-2x"></i>' : '';
 			$replace['LINK_TEXT'] = str_replace(" ", "&nbsp;", varset($e107_vars[$act]['text']));
 			$replace['LINK_DESCRIPTION'] = varset($e107_vars[$act]['description']);
@@ -1497,6 +1559,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 			$replace['LINK_CLASS'] = varset($e107_vars[$act]['link_class']);
 			$replace['SUB_CLASS'] = '';
+
+			if(empty($e107_vars[$act]['link']) && empty($e107_vars[$act]['sub']))
+			{
+				$replace['LINK_CLASS'] .= ' '.self::ADMIN_PANE_LINK_CLASS;
+			}
 
 			if(!isset($e107_vars[$act]['image_src']) && !isset($e107_vars[$act]['icon']))
 			{
@@ -1537,19 +1604,19 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 			else 
 			{
-				$START_SUB = $tmpl['start_sub'] ?? '';
+				$START_SUB = isset($tmpl['start_sub']) ? $tmpl['start_sub'] : '';
 			}		
 	
 			if(!empty($e107_vars[$act]['sub']))
 			{
 				$replace['SUB_ID'] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
 				$replace['LINK_CLASS'] = ' '.varset($e107_vars[$act]['link_class'], ''); // e-expandit removed.
-				$replace['SUB_CLASS'] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
+				$replace['SUB_CLASS'] = ' '.varset($e107_vars[$act]['sub_class'], '');
 
 
 				$replace['SUB_MENU']  = $tp->parseTemplate($START_SUB, false, $replace);
 				$replace['SUB_MENU'] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
-				$replace['SUB_MENU'] .= $tmpl['end_sub'] ?? '';
+				$replace['SUB_MENU'] .= isset($tmpl['end_sub']) ? $tmpl['end_sub'] : '';
 			}
 
 
@@ -2015,9 +2082,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		$dbLink = str_replace("//","/",$dbLink); // precaution for e_HTTP inclusion above.
 
-		if(!empty($data['link_owner']) && !empty($data['link_sefurl']))
+		$sefUrl = sitelinks::sefUrl($data);
+
+		if(!empty($sefUrl))
 		{
-			$dbLink = e107::url($data['link_owner'],$data['link_sefurl']);
+			$dbLink = $sefUrl;
 		}
 
 		//if(E107_DBG_PATH)

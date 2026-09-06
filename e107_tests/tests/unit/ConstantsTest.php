@@ -9,7 +9,7 @@
 	 */
 
 
-	class e107ConstantsTest extends \Codeception\Test\Unit
+	class e107ConstantsTest extends \Test\Unit
 	{
 		public function testVerifyE_BASE()
 		{

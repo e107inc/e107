@@ -54,6 +54,18 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/basic-light', // fixtures copied out of tests/_data
 		'e107_themes/testcore',
 		'e107_themes/testkubrick',
+		'e107_core/templates/e107_tests_corescan_template.php', // @see e107TemplateSourceTest
+		'e107_themes/tpstate1_legacy',    // @see Helper\ThemeFixture
+		'e107_themes/tpstate1_onlinetpl',
+		'e107_themes/tpstate1_onlinedir',
+		'e107_themes/tpstate3_plain',
+		'e107_themes/tpstate3_rootfpw',
+		'e107_themes/tpstate3_rootlogin',
+		'e107_themes/tpstate3_globalfpw',
+		'e107_themes/tpstate3_tplusersettings',
+		'e107_themes/tpstate4_legacybs',
+		'e107_themes/tpstate4_globalfpw',
+		'e107_tests_theme_fixture_probe.php', // @see Helper\ThemeFixture
 		'e107_plugins/thing',      // downloaded by e_marketplaceTest
 		// Plugin folders a unit test creates and removes itself. A test that
 		// fails part way leaves one behind, and the next run's plugin scan
@@ -61,13 +73,22 @@ class WorkspaceCleanup extends Extension
 		'e107_plugins/nofollow',      // @see pluginsTest::testRemotePlugin
 		'e107_plugins/temptest',      // @see e_pluginTest::testIgnoringOfInvalidPlugin
 		'e107_plugins/temptest5709',  // @see e107pluginTest
+		'e107_plugins/temptest6024',  // @see SingleEntryErrorPageCest
+		'e107_plugins/temptest6109',  // @see lancheckTest
+		'e107_tests_token_injection_probe.php', // @see CsrfTokenInjectionCest
+		'e107_tests_csrf_failclosed_probe.php', // @see CsrfFailClosedCest
+		'e107_tests_csrf_clienthalf_reset.php',  // @see CsrfClientHalfCest
+		'e107_tests_csrf_matrix_probe.php',      // @see CsrfModeMatrixCest
+		'e107_languages/e107_tests_lancheck_target.php', // @see lancheckTest
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
+		'e107_tests_datepicker_probe.php', // @see DatePickerWithoutBootstrapCest
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
 		'e107_tests_pm_fixture_probe.php',    // @see PmAttachmentCest
 		'e107_tests_pm_storage_probe.php',    // @see PmAttachmentStorageCest
 		'e107_plugins/pm/attachments',        // legacy attachment path; @see PmAttachmentStorageCest
 		'e107_tests_plugin_install_probe.php', // @see Helper\Acceptance::havePluginInstalled()
 		'e107_tests_thumb_probe.php',          // @see ThumbnailContainmentCest
+		'e107_tests_faqs_authz.php',           // @see FaqsAnonymousWriteCest
 		'e107_tests_p16_probe.php',            // @see ThumbMediaUserclassCest
 		'e107_tests_p18_probe.php',            // @see ForumAttachmentServingCest
 		'e107_themes/bootstrap5/images/e107_tests_p16_theme.png',       // @see ThumbMediaUserclassCest
@@ -87,13 +108,17 @@ class WorkspaceCleanup extends Extension
 		'e107_media/.htaccess',               // written at runtime; @see e_file::blockScriptExecution()
 		'e107_tests_p6_unsubscribe_reset.php',  // @see NewsletterUnsubscribeCest
 		'e107_tests_p6_cron_probe.php',         // @see CronMisconfigMailCest
+		'e107_plugins/e107_tests_cronprobe',    // @see CronMisconfigMailCest
 		'e107_tests_p6_contact_probe.php',      // @see ContactFormCest
 		'e107_tests_p6_gsitemap_reset.php',     // @see GsitemapFuncCest
 		'e107_tests_p6_rss_reset.php',          // @see RssCommentsFeedCest
 		'e107_tests_p6_poll_reset.php',         // @see PollStuffingCest
 		'e107_tests_p6_download_reset.php',     // @see DownloadMirrorActiveCest
-		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest
+		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest, OnlineMemberListLinkCest
 		'e107_tests_install_prefs_probe.php',  // @see InstallPrefDuplicatesCest
+		'e107_tests_5928_pref_probe.php',      // @see MissingCorePrefCest
+		'e107_tests_xup_token_probe.php',      // @see ProviderLoginTokenCest
+		'e107_tests_xup_route_probe.php',      // @see XupProviderLoginTokenCest
 		'e107_tests_encoding_probe.php',            // @see Helper\OutputEncodingFixture
 		'e107_tests_encoding_feed.xml',
 		'e107_tests_encoding_addons.xml',
@@ -101,6 +126,38 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_encoding_tinymce_canary.xml',
 		'e107_tests_captcha_probe.php',        // @see CaptchaLifecycleCest
 		'e107_tests_redirect_probe.php',           // @see Helper\RedirectFixture
+		'e107_tests_no_token_probe.php',       // @see ForcedLogoutCsrfCest
+		'e107_tests_menu_prefs_probe.php',        // @see Helper\MenuPrefFixture
+		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
+		'e107_tests_chatbox_request_self_probe.php', // @see ChatboxRequestSelfCest
+		'e107_tests_containment_unguarded.php',    // @see ProbeContainmentCest
+		'e107_tests_cli_bootstrap_probe.php',  // @see CliBootstrapHttpRefusalCest
+		'e107_tests_cli_only_entry.php',       // @see CliBootstrapHttpRefusalCest
+		'e107_tests_cli_only_canary.txt',      // @see CliBootstrapHttpRefusalCest
+		'e107_tests_sessionfixation_probe.php', // @see SessionFixationCest
+		'e107_tests_pm_send_probe.php',            // @see PmAttachmentSendCest
+		'e107_tests_host_arming_probe.php',        // @see HostAllowListArmingCest
+		'e107_tests_host_arming_prefs.php',        // @see HostAllowListArmingCest
+		'e107_tests_p9_csrf_probe.php',        // @see AdminMiscCsrfCest
+		'e107_tests_rate_csrf.php',            // @see RateVoteCsrfCest
+		'e107_tests_signup_csrf.php',          // @see SignupTestMailCsrfCest
+		'e107_tests_upload_csrf.php',          // @see MediaUploadCsrfCest
+		'e107_tests_lan_fallback.php',         // @see CsrfRefusalLanFallbackCest
+		'e107_tests_security_level.php',       // @see SecurityLevelZeroCsrfCest
+		'e107_themes/e107_tests_p84_themecopy',    // @see AdminGetCsrfPluginThemeMenuCest
+		'e107_plugins/admin_menu/admin_menu_sql.php', // @see AdminGetCsrfPluginThemeMenuCest
+		'e107_plugins/forum/forum_update_check.php', // @see ForumUpgradeCsrfCest
+		'e107_tests_admin_password_probe.php',       // @see AdminPasswordChangeCest
+		'e107_tests_ghsa7v5h_probe.php',       // @see SessionAuthTokenCest
+		'e107_tests_cookie_mode_probe.php',    // @see CookieModeRemovedCest
+		'e107_tests_session_rekey_probe.php',  // @see SessionRekeyUpgradeCest
+		'e107_tests_comment_post_authz_probe.php', // @see CommentPostAuthzCest
+	];
+
+	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
+	private static $parked = [
+		'e107_images/e107_tests_5999_adminlogo.png' => 'e107_images/adminlogo.png', // @see admin_shortcodesLogoTest
+		'e107_languages/English/lan_rate.php.bak' => 'e107_languages/English/lan_rate.php', // @see CsrfRefusalLanFallbackCest
 	];
 
 	/** @var \Deployer|null */
@@ -120,6 +177,7 @@ class WorkspaceCleanup extends Extension
 		}
 		$this->acquireWorkspaceLock();
 		$this->restoreConfigBackup();
+		$this->restoreParked();
 		$this->htaccess = @file_get_contents(APP_PATH.'/e107.htaccess');
 		$this->sweep();
 	}
@@ -131,6 +189,7 @@ class WorkspaceCleanup extends Extension
 			return;
 		}
 		$this->restoreConfigBackup();
+		$this->restoreParked();
 		$this->restoreHtaccess();
 		$this->sweep();
 		$this->releaseWorkspaceLock();
@@ -269,6 +328,25 @@ class WorkspaceCleanup extends Extension
 		codecept_debug('WorkspaceCleanup: restoring e107_config.php from an interrupted run');
 		@unlink(APP_PATH.'/e107_config.php');
 		@rename($backup, APP_PATH.'/e107_config.php');
+	}
+
+	/**
+	 * Put back anything a test parked and did not live to restore, on APP_PATH as {@see Extension\WorkspaceCleanup::restoreConfigBackup()} does.
+	 *
+	 * @return void
+	 */
+	private function restoreParked()
+	{
+		foreach (self::$parked as $parked => $original)
+		{
+			if (!file_exists(APP_PATH.'/'.$parked))
+			{
+				continue;
+			}
+			codecept_debug('WorkspaceCleanup: restoring '.$original.' from an interrupted run');
+			@unlink(APP_PATH.'/'.$original);
+			@rename(APP_PATH.'/'.$parked, APP_PATH.'/'.$original);
+		}
 	}
 
 	/**

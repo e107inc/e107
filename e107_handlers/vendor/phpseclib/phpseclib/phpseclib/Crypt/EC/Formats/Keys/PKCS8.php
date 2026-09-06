@@ -144,7 +144,7 @@ abstract class PKCS8 extends Progenitor
                     ' private key field should be 0x' . bin2hex($expected)
                 );
             }
-            $arr = $components['curve']->extractSecret(substr($key['privateKey'], 2));
+            $arr = $components['curve']->extractSecret((string) substr($key['privateKey'], 2));
             $components['dA'] = $arr['dA'];
             $components['secret'] = $arr['secret'];
         }
@@ -179,7 +179,7 @@ abstract class PKCS8 extends Progenitor
                     ' private key field should be 0x' . bin2hex($expected)
                 );
             }
-            $components['dA'] = new BigInteger(substr($privateKey, 2), 256);
+            $components['dA'] = new BigInteger((string) substr($privateKey, 2), 256);
         }
 
         if (isset($key['publicKey'])) {

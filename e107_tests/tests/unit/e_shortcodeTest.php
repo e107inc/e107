@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_shortcodeTest extends \Codeception\Test\Unit
+	class e_shortcodeTest extends \Test\Unit
 	{
 /*
 		public function testSetVars()

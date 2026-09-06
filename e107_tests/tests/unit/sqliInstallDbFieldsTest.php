@@ -22,12 +22,22 @@
  * e_install class body is extracted from source and eval'd under a renamed name,
  * mirroring installStage7HashTest.
  */
-class sqliInstallDbFieldsTest extends \Codeception\Test\Unit
+class sqliInstallDbFieldsTest extends \Test\Unit
 {
 	/** @var string */
 	private static $renamedClass = 'e_install_for_dbfields_test';
 
-	public static function setUpBeforeClass(): void
+	/**
+	 * Use Codeception's @beforeClass annotation rather than overriding
+	 * PHPUnit's setUpBeforeClass(): the latter requires a `: void` return
+	 * type on PHPUnit 8+, which the downgrade pipeline strips for PHP 5.6
+	 * targets. Annotation-driven lifecycle methods have no signature
+	 * contract, so they survive the strip and still execute on every
+	 * PHP version in the matrix.
+	 *
+	 * @beforeClass
+	 */
+	public static function loadRenamedInstallClass()
 	{
 		if (class_exists(self::$renamedClass, false))
 		{

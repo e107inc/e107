@@ -23,7 +23,7 @@ require_once('rss_import_class.php');
 class livejournal_import extends rss_import
 {
 
-	
+
 	public $title		= 'LiveJournal';
 	public $description	= 'Import up to 500 items from yourblog.livejournal.com';
 	public $supported	= array('news');
@@ -45,19 +45,19 @@ class livejournal_import extends rss_import
 		{
 			$domain = preg_replace("/https?:\/\//i",'',$_POST['siteUrl']);
 			list($site,$dom,$tld) = explode(".",$domain);
-									
+
 			$this->feedUrl = "http://".$site.".livejournal.com/data/rss";	
 		}
-		
+
 		if(vartrue($_POST['siteCleanup']))
 		{
 			$this->cleanupHtml = true;
 		}	
-		
+
 		$mes->addDebug("LiveJournal Feed:".$this->feedUrl);
 	}
-		
-	
+
+
 	function config()
 	{
 		$site = e107::getParser()->toAttribute(varset($_POST['siteUrl'], ''));
@@ -77,7 +77,7 @@ class livejournal_import extends rss_import
 
 	function process($type,$source)
 	{
-				
+
 		switch ($type) 
 		{
 			case 'description':
@@ -94,13 +94,13 @@ class livejournal_import extends rss_import
 					return $body;
 				}		
 			break;
-			
+
 			default:
 				return $source[$type][0];
 			break;
 		}		
-		
-		
+
+
 	}
 
 	//TODO Comment Import: 	

@@ -16,8 +16,9 @@
  * e107::getUrl()->create('news/view/item', ...). This locks the archive
  * shortcodes to that same parser + router idiom.
  */
-class news_archive_shortcodesTest extends \Codeception\Test\Unit
+class news_archive_shortcodesTest extends \Test\Unit
 {
+
 	/** @var news_archive_shortcodes */
 	protected $sc;
 

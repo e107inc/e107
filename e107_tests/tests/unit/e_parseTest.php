@@ -8,9 +8,11 @@
  *
  */
 
+use e107\Reflection\ReflectionMethod;
 
-class e_parseTest extends \Codeception\Test\Unit
+class e_parseTest extends \Test\Unit
 {
+
 	/** @var e_parse */
 	private $tp;
 
@@ -1319,13 +1321,15 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testHtmlwrap()
-			{
-				$html = "<div><p>My paragraph <b>bold</b></p></div>";
+	public function testHtmlwrapKeepsATagWhoseAttributeQuoteIsNeverClosed()
+	{
+		$tag = '<a href="' . str_repeat('a', 40) . '>';
 
-				$result = $this->tp->htmlwrap($html, 20);
-			}*/
+		self::assertStringContainsString($tag, $this->tp->htmlwrap($tag . ' tail', 20),
+			'htmlwrap() ends a tag at the first > and leaves it alone, where makeClickable() reads the '
+			. 'quotes and keeps scanning. The two splitters cannot be shared: the stricter one makes this '
+			. 'a run of text and writes a break character into the attribute.');
+	}
 
 	public function testToRss()
 	{
@@ -1570,6 +1574,20 @@ EXPECTED;
 		self::assertEquals($expected, $actual);
 	}
 
+	public function testToAttributesKeepsMeaningfulEmptyValues()
+	{
+		$input = [
+			"alt"   => "",
+			"value" => "",
+			"title" => "",
+		];
+		$expected = " alt='' value=''";
+
+		$actual = $this->tp->toAttributes($input);
+
+		self::assertEquals($expected, $actual);
+	}
+
 	public function testToAttributesMixedPureAndReplaceConstants()
 	{
 		$input = [
@@ -1584,6 +1602,44 @@ EXPECTED;
 		$actual = $this->tp->toAttributes($input);
 
 		self::assertEquals($expected, $actual);
+	}
+
+	public function testBootstrapData()
+	{
+		$expected = [
+			'data-toggle'    => 'collapse',
+			'data-bs-toggle' => 'collapse',
+			'data-target'    => '#sub-main-custom',
+			'data-bs-target' => '#sub-main-custom',
+		];
+
+		$input = ['toggle' => 'collapse', 'target' => '#sub-main-custom'];
+
+		foreach ([3, 4, 5] as $version)
+		{
+			$this->tp->setBootstrap($version);
+
+			self::assertSame($expected, $this->tp->bootstrapData($input), 'Bootstrap ' . $version);
+		}
+
+		self::assertSame([], $this->tp->bootstrapData([]));
+	}
+
+	public function testBootstrapShowClass()
+	{
+		$expected = [3 => 'in', 4 => 'show', 5 => 'show'];
+
+		foreach ($expected as $version => $class)
+		{
+			$this->tp->setBootstrap($version);
+
+			self::assertSame($class, $this->tp->bootstrapShowClass(), 'Bootstrap ' . $version);
+		}
+
+		$undeclared = $this->make('e_parse');
+
+		self::assertNull($undeclared->getBootstrap());
+		self::assertSame('in', $undeclared->bootstrapShowClass());
 	}
 
 	public function testThumbCacheFile()
@@ -2778,7 +2834,8 @@ EXPECTED;
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false),
 				'expected' => array(
 					"thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
-					"class='img-rounded rounded user-avatar'"
+					"class='img-rounded rounded user-avatar'",
+					"alt=''"
 				)
 			),
 			3 => array(
@@ -2814,7 +2871,7 @@ EXPECTED;
 				'expected' => array(
 					"thumb.php?src=e_AVATAR%2Fdefault%2Favatartest.png&amp;w=30&amp;h=30",
 					"class='img-circle rounded-circle user-avatar'",
-					'alt="mytitle"',
+					"alt='mytitle'",
 				)
 			),
 
@@ -2869,6 +2926,252 @@ EXPECTED;
 		}
 
 
+	}
+
+	/**
+	 * The avatar manager needs the file a user_image names rather than the url that
+	 * renders it, and it must never be handed a path outside the avatar folders.
+	 * @see https://github.com/e107inc/e107/issues/6023
+	 */
+	public function testToAvatarPath()
+	{
+		self::assertSame(e_AVATAR_DEFAULT . 'avatartest.png', $this->tp->toAvatarPath('avatartest.png'));
+		self::assertSame(e_AVATAR_UPLOAD . 'avatartest.png', $this->tp->toAvatarPath('-upload-avatartest.png'));
+
+		$rejected = array(
+			'',
+			'-upload-',
+			'.',
+			'..',
+			'-upload-.',
+			'-upload-..',
+			'http://mydomain.com/remoteavatar.jpg',
+			'https://mydomain.com/remoteavatar.jpg',
+			'../../../class2.php',
+			'-upload-../../../class2.php',
+			'sub/avatartest.png',
+			'sub\\avatartest.png',
+			"avatartest.png\0.php",
+			null,
+			array('avatartest.png'),
+		);
+
+		foreach ($rejected as $image)
+		{
+			self::assertSame('', $this->tp->toAvatarPath($image), 'Resolved a path for ' . var_export($image, true));
+		}
+	}
+
+	/**
+	 * An administrator's alt text carries the stored name without its -upload-
+	 * prefix, as it did when toAvatar() stripped the prefix itself.
+	 */
+	public function testToAvatarKeepsTheUploadedNameInTheAdminAltText()
+	{
+		if (!deftrue('ADMIN'))
+		{
+			self::markTestSkipped('toAvatar() only puts the raw user_image in alt for an administrator.');
+		}
+
+		if (!is_dir(e_AVATAR_UPLOAD))
+		{
+			mkdir(e_AVATAR_UPLOAD, 0755, true);
+		}
+
+		copy(codecept_data_dir() . 'icon_64.png', e_AVATAR_UPLOAD . 'avatartest.png');
+
+		$parms = array('w' => 50, 'h' => 50, 'crop' => false);
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => '-upload-avatartest.png'), $parms));
+
+		self::assertEquals('avatartest.png', $img->getAttribute('alt'));
+	}
+
+	/**
+	 * Parse an {@see e_parse::toAvatar()} result and return its img element.
+	 * @param string $html
+	 * @return DOMElement
+	 */
+	private function avatarTag($html)
+	{
+		$doc = new DOMDocument();
+		$doc->loadHTML('<body>' . $html . '</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+		return $doc->getElementsByTagName('img')->item(0);
+	}
+
+	/**
+	 * A remote avatar whose host has gone away must fall back to the generic
+	 * avatar in the browser, without the server ever fetching the URL itself.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarRemoteImageCarriesAClientSideFallback()
+	{
+		$parms = array('w' => 50, 'h' => 50, 'crop' => false);
+
+		$remote = $this->avatarTag($this->tp->toAvatar(array('user_image' => 'https://mydomain.com/remoteavatar.jpg'), $parms));
+
+		self::assertEquals('https://mydomain.com/remoteavatar.jpg', $remote->getAttribute('src'));
+
+		$onError = $remote->getAttribute('onerror');
+
+		self::assertStringStartsWith("this.onerror=null;this.src='", $onError);
+		self::assertStringEndsWith("';", $onError);
+		self::assertStringContainsString('thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&w=50&h=50', $onError);
+		self::assertStringNotContainsString('&amp;', $onError);
+
+		$local = $this->avatarTag($this->tp->toAvatar(array('user_image' => 'avatartest.png'), $parms));
+
+		self::assertFalse($local->hasAttribute('onerror'));
+	}
+
+	/**
+	 * A remote avatar URL is encoded as an attribute value, so a quote or an
+	 * ampersand in it survives the round trip instead of ending the attribute.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarEncodesTheRemoteImageUrl()
+	{
+		$image = "https://mydomain.com/remoteavatar.jpg?x=1&y=2'";
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => $image), array('w' => 50, 'h' => 50, 'crop' => false)));
+
+		self::assertEquals($image, $img->getAttribute('src'));
+	}
+
+	/**
+	 * A remote avatar URL is a URL and not template text, so an {e_...} token in
+	 * one stays as it was typed instead of expanding into a local path.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarLeavesConstantsInTheRemoteImageUrlAlone()
+	{
+		$image = 'https://mydomain.com/{e_IMAGE}remoteavatar.jpg';
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => $image), array('w' => 50, 'h' => 50, 'crop' => false)));
+
+		self::assertEquals($image, $img->getAttribute('src'));
+	}
+
+	/**
+	 * An administrator sees the raw user_image as the alt text, so it has to be
+	 * encoded as an attribute value rather than dropped between quotes.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarEncodesTheAdminAltText()
+	{
+		if (!deftrue('ADMIN'))
+		{
+			self::markTestSkipped('toAvatar() only puts the raw user_image in alt for an administrator.');
+		}
+
+		$image = 'https://mydomain.com/remoteavatar.jpg?q="x';
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => $image), array('w' => 50, 'h' => 50, 'crop' => false)));
+
+		self::assertEquals($image, $img->getAttribute('alt'));
+	}
+
+	/**
+	 * The caller's id and style reach the tag as attribute values, quotes and all.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarEncodesIdAndStyle()
+	{
+		$parms = array(
+			'w'     => 50,
+			'h'     => 50,
+			'crop'  => false,
+			'id'    => "av'1",
+			'style' => "background:url('x.png')",
+		);
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => 'avatartest.png'), $parms));
+
+		self::assertEquals("av'1", $img->getAttribute('id'));
+		self::assertEquals("background:url('x.png')", $img->getAttribute('style'));
+	}
+
+	/**
+	 * {USER_AVATAR=picture.png} reaches toAvatar() with a string where the
+	 * options array is expected, so nothing may subscript $options by reference.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarAcceptsStringOptionsFromAShortcode()
+	{
+		$image = 'https://mydomain.com/remoteavatar.jpg';
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => $image), $image));
+
+		self::assertEquals($image, $img->getAttribute('src'));
+	}
+
+	/**
+	 * A remote avatar embedded as base64 cannot fail to load, so it is left
+	 * without the fallback attribute.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarBase64RemoteImageCarriesNoFallback()
+	{
+		$registryId = 'core/e107/singleton/e_file';
+		$originalFile = e107::getRegistry($registryId);
+		$remoteBytes = file_get_contents(codecept_data_dir() . 'icon_64.png');
+		$stubFile = $this->make('e_file', array(
+			'getRemoteContent' => function () use ($remoteBytes) { return $remoteBytes; },
+		));
+		e107::setRegistry($registryId, $stubFile);
+
+		try
+		{
+			$result = $this->tp->toAvatar(
+				array('user_image' => 'https://mydomain.com/remoteavatar.jpg'),
+				array('w' => 50, 'h' => 50, 'crop' => false, 'base64' => true)
+			);
+		}
+		finally
+		{
+			e107::setRegistry($registryId, $originalFile);
+		}
+
+		$img = $this->avatarTag($result);
+
+		self::assertStringStartsWith('data:image/jpg;base64,', $img->getAttribute('src'));
+		self::assertFalse($img->hasAttribute('onerror'));
+	}
+
+	/**
+	 * The hd option doubles an avatar's dimensions, a default height included.
+	 * @see https://github.com/e107inc/e107/issues/6060
+	 */
+	public function testToAvatarHdWithoutAnExplicitHeight()
+	{
+		$parser = e107::getParser();
+		$originalHeight = $parser->thumbHeight();
+		$parser->thumbHeight(0);
+
+		try
+		{
+			$img = $this->avatarTag($this->tp->toAvatar(
+				array('user_image' => 'https://mydomain.com/remoteavatar.jpg'),
+				array('w' => 50, 'hd' => true)
+			));
+
+			self::assertEquals('50', $img->getAttribute('width'));
+			self::assertFalse($img->hasAttribute('height'));
+			self::assertStringContainsString('w=100&h=0', $img->getAttribute('onerror'));
+
+			$sized = $this->avatarTag($this->tp->toAvatar(
+				array('user_image' => 'https://mydomain.com/remoteavatar.jpg'),
+				array('w' => 50, 'h' => 50, 'hd' => true)
+			));
+
+			self::assertEquals('50', $sized->getAttribute('width'));
+			self::assertEquals('50', $sized->getAttribute('height'));
+			self::assertStringContainsString('w=100&h=100', $sized->getAttribute('onerror'));
+		}
+		finally
+		{
+			$parser->thumbHeight($originalHeight);
+		}
 	}
 
 	public function testToIcon()
@@ -2964,6 +3267,119 @@ EXPECTED;
 		self::assertSame($expected, $result);
 	}
 
+	/**
+	 * Every operand of the <img> statement is encoded where it is written, the src path and srcset included.
+	 */
+	public function testToImageAttributeInjection()
+	{
+		$src = '{e_PLUGIN}gallery/images/butterfly.jpg';
+		$breakout = '" onload="alert(1)';
+
+		$parm = array(
+			'w'       => 0,
+			'h'       => 0,
+			'id'      => 'x'.$breakout,
+			'class'   => 'x'.$breakout,
+			'alt'     => 'x'.$breakout,
+			'style'   => 'width:1px;'.$breakout,
+			'title'   => 'x'.$breakout,
+			'loading' => 'lazy'.$breakout,
+			'width'   => '1'.$breakout,
+			'height'  => '1'.$breakout,
+		);
+
+		$result = $this->tp->toImage($src, $parm);
+		$result = preg_replace('/"([^"]*)thumb.php/', '"thumb.php', $result);
+
+		$expected = '<img id="x&quot; onload=&quot;alert(1)" class="x&quot; onload=&quot;alert(1)"'
+			.' src="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=0&amp;h=0"'
+			.' alt="x&quot; onload=&quot;alert(1)"'
+			.' width="1&quot; onload=&quot;alert(1)" height="1&quot; onload=&quot;alert(1)"'
+			.' style="width:1px;&quot; onload=&quot;alert(1)"'
+			.' loading="lazy&quot; onload=&quot;alert(1)"'
+			.' title="x&quot; onload=&quot;alert(1)"  />';
+
+		self::assertSame($expected, $result);
+		self::assertStringNotContainsString($breakout, $result);
+	}
+
+	/**
+	 * The sink encodes what it is given; it does not validate it, and it does not encode it twice.
+	 */
+	public function testToImageKeepsLegacyAttributeValues()
+	{
+		$src = '{e_PLUGIN}gallery/images/butterfly.jpg';
+
+		$parm = array(
+			'w'      => 0,
+			'h'      => 0,
+			'class'  => 'salt &amp; pepper',
+			'title'  => "Ben&#039;s",
+			'width'  => '50%',
+			'height' => 'auto',
+		);
+
+		$result = $this->tp->toImage($src, $parm);
+
+		self::assertStringContainsString('class="salt &amp; pepper"', $result);
+		self::assertStringContainsString('title="Ben&#039;s"', $result);
+		self::assertStringContainsString('width="50%"', $result);
+		self::assertStringContainsString('height="auto"', $result);
+	}
+
+	/**
+	 * The src path and the srcset are operands like the rest, and a caller may hand either of them a quote.
+	 */
+	public function testToImageEncodesThePathAndSrcset()
+	{
+		$breakout = '" onwheel="alert(1)';
+
+		$parm = array('srcset' => 'b' . $breakout . '.gif 2x');
+
+		$result = $this->tp->toImage('http://example.com/a' . $breakout . '.gif', $parm);
+
+		$expected = '<img class="img-responsive img-fluid"'
+			. ' src="http://example.com/a&quot; onwheel=&quot;alert(1).gif"'
+			. ' alt="a&quot; onwheel=&quot;alert(1).gif"'
+			. ' srcset="b&quot; onwheel=&quot;alert(1).gif 2x"  />';
+
+		self::assertSame($expected, $result);
+		self::assertStringNotContainsString($breakout, $result);
+	}
+
+	/**
+	 * thumbUrl() and thumbSrcSet() mint an &amp; of their own, and the encoder has to leave it as one.
+	 */
+	public function testToImageLeavesItsOwnThumbnailUrlsAlone()
+	{
+		$result = $this->tp->toImage('{e_MEDIA_IMAGE}2020-12/b.gif', array('w' => 100, 'h' => 100));
+		$result = preg_replace('/"([^"]*)thumb.php/', '"thumb.php', $result);
+
+		$expected = '<img class="img-responsive img-fluid"'
+			. ' src="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fb.gif&amp;w=100&amp;h=100"'
+			. ' alt="b.gif"'
+			. ' srcset="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fb.gif&amp;w=200&amp;h=200 2x"'
+			. ' width="100" height="100"  />';
+
+		self::assertSame($expected, $result);
+	}
+
+	/**
+	 * The route the advisory names: a member's file name appended raw to a SEF media URL by thumbUrlSEF().
+	 */
+	public function testToImageEncodesTheSefMediaPath()
+	{
+		$breakout = '" onwheel="alert(1)';
+
+		$this->tp->setmodRewriteMedia(true);
+		$result = $this->tp->toImage('{e_MEDIA_IMAGE}2020-12/a' . $breakout . '.gif', array('w' => 100, 'h' => 100));
+		$this->tp->setmodRewriteMedia(false);
+
+		self::assertStringContainsString('/100x100/2020-12/a&quot; onwheel=&quot;alert(1).gif"', $result);
+		self::assertStringContainsString('/200x200/2020-12/a&quot; onwheel=&quot;alert(1).gif', $result);
+		self::assertStringNotContainsString($breakout, $result);
+	}
+
 	public function testThumbSrcSet()
 	{
 		$src = "{e_PLUGIN}gallery/images/butterfly.jpg";
@@ -2985,16 +3401,28 @@ EXPECTED;
 
 	}
 
+	public function testPreFilterRunsBbcodeSaveHandlersOnTextThatAlsoContainsHtml()
+	{
+		$payload = '[img height=bogus]{e_THEME}bootstrap3/images/logo.png[/img]';
+
+		$filtered = $this->tp->preFilter($payload);
+		self::assertSame('[img]{e_THEME}bootstrap3/images/logo.png[/img]', $filtered);
+
+		self::assertSame('<b>hi</b>' . $filtered, $this->tp->preFilter('<b>hi</b>' . $payload));
+	}
+
 	public function testIsBBcode()
 	{
 		$tests = array(
 			0 => array("My Simple Text", false), // input , expected result
 			1 => array("<hr />", false),
 			2 => array("[b]Bbcode[/b]", true),
-			3 => array("<div class='something'>[code]something[/code]</div>", false),
+			3 => array("<div class='something'>[code]something[/code]</div>", true),
 			4 => array("[code]&lt;b&gt;someting&lt;/b&gt;[/code]", true),
 			5 => array("[html]something[/html]", false),
-			6 => array("http://something.com/index.php?what=ever", false)
+			6 => array("http://something.com/index.php?what=ever", false),
+			7 => array("<b>hi</b>[img height=1]{e_THEME}logo.png[/img]", true),
+			8 => array("1<2>3 [b]Bbcode[/b]", true)
 		);
 
 
@@ -3188,6 +3616,91 @@ Your browser does not support the audio tag.
 		}
 
 
+	}
+
+	public function testMakeClickableSkipsMarkup()
+	{
+		$tp = $this->tp;
+
+		$untouched = array(
+			'email' => array(
+				"<a class='e-email' href='mailto:john@example.com'>john@example.com</a>" => 'an address between an <a> and its </a>',
+				'<a href="#">john@example.com'                                          => 'an address after an <a> that is never closed',
+				"<img src='x.png' alt='a > john@example.com' />"                         => 'an address inside a quoted attribute holding a >',
+				'<img src="x.png" alt="john@example.com" />'                             => 'an address inside an attribute',
+			),
+			'url'   => array(
+				'<a href="#">visit www.example.com</a>' => 'a url between an <a> and its </a>',
+				'<b>bold</b>www.example.com'            => 'a url running straight on from a tag',
+			),
+		);
+
+		foreach ($untouched as $type => $samples)
+		{
+			foreach ($samples as $sample => $why)
+			{
+				self::assertEquals($sample, $tp->makeClickable($sample, $type), 'Rewrote ' . $why);
+			}
+		}
+
+		$result = $tp->makeClickable('<a href="#">click</a> john@example.com', 'email');
+		self::assertStringContainsString("<a class='e-email' ", $result, 'An address after a closed link was left alone');
+
+		$expected = 'first line' . E_NL . '<a class="e-url" href="http://www.example.com" >www.example.com</a>';
+		self::assertEquals($expected, $tp->makeClickable('first line' . E_NL . 'www.example.com', 'url'), 'A url after a line break was left alone');
+
+		$expected = '<a class="e-url" href="http://example.com" >http://example.com</a>' . E_NL . 'next';
+		self::assertEquals($expected, $tp->makeClickable('http://example.com' . E_NL . 'next', 'url'), 'A line break was swallowed into the url');
+
+		$expected = 'first line' . E_NL . '<a class="e-url" href="http://WWW.EXAMPLE.COM" >WWW.EXAMPLE.COM</a>';
+		self::assertEquals($expected, $tp->makeClickable('first line' . E_NL . 'WWW.EXAMPLE.COM', 'url'), 'An upper case www. url stopped being linked');
+
+		$expected = 'first line' . E_NL . '<a class="e-url" href="FTP://FTP.EXAMPLE.COM" >FTP.EXAMPLE.COM</a>';
+		self::assertEquals($expected, $tp->makeClickable('first line' . E_NL . 'FTP.EXAMPLE.COM', 'url'), 'An upper case ftp. url stopped being linked');
+	}
+
+	public function testEmailBbcodesWithMakeClickableOn()
+	{
+		$cfg = e107::getConfig();
+		$savedPref = $cfg->get('make_clickable');
+		$hadGlobalPref = array_key_exists('pref', $GLOBALS);
+		$savedGlobalPref = $hadGlobalPref ? $GLOBALS['pref'] : null;
+
+		$cfg->set('make_clickable', 1);
+		$GLOBALS['pref']['make_clickable'] = 1;
+
+		try
+		{
+			$samples = array(
+				'[email]john@example.com[/email]',
+				'[email=john@example.com]Mail me[/email]',
+				'[link=mailto:john@example.com]Mail me[/link]',
+			);
+
+			foreach ($samples as $sample)
+			{
+				$tp = $this->make('e_parse');
+				$tp->__construct();
+
+				$result = $tp->toHTML($sample, true);
+
+				self::assertStringContainsString('"john"+"@"+"example.com"', $result, 'Address lost from ' . $sample);
+				self::assertStringNotContainsString("class='e-email'", $result, 'Nested link produced by ' . $sample);
+			}
+		}
+		finally
+		{
+			$cfg->set('make_clickable', $savedPref);
+
+			if ($hadGlobalPref)
+			{
+				$GLOBALS['pref'] = $savedGlobalPref;
+			}
+			else
+			{
+				unset($GLOBALS['pref']);
+			}
+		}
 	}
 
 
@@ -3446,9 +3959,7 @@ Your browser does not support the audio tag.
 	public function testCleanHtmlNormalizesVoidElementsOnOldLibxml()
 	{
 		$normalize = new ReflectionMethod('e_parse', 'normalizeVoidElements');
-		$normalize->setAccessible(true);
 		$strip = new ReflectionMethod('e_parse', 'stripVoidClosingTags');
-		$strip->setAccessible(true);
 
 		$doc = new DOMDocument();
 		$doc->loadHTML('<body><video><source src="x.mp4" type="video/mp4"></source></video></body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);

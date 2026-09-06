@@ -958,7 +958,7 @@ class e_model extends e_object
         $simple = false;
         if(strpos($key, '//') === 0)
         {
-        	$key = substr($key, 2);
+        	$key = (string) substr($key, 2);
         	$simple = true;
         }
         /*elseif($key[0] == '/')
@@ -1110,7 +1110,7 @@ class e_model extends e_object
         	// Example: '//some/key'; NOTE: '//some/key//more/depth' is NOT parsed
         	// if you wish to have array('some/key' => array('more/depth' => value))
         	// right syntax is 'some/key//more/depth'
-        	$key = substr($key, 2);
+        	$key = (string) substr($key, 2);
         	$simple = true;
         }
         /*elseif($key[0] == '/')
@@ -3770,7 +3770,7 @@ class e_tree_model extends e_front_model
 			// string form. execute($var) is an opaque dynamic-SQL passthrough boundary.
 			$result = ($sql->execute($QRY) !== false) ? $sql->fetch() : array();
 			if(!is_array($result)) $result = array();
-			$total = $result['e_tree_total'] ?? 0;
+			$total = isset($result['e_tree_total']) ? $result['e_tree_total'] : 0;
 
 			if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 			{
@@ -3830,7 +3830,7 @@ class e_tree_model extends e_front_model
 			return $qry;
 		}
 
-		$projection = substr($qry, strlen($lead[0]), $from - strlen($lead[0]));
+		$projection = (string) substr($qry, strlen($lead[0]), $from - strlen($lead[0]));
 		if(preg_match_all('/[\w`]\s*\.\s*\*/', $projection, $m) < 2)
 		{
 			return $qry;
@@ -3885,7 +3885,7 @@ class e_tree_model extends e_front_model
 			{
 				if($depth > 0) $depth--;
 			}
-			elseif($depth === 0 && ($ch === 'f' || $ch === 'F') && strcasecmp(substr($qry, $i, 4), 'FROM') === 0)
+			elseif($depth === 0 && ($ch === 'f' || $ch === 'F') && strcasecmp((string) substr($qry, $i, 4), 'FROM') === 0)
 			{
 				$before = $i === 0 ? ' ' : $qry[$i - 1];
 				$after = $i + 4 >= $len ? ' ' : $qry[$i + 4];
@@ -4229,6 +4229,12 @@ class e_front_tree_model extends e_tree_model
 			$syncvalue = $value;
 		}
 
+		if(!is_string($field) || $sql->quoteIdentifier($field) === false)
+		{
+			$this->addMessageDebug('batchUpdate() refused a field name that is not a valid identifier.');
+			return false;
+		}
+
 		// A raw SQL expression must be passed EXPLICITLY as a SqlFragment (e.g.
 		// "1-`field`"); anything else is a literal and gets bound, never spliced.
 		$isExpression = $value instanceof \e107\Database\SqlFragment;
@@ -4452,6 +4458,7 @@ class e_admin_tree_model extends e_front_tree_model
 
 	/**
 	 * Export Selected Data
+	 * Every column of the table is streamed unless the 'export_exclude' param names columns to leave out.
 	 * @param $ids
 	 * @return null
 	 */
@@ -4470,8 +4477,15 @@ class e_admin_tree_model extends e_front_tree_model
 
 	    $filename   = "e107Export_" .$this->getModelTable()."_". date("YmdHi").".xml";
 	    $query      = $this->getFieldIdName().' IN ('.$idstr.') '; //  ORDER BY '.$this->getParam('db_order') ;
+	    $options    = array('file' => $filename, 'query' => $query);
+	    $exclude    = $this->getParam('export_exclude');
 
-		e107::getXml()->e107Export(null,$table,null,null, array('file'=>$filename,'query'=>$query));
+		if(!empty($exclude))
+		{
+			$options['exclude'] = $exclude;
+		}
+
+		e107::getXml()->e107Export(null, $table, null, null, $options);
 
 		return null;
 

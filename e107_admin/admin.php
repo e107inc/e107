@@ -132,7 +132,7 @@ class admin_start
 
 		if(e_AJAX_REQUEST || !getperms('0') || varset($_GET['mode']) === 'customize') // don't display this tuff to regular admins only main admin.
 		{
-			return null;
+			return;
 		}
 
 
@@ -190,7 +190,7 @@ class admin_start
 
 		if($this->exit === true)
 		{
-			return null;
+			return;
 		}
 
 		e107::getDebug()->logTime('Check New Install');
@@ -300,7 +300,7 @@ class admin_start
 
         if($this->upgradeRequiredFirst)
         {
-            $message = "<p><a class='btn btn-lg btn-primary alert-link' href='e107_update.php'>".LAN_CONTINUE." ".SEP."</a></p>";
+            $message = "<p><a class='btn btn-lg btn-primary alert-link' href='e107_update.php?e-token=".defset('e_TOKEN')."'>".LAN_CONTINUE." ".SEP."</a></p>";
             e107::getMessage()->addInfo($message);
         }
 
@@ -461,7 +461,14 @@ TMPO;
 
 		if(!empty($_GET['dismiss']) && $_GET['dismiss'] == 'upgrade')
 		{
-			file_put_contents($upgradeAlertFlag,'true');
+			if(!defined('e_TOKEN') || !empty($_GET['e-token']))
+			{
+				file_put_contents($upgradeAlertFlag,'true');
+			}
+			else
+			{
+				echo e107::getMessage()->addError(defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'))->render();
+			}
 		}
 
 		$pref = e107::getPref('install_date');
@@ -481,7 +488,7 @@ TMPO;
 			$srch = array('[',']');
 			$repl = array("<a href='https://github.com/e107inc/e107/discussions' target='_blank' rel='external'>","</a>");
 			$message = str_replace($srch,$repl,ADLAN_191);
-			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
+			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade&amp;e-token=".defset('e_TOKEN')."'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
 			echo e107::getMessage()->setTitle(LAN_UPGRADING,E_MESSAGE_INFO)->addInfo($message)->render();
 		}
 
@@ -765,7 +772,7 @@ TMPO;
 					{
 						if (is_dir($dir."/".$file) == FALSE && !in_array($file,$exceptions))
 						{
-							$fext = substr(strrchr($file, "."), 1);
+							$fext = (string) substr(strrchr($file, "."), 1);
 							if (!array_key_exists(strtolower($fext),$this->allowed_types) )
 							{
 								if ($file == 'index.html' || $file == "null.txt")

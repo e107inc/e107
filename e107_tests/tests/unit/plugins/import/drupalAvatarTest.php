@@ -16,8 +16,9 @@
  * used to fopen() the remote URL and store basename() of it, so a Drupal row
  * naming a picture shell.php landed a file called shell.php there.
  */
-class drupalAvatarTest extends \Codeception\Test\Unit
+class drupalAvatarTest extends \Test\Unit
 {
+
 	/** 2x2 PNG, so getimagesize() has something real to report. */
 	const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAC0lEQVQImWNgQAYAAA4AAbGa6gYAAAAASUVORK5CYII=';
 

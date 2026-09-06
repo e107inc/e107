@@ -165,7 +165,7 @@ class e_media
 			if(!$sql->createQueryBuilder()->select('media_url')->from('core_media')->where('media_url', $fullpath)->limit(1)->fetchRow())
 			{
 
-				if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($insert, $sql->getFieldDefs('core_media')['_FIELD_TYPES'])->execute())
+				if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($insert)->execute())
 				{
 					$count++;
 					$mes->addDebug("Imported Media: ".$f['fname']);
@@ -1454,7 +1454,7 @@ class e_media
 		$img_data['media_description'] 	= vartrue($new_data['media_description']);
 		$img_data['media_userclass'] 	= '0';
 
-		if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($img_data, $sql->getFieldDefs('core_media')['_FIELD_TYPES'])->execute())
+		if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($img_data)->execute())
 		{
 			$mes->add("Importing Media: ".$file, E_MESSAGE_SUCCESS);
 			$this->log("Importing Media: ".$file." successful");
@@ -2129,7 +2129,6 @@ class e_media
 			}
 
 		//	e107::getLog()->addSuccess("Converting <b>".$oldFile."</b> to <b>".$jpgFile."</b>");
-			imagedestroy($image);
 		}
 
 
@@ -2171,8 +2170,8 @@ class e_media
 		if($chunks < 2 && file_exists($targetDir . $fileName))
 		{
 			$ext = strrpos($fileName, '.');
-			$fileName_a = substr($fileName, 0, $ext);
-			$fileName_b = substr($fileName, $ext);
+			$fileName_a = (string) substr($fileName, 0, $ext);
+			$fileName_b = (string) substr($fileName, $ext);
 
 			$count = 1;
 			while(file_exists($targetDir .  $fileName_a . '_' . $count . $fileName_b))

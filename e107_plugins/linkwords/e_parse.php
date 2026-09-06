@@ -373,7 +373,7 @@ class linkwords_parse
 
 		// Now see if disabled on specific pages
 		$check_url = e_SELF . (defined('e_QUERY') ? "?" . e_QUERY : '');
-		$this->block_list = explode("|", substr(varset($pref['lw_page_visibility']), 2));    // Knock off the 'show/hide' flag
+		$this->block_list = explode("|", (string) substr(varset($pref['lw_page_visibility']), 2));    // Knock off the 'show/hide' flag
 
 		foreach($this->block_list as $p)
 		{
@@ -381,7 +381,7 @@ class linkwords_parse
 			{
 				if(substr($p, -1) === '!')
 				{
-					$p = substr($p, 0, -1);
+					$p = (string) substr($p, 0, -1);
 					if(substr($check_url, strlen($p) * -1) == $p)
 					{
 						return;

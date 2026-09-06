@@ -78,6 +78,9 @@ trait ConnectionTrait
 
 	private     $debugMode      = false;
 
+	/** @var array table => NOT NULL stand-in map, read from the server at most once per request */
+	private     $notNullDefaults = array();
+
 	/*
 	 * Backend contract: the driver-specific methods this trait calls.
 	 * Declared abstract so the dependency is explicit to readers and tooling,
@@ -311,6 +314,88 @@ trait ConnectionTrait
 		}
 
 		return new QueryBuilder($this);
+	}
+
+	/**
+	 * Field-type map for a table; the full contract is documented at
+	 * {@see ConnectionInterface::getFieldTypes()}.
+	 *
+	 * @param string $tableName
+	 * @return array
+	 */
+	public function getFieldTypes($tableName)
+	{
+		$defs = $this->getFieldDefs($tableName);
+
+		return (is_array($defs) && isset($defs['_FIELD_TYPES'])) ? $defs['_FIELD_TYPES'] : array();
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::getNotNullDefaults()}.
+	 *
+	 * @param string $tableName
+	 * @return array column => stand-in value
+	 */
+	public function getNotNullDefaults($tableName)
+	{
+		if(!isset($this->notNullDefaults[$tableName]))
+		{
+			$this->notNullDefaults[$tableName] = $this->_readNotNullDefaults($tableName);
+		}
+
+		return $this->notNullDefaults[$tableName];
+	}
+
+	/**
+	 * Read the map off the table as it stands, rather than off a cached
+	 * definition. A definition file outlives the table it describes: nothing
+	 * clears e_CACHE_DB when db_verify repairs a column or an update routine adds
+	 * one, so a cached map would miss a NOT NULL column added since it was
+	 * written and, worse, would keep a stand-in for a column since made nullable
+	 * and quietly store '' where the caller meant NULL.
+	 *
+	 * The read costs one SHOW COLUMNS per table per request, and only on a typed
+	 * write that actually binds a null, which is the rare one. It runs on its own
+	 * connection because the caller may be part way through a result set of its
+	 * own; {@see user_extended::user_extended_get_types()} takes the same
+	 * precaution.
+	 *
+	 * An AUTO_INCREMENT column is left out on purpose: a null bound there means
+	 * "assign one", which is what the server does with NULL, whereas the stand-in
+	 * would bind 0 and hand back an id of 0 under NO_AUTO_VALUE_ON_ZERO.
+	 *
+	 * @param string $tableName Logical table name.
+	 * @return array column => stand-in value
+	 */
+	private function _readNotNullDefaults($tableName)
+	{
+		$table = $this->resolveTableName($tableName);
+
+		if($table === false)
+		{
+			return array();
+		}
+
+		$sql = e107::getDb('_schema');
+
+		if($sql->gen('SHOW COLUMNS FROM `'.str_replace('`', '``', $table).'`') === false)
+		{
+			return array();
+		}
+
+		$map = array();
+
+		while($row = $sql->fetch())
+		{
+			if($row['Null'] === 'YES' || stripos((string) $row['Extra'], 'auto_increment') !== false)
+			{
+				continue;
+			}
+
+			$map[$row['Field']] = ($row['Default'] === null) ? '' : $row['Default'];
+		}
+
+		return $map;
 	}
 
 	/**
@@ -612,11 +697,16 @@ trait ConnectionTrait
 	 */
 	function truncate($table=null)
 	{
-		if($table == null){ return null; }
+		if($table == null)
+		{
+			$this->_refuse("truncate() needs a table name");
+
+			return null;
+		}
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("truncate() invalid table identifier");
 		}
 
 		return $this->gen("TRUNCATE TABLE ".$this->mySQLPrefix.$table);
@@ -632,7 +722,7 @@ trait ConnectionTrait
 	{
 		if(empty($table) || ($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("isEmpty() missing or invalid table identifier");
 		}
 
 		$result = $this->gen("SELECT NULL FROM ".$this->mySQLPrefix.$table." LIMIT 1");
@@ -661,8 +751,7 @@ trait ConnectionTrait
 
 		if(empty($table) || empty($parent) || empty($pid))
 		{
-			$this->mySQLlastErrText = "missing variables in sql->categories()";
-			return false;
+			return $this->_refuse("missing variables in sql->selectTree()");
 		}
 
 		// table and column names fail closed outside the identifier grammar
@@ -671,8 +760,7 @@ trait ConnectionTrait
 			|| ($pid = $this->_safeIdentifier($pid, true)) === false
 			|| ($order = $this->_safeIdentifier($order, true)) === false)
 		{
-			$this->mySQLlastErrText = "invalid identifier in sql->selectTree()";
-			return false;
+			return $this->_refuse("invalid identifier in sql->selectTree()");
 		}
 
 		$sql = "DROP FUNCTION IF EXISTS `getDepth` ;";
@@ -759,6 +847,7 @@ trait ConnectionTrait
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
+			$this->_refuse("_getUnique() invalid table identifier");
 			return $unique;
 		}
 
@@ -802,13 +891,12 @@ trait ConnectionTrait
 	{
 		if(!$table || !$args )
 		{
-			return false;
+			return $this->_refuse("copyRow() needs both a table name and a where clause");
 		}
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			$this->mySQLlastErrText = "copyRow \$table failed identifier validation";
-			return false;
+			return $this->_refuse("copyRow \$table failed identifier validation");
 		}
 
 		if($fields !== '*')
@@ -817,8 +905,7 @@ trait ConnectionTrait
 			{
 				if($this->_safeIdentifier($fieldName, true) === false)
 				{
-					$this->mySQLlastErrText = "copyRow \$fields failed identifier validation";
-					return false;
+					return $this->_refuse("copyRow \$fields failed identifier validation");
 				}
 			}
 		}
@@ -827,8 +914,7 @@ trait ConnectionTrait
 			list($fieldList, $fieldList2) = $this->generateCopyRowFieldLists($table, $fields);
 
 			if (empty($fieldList)) {
-				$this->mySQLlastErrText = "copyRow \$fields list was empty";
-				return false;
+				return $this->_refuse("copyRow \$fields list was empty");
 			}
 
 			$beforeLastInsertId = $this->lastInsertId();
@@ -886,7 +972,7 @@ trait ConnectionTrait
 	{
 		if(($oldtable = $this->_safeIdentifier($oldtable)) === false || ($newtable = $this->_safeIdentifier($newtable)) === false)
 		{
-			return false;
+			return $this->_refuse("copyTable() invalid table identifier");
 		}
 
 		$old = $this->mySQLPrefix.strtolower($oldtable);
@@ -936,7 +1022,7 @@ trait ConnectionTrait
 	{
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("dropTable() invalid table identifier");
 		}
 
 		$name = $this->mySQLPrefix.strtolower($table);
@@ -966,6 +1052,31 @@ trait ConnectionTrait
 	{
 		$this->mySQLlastErrNum = 0;
 		$this->mySQLlastErrText = '';
+	}
+
+	/**
+	 * Records a failure raised here rather than by the server, which carries no driver number and so reads back as the -1 {@see ConnectionInterface::getLastErrorNumber()} defines for that case.
+	 *
+	 * @param string $text
+	 * @return bool false, so a caller can return it directly
+	 */
+	private function _refuse($text)
+	{
+		$this->mySQLlastErrNum = -1;
+		$this->mySQLlastErrText = $text;
+
+		return false;
+	}
+
+	/**
+	 * Refuses a table name that {@see ConnectionTrait::_safeIdentifier()} rejected, for the legacy CRUD entry points each backend writes for itself.
+	 *
+	 * @param string $method
+	 * @return bool false, so a caller can return it directly
+	 */
+	protected function _refuseIdentifier($method)
+	{
+		return $this->_refuse($method.'() invalid table identifier');
 	}
 
 	/**
@@ -1159,6 +1270,7 @@ trait ConnectionTrait
 
 		if(($table = $this->_safeIdentifier($table)) === false || ($field = $this->_safeIdentifier($field, true)) === false)
 		{
+			$this->_refuse("max() invalid table or field identifier");
 			return null;
 		}
 
@@ -1187,7 +1299,7 @@ trait ConnectionTrait
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("field() invalid table identifier");
 		}
 
 		$convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
@@ -1237,7 +1349,7 @@ trait ConnectionTrait
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("index() invalid table identifier");
 		}
 
 		$this->_getMySQLaccess();
@@ -1372,6 +1484,11 @@ trait ConnectionTrait
 	{
 		$this->_notifyDeprecated('insert', 'Use the query builder: $sql->createQueryBuilder()->insert(\'table\')->values($row)->execute().');
 
+		if(($tableName = $this->_safeIdentifier($tableName)) === false)
+		{
+			return $this->_refuseIdentifier(isset($arg['_REPLACE']) ? 'replace' : 'insert');
+		}
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
@@ -1412,7 +1529,10 @@ trait ConnectionTrait
 				unset($_tmp);
 			}
 
-			if(!isset($arg['data'])) { return false; }
+			if(!isset($arg['data']))
+			{
+				return $this->_refuse(($REPLACE ? 'replace' : 'insert')."() needs a data array");
+			}
 
 
 			// See if we need to auto-add field types array
@@ -1629,12 +1749,22 @@ trait ConnectionTrait
 	{
 		$this->_notifyDeprecated('update', 'Use the query builder: $sql->createQueryBuilder()->update(\'table\')->set(\'col\', $value)->where(...)->execute().');
 
+		if(($tableName = $this->_safeIdentifier($tableName)) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 
 		$this->_getMySQLaccess();
 
 		$arg = $this->_prepareUpdateArg($tableName, $arg);
+
+		if($arg === false)
+		{
+			return $this->_refuse("update() needs a data array");
+		}
 
 		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
 

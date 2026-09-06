@@ -32,7 +32,6 @@ if ( ! isset($LOGIN_MENU_FORM))
     NEW SHORTCODES/PARAMETERS:
 
     $LOGIN_MENU_LOGGED
-    - LM_REMEMBERME (parm: 'href' or empty)
     - LM_SIGNUP_LINK (parm: 'href' or empty)
     - LM_FPW_LINK (parm: 'href' or empty)
     - LM_RESEND_LINK (parm: 'href' or empty)
@@ -55,9 +54,6 @@ if ( ! isset($LOGIN_MENU_FORM))
     $sc_style['LM_RESEND_LINK']['pre'] = "<br />[ ";
     $sc_style['LM_RESEND_LINK']['post'] = " ]";
 
-    $sc_style['LM_REMEMBERME']['pre'] = "<br />";
-    $sc_style['LM_REMEMBERME']['post'] = "";
-
     $sc_style['LM_IMAGECODE_NUMBER']['pre'] = "<br />";
     $sc_style['LM_IMAGECODE_NUMBER']['post'] = "<br />";
 
@@ -66,7 +62,7 @@ if ( ! isset($LOGIN_MENU_FORM))
 
 	$LOGIN_MENU_FORM = "{LM_MESSAGE}";
 
-	if ((varset($pref['password_CHAP'],0) == 2) && ($pref['user_tracking'] == "session"))
+	if (varset($pref['password_CHAP'],0) == 2)
 	{
 	  $LOGIN_MENU_FORM .= "
     	<div style='text-align: center' id='nologinmenuchap'>"."Javascript must be enabled in your browser if you wish to log into this site"."
@@ -86,7 +82,6 @@ if ( ! isset($LOGIN_MENU_FORM))
             {LM_PASSWORD_INPUT}<br />
             {LM_IMAGECODE_NUMBER}{LM_IMAGECODE_BOX}
             {LM_LOGINBUTTON}
-            {LM_REMEMBERME}<br />
             {LM_SIGNUP_LINK}
             {LM_FPW_LINK}
             {LM_RESEND_LINK}
@@ -178,7 +173,7 @@ if ( ! isset($LOGIN_MENU_LOGGED))
     $sc_style['LM_EXTERNAL_LINKS']['pre'] = '<li class="list-group-item login-menu-external">';
 	$sc_style['LM_EXTERNAL_LINKS']['post'] = '</li>';
 
-    $sc_style['LM_STATS']['pre'] = '<li class="list-group-item nav-header login-menu-stats smalltext">'.LAN_LOGINMENU_25.':</li><li>';
+    $sc_style['LM_STATS']['pre'] = '<li class="list-group-item nav-header login-menu-stats smalltext">'.LAN_LOGINMENU_25.':</li><li class="list-group-item login-menu-stats-items">';
 	$sc_style['LM_STATS']['post'] = '</li>';
 
     $sc_style['LM_LISTNEW_LINK']['pre'] = '<li class="list-group-item login-menu-listnew">';
@@ -241,7 +236,10 @@ if ( ! isset($LOGIN_MENU_STATS))
     ';
 }
 
-$LM_STATITEM_SEPARATOR = '<br />';
+if ( ! isset($LM_STATITEM_SEPARATOR))
+{
+	$LM_STATITEM_SEPARATOR = '<br />';
+}
 if (!isset($LOGIN_MENU_STATITEM))
 {
 

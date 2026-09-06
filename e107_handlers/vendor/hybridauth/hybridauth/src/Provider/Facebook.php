@@ -149,7 +149,7 @@ class Facebook extends OAuth2
      */
     public function getUserProfile()
     {
-        return $this->getUserProfileFromOIDCToken() ?? $this->getUserProfileFromAccessToken();
+        return $this->getUserProfileFromOIDCToken() !== null ? $this->getUserProfileFromOIDCToken() : $this->getUserProfileFromAccessToken();
     }
 
     /**
@@ -529,7 +529,7 @@ class Facebook extends OAuth2
      * @param string $accessToken
      * @return string|null
      */
-    private function getKidFromOLDCToken(string $accessToken): ?string
+    private function getKidFromOLDCToken($accessToken)
     {
         $segments = explode('.', $accessToken);
 
@@ -537,7 +537,7 @@ class Facebook extends OAuth2
             return null;
         }
 
-        $payload = json_decode(base64_decode($segments[0] ?? ''));
+        $payload = json_decode(base64_decode(isset($segments[0]) ? $segments[0] : ''));
 
         if (!is_object($payload) || !isset($payload->kid)) {
             return null;

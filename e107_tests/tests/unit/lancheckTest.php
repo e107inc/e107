@@ -6,8 +6,9 @@
 	 * Time: 12:17 PM
 	 */
 
+	use e107\Reflection\ReflectionMethod;
 
-	class lancheckTest extends \Codeception\Test\Unit
+	class lancheckTest extends \Test\Unit
 	{
 
 		/** @var lancheck */
@@ -15,6 +16,15 @@
 
 		/** @var string Scratch language file for the write_lanfile() tests. */
 		protected $target;
+
+		/** @var string What the confirmation screen rendered on the last write. */
+		protected $rendered;
+
+		/** @var string Scratch language pack directory for the findLocale() tests. */
+		protected $scratchLang;
+
+		/** @var string Scratch plugin directory for the language-pack tests. */
+		protected $scratchPlugin;
 
 		protected function _before()
 		{
@@ -35,19 +45,43 @@
 			global $ns;
 			$ns = e107::getRender();
 
-			$this->target = sys_get_temp_dir().'/e107-lancheck-'.uniqid('', true).'.php';
+			$this->target = e_LANGUAGEDIR.'e107_tests_lancheck_target.php';
 		}
 
 		protected function _after()
 		{
+			unset($_SESSION['lancheck']);
+			unset($_SESSION['lancheck-edit-file'], $_POST['newlang'], $_POST['newdef']);
+			unset($_GET['sub'], $_GET['lan'], $_GET['file'], $_GET['type']);
+			e107::getMessage()->reset();
+
 			if($this->target && is_file($this->target))
 			{
 				unlink($this->target);
 			}
 
-			unset($_SESSION['lancheck-edit-file'], $_POST['newlang'], $_POST['newdef']);
-			unset($_GET['sub'], $_GET['lan'], $_GET['file'], $_GET['type']);
-			e107::getMessage()->reset();
+			if($this->scratchLang && is_dir($this->scratchLang))
+			{
+				foreach(glob($this->scratchLang.'*') as $file)
+				{
+					unlink($file);
+				}
+
+				rmdir($this->scratchLang);
+				$this->scratchLang = null;
+			}
+
+			if($this->scratchPlugin && is_dir($this->scratchPlugin))
+			{
+				foreach(glob($this->scratchPlugin.'languages/*') as $file)
+				{
+					unlink($file);
+				}
+
+				rmdir($this->scratchPlugin.'languages');
+				rmdir($this->scratchPlugin);
+				$this->scratchPlugin = null;
+			}
 		}
 
 		/**
@@ -67,7 +101,7 @@
 
 			ob_start();
 			$this->lan->write_lanfile('English');
-			ob_end_clean();
+			$this->rendered = ob_get_clean();
 
 			return file_get_contents($this->target);
 		}
@@ -290,6 +324,49 @@
 		}
 
 		/**
+		 * Reach the private locale reader.
+		 *
+		 * @param string $language language pack directory name
+		 * @return bool|string
+		 */
+		protected function findLocale($language)
+		{
+			$method = new ReflectionMethod('lancheck', 'findLocale');
+
+			return $method->invoke($this->lan, $language);
+		}
+
+		/**
+		 * Write a scratch language pack, which _after() then removes.
+		 *
+		 * @param string $body PHP for the pack file, without the opening tag
+		 * @return string the pack's language name
+		 */
+		protected function writeScratchPack($body)
+		{
+			$language = uniqid('Testlang');
+			$this->scratchLang = e_LANGUAGEDIR.$language.'/';
+
+			mkdir($this->scratchLang);
+			file_put_contents($this->scratchLang.$language.'.php', "<?php\n".$body);
+
+			return $language;
+		}
+
+		public function testFindLocaleReadsTheCoreEnglishPack()
+		{
+			$this->assertSame('en_GB', $this->findLocale('English'));
+		}
+
+		/** Third-party packs and release/v2.3.x still declare the codes with define(). */
+		public function testFindLocaleReadsADefineStylePack()
+		{
+			$language = $this->writeScratchPack("define(\"CORE_LC\", \"xx\");\ndefine(\"CORE_LC2\", \"yy\");\n");
+
+			$this->assertSame('xx_YY', $this->findLocale($language));
+		}
+
+		/**
 		 * The file to edit comes off the query string and is never checked, while
 		 * toDB() leaves ../ completely intact (it encodes for HTML, not for the
 		 * filesystem). The path decides where a directory gets created, where a
@@ -318,18 +395,24 @@
 			}
 		}
 
-		/** The guard must not be so tight that the feature stops working. */
-		public function testInitStillOpensAnOrdinaryLanguageFile()
+		/**
+		 * The edit screen's caption comes from language.php's own language file and from SEP,
+		 * which the admin theme defines; a unit run has neither and neither bears on the guard.
+		 */
+		protected function loadEditScreenLans()
 		{
-			// The edit screen's caption is built from language.php's own language
-			// file and from SEP, which the admin theme defines. Neither is present
-			// in a unit run, and neither has anything to do with the guard.
 			e107::coreLan('language', true);
 
 			if(!defined('SEP'))
 			{
 				define('SEP', ' &raquo; ');
 			}
+		}
+
+		/** The guard must not be so tight that the feature stops working. */
+		public function testInitStillOpensAnOrdinaryLanguageFile()
+		{
+			$this->loadEditScreenLans();
 
 			$_GET['sub']  = 'edit';
 			$_GET['lan']  = 'English';
@@ -339,6 +422,64 @@
 
 			$this->assertIsArray($result, 'An ordinary language file should still open.');
 			$this->assertSame('edit', $result['mode']);
+		}
+
+		/**
+		 * GHSA-pf37-7c5m-mpg3: the P and T types prefix the plugin and theme roots, and
+		 * containment stopped at the root itself, so any writable .php file under a plugin
+		 * opened in the editor and was replaced whole by the save that followed.
+		 */
+		public function testInitRefusesAPluginFileOutsideALanguagesDirectory()
+		{
+			$this->loadEditScreenLans();
+
+			$_GET['sub']  = 'edit';
+			$_GET['lan']  = 'English';
+			$_GET['type'] = 'P';
+			$_GET['file'] = 'download/handlers/SecureLinkDecorator.php';
+
+			$this->assertEmpty($this->lan->init(),
+				'The editor opened a plugin file that is not a language file.');
+			$this->assertArrayNotHasKey('lancheck-edit-file', $_SESSION,
+				'A plugin file outside a languages directory reached the save step.');
+		}
+
+		/** The plugin the editor is actually for still opens. */
+		public function testInitStillOpensAPluginLanguageFile()
+		{
+			$this->loadEditScreenLans();
+
+			$plugin = $this->writeScratchPlugin(array('English.php' => 'define("LAN_TEST_X", "Hello");'));
+
+			$_GET['sub']  = 'edit';
+			$_GET['lan']  = 'English';
+			$_GET['type'] = 'P';
+			$_GET['file'] = $plugin.'/languages/English.php';
+
+			$result = $this->lan->init();
+
+			$this->assertIsArray($result, 'A plugin language file should still open.');
+			$this->assertSame('edit', $result['mode']);
+		}
+
+		/**
+		 * GHSA-pf37-7c5m-mpg3: the header block the generator writes carried the
+		 * display name of whoever pressed save, and a display name holding the
+		 * sequence that ends a comment ended the header early, leaving the rest
+		 * of the name to run as PHP on every page that loads the file.
+		 */
+		public function testWrite_lanfileKeepsUserInputOutOfTheGeneratedHeader()
+		{
+			$written = $this->writeLanFile(array('LAN_X'), array('harmless'));
+
+			$this->assertStringNotContainsString(USERNAME, $written,
+				'The generated file must carry no value the saving user controls.');
+
+			$result = $this->includeGenerated('LAN_X');
+
+			$this->assertSame(0, $result['exit'], 'Including the generated file must not fatal.');
+			$this->assertSame('[VALUE]harmless', $result['stdout'],
+				'Nothing but the translation may come out of the generated file.');
 		}
 
 		/**
@@ -395,6 +536,33 @@
 		}
 
 		/**
+		 * PCRE's $ matches before a final newline as well as at the end of the subject, so a
+		 * name ending in one passed the test and went into the file as a constant no template
+		 * can ever reference by name.
+		 */
+		public function testWrite_lanfileRejectsAConstantNameEndingInANewline()
+		{
+			$written = $this->writeLanFile(array("FOO\n"), array('harmless'));
+
+			$this->assertStringNotContainsString('FOO', $written,
+				'A name that is not a usable identifier must not be written into the file.');
+		}
+
+		/**
+		 * The writer refuses a name ending in a newline, so the reader has to refuse one too:
+		 * a file already carrying such a name would otherwise put it back on the edit screen,
+		 * where the attribute round trip turns the newline into a space and the next save
+		 * drops the phrase from the file.
+		 */
+		public function testFill_phrases_arrayRejectsAConstantNameEndingInANewline()
+		{
+			$back = $this->lan->fill_phrases_array("<?php\ndefine('FOO\n', 'value');\n", 'tran');
+
+			$this->assertArrayNotHasKey("FOO\n", $back['tran'],
+				'The reader accepted a name the writer refuses to write.');
+		}
+
+		/**
 		 * The LC_ALL branch interpolates the value with no quotes at all, so this
 		 * one never even needed a quote to break out of.
 		 */
@@ -408,6 +576,8 @@
 
 			$result = $this->includeGenerated('LAN_UNUSED');
 
+			$this->assertSame(0, $result['exit'],
+				'Including the generated file must not fatal: '.$result['stdout']);
 			$this->assertStringNotContainsString('INJECTED_LOCALE', $result['stdout'],
 				'The setlocale() argument must be written as a quoted literal, not as source.');
 		}
@@ -488,18 +658,118 @@
 		 */
 		public function testWrite_lanfileEscapesTheConfirmationHtml()
 		{
-			file_put_contents($this->target, "<?php\n");
+			$this->writeLanFile(array('LAN_X'), array('<script>alert(1)</script>'));
 
-			$_SESSION['lancheck-edit-file'] = $this->target;
-			$_POST['newdef']                = array('LAN_X');
-			$_POST['newlang']               = array('<script>alert(1)</script>');
-
-			ob_start();
-			$this->lan->write_lanfile('English');
-			$rendered = ob_get_clean();
-
-			$this->assertStringNotContainsString('<script>', $rendered,
+			$this->assertStringNotContainsString('<script>', $this->rendered,
 				'The saved translation must be escaped before it is echoed back.');
+		}
+
+		/**
+		 * The confirmation screen is the only account of what went to disk, and a phrase that
+		 * is not valid UTF-8 is an ordinary condition of a language pack rather than an odd
+		 * one, so the line has to survive one instead of disappearing.
+		 */
+		public function testWrite_lanfileShowsAPhraseThatIsNotValidUtf8()
+		{
+			$this->writeLanFile(array('LAN_X'), array("caf\xe9"));
+
+			$this->assertStringContainsString('LAN_X', $this->rendered,
+				'The confirmation screen dropped the whole line for a phrase that is not valid UTF-8.');
+		}
+
+		/**
+		 * Write a scratch plugin language pack, which _after() then removes.
+		 *
+		 * The directory name is fixed so that WorkspaceCleanup's sweep can carry
+		 * it and heal a run that dies before _after().
+		 *
+		 * @param array $files file name => pack body, without the opening tag
+		 * @return string the plugin's directory name
+		 */
+		protected function writeScratchPlugin($files)
+		{
+			$plugin = 'temptest6109';
+			$this->scratchPlugin = e_PLUGIN.$plugin.'/';
+
+			mkdir($this->scratchPlugin.'languages', 0755, true);
+
+			foreach($files as $name => $body)
+			{
+				file_put_contents($this->scratchPlugin.'languages/'.$name, "<?php
+".$body);
+			}
+
+			return $plugin;
+		}
+
+		/**
+		 * A plugin that keeps its packs flat in languages/ leaves nothing before
+		 * the first slash of the relative path.
+		 */
+		public function testGet_comp_lan_phrasesReadsAFlatPluginLayout()
+		{
+			$plugin = $this->writeScratchPlugin(array('English.php' => "define('LAN_TEST_FLAT', 'flat');
+"));
+
+			$phrases = $this->lan->get_comp_lan_phrases(e_PLUGIN.$plugin.'/languages/', 'English', 1);
+
+			$this->assertSame(array('English.php' => array('LAN_TEST_FLAT' => 'flat')), $phrases);
+		}
+
+		/**
+		 * The whitelist reads the component out of the path, and only once
+		 * thirdPartyPlugins() has asked for it.
+		 * The last assertion is the shape check_lanfiles() passes, where the
+		 * component directory is already the root.
+		 */
+		public function testGet_comp_lan_phrasesFiltersOnTheComponentDirectory()
+		{
+			$plugin = $this->writeScratchPlugin(array('English.php' => "define('LAN_TEST_FLAT', 'flat');
+"));
+			$expected = array($plugin.'/languages/English.php' => array('LAN_TEST_FLAT' => 'flat'));
+
+			$this->lan->thirdPartyPlugins(false);
+
+			$this->lan->core_plugins = array($plugin);
+			$this->assertSame($expected, $this->lan->get_comp_lan_phrases(e_PLUGIN, 'English', 2));
+
+			$this->lan->core_plugins = array('not_a_plugin_of_ours');
+			$this->assertSame(array(), $this->lan->get_comp_lan_phrases(e_PLUGIN, 'English', 2));
+
+			$this->lan->core_plugins = array($plugin);
+			$this->assertSame(array(), $this->lan->get_comp_lan_phrases(e_PLUGIN.$plugin.'/languages/', 'English', 1));
+		}
+
+		/**
+		 * Put the checker into the state check_all() establishes before it
+		 * verifies a pack.
+		 *
+		 * @param string $language the language being verified
+		 */
+		protected function startVerifying($language)
+		{
+			$transLanguage = new ReflectionProperty('lancheck', 'transLanguage');
+			$transLanguage->setAccessible(true);
+			$transLanguage->setValue($this->lan, $language);
+
+			$_SESSION['lancheck'][$language] = array('file' => 0, 'def' => 0, 'bom' => 0, 'utf' => 0, 'total' => 0);
+		}
+
+		/** A pack with no BOM and no trailing content never gets a 'bom' entry. */
+		public function testCheck_lanfilesAcceptsAPackWithoutABomEntry()
+		{
+			$plugin = $this->writeScratchPlugin(array(
+				'English.php' => "define('LAN_TEST_FLAT', 'flat');
+",
+				'Dutch.php'   => "define('LAN_TEST_FLAT', 'plat');
+",
+			));
+
+			$this->startVerifying('Dutch');
+
+			$text = $this->lan->check_lanfiles('P', $plugin, 'English', 'Dutch');
+
+			$this->assertStringContainsString($plugin, $text);
 		}
 
 /*

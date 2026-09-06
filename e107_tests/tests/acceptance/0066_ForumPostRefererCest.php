@@ -33,7 +33,6 @@ class ForumPostRefererCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->haveForumPluginInstalled();
 
 		$this->ids = $I->haveForumStructure();

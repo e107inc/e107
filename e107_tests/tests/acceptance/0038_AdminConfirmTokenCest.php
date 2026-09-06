@@ -67,9 +67,14 @@ class AdminConfirmTokenCest
 	 * so, and both pages render in full whether the upload was processed or
 	 * not.
 	 *
-	 * @see e107_handlers/file_class.php:2069
+	 * A submission carrying no file part arrives with no file name at all and is
+	 * refused before the archive is opened. This is the prefix that refusal
+	 * shares with the one for an archive ZipArchive cannot open, whose own half
+	 * of the message names the reason.
+	 *
+	 * @see e_file::unzipArchive()
 	 */
-	const ARCHIVE_HANDLER_MARKER = "Couldn't detect the root folder in the zip.";
+	const ARCHIVE_HANDLER_MARKER = "Couldn't open the archive.";
 
 	public function _before(AcceptanceTester $I)
 	{
@@ -341,6 +346,7 @@ class AdminConfirmTokenCest
 // Fixture for 0041_AdminConfirmTokenCest. Removed again in the Cest's _after().
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 \$db = e107::getDb();

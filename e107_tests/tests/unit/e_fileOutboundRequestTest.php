@@ -42,8 +42,9 @@
  *     and untested here; see the advisory.
  */
 
-class e_fileOutboundRequestTest extends \Codeception\Test\Unit
+class e_fileOutboundRequestTest extends \Test\Unit
 {
+
 	/** Fixture written into the served tree. @see WorkspaceCleanup */
 	const HOP_FIXTURE = 'e107_tests_p3_hop.php';
 
@@ -214,20 +215,21 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 			register_shutdown_function(array(__CLASS__, 'stopBuiltInServer'));
 
 			$authority = '127.0.0.1:' . $port;
-			for($waited = 0; $waited < 50; $waited++)
+			$outcome = \Test\Poll::until(function () use ($authority, $server)
 			{
 				if($this->fixtureAnswers($authority, 'http'))
 				{
-					return $authority;
+					return 'answering';
 				}
 
 				$status = proc_get_status($server);
-				if(!$status['running'])
-				{
-					break; // the port was taken between the probe and here
-				}
 
-				usleep(100000);
+				return $status['running'] ? false : 'exited';
+			}, 30);
+
+			if($outcome === 'answering')
+			{
+				return $authority;
 			}
 
 			self::stopBuiltInServer();
@@ -353,6 +355,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		$php .= "\$echo = isset(\$_GET['echo']);\n";
 		$php .= "if(isset(\$_GET['log']))\n{\n";
 		$php .= "\tfile_put_contents('" . $this->hitPath . "', 'x', FILE_APPEND | LOCK_EX);\n}\n";
+		$php .= "if(isset(\$_GET['loghost']))\n{\n";
+		$php .= "\tfile_put_contents('" . $this->hitPath . "', isset(\$_SERVER['HTTP_HOST']) ? \$_SERVER['HTTP_HOST'] : '', FILE_APPEND | LOCK_EX);\n}\n";
 		$php .= "if(\$hop < \$stop)\n{\n";
 		$php .= "\tsleep(isset(\$_GET['sleep']) ? (int) \$_GET['sleep'] : 0);\n";
 		$php .= "\t\$next = '/" . self::HOP_FIXTURE . "?hop=' . (\$hop + 1) . '&stop=' . \$stop;\n";
@@ -415,7 +419,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	{
 		$colon = strpos((string) self::$authority, ':');
 
-		return ($colon === false) ? '' : substr(self::$authority, $colon);
+		return ($colon === false) ? '' : (string) substr(self::$authority, $colon);
 	}
 
 	/**
@@ -568,6 +572,113 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		self::assertFalse($fl->resolveOutboundTarget('http://p3-pin.test/'),
 			'A name with no A or AAAA record has nothing to pin to.');
 	}
+
+	/**
+	 * PHP's own resolver and the operating system's do not always agree.
+	 * dns_get_record() builds its own queries instead of calling
+	 * getaddrinfo(), and on Windows it fails per host and per call, so a name
+	 * cURL reaches without trouble was being refused as unsafe.
+	 */
+	public function testResolveHostnameFallsBackToTheSystemResolver()
+	{
+		$fl = new E107P3SplitResolverFile();
+
+		// Positive control: the first resolver answers and the second is not consulted.
+		$fl->dnsRecords = array(self::PUBLIC_IP);
+		$fl->systemRecords = array('127.0.0.1');
+		$target = $fl->resolveOutboundTarget('http://p3-split.test/');
+		self::assertIsArray($target);
+		self::assertSame(array(self::PUBLIC_IP), $target['addresses'],
+			'The system resolver is a fallback, not a second source to merge in.');
+
+		$fl->dnsRecords = array();
+		$fl->systemRecords = array('8.8.8.8');
+		$target = $fl->resolveOutboundTarget('http://p3-split.test/');
+		self::assertIsArray($target);
+		self::assertSame(array('8.8.8.8'), $target['addresses']);
+	}
+
+
+	/**
+	 * The fallback answer is put to the same address test as any other, so a
+	 * resolver that says 127.0.0.1 is refused exactly as before, and a name
+	 * neither resolver can see stays refused.
+	 */
+	public function testTheSystemResolverAnswerFacesTheSameAddressTest()
+	{
+		$fl = new E107P3SplitResolverFile();
+		$fl->dnsRecords = array();
+
+		$fl->systemRecords = array('127.0.0.1');
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'));
+
+		$fl->systemRecords = array('169.254.169.254');
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'));
+
+		$fl->systemRecords = array(self::PUBLIC_IP, '10.0.0.1');
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'),
+			'One private answer still poisons the whole name.');
+
+		$fl->systemRecords = array('not-an-address');
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'));
+
+		$fl->systemRecords = array();
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'),
+			'Neither resolver answering is still a refusal.');
+
+		// Positive control, so the refusals above are the address test talking
+		// and not a fallback that never ran.
+		$fl->systemRecords = array(self::PUBLIC_IP);
+		self::assertIsArray($fl->resolveOutboundTarget('http://p3-split.test/'));
+	}
+
+
+	/**
+	 * The C library answers a host that spells an address in decimal, octal or
+	 * hex out of inet_aton, without asking any name service, so the fallback
+	 * would otherwise accept spellings this policy has always refused.
+	 */
+	public function testTheSystemResolverIsAskedAboutNamesOnly()
+	{
+		$fl = new E107P3SplitResolverFile();
+		$fl->dnsRecords = array();
+
+		self::assertFalse($fl->resolveOutboundTarget('http://16843009/'),
+			'1.1.1.1 in decimal is an address literal, not a name.');
+		self::assertFalse($fl->resolveOutboundTarget('http://1.1/'));
+		self::assertFalse($fl->resolveOutboundTarget('http://0x01010101/'));
+		self::assertFalse($fl->resolveOutboundTarget('http://2130706433/'));
+		self::assertFalse($fl->resolveOutboundTarget('http://0177.0.0.1/'));
+
+		self::assertSame(array(), $fl->addressesFor('16843009'));
+		self::assertSame(array(), $fl->addressesFor('0x01010101'));
+	}
+
+
+	/**
+	 * The fallback runs the real system resolver, on the one name every host
+	 * this suite runs on resolves without a name server: gethostbyname() would
+	 * answer a failed lookup with the name it was handed, gethostbynamel()
+	 * answers false.
+	 */
+	public function testTheSystemResolverHalfAnswersWithAddressesOnly()
+	{
+		$fl = new E107P3SplitResolverFile();
+		$fl->dnsRecords = array();
+
+		$addresses = $fl->addressesFor('localhost');
+
+		self::assertNotSame(array(), $addresses,
+			'localhost resolves through the system resolver wherever this suite runs.');
+		self::assertFalse(in_array('localhost', $addresses, true),
+			'A name is not an address.');
+
+		foreach($addresses as $ip)
+		{
+			self::assertNotFalse(filter_var($ip, FILTER_VALIDATE_IP), $ip);
+		}
+	}
+
 
 	/**
 	 * The per-hop predicate has to refuse everything isUrlSafe() refuses,
@@ -1057,9 +1168,81 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * isValidURL() probes with get_headers(), which follows a Location with
-	 * nothing revalidating the target. It only takes a context argument from
-	 * PHP 7.1, and these fixes are backported to a branch whose CI runs 5.6.
+	 * The stream layer walked the whole getaddrinfo list before the pin, and
+	 * ext/curl still walks it through CURLOPT_RESOLVE, so a name whose first
+	 * address refuses the connection has to answer over the streams too.
+	 * fe80::1 is dead wherever the suite runs: a link-local address carries no
+	 * scope here, so nothing can connect to it.
+	 */
+	public function testStreamFallbackTriesEveryResolvedAddress()
+	{
+		$this->requireFixtureServer();
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('fe80::1', '127.0.0.1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame(self::FINAL_SENTINEL, $this->resultOf($this->withoutCurl($body)),
+			'The first address the policy resolved must not be the whole answer.');
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('fe80::1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame('false', $this->resultOf($this->withoutCurl($body)),
+			'Negative control: nothing can be reached at fe80::1, so the walk cannot be passing for another reason.');
+	}
+
+	/**
+	 * The raw socket is what is left when neither ext/curl nor allow_url_fopen
+	 * is there, and it took the same one address.
+	 */
+	public function testSocketFallbackTriesEveryResolvedAddress()
+	{
+		$this->requireFixtureServer();
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('fe80::1', '127.0.0.1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame(self::FINAL_SENTINEL, $this->resultOf($this->withoutCurl($body, '-d allow_url_fopen=0')),
+			'The socket hop has to walk the addresses the policy resolved as well.');
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('fe80::1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame('false', $this->resultOf($this->withoutCurl($body, '-d allow_url_fopen=0')),
+			'Negative control: nothing can be reached at fe80::1 over a socket either.');
+	}
+
+	/**
+	 * A host that is already an address literal carries its own brackets, so
+	 * the socket hop has to leave it alone rather than quote it a second time.
+	 */
+	public function testSocketFallbackLeavesAnAddressLiteralAlone()
+	{
+		$this->requireFixtureServer();
+
+		if (!$this->fixtureAnswers('[::1]' . $this->fixturePort(), 'http'))
+		{
+			self::markTestSkipped('Nothing answers the fixture over IPv6 here, so a bracketed literal cannot be driven.');
+		}
+
+		$url = 'http://[::1]' . $this->fixturePort() . '/' . self::HOP_FIXTURE . '?hop=0&stop=0';
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('::1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($url) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame(self::FINAL_SENTINEL, $this->resultOf($this->withoutCurl($body, '-d allow_url_fopen=0')),
+			'A literal reached the socket as [[::1]] rather than [::1].');
+	}
+
+	/**
+	 * The probe must not follow a Location: nothing would revalidate the target
+	 * it lands on, and the option that stops it has to travel with this one
+	 * request rather than sit in the default stream context.
 	 */
 	public function testIsValidUrlDoesNotFollowRedirects()
 	{
@@ -1086,6 +1269,59 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * The probe put the URL to the policy and then handed it as typed to
+	 * fopen(), so the lookup that connected was a second lookup. p3-pin.test
+	 * has no DNS record anywhere (RFC 6761), so an answer can only come back
+	 * if the request was rewritten to an address the policy resolved.
+	 */
+	public function testIsValidUrlConnectsToThePinnedAddress()
+	{
+		$this->requireFixtureServer();
+
+		$fl = new E107P3PinnedFile();
+		$fl->addresses = array('127.0.0.1');
+
+		$timeout = ini_get('default_socket_timeout');
+
+		self::assertTrue($fl->isValidURL($this->pinnedUrl() . '&loghost=1'));
+		self::assertSame(self::PINNED_HOST . $this->fixturePort(), $this->fixtureLog(),
+			'The name has to arrive in the Host header, or the rewrite has changed which site answers.');
+		self::assertSame($timeout, ini_get('default_socket_timeout'),
+			'The probe must not leave its own socket timeout behind for the rest of the request.');
+
+		$unpinned = new E107P3PinnedFile();
+		$unpinned->addresses = array();
+
+		self::assertFalse($unpinned->isValidURL($this->pinnedUrl(self::UNPINNED_HOST)),
+			'Negative control: with nothing to pin the name cannot be resolved at all.');
+
+		self::assertFalse($this->fl->isValidURL('http://127.0.0.1' . $this->fixturePort() . '/'),
+			'The address policy still governs the probe.');
+	}
+
+	/**
+	 * The probe reports on the URL, not on one address of it, so it has to try
+	 * the rest of the set before answering unreachable.
+	 */
+	public function testIsValidUrlTriesEveryResolvedAddress()
+	{
+		$this->requireFixtureServer();
+
+		$fl = new E107P3PinnedFile();
+		$fl->addresses = array('fe80::1', '127.0.0.1');
+
+		self::assertTrue($fl->isValidURL($this->pinnedUrl()),
+			'A dead first address must not be reported as an unreachable URL.');
+
+		$dead = new E107P3PinnedFile();
+		$dead->addresses = array('fe80::1');
+
+		self::assertFalse($dead->isValidURL($this->pinnedUrl()),
+			'Negative control: nothing can be reached at fe80::1, so the walk cannot be passing for another reason.');
+	}
+
+
+	/**
 	 * @return int requests the fixture has answered since the last reset
 	 */
 	private function fixtureHits()
@@ -1093,6 +1329,36 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		clearstatcache(true, $this->hitPath);
 
 		return is_file($this->hitPath) ? (int) filesize($this->hitPath) : 0;
+	}
+
+	/**
+	 * The `ssl` options are new here and the return value cannot show them, so
+	 * this drives an https probe with and without the certificate's issuer.
+	 */
+	public function testIsValidUrlProbesOverTls()
+	{
+		$this->requireTlsFixture();
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('127.0.0.1'); ";
+		$body .= "\$r = \$fl->isValidURL('" . addslashes($this->hopUrl(0, 0, 'https')) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame('true', $this->resultOf($this->runPhp($body, '-d openssl.cafile=' . self::CA_BUNDLE)),
+			'A peer the probe can verify has to be reported reachable.');
+
+		self::assertSame('false', $this->resultOf($this->runPhp($body)),
+			'... and one it cannot verify must not be.');
+	}
+
+
+	/**
+	 * @return string everything the fixture has appended since the last reset
+	 */
+	private function fixtureLog()
+	{
+		clearstatcache(true, $this->hitPath);
+
+		return is_file($this->hitPath) ? (string) file_get_contents($this->hitPath) : '';
 	}
 
 	private function resetFixtureHits()

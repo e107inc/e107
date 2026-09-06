@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_userTest extends \Codeception\Test\Unit
+	class e_userTest extends \Test\Unit
 	{
 
 		protected $user;

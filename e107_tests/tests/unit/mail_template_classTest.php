@@ -15,8 +15,9 @@
  * found. Every later one, of any other name, came back FALSE, and the caller
  * reports that as "template not found".
  */
-class mail_template_classTest extends \Codeception\Test\Unit
+class mail_template_classTest extends \Test\Unit
 {
+
 	/** @var string */
 	private $fixtureFile;
 

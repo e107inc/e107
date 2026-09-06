@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use Psr\Http\Message\StreamInterface;
@@ -15,7 +13,7 @@ use Psr\Http\Message\StreamInterface;
 #[\AllowDynamicProperties]
 final class FnStream implements StreamInterface
 {
-    private const SLOTS = [
+    const SLOTS = [
         '__toString', 'close', 'detach', 'rewind',
         'getSize', 'tell', 'eof', 'isSeekable', 'seek', 'isWritable', 'write',
         'isReadable', 'read', 'getContents', 'getMetadata',
@@ -41,8 +39,10 @@ final class FnStream implements StreamInterface
      * Lazily determine which methods are not implemented.
      *
      * @throws \BadMethodCallException
+     * @return void
+     * @param string $name
      */
-    public function __get(string $name): void
+    public function __get($name)
     {
         throw new \BadMethodCallException(str_replace('_fn_', '', $name)
             .'() is not implemented in the FnStream');
@@ -54,7 +54,7 @@ final class FnStream implements StreamInterface
     public function __destruct()
     {
         if (isset($this->_fn_close)) {
-            ($this->_fn_close)();
+            call_user_func($this->_fn_close);
         }
     }
 
@@ -62,8 +62,9 @@ final class FnStream implements StreamInterface
      * An unserialize would allow the __destruct to run when the unserialized value goes out of scope.
      *
      * @throws \LogicException
+     * @return void
      */
-    public function __wakeup(): void
+    public function __wakeup()
     {
         throw new \LogicException('FnStream should never be unserialized');
     }
@@ -90,11 +91,14 @@ final class FnStream implements StreamInterface
         return new self($methods);
     }
 
-    public function __toString(): string
+    /**
+     * @return string
+     */
+    public function __toString()
     {
         try {
             /** @var string */
-            return ($this->_fn___toString)();
+            return call_user_func($this->_fn___toString);
         } catch (\Throwable $e) {
             if (\PHP_VERSION_ID >= 70400) {
                 throw $e;
@@ -102,72 +106,114 @@ final class FnStream implements StreamInterface
             trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
 
             return '';
+        } catch (\Exception $e) {
+            if (\PHP_VERSION_ID >= 70400) {
+                throw $e;
+            }
+            trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
+            return '';
         }
     }
 
-    public function close(): void
+    /**
+     * @return void
+     */
+    public function close()
     {
-        ($this->_fn_close)();
+        call_user_func($this->_fn_close);
     }
 
     public function detach()
     {
-        return ($this->_fn_detach)();
+        return call_user_func($this->_fn_detach);
     }
 
-    public function getSize(): ?int
+    /**
+     * @return int|null
+     */
+    public function getSize()
     {
-        return ($this->_fn_getSize)();
+        return call_user_func($this->_fn_getSize);
     }
 
-    public function tell(): int
+    /**
+     * @return int
+     */
+    public function tell()
     {
-        return ($this->_fn_tell)();
+        return call_user_func($this->_fn_tell);
     }
 
-    public function eof(): bool
+    /**
+     * @return bool
+     */
+    public function eof()
     {
-        return ($this->_fn_eof)();
+        return call_user_func($this->_fn_eof);
     }
 
-    public function isSeekable(): bool
+    /**
+     * @return bool
+     */
+    public function isSeekable()
     {
-        return ($this->_fn_isSeekable)();
+        return call_user_func($this->_fn_isSeekable);
     }
 
-    public function rewind(): void
+    /**
+     * @return void
+     */
+    public function rewind()
     {
-        ($this->_fn_rewind)();
+        call_user_func($this->_fn_rewind);
     }
 
-    public function seek($offset, $whence = SEEK_SET): void
+    /**
+     * @return void
+     */
+    public function seek($offset, $whence = SEEK_SET)
     {
-        ($this->_fn_seek)($offset, $whence);
+        call_user_func($this->_fn_seek, $offset, $whence);
     }
 
-    public function isWritable(): bool
+    /**
+     * @return bool
+     */
+    public function isWritable()
     {
-        return ($this->_fn_isWritable)();
+        return call_user_func($this->_fn_isWritable);
     }
 
-    public function write($string): int
+    /**
+     * @return int
+     */
+    public function write($string)
     {
-        return ($this->_fn_write)($string);
+        return call_user_func($this->_fn_write, $string);
     }
 
-    public function isReadable(): bool
+    /**
+     * @return bool
+     */
+    public function isReadable()
     {
-        return ($this->_fn_isReadable)();
+        return call_user_func($this->_fn_isReadable);
     }
 
-    public function read($length): string
+    /**
+     * @return string
+     */
+    public function read($length)
     {
-        return ($this->_fn_read)($length);
+        return call_user_func($this->_fn_read, $length);
     }
 
-    public function getContents(): string
+    /**
+     * @return string
+     */
+    public function getContents()
     {
-        return ($this->_fn_getContents)();
+        return call_user_func($this->_fn_getContents);
     }
 
     /**
@@ -175,6 +221,6 @@ final class FnStream implements StreamInterface
      */
     public function getMetadata($key = null)
     {
-        return ($this->_fn_getMetadata)($key);
+        return call_user_func($this->_fn_getMetadata, $key);
     }
 }

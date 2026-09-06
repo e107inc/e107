@@ -37,11 +37,6 @@
 		return;
 	}
 	
-	$ONLINE_TABLE = '';
-	$ONLINE_TABLE_START = '';
-	$ONLINE_TABLE_END = '';
-	$ONLINE_TABLE_MISC = '';
-
 	if(!defined('COMMENT'))
 	{
 		define('COMMENT', '');
@@ -57,6 +52,11 @@
 		require_once(e_CORE . "templates/online_template.php");
 	}
 
+	$ONLINE_TABLE = varset($ONLINE_TABLE, '');
+	$ONLINE_TABLE_START = varset($ONLINE_TABLE_START, '');
+	$ONLINE_TABLE_END = varset($ONLINE_TABLE_END, '');
+	$ONLINE_TABLE_MISC = varset($ONLINE_TABLE_MISC, '');
+
 	global $listuserson;
 
 	foreach($listuserson as $uinfo => $pinfo)
@@ -64,10 +64,10 @@
 		$class_check = true;
 		list($oid, $oname) = explode(".", $uinfo, 2);
 		$online_location = $pinfo;
-		$online_location_page = substr(strrchr($online_location, "/"), 1);
+		$online_location_page = (string) substr(strrchr($online_location, "/"), 1);
 		if(strpos($online_location, "forum_") === false || strpos($online_location, "content.php") === false || strpos($online_location, "comment.php") === false)
 		{
-			$online_location_page = str_replace(".php", "", substr(strrchr($online_location, "/"), 1));
+			$online_location_page = str_replace(".php", "", (string) substr(strrchr($online_location, "/"), 1));
 		}
 
 		switch($online_location_page)
@@ -182,7 +182,7 @@
 
 		if(strpos($online_location, "content.php") !== false)
 		{
-			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
+			$tmp = explode(".", (string) substr(strrchr($online_location, "php."), 2));
 			if($tmp[0] == "article")
 			{
 				$content = $sql->createQueryBuilder()
@@ -272,7 +272,7 @@
 				$visibleForums = e107forum::visibleForumIds();
 			}
 
-			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
+			$tmp = explode(".", (string) substr(strrchr($online_location, "php."), 2));
 			if(strpos($online_location, "_viewtopic") !== false)
 			{
 				if($tmp[2])
@@ -377,8 +377,10 @@
 			->orderBy('user_join', 'DESC')->setFirstResult(0)->setMaxResults(1)
 			->fetchRow();
 
+		$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
+
 		$scArray['ONLINE_TABLE_MEMBERS_TOTAL'] = "<br />" . ONLINE_EL5 . ": " . $total_members;
-		$scArray['ONLINE_TABLE_MEMBERS_NEWEST'] = "<br />" . ONLINE_EL6 . ": " . (USER ? "<a href='" . e_BASE . "user.php?id." . $row['user_id'] . "'>" . $row['user_name'] . "</a>" : $row['user_name']);
+		$scArray['ONLINE_TABLE_MEMBERS_NEWEST'] = "<br />" . ONLINE_EL6 . ": " . (USER ? "<a href='" . e107::getUrl()->create('user/profile/view', $uparams) . "'>" . $row['user_name'] . "</a>" : $row['user_name']);
 	}
 
 

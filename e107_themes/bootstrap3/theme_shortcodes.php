@@ -164,10 +164,10 @@ class theme_shortcodes extends e_shortcode
 				$text .= '
 				<li class="divider-vertical"></li>
 				<li class="dropdown">
-			
+
 				<a class="dropdown-toggle" href="#" data-toggle="dropdown">'.LAN_LOGINMENU_51.' <strong class="caret"></strong></a>
 				<div class="dropdown-menu col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
-				
+
 				{SOCIAL_LOGIN: size=2x&label=1}
 				'; // Sign In
 			}
@@ -194,11 +194,6 @@ class theme_shortcodes extends e_shortcode
 				{LM_IMAGECODE_NUMBER}
 				{LM_IMAGECODE_BOX}
 				
-				<div class="checkbox">
-				
-				<label class="string optional" for="bs3-autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="bs3-autologin" value="1">
-				'.LAN_LOGINMENU_6.'</label>
-				</div>
 				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="bs3-userlogin" value="'.LAN_LOGINMENU_51.'">
 				';
 				
@@ -268,7 +263,7 @@ class theme_shortcodes extends e_shortcode
 		}
 		
 		$text .= '
-		<li><a href="'.e_HTTP.'index.php?logout">{GLYPH=fa-power-off} '.LAN_LOGOUT.'</a></li>
+		<li><a href="'.e_HTTP.'index.php?logout&amp;e-token='.defset('e_TOKEN').'">{GLYPH=fa-power-off} '.LAN_LOGOUT.'</a></li>
 		</ul>
 		</li>
 		</ul>

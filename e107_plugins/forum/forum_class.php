@@ -61,25 +61,22 @@ if(!deftrue('BOOTSTRAP')) // test with 'jayya'
 }
 
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
-if(!defined('IMAGE_new') && !defined('IMAGE_e'))
+foreach(array(
+	THEME.'templates/forum/forum_icons_template.php', // Preferred v2.x location.
+	THEME.'forum/forum_icons_template.php',
+	THEME.'forum_icons_template.php',
+) as $forumIconsTemplate)
 {
-	if (file_exists(THEME.'templates/forum/forum_icons_template.php')) // Preferred v2.x location.
+	if(file_exists($forumIconsTemplate))
 	{
-		require_once(THEME.'templates/forum/forum_icons_template.php');
-	}
-	elseif (file_exists(THEME.'forum/forum_icons_template.php'))
-	{
-		require_once(THEME.'forum/forum_icons_template.php');
-	}
-	elseif (file_exists(THEME.'forum_icons_template.php'))
-	{
-		require_once(THEME.'forum_icons_template.php');
-	}
-	else
-	{
-		require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
+		require_once($forumIconsTemplate);
+		break;
 	}
 }
+
+unset($forumIconsTemplate);
+
+require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
 
 class e107forum
 {
@@ -114,17 +111,17 @@ class e107forum
 		$this->e107 = e107::getInstance();
 		$this->userViewed = array();
 		$this->modArray = array();
-		
+
 		if($update === false)
 		{
 			$this->loadPermList();
 		}
-		
+
 		$this->prefs = e107::getPlugConfig('forum');
 		if(!$this->prefs->get('postspage')) {
 			$this->setDefaults();
 		}
-		
+
 		$this->getForumData();
 //		var_dump($this->prefs);
 
@@ -3158,12 +3155,12 @@ class e107forum
 
 			if($forumInfo['sub_parent'])
 			{
-				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? (string) substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN_ABS."forum/forum_viewforum.php?{$forumInfo['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
 
 			$tmpFname = $forumInfo['forum_name'];
-			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
+			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = (string) substr($tmpFname, 1); }
 
 			if ($forum_href)
 			{
@@ -3192,7 +3189,7 @@ class e107forum
 		
 		if($forumInfo['sub_parent'])
 		{
-				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? (string) substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 		}
 		
 		$breadcrumb[]	= array('text'=>$tp->toHTML($forumInfo['parent_name'])		, 'url'=> e107::url('forum', 'index')."#".$frm->name2id($forumInfo['parent_name']));

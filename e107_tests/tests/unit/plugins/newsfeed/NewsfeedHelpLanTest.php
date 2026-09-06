@@ -16,8 +16,9 @@
  * "immage". The dead links and typos must stay gone. NFLAN_42 itself must
  * remain defined because e107_plugins/newsfeed/e_help.php renders it.
  */
-class NewsfeedHelpLanTest extends \Codeception\Test\Unit
+class NewsfeedHelpLanTest extends \Test\Unit
 {
+
 	/** @var array */
 	protected $lan;
 

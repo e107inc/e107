@@ -12,7 +12,7 @@
  * the site is not showing plugins in a section of their own. The map it folds
  * them with has to cover every category a plugin is allowed to declare.
  */
-class admin_shortcodesNavigationTest extends \Codeception\Test\Unit
+class admin_shortcodesNavigationTest extends \Test\Unit
 {
 	/** @var admin_shortcodes */
 	private $sc;

@@ -230,28 +230,28 @@ class faqs_shortcodes extends e_shortcode
 	{
 	//	$tp = e107::getParser();
 	//	return $tp->toHTML($this->var['faq_info_title']);
-		
-		
+
+
 		$tp = e107::getParser();
 		$url = e107::url('faqs','category', $this->var); //@See faqs/e_url.php 
 		return "<a href='".$url."'>".$tp->toHTML($this->var['faq_info_title'])."</a>";	
 		/*
 
 		return "<a href='".e107::getUrl()->create('faqs/list/all', array('category' => $this->var['faq_info_id']))."'>".$tp->toHTML($this->var['faq_info_title'])."</a>";	
-		
-		
-		
+
+
+
 		$tp = e107::getParser();
 		if($parm == 'extend' && $this->tag)
 		{
 			return "<a href='".$this->sc_faq_current_tag('url')."'>".$tp->toHTML($this->var['faq_info_title'])." &raquo; ".$this->sc_faq_current_tag('raw')."</a>";
 		}
-		
+
 		if($parm == 'raw')
 		{
 			return $tp->toHTML($this->var['faq_info_title']);	
 		}
-		
+
 		return "<a href='".e107::getUrl()->create('faqs/list/all', array('category' => $this->var['faq_info_id']))."'>".$tp->toHTML($this->var['faq_info_title'])."</a>";	
 	*/
 	}
@@ -274,6 +274,29 @@ class faqs_shortcodes extends e_shortcode
 	{
 		$type = vartrue($parm, 'relative');
 		return e107::getParser()->toDate($this->var['faq_datestamp'], $type);
+	}
+
+	/**
+	 * Caption a template section hands to {@see e_render::tablerender()}.
+	 *
+	 * Absent 'caption' falls back to $default; an empty one is honoured, so the
+	 * wrapper renders with no heading. The caption resolves against the row this
+	 * batch holds, so {@see faqs_shortcodes::setVars()} first where the section
+	 * has one.
+	 *
+	 * @param array $tmpl $FAQS_TEMPLATE, from {@see e107::getTemplate()}
+	 * @param string $key section of $tmpl the caption belongs to
+	 * @param string $default caption rendered before the section could set its own
+	 * @return string
+	 */
+	public function caption($tmpl, $key, $default)
+	{
+		if(!isset($tmpl[$key]['caption']))
+		{
+			return $default;
+		}
+
+		return e107::getParser()->parseTemplate($tmpl[$key]['caption'], true, $this);
 	}
 
 	function sc_faq_caption()
@@ -313,6 +336,16 @@ class faqs_shortcodes extends e_shortcode
 		return "<img src='".e_PLUGIN_ABS."faq/images/faq.png'  alt='' />";	
 	}
 
+	/**
+	 * @return bool whether this caller may ask a question
+	 */
+	private function canSubmitQuestion()
+	{
+		$faqpref = e107::pref('faqs');
+
+		return check_class(varset($faqpref['submit_question'], e_UC_NOBODY));
+	}
+
 	function sc_faq_submit_question($parms=null)
 	{
 
@@ -343,7 +376,7 @@ class faqs_shortcodes extends e_shortcode
 
 			$text .= "<div id='form-ask-a-question' class='alert alert-info alert-block ".$hide." form-group faq-submit-question-form'>";
 
-			if(check_class($faqpref['submit_question']))
+			if($this->canSubmitQuestion())
 			{
 				$text .= $frm->open('faq-ask-question','post');
 				//TODO LAN ie. [x] character limit.
@@ -377,9 +410,7 @@ class faqs_shortcodes extends e_shortcode
 
 	function sc_faq_submit_question_list()
 	{
-		$faqpref = e107::pref('faqs');
-
-		if (isset($faqpref['submit_question']) && check_class($faqpref['submit_question']))
+		if ($this->canSubmitQuestion())
 		{
 			$tp = e107::getParser();
 

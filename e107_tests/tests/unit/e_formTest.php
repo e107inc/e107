@@ -8,9 +8,11 @@
  *
  */
 
+use e107\Reflection\ReflectionMethod;
 
-class e_formTest extends \Codeception\Test\Unit
+class e_formTest extends \Test\Unit
 {
+
 	/** @var e_form */
 	protected $_frm;
 
@@ -318,6 +320,7 @@ class e_formTest extends \Codeception\Test\Unit
 		$opt = ['active'=>'1', 'fade'=>true];
 		$result = $this->_frm->tabs($array,$opt);
 		self::assertStringContainsString('<a class="nav-link active" href="#tab-1"',$result, 'Test 1 Nav Failed'); // Nav
+		self::assertStringContainsString("href=\"#tab-1\" data-toggle='tab' data-bs-toggle='tab'>", $result, 'Test 1 Toggle Failed'); // Toggle
 		self::assertStringContainsString('<div class="tab-pane fade in active" id="tab-1"', $result, 'Test 1 Pane Failed'); // Pane
 
 		// Test 2.
@@ -359,6 +362,27 @@ class e_formTest extends \Codeception\Test\Unit
 		$expected = "<div id='test-carousel' class='carousel slide' data-ride='carousel' data-wrap='' data-interval='0'>";
 		self::assertStringContainsString($expected, $result);
 
+	}
+
+	public function testCopyable()
+	{
+		$result = $this->_frm->copyable('curl -fsS \'http://x/cron.php?token=a<script>alert(1)</script>\'', ['label'=>'Command']);
+
+		self::assertStringContainsString('<div class="e-copyable">', $result);
+		self::assertStringContainsString('<label class="e-copyable-label">Command</label>', $result);
+		self::assertStringContainsString('<pre class="e-copyable-text" dir="ltr">', $result);
+		self::assertStringContainsString('e-copyable-btn', $result);
+		self::assertStringContainsString('data-copied="'.LAN_EFORM_COPIED.'"', $result);
+		self::assertStringContainsString('>'.LAN_EFORM_COPY.'</button>', $result);
+
+		self::assertStringNotContainsString('<script>', $result, 'the text must not be able to open a tag');
+		self::assertStringContainsString('&lt;script&gt;alert(1)&lt;/script&gt;', $result);
+		self::assertStringNotContainsString('curl -fsS \'', $result, 'the quotes around the URL must be escaped too');
+
+		$plain = $this->_frm->copyable('* * * * * php -q cron.php');
+
+		self::assertStringNotContainsString('e-copyable-label', $plain, 'no label was asked for');
+		self::assertStringContainsString('<pre class="e-copyable-text" dir="ltr">* * * * * php -q cron.php</pre>', $plain);
 	}
 
 /*
@@ -1439,6 +1463,55 @@ class e_formTest extends \Codeception\Test\Unit
 
 
 	}
+
+	public function testRenderValueUserclassesInlineHeldClassOutsideClasslist()
+	{
+
+			$field = array('title'=>'Userclasses', 'type'=>'userclasses', 'inline'=>true, 'readParms'=>'classlist=classes,new&defaultLabel=--');
+			$result  = $this->_frm->renderValue('uc', '253', $field, 999);
+
+			$result = str_replace(array("\n", "\r"), "", $result);
+
+			$tags = e107::getParser()->getTags($result,'a');
+
+			self::assertNotEmpty($tags['a'][0]);
+			self::assertSame(',253', $tags['a'][0]['data-value']);
+			self::assertStringContainsString('{"value":253,"text":"Members"}', $tags['a'][0]['data-source'], 'Members (253) is held by the record but missing from the inline checklist, so it cannot be ticked and is dropped on save.');
+
+	}
+
+	public function testRenderValueUserclassInlineHeldClassOutsideClasslist()
+	{
+
+			$field = array('title'=>'Userclass', 'type'=>'userclass', 'inline'=>true, 'readParms'=>'classlist=classes,new');
+			$result  = $this->_frm->renderValue('uc', '253', $field, 999);
+
+			$result = str_replace(array("\n", "\r"), "", $result);
+
+			$tags = e107::getParser()->getTags($result,'a');
+
+			self::assertNotEmpty($tags['a'][0]);
+			self::assertSame('select', $tags['a'][0]['data-type']);
+			self::assertSame('253', $tags['a'][0]['data-value']);
+			self::assertStringContainsString('{"value":253,"text":"Members"}', $tags['a'][0]['data-source'], 'The single-class editor must offer the class the record holds, or saving replaces it with whichever option the browser preselected.');
+
+	}
+
+	public function testRenderValueUserclassesInlineStoredValueWithWhitespace()
+	{
+
+			$field = array('title'=>'Userclasses', 'type'=>'userclasses', 'inline'=>true, 'readParms'=>'classlist=classes,new&defaultLabel=--');
+			$result  = $this->_frm->renderValue('uc', '253, 1', $field, 999);
+
+			$result = str_replace(array("\n", "\r"), "", $result);
+
+			$tags = e107::getParser()->getTags($result,'a');
+
+			self::assertNotEmpty($tags['a'][0]);
+			self::assertStringContainsString('{"value":253,"text":"Members"}', $tags['a'][0]['data-source']);
+			self::assertSame(1, substr_count($tags['a'][0]['data-source'], '"text":"PRIVATEMENU"'), 'A class already in the classlist must not be offered twice.');
+
+	}
 	/*
 			public function testRenderListForm()
 			{
@@ -1487,10 +1560,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 	public function testInlineTokenGeneratedOnlyOnce()
 	{
-		$class = new \ReflectionClass('e_form');
-
-		$method = $class->getMethod('inlineToken');
-		$method->setAccessible(true);
+		$method = new ReflectionMethod('e_form', 'inlineToken');
 
 		$results = [];
 		$results[] = $method->invoke($this->_frm);

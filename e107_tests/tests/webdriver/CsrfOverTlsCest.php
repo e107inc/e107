@@ -3,50 +3,53 @@
 /**
  * The browser check, over the only scheme on which it can exist.
  *
- * This branch recommends mode 4: the browser is asked where the request came
- * from, and no token is read, minted or published at all. That is only a
- * coherent policy where the browser actually answers, which means HTTPS, since
+ * The recommended mode accepts either proof: the browser saying the request came
+ * from this site, or a valid token. Over HTTPS the browser half is live, because
  * the Fetch Metadata headers are appended only to a potentially trustworthy
- * origin.
+ * origin, and CsrfPlainHttpCest covers the scheme where they never arrive.
  *
- * Over plain HTTP the same preference softens to the hybrid, which
- * CsrfPlainHttpCest covers. Together the two say the whole thing: strict where
- * the browser can vouch, usable where it cannot.
+ * What is worth asserting in a real browser is that the token half is still
+ * delivered even here, where the browser can answer. It is not there for this
+ * browser; it is there for the one that cannot send Sec-Fetch-Site at all, and a
+ * page that stopped carrying it would refuse those visitors with nothing to fall
+ * back on.
  *
  * @env tls
  */
 class CsrfOverTlsCest
 {
 	/**
-	 * The saving this mode is for. A token that is never published is a token
-	 * that can never be missing from a page, which is the entire class of fault
-	 * behind the v2.3.10 lockout.
+	 * The fallback has to survive the case that does not need it. A token
+	 * published only where Fetch Metadata is missing would be a token decided by
+	 * the request rather than by the mode, and a cached page would carry the
+	 * wrong answer.
 	 *
 	 * @param \WebDriverTester $I
 	 * @return void
 	 */
-	public function noTokenIsPublishedWhenTheBrowserIsAskedInstead(\WebDriverTester $I)
+	public function aTokenIsPublishedEvenWhereTheBrowserCanVouch(\WebDriverTester $I)
 	{
-		$I->wantTo('see that a site on HTTPS publishes no CSRF token at all');
+		$I->wantTo('see that a site on HTTPS still publishes a CSRF token');
 
 		$I->amOnPage('/');
 		$I->waitForElement('body', 10);
 
-		$I->assertStringNotContainsString('name="e-token"', $I->grabPageSource(),
-			'the browser check reads no token, so none should be published');
+		$I->assertStringContainsString('name="e-token"', $I->grabPageSource(),
+			'the recommended mode reads a token, so every page has to carry one');
 	}
 
 	/**
-	 * And the writes still go through, on the browser's word alone. A form
-	 * submitted from a document this site served is a same-origin request, which
-	 * is exactly what Sec-Fetch-Site reports and what no other site can cause.
+	 * And the writes go through. A form submitted from a document this site
+	 * served is a same-origin request carrying a token it was just handed, which
+	 * satisfies either half, so a browser that cannot sign in here means the
+	 * mode is refusing something no attacker could have produced.
 	 *
 	 * @param \WebDriverTester $I
 	 * @return void
 	 */
-	public function anAdministratorCanSignInOnTheBrowsersWordAlone(\WebDriverTester $I)
+	public function anAdministratorCanSignInOverTls(\WebDriverTester $I)
 	{
-		$I->wantTo('sign in to the admin area with no token in play');
+		$I->wantTo('sign in to the admin area over HTTPS');
 
 		$I->loginAsAdmin();
 

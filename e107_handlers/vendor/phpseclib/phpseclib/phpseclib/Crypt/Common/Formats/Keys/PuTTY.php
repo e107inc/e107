@@ -80,7 +80,7 @@ abstract class PuTTY
             $temp = pack('Na*', $sequence++, $password);
             $symkey .= Strings::hex2bin(sha1($temp));
         }
-        return substr($symkey, 0, $length);
+        return (string) substr($symkey, 0, $length);
     }
 
     /**
@@ -114,7 +114,7 @@ abstract class PuTTY
         $temp = sodium_crypto_pwhash($length, $password, $salt, $passes, $memory << 10, $flavour);
 
         $symkey = substr($temp, 0, 32);
-        $symiv = substr($temp, 32, 16);
+        $symiv = (string) substr($temp, 32, 16);
         $hashkey = substr($temp, -32);
 
         return compact('symkey', 'symiv', 'hashkey');
@@ -153,11 +153,11 @@ abstract class PuTTY
                     case preg_match('#^(.*?): (.*)#', $line, $match):
                         $in_value = $line[strlen($line) - 1] == '\\';
                         $current = strtolower($match[1]);
-                        $values[$current] = $in_value ? substr($match[2], 0, -1) : $match[2];
+                        $values[$current] = $in_value ? (string) substr($match[2], 0, -1) : $match[2];
                         break;
                     case $in_value:
                         $in_value = $line[strlen($line) - 1] == '\\';
-                        $values[$current] .= $in_value ? substr($line, 0, -1) : $line;
+                        $values[$current] .= $in_value ? (string) substr($line, 0, -1) : $line;
                         break;
                     default:
                         $data .= $line;

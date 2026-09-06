@@ -16,7 +16,7 @@
  * e_db_pdo and e_db_mysql. They should only ever shrink as parity work
  * lands; additions need a justification comment.
  */
-class e_db_parityTest extends \Codeception\Test\Unit
+class e_db_parityTest extends \Test\Unit
 {
 	/**
 	 * Public methods allowed to exist only on e_db_pdo.

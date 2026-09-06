@@ -59,10 +59,18 @@ class Acceptance extends E107Base
 	/** @var bool whether this run has stood a site up yet */
 	private $siteInstalled = false;
 
-	public function _before(?\Codeception\TestInterface $test = null)
+	/**
+	 * Show the run's probe secret on every request, so a fixture in the docroot
+	 * answers this suite and nobody else, and start with e107's counters clear.
+	 *
+     * @param \Codeception\TestInterface|null $test
+     */
+    public function _before($test = null)
 	{
 		parent::_before($test);
+		$this->getModule('PhpBrowser')->haveHttpHeader(ProbeGuard::HEADER, ProbeGuard::secret());
 		$this->haveInstalledSite();
+		$this->resetFloodProtection();
 	}
 
 	/**
@@ -499,7 +507,8 @@ class Acceptance extends E107Base
 		$largePrefix = $dbh->query("SHOW VARIABLES LIKE 'innodb_large_prefix'")->fetch(\PDO::FETCH_ASSOC);
 
 		$innodbBytes = 3072;
-		if (!empty($largePrefix) && strtoupper($largePrefix['Value']) !== 'ON')
+		if (!empty($largePrefix) && strtoupper($largePrefix['Value']) === 'OFF' && $number !== ''
+			&& ($maria ? version_compare($number, '10.3', '<') : version_compare($number, '8.0', '<')))
 		{
 			$innodbBytes = 767;
 		}
@@ -604,6 +613,9 @@ class Acceptance extends E107Base
 	 * Uninstall a plugin and drop its tables, leaving the state a fresh install
 	 * leaves. Safe to call for a plugin that was never installed.
 	 *
+	 * Call it before deleting a fixture plugin's directory: the probe rebuilds
+	 * the detected-plugin list, and a folder that has gone loses its table row.
+	 *
 	 * @param string $plugin plugin folder name
 	 * @return void
 	 */
@@ -643,7 +655,8 @@ class Acceptance extends E107Base
 		}
 
 		$browser = $this->getModule('PhpBrowser');
-		$browser->amOnPage('/'.self::PLUGIN_PROBE_FILE.'?act='.$act.'&plugin='.urlencode($plugin));
+		$browser->amOnPage('/'.self::PLUGIN_PROBE_FILE.'?'.ProbeGuard::query()
+			.'&act='.$act.'&plugin='.urlencode($plugin));
 
 		$body = $browser->grabPageSource();
 
@@ -666,6 +679,7 @@ class Acceptance extends E107Base
 // Fixture for Helper\Acceptance::havePluginInstalled(). Removed in dropPluginProbe().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';
@@ -695,6 +709,9 @@ function e107_test_plugin_installed($folder)
 
 	return is_array($installed) && isset($installed[$folder]);
 }
+
+// A stale detected-plugin cache prunes the new plugin's row as an orphan.
+e107::getPlug()->clearCache();
 
 $plugin = e107::getPlugin();
 

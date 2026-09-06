@@ -12,6 +12,18 @@ namespace Helper;
  */
 class Webdriver extends E107Base
 {
+    /**
+     * Start every test with e107's request counters clear.
+     *
+     * @param \Codeception\TestInterface|null $test
+     * @return void
+     */
+    public function _before($test = null)
+    {
+        parent::_before($test);
+        $this->resetFloodProtection();
+    }
+
     protected function writeLocalE107Config()
     {
         // The browser reaches the app through the deployment target's docroot,

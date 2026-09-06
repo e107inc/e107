@@ -354,7 +354,10 @@ class base_import_class
 		$name = empty($path) ? '' : basename($path);
 		$name = preg_replace('/\.[^.]*$/', '', $name);
 		$name = trim(preg_replace('/[^A-Za-z0-9_-]/', '_', $name), '_');
-		$name = substr($name, 0, 60);
+		// The cast keeps the empty-name check honest on PHP 5.6, where
+		// substr('' , 0, 60) is false rather than the '' every later PHP
+		// returns; false would slip the === '' test and lose the fallback.
+		$name = (string) substr($name, 0, 60);
 
 		if($name === '')
 		{
@@ -541,7 +544,7 @@ class base_import_class
 	  $bbphpbb = (strpos($options,'phpbb') !== FALSE) ? TRUE : FALSE;		// Strip values as phpbb
 	  $nextchar = 0;
 	  $loopcount = 0;
-	 
+
 	  while ($nextchar < strlen($value))
 	  {
 	    $firstbit = '';
@@ -554,13 +557,13 @@ class base_import_class
 	    if ($firstcode === FALSE) return $value;   	// Done if no square brackets
 	    $firstend = strpos($value,']',$firstcode);
 	    if ($firstend === FALSE) return $value;		// Done if no closing bracket
-	    $bbword = substr($value,$firstcode+1,$firstend - $firstcode - 1);	// May need to process this more if parameter follows
+	    $bbword = (string) substr($value,$firstcode+1,$firstend - $firstcode - 1);	// May need to process this more if parameter follows
 		$bbparam = '';
 		$temp = strpos($bbword,'=');
 		if ($temp !== FALSE)
 		{
-		  $bbparam = substr($bbword,$temp);
-		  $bbword  = substr($bbword,0,-strlen($bbparam));
+		  $bbparam = (string) substr($bbword,$temp);
+		  $bbword  = (string) substr($bbword,0,-strlen($bbparam));
 		}
 	    if (($bbword) && ($bbword == trim($bbword)))
 	    {
@@ -573,12 +576,12 @@ class base_import_class
 		  else
 		  {  // Got a valid bbcode pair here
 		    $firstbit = '';
-		    if ($firstcode > 0) $firstbit = substr($value,0,$firstcode);
-		    $middlebit = substr($value,$firstend+1,$laststart - $firstend-1);
-		    $lastbit = substr($value,$lastend+1,strlen($value) - $lastend);
+		    if ($firstcode > 0) $firstbit = (string) substr($value,0,$firstcode);
+		    $middlebit = (string) substr($value,$firstend+1,$laststart - $firstend-1);
+		    $lastbit = (string) substr($value,$lastend+1,strlen($value) - $lastend);
 		    // Process bbcodes here
 			if ($bblower) $bbword = strtolower($bbword);
-			if ($bbphpbb && (strpos($bbword,':') !== FALSE)) $bbword = substr($bbword,0,strpos($bbword,':'));
+			if ($bbphpbb && (strpos($bbword,':') !== FALSE)) $bbword = (string) substr($bbword,0,strpos($bbword,':'));
 			if ($maptable)
 			{   // Do mapping
 			  if (array_key_exists($bbword,$maptable)) $bbword = $maptable[$bbword];

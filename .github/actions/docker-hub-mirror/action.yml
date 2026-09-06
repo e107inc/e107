@@ -1,0 +1,16 @@
+name: Add a Docker Hub mirror
+description: >-
+  Gives the runner's Docker daemon a second source for docker.io images. The
+  daemon tries the mirror first and falls back to Docker Hub, so a pull
+  survives either of them being down.
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        [ -f /etc/docker/daemon.json ] || echo '{}' | sudo tee /etc/docker/daemon.json >/dev/null
+        sudo jq '. + {"registry-mirrors": ["https://mirror.gcr.io"]}' /etc/docker/daemon.json \
+          | sudo tee /etc/docker/daemon.json.new >/dev/null
+        sudo mv /etc/docker/daemon.json.new /etc/docker/daemon.json
+        sudo systemctl restart docker

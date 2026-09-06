@@ -115,10 +115,14 @@ are throwaway test containers), picks version-appropriate gd/xdebug builds,
 and installs the same Composer bootstrap, which auto-selects Composer 2.2 LTS
 on old PHP.
 
-Note that current `master` needs PHP 8 for its test dependencies, so legacy
-containers are for `release/v2.3.x` worktrees and grafted old tags. On a tree
-whose composer constraints can't resolve on the container's PHP, `install`
-surfaces composer's error untouched.
+`master`'s `e107_tests/composer.json` carries union constraints (for example
+`codeception/codeception: "^4.2 || >=5.0.11"`), and `composer.php5.6.lock`
+and `composer.php7.4.lock` pin what they resolve to on those PHPs, so legacy
+containers install a known dependency set on this branch too: see "One lock
+per PHP range" below.
+Grafted old tags and `release/v2.3.x` worktrees bring their own constraints
+and locks; on a tree whose constraints can't resolve on the container's PHP,
+`install` surfaces composer's error untouched.
 
 ## Dependencies: per-env vendor, no lock churn
 
@@ -126,31 +130,71 @@ Every env mounts a named volume over `e107_tests/vendor`, so:
 
 - Two stacks with different PHP versions never poison each other's vendor
   tree, even in the same worktree.
-- The repo's `composer.lock` is **never modified** by the harness.
+- The repo's lock files are rewritten by `relock` alone, never by `up`,
+  `install` or `run`.
 
-`up`/`install` first try `composer install` against the repo lock (CI
-parity). When the env's PHP can't satisfy the lock (PHPUnit brackets PHP
-versions aggressively), the harness says so on one loud line and falls back
-to a per-env `composer update` whose lock lives inside the volume, not in
-your worktree. `run` preflights for drift (composer.json/lock edits, branch
-switches, PHP changes) and reinstalls automatically.
+`up`/`install` run `composer install` against the newest committed lock the
+env's PHP can take (CI parity). Only when no committed lock fits does the
+harness say so on one loud line and fall back to a per-env `composer update`
+whose lock lives inside the volume, not in your worktree; that line means a
+PHP range has no lock yet (see below). `run` preflights for drift
+(composer.json or lock edits, branch switches, PHP changes) and reinstalls
+automatically.
 
 The worktree's own `e107_tests/vendor/` directory is yours: the harness
 neither writes nor reads it. If you want IDE autocompletion for Codeception,
 run `composer install` in `e107_tests/` on the host yourself.
 
-### Bumping the canon composer.lock
+### One lock per PHP range
 
-To re-pin the repo lock to the latest deps (done on the newest PHP):
+`composer.json` uses union constraints because one file has to serve every
+cell in the PHP 5.6-8.5 matrix, and composer picks the highest branch the
+running PHP can satisfy. What it picks depends on where upstream dropped a
+PHP version, so one lock cannot serve the whole range; there is one per
+range instead, each resolved on the oldest PHP it serves so every newer PHP
+in the range installs it unchanged (JSON can't carry comments, so the
+rationale lives here):
+
+- `composer.lock`: resolved on the PHP that `config.platform.php` in
+  `composer.json` declares (8.1), and installed as-is from there up.
+- `composer.php7.4.lock`: resolved on PHP 7.4 and installed on 7.4 and 8.0.
+  Codeception 4.2 with the 1.x modules, Twig 1.x and PHPUnit 9.
+- `composer.php5.6.lock`: resolved on PHP 5.6 and installed on 5.6 and 7.0.
+  Codeception 4.2 with the 1.x modules, Twig 1.x and PHPUnit 5.7.
+
+Composer 2.9 and later refuse to resolve any release carrying a Packagist
+security advisory, which on PHP 7.4 leaves no installable Twig at all (every
+release below 3.20 has one, and the ones above need PHP 8.1). `composer.json`
+turns that resolution-time block off (`config.audit.block-insecure`): the
+harness is dev-only and never ships, and `composer audit` still reports the
+advisories after an install.
+
+An env tries `composer.lock` first, then each `composer.php<floor>.lock`
+from the newest floor down, and installs the first one whose platform
+requirements its PHP meets. A PHP that none fits falls back to a live
+`composer update`, and says so; the fix is to add an empty
+`composer.php<floor>.lock` for that range and run `relock`.
+
+There is deliberately no `behat/gherkin` cap: gherkin >=4.13 requires PHP
+8.1, so legacy cells can never reach the release that breaks Codeception
+4.x's loader, and modern cells run Codeception 5.x, which is fine with it.
+
+### Upgrading the dependencies
+
+`relock` regenerates every committed lock inside an env on the PHP it is
+resolved for, and leaves the diff for you to review:
 
 ```sh
-e107_tests/bin/e107-tests up          # PHP 8.5
-e107_tests/bin/e107-tests exec sh -c 'cd e107_tests && composer update --prefer-dist --no-progress'
-e107_tests/bin/e107-tests run unit    # sanity before committing the lock
+e107_tests/bin/e107-tests relock                      # every lock
+e107_tests/bin/e107-tests relock composer.php5.6.lock # one of them
+e107_tests/bin/e107-tests up --php 8.1 && e107_tests/bin/e107-tests run unit
 ```
 
-`exec` runs plain composer without the vendor-volume redirect, so this is
-the one deliberate way the worktree lock gets rewritten.
+Generating a lock on its own floor matters twice over: the resolution is
+the one that PHP's Composer makes (the php:5.6 image ships Composer 2.2,
+which predates the advisory block that a current Composer applies to
+PHPUnit 5.7), and `check-platform-reqs` is checked on the real interpreter.
+`relock` needs `php` on the host to read the floor out of `composer.json`.
 
 ## How the wiring works
 
@@ -189,6 +233,21 @@ and every command except `up` rediscovers its env from those labels via
   (a downed stack's vendor/composer caches rebuild on the next `up`), and
   `gc --worktrees-gone` tears down stacks whose worktree was deleted.
 
+Changing a flag on an env that already exists is supported: `up --xdebug` on
+a stack brought up without it recreates the containers on the xdebug image
+rather than erroring or quietly doing nothing, and says which way it is
+switching the env as it goes. The catch is that `up` only rewrites the labels
+of the services it brings up, so a partial-scope `up` leaves the others
+carrying the labels of the run that created them; `--no-selenium` is the
+reachable case, its browser container surviving the switch untouched. `up`
+fails if the labels it leaves behind disagree with the flags it was given, and
+the answer when that happens is `down` followed by `up` with the flags you
+want.
+
+Every diagnostic the harness prints goes to stderr, and stdout carries only a
+command's own data. A refusal is therefore invisible to a caller capturing
+stdout alone: read verdicts with `2>&1`.
+
 ## Self-healing
 
 `up` and the exec-ish commands absorb the environmental flakes we used to
@@ -201,10 +260,23 @@ debug by hand:
 - **Stale bind mounts**: a long-lived container that starts failing every
   exec with "chdir to cwd" / "container breakout detected" (podman after
   heavy git churn) is restarted automatically and the command retried.
-- **Registry flakes**: a transient "denied"/rate-limit on pull doesn't kill
-  `up` when all needed images already exist locally.
+- **Registry flakes**: `up` pulls the images it is missing three times with
+  a growing pause before giving up, and a "denied"/rate-limit refusal doesn't
+  kill it when all needed images already exist locally.
+- **Package host flakes**: the composer install inside the container gets
+  the same three tries, so a package host that answers 504 for a minute
+  costs a minute, not the run.
 - **Honest exit codes**: `up` verifies db/web/selenium are actually running
   and healthy and fails loudly (with `compose ps` output) if not.
+
+## Composer's download cache
+
+Composer's cache lives in a named volume per env, so a `down` followed by
+`up` reinstalls without downloading again. Set `E107_COMPOSER_CACHE` to an
+absolute host directory to bind that instead; CI does, wrapped in
+`actions/cache`, so a warm run installs from lock without a single request
+to a package host. `down --volumes` leaves a bound directory alone. Local
+users have no reason to set it.
 
 ## Working in a worktree
 
@@ -246,8 +318,11 @@ e107-tests sql < dump.sql
 e107-tests exec php -i             # one-shot PHP CLI command
 
 # CI reproduction
+e107-tests ci-unit                 # CI's exact unit command
+
+# Coverage, on demand
 e107-tests up --xdebug             # coverage-capable image
-e107-tests ci-unit                 # CI's exact unit coverage command
+e107-tests run unit --coverage --coverage-html
 
 # Reset only the DB and test-written app state, keep the stack
 e107-tests reset
@@ -293,5 +368,7 @@ during validation, so we don't rely on it. Treat `clean` as the canonical
   combo; handles EOL Debian bases for PHP 5.6/7.0.
 - `compose.yml`: the db + web + selenium services, parameterized by env,
   plus the `e107.tests.*` labels that serve as the harness's state store.
+- `../composer.lock`, `../composer.php<floor>.lock`: one dependency lock per
+  PHP range; see "One lock per PHP range".
 - `entrypoint.sh`: waits for DB, fixes ownership on the bind mount.
 - `apache-vhost.conf` / `php-overrides.ini`: sensible test defaults.

@@ -16,6 +16,8 @@ e107::coreLan('user');
 
 class user_shortcodes extends e_shortcode
 {
+	/** The v1 keys the page found, when the theme supplied a v1-shaped user_template.php. */
+	public $legacyTemplate = array();
 
 	private $commentsDisabled;
 	private $commentsEngine;
@@ -304,17 +306,17 @@ class user_shortcodes extends e_shortcode
 	{
 		$boot = deftrue('BOOTSTRAP');
 		$tp = e107::getParser();
-		
+
 		switch ($parm) 
 		{
 			case 'email':
 				return ($boot) ? $tp->toGlyph('fa-envelope') : $this->sc_user_email_icon();
 			break;
-			
+
 			case 'lastvisit':
 				return ($boot) ? $tp->toGlyph('fa fa-clock-o') : '';
 			break;
-			
+
 			case 'birthday':
 				return ($boot) ? $tp->toGlyph('fa-calendar') : $this->sc_user_birthday_icon();
 			break;
@@ -322,11 +324,11 @@ class user_shortcodes extends e_shortcode
 			case 'level':
 				return ($boot) ? $tp->toGlyph('fa-signal') : '';
 			break;
-			
+
 			case 'website':
 				return ($boot) ? $tp->toGlyph('fa-home') : '';
 			break;
-			
+
 			case 'location':
 				return ($boot) ? $tp->toGlyph('fa-map-marker') : '';
 			break;
@@ -343,7 +345,7 @@ class user_shortcodes extends e_shortcode
 			break;
 		}
 
-	
+
 		/*
 		if(defined("USER_ICON"))
 		{
@@ -353,7 +355,7 @@ class user_shortcodes extends e_shortcode
 		{
 			return "<img src='".THEME_ABS."images/user.png' alt='' style='vertical-align:middle;' /> ";
 		}
-		
+
 		return "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='vertical-align:middle;' /> ";
 		*/
 	}
@@ -654,7 +656,7 @@ class user_shortcodes extends e_shortcode
 		/*
 
 		return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_sess']."}",true);
-		
+
 		if ($this->var['user_sess'] && file_exists(e_MEDIA."avatars/".$this->var['user_sess']))
 		{
 			//return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}", true); // this one will resize. 
@@ -780,17 +782,19 @@ class user_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 
-		if(THEME_LEGACY === true) // v1.x
-        {
-            global $EXTENDED_CATEGORY_START, $EXTENDED_CATEGORY_END, $EXTENDED_CATEGORY_TABLE;
-        }
-        else // v2.x
-        {
-            $template = e107::getCoreTemplate('user','extended');
-            $EXTENDED_CATEGORY_START    = $template['start'];
-            $EXTENDED_CATEGORY_END	    = $template['end'];
-            $EXTENDED_CATEGORY_TABLE 	= $template['item'];;
-        }
+		if(!empty($this->legacyTemplate['EXTENDED_CATEGORY_TABLE']))
+		{
+			$EXTENDED_CATEGORY_START    = $this->legacyTemplate['EXTENDED_CATEGORY_START'];
+			$EXTENDED_CATEGORY_END      = $this->legacyTemplate['EXTENDED_CATEGORY_END'];
+			$EXTENDED_CATEGORY_TABLE    = $this->legacyTemplate['EXTENDED_CATEGORY_TABLE'];
+		}
+		else
+		{
+			$template = e107::getCoreTemplate('user','extended');
+			$EXTENDED_CATEGORY_START    = varset($template['start'], '');
+			$EXTENDED_CATEGORY_END      = varset($template['end'], '');
+			$EXTENDED_CATEGORY_TABLE    = varset($template['item'], '');
+		}
 
      /*
 		$qry = "SELECT f.*, c.user_extended_struct_name AS category_name, c.user_extended_struct_id AS category_id FROM #user_extended_struct as f
@@ -944,7 +948,7 @@ class user_shortcodes extends e_shortcode
 
 	function sc_user_addons($parm=null)
 	{
-		$template 	= e107::getCoreTemplate('user','addon');
+		$template 	= vartrue($this->legacyTemplate['USER_EMBED_USERPROFILE_TEMPLATE'], e107::getCoreTemplate('user','addon'));
 		$tp 		= e107::getParser();
 		$data 		= e107::getAddonConfig('e_user',null,'profile',$this->var);
 		
@@ -995,7 +999,7 @@ class user_shortcodes extends e_shortcode
 			
 			//if the first char of parm is an ! mark, it means it should not render the following parms
 			if(strpos($parm,'!')===0){
-				$tmp = explode(",", substr($parm,1) );
+				$tmp = explode(",", (string) substr($parm,1) );
 				foreach($tmp as $not){
 					$not=trim($not);
 					if(isset($key[$not])){
@@ -1003,7 +1007,7 @@ class user_shortcodes extends e_shortcode
 						unset($key[$not]);
 					}
 				}
-			
+
 			//else it means we render only the following parms
 			}else{
 				$tmp = explode(",", $parm );

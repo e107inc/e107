@@ -61,7 +61,7 @@ class UserHandler
 	private $otherFields = array();
 	private $passwordAPI = false;
 
-	private $otherFieldTypes = array();
+	public $otherFieldTypes = array();
 
 	// Constructor
 	public function __construct()
@@ -108,7 +108,6 @@ class UserHandler
 		'user_email' => array('niceName'=> LAN_EMAIL, 'fieldType' => 'string', 'vetMethod' => '1,3', 'vetParam' => '', 'fieldOptional' => varset($pref['disable_emailcheck'],0), 'srcName' => 'email', 'dbClean' => 'toDB'),
 		'user_signature' => array('niceName'=> LAN_USER_09, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'signature', 'dbClean' => 'toDB'),
 		'user_hideemail' => array('niceName'=> LAN_USER_10, 'fieldType' => 'int', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'hideemail', 'dbClean' => 'intval'),
-		'user_xup' => array('niceName'=> "XUP File", 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'user_xup', 'dbClean' => 'toDB'),
 		'user_class' => array('niceName'=> LAN_USER_12, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'class', 'dataType' => '1')
 	);
 
@@ -161,8 +160,6 @@ class UserHandler
 				$this->passwordOpts = 0;		// In case it got set to some stupid value
 			break;
 		}
-
-		return false;
 	}
 
 
@@ -187,24 +184,22 @@ class UserHandler
 
 
 	/**
-	 * Check if a user posted field is readonly (should not be user-editable) - used in usersettings.php
-	 * @param array $posted
-	 * @return bool
+	 * Check if a user posted field is readonly (should not be user-editable).
+	 * @param array|Traversable $posted values keyed by field name, or a list of field names
+	 * @return bool true if the set names a readonly field, or cannot be checked against the list
 	 */
 	public function hasReadonlyField($posted)
 	{
 		$restricted = array_keys($this->otherFields);
 
-		$pref = e107::getPref();
-
-		if(empty($pref['signup_option_class']))
+		if(empty($restricted) || (!is_array($posted) && !($posted instanceof Traversable)))
 		{
-			$restricted[] = 'user_class';
+			return true;
 		}
 
 		foreach($posted as $k=>$v)
 		{
-			if(in_array($k,$restricted))
+			if(in_array($k, $restricted, true) || (is_int($k) && in_array($v, $restricted, true)))
 			{
 				return true;
 			}
@@ -290,7 +285,7 @@ class UserHandler
 			case PASSWORD_E107_SALT:
 				$hash = $this->HashPassword($password, $login_name, PASSWORD_E107_SALT);
 				if ($hash === false) return PASSWORD_INVALID;
-				return ($hash == $stored_hash) ? PASSWORD_VALID : PASSWORD_INVALID;
+				return hash_equals((string) $stored_hash, $hash) ? PASSWORD_VALID : PASSWORD_INVALID;
 				break;
 
 			case PASSWORD_E107_PHP: // PHP 5.5+ Blowfish+
@@ -449,8 +444,8 @@ class UserHandler
 	 */
 	public function CheckCHAP($challenge, $response, $login_name, $stored_hash )
 	{
-		if (strlen($challenge) != 40) return PASSWORD_INVALID;
-		if (strlen($response) != 32) return PASSWORD_INVALID;
+		if (!is_string($challenge) || strlen($challenge) != 40) return PASSWORD_INVALID;
+		if (!is_string($response) || strlen($response) != 32) return PASSWORD_INVALID;
 		$valid_ret = PASSWORD_VALID;
 		if (strlen($stored_hash) == 32)
 		{	// Its simple md5 password storage
@@ -458,22 +453,23 @@ class UserHandler
 			if ($this->passwordOpts != PASSWORD_E107_MD5) $valid_ret = $stored_hash;
 		}
 		$testval = md5(substr($stored_hash,strlen(PASSWORD_E107_ID)).$challenge);
-		if ($testval == $response) return $valid_ret;
+		if (hash_equals($testval, $response)) return $valid_ret;
 		return PASSWORD_INVALID;
 	}
 
 
 
 	/**
-	 *	Checks whether the user has to validate a change of user settings by entering password (basically, if that field affects the
-	 *	stored password value)
+	 *	Checks whether the user has to confirm a change of user settings by entering their current password - either
+	 *	because the field affects the stored password value, or because the field is the credential itself.
 	 *
 	 *	@param string $fieldName - name of field being changed
 	 *
-	 *	@return bool TRUE if change required, false otherwise
+	 *	@return bool TRUE if the current password is required, false otherwise
 	 */
 	public function isPasswordRequired($fieldName)
 	{
+		if ($fieldName === 'user_password') return TRUE;
 		if ($this->preferred == PASSWORD_E107_MD5) return false;
 		switch ($fieldName)
 		{
@@ -708,8 +704,11 @@ class UserHandler
 	/**
 	 *	Create user cookie
 	 *
+	 *	Regenerates the session id first, so anything holding the old one has to
+	 *	read it again. {@see e_session::regenerateId()}
+	 *
 	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
-	 *	@param bool $autologin - TRUE if the 'Remember Me' box ticked
+	 *	@param bool $autologin - ignored since v2.3.12; 'Remember Me' is discontinued
 	 *
 	 *	@return void|true
 	 */
@@ -720,28 +719,9 @@ class UserHandler
 			return true;
 		}
 
-		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
-		if (e107::getPref('user_tracking','session') == 'session')
-		{
-			$_SESSION[e107::getPref('cookie_name')] = $cookieval;
-		}
-		else
-		{
-			if ($autologin == 1)
-			{	// Cookie valid for up to 30 days
-				cookie(e107::getPref('cookie_name'), $cookieval, (time() + 3600 * 24 * 30));
-				$_COOKIE[e107::getPref('cookie_name')] = $cookieval; // make it available to the global scope before the page is reloaded
-			}
-			else
-			{
-				cookie(e107::getPref('cookie_name'), $cookieval);
-				$_COOKIE[e107::getPref('cookie_name')] = $cookieval; // make it available to the global scope before the page is reloaded
-			}
-		}
+		e107::getSession()->regenerateId();
 
-
-	//	echo "Debug: making cookie: ".$cookieval ." from ".print_a($lode,true);
-	//	exit;
+		$_SESSION[e107::getPref('cookie_name')] = $lode['user_id'].'.'.md5($lode['user_password']);
 	}
 
 
@@ -826,7 +806,6 @@ class UserHandler
   user_image		image			image*			-				Avatar (may be external URL or file on server)
   user_hideemail	hideemail		hideemail		-				Flag to hide user's email address
   user_login		realname		realname		realname		User Real name
-  user_xup			xupexist$		user_xup		-				XUP file link
   user_class		class			class			userclass		User class (array on form)
 
 user_loginname may be auto-generated
@@ -1566,6 +1545,48 @@ class e_user_provider
 	}
 
 	/**
+	 * Whether a request naming this provider has to prove that it started here.
+	 *
+	 * The address that begins a social login is also the address the provider
+	 * sends the visitor back to, so an ordinary token cannot be asked of
+	 * everything that arrives at it: the provider has no way to carry one home.
+	 * The two legs are told apart by the session instead. Hybridauth writes a
+	 * record of the handshake under the provider's own name before it redirects
+	 * the visitor away, in {@see \Hybridauth\Adapter\OAuth2::getAuthorizeUrl()}
+	 * and {@see \Hybridauth\Adapter\OAuth1::requestAuthToken()}, and takes that
+	 * record back out once the provider has answered. Its presence marks the
+	 * returning leg; its absence marks a fresh outgoing one, which is the leg
+	 * another site can forge and so the leg that has to carry a token.
+	 *
+	 * OpenID adapters store nothing at all before they redirect, see
+	 * {@see \Hybridauth\Adapter\OpenID::authenticateBegin()}, so their two legs
+	 * are indistinguishable from here and neither of them is asked for a token.
+	 * What remains forgeable on those five is refused by the browser's own
+	 * account of the request instead, see
+	 * {@see core_system_xup_controller::askedForByAnotherSiteInTheBackground()}.
+	 *
+	 * @return bool
+	 */
+	public function loginNeedsToken()
+	{
+		$provider = $this->getProvider();
+
+		if (empty($provider) || self::getTypeOf($provider) === 'OpenID')
+		{
+			return false;
+		}
+
+		$storage = new Hybridauth\Storage\Session();
+
+		foreach (array('authorization_state', 'request_token') as $handshakeKey)
+		{
+			if ($storage->get($provider . '.' . $handshakeKey)) return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * XUP Signup Method (falls-back to XUP login when existing user is detected).
 	 * May be used as a simple XUP login link for existing and non-existing users.
 	 */
@@ -1799,6 +1820,30 @@ class e_user_provider
 				),
 			array('full' => true, 'encode' => false)
 		);
+	}
+
+	/**
+	 * Build the address a visitor follows to begin a social login here.
+	 *
+	 * The site's own token is added to it, and deliberately not to
+	 * {@see e_user_provider::generateCallbackUrl()}: the callback is the
+	 * redirect_uri every site has already filed with its provider, and a
+	 * provider matches it exactly, so it has to keep the shape it has always
+	 * had. Only the outgoing leg comes from a page e107 rendered, and only the
+	 * outgoing leg is asked to prove it, see
+	 * {@see e_user_provider::loginNeedsToken()}.
+	 *
+	 * @param string $backUrl
+	 * @return string
+	 */
+	public function generateLoginUrl($backUrl = null)
+	{
+		$url = $this->generateCallbackUrl($backUrl);
+		$token = defset('e_TOKEN');
+
+		if (empty($token)) return $url;
+
+		return $url . (strpos($url, '?') === false ? '?' : '&') . 'e-token=' . $token;
 	}
 
 	/**
@@ -2277,9 +2322,11 @@ class e_userperms
 		{
 			if(is_array($data['title']))
 			{
-				$title_parts = array_map(fn($const) => defset($const, 'Untitled'), $data['title']);
-				$separator = $data['separator'] ?? '';
-				$sub_separator = $data['sub_separator'] ?? '';
+				$title_parts = array_map(function ($const) {
+                    return defset($const, 'Untitled');
+                }, $data['title']);
+				$separator = isset($data['separator']) ? $data['separator'] : '';
+				$sub_separator = isset($data['sub_separator']) ? $data['sub_separator'] : '';
 
 				if(count($title_parts) > 2 && $sub_separator)
 				{

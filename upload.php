@@ -28,16 +28,16 @@ class userUpload
 {
 	function __construct()
 	{
-		
+
 
 		/*
 		e107::css('inline', "
 			input[type=file] {
-			
-			
+
+
 			}
 		"); 
-		
+
 		e107::js('inline', "
 
 			function frmVerify()
@@ -63,7 +63,7 @@ class userUpload
 					return false;
 				}
 			}
-			
+
 		");
 		*/
    		

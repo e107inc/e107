@@ -20,8 +20,15 @@ e107::coreLan('contact');
 
 class contact_shortcodes extends e_shortcode
 {
-	
-	
+
+	/**
+	 * Whether a shortcode has already put the CAPTCHA input on the form being rendered.
+	 *
+	 * @var bool
+	 */
+	protected $imagecodeRendered = false;
+
+
 	function sc_contact_email_copy($parm='') 
 	{
 		global $pref;
@@ -78,20 +85,26 @@ class contact_shortcodes extends e_shortcode
 	 * contact.php refuses a submission whose code does not verify, so the fields
 	 * that answer it cannot be left to the template: a theme that overrides
 	 * contact_template.php without {CONTACT_IMAGECODE_INPUT} would otherwise
-	 * have a form nobody can submit.
+	 * have a form nobody can submit. Consumes the record of this render, so
+	 * every form on the page is judged on its own markup, and still reads the
+	 * markup for core's own field, which is the only evidence left when a
+	 * plugin answers the shortcode without the batch being called.
 	 *
 	 * @param string $text rendered form markup
 	 * @return string
 	 */
 	public function withImagecode($text)
 	{
-		if(strpos($text, "name='code_verify'") !== false || strpos($text, 'name="code_verify"') !== false)
+		$rendered = $this->imagecodeRendered;
+		$this->imagecodeRendered = false;
+
+		if($rendered || strpos($text, "name='code_verify'") !== false || strpos($text, 'name="code_verify"') !== false)
 		{
 			return $text;
 		}
 
 		$block = "<div class='control-group form-group'><label for='code-verify'>".$this->sc_contact_imagecode_label()."</label> "
-			.$this->sc_contact_imagecode()."<span class='m-2'>".$this->sc_contact_imagecode_input()."</span></div>";
+			.$this->sc_contact_imagecode()."<span class='m-2'>".$this->imagecodeInput()."</span></div>";
 
 		$close = strripos($text, '</form>');
 
@@ -145,6 +158,18 @@ class contact_shortcodes extends e_shortcode
 	}
 	
 	function sc_contact_imagecode_input($parm='') 
+	{
+		$this->imagecodeRendered = true;
+
+		return $this->imagecodeInput();
+	}
+
+	/**
+	 * The CAPTCHA input, for callers that are not the shortcode.
+	 *
+	 * @return string
+	 */
+	protected function imagecodeInput()
 	{
 		return e107::getSecureImg()->renderInput(secure_image::FORM_CONTACT);
 	}
@@ -243,7 +268,7 @@ class contact_shortcodes extends e_shortcode
 
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
-		$value = !empty($_POST['email_send'] ) ? e107::getParser()->filter($_POST['email_send'],'email') : USEREMAIL;
+		$value = e107::getParser()->filter(!empty($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL);
 		return "<input type='email'   ".$disabled." id='contactEmail' title='".LAN_CONTACT_18."' aria-label='".LAN_CONTACT_18."'  aria-labelledby='contactEmail' name='email_send' required='required' size='30' ".$placeholder." class='".$class."' value='".$value."' />";
 	}
 	
@@ -278,7 +303,7 @@ class contact_shortcodes extends e_shortcode
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox '.$size.' form-control';
 
 
-		$value = !empty($_POST['body']) ? stripslashes($_POST['body']) : '';
+		$value = !empty($_POST['body']) ? e107::getParser()->post_toForm($_POST['body']) : '';
 		
 		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LAN_CONTACT_20."' aria-label='".LAN_CONTACT_20."' aria-labelledby='contactBody' name='body' ".$placeholder." required='required' class='".$class."'>".$value."</textarea>";
 	}

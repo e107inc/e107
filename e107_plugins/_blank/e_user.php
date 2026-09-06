@@ -18,7 +18,7 @@ class _blank_user // plugin-folder + '_user'
 	{
 
 		$var = array(
-			0 => array('label' => "Label", 'text' => "Some text to display", 'url'=> e_PLUGIN_ABS."_blank/blank.php")
+			0 => array('label' => "Label", 'text' => "Some text to display", 'url'=> e_PLUGIN_ABS."_blank/_blank.php")
 		);
 		
 		return $var;

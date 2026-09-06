@@ -33,7 +33,6 @@ class BannerOffsiteOptInCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->havePluginInstalled('banner');
 
 		$this->bannerId = (int) $I->haveInDatabase('e107_banner', array(
