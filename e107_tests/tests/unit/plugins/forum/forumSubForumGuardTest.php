@@ -19,8 +19,9 @@
  * subprocess, the way e_fileOutboundRequestTest drives class2.php, so nothing
  * the front page touches is left behind in this one.
  */
-class forumSubForumGuardTest extends \Codeception\Test\Unit
+class forumSubForumGuardTest extends \Test\Unit
 {
+
 	const MARKER = 'e107help sub-forum guard probe';
 
 	/** @var bool whether this test installed the forum plugin for its tables */
@@ -114,17 +115,10 @@ class forumSubForumGuardTest extends \Codeception\Test\Unit
 	 */
 	private function renderForumIndex()
 	{
-		$php = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-		$php .= "\$_E107 = array('cli' => true); ";
-		$php .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
-		$php .= "e107::getConfig()->setPref('plug_installed/forum', '2.0'); ";
+		$php = "e107::getConfig()->setPref('plug_installed/forum', '2.0'); ";
 		$php .= "require_once('".addslashes(APP_PATH.'/e107_plugins/forum/forum.php')."'); ";
 
-		$output = array();
-		$status = 0;
-		exec(sprintf('timeout 60 php -r %s 2>&1', escapeshellarg($php)), $output, $status);
-
-		self::assertNotSame(124, $status, 'the subprocess wedged, so nothing was measured');
+		list($output, ) = $this->runInBootedCli($php);
 
 		return implode("\n", $output);
 	}

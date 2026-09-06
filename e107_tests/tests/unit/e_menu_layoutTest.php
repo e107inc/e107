@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_menu_layoutTest extends \Codeception\Test\Unit
+	class e_menu_layoutTest extends \Test\Unit
 	{
 
 		protected $menu;
@@ -18,42 +18,6 @@
 		{
 			require_once(e_HANDLER."menumanager_class.php");
 		}
-
-		private function copydir( $src, $dst )
-		{
-			if(!is_dir($src) || is_dir($dst))
-			{
-				echo 'Skipping directory creation. '.$dst.' already exists.'."\n";
-				return false;
-			}
-
-			mkdir($dst);
-
-			$DS = DIRECTORY_SEPARATOR ;
-
-			$files = scandir($src);
-
-			unset($files[0], $files[1]);
-
-			foreach($files as $file)
-			{
-				if($file != '.' && $file != '..')
-				{
-					if(is_dir($src . $DS . $file))
-					{
-						$this->copydir($src . $DS . $file, $dst . $DS . $file);
-					}
-					else
-					{
-						copy($src . $DS . $file, $dst . $DS . $file);
-					}
-				}
-			}
-
-			// closedir($dir);
-		}
-
-
 
 /*
 		public function testMenuSelector()

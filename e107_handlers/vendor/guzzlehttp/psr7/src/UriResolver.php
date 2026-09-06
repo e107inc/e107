@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use Psr\Http\Message\UriInterface;
@@ -19,8 +17,10 @@ final class UriResolver
      * Removes dot segments from a path and returns the new path.
      *
      * @see https://datatracker.ietf.org/doc/html/rfc3986#section-5.2.4
+     * @param string $path
+     * @return string
      */
-    public static function removeDotSegments(string $path): string
+    public static function removeDotSegments($path)
     {
         if ($path === '' || $path === '/') {
             return $path;
@@ -54,8 +54,9 @@ final class UriResolver
      * Converts the relative URI into a new URI that is resolved against the base URI.
      *
      * @see https://datatracker.ietf.org/doc/html/rfc3986#section-5.2
+     * @return \Psr\Http\Message\UriInterface
      */
-    public static function resolve(UriInterface $base, UriInterface $rel): UriInterface
+    public static function resolve(UriInterface $base, UriInterface $rel)
     {
         if ((string) $rel === '') {
             // we can simply return the same base URI instance for this same-document reference
@@ -124,8 +125,9 @@ final class UriResolver
      * relative-path reference will be returned as-is.
      *
      *    echo UriResolver::relativize($base, new Uri('/a/b/c'));  // prints 'c' as well
+     * @return \Psr\Http\Message\UriInterface
      */
-    public static function relativize(UriInterface $base, UriInterface $target): UriInterface
+    public static function relativize(UriInterface $base, UriInterface $target)
     {
         if ($target->getScheme() !== ''
             && ($base->getScheme() !== $target->getScheme() || $target->getAuthority() === '' && $base->getAuthority() !== '')
@@ -171,7 +173,10 @@ final class UriResolver
         return $emptyPathUri;
     }
 
-    private static function getRelativePath(UriInterface $base, UriInterface $target): string
+    /**
+     * @return string
+     */
+    private static function getRelativePath(UriInterface $base, UriInterface $target)
     {
         $sourceSegments = explode('/', $base->getPath());
         $targetSegments = explode('/', $target->getPath());

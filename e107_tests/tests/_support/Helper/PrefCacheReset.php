@@ -27,7 +27,7 @@ class PrefCacheReset extends Module
 	public function purge()
 	{
 		// Helper/ -> _support/ -> tests/ -> e107_tests/ -> app docroot.
-		$docroot = dirname(__DIR__, 4);
+		$docroot = dirname(dirname(dirname(dirname(__DIR__))));
 		$caches = glob($docroot . '/e107_system/*/cache/content/S_Config_*.cache.php');
 		foreach ($caches ?: array() as $cacheFile)
 		{

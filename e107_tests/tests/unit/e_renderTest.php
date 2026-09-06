@@ -1,7 +1,7 @@
 <?php
 
 
-class e_renderTest extends \Codeception\Test\Unit
+class e_renderTest extends \Test\Unit
 {
 
 	/** @var e_render */

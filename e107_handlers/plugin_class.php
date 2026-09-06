@@ -169,6 +169,7 @@ class e_plugin
 		$this->_installed = array();
 		$this->_addons = array();
 		e107::setRegistry('core/e107/addons/e_url');
+		e107\Language\GlobalLanguageList::invalidate();
 
 		$this->_init(true);
 		$this->_initIDs();
@@ -678,7 +679,7 @@ class e_plugin
 		}
 
 
-        if(e_PAGE == 'e107_update.php')
+        if(defset('e_PAGE') == 'e107_update.php')
         {
             return null;
         }
@@ -1251,7 +1252,6 @@ class e_plugin
 		$core->set('bbcode_list', array())
 			 ->set('shortcode_legacy_list', array())
 			 ->set('shortcode_list', array())
-			 ->set('lan_global_list', array())
 			 ->set('wysiwyg_list', array());
 
 		$paths = $this->getDetected();
@@ -1277,11 +1277,6 @@ class e_plugin
 
 			if ($is_installed)
 			{
-				if($hasLAN = $this->hasLanGlobal())
-				{
-					$core->setPref('lan_global_list/'.$hasLAN, $hasLAN);
-				}
-
 				foreach ($tmp as $val)
 				{
 					if (strpos($val, 'e_') === 0)
@@ -1302,7 +1297,7 @@ class e_plugin
 				// legacy shortcodes - plugin root *.sc files
 				if (substr($adds, -3) === ".sc")
 				{
-					$sc_name = substr($adds, 0, -3); // remove the .sc
+					$sc_name = (string) substr($adds, 0, -3); // remove the .sc
 					if ($is_installed)
 					{
 						$scl_array[$sc_name] = "0"; // default userclass = e_UC_PUBLIC
@@ -1315,7 +1310,7 @@ class e_plugin
 				// new shortcodes location - shortcodes/single/*.php
 				elseif (strpos($adds, "sc_") === 0)
 				{
-					$sc_name = substr(substr($adds, 3), 0, -4); // remove the sc_ and .php
+					$sc_name = (string) substr((string) substr($adds, 3), 0, -4); // remove the sc_ and .php
 
 					if ($is_installed)
 					{
@@ -1332,14 +1327,14 @@ class e_plugin
 					// simple bbcode
 					if(substr($adds,-3) == ".bb")
 					{
-						$bb_name = substr($adds, 0,-3); // remove the .bb
+						$bb_name = (string) substr($adds, 0,-3); // remove the .bb
                     	$bb_array[$bb_name] = "0"; // default userclass.
 					}
 					// bbcode class
 					elseif(strpos($adds, "bb_") === 0 && substr($adds, -4) == ".php")
 					{
-						$bb_name = substr($adds, 0,-4); // remove the .php
-						$bb_name = substr($bb_name, 3);
+						$bb_name = (string) substr($adds, 0,-4); // remove the .php
+						$bb_name = (string) substr($bb_name, 3);
                     	$bb_array[$bb_name] = "0"; // TODO - instance and getPermissions() method
 					}
 				}
@@ -1754,7 +1749,7 @@ class e107plugin
 
 		foreach ($pluginList as $p)
 		{
-			$p['path'] = substr(str_replace(e_PLUGIN, "", $p['path']), 0, -1);
+			$p['path'] = (string) substr(str_replace(e_PLUGIN, "", $p['path']), 0, -1);
 			$plugin_path = $p['path'];
 
 			if (strpos($plugin_path, 'e107_') !== FALSE)
@@ -1762,14 +1757,14 @@ class e107plugin
 				$mes->addWarning("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.");
 				continue;
 			}
-			
+
 			if(in_array($plugin_path, $this->disAllowed))
 			{
 				$mes->addWarning("Folder error: <i>{$p['path']}</i> is not permitted as an acceptable folder name.");
 				continue;	
 			}
-			
-			
+
+
 			$plug['plug_action'] = 'scan'; // Make sure plugin.php knows what we're up to
 
 			if (!$this->parse_plugin($p['path']))
@@ -1781,14 +1776,14 @@ class e107plugin
 
 			$plug_info = $this->plug_vars;
 			$eplug_addons = $this->getAddons($plugin_path);
-			
+
 			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml - no longer relevant. 
 			if ($plugin_path == $plug_info['folder'])
 			{
 				if (array_key_exists($plugin_path, $pluginDBList))
 				{ // Update the addons needed by the plugin
 					$pluginDBList[$plugin_path]['status'] = 'exists';
-					
+
 						// Check for name (lan) changes
 					if (vartrue($plug_info['@attributes']['lan']) && $pluginDBList[$plugin_path]['plugin_name'] != $plug_info['@attributes']['lan'])
 					{
@@ -1798,15 +1793,14 @@ class e107plugin
 						$this->plugFolder = $plugin_path;
 						$this->XmlLanguageFiles('upgrade');
 					}
-					
-					// Reconcile the global/log language-file lists on a folder scan too, not just 'refresh'.
+
+					// Reconcile the log language-file list on a folder scan too, not just 'refresh'.
 					// XmlLanguageFileCheck() forces an 'uninstall' (removePref) when the plugin is not
-					// installed, so a stale lan_global_list/lan_log_list entry for an uninstalled plugin
-					// is cleared instead of surviving every scan. See https://github.com/e107inc/e107/issues/5709
+					// installed, so a stale lan_log_list entry for an uninstalled plugin is cleared
+					// instead of surviving every scan. See https://github.com/e107inc/e107/issues/5709
 					if ($mode == 'refresh' || $mode == 'update')
 					{
 						if ($this->XmlLanguageFileCheck('_log', 'lan_log_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], FALSE, $plugin_path)) $sp = TRUE;
-						if ($this->XmlLanguageFileCheck('_global', 'lan_global_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], TRUE, $plugin_path)) $sp = TRUE;
 					}
 
 					// Check for missing plugin_category in plugin table.
@@ -1853,10 +1847,10 @@ class e107plugin
 					if ($plug_info['@attributes']['name'])
 					{					
 						$pName = vartrue($plug_info['@attributes']['lan']) ? $plug_info['@attributes']['lan'] : $plug_info['@attributes']['name'] ;
-						
+
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1);
-						
-						
+
+
 						$pInsert = array(
 							'plugin_id' 			=> 0,
 							'plugin_name'			=> $tp->toDB($pName, true),
@@ -1866,7 +1860,7 @@ class e107plugin
 							'plugin_addons'			=> $eplug_addons,
 							'plugin_category'		=> $this->manage_category($plug_info['category'])
 						);
-						
+
 							if (e107::getDb()->createQueryBuilder()->insert('plugin')->insertGetId($pInsert))
 							{
 								$log->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
@@ -1875,7 +1869,7 @@ class e107plugin
 							{
 								$log->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
 							}
-							
+
 							$log->flushMessages("Updated Plugins table");
 						}
 					}
@@ -1915,6 +1909,8 @@ class e107plugin
 			$this->rebuildUrlConfig();
 			e107::getConfig('core')->save(true,false,false);
 		}
+
+		e107::getPlug()->clearCache();
 
 		// Triggering system (post) event.
 		e107::getEvent()->trigger('system_plugins_table_updated', array(
@@ -1998,7 +1994,7 @@ class e107plugin
 
 				foreach($iconTypes as $key)
 				{
-					if(!empty($attrib[$key]) && str_ends_with($attrib[$key], '.png'))
+					if(!empty($attrib[$key]) && substr_compare($attrib[$key], '.png', -strlen('.png')) === 0)
 					{
 						$path = e_PLUGIN.$folder."/".$attrib[$key];
 						$file = basename($path);
@@ -2364,26 +2360,21 @@ class e107plugin
 	private function manage_userclass($action, $class_name, $class_description='')
 	{
 		$this->log("Running ".__FUNCTION__);
-		$e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+		$userClass = e107::getSingleton('user_class_admin');
 
 		$mes->addDebug("Userclass: ".$action.": ".$class_name." : ".$class_description);
-
-		if (!$e107->user_class->isAdmin())
-		{
-			$e107->user_class = new user_class_admin; // We need the extra methods of the admin extension
-		}
 
 		$class_name = strip_tags(strtoupper($class_name));
 		if ($action == 'add')
 		{
-			if ($e107->user_class->ucGetClassIDFromName($class_name) !== FALSE)
+			if ($userClass->ucGetClassIDFromName($class_name) !== FALSE)
 			{ // Class already exists.
 				return TRUE; // That's probably OK
 			}
-			$i = $e107->user_class->findNewClassID();
+			$i = $userClass->findNewClassID();
 			if ($i !== FALSE)
 			{
 				$tmp = array();
@@ -2398,7 +2389,7 @@ class e107plugin
 				$tmp['_FIELD_TYPES']['userclass_visibility'] = 'int';
 				$tmp['_FIELD_TYPES']['userclass_id'] = 'int';
 				$tmp['_FIELD_TYPES']['_DEFAULT'] = 'todb';
-				return $e107->user_class->add_new_class($tmp);
+				return $userClass->add_new_class($tmp);
 			}
 			else
 			{
@@ -2407,8 +2398,8 @@ class e107plugin
 		}
 		if ($action == 'remove')
 		{
-			$classID = $e107->user_class->ucGetClassIDFromName($class_name);
-			if (($classID !== FALSE) && ($e107->user_class->deleteClassAndUsers($classID) === TRUE))
+			$classID = $userClass->ucGetClassIDFromName($class_name);
+			if (($classID !== FALSE) && ($userClass->deleteClassAndUsers($classID) === TRUE))
 			{
 				return TRUE;
 			}
@@ -2479,7 +2470,7 @@ class e107plugin
 					$linkData = array(
 						'link_name'			 => $link_name,
 						'link_url'			 => $path,
-						'link_description'	 => vartrue($options['link_desription']),
+						'link_description'	 => vartrue($options['link_description']),
 						'link_button'		 => vartrue($options['link_icon']),
 						'link_category'		 => vartrue($options['link_category'],'1'),
 						'link_order'		 => $link_t + 1,
@@ -2775,7 +2766,7 @@ class e107plugin
 
 		if (strpos($pref[$prefname], ",") === 0)
 		{
-			$pref[$prefname] = substr($pref[$prefname], 1);
+			$pref[$prefname] = (string) substr($pref[$prefname], 1);
 		}
 
 		e107::getConfig('core')->setPref($pref);
@@ -2934,14 +2925,13 @@ class e107plugin
 		$config = eRouter::adminBuildConfig(e107::getPref('url_config'), $modules); // merge with current config
 		$locations = eRouter::adminBuildLocations($modules); // rebuild locations pref
 		$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config); // rebuild aliases
-			
-		// set new values, changes should be saved outside this methods
-	/*	e107::getConfig()
+
+		e107::getConfig()
 			->set('url_aliases', $aliases)
 			->set('url_config', $config)
 			->set('url_modules', $modules)
 			->set('url_locations', $locations);
-			*/
+
 		eRouter::clearCache();
 	}
 
@@ -3621,16 +3611,15 @@ class e107plugin
 
 						if(!$sql->db_Query($query))
 						{
-							$errno = (string) $sql->getLastErrorNumber();
+							$errno = $sql->getLastErrorNumber();
 							$error = $sql->getLastErrorText();
 
 							// "Table already exists" is normal rather than a
 							// failure: uninstalling a plugin leaves its tables in
 							// place unless delete_tables was asked for, so every
 							// reinstall meets them again, and the table being
-							// there is all this step wanted. PDO reports it as
-							// SQLSTATE 42S01 and mysqli as 1050, so take either.
-							if(in_array($errno, array('42S01', '1050'), true))
+							// there is all this step wanted.
+							if((int) $errno === 1050)
 							{
 								$txt = "Table {$v} already present.";
 								$status = E_MESSAGE_INFO;
@@ -3988,15 +3977,8 @@ class e107plugin
 				case 'install':
 				case 'upgrade':
 				case 'refresh':
-					e107::getMessage()->addDebug("Adding ".$this->plugFolder." to lan_global_list");
 					e107::lan($this->plugFolder,'global',true);
-					$core->setPref('lan_global_list/'.$this->plugFolder, $this->plugFolder);
-					$updated = true;
 					break;
-				case 'uninstall':
-					$core->removePref('lan_global_list/'.$this->plugFolder);
-					$updated = true;
-				break;
 			}	
 		}
 			
@@ -4541,19 +4523,19 @@ class e107plugin
 	function execute_function($path = null, $what = '', $when = '', $callbackData = null)
 	{
 		$mes = e107::getMessage();
-		
+
 		if($path == null)
 		{
 			$path = $this->plugFolder;	
 		}
-		
+
 		$class_name = $path."_setup"; // was using $this->pluginFolder; 
 		$method_name = $what."_".$when;
-		
-		
+
+
 			// {PLUGIN}_setup.php should ALWAYS be the name of the file.. 
-			
-			
+
+
 	//	if (varset($this->plug_vars['@attributes']['setupFile']))
 	//	{
 	//		$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plug_vars['@attributes']['setupFile'];
@@ -4581,15 +4563,15 @@ class e107plugin
 			{
 				$mes->addDebug("Found setup file <b>".$path."_setup.php</b> ");
 			}
-			
+
 			include_once($setup_file);
-			
+
 
 			if (class_exists($class_name))
 			{
 				$obj = new $class_name;
 			//	$obj->version_from = $this; // Not used?
-				
+
 				if (method_exists($obj, $method_name))
 				{
 					if(e_PAGE == 'e107_update.php' && E107_DBG_INCLUDES)
@@ -5157,7 +5139,7 @@ class e107plugin
 					// legacy shortcodes - plugin root *.sc files
 					if (substr($adds, -3) === ".sc")
 					{
-						$sc_name = substr($adds, 0, -3); // remove the .sc
+						$sc_name = (string) substr($adds, 0, -3); // remove the .sc
 						if ($is_installed)
 						{
 							$scl_array[$sc_name] = "0"; // default userclass = e_UC_PUBLIC
@@ -5170,7 +5152,7 @@ class e107plugin
 					// new shortcodes location - shortcodes/single/*.php
 					elseif (strpos($adds, "sc_") === 0)
 					{
-						$sc_name = substr(substr($adds, 3), 0, -4); // remove the sc_ and .php
+						$sc_name = (string) substr((string) substr($adds, 3), 0, -4); // remove the sc_ and .php
 						
 						if ($is_installed)
 						{
@@ -5187,14 +5169,14 @@ class e107plugin
 						// simple bbcode
 						if(substr($adds,-3) == ".bb")
 						{
-							$bb_name = substr($adds, 0,-3); // remove the .bb
+							$bb_name = (string) substr($adds, 0,-3); // remove the .bb
 	                    	$bb_array[$bb_name] = "0"; // default userclass.
 						}
 						// bbcode class
 						elseif(strpos($adds, "bb_") === 0 && substr($adds, -4) == ".php")
 						{
-							$bb_name = substr($adds, 0,-4); // remove the .php
-							$bb_name = substr($bb_name, 3);
+							$bb_name = (string) substr($adds, 0,-4); // remove the .php
+							$bb_name = (string) substr($bb_name, 3);
 	                    	$bb_array[$bb_name] = "0"; // TODO - instance and getPermissions() method
 						}
 					}
@@ -5571,9 +5553,9 @@ class e107plugin
 		}
 
 		// For BC.
-		$ret['administration']['icon'] = str_replace($plugName."/","",$eplug_icon);
+		$ret['administration']['icon'] = str_replace($plugName."/","",varset($eplug_icon));
 		$ret['administration']['caption'] = varset($eplug_caption);
-		$ret['administration']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
+		$ret['administration']['iconSmall'] = str_replace($plugName."/","",varset($eplug_icon_small));
 		$ret['administration']['configFile'] = varset($eplug_conffile);
 
 		if(varset($eplug_conffile))

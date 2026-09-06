@@ -203,6 +203,7 @@ class e107
 		'e_emote'                        => '{e_HANDLER}e_emote_class.php',
 		'e_file'                         => '{e_HANDLER}file_class.php',
 		'e_file_inspector_json_phar'     => '{e_HANDLER}e_file_inspector_json_phar.php',
+		'e_file_inspector_progress'      => '{e_HANDLER}e_file_inspector.php',
 		'e_form'                         => '{e_HANDLER}form_handler.php',
 		'e_jshelper'                     => '{e_HANDLER}js_helper.php',
 		'e_media'                        => '{e_HANDLER}media_class.php',
@@ -537,15 +538,7 @@ class e107
 	 */
 	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info=array(), $e107_config_override = array())
 	{
-		if(!empty($e107_paths['admin'])) //v2.4
-		{
-			foreach($e107_paths as $dir => $path)
-			{
-				$newKey = strtoupper($dir).'_DIRECTORY';
-				$e107_paths[$newKey] = $path;
-				unset($e107_paths[$dir]);
-			}
-		}
+		$e107_paths = self::expandShortPathKeys($e107_paths);
 
 		if(!empty($e107_config_mysql_info['db']))
 		{
@@ -553,6 +546,29 @@ class e107
 		}
 
 		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override);
+	}
+
+	/**
+	 * Key a folder override array by the names {@see e107::setDirs()} reads, dropping the entries that name no folder.
+	 *
+	 * @param array $e107_paths
+	 * @return array
+	 */
+	private static function expandShortPathKeys($e107_paths)
+	{
+		$expanded = array();
+
+		foreach((array) $e107_paths as $folder => $path)
+		{
+			if(!is_string($path) || $path === '')
+			{
+				continue;
+			}
+
+			$expanded[self::dirName($folder)] = $path;
+		}
+
+		return $expanded;
 	}
 
 	/**
@@ -812,6 +828,20 @@ class e107
 	}
 
 	/**
+	 * The {@see e107::overridableDirs()} name a folder goes by, from either the v2.4 short key ('admin') or the name itself ('ADMIN_DIRECTORY').
+	 *
+	 * @param string $folder
+	 * @return string
+	 */
+	private static function dirName($folder)
+	{
+		$suffix = '_DIRECTORY';
+		$name = strtoupper($folder);
+
+		return substr($name, -strlen($suffix)) === $suffix ? $name : $name.$suffix;
+	}
+
+	/**
 	 * Get default e107 folders, root folders can be overridden by passed override array
 	 *
 	 * @param array $override_root
@@ -986,7 +1016,7 @@ class e107
 	 */
 	public static function getFolder($for)
 	{
-		$key = strtoupper($for).'_DIRECTORY';
+		$key = self::dirName($for);
 		$self = self::getInstance();
 		return (isset($self->e107_dirs[$key]) ? $self->e107_dirs[$key] : '');
 	}
@@ -1947,6 +1977,57 @@ class e107
 	}
 
 	/**
+	 * Write $data to $file so that a concurrent reader gets the old file or
+	 * the new one, never a partial one.
+	 *
+	 * Falls back to a plain file_put_contents() when the temporary file or the
+	 * rename() cannot be made, so on such a host the write can still be torn.
+	 * The read side is not covered: a reader that checks a file exists and
+	 * then opens it can still lose to a delete in between.
+	 *
+	 * @param string   $file absolute path
+	 * @param string   $data
+	 * @param int|null $mode chmod() mode for the result; null gives what a plain
+	 *                       write would have under the current umask
+	 * @return bool true when $file holds $data
+	 */
+	public static function writeFileAtomic($file, $data, $mode = null)
+	{
+		$dir = dirname($file);
+		$tmp = @tempnam($dir, 'e107');
+
+		if($tmp !== false && realpath(dirname($tmp)) === realpath($dir))
+		{
+			if(@file_put_contents($tmp, $data) !== false)
+			{
+				@chmod($tmp, $mode === null ? 0666 & ~umask() : $mode);
+
+				if(@rename($tmp, $file))
+				{
+					return true;
+				}
+			}
+		}
+
+		if($tmp !== false)
+		{
+			@unlink($tmp);
+		}
+
+		if(@file_put_contents($file, $data) === false)
+		{
+			return false;
+		}
+
+		if($mode !== null)
+		{
+			@chmod($file, $mode);
+		}
+
+		return true;
+	}
+
+	/**
 	 * Create a new file inspector object
 	 *
 	 * Note: Only the core file inspector is supported right now.
@@ -1965,6 +2046,17 @@ class e107
         }
         catch (Throwable $e)
         {
+            // TODO: LAN
+            self::getMessage()->addWarning(
+                "The core integrity image is corrupt. " .
+                "File Inspector will be inoperative. " .
+                "Resolve this issue by uploading a good copy of the core image to " .
+                escapeshellarg($fileInspectorPath) . ". " .
+                "If uploading with FTP, use binary transfer mode. " .
+                "Error message: " .
+                $e->getMessage()
+            );
+        } catch (\Exception $e) {
             // TODO: LAN
             self::getMessage()->addWarning(
                 "The core integrity image is corrupt. " .
@@ -2121,9 +2213,7 @@ class e107
 		trigger_error('<b>'.__METHOD__.' is deprecated.</b>  Use the e_user_provider interfaces instead (e107::getUserProvider())', E_USER_DEPRECATED); // NO LAN
 
 		$e_user_provider = new e_user_provider(null, $config);
-		$reflection = new ReflectionClass('e_user_provider');
-		$reflection_property = $reflection->getProperty('hybridauth');
-		$reflection_property->setAccessible(true);
+		$reflection_property = new \e107\Reflection\ReflectionProperty('e_user_provider', 'hybridauth');
 		return $reflection_property->getValue($e_user_provider);
 	}
 
@@ -3037,7 +3127,7 @@ class e107
 		$filename = $addonName; // e.g. 'e_cron';
 		if(!$className)
 		{
-			$className = substr($filename, 2); // remove 'e_'
+			$className = (string) substr($filename, 2); // remove 'e_'
 		}
 
 		$elist = self::getPref($filename.'_list');
@@ -3519,12 +3609,7 @@ class e107
 		elseif($cacheFile !== null)
 		{
 			$payload = "<?php\nreturn " . var_export($names, true) . ";\n";
-			// Atomic-ish write: temp + rename.
-			$tmp = $cacheFile . '.' . getmypid() . '.tmp';
-			if(@file_put_contents($tmp, $payload, LOCK_EX) !== false)
-			{
-				@rename($tmp, $cacheFile);
-			}
+			self::writeFileAtomic($cacheFile, $payload);
 		}
 
 		$local[$key] = $names;
@@ -3714,7 +3799,12 @@ class e107
         // Introducing noWrapper when merging
 		$ret_core = self::_getTemplate($id, $key, $reg_path, $path, $info, true);
 
-		return (is_array($ret_core) ? array_merge($ret_core, $ret) : $ret);
+		if($ret === false && is_array($ret_core))
+		{
+			return $ret_core;
+		}
+
+		return (is_array($ret_core) && is_array($ret) ? array_merge($ret_core, $ret) : $ret);
 	}
 
 	/**
@@ -4006,14 +4096,30 @@ class e107
 
 			if($source === null)
 			{
+				if(strpos($path, e_CORE) !== 0)
+				{
+					self::predefineLegacyLans($path);
+				}
+
+				global $pref;
+
 				(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
+
+				$definedByTheIncludedFile = get_defined_vars();
+				$v1Shaped = !isset($$var);
+
 				$source = array(
-					'template' => (isset($$var) ? $$var : array()),
+					'template' => ($v1Shaped ? self::v1TemplateVars($definedByTheIncludedFile, array($var, $var_info, $wrapper, 'SC_WRAPPER')) : $$var),
 					'info'     => (isset($$var_info) && is_array($$var_info) ? $$var_info : array()),
-					'sc_style' => (isset($SC_WRAPPER) ? $SC_WRAPPER : null),
+					'sc_style' => (isset($SC_WRAPPER) ? $SC_WRAPPER : ($v1Shaped && isset($sc_style) ? $sc_style : null)),
 					'wrapper'  => (isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper) ? $$wrapper : null),
 				);
 				self::setRegistry($sourceRegPath, $source);
+
+				if(deftrue('E107_DBG_INCLUDES'))
+				{
+					self::getMessage()->addDebug("Loaded Template File: ".$path);
+				}
 			}
 
 			self::setRegistry($regPath, $source['template']);
@@ -4057,6 +4163,30 @@ class e107
 		}
 
 		return ($ret && is_array($ret) && isset($ret[$key])) ? $ret[$key] : false;
+	}
+
+	/**
+	 * The uppercase variables a v1-shaped template file left behind, as the template array {@see e107::_getTemplate()} returns.
+	 *
+	 * @param array $defined the included file's scope, taken with get_defined_vars()
+	 * @param array $reserved the names the loader reads for itself
+	 * @return array
+	 */
+	private static function v1TemplateVars($defined, $reserved)
+	{
+		$ret = array();
+
+		foreach($defined as $name => $value)
+		{
+			if(in_array($name, $reserved, true) || !preg_match('/^[A-Z][A-Z0-9_]*$/', $name))
+			{
+				continue;
+			}
+
+			$ret[$name] = $value;
+		}
+
+		return $ret;
 	}
 
 
@@ -4787,7 +4917,7 @@ class e107
 
 		if (!empty($plugin) && empty($tmp[$plugin][$key]['sef']))
 		{
-			self::getMessage()->addDebug("e_url.php in <b>" . e_PLUGIN . $plugin . "</b> is missing the key: <b>" . $key . "</b>. Or, you may need to <a href='" . e_ADMIN . "db.php?mode=plugin_scan'>scan your plugin directories</a> to register e_url.php");
+			self::getMessage()->addDebug("e_url.php in <b>" . e_PLUGIN . $plugin . "</b> is missing the key: <b>" . $key . "</b>. Or, you may need to <a href='" . e_ADMIN . "db.php?mode=plugin_scan&amp;e-token=" . defset('e_TOKEN') . "'>scan your plugin directories</a> to register e_url.php");
 			return false;
 		}
 
@@ -5272,14 +5402,14 @@ class e107
 			str_replace(
 				array('ajax_used=1', '&&'),
 				array('', '&'),
-				($_SERVER['QUERY_STRING'] ?? '')
+				(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '')
 			), '&');
 
 
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
-		$_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?? '';
-		$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_HOST'] ?? '';
+		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? (string) substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+		$_SERVER['SERVER_NAME'] = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+		$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 		// Prefer the client `Host` header so a non-standard port survives into
 		// every URL built from HTTP_HOST (form actions, SITEURL, redirects); a
 		// malformed/crafted Host falls back to SERVER_NAME. See resolveHttpHost().
@@ -5764,7 +5894,7 @@ class e107
 	function fix_windows_paths($path)
 	{
 		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
-		$fixed_path = (substr($fixed_path, 1, 2) === ":/" ? substr($fixed_path, 2) : $fixed_path);
+		$fixed_path = ((string) substr($fixed_path, 1, 2) === ":/" ? (string) substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;
 	}
 
@@ -5933,7 +6063,7 @@ class e107
 
 		if(!deftrue('e_SINGLE_ENTRY') && !deftrue('e_SELF_OVERRIDE') )
 		{
-			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
+			$page = (string) substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 
 			if(!empty($_SERVER['_']) && self::isCli())
 			{
@@ -5969,8 +6099,8 @@ class e107
 
 		if ($isPluginDir)
 		{
-			$temp = substr($e107Path, strpos($e107Path, '/') +1);
-			$plugDir = substr($temp, 0, strpos($temp, '/'));
+			$temp = (string) substr($e107Path, strpos($e107Path, '/') +1);
+			$plugDir = (string) substr($temp, 0, strpos($temp, '/'));
 			define('e_CURRENT_PLUGIN', rtrim($plugDir,'/'));
 			define('e_PLUGIN_DIR', e_PLUGIN.e_CURRENT_PLUGIN.'/');
 			define('e_PLUGIN_DIR_ABS', e_PLUGIN_ABS.e_CURRENT_PLUGIN.'/');
@@ -6042,7 +6172,6 @@ class e107
 	public function set_urls_deferred()
 	{
 		$siteurl = self::getPref('siteurl');
-		$configured_host = parse_url($siteurl, PHP_URL_HOST);
 		$http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
 		$allowed_hosts = $this->getAllowedHosts();
@@ -6052,10 +6181,10 @@ class e107
 			define('SITEURL', $siteurl);
 			define('SITEURLBASE', rtrim(SITEURL,'/'));
 		}
-		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && !$this->isAllowedHost($allowed_hosts, $http_host))
+		elseif(!empty($allowed_hosts) && !$this->isAllowedHost($allowed_hosts, $http_host))
 		{
 			error_log('e107 host check: HTTP_HOST '.var_export($http_host, true).' is not allowed by the configured siteurl preference '.var_export($siteurl, true).' or any of the configured `trusted_hosts` pref entries');
-			$this->renderHostMismatchKillswitch();
+			$this->renderConfigurationIssue();
 		}
 		else
 		{
@@ -6079,28 +6208,32 @@ class e107
 	 * The list of hostnames this installation answers to: the host from the
 	 * `siteurl` pref plus any `trusted_hosts` pref entries.
 	 *
-	 * Shared by the boot-time host check in `set_urls_deferred()` and by the
-	 * public `isTrustedHost()` so both reason about the same allow-list.
+	 * Shared by the boot-time host check in {@see e107::set_urls_deferred()} and
+	 * by the public {@see e107::isTrustedHost()} so both reason about the same
+	 * allow-list.
 	 *
-	 * @return string[]
+	 * The `trusted_hosts` pref is read through
+	 * {@see e107::normaliseTrustedHostList()}, so a value holding a multi-line
+	 * string or a whole URL names the hostnames it says rather than one entry
+	 * that can never match. Entries that reduce to nothing are dropped, so an
+	 * empty return means "this installation has been told no hostname of its
+	 * own" rather than "it was told one that can never match". The boot-time
+	 * check arms itself on that emptiness, and a site whose whole configuration
+	 * is a blank `trusted_hosts` line must not be locked out by it.
+	 *
+	 * @return string[] normalised hostnames, in no particular order
 	 */
 	private function getAllowedHosts()
 	{
 		$allowed_hosts = array();
 
-		$configured_host = parse_url(self::getPref('siteurl'), PHP_URL_HOST);
-		if(!empty($configured_host))
+		$configured_host = self::normaliseHost(parse_url(self::getPref('siteurl'), PHP_URL_HOST));
+		if($configured_host !== '')
 		{
 			$allowed_hosts[] = $configured_host;
 		}
 
-		$trusted_hosts_pref = self::getPref('trusted_hosts');
-		if(!empty($trusted_hosts_pref))
-		{
-			$allowed_hosts = array_merge($allowed_hosts, (array) $trusted_hosts_pref);
-		}
-
-		return $allowed_hosts;
+		return array_merge($allowed_hosts, self::normaliseTrustedHostList(self::getPref('trusted_hosts')));
 	}
 
 	/**
@@ -6152,7 +6285,7 @@ class e107
 			}
 
 			if($httpHost === $allowedHost
-				|| substr($httpHost, -strlen('.' . $allowedHost)) === '.' . $allowedHost)
+				|| (string) substr($httpHost, -strlen('.' . $allowedHost)) === '.' . $allowedHost)
 			{
 				return true;
 			}
@@ -6162,7 +6295,7 @@ class e107
 	}
 
 	/**
-	 * Normalise a hostname for comparison: lowercase, strip a trailing
+	 * Normalise a hostname for comparison: trim, lowercase, strip a trailing
 	 * `:port`, strip a leading `www.`.
 	 *
 	 * Both sides of the host check run through this so the configured
@@ -6171,6 +6304,11 @@ class e107
 	 * port) since `parse_url(PHP_URL_HOST)` already drops the port from
 	 * `siteurl`; applying it symmetrically keeps any manually-entered
 	 * `trusted_hosts` entries that include a port from silently never matching.
+	 * The trim reaches a configured value and, through the public
+	 * {@see e107::isTrustedHost()}, a host a caller parsed out of a URL of its
+	 * own, such as the redirect destination {@see redirection::leavesThisSite()}
+	 * hands over; widening a value there can only move a match towards this
+	 * site's own hostnames.
 	 *
 	 * @param string $host
 	 *
@@ -6178,7 +6316,7 @@ class e107
 	 */
 	private static function normaliseHost($host)
 	{
-		$host = strtolower((string) $host);
+		$host = strtolower(trim((string) $host));
 		$host = preg_replace('/:\d+$/', '', $host);
 		$host = preg_replace('/^www\./', '', $host);
 		return $host;
@@ -6211,7 +6349,7 @@ class e107
 
 		// A bare hostname / IPv4, or a bracketed IPv6 literal, with an optional
 		// numeric port: what a browser puts in the `Host` header.
-		$shaped = '/^(?:[A-Za-z0-9._-]+|\[[0-9A-Fa-f:]+\])(?::\d{1,5})?$/';
+		$shaped = '/^(?:[A-Za-z0-9._-]+|\[[0-9A-Fa-f:]+\])(?::\d{1,5})?$/D';
 
 		if($httpHost !== '' && preg_match($shaped, $httpHost))
 		{
@@ -6272,18 +6410,21 @@ class e107
 	/**
 	 * Emit a 503 Service Unavailable response and terminate the request.
 	 *
-	 * Fires when `set_urls_deferred()` rejects the incoming `Host` header. The
-	 * response is rendered inline because none of the theme, plugin, or session
-	 * bootstrap has run yet at this point.
+	 * The page for a request e107 cannot serve because its own configuration
+	 * or database is not in a state to serve it: a `Host` header rejected by
+	 * {@see e107::set_urls_deferred()}, a database server that cannot be
+	 * reached, a database that holds no e107 tables. The response is rendered
+	 * inline because none of the theme, plugin, or session bootstrap has run
+	 * yet at this point.
 	 *
 	 * The body intentionally carries no diagnostic detail (no echo of the
-	 * incoming `Host`, no configured hostname, no admin URL). The diagnostic
-	 * detail is sent to `error_log()` by the caller, which is the channel that
-	 * already requires server access.
+	 * incoming `Host`, no configured hostname, no database name, no path). The
+	 * caller sends the diagnostic detail to `error_log()` first, which is the
+	 * channel that already requires server access.
 	 *
 	 * @return void
 	 */
-	private function renderHostMismatchKillswitch()
+	public function renderConfigurationIssue()
 	{
 		if(!headers_sent())
 		{
@@ -6987,7 +7128,7 @@ class e107
 	 * @param array $sqlinfo
 	 * @return void
 	 */
-	private function setMySQLConfig($sqlinfo): void
+	private function setMySQLConfig($sqlinfo)
 	{
 		if(!empty($sqlinfo['server']))
 		{

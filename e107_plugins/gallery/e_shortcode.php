@@ -235,6 +235,27 @@ class gallery_shortcodes extends e_shortcode
 	}
 
 	/**
+	 * Caption the slideshow menu hands to {@see e_render::tablerender()}.
+	 *
+	 * Absent 'slideshow_caption' falls back to the plugin name; an empty one is
+	 * honoured, so the wrapper renders with no heading.
+	 *
+	 * @param array $tmpl gallery template, from {@see e107::getTemplate()}
+	 * @return string
+	 */
+	public function slideshowCaption($tmpl)
+	{
+		$tmpl = array_change_key_case((array) $tmpl);
+
+		if(!isset($tmpl['slideshow_caption']))
+		{
+			return defset('LAN_PLUGIN_GALLERY_TITLE', 'Gallery');
+		}
+
+		return e107::getParser()->parseTemplate($tmpl['slideshow_caption']);
+	}
+
+	/**
 	 * Display a Grid of thumbnails - useful for home pages.
 	 * Amount per row differs according to device, so they are not set here, only the amount.
 	 * @example {GALLERY_PORTFOLIO: placeholder=1&category=2}

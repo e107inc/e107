@@ -107,8 +107,13 @@ class forum_attachments
 	 * publishes every name in it. Each poster's directory is therefore covered
 	 * as well as the root above it.
 	 *
-	 * It costs nothing to call again: e_file::protectDirectory() skips a file
-	 * that is already there and never overwrites one an administrator edited.
+	 * The walk over every poster's directory is why this belongs to the setup
+	 * routes and to no request path: install and upgrade through
+	 * {@see forum_setup::install_post()}, and the v1 migration's first step
+	 * through {@see forum_update::checkAttachmentDirs()}, which is reached when
+	 * the upgrade hook does not run. A post covers the root and the directory it
+	 * is about to write into, in
+	 * {@see forum_post_handler::processAttachments()}.
 	 *
 	 * A public forum's attachments stay readable, because nothing in e107 ever
 	 * links the raw path. view_shortcodes.php renders an image through
@@ -148,6 +153,39 @@ class forum_attachments
 		}
 
 		return $done;
+	}
+
+	/**
+	 * Cover a poster's directory and the root above it, before anything is written into either.
+	 *
+	 * @param string $dir a poster's directory, as {@see e107forum::getAttachmentPath()} returns it
+	 * @return bool true when the directory and whichever of {@see forum_attachments::paths()} holds it are both covered
+	 */
+	public static function protectPath($dir)
+	{
+		if(!is_dir($dir))
+		{
+			@mkdir($dir, 0755, true);
+		}
+
+		if(!is_dir($dir))
+		{
+			return false;
+		}
+
+		$file = e107::getFile();
+		$covered = true;
+
+		foreach(self::paths() as $root)
+		{
+			if(strpos($dir, $root) === 0)
+			{
+				$covered = $file->protectDirectory($root);
+				break;
+			}
+		}
+
+		return $file->protectDirectory($dir) && $covered;
 	}
 
 	/**
@@ -339,7 +377,7 @@ class forum_attachments
 				continue;
 			}
 
-			$parts = explode('/', substr($path, strlen($real)));
+			$parts = explode('/', (string) substr($path, strlen($real)));
 
 			if(count($parts) !== 2)
 			{

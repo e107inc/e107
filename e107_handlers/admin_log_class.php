@@ -352,7 +352,7 @@ class e_admin_log
 				'dblog_remarks'   => $explain
 			);
 
-			if(!$this->rldb->createQueryBuilder()->insert('admin_log')->valuesTyped($adminLogInsert, $this->rldb->getFieldDefs('admin_log')['_FIELD_TYPES'])->execute())
+			if(!$this->rldb->createQueryBuilder()->insert('admin_log')->valuesTyped($adminLogInsert)->execute())
 			{
 				trigger_error('Error inserting admin log entry: '.print_r($adminLogInsert,true), E_USER_WARNING);
 			}
@@ -454,7 +454,7 @@ class e_admin_log
 				'dblog_remarks'   => $explain
 			);
 
-			if(!$this->rldb->createQueryBuilder()->insert('dblog')->valuesTyped($rollingLogInsert, $this->rldb->getFieldDefs('dblog')['_FIELD_TYPES'])->execute())
+			if(!$this->rldb->createQueryBuilder()->insert('dblog')->valuesTyped($rollingLogInsert)->execute())
 			{
 				trigger_error("Error inserting admin rolling log entry: $eventcode", E_USER_WARNING);
 			}
@@ -590,7 +590,7 @@ class e_admin_log
 			'dblog_remarks'   => print_r($event_data, true),
 		);
 
-		if($this->rldb->createQueryBuilder()->insert('audit_log')->valuesTyped($insertQry, $this->rldb->getFieldDefs('audit_log')['_FIELD_TYPES'])->execute())
+		if($this->rldb->createQueryBuilder()->insert('audit_log')->valuesTyped($insertQry)->execute())
 		{
 			return true;
 		}

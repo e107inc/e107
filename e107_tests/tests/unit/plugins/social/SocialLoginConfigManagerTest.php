@@ -10,7 +10,7 @@ use Codeception\Stub;
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  */
-class SocialLoginConfigManagerTest extends \Codeception\Test\Unit
+class SocialLoginConfigManagerTest extends \Test\Unit
 {
 	/**
 	 * @var e_core_pref

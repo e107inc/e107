@@ -38,7 +38,7 @@ if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && !e107::getUserPro
 
 e107::coreLan('login');
 
-$loginTpl = e107::getCoreTemplate('login'); // fetched here (and re-fetched/cached at L64) so a theme can opt out of bare/iframe render
+$loginTpl = e107::getCoreTemplate('login');
 if(!defined('e_IFRAME')) define('e_IFRAME', empty($loginTpl['page']['noiframe'])); // default true (bare) unchanged; set $LOGIN_TEMPLATE['page']['noiframe']=true in a theme override to render with full theme
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
@@ -59,40 +59,23 @@ if (!USER || getperms('0'))
 
 	if (empty($LOGIN_TABLE))
 	{
-
-		if(deftrue('BOOTSTRAP'))
+		if(!empty($loginTpl['LOGIN_TABLE']))
 		{
-			$LOGIN_TEMPLATE = e107::getCoreTemplate('login');
+			$LOGIN_TABLE 		= $loginTpl['LOGIN_TABLE'];
+			$LOGIN_TABLE_HEADER = varset($loginTpl['LOGIN_TABLE_HEADER'], '');
+			$LOGIN_TABLE_FOOTER = varset($loginTpl['LOGIN_TABLE_FOOTER'], '');
 		}
-		else // BC Stuff.
+		elseif(!empty($loginTpl['page']))
 		{
-
-			if (file_exists(THEME.'templates/login_template.php')) //v2.x path
-			{
-				require_once(THEME.'templates/login_template.php');
-			}
-			elseif (file_exists(THEME.'login_template.php'))
-			{
-				require_once(THEME.'login_template.php');
-			}
-			else
-			{
-				$LOGIN_TEMPLATE = e107::getCoreTemplate('login');
-			}
+			$LOGIN_TABLE_HEADER = $loginTpl['page']['header'];
+			$LOGIN_TABLE 		= "<form id='login-page' class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$loginTpl['page']['body']."</form>";
+			$LOGIN_TABLE_FOOTER = $loginTpl['page']['footer'];
 		}
 	}
 
 
 	$sc = e107::getScBatch('login');
 	$sc->wrapper('login/page');
-
-
-	if(!empty($LOGIN_TEMPLATE['page']))
-	{
-		$LOGIN_TABLE_HEADER = $LOGIN_TEMPLATE['page']['header'];
-		$LOGIN_TABLE 		= "<form id='login-page' class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$LOGIN_TEMPLATE['page']['body']."</form>";
-		$LOGIN_TABLE_FOOTER = $LOGIN_TEMPLATE['page']['footer'];
-	}
 
 
 	$text = $tp->parseTemplate($LOGIN_TABLE,true, $sc);

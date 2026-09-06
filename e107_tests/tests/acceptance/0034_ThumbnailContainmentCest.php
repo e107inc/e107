@@ -1333,7 +1333,6 @@ class ThumbnailContainmentCest
 		ob_start();
 		imagepng($image);
 		$png = ob_get_clean();
-		imagedestroy($image);
 
 		return $png."\n".$text."\n";
 	}
@@ -1409,7 +1408,6 @@ class ThumbnailContainmentCest
 
 		if($width !== strlen(self::SECRET_SYSTEM)) // every sentinel is this long
 		{
-			imagedestroy($image);
 
 			return null;
 		}
@@ -1432,7 +1430,6 @@ class ThumbnailContainmentCest
 			}
 		}
 
-		imagedestroy($image);
 
 		return $text;
 	}
@@ -1575,6 +1572,7 @@ class ThumbnailContainmentCest
 // Fixture for 0034_ThumbnailContainmentCest. Removed again in the Cest's _after().
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 \$act = isset(\$_GET['act']) ? \$_GET['act'] : '';

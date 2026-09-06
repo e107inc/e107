@@ -43,8 +43,8 @@ abstract class IEEE
             return false;
         }
 
-        $r = new BigInteger(substr($sig, 0, $len >> 1), 256);
-        $s = new BigInteger(substr($sig, $len >> 1), 256);
+        $r = new BigInteger((string) substr($sig, 0, $len >> 1), 256);
+        $s = new BigInteger((string) substr($sig, $len >> 1), 256);
 
         return compact('r', 's');
     }

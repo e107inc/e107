@@ -120,7 +120,7 @@ class parseXml extends xmlClass // BC with v1.x
 				return FALSE;
             }
         }
-		xml_parser_free( $this->parser );
+		$this->parser = null;
 		return $this -> xmlData;
 	}
 
@@ -367,7 +367,7 @@ class xmlClass
 	 */
 	public function setOptAddRoot($flag)
 	{
-		$this->_optAddRoot = (boolean) $flag;
+		$this->_optAddRoot = (bool) $flag;
 		return $this;
 	}
 
@@ -401,7 +401,7 @@ class xmlClass
 	 */
 	public function setOptForceArray($flag)
 	{
-		$this->_optForceArray = (boolean) $flag;
+		$this->_optForceArray = (bool) $flag;
 		return $this;
 	}
 
@@ -425,7 +425,7 @@ class xmlClass
 	 */
 	public function setOptStripComments($flag)
 	{
-		$this->stripComments = (boolean) $flag;
+		$this->stripComments = (bool) $flag;
 		return $this;
 	}
 
@@ -947,7 +947,7 @@ class xmlClass
 	 * @param array $tables - table names without the prefix
 	 * @param array|null $plugPrefs
 	 * @param array|null $themePrefs
-	 * @param array $options [optional] debug, return, query
+	 * @param array $options [optional] debug, return, query, fields, exclude (column names to leave out of every exported row)
 	 * @return string text / file for download
 	 */
 	public function e107Export($xmlprefs, $tables, $plugPrefs=null, $themePrefs=null, $options = array())
@@ -966,7 +966,7 @@ class xmlClass
 		{
 			$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile(e_CORE."xml/default_install.xml",'advanced');
 			$default = e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
-			$excludes = array('social_login','replyto_email','replyto_name','siteadminemail','lan_global_list','menuconfig_list','plug_installed','shortcode_legacy_list','siteurl','cookie_name','install_date', 'wysiwyg');
+			$excludes = array('social_login','replyto_email','replyto_name','siteadminemail','menuconfig_list','plug_installed','shortcode_legacy_list','siteurl','cookie_name','install_date', 'wysiwyg');
 		}
 
 		if(varset($xmlprefs)) // Export Core Preferences.
@@ -1049,6 +1049,7 @@ class xmlClass
 
 		if(!empty($tables))
 		{
+			$exclude = !empty($options['exclude']) ? (array) $options['exclude'] : array();
 			$text .= "\t<database>\n";
 			foreach($tables as $tbl)
 			{
@@ -1126,6 +1127,11 @@ class xmlClass
 					$text .= "\t\t<item>\n";
 					foreach($row as $key=>$val)
 					{
+						if(in_array($key, $exclude, true))
+						{
+							continue;
+						}
+
 						$text .= "\t\t\t<field name=\"".$key."\">".$this->e107ExportValue($val,$key)."</field>\n";
 					}
 
@@ -1388,7 +1394,6 @@ class xmlClass
 				// (plain values() would bind raw). $table is import-derived; the
 				// builder validates it fail-closed.
 				$fieldDefs  = $sql->getFieldDefs($table);
-				$fieldTypes = (is_array($fieldDefs) && isset($fieldDefs['_FIELD_TYPES'])) ? $fieldDefs['_FIELD_TYPES'] : array();
 				$notNull    = (is_array($fieldDefs) && isset($fieldDefs['_NOTNULL'])) ? $fieldDefs['_NOTNULL'] : array();
 
 				foreach($val['item'] as $item)
@@ -1417,11 +1422,11 @@ class xmlClass
 					// are byte-identical to the deprecated array CRUD. The original
 					// fall-through is preserved: in replace mode a failed REPLACE still
 					// attempts an INSERT.
-					if(($mode === "replace") && $sql->createQueryBuilder()->replace($table)->valuesTyped($insert_array, $fieldTypes)->execute()!==false)
+					if(($mode === "replace") && $sql->createQueryBuilder()->replace($table)->valuesTyped($insert_array)->execute()!==false)
 					{
 						$ret['success'][] = $table;
 					}
-					elseif($sql->createQueryBuilder()->insert($table)->valuesTyped($insert_array, $fieldTypes)->execute()!==false)
+					elseif($sql->createQueryBuilder()->insert($table)->valuesTyped($insert_array)->execute()!==false)
 					{
 						$ret['success'][] = $table;
 					}
@@ -1643,7 +1648,7 @@ class XMLParse
             $this->isError = true;
             $this->error = 'error: '.xml_error_string(xml_get_error_code($parser)).' at line '.xml_get_current_line_number($parser);
         }
-        xml_parser_free($parser);
+        $this->parser = null;
 
         return $res;
     }

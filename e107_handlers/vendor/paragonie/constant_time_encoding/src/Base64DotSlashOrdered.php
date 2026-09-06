@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace ParagonIE\ConstantTime;
 
 use Override;
@@ -47,7 +46,7 @@ abstract class Base64DotSlashOrdered extends Base64
      * @return int
      */
     #[Override]
-    protected static function decode6Bits(int $src): int
+    protected static function decode6Bits($src)
     {
         $ret = -1;
 
@@ -71,7 +70,7 @@ abstract class Base64DotSlashOrdered extends Base64
      * @return string
      */
     #[Override]
-    protected static function encode6Bits(int $src): string
+    protected static function encode6Bits($src)
     {
         $src += 0x2e;
 

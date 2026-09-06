@@ -185,7 +185,7 @@ class e_theme_layout_parser
 	 */
 	protected function readAssignment($pos, &$result)
 	{
-		$name = substr($this->tokens[$pos][1], 1);
+		$name = (string) substr($this->tokens[$pos][1], 1);
 		$next = $this->nextSignificant($pos + 1);
 		$key = null;
 
@@ -571,7 +571,7 @@ class e_theme_layout_parser
 	protected function unquote($literal)
 	{
 		$quote = substr($literal, 0, 1);
-		$body = substr($literal, 1, -1);
+		$body = (string) substr($literal, 1, -1);
 
 		if($quote === "'")
 		{
@@ -612,12 +612,12 @@ class e_theme_layout_parser
 
 				if($body[0] === 'x')
 				{
-					return chr(hexdec(substr($body, 1)));
+					return chr(hexdec((string) substr($body, 1)));
 				}
 
 				if($body[0] === 'u' && function_exists('mb_convert_encoding'))
 				{
-					return mb_convert_encoding('&#'.hexdec(substr($body, 2, -1)).';', 'UTF-8', 'HTML-ENTITIES');
+					return mb_convert_encoding('&#'.hexdec((string) substr($body, 2, -1)).';', 'UTF-8', 'HTML-ENTITIES');
 				}
 
 				if($body[0] >= '0' && $body[0] <= '7')

@@ -27,4 +27,6 @@ return [
     'LAN_EFORM_014' => "create another",
     'LAN_EFORM_015' => "edit current",
     'LAN_EFORM_016' => "After submit:",
+    'LAN_EFORM_COPY' => "Copy",
+    'LAN_EFORM_COPIED' => "Copied",
 ];

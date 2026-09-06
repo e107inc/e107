@@ -15,7 +15,7 @@ use e107\Database\Platform\MysqlPlatform;
 use e107\Database\Platform\PlatformInterface;
 use Generator;
 use InvalidArgumentException;
-use ReflectionMethod;
+use e107\Reflection\ReflectionMethod;
 
 	/**
 	 * DB-less tests for {@see QueryBuilder} and {@see ExpressionBuilder}: every test
@@ -24,7 +24,7 @@ use ReflectionMethod;
 	 * anything. Round-trip tests against the real backends live in
 	 * e_db_abstractTest.
 	 */
-	class QueryBuilderTest extends \Codeception\Test\Unit
+	class QueryBuilderTest extends \Test\Unit
 	{
 
 		protected function _before()
@@ -187,6 +187,193 @@ use ReflectionMethod;
 			$this->assertThrowsInvalidArgument(function() use ($qb) {
 				$qb->insert('tmp')->valuesTyped(array(array('a' => 1), array('a' => 2)));
 			});
+		}
+
+		public function testValuesTypedSourcesTheTablesOwnTypesWhenNoneArePassed()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->fieldTypes['user'] = array('user_id' => 'int', '_DEFAULT' => 'str');
+
+			$qb->insert('user')->valuesTyped(array('user_id' => '5', 'user_name' => 'bob'));
+
+			$this->assertSame('user', $stub->fieldTypesAskedFor);
+			$this->assertSame(
+				array(
+					'qb1' => array('value' => 5, 'type' => ConnectionInterface::PARAM_INT),
+					'qb2' => array('value' => 'bob', 'type' => ConnectionInterface::PARAM_STR),
+				),
+				$qb->getParameters()
+			);
+		}
+
+		public function testValuesTypedWithNoDefinitionOnRecordBindsEveryColumnAsAString()
+		{
+			$qb = $this->makeQb($stub);
+
+			$qb->insert('e107_tests_no_such_table')->valuesTyped(array('id' => '5'));
+
+			$this->assertSame('e107_tests_no_such_table', $stub->fieldTypesAskedFor);
+			$this->assertSame(
+				array('qb1' => array('value' => '5', 'type' => ConnectionInterface::PARAM_STR)),
+				$qb->getParameters()
+			);
+		}
+
+		public function testValuesTypedPassedAMapDoesNotAskTheConnection()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->fieldTypes['user'] = array('user_id' => 'int');
+
+			$qb->insert('user')->valuesTyped(array('user_id' => '5'), array());
+
+			$this->assertNull($stub->fieldTypesAskedFor);
+			$this->assertSame(
+				array('qb1' => array('value' => '5', 'type' => ConnectionInterface::PARAM_STR)),
+				$qb->getParameters()
+			);
+		}
+
+		/**
+		 * A typed write has asked for the table's definition to apply, and the
+		 * definition says these columns cannot hold NULL. The stand-in is resolved
+		 * before the field-type transform, so an int column's stand-in still lands
+		 * as an int.
+		 */
+		public function testValuesTypedStandsInForANullTheColumnCannotHold()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->fieldTypes['user'] = array('user_id' => 'int', '_DEFAULT' => 'str');
+			$stub->notNullDefaults['user'] = array('user_id' => '0', 'user_name' => '');
+
+			$qb->insert('user')->valuesTyped(array('user_id' => null, 'user_name' => null));
+
+			$this->assertSame('user', $stub->notNullDefaultsAskedFor);
+			$this->assertSame(
+				array(
+					'qb1' => array('value' => 0, 'type' => ConnectionInterface::PARAM_INT),
+					'qb2' => array('value' => '', 'type' => ConnectionInterface::PARAM_STR),
+				),
+				$qb->getParameters()
+			);
+		}
+
+		/**
+		 * The other half, and the one that makes the first non-vacuous: a column
+		 * the table does not declare NOT NULL is one a caller may mean NULL in, so
+		 * a stand-in there would overwrite an intended value.
+		 */
+		public function testValuesTypedLeavesANullableColumnNull()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->notNullDefaults['user'] = array('user_name' => '');
+
+			$qb->insert('user')->valuesTyped(array('user_signature' => null));
+
+			$this->assertSame(
+				array('qb1' => array('value' => null, 'type' => ConnectionInterface::PARAM_STR)),
+				$qb->getParameters()
+			);
+		}
+
+		/**
+		 * INSERT and UPDATE have to agree. They did not: the server rejects a NULL
+		 * bound into a NOT NULL column on INSERT whatever the sql_mode, and quietly
+		 * coerces the same NULL on UPDATE while the mode is not strict.
+		 */
+		public function testSetTypedStandsInOnAnUpdateAsWell()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->notNullDefaults['user'] = array('user_name' => '');
+
+			$qb->update('user')->setTyped('user_name', null, 'str')->where('user_id', 1);
+
+			$this->assertSame(
+				array('value' => '', 'type' => ConnectionInterface::PARAM_STR),
+				$qb->getParameters()['qb1']
+			);
+		}
+
+		/**
+		 * The one spelling that still means SQL NULL whatever the column says, so
+		 * a caller who wants the server's own complaint can have it.
+		 */
+		public function testSetTypedWithTheNullFieldTypeStillBindsSqlNull()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->notNullDefaults['user'] = array('user_name' => '');
+
+			$qb->insert('user')->setTyped('user_name', null, 'null');
+
+			$this->assertSame(
+				array('qb1' => array('value' => null, 'type' => ConnectionInterface::PARAM_NULL)),
+				$qb->getParameters()
+			);
+		}
+
+		/**
+		 * values() is the literal path and stays one: it must not even ask.
+		 */
+		public function testValuesBindsANullWithoutConsultingTheTable()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->notNullDefaults['user'] = array('user_name' => '');
+
+			$qb->insert('user')->values(array('user_name' => null));
+
+			$this->assertNull($stub->notNullDefaultsAskedFor);
+			$this->assertSame(array('qb1' => null), $qb->getParameters());
+		}
+
+		/**
+		 * A row of twenty columns would otherwise ask the connection twenty times.
+		 */
+		public function testTheStandInMapIsReadOnceForAWholeRow()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->notNullDefaults['user'] = array('user_name' => '');
+
+			$qb->insert('user')->valuesTyped(array('a' => null, 'b' => null, 'c' => null));
+
+			$this->assertSame(1, $stub->notNullDefaultsCalls);
+		}
+
+		public function testValuesTypedStillRefusesAMapThatIsNotAnArray()
+		{
+			$qb = $this->makeQb($stub);
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->insert('user')->valuesTyped(array('user_id' => '5'), false);
+			});
+			$this->assertNull($stub->fieldTypesAskedFor);
+			$this->assertSame(array(), $qb->getParameters());
+		}
+
+		public function testUpsertTypedStillRefusesAMapThatIsNotAnArray()
+		{
+			$qb = $this->makeQb($stub);
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->insert('user')->upsertTyped(array('user_id' => '5'), 'user_id', null, false);
+			});
+			$this->assertNull($stub->fieldTypesAskedFor);
+			$this->assertSame(array(), $qb->getParameters());
+		}
+
+		public function testUpsertTypedSourcesTheTablesOwnTypesWhenNoneArePassed()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->fieldTypes['user_extended'] = array('user_extended_id' => 'int', '_DEFAULT' => 'str');
+
+			$qb->insert('user_extended')->upsertTyped(array('user_extended_id' => '5', 'user_hidden' => 'x'), 'user_extended_id');
+
+			$this->assertSame('user_extended', $stub->fieldTypesAskedFor);
+			$this->assertSame(
+				array(
+					'qb1' => array('value' => 5, 'type' => ConnectionInterface::PARAM_INT),
+					'qb2' => array('value' => 'x', 'type' => ConnectionInterface::PARAM_STR),
+				),
+				$qb->getParameters()
+			);
 		}
 
 		public function testSetTypedRejectsHostileColumn()
@@ -1062,6 +1249,70 @@ use ReflectionMethod;
 			$this->assertSame('INSERT INTO `e107_tmp` (`a`) VALUES (:qb1)', $stub->lastSql);
 		}
 
+		/**
+		 * The shorthand replaced the deprecated array-form insert(), which read a
+		 * row against the table's own definition. Binding it literally instead put
+		 * every one of those call sites on a path their legacy form never took.
+		 */
+		public function testInsertGetIdReadsItsRowAgainstTheTable()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->insertId = 7;
+			$stub->executeReturn = 1;
+			$stub->fieldTypes['user'] = array('user_id' => 'int', '_DEFAULT' => 'str');
+			$stub->notNullDefaults['user'] = array('user_name' => '');
+
+			$this->assertSame(7, $qb->insert('user')->insertGetId(array('user_id' => '5', 'user_name' => null)));
+
+			$this->assertSame(
+				array(
+					'qb1' => array('value' => 5, 'type' => ConnectionInterface::PARAM_INT),
+					'qb2' => array('value' => '', 'type' => ConnectionInterface::PARAM_STR),
+				),
+				$stub->lastParams
+			);
+		}
+
+		/**
+		 * The id is orthogonal to how the row was built, so the shorthand must not
+		 * be the only way to ask for it.
+		 */
+		public function testInsertGetIdTakesTheRowTheQueryAlreadyCarries()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->insertId = 12;
+			$stub->executeReturn = 1;
+
+			$this->assertSame(12, $qb->insert('tmp')->values(array('a' => null))->insertGetId());
+
+			$this->assertSame('INSERT INTO `e107_tmp` (`a`) VALUES (:qb1)', $stub->lastSql);
+			$this->assertSame(array('qb1' => null), $stub->lastParams,
+				'a row already bound by values() stays literal');
+		}
+
+		public function testInsertGetIdRefusesARowThatIsNotAnArray()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function () use ($qb)
+			{
+				$qb->insert('tmp')->insertGetId('a');
+			});
+		}
+
+		/**
+		 * A list of rows has no one id to return, and used to be accepted.
+		 */
+		public function testInsertGetIdRefusesAListOfRows()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function () use ($qb)
+			{
+				$qb->insert('tmp')->insertGetId(array(array('a' => 1), array('a' => 2)));
+			});
+		}
+
 		public function testNicheOrderingAndHaving()
 		{
 			$qb = $this->makeQb();
@@ -1704,6 +1955,11 @@ use ReflectionMethod;
 		public $rows = array();
 		public $executeReturn = 0;
 		public $insertId = 0;
+		public $fieldTypes = array();
+		public $fieldTypesAskedFor = null;
+		public $notNullDefaults = array();
+		public $notNullDefaultsAskedFor = null;
+		public $notNullDefaultsCalls = 0;
 
 		public function resolveTableName($table)
 		{
@@ -1758,6 +2014,21 @@ use ReflectionMethod;
 		public function lastInsertId()
 		{
 			return $this->insertId;
+		}
+
+		public function getFieldTypes($table)
+		{
+			$this->fieldTypesAskedFor = $table;
+
+			return isset($this->fieldTypes[$table]) ? $this->fieldTypes[$table] : array();
+		}
+
+		public function getNotNullDefaults($table)
+		{
+			$this->notNullDefaultsAskedFor = $table;
+			$this->notNullDefaultsCalls++;
+
+			return isset($this->notNullDefaults[$table]) ? $this->notNullDefaults[$table] : array();
 		}
 
 		public function applyFieldType($type, $fieldValue)

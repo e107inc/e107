@@ -66,7 +66,7 @@ class news_menu
 					$fields['layout']     = array('title'=> LAN_TEMPLATE, 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>$templates));
 				//	$fields['layout']       = array('title'=> "Layout", 'type'=>'method',  'tab'=>0,'writeParms'=>'');
 					$fields['count']        = array('title'=> LAN_NEWS_ADMIN_05, 'tab'=>1, 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>4));
-					$fields['feature']      = array('title'=> LAN_NEWS_ADMIN_10, 'tab'=>1, 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>0));
+					$fields['featured']     = array('title'=> LAN_NEWS_ADMIN_10, 'tab'=>1, 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>0));
 					$fields['titleLimit']   = array('title'=> LAN_NEWS_ADMIN_06, 'tab'=>1,  'type'=>'number', 'writeParms'=>'');
 					$fields['summaryLimit'] = array('title'=> LAN_NEWS_ADMIN_07,'tab'=>1,  'type'=>'number', 'writeParms'=>'');
 

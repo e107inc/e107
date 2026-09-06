@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_arrayTest extends \Codeception\Test\Unit
+	class e_arrayTest extends \Test\Unit
 	{
 		/** @var e_array */
 		private $arrObj;

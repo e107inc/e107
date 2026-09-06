@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_admin_uiTest extends \Codeception\Test\Unit
+	class e_admin_uiTest extends \Test\Unit
 	{
 
 

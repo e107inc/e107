@@ -11,6 +11,7 @@
 
 class e_db_pdoTest extends e_db_abstractTest
 {
+
 	protected function makeDb()
 	{
 		return $this->make('e_db_pdo');
@@ -77,6 +78,10 @@ class e_db_pdoTest extends e_db_abstractTest
 
 		$result = $this->db->backup('missing_table', null, $opts);
 		$this->assertFalse($result);
+		$this->assertNotSame(0, $this->db->getLastErrorNumber(),
+			'a failed backup has to leave an error number behind');
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'a failed backup has to say why');
 	}
 
 	/**

@@ -4,7 +4,7 @@
 /**
  * @group plugins
  */
-class siteinfo_shortcodesTest extends \Codeception\Test\Unit
+class siteinfo_shortcodesTest extends \Test\Unit
 {
 
 	/** @var siteinfo_shortcodes */
@@ -117,6 +117,26 @@ class siteinfo_shortcodesTest extends \Codeception\Test\Unit
 		$tp->setmodRewriteMedia(false);
 		$tp->setStaticUrl(null);
 
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/5953
+	 */
+	public function testSc_logoClassParm()
+	{
+		$default = $this->sc->sc_logo(['w'=>200, 'h'=>100]);
+		self::assertStringContainsString('<img class="logo img-responsive img-fluid"', $default);
+
+		$custom = $this->sc->sc_logo(['w'=>200, 'h'=>100, 'class'=>'navbar-brand-image']);
+		self::assertStringContainsString('<img class="logo img-responsive img-fluid navbar-brand-image"', $custom);
+		self::assertSame($default, str_replace(' navbar-brand-image', '', $custom));
+
+		$stringParm = $this->sc->sc_logo('w=200&h=100&class=navbar-brand-image');
+		self::assertSame($custom, $stringParm);
+
+		$injected = $this->sc->sc_logo(['w'=>200, 'h'=>100, 'class'=>'x" onerror="alert(1)']);
+		self::assertStringContainsString('class="logo img-responsive img-fluid x&quot; onerror=&quot;alert(1)"', $injected);
+		self::assertStringNotContainsString('onerror="', $injected);
 	}
 
 /*	public function testSc_theme_disclaimer()

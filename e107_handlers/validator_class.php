@@ -1048,7 +1048,7 @@ class e_validator
 	public function setIsValidData($status)
 	{
 
-		$this->_is_valid_data = (boolean) $status;
+		$this->_is_valid_data = (bool) $status;
 
 		return $this;
 	}
@@ -1198,7 +1198,7 @@ class validatorClass
 				{
 					if (vartrue($defs['longtrim']))
 					{
-						$value = substr($value, 0, $defs['maxLength']);
+						$value = (string) substr($value, 0, $defs['maxLength']);
 					}
 					else
 					{
@@ -1251,7 +1251,7 @@ class validatorClass
 							break;
 						case 2 :        // Assumes we're processing a dual password field - array name for second value is one more than for first
 							$src2 = substr($src, 0, -1) . (substr($src, -1, 1) + 1);
-							if (!isset($sourceFields[$src2]) || ($sourceFields[$src2] != $value))
+							if (!isset($sourceFields[$src2]) || ($sourceFields[$src2] !== $value))
 							{
 								$errNum = ERR_PASSWORDS_DIFFERENT;
 							}

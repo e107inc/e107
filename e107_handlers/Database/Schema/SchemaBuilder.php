@@ -43,7 +43,7 @@ require_once(__DIR__.'/Table.php');
  * <code>
  * $schema = e107::getDb()->schema();
  * $schema->addColumn('user_extended', 'user_twitter',
- *     Column::define('VARCHAR', 255)->notNull()->default(''));
+ *     Column::define('VARCHAR', 255)->notNull()->defaultValue(''));
  * $schema->dropColumn('user_extended', 'user_twitter');
  * </code>
  *
@@ -51,8 +51,8 @@ require_once(__DIR__.'/Table.php');
  * {@see SchemaBuilder::table()}:
  * <code>
  * $schema->table('comments')
- *     ->addColumn('comment_author_id', Column::define('INT', 10)->unsigned()->notNull()->default('0'), 'comment_author')
- *     ->addColumn('comment_author_name', Column::define('VARCHAR', 100)->notNull()->default(''), 'comment_author_id')
+ *     ->addColumn('comment_author_id', Column::define('INT', 10)->unsigned()->notNull()->defaultValue('0'), 'comment_author')
+ *     ->addColumn('comment_author_name', Column::define('VARCHAR', 100)->notNull()->defaultValue(''), 'comment_author_id')
  *     ->execute();
  * </code>
  *
@@ -469,7 +469,30 @@ class SchemaBuilder
 	 */
 	public function getCreateTable($table)
 	{
-		if($this->db->execute('SHOW CREATE TABLE '.$this->quoteTable($table)) === false)
+		return $this->_showCreateTable($this->quoteTable($table));
+	}
+
+	/**
+	 * The CREATE TABLE statement that reproduces a literal physical table,
+	 * applying the prefix only and never the multi-language lan_* routing of
+	 * {@see SchemaBuilder::getCreateTable()}.
+	 *
+	 * @param string $table Logical table name (prefix applied, no routing).
+	 * @return string|null the statement, or null on error.
+	 * @throws InvalidArgumentException on an invalid table name.
+	 */
+	public function getCreateTablePhysical($table)
+	{
+		return $this->_showCreateTable($this->quotePhysicalTable($table));
+	}
+
+	/**
+	 * @param string $quoted backtick-quoted physical table name.
+	 * @return string|null the statement, or null on error.
+	 */
+	private function _showCreateTable($quoted)
+	{
+		if($this->db->execute('SHOW CREATE TABLE '.$quoted) === false)
 		{
 			return null;
 		}

@@ -487,7 +487,7 @@ class e_parse
 			return ($length === null) ? mb_substr($str, $start) : mb_substr($str, $start, $length);
 		}
 
-		return substr($str, $start, $length);
+		return (string) substr($str, $start, $length);
 
 	}
 
@@ -1135,7 +1135,7 @@ class e_parse
 			{
 				// We are within an HTML tag
 				// Create a lowercase copy of this tag's contents
-				$lvalue = strtolower(substr($value, 1, -1));
+				$lvalue = strtolower((string) substr($value, 1, -1));
 				if ($lvalue)
 				{
 					// Tag of non-zero length
@@ -1231,7 +1231,7 @@ class e_parse
 									}
 									else
 									{
-										$pulled = substr($sp, 0, $i + 1);
+										$pulled = (string) substr($sp, 0, $i + 1);
 									}
 								}
 								$loopCount++;
@@ -1255,18 +1255,18 @@ class e_parse
 								if ($i == 0)
 								{
 									// No 'special' break boundary character found - break at the word boundary
-									$pulled = substr($sp, 0, $width);
+									$pulled = (string) substr($sp, 0, $width);
 								}
 								else
 								{
-									$pulled = substr($sp, 0, $i);
+									$pulled = (string) substr($sp, 0, $i);
 								}
 							}
 							if ($pulled)
 							{
 								$value .= $pulled . $break;
 								// Shorten $sp by whatever we've processed (will work even for utf-8)
-								$sp = substr($sp, strlen($pulled));
+								$sp = (string) substr($sp, strlen($pulled));
 							}
 						}
 						// Add in any residue
@@ -1522,6 +1522,7 @@ class e_parse
 
 	/**
 	 * Replace text represenation of website urls and email addresses with clickable equivalents.
+	 * A well formed HTML tag, and the text between an <a> and its </a>, is left as it was found.
 	 *
 	 * @param string $text
 	 * @param string $type email|url
@@ -1547,45 +1548,116 @@ class e_parse
 			$textReplace = $this->toGlyph($textReplace, '');
 		}
 
-		switch ($type)
+		$segments = $this->splitOnTags($text);
+
+		if ($segments === false)
 		{
-			default:
-			case 'email':
-
-				preg_match_all("#(?:[\n\r ]|^)?([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", $text, $match);
-
-				if (!empty($match[0]))
-				{
-
-					$srch = array();
-					$repl = array();
-
-					foreach ($match[0] as $eml)
-					{
-						$email = trim($eml);
-						$srch[] = $email;
-						$repl[] = $this->emailObfuscate($email, $textReplace);
-					}
-					$text = str_replace($srch, $repl, $text);
-				}
-				break;
-
-			case 'url':
-
-				$linktext = (!empty($textReplace)) ? $textReplace : '$3';
-				$external = (!empty($opts['ext'])) ? 'target="_blank"' : '';
-
-				$text = preg_replace("/(^|[\n \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", '$1$2<a class="e-url" href="$3" ' . $external . '>' . $linktext . '</a>', $text);
-				$text = preg_replace("/(^|[\n \(])([\w]*?)((www)\.[^ \,\"\t\n\r\)<]*)/is", '$1$2<a class="e-url" href="http://$3" ' . $external . '>' . $linktext . '</a>', $text);
-				$text = preg_replace("/(^|[\n ])([\w]*?)((ftp)\.[^ \,\"\t\n\r<]*)/is", '$1$2<a class="e-url" href="$4://$3" ' . $external . '>' . $linktext . '</a>', $text);
-
-				break;
-
+			return $text;
 		}
 
+		$depth = 0;
+
+		foreach ($segments as $i => $segment)
+		{
+			if ($i % 2)
+			{
+				if (preg_match('#^<(/?)a\b#i', $segment, $tag))
+				{
+					$depth = ($tag[1] === '') ? $depth + 1 : max(0, $depth - 1);
+				}
+
+				continue;
+			}
+
+			if ($depth === 0 && $segment !== '')
+			{
+				$segments[$i] = ($type === 'url')
+					? $this->clickableUrls($segment, $textReplace, !empty($opts['ext']), $i === 0)
+					: $this->clickableEmails($segment, $textReplace);
+			}
+		}
+
+		return implode('', $segments);
+	}
+
+
+	/**
+	 * Split text into alternating plain text and HTML tags, the tags landing on the odd offsets.
+	 * A tag whose attribute values are quoted keeps whatever the quotes contain, '>' included.
+	 *
+	 * @param string $text
+	 * @return array|false false when the text defeats the pattern engine
+	 */
+	private function splitOnTags($text)
+	{
+
+		return preg_split('#(<(?:[^<>"\']|"[^"]*"|\'[^\']*\')*>)#s', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+	}
+
+
+	/**
+	 * Obfuscate every email address in a fragment that is known to carry no markup.
+	 *
+	 * @param string $text
+	 * @param string $textReplace substitute text within links
+	 * @return string
+	 */
+	private function clickableEmails($text, $textReplace)
+	{
+
+		if (strpos($text, '@') === false)
+		{
+			return $text;
+		}
+
+		preg_match_all("#(?:[\n\r ]|^)?([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", $text, $match);
+
+		if (empty($match[0]))
+		{
+			return $text;
+		}
+
+		$srch = array();
+		$repl = array();
+
+		foreach ($match[0] as $eml)
+		{
+			$email = trim($eml);
+			$srch[] = $email;
+			$repl[] = $this->emailObfuscate($email, $textReplace);
+		}
+
+		return str_replace($srch, $repl, $text);
+	}
+
+
+	/**
+	 * Link every bare url in a fragment that is known to carry no markup.
+	 *
+	 * @param string $text
+	 * @param string $textReplace substitute text within links
+	 * @param bool   $external    load link in new window
+	 * @param bool   $atStart     whether this fragment opens the text, so a url may sit at its very start
+	 * @return string
+	 */
+	private function clickableUrls($text, $textReplace, $external, $atStart)
+	{
+
+		if (strpos($text, '://') === false && stripos($text, 'www.') === false && stripos($text, 'ftp.') === false)
+		{
+			return $text;
+		}
+
+		$linktext = (!empty($textReplace)) ? $textReplace : '$3';
+		$target = $external ? 'target="_blank"' : '';
+		$break = '\n' . E_NL;
+		$start = $atStart ? '^|' : '';
+
+		$text = preg_replace("/(" . $start . "[" . $break . " \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"" . $break . "\r\t<]*)/is", '$1$2<a class="e-url" href="$3" ' . $target . '>' . $linktext . '</a>', $text);
+		$text = preg_replace("/(" . $start . "[" . $break . " \(])([\w]*?)((www)\.[^ \,\"\t" . $break . "\r\)<]*)/is", '$1$2<a class="e-url" href="http://$3" ' . $target . '>' . $linktext . '</a>', $text);
+		$text = preg_replace("/(" . $start . "[" . $break . " ])([\w]*?)((ftp)\.[^ \,\"\t" . $break . "\r<]*)/is", '$1$2<a class="e-url" href="$4://$3" ' . $target . '>' . $linktext . '</a>', $text);
+
 		return $text;
-
-
 	}
 
 
@@ -1617,7 +1689,7 @@ class e_parse
 			$parm .= '<' . $tag . '>';
 		}
 
-		return strip_tags($html, $parm);
+		return strip_tags($html, $parm !== null && is_array($parm) ? '<' . implode('><', $parm) . '>' : $parm);
 	}
 
 	/**
@@ -1982,9 +2054,9 @@ class e_parse
 
 			if ($lt > $textStart)
 			{
-				$blocks[] = array('text', substr($html, $textStart, $lt - $textStart));
+				$blocks[] = array('text', (string) substr($html, $textStart, $lt - $textStart));
 			}
-			$blocks[] = array($tag, substr($html, $lt, $end - $lt));
+			$blocks[] = array($tag, (string) substr($html, $lt, $end - $lt));
 
 			$pos = $end;
 			$textStart = $end;
@@ -1992,7 +2064,7 @@ class e_parse
 
 		if ($textStart < $length)
 		{
-			$blocks[] = array('text', substr($html, $textStart));
+			$blocks[] = array('text', (string) substr($html, $textStart));
 		}
 
 		return $blocks;
@@ -2013,7 +2085,7 @@ class e_parse
 	{
 		foreach (array('script', 'style') as $tag)
 		{
-			if (strcasecmp(substr($html, $offset + 1, strlen($tag)), $tag) !== 0)
+			if (strcasecmp((string) substr($html, $offset + 1, strlen($tag)), $tag) !== 0)
 			{
 				continue;
 			}
@@ -2216,11 +2288,25 @@ class e_parse
 	}
 
 	/**
+	 * Encode a value as a complete JavaScript string literal, safe inside an HTML attribute
+	 * the browser decodes before compiling it, which {@see e_parse::toAttribute()} is not.
+	 *
+	 * @param string $text
+	 * @return string a complete JavaScript string literal, its delimiting quotes included
+	 */
+	public function toJsString($text)
+	{
+		$encoded = json_encode((string) $text, JSON_HEX_QUOT | JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP);
+
+		return $encoded === false ? '""' : $encoded;
+	}
+
+	/**
 	 * Build a series of HTML attributes from the provided array
 	 *
 	 * Because of legacy loose typing client code usages, values that are {@see empty()} will not be added to the
-	 * concatenated HTML attribute string except when the key is `value`, the key begins with `data-`, or the value is
-	 * a number.
+	 * concatenated HTML attribute string except when the key is `alt` or `value`, the key begins with `data-`, or the
+	 * value is a number.
 	 *
 	 * @param array $attributes Key-value pairs of HTML attributes. The value must not be HTML-encoded. If the value is
 	 *                          boolean true, the value will be set to the key (e.g. `['required' => true]` becomes
@@ -2239,13 +2325,52 @@ class e_parse
 			{
 				$value = $key;
 			}
-			if (!empty($value) || is_numeric($value) || $key === "value" || strpos($key, 'data-') === 0)
+			if (!empty($value) || is_numeric($value) || in_array($key, array('alt', 'value'), true) || strpos($key, 'data-') === 0)
 			{
 				$stringifiedAttributes[] = $key . "='" . $this->toAttribute($value, $pure) . "'";
 			}
 		}
 
 		return count($stringifiedAttributes) > 0 ? " " . implode(" ", $stringifiedAttributes) : "";
+	}
+
+	/**
+	 * Spell a Bootstrap JavaScript behaviour's data attributes for Bootstrap 3, 4 and 5 at once.
+	 *
+	 * Pass the behaviour, not the prefix: `data-` and `data-bs-` both come back. State classes cannot be doubled up
+	 * like this; use {@see e_parse::bootstrapShowClass()}.
+	 *
+	 * @param array $attributes Behaviour attributes without their prefix, e.g. `['toggle' => 'collapse', 'target' => '#sub-1']`
+	 * @return array Attribute name-value pairs, ready for {@see e_parse::toAttributes()}
+	 * @deprecated v2.3.12 Stopgap while core markup is still framework-coupled. Framework spellings belong in template
+	 *             packs (issue #5909); reach for a template override before calling this from new code.
+	 */
+	public function bootstrapData($attributes)
+	{
+		$prefixed = [];
+
+		foreach ($attributes as $key => $value)
+		{
+			$prefixed['data-' . $key] = $value;
+			$prefixed['data-bs-' . $key] = $value;
+		}
+
+		return $prefixed;
+	}
+
+	/**
+	 * The class Bootstrap puts on a shown `.collapse` or a faded-in `.fade` element: `in` on Bootstrap 3, `show` from
+	 * Bootstrap 4 on.
+	 *
+	 * Emit one or the other, never both: Bootstrap 3 also ships `.show` as a `display: block !important` utility.
+	 *
+	 * @return string
+	 * @deprecated v2.3.12 Stopgap while core markup is still framework-coupled. Framework spellings belong in template
+	 *             packs (issue #5909); reach for a template override before calling this from new code.
+	 */
+	public function bootstrapShowClass()
+	{
+		return $this->bootstrap > 3 ? 'show' : 'in';
 	}
 
 	/**
@@ -2295,7 +2420,7 @@ class e_parse
 		{
 			if (!empty($unprepend) && substr($key, 0, strlen($unprepend)) == $unprepend)
 			{
-				$key = substr($key, strlen($unprepend));
+				$key = (string) substr($key, strlen($unprepend));
 			}
 			$parts = explode('/', $key);
 			$nested = &$output;
@@ -2428,8 +2553,8 @@ class e_parse
 		}
 
 		return (float) (
-			preg_replace('/[^-0-9]/', '', substr($value, 0, $sep)) . '.' .
-			preg_replace('/[^0-9]/', '', substr($value, $sep + 1, strlen($value)))
+			preg_replace('/[^-0-9]/', '', (string) substr($value, 0, $sep)) . '.' .
+			preg_replace('/[^0-9]/', '', (string) substr($value, $sep + 1, strlen($value)))
 		);
 	}
 
@@ -2663,7 +2788,7 @@ class e_parse
 		$tmp = explode('.', $filename);
 		$ext = end($tmp);
 		$len = strlen($ext) + 1;
-		$start = substr($filename, 0, -$len);
+		$start = (string) substr($filename, 0, -$len);
 
 		// cleanup.
 		$newOpts = array(
@@ -4176,6 +4301,16 @@ class e_parse
 		$this->bootstrap = (int) $version;
 	}
 
+	/**
+	 * The major Bootstrap version the active theme declared, or null when it declared none.
+	 *
+	 * @return int|null
+	 */
+	public function getBootstrap()
+	{
+		return $this->bootstrap;
+	}
+
 	public function setmodRewriteMedia($bool)
 	{
 		$this->modRewriteMedia = (bool) $bool;
@@ -4621,6 +4756,38 @@ class e_parse
 	}
 
 	/**
+	 * Resolve a user_image value to the avatar file it names, without checking that the file is there.
+	 *
+	 * @param string $image user_image as stored, with or without the -upload- prefix
+	 * @return string path under e_AVATAR_UPLOAD or e_AVATAR_DEFAULT, '' when the value names no local
+	 *                file (a remote url, or anything carrying a path); never the generic avatar
+	 */
+	public function toAvatarPath($image)
+	{
+
+		if (!is_string($image) || strpbrk($image, "/\\\0") !== false)
+		{
+			return '';
+		}
+
+		$directory = e_AVATAR_DEFAULT;
+
+		if (strpos($image, '-upload-') === 0)
+		{
+			$directory = e_AVATAR_UPLOAD;
+			$image = (string) substr($image, 8);
+		}
+
+		if ($image === '' || trim($image, '.') === '')
+		{
+			return '';
+		}
+
+		return $directory . $image;
+	}
+
+
+	/**
 	 * Render an avatar based on supplied user data or current user when missing.
 	 *
 	 * @param array    $userData - user data from e107_user. ie. user_image, user_id etc.
@@ -4645,12 +4812,13 @@ class e_parse
 
 		$tp = e107::getParser();
 		$width = !empty($options['w']) ? intval($options['w']) : $tp->thumbWidth;
-		$height = ($tp->thumbHeight !== 0) ? $tp->thumbHeight : '';
+		$height = $tp->thumbHeight;
 		$crop = isset($options['crop']) ? $options['crop'] : $tp->thumbCrop;
 		$linkStart = '';
 		$linkEnd = '';
 		$full = !empty($options['base64']) ? true : false;
 		$file = '';
+		$remote = false;
 
 		if (!empty($options['mode']) && $options['mode'] === 'full')
 		{
@@ -4690,31 +4858,26 @@ class e_parse
 			if (strpos($image, '://') !== false) // Remote Image
 			{
 				$url = $image;
+				$remote = true;
 			}
-			elseif (strpos($image, '-upload-') === 0)
+			else
 			{
+				$file = $this->toAvatarPath($image);
 
-				$image = substr($image, 8); // strip the -upload- from the beginning.
-				if (file_exists(e_AVATAR_UPLOAD . $image))
+				if ($file !== '')
 				{
-					$file = e_AVATAR_UPLOAD . $image;
+					$image = basename($file);
+				}
+
+				if (file_exists($file))
+				{
 					$url = $tp->thumbUrl($file, 'w=' . $width . '&h=' . $height . '&crop=' . $crop, false, $full);
 				}
-				else
+				else // Image Missing.
 				{
 					$file = $genericFile;
 					$url = $genericImg;
 				}
-			}
-			elseif (file_exists(e_AVATAR_DEFAULT . $image))  // User-Uplaoded Image
-			{
-				$file = e_AVATAR_DEFAULT . $image;
-				$url = $tp->thumbUrl($file, 'w=' . $width . '&h=' . $height . '&crop=' . $crop, false, $full);
-			}
-			else // Image Missing.
-			{
-				$url = $genericImg;
-				$file = $genericFile;
 			}
 		}
 		else // No image provided - so send generic.
@@ -4759,7 +4922,7 @@ class e_parse
 			$linkEnd = '</a>';
 		}
 
-		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
+		$title = (ADMIN) ? $image : $userData['user_name'];
 		$shape = (!empty($options['shape'])) ? 'img-' . $options['shape'] : 'img-rounded rounded';
 
 		if ($shape === 'img-circle')
@@ -4774,20 +4937,31 @@ class e_parse
 
 		if (!empty($options['alt']))
 		{
-			$title = $tp->toAttribute($options['alt']);
+			$title = $options['alt'];
 		}
-
-		$heightInsert = empty($height) ? '' : "height='" . $height . "'";
-		$id = (!empty($options['id'])) ? "id='" . $options['id'] . "' " : '';
 
 		$classOnline = (!empty($userData['user_currentvisit']) && intval($userData['user_currentvisit']) > (time() - 300)) ? ' user-avatar-online' : '';
 
 		$class = !empty($options['class']) ? $options['class'] : $shape . ' user-avatar';
-		$style = !empty($options['style']) ? " style='" . $options['style'] . "'" : '';
-		$loading = !empty($options['loading']) ? " loading='" . $options['loading'] . "'" : " loading='lazy'"; // default to lazy.
+
+		$attributes = array(
+			'id'      => !empty($options['id']) ? $options['id'] : null,
+			'class'   => $class . $classOnline,
+			'alt'     => $title,
+			'src'     => html_entity_decode($url, ENT_QUOTES, 'UTF-8'),
+			'width'   => $width,
+			'height'  => empty($height) ? null : $height,
+			'style'   => !empty($options['style']) ? $options['style'] : null,
+			'loading' => !empty($options['loading']) ? $options['loading'] : 'lazy',
+		);
+
+		if ($remote && strpos($url, 'data:') !== 0)
+		{
+			$attributes['onerror'] = "this.onerror=null;this.src='" . html_entity_decode($genericImg, ENT_QUOTES, 'UTF-8') . "';";
+		}
 
 		$text = $linkStart;
-		$text .= '<img ' . $id . "class='" . $class . $classOnline . "' alt=\"" . $title . "\" src='" . $url . "'  width='" . $width . "' " . $heightInsert . $style . $loading . ' />';
+		$text .= '<img' . $tp->toAttributes($attributes, true) . ' />';
 		$text .= $linkEnd;
 
 		//	return $url;
@@ -5017,24 +5191,24 @@ class e_parse
 
 
 
-		$id = (!empty($parm['id'])) ? 'id="' . $parm['id'] . '" ' : '';
-		$class = (!empty($parm['class'])) ? $parm['class'] : 'img-responsive img-fluid';
-		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : basename($file);
-		$style = (!empty($parm['style'])) ? 'style="' . $parm['style'] . '" ' : '';
-		$srcset = (!empty($parm['srcset'])) ? 'srcset="' . $parm['srcset'] . '" ' : '';
+		$id = (!empty($parm['id'])) ? 'id="' . $this->attributeValue($parm['id']) . '" ' : '';
+		$class = (!empty($parm['class'])) ? $this->attributeValue($parm['class']) : 'img-responsive img-fluid';
+		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : $this->attributeValue(basename($file));
+		$style = (!empty($parm['style'])) ? 'style="' . $this->attributeValue($parm['style']) . '" ' : '';
+		$srcset = (!empty($parm['srcset'])) ? 'srcset="' . $this->attributeValue($parm['srcset']) . '" ' : '';
 		$width = (!empty($parm['w'])) ? 'width="' . (int) $parm['w'] . '" ' : '';
-		$title = (!empty($parm['title'])) ? 'title="' . $parm['title'] . '" ' : '';
+		$title = (!empty($parm['title'])) ? 'title="' . $this->attributeValue($parm['title']) . '" ' : '';
 		$height = !empty($parm['h']) ? 'height="' . (int) $parm['h'] . '" ' : '';
-		$loading = !empty($parm['loading']) ? 'loading="' . $parm['loading'] . '" ' : ''; // eg. lazy, eager, auto
+		$loading = !empty($parm['loading']) ? 'loading="' . $this->attributeValue($parm['loading']) . '" ' : ''; // eg. lazy, eager, auto
 
 		if (isset($parm['width'])) // width attribute override (while retaining w)
 		{
-			$width = 'width="' . $parm['width'] . '" ';
+			$width = 'width="' . $this->attributeValue($parm['width']) . '" ';
 		}
 
 		if (isset($parm['height'])) // height attribute override (while retaining h)
 		{
-			$height = 'height="' . $parm['height'] . '" ';
+			$height = 'height="' . $this->attributeValue($parm['height']) . '" ';
 		}
 
 		$html = '';
@@ -5069,12 +5243,24 @@ class e_parse
 			return $tp->replaceConstants($path, 'full');
 		}
 
-		$html .= "<img {$id}class=\"{$class}\" src=\"" . $path . '" alt="' . $alt . '" ' . $srcset . $width . $height . $style . $loading . $title . ' />';
+		$html .= "<img {$id}class=\"{$class}\" src=\"" . $this->attributeValue($path) . '" alt="' . $alt . '" ' . $srcset . $width . $height . $style . $loading . $title . ' />';
 
 		//	$html .= ($this->convertToWebP) ? "\n</picture>" : '';
 
 		return $html;
 
+	}
+
+
+	/**
+	 * Encode a value for a quoted HTML attribute, leaving an entity the caller already wrote alone.
+	 *
+	 * @param mixed $value
+	 * @return string
+	 */
+	private function attributeValue($value)
+	{
+		return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
 	}
 
 
@@ -5092,7 +5278,7 @@ class e_parse
 			return false;
 		}
 
-		if (strpos($text, '[') === false || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+		if (strpos($text, '[') === false)
 		{
 			return false;
 		}
@@ -5131,11 +5317,6 @@ class e_parse
 		if (strpos($text, '[html]') !== false)
 		{
 			return true;
-		}
-
-		if ($this->isBBcode($text))
-		{
-			return false;
 		}
 
 		if (preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
@@ -5340,7 +5521,7 @@ class e_parse
 		{
 			if (strpos($k, 'youtube_') === 0)
 			{
-				$key = substr($k, 8);
+				$key = (string) substr($k, 8);
 				$ytpref[$key] = $v;
 			}
 		}
@@ -6120,28 +6301,6 @@ class e_parse
 	private function processModifiers($opts, $text, $convertNL, $parseBB, $modifiers, $postID)
 	{
 
-		if ($opts['link_click'])
-		{
-
-			if ($opts['link_replace'] && defset('ADMIN_AREA') !== true)
-			{
-
-				$link_text = $this->pref['link_text'];
-				$email_text = ($this->pref['email_text']) ? $this->replaceConstants($this->pref['email_text']) : LAN_EMAIL_SUBS;
-
-				$text = $this->makeClickable($text, 'url', array('sub' => $link_text, 'ext' => $this->pref['links_new_window']));
-				$text = $this->makeClickable($text, 'email', array('sub' => $email_text));
-			}
-			else
-			{
-
-				$text = $this->makeClickable($text, 'url', array('ext' => true));
-				$text = $this->makeClickable($text, 'email');
-
-			}
-		}
-
-
 		// Convert emoticons to graphical icons, if enabled
 		if ($opts['emotes'])
 		{
@@ -6202,6 +6361,28 @@ class e_parse
 			else // Need to strip just some BBCodes
 			{
 				$text = e107::getBB()->parseBBCodes($text, $postID, 'default', $parseBB);
+			}
+		}
+
+
+		if ($opts['link_click'])
+		{
+
+			if ($opts['link_replace'] && defset('ADMIN_AREA') !== true)
+			{
+
+				$link_text = $this->pref['link_text'];
+				$email_text = ($this->pref['email_text']) ? $this->replaceConstants($this->pref['email_text']) : LAN_EMAIL_SUBS;
+
+				$text = $this->makeClickable($text, 'url', array('sub' => $link_text, 'ext' => $this->pref['links_new_window']));
+				$text = $this->makeClickable($text, 'email', array('sub' => $email_text));
+			}
+			else
+			{
+
+				$text = $this->makeClickable($text, 'url', array('ext' => true));
+				$text = $this->makeClickable($text, 'email');
+
 			}
 		}
 

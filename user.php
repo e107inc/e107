@@ -43,22 +43,24 @@ e107::getLanguage()->bcDefs($bcList);
 
 
 
+$full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
+$user_list_max = 50;
+
 if(e_AJAX_REQUEST)
 {
-	if(vartrue($_POST['q']))
-	{
-		$db = e107::getDb();
-		$tp = e107::getParser();
+	$q = $full_perms && is_string(varset($_POST['q'])) ? e107::getParser()->filter($_POST['q']) : '';
 
-		$q = $tp->filter($_POST['q']);
+	if($q !== '')
+	{
 		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
 
 		//TODO FIXME Filter by userclass.  - see $frm->userlist().
 
-		$qb = $db->createQueryBuilder();
+		$qb = e107::getDb()->createQueryBuilder();
 		$rows = $qb->select('user_id', 'user_name')->from('user')
 			->where($qb->expr()->startsWith('user_name', $q))
-			->orderBy('user_name', 'ASC')->setMaxResults((int) $l)
+			->andWhere('user_ban', 0)
+			->orderBy('user_name', 'ASC')->setMaxResults(max(1, min($user_list_max, $l)))
 			->fetchAll();
 
 		if($rows)
@@ -110,36 +112,29 @@ $self_page =($qs[0] == 'id' && intval($qs[1]) == USERID);
 
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
-if(THEME_LEGACY === true) // v1.x BC Fix for loading old templates.
-{
-    $sc_style = array();
-	e107::getMessage()->addDebug( "Loading v1.x user template");
-	$_userTmpl = e107::coreTemplatePath('user');
-	e107::predefineLegacyLans($_userTmpl); // #5653: pre-define any missing legacy LAN_* before include.
-	include($_userTmpl); //correct way to load a core template. (don't use 'include_once' in case it has already been loaded).
-    e107::scStyle($sc_style);
-}
-else // v2.x
-{
-    e107::getMessage()->addDebug( "Loading v2.x user template");
-    $USER_TEMPLATE              = e107::getCoreTemplate('user');
-	$USER_FULL_TEMPLATE         = $USER_TEMPLATE['view'];
-	$USER_SHORT_TEMPLATE_START  = $USER_TEMPLATE['list']['start'] ;
-	$USER_SHORT_TEMPLATE        = $USER_TEMPLATE['list']['item'] ;
-	$USER_SHORT_TEMPLATE_END    = $USER_TEMPLATE['list']['end'];
+$USER_TEMPLATE  = e107::getCoreTemplate('user');
+$USER_LIST      = varset($USER_TEMPLATE['list'], array());
 
-}
+$USER_FULL_TEMPLATE         = vartrue($USER_TEMPLATE['USER_FULL_TEMPLATE'], varset($USER_TEMPLATE['view'], ''));
+$USER_SHORT_TEMPLATE_START  = vartrue($USER_TEMPLATE['USER_SHORT_TEMPLATE_START'], varset($USER_LIST['start'], ''));
+$USER_SHORT_TEMPLATE        = vartrue($USER_TEMPLATE['USER_SHORT_TEMPLATE'], varset($USER_LIST['item'], ''));
+$USER_SHORT_TEMPLATE_END    = vartrue($USER_TEMPLATE['USER_SHORT_TEMPLATE_END'], varset($USER_LIST['end'], ''));
 
 $USER_FULL_TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $USER_FULL_TEMPLATE); // BC Fix
 
 $user_shortcodes = e107::getScBatch('user');
 $user_shortcodes->wrapper('user/view');
+$user_shortcodes->legacyTemplate = array(
+	'EXTENDED_CATEGORY_START'         => varset($USER_TEMPLATE['EXTENDED_CATEGORY_START'], ''),
+	'EXTENDED_CATEGORY_TABLE'         => varset($USER_TEMPLATE['EXTENDED_CATEGORY_TABLE'], ''),
+	'EXTENDED_CATEGORY_END'           => varset($USER_TEMPLATE['EXTENDED_CATEGORY_END'], ''),
+	'USER_EMBED_USERPROFILE_TEMPLATE' => varset($USER_TEMPLATE['USER_EMBED_USERPROFILE_TEMPLATE'], '')
+);
 
 
 $user_frm = new form;
 require_once(HEADERF);
 
-$full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
 if (!$full_perms && !$self_page)
 {
 	$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_USER_55."</div>");
@@ -173,16 +168,21 @@ else
 		}
 		else
 		{
-			$qs = explode(".", e_QUERY);
 			$from = intval($qs[0]);
-			$records = intval($qs[1]);
-			$order = ($qs[2] == 'ASC' ? 'ASC' : 'DESC');
+			$records = isset($qs[1]) ? intval($qs[1]) : 0;
+			$order = (varset($qs[2]) === 'ASC' ? 'ASC' : 'DESC');
 		}
 	}
 }
-if (vartrue($records) > 50)
+$records = (int) vartrue($records, 20);
+
+if ($records < 1)
 {
-	$records = 50;
+	$records = 20;
+}
+elseif ($records > $user_list_max)
+{
+	$records = $user_list_max;
 }
 
 if (isset($id))
@@ -281,7 +281,8 @@ if (isset($id))
 
 	$ns->tablerender(LAN_USER_52, $text, 'user-list');
 
-	$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
+	$listUrl = e107::getUrl()->create('user/profile/list', array('page' => '--FROM--', 'records' => $records, 'order' => $order), array('full' => 1));
+	$parms = $users_total.",".$records.",".$from.",".str_replace('--FROM--', '[FROM]', $listUrl);
 	echo "<div class='nextprev form-inline'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
 

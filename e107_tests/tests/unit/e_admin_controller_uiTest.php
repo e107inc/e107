@@ -10,7 +10,7 @@
 
 
 
-	class e_admin_controller_uiTest extends \Codeception\Test\Unit
+	class e_admin_controller_uiTest extends \Test\Unit
 	{
 
 		/** @var e_admin_ui */
@@ -60,7 +60,7 @@
 					OR e.calls_from = REPLACE(m.mem_phone_other1 , '-', '') 
 					OR e.calls_from = REPLACE(m.mem_phone_other2 , '-', '')
 				)
-			
+
 			) 
 			LEFT JOIN `#member_calender` AS cl ON 
 			(
@@ -69,7 +69,7 @@
 					cl.cal_by_phone = REPLACE(m.mem_phone_day, '-', '') 
 					OR cl.cal_by_cell = REPLACE(m.mem_phone_cell , '-', '') 
 				)
-			
+
 			) ";
 
 			$this->ui->joinAlias($qry2);
@@ -218,6 +218,15 @@
 			$isfilter = false;
 			$handleAction = 'List';
 
+			// Simulate a custom search handler for user_phone
+			$this->ui = $this->make(e_admin_ui::class, array(
+				'handleListSearchfieldFilter' => function ($field)
+				{
+					$search = $this->ui->getQuery('searchquery');
+					return "u.user_phone LIKE '%custom_phone_" .  $search . "%'";
+				},
+			));
+
 			$this->ui->setFields([
 					'user_id'           => array('title'=>'User ID', '__tableField' => 'u.user_id', 'type'=>'int', 'data'=>'int'),
 					'user_name' 		=> array('title' => 'Name',	'__tableField' => 'u.user_name', 'type' => 'text',	 'data'=>'safestr'), // Display name
@@ -231,13 +240,6 @@
 			$this->req->setAction('List');
 			$this->req->setQuery('searchquery', '5551234');
 			$this->ui->setRequest($this->req);
-
-			// Simulate a custom search handler for user_phone
-		    $this->ui->handleListSearchfieldFilter = function ($field)
-		    {
-		        $search = $this->ui->getQuery('searchquery');
-		        return "u.user_phone LIKE '%custom_phone_" .  $search . "%'";
-		    };
 
 		    // Test custom search specifically for user_phone
 		    $filterOptions = 'searchfield__user_phone';
@@ -255,20 +257,9 @@
 
 			// For Banlist test.
 
-			$this->ui->handleListBanlistIpSearch  = function($srch)
-			{
-				$ret = array(
-					"banlist_ip = '".$srch."'"
-				);
-
-				if($ip6 = e107::getIPHandler()->ipEncode($srch,true))
-				{
-					$ip = str_replace('x', '', $ip6);
-					$ret[] = "banlist_ip LIKE '%".$ip."%'";
-				}
-
-				return implode(" OR ",$ret);
-			};
+			require_once(__DIR__ . '/fixtures/AdminUiBanlistSearchFixture.php');
+			$this->ui = $this->make(AdminUiBanlistSearchFixture::class);
+			$this->ui->setRequest($this->req);
 
 
 

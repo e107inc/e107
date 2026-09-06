@@ -29,7 +29,7 @@ use ReflectionClass;
 	 * instanceof and catch checks - the guarantees v2-era core and plugin
 	 * code rely on.
 	 */
-	class V2AliasTest extends \Codeception\Test\Unit
+	class V2AliasTest extends \Test\Unit
 	{
 		/**
 		 * Every v2 name registered by the e_db_interface.php compatibility
@@ -121,7 +121,11 @@ use ReflectionClass;
 
 			$this->assertArrayHasKey(ConnectionInterface::class, class_implements('e_db_pdo'),
 				'e_db_pdo should implement the namespaced connection interface via the e_db alias');
-			$this->assertArrayHasKey(ConnectionTrait::class, class_uses('e_db_pdo'),
+			$traits = array_map(function ($trait)
+			{
+				return (new ReflectionClass($trait))->getName();
+			}, class_uses('e_db_pdo'));
+			$this->assertContains(ConnectionTrait::class, $traits,
 				'e_db_pdo should compose the namespaced connection trait via the e_db_common alias');
 		}
 	}

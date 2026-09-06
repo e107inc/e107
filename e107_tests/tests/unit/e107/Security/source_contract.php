@@ -10,6 +10,8 @@
 
 namespace e107\Security;
 
+use e107\Reflection\ReflectionMethod;
+
 /**
  * Reads the source of the security handlers so a test can assert about it.
  *
@@ -37,7 +39,7 @@ class SourceContract
 	 */
 	public static function methodBody($class, $method)
 	{
-		$reflection = new \ReflectionMethod($class, $method);
+		$reflection = new ReflectionMethod($class, $method);
 		$lines = file($reflection->getFileName());
 		$start = $reflection->getStartLine() - 1;
 

@@ -68,12 +68,14 @@ switch($action)
 	case 'edit' :
 	case 'add' :
 		$text = "You can ban users from your site at this screen.<br />
-Either enter their full IP address or use a wildcard to ban a range of IP addresses. You can also enter an email address to stop a user registering as a member on your site.<br /><br />
+Enter a full IP address, a range of addresses, an email address or a host name pattern. An entry that is none of these is refused, because nothing would enforce it.<br /><br />
 <b>Banning by IP address:</b><br />
 Entering the IP address 123.123.123.123 will stop the user with that address visiting your site.<br />
-Entering an IP address with one or more wildcards in the end blocks, such as 123.123.123.* or 214.098.*.*, will stop anyone in that IP range from visiting your 
-site. (Note that there must be exactly four groups of digits or asterisks)<br /><br />
-IPV6 format addresses are also supported, including '::' to represent a block of zero values. Each pair of digits in the end fields may be a separate wildcard<br /><br />
+A range can be written in CIDR notation, such as 123.123.123.0/24 or 2001:db8::/32, as two addresses joined by a hyphen, such as 123.123.123.10-123.123.123.99, or with asterisks in the last groups, such as 123.123.123.* or 214.098.*.*.
+The list shows the first and last address each range covers.<br /><br />
+IPV6 format addresses are also supported, including '::' to represent a block of zero values.<br /><br />
+<b>Banning by host name</b><br />
+Entering *.example.com will stop anyone whose address resolves to a host under example.com, when the reverse DNS option is enabled.<br /><br />
 <b>Banning by email address</b><br />
 Entering the email address foo@bar.com will stop anyone using that email address from registering as a member on your site.<br />
 Entering the email address *@bar.com will stop anyone using that email domain from registering as a member on your site.<br /><br />
@@ -84,7 +86,8 @@ This is done from the user administration page.<br /><br />";
 	case 'whedit' :
 		$text = "You can specify IP addresses which you know to be 'friendly' here - generally those for the main site admins, to guarantee that they can
   always gain access to the site.<br />
-  You are advised to keep the number of addresses in this list to an absolute minimum; both for security, and to minimise the impact on site performance.";
+  An address range is accepted in the same forms as on the ban screen, and every address in it is exempt from every ban, however narrow the ban. Enter ranges with care.<br />
+  You are advised to keep the number of addresses in this list to an absolute minimum, for security.";
 		break;
 	case 'banlog' :
 		$text = "This shows a list of all site accesses involving an address which is in the ban list or the white list. The 'reason' column shows the outcome.";

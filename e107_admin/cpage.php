@@ -242,12 +242,12 @@ class page_chapters_ui extends e_admin_ui
 				$bk = $row['chapter_id'];
 				$this->books[$bk] = $row['chapter_name'];
 			}
-			
+
 			asort($this->books);
-			
+
 			$this->fields['chapter_parent']['writeParms'] = $this->books;	
-			
-			
+
+
 			$tmp = e107::getLayouts('', 'chapter', 'front', '', true, false);
 			$tmpl = array();
 			foreach($tmp as $key=>$val)
@@ -257,7 +257,7 @@ class page_chapters_ui extends e_admin_ui
 					$tmpl[$key] = $val;	
 				}	
 			}
-			
+
 			$this->fields['chapter_template']['writeParms'] = $tmpl; // e107::getLayouts('', 'chapter', 'front', '', true, false); // e107::getLayouts('', 'page', 'books', 'front', true, false); 
 			
 		}
@@ -904,7 +904,7 @@ class page_admin_ui extends e_admin_ui
 			{
 				$insert = array('menu_name' => $menu_name, 'menu_path' => $menu_path);
 
-				if(e107::getDb()->createQueryBuilder()->insert('menus')->valuesTyped($insert, e107::getDb()->getFieldDefs('menus')['_FIELD_TYPES'])->execute() !== false)
+				if(e107::getDb()->createQueryBuilder()->insert('menus')->valuesTyped($insert)->execute() !== false)
 				{
 					$mes->addDebug(CUSLAN_73);
 					return true;

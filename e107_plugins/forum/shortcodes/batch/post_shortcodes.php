@@ -374,10 +374,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		$text = "
 		<ul class='nav nav-tabs'>
 		<li class='active'><a href='#type' data-toggle='tab' data-bs-toggle='tab'>".LAN_FORUM_3025."</a></li>";
-		
+
 		$text .= ($poll) ? "<li><a href='#poll' data-toggle='tab' data-bs-toggle='tab'>".LAN_FORUM_1016."</a></li>\n" : "";
 		$text .= ($attach) ? "<li><a href='#attach' data-toggle='tab' data-bs-toggle='tab'>".LAN_FORUM_3012."</a></li>\n" : "";
-		
+
 		$text .= "
 		</ul>
 				<div class='tab-content text-left'>
@@ -390,15 +390,15 @@ class plugin_forum_post_shortcodes extends e_shortcode
 						</div>
 					</div>
 				";
-				
+
 		if($poll)
 		{
 			$text .= "<div class='tab-pane' id='poll'>
 						".$poll."
 					</div>";	
-			
+
 		}
-					
+
 		if($attach)
 		{
 			$text .= "
@@ -406,11 +406,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 						".$attach."
 					</div>";	
 		}			
-										
+
 		$text .= "			
 		</div>";
-		
-			
+
+
 		return $text;*/
 		
 		

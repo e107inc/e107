@@ -29,7 +29,6 @@ class CommentFeedParentClassCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->havePluginInstalled('rss_menu');
 		$I->havePluginInstalled('download');
 

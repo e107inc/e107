@@ -36,7 +36,7 @@ class admin_shortcodes extends e_shortcode
             {	//TODO LANVARS
 				$text = ADLAN_122.'  v'.$cacheData.'</a>.
 					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
-				
+
 				$mes->addInfo($text);
 				return null; //  $mes->render();
 			}
@@ -381,7 +381,7 @@ class admin_shortcodes extends e_shortcode
 		if($lanperms && !getperms($sql->mySQLlanguage))
 		{
 			$slng->set($lanperms[0]);
-			if ($pref['user_tracking'] === 'session' && $pref['multilanguage_subdomain'])
+			if (!empty($pref['multilanguage_subdomain']))
 			{
 				e107::getRedirect()->redirect($slng->subdomainUrl($lanperms[0]));
 			}
@@ -700,9 +700,15 @@ class admin_shortcodes extends e_shortcode
 			$path = e_IMAGE.'adminlogo.png';
 		}
 
-		$dimensions = getimagesize($path);
+		$dimensions = @getimagesize($path);
+		$style = '';
 
-		$image = "<img class='logo admin_logo' src='".$logo."' style='width: ".$dimensions[0]. 'px; height: ' .$dimensions[1]."px' alt='".ADLAN_153."' />\n";
+		if(!empty($dimensions[0]) && !empty($dimensions[1]))
+		{
+			$style = " style='width: ".$dimensions[0]. 'px; height: ' .$dimensions[1]."px'";
+		}
+
+		$image = "<img class='logo admin_logo' src='".$logo."'".$style." alt='".ADLAN_153."' />\n";
 
 		if (isset($link) && $link)
 		{
@@ -1200,7 +1206,7 @@ class admin_shortcodes extends e_shortcode
 			}
 
 			$e107_var['lout']['text'] = LAN_LOGOUT;
-			$e107_var['lout']['link'] = e_ADMIN_ABS.'admin.php?logout';
+			$e107_var['lout']['link'] = e_ADMIN_ABS.'admin.php?logout&e-token='.defset('e_TOKEN');
 
 			if(function_exists('e_admin_menu'))
 			{
@@ -1940,7 +1946,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$lan = defset('LAN_DATABASE_UPDATE', "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.");
 				$srch = array('[',']');
 				$repl = [
-					"<a class='text-info' href='".e_ADMIN_ABS."e107_update.php'>",
+					"<a class='text-info' href='".e_ADMIN_ABS."e107_update.php?e-token=".defset('e_TOKEN')."'>",
 					"</a>"
 				];
 				eHelper::addSystemNotification('core_update', str_replace($srch, $repl, $lan));
@@ -1952,7 +1958,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//	$upStatus =  (e107::getSession()->get('core-update-status') === true) ? '<span title="' .ADLAN_120. '" class="text-info"><i class="fa fa-database"></i></span>' : '<!-- -->';
 
 			return;
-		//	return varset($template['start']). '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-bs-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .varset($template['end']);
 
 		}
 
@@ -2205,7 +2210,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 			$tmp[3]['text']            = LAN_LOGOUT;
 			$tmp[3]['description']     = ADLAN_151;
-			$tmp[3]['link']            = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[3]['link']            = e_ADMIN_ABS.'admin.php?logout&e-token='.defset('e_TOKEN');
 			$tmp[3]['image']           = "<i class='S16 e-logout-16'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[3]['image_large']     = '';
 			$tmp[3]['image_src']       = '';
@@ -2214,7 +2219,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 			$tmp[4]['text']            = LAN_LOGOUT;
 			$tmp[4]['description']     = ADLAN_151;
-			$tmp[4]['link']            = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[4]['link']            = e_ADMIN_ABS.'admin.php?logout&e-token='.defset('e_TOKEN');
 			$tmp[4]['image']           = '';
 			$tmp[4]['image_large']     = '';
 			$tmp[4]['image_src']       = '';

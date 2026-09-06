@@ -7,8 +7,9 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
+use e107\Reflection\ReflectionProperty;
 
-class e_admin_dispatcherTest extends \Codeception\Test\Unit
+class e_admin_dispatcherTest extends \Test\Unit
 {
 
 	protected $dp;
@@ -24,10 +25,19 @@ class e_admin_dispatcherTest extends \Codeception\Test\Unit
 		try
 		{
 			$this->controller = $this->make(e_admin_controller_ui::class);
-			$this->dp = $this->getMockBuilder('e_admin_dispatcher')
-				->onlyMethods(['hasPerms', 'hasRouteAccess', 'getMenuData', 'getMenuAliases', 'getMenuIcon', 'getMenuTitle', 'hasModeAccess'])
-				->disableOriginalConstructor()
-				->getMock();
+			// PHPUnit renamed setMethods() to onlyMethods() in 8.x and
+			// dropped the old form in 10.x. The legacy PHP cells run
+			// Codeception 4.x with a PHPUnit that only has setMethods();
+			// the modern cells run Codeception 5.x with a PHPUnit that
+			// only has onlyMethods(). Pick whichever the active mock
+			// builder exposes so the same test source runs on both ends
+			// of the matrix.
+			$mockedMethods = ['hasPerms', 'hasRouteAccess', 'getMenuData', 'getMenuAliases', 'getMenuIcon', 'getMenuTitle', 'hasModeAccess'];
+			$mockBuilder = $this->getMockBuilder('e_admin_dispatcher')->disableOriginalConstructor();
+			$mockBuilder = method_exists($mockBuilder, 'onlyMethods')
+				? $mockBuilder->onlyMethods($mockedMethods)
+				: $mockBuilder->setMethods($mockedMethods);
+			$this->dp = $mockBuilder->getMock();
 
 			$this->req = $this->make(e_admin_request::class);
 			$this->dp->setRequest($this->req);
@@ -51,9 +61,7 @@ class e_admin_dispatcherTest extends \Codeception\Test\Unit
 				->willReturnCallback(function ()
 				{
 
-					$reflection = new ReflectionClass($this->dp);
-					$adminMenuProperty = $reflection->getProperty('adminMenu');
-					$adminMenuProperty->setAccessible(true);
+					$adminMenuProperty = new ReflectionProperty($this->dp, 'adminMenu');
 
 					return $adminMenuProperty->getValue($this->dp) ?: [];
 				});
@@ -128,6 +136,49 @@ class e_admin_dispatcherTest extends \Codeception\Test\Unit
 		$this::assertNotEmpty($result['misc/custom']['sub']['misc/custom2'], 'Misc custom2 sub-item should be present');
 
 
+	}
+
+	public function testRenderMenuCollapseSpellsEveryBootstrapVersion()
+	{
+
+		$this->req->setMode('main');
+		$this->req->setAction('custom1');
+
+		$this->dp->setMenuData([
+			'main/custom'  => ['caption' => 'Custom Pages', 'perm' => 'P'],
+			'main/custom1' => ['group' => 'main/custom', 'caption' => 'Custom Page 1', 'perm' => 'P'],
+		]);
+
+		$this->dp->method('hasRouteAccess')->willReturn(true);
+
+		$expectedData = [
+			'data-toggle'    => 'collapse',
+			'data-bs-toggle' => 'collapse',
+			'data-target'    => '#sub-main-custom',
+			'data-bs-target' => '#sub-main-custom',
+			'role'           => 'button',
+			'aria-expanded'  => 'true',
+		];
+
+		$tp = e107::getParser();
+		$restore = $tp->getBootstrap();
+
+		try
+		{
+			foreach([3 => 'collapse in', 4 => 'collapse show', 5 => 'collapse show'] as $version => $subClass)
+			{
+				$tp->setBootstrap($version);
+
+				$result = $this->dp->renderMenu(true);
+
+				$this::assertEquals($expectedData, $result['main/custom']['link_data'], 'Bootstrap ' . $version . ' link attributes');
+				$this::assertSame($subClass, $result['main/custom']['sub_class'], 'Bootstrap ' . $version . ' collapse class');
+			}
+		}
+		finally
+		{
+			$tp->setBootstrap($restore);
+		}
 	}
 
 	public function testRenderMenuUserclassAccess()

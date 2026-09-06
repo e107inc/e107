@@ -225,7 +225,7 @@ class AesCbcHmacSha2
 		$input = $aad . $iv . $ciphertext . self::al($aad);
 		$mac = hash_hmac($algorithm['hash'], $input, self::macKey($enc, $key), true);
 
-		return substr($mac, 0, (int) ($algorithm['keyLength'] / 2));
+		return (string) substr($mac, 0, (int) ($algorithm['keyLength'] / 2));
 	}
 
 	/**
@@ -264,7 +264,7 @@ class AesCbcHmacSha2
 	 */
 	private static function macKey($enc, $key)
 	{
-		return substr($key, 0, (int) (self::$algorithms[$enc]['keyLength'] / 2));
+		return (string) substr($key, 0, (int) (self::$algorithms[$enc]['keyLength'] / 2));
 	}
 
 	/**
@@ -276,7 +276,7 @@ class AesCbcHmacSha2
 	 */
 	private static function encryptionKey($enc, $key)
 	{
-		return substr($key, (int) (self::$algorithms[$enc]['keyLength'] / 2));
+		return (string) substr($key, (int) (self::$algorithms[$enc]['keyLength'] / 2));
 	}
 
 	/**

@@ -24,17 +24,15 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * - ids (string): comma separated id list - load specific featurebox items, default empty 
 	 * 
 	 * @param string $parm parameters
-	 * @param string $mod category template
-	 * @example {FEATUREBOX=cols=2|tabs}
+	 * @param string $mod category sef, or category template on a site whose sefs are still empty
+	 * @example {FEATUREBOX|tabs=cols=2}
 	 */
 	function sc_featurebox($parm=null, $mod = '')
 	{
 
 		if($parm == null && $mod == '') // ie {FEATUREBOX}
 		{
-			$menCat = e107::getPlugPref('featurebox','menu_category');
-			$type 	= vartrue($menCat,'bootstrap_carousel');
-			$text = e107::getParser()->parseTemplate("{FEATUREBOX|".$type."}");
+			$text = e107::getParser()->parseTemplate("{FEATUREBOX|".self::defaultCategory()."}");
 			
 			return $text;
 		}
@@ -79,6 +77,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			return '';
 		}
 		
+		$ctemplate = $this->categoryTemplate($category, $ctemplate);
 		$tmpl = $this->getFboxTemplate($ctemplate);
 		
 		
@@ -119,7 +118,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			return $ret;
 		}
 		
-		return e107::getRender()->tablerender(LAN_PLUGIN_FEATUREBOX_NAME, $ret, vartrue($parm['tablestyle'], 'featurebox'), true);
+		return e107::getRender()->tablerender($this->caption($tmpl, $category), $ret, vartrue($parm['tablestyle'], 'featurebox'), true);
 	}
 	
 	/**
@@ -131,7 +130,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * - uselimit (boolean): ignore 'limit' field , use 'total' items number for navigation looping
 	 * 
 	 * @param string $parm parameters
-	 * @param string $mod category template
+	 * @param string $mod category sef, or category template on a site whose sefs are still empty
 	 */
 	function sc_featurebox_navigation($parm=null, $mod = '')
 	{
@@ -164,7 +163,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			return '';
 		}
-		$tmpl = $this->getFboxTemplate($ctemplate);
+		$tmpl = $this->getFboxTemplate($this->categoryTemplate($category, $ctemplate));
 		
 		if($category->get('fb_category_random'))
 		{
@@ -286,7 +285,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * - limit (int): load to
 	 * 
 	 * @param string $parm parameters
-	 * @param string $mod category template
+	 * @param string $mod category sef, or category template on a site whose sefs are still empty
 	 */
 	function sc_featurebox_items($parm=null, $mod = '')
 	{
@@ -315,7 +314,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			return '';
 		}
-		return $this->render($category, $ctemplate, $parm);
+		return $this->render($category, $this->categoryTemplate($category, $ctemplate), $parm);
 	}
 	
 	/**
@@ -432,6 +431,21 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	}
 	
 	/**
+	 * The template a loaded category renders through, which is no longer the same
+	 * string as the address that found it.
+	 *
+	 * @param plugin_featurebox_category $category
+	 * @param string $fallback address the caller asked for, used while the category carries no template of its own
+	 * @return string
+	 */
+	protected function categoryTemplate($category, $fallback)
+	{
+		$template = (string) $category->get('fb_category_template');
+
+		return $template !== '' ? $template : $fallback;
+	}
+
+	/**
 	 * Retrieve template array by category
 	 * 
 	 * @param string $ctemplate
@@ -454,20 +468,72 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		}
 		return $tmpl;
 	}
+
+	/**
+	 * Caption a category template hands to {@see e_render::tablerender()}.
+	 *
+	 * The 'caption' key is parsed against the category model, so it reaches the
+	 * same shortcodes as 'list_start'. Absent, it falls back to the plugin name;
+	 * present but empty, it is honoured and the wrapper renders with no heading.
+	 *
+	 * @param array $tmpl category template, from {@see featurebox_shortcodes::getFboxTemplate()}
+	 * @param plugin_featurebox_category $category
+	 * @return string
+	 */
+	public function caption($tmpl, $category)
+	{
+		if(!isset($tmpl['caption']))
+		{
+			return defset('LAN_PLUGIN_FEATUREBOX_NAME', 'Feature Box');
+		}
+
+		return e107::getParser()->parseTemplate($tmpl['caption'], true, $category);
+	}
 	
 	/**
-	 * Get category model by template
-	 * @param string $template
+	 * Category template rendered when the caller names none.
+	 *
+	 * An empty 'menu_category' preference is answered from the categories the site
+	 * holds, so this returns the pre-2014 'bootstrap_carousel' seed or the current
+	 * 'bootstrap3_carousel' depending on when featurebox was installed.
+	 *
+	 * @return string
+	 */
+	public static function defaultCategory()
+	{
+		$pref = e107::getPlugPref('featurebox', 'menu_category');
+
+		if(!empty($pref))
+		{
+			return $pref;
+		}
+
+		if(e107::isInstalled('featurebox'))
+		{
+			$legacy = new plugin_featurebox_category();
+
+			if($legacy->loadBySef('bootstrap_carousel')->hasData())
+			{
+				return 'bootstrap_carousel';
+			}
+		}
+
+		return 'bootstrap3_carousel';
+	}
+
+	/**
+	 * Get category model by address
+	 * @param string $address category sef, or category template on a site whose sefs are still empty
 	 * @return plugin_featurebox_category
 	 */
-	public function getCategoryModel($template, $force = false)
+	public function getCategoryModel($address, $force = false)
 	{
 		
-		if(!isset($this->_categories[$template]))
+		if(!isset($this->_categories[$address]))
 		{		
-			$this->_categories[$template] = new plugin_featurebox_category();
-			$this->_categories[$template]->loadByTemplate($template, $force);
+			$this->_categories[$address] = new plugin_featurebox_category();
+			$this->_categories[$address]->loadBySef($address, $force);
 		}
-		return $this->_categories[$template];
+		return $this->_categories[$address];
 	}
 }

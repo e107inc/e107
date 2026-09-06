@@ -146,25 +146,20 @@ class e_session
      * follows e107's recommendation and moves with it, so the recommendation can
      * be raised in a later release without every operator having to act.
      *
-     * On this branch it is CSRF_CHECK_SAME_SITE. No token is minted, published
-     * or read, which removes by construction the whole class of fault where a
-     * document that had to issue a write was never handed one. Seven of those
-     * were found in a single release; the eighth is the one nobody has found yet.
+     * It sits at CSRF_CHECK_TOKEN_OR_SAME_SITE rather than CSRF_CHECK_SAME_SITE
+     * because an upgrade has no opportunity to ask the operator's browser what it
+     * supports, and a mode that refuses a POST without Fetch Metadata would lock
+     * out every visitor whose browser predates it. An install cannot be asked on
+     * their behalf either: it only ever sees the installer's own browser, and it
+     * is the visitors who would be turned away.
      *
-     * What it costs is the fallback. A browser too old to send Sec-Fetch-Site is
-     * refused rather than admitted on a token, and an upgrade has no opportunity
-     * to ask anyone's browser what it supports. An operator whose visitors need
-     * the fallback sets TOKEN_CHECK_ENFORCE or CSRF_CHECK_TOKEN_OR_SAME_SITE. A
-     * fresh install is asked on its behalf: if the browser doing the installing
-     * sent no Sec-Fetch-Site, install.php writes TOKEN_CHECK_ENFORCE outright
-     * rather than leaving the preference unset.
-     *
-     * release/v2.3.x makes the opposite trade, because a hotfix to a release that
-     * is already locking people out cannot introduce a second way to be locked
-     * out.
+     * What the token half costs is that a valid token would otherwise be enough
+     * on its own, including on a request the browser has told us came from
+     * somewhere else. attest() refuses that case, so the fallback serves only the
+     * browsers that cannot answer, which is the whole reason it is here.
      * @var int
      */
-    const CSRF_CHECK_RECOMMENDED = self::CSRF_CHECK_SAME_SITE;
+    const CSRF_CHECK_RECOMMENDED = self::CSRF_CHECK_TOKEN_OR_SAME_SITE;
 
     /**
      * Session save path
@@ -259,7 +254,7 @@ class e_session
      */
     public function getOption($key, $default = null)
     {
-        return ($this->_options[$key] ?? $default);
+        return (isset($this->_options[$key]) ? $this->_options[$key] : $default);
     }
 
     /**
@@ -353,7 +348,7 @@ public function get($key, $clear = false)
     foreach ($this->_data as $dataKey => $value) {
         if (strpos($dataKey, $key . '/') === 0) {
             // Normalize multiple slashes to a single slash
-            $subKeyString = preg_replace('#/+#', '/', substr($dataKey, strlen($key . '/')));
+            $subKeyString = preg_replace('#/+#', '/', (string) substr($dataKey, strlen($key . '/')));
             $subKeys = explode('/', $subKeyString);
             // Remove empty segments
             $subKeys = array_filter($subKeys, function($k) { return $k !== ''; });
@@ -669,7 +664,7 @@ public function getData($key = null, $clear = false)
      * @param array|null $server defaults to $_SERVER
      * @return bool
      */
-    public static function fetchMetadataReachesUs(array $server = null)
+    public static function fetchMetadataReachesUs($server = null)
     {
         if($server === null)
         {
@@ -769,13 +764,13 @@ public function getData($key = null, $clear = false)
         {
             // [::1]:8080
             $end = strpos($host, ']');
-            $host = ($end === false) ? substr($host, 1) : substr($host, 1, $end - 1);
+            $host = ($end === false) ? (string) substr($host, 1) : (string) substr($host, 1, $end - 1);
         }
         elseif(substr_count($host, ':') === 1)
         {
             // host:port. More than one colon is a bare IPv6 literal, which
             // cannot carry a port without brackets.
-            $host = substr($host, 0, strrpos($host, ':'));
+            $host = (string) substr($host, 0, strrpos($host, ':'));
         }
 
         if($host === 'localhost' || $host === '::1' || $host === '0:0:0:0:0:0:0:1')
@@ -805,51 +800,6 @@ public function getData($key = null, $clear = false)
             self::TOKEN_CHECK_ENFORCE,
             self::CSRF_CHECK_TOKEN_OR_SAME_SITE,
         ), true);
-    }
-
-    /**
-     * What csrf_enforce a fresh install should be given, or null to leave it
-     * unset so the site follows e107's recommendation and moves with it.
-     *
-     * Leaving it unset is the normal answer and the one that keeps a site up to
-     * date without its operator acting. It is the wrong answer in exactly one
-     * case: when the recommendation refuses a POST that carries no
-     * Sec-Fetch-Site, and the browser doing the installing did not send one.
-     * Nobody can be asked about their visitors' browsers during an install, but
-     * the browser in front of us is the one browser certain to be used against
-     * this site, and if it cannot answer, the person installing would be locked
-     * out of the site they just built.
-     *
-     * A branch whose recommendation still reads a token returns null for
-     * everything, because there is nothing to be locked out of.
-     *
-     * @param array|null $server defaults to $_SERVER
-     * @return int|null a csrf_enforce value to store, or null to store nothing
-     */
-    public static function installTimeMode(array $server = null)
-    {
-        if($server === null)
-        {
-            $server = $_SERVER;
-        }
-
-        if(self::modeUsesToken(self::CSRF_CHECK_RECOMMENDED))
-        {
-            return null;
-        }
-
-        // Over an origin no browser considers trustworthy, the header is absent
-        // for every browser alive, so its absence says nothing about this one.
-        // Pinning here would freeze the site on a token mode for good, including
-        // long after it has grown a certificate. tokenCheckMode() already softens
-        // the recommendation for as long as it needs softening, and stops the day
-        // the site can carry the header.
-        if(!self::fetchMetadataReachesUs($server))
-        {
-            return null;
-        }
-
-        return empty($server['HTTP_SEC_FETCH_SITE']) ? self::TOKEN_CHECK_ENFORCE : null;
     }
 
     /**
@@ -1176,6 +1126,28 @@ public function getData($key = null, $clear = false)
     }
 
     /**
+     * Give the session a new id, keeping its data and deleting the old record.
+     *
+     * Call this where the identity the session speaks for changes. Silently
+     * does nothing when no session is running or output has already started.
+     *
+     * @return e_session
+     */
+    public function regenerateId()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE || headers_sent())
+        {
+            e107::getDebug()->log('Session id not regenerated: no active session, or output has already started.');
+
+            return $this;
+        }
+
+        session_regenerate_id(true);
+
+        return $this;
+    }
+
+    /**
      * Retrieve current session save method
      * @return string
      */
@@ -1284,7 +1256,7 @@ public function getData($key = null, $clear = false)
             $sessionData = $this->_data['_session_validate_data'];
             $validateData = $this->getValidateData();
 
-            $details = 'USER INFORMATION: '.($_COOKIE[e_COOKIE] ?? ($_SESSION[e_COOKIE] ?? 'n/a'))."\n";
+            $details = 'USER INFORMATION: '.(isset($_COOKIE[e_COOKIE]) ? $_COOKIE[e_COOKIE] : (isset($_SESSION[e_COOKIE]) ? $_SESSION[e_COOKIE] : 'n/a'))."\n";
             $details .= "HOST: ".$_SERVER['HTTP_HOST']."\n";
             $details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
             $details .= "SESSION OPTIONS: ".print_r($this->_options, true)."\n";
@@ -1464,11 +1436,10 @@ public function getData($key = null, $clear = false)
     public function destroy()
     {
         $this->cookieDelete()->close();
-        //unset($_SESSION);
 
         // cleanup
         cookie(e_COOKIE, null, null); // remove user auth cookie
-        // unset($_SESSION['_cookie_session_validate']);
+        unset($_SESSION[e_COOKIE], $_COOKIE[e_COOKIE]);
 
         session_destroy();
         return $this;
@@ -1536,20 +1507,7 @@ class e_core_session extends e_session
         {
             if(e_SECURITY_LEVEL == e_session::SECURITY_LEVEL_INSANE)
             {
-                // regenerate SID
-                $oldSID = session_id(); // old SID
-                $oldSData = $_SESSION; // old session data
-                session_regenerate_id();
-                $newSID = session_id(); // new SID
-
-                // Clean
-                session_id($oldSID); // switch to the old session
-                session_destroy(); // destroy it
-
-                // set new ID, reopen the session, set saved data
-                session_id($newSID);
-                session_start();
-                $_SESSION = $oldSData;
+                $this->regenerateId();
             }
             $this->set('__form_token_regenerate', time()); // check() needs it to re-create token on the next request
         }
@@ -1767,6 +1725,15 @@ class e_core_session extends e_session
             return true;
         }
 
+        // The token fallback is for browsers that cannot say where a request
+        // came from, not for one that says it came from somewhere else. Tokens
+        // leak through logs, referrers and shared screens, so a token must not
+        // talk over an answer the browser has already given.
+        if(self::fetchMetadataDisavows($mode))
+        {
+            return false;
+        }
+
         if($usesToken && self::hasSubmittedToken())
         {
             // Validity was settled above.
@@ -1854,6 +1821,37 @@ class e_core_session extends e_session
         }
 
         return self::originIsKnownHost();
+    }
+
+    /**
+     * Has the browser affirmatively told us this request came from somewhere
+     * that is not this site?
+     *
+     * The inverse of fetchMetadataVouches() only where the browser actually
+     * answered. An absent or empty header is not a denial, it is silence, and
+     * silence is what the token fallback exists to serve. 'none' is not a denial
+     * either: it means the user started this themselves, from a bookmark or the
+     * address bar, which is the opposite of forgery.
+     *
+     * Only modes that ask the browser at all can be answered by it. A mode that
+     * reads nothing but a token was chosen for a reason and is left alone.
+     *
+     * @param int $mode
+     * @return bool
+     */
+    private static function fetchMetadataDisavows($mode)
+    {
+        if(!self::modeUsesFetchMetadata($mode) || empty($_SERVER['HTTP_SEC_FETCH_SITE']))
+        {
+            return false;
+        }
+
+        if(strtolower(trim($_SERVER['HTTP_SEC_FETCH_SITE'])) === 'none')
+        {
+            return false;
+        }
+
+        return !self::fetchMetadataVouches($mode);
     }
 
     /**
@@ -2021,6 +2019,12 @@ class e_core_session extends e_session
 class e_session_db implements SessionHandlerInterface
 {
     /**
+     * Digest the session id is stored under, and the prefix that marks a row as
+     * carrying one. Must be a {@see hash_algos()} name.
+     */
+    const KEY_ALGO = 'sha256';
+
+    /**
      * @var e_db
      */
     protected $_db = null;
@@ -2109,7 +2113,8 @@ class e_session_db implements SessionHandlerInterface
      * @param string $name
      * @return bool
      */
-    public function open(string $path, string $name): bool
+    #[\ReturnTypeWillChange]
+    public function open($path, $name)
     {
         return true;
     }
@@ -2118,7 +2123,8 @@ class e_session_db implements SessionHandlerInterface
      * Close session
      * @return bool
      */
-    public function close(): bool
+    #[\ReturnTypeWillChange]
+    public function close()
     {
         $this->gc($this->getLifetime());
         return true;
@@ -2129,12 +2135,51 @@ class e_session_db implements SessionHandlerInterface
      * @param string $id
      * @return string|false
      */
-    public function read(string $id): string|false
+    #[\ReturnTypeWillChange]
+    public function read($id)
+    {
+        $data = $this->readKey(self::storageKey($id));
+
+        if('' === $data)
+        {
+            $legacy = $this->readKey(self::_sanitize($id));
+
+            if('' !== $legacy && false !== $legacy && $this->rekey(self::_sanitize($id), self::storageKey($id)))
+            {
+                $data = $legacy;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Storage key for a session id.
+     *
+     * The id is the value of the visitor's session cookie, so a row keyed by it
+     * verbatim turns any read of this table into a set of live credentials.
+     * The algorithm is named in the value so {@see e_session_db::read()} can
+     * recognise a row written before this was introduced, and so the digest can
+     * be changed later without a second migration.
+     *
+     * @param string $id
+     * @return string
+     */
+    public static function storageKey($id)
+    {
+        return self::KEY_ALGO.'$'.hash(self::KEY_ALGO, self::_sanitize($id));
+    }
+
+    /**
+     * @param string $key
+     * @return string|false session data, '' when no live row holds that key
+     */
+    protected function readKey($key)
     {
         $data = false;
         $check = $this->_db->createQueryBuilder()
             ->select('session_data')->from($this->getTable())
-            ->where('session_id', $this->_sanitize($id))
+            ->where('session_id', $key)
             ->where('session_expires', '>', time())
             ->execute();
         if($check)
@@ -2150,22 +2195,39 @@ class e_session_db implements SessionHandlerInterface
     }
 
     /**
+     * @param string $from
+     * @param string $to
+     * @return bool
+     */
+    protected function rekey($from, $to)
+    {
+        return false !== $this->_db->createQueryBuilder()
+            ->update($this->getTable())
+            ->set('session_id', $to)
+            ->where('session_id', $from)
+            ->execute();
+    }
+
+    /**
      * Write session data
      * @param string $id
      * @param string $data
      * @return bool
      */
-    public function write(string $id, string $data): bool
+    #[\ReturnTypeWillChange]
+    public function write($id, $data)
     {
         $values = array(
             'session_expires' => (int) (time() + $this->getLifetime()),
             'session_data'    => base64_encode($data),
             'session_user'    => (int) defset('USERID'),
         );
-        if(!($id = $this->_sanitize($id)))
+        if(!self::_sanitize($id))
         {
             return false;
         }
+
+        $id = self::storageKey($id);
 
         $check = $this->_db->createQueryBuilder()
             ->select('session_id')->from($this->getTable())
@@ -2204,22 +2266,26 @@ class e_session_db implements SessionHandlerInterface
      * @param string $id
      * @return bool
      */
-    public function destroy(string $id): bool
+    #[\ReturnTypeWillChange]
+    public function destroy($id)
     {
-        $id = $this->_sanitize($id);
-        $this->_db->createQueryBuilder()
-            ->delete($this->getTable())
-            ->where('session_id', $id)
-            ->execute();
+        foreach (array(self::storageKey($id), self::_sanitize($id)) as $key)
+        {
+            $this->_db->createQueryBuilder()
+                ->delete($this->getTable())
+                ->where('session_id', $key)
+                ->execute();
+        }
         return true;
     }
 
     /**
      * Garbage collection
      * @param int $max_lifetime
-     * @return bool
+     * @return int|false
      */
-    public function gc(int $max_lifetime): int|false
+    #[\ReturnTypeWillChange]
+    public function gc($max_lifetime)
     {
         return $this->_db->createQueryBuilder()
             ->delete($this->getTable())
@@ -2232,7 +2298,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $id
      * @return string
      */
-    protected function _sanitize(string $id): string
+    protected static function _sanitize($id)
     {
         return preg_replace('#[^0-9a-zA-Z,-]#', '', $id);
     }

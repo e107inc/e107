@@ -7,7 +7,7 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
-class bb_hTest extends \Codeception\Test\Unit
+class bb_hTest extends \Test\Unit
 {
 	/** @var bb_h */
 	protected $bb;

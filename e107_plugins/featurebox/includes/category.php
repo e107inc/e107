@@ -80,6 +80,11 @@ class plugin_featurebox_category extends e_model
 	{
 		return $this->get('fb_category_template');
 	}
+
+	public function sc_featurebox_category_sef()
+	{
+		return e107::getParser()->toAttribute(self::address($this->getData()));
+	}
 	
 	public function sc_featurebox_category_limit()
 	{
@@ -117,22 +122,53 @@ class plugin_featurebox_category extends e_model
 	}
 	
 	/**
-	 * Load category data by layout
+	 * The string a {FEATUREBOX|x} modifier has to carry to reach one category: its
+	 * sef, or its template for as long as the sef is empty.
+	 *
+	 * @param array $row featurebox_category row
+	 * @return string
+	 */
+	public static function address($row)
+	{
+		$sef = isset($row['fb_category_sef']) ? trim((string) $row['fb_category_sef']) : '';
+
+		if($sef !== '')
+		{
+			return $sef;
+		}
+
+		return isset($row['fb_category_template']) ? trim((string) $row['fb_category_template']) : '';
+	}
+
+	/**
+	 * Narrow a value to the grammar a {FEATUREBOX|x} modifier survives.
+	 * Menu Manager filters the modifier it writes with /[^\w-]/ and no /u, so an
+	 * accented sef is transliterated to ASCII here rather than mangled there.
+	 *
+	 * @param string $sef
+	 * @return string
+	 */
+	public static function toSef($sef)
+	{
+		$tp = e107::getParser();
+
+		return trim((string) preg_replace('/[^\w-]+/', '-', $tp->toASCII($tp->toText((string) $sef))), '-');
+	}
+
+	/**
+	 * Load the category one {FEATUREBOX|x} modifier addresses.
 	 * TODO - system cache
-	 * 
-	 * @param string $template
+	 *
+	 * @param string $sef
 	 * @param boolean $force
 	 * @return plugin_featurebox_category
 	 */
-	public function loadByTemplate($template, $force = false)
+	public function loadBySef($sef, $force = false)
 	{
 		if($force || null === $this->_loaded_data)
 		{
-			$row = e107::getDb()->createQueryBuilder()
-				->select('*')->from('featurebox_category')
-				->whereIn('fb_category_class', array_map('intval', explode(',', USERCLASS_LIST)))
-				->where('fb_category_template', e107::getParser()->toDB($template))
-				->fetchRow();
+			$row = self::findByAddress($sef);
+
 			if($row)
 			{
 				$this->setData($row);
@@ -141,6 +177,60 @@ class plugin_featurebox_category extends e_model
 		}
 		$this->_loaded_data = false;
 		return $this;
+	}
+
+	/**
+	 * Load category data by layout
+	 * TODO - system cache
+	 * 
+	 * @param string $template
+	 * @param boolean $force
+	 * @return plugin_featurebox_category
+	 * @deprecated v2.4.0 Avoid in new code and migrate existing call sites when refactoring; {@see plugin_featurebox_category::loadBySef()} resolves the same string against the category's sef first. This method remains supported and tested, with no removal planned.
+	 */
+	public function loadByTemplate($template, $force = false)
+	{
+		return $this->loadBySef($template, $force);
+	}
+
+	/**
+	 * The one category an address resolves to, read in id order so that two
+	 * categories sharing a template still resolve deterministically. Matched
+	 * without regard to case, as the SQL this replaces was under the column's
+	 * collation. Selects the whole row so that no SQL names fb_category_sef,
+	 * which a site that has taken the files but not the database update lacks.
+	 *
+	 * @param string $address
+	 * @param boolean $visibleOnly true to see only the current user's classes, as the front end does
+	 * @return array|null
+	 */
+	public static function findByAddress($address, $visibleOnly = true)
+	{
+		$address = trim((string) $address);
+
+		if($address === '')
+		{
+			return null;
+		}
+
+		$qb = e107::getDb()->createQueryBuilder()
+			->select('*')->from('featurebox_category')
+			->orderBy('fb_category_id', 'ASC');
+
+		if($visibleOnly)
+		{
+			$qb->whereIn('fb_category_class', array_map('intval', explode(',', USERCLASS_LIST)));
+		}
+
+		foreach((array) $qb->fetchAll() as $row)
+		{
+			if(strcasecmp(self::address($row), $address) === 0)
+			{
+				return $row;
+			}
+		}
+
+		return null;
 	}
 	
 	/**

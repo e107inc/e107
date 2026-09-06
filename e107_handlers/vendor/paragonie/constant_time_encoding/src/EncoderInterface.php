@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace ParagonIE\ConstantTime;
 
 use SensitiveParameter;
@@ -41,9 +40,8 @@ interface EncoderInterface
      * @return string
      */
     public static function encode(
-        #[SensitiveParameter]
-        string $binString
-    ): string;
+        $binString
+    );
 
     /**
      * Convert a binary string into a hexadecimal string without cache-timing
@@ -54,8 +52,7 @@ interface EncoderInterface
      * @return string (raw binary)
      */
     public static function decode(
-        #[SensitiveParameter]
-        string $encodedString,
-        bool $strictPadding = false
-    ): string;
+        $encodedString,
+        $strictPadding = false
+    );
 }

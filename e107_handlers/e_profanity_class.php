@@ -17,7 +17,7 @@ class e_profanity
 
 		if(empty($this->pref['profanity_words']))
 		{
-			return null;
+			return;
 		}
 
 		$words = explode(',', $this->pref['profanity_words']);
@@ -39,8 +39,6 @@ class e_profanity
 			$this->profanityList = str_replace('#', '\#', implode("\b|\b", $word_array));        // We can get entities in the string - confuse the regex delimiters
 		}
 		unset($words);
-
-		return true;
 	}
 
 	/**

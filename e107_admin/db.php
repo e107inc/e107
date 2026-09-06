@@ -43,6 +43,23 @@ if(isset($_GET['type']))
     $_GET['type'] = preg_replace('/[^\w\-]/', '', $_GET['type']);
 }
 
+if(e_QUERY === 'plugin')
+{
+	$_GET['mode'] = 'plugin_scan';
+}
+
+$dbIsPost = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+
+$dbTokenRefused = (!$dbIsPost && isset($_GET['mode']) && db_modeNeedsToken($_GET['mode'])
+	&& defined('e_TOKEN') && empty($_GET['e-token']));
+$dbTokenMessage = defset('DBLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.');
+
+if($dbTokenRefused)
+{
+	$_GET['mode'] = '';
+	$mes->addError($dbTokenMessage);
+}
+
 /*
  * Execute trigger
  */
@@ -85,7 +102,11 @@ if(e_AJAX_REQUEST )
         ob_end_clean();
 	}
 
-	if(varset($_GET['mode']) == 'backup') //FIXME - not displaying progress until complete. Use e-progress?
+	if($dbTokenRefused)
+	{
+		echo $dbTokenMessage;
+	}
+	elseif(varset($_GET['mode']) == 'backup') //FIXME - not displaying progress until complete. Use e-progress?
 	{
 		echo "".DBLAN_120."<br />";
 		
@@ -157,6 +178,9 @@ class system_tools
 	public $_options = array();
 	
 	private $_utf8_exclude = array();
+
+	/** @var db_verify|null */
+	private $dbv;
 
 
 	function __construct()
@@ -234,7 +258,7 @@ class system_tools
 			e107::getCache()->clear('Dbverify',true);
 			require_once(e_HANDLER."db_verify_class.php");
 			$dbv = new db_verify;
-			$dbv->backUrl = e_SELF."?mode=verify_sql";
+			$dbv->backUrl = db_modeUrl('verify_sql', '&amp;');
 			$dbv->verify();
 
 			//echo e107::getMessage()->render();
@@ -289,7 +313,7 @@ class system_tools
 			$this->scan_override();
 		}
 
-		if(isset($_POST['plugin_scan']) || e_QUERY == "plugin" || isset($_POST['delplug']) || $_GET['mode']=='plugin_scan')
+		if(isset($_POST['plugin_scan']) || isset($_POST['delplug']) || $_GET['mode']=='plugin_scan')
 		{
 			$this->plugin_viewscan('refresh');
 		}
@@ -349,17 +373,34 @@ class system_tools
 	}
 
 
-	// Developer Mode ONly.. No LANS required. 
+	/**
+	 * @return bool
+	 *   False when developer mode is off, after answering the administrator with the reason.
+	 */
+	private function githubSyncAllowed()
+	{
+		$pref = e107::pref();
+
+		if(!empty($pref['developer']))
+		{
+			return true;
+		}
+
+		e107::getMessage()->addError("Developer mode has to be enabled in order to use this functionality!");
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());
+
+		return false;
+	}
+
+
+	// Developer Mode ONly.. No LANS required.
 	private function githubSync()
 	{
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
-		$pref = e107::pref();
 
-		if(empty($pref['developer']))
+		if(!$this->githubSyncAllowed())
 		{
-			e107::getMessage()->addError("Developer mode has to be enabled in order to use this functionality!");
-			e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
 			return;
 		}
 
@@ -390,6 +431,11 @@ class system_tools
 	// Developer Mode ONly.. No LANS.
 	private function githubSyncProcess()
 	{
+		if(!$this->githubSyncAllowed())
+		{
+			return null;
+		}
+
 		$fl = e107::getFile();
 		$result = $fl->unzipGithubArchive('core');
 
@@ -445,7 +491,7 @@ class system_tools
 		$mes = e107::getMessage();
 		
 		$message = DBLAN_70;
-		$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
+		$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup&amp;e-token=".defset('e_TOKEN')."' >".LAN_CREATE."</a>";
 		
 		
 		$mes->addInfo($message);
@@ -487,7 +533,7 @@ class system_tools
 	{	
 		$sql 		= e107::getDb('new');
 		$mes 		= e107::getMessage();
-		
+
 		$user 		= $_POST['name'];
 		$pass 		= $_POST['password'];
 		$server 	= e107::getMySQLConfig('server'); // $_POST['server'];
@@ -533,32 +579,32 @@ class system_tools
 					return;
 				}
 			}
-			
+
 			if(!$sql->database($database))
 			{
 				$mes->addError(DBLAN_76);
 			}
-					
+
 			$mes->addSuccess(DBLAN_76);
-					
+
 			if($this->multiSiteCreateTables($sql, $prefix))
 			{
 				$coreConfig = e_CORE. "xml/default_install.xml";		
 				$ret = e107::getXml()->e107Import($coreConfig, 'add', true, false, $sql); // Add core pref values
 				$mes->addInfo(print_a($ret,true));
 			}	
-				
+
 		}
 		else
 		{
 			$mes->addSuccess(DBLAN_74);
 		}
-		
+
 		if($error = $sql->getLastErrorText())
 		{
 			$mes->addError($error);
 		}
-			
+
 		//	print_a($_POST);
 
 		
@@ -768,6 +814,65 @@ class system_tools
 	}
 
 
+	/**
+	 * @return db_verify
+	 */
+	private function dbVerify()
+	{
+		if($this->dbv === null)
+		{
+			require_once(e_HANDLER."db_verify_class.php");
+			$this->dbv = new db_verify;
+		}
+
+		return $this->dbv;
+	}
+
+	/**
+	 * The character set each table should carry, as db_verify settles it for this server, keyed by physical table name; a table db_verify does not know, and the `lan_` copy of one it does, take the base table's answer or utf8mb4.
+	 *
+	 * @param string[] $tables physical table names
+	 * @return array physical table name => character set
+	 * @throws Exception when the live schema cannot be read
+	 */
+	private function intendedCharsets(array $tables)
+	{
+		$intended = $this->dbVerify()->resolveAll();
+		$charsets = array();
+
+		foreach($tables as $table)
+		{
+			$logical = (string) substr($table, strlen(MPREFIX));
+			$base = preg_replace('/^lan_[A-Za-z]+_/', '', $logical);
+
+			$charsets[$table] = isset($intended[$base]) ? $intended[$base] : 'utf8mb4';
+		}
+
+		return $charsets;
+	}
+
+	/**
+	 * @param string $collation as SHOW TABLE STATUS reports it
+	 * @param string $charset
+	 * @return bool whether the collation belongs to the character set, `utf8mb3` and `utf8` being one
+	 */
+	private static function sameCharset($collation, $charset)
+	{
+		$of = (string) substr((string) $collation, 0, (int) strpos((string) $collation . '_', '_'));
+
+		return preg_replace('/^utf8mb3$/', 'utf8', $of) === preg_replace('/^utf8mb3$/', 'utf8', (string) $charset);
+	}
+
+	/**
+	 * @param string $collation as SHOW TABLE STATUS reports it
+	 * @param string $charset the one db_verify settled on
+	 * @return bool
+	 */
+	private static function collationIsIntended($collation, $charset)
+	{
+		return ($charset === 'utf8mb4') ? ($collation === 'utf8mb4_general_ci') : self::sameCharset($collation, $charset);
+	}
+
 	private function convertUTF8Form()
 	{
 		$mes 	= e107::getMessage();
@@ -777,6 +882,19 @@ class system_tools
 		$tp = e107::getParser();
 		
 		$sql->execute('SHOW TABLE STATUS WHERE Name LIKE :prefix', array('prefix' => $config['mySQLprefix'].'%'));
+		$rows = $sql->rows();
+
+		try
+		{
+			$intended = $this->intendedCharsets(array_column($rows, 'Name'));
+		}
+		catch(Exception $e)
+		{
+			$mes->addError($e->getMessage());
+			e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_65.SEP.$config['mySQLdefaultdb'], $mes->render());
+
+			return;
+		}
 		
 		
 		$text = "<table class='table adminlist'>
@@ -800,23 +918,23 @@ class system_tools
 		
 		
 		$invalidCollations = false;	
-		while($row = $sql->fetch())
+		foreach($rows as $row)
 		{
 				if(in_array($row['Name'],$this->_utf8_exclude))
 				{
 					continue;
 				}
-					
-			
+
+				$valid = self::collationIsIntended($row['Collation'], $intended[$row['Name']]);
+
 				$text .= "<tr>
 					<td>".$row['Name']."</td>
 					<td>".$row['Engine']."</td>
 					<td>".$row['Collation']."</td>
-					<td>".(($row['Collation'] == 'utf8mb4_general_ci') ? defset('ADMIN_TRUE_ICON') : defset('ADMIN_FALSE_ICON'))."</td>
+					<td>".($valid ? defset('ADMIN_TRUE_ICON') : defset('ADMIN_FALSE_ICON'))."</td>
 					</tr>";
-			//	 print_a($row);
-				
-				if($row['Collation'] != 'utf8mb4_general_ci')
+
+				if(!$valid)
 				{
 					$invalidCollations = true;	
 				}
@@ -886,13 +1004,61 @@ class system_tools
 	
 		$schemaParams = array('schema' => $dbtable, 'prefix' => $config['mySQLprefix'].'%');
 
-		$queries = array();
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND  COLLATION_NAME != 'utf8mb4_general_ci'  and data_type LIKE '%char%';", $schemaParams);
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
+		$sql->execute('SHOW TABLE STATUS WHERE Name LIKE :prefix', array('prefix' => $config['mySQLprefix'].'%'));
+		$tables = array_column($sql->rows(), 'Name');
 
+		try
+		{
+			$intended = $this->intendedCharsets($tables);
+		}
+		catch(Exception $e)
+		{
+			$mes->addError($e->getMessage());
+			echo $mes->render();
+
+			return;
+		}
+
+		$held = array_keys(array_diff($intended, array('utf8mb4')));
+		$this->_utf8_exclude = array_merge($this->_utf8_exclude, $held);
+
+		$columns = array();
+
+		if($sql->execute("SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND COLLATION_NAME != 'utf8mb4_general_ci' AND (data_type LIKE '%char%' OR data_type LIKE '%text%') ORDER BY TABLE_NAME, ORDINAL_POSITION", $schemaParams))
+		{
+			while($row = $sql->fetch())
+			{
+				if(!in_array($row['TABLE_NAME'], $this->_utf8_exclude))
+				{
+					$columns[$row['TABLE_NAME']][] = $row['COLUMN_NAME'];
+				}
+			}
+		}
+		else
+		{
+			$mes->addError($sql->getLastErrorText());
+			$ERROR = TRUE;
+		}
+
+		$queries = array();
 		$queries2 = array();
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix  AND COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%char%';", $schemaParams);
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
+
+		foreach($columns as $table => $names)
+		{
+			try
+			{
+				$statements = $this->dbVerify()->utf8ConversionStatements($table, $names);
+			}
+			catch(InvalidArgumentException $e)
+			{
+				$mes->addError($e->getMessage());
+				$ERROR = TRUE;
+				continue;
+			}
+
+			$queries = array_merge($queries, $statements['binary']);
+			$queries2 = array_merge($queries2, $statements['restore']);
+		}
 
 
 	//	$sql->gen("USE ".$dbtable);
@@ -904,29 +1070,23 @@ class system_tools
 
 	
 		// Convert Text tables to Binary.
-		foreach($queries as $qry)
+		foreach($queries as $q)
 		{
-
-			foreach($qry as $q)
+			// Only a plain ALTER TABLE ... MODIFY built from the server's own definitions may run.
+			if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
 			{
-				// $q is generated server-side from information_schema column/table
-				// names; reject anything that is not a plain ALTER TABLE ... MODIFY
-				// statement to prevent second-order injection via crafted identifiers.
-				if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
-				{
-					$mes->addError($q);
-					$ERROR = TRUE;
-					continue;
-				}
-				if(!$sql->db_Query($q))
-				{
-					$mes->addError($q);
-					$ERROR = TRUE;
-				}
-				else
-				{
-					$mes->addDebug($q);
-				}
+				$mes->addError($q);
+				$ERROR = TRUE;
+				continue;
+			}
+			if(!$sql->db_Query($q))
+			{
+				$mes->addError($q);
+				$ERROR = TRUE;
+			}
+			else
+			{
+				$mes->addDebug($q);
 			}
 		}
 
@@ -963,26 +1123,22 @@ class system_tools
 
 		// ---------------
 		// Convert Table Fields back to Text/varchar etc. 
-		foreach($queries2 as $qry)
+		foreach($queries2 as $q)
 		{
-			foreach($qry as $q)
+			if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
 			{
-				// Same guard as above: only allow generated ALTER TABLE ... MODIFY statements.
-				if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
-				{
-					$mes->addError($q);
-					$ERROR = TRUE;
-					continue;
-				}
-				if(!$sql->db_Query($q))
-				{
-					$mes->addError($q);
-					$ERROR = TRUE;
-				}
-				else
-				{
-					$mes->addDebug($q);
-				}
+				$mes->addError($q);
+				$ERROR = TRUE;
+				continue;
+			}
+			if(!$sql->db_Query($q))
+			{
+				$mes->addError($q);
+				$ERROR = TRUE;
+			}
+			else
+			{
+				$mes->addDebug($q);
 			}
 		}
 
@@ -1007,43 +1163,6 @@ class system_tools
 		echo $mes->render();
 	}
 
-	function getQueries($query, $params = array())
-	{
-
-		$mes = e107::getMessage();
-		$sql = e107::getDb('utf8-convert');
-
-		$qry = [];
-
-		if($sql->execute($query, $params))
-		{
-			while ($row = $sql->fetch('num'))
-			{
-	   			 $qry[] = $row[0];
-			}
-		}
-		else 
-		{
-			$mes->addError($query);	
-		}
-
-		return $qry;
-		
-		
-		/*
-		if(!$result = mysql_query($query))
-		{
-			$mes->addError("Query Failed: ".$query);
-			return;
-		}
-		while ($row = mysql_fetch_array($result, 'num'))
-		{
-   			 $qry[] = $row[0];
-		}
-
-		return $qry;
-		 * */
-	}
 
 
 	/**
@@ -1136,10 +1255,11 @@ class system_tools
 
 		foreach($this->_options as $key=>$val)
 		{
-			
+			$url = db_modeUrl($key, '&amp;');
+
 			$text .= "<div class='col-md-6 col-lg-4' style='height:80px; padding-bottom:10px'>
-			<a class='btn btn-default btn-secondary btn-lg btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$tp->toGlyph($val['icon'], ['fw'=>true, 'size'=>'2x'])."</a>
-			<h4 style='margin-bottom:3px'><a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
+			<a class='btn btn-default btn-secondary btn-lg btn-large pull-left' style='margin-right:10px' href='".$url."' title=\"".$val['label']."\">".$tp->toGlyph($val['icon'], ['fw'=>true, 'size'=>'2x'])."</a>
+			<h4 style='margin-bottom:3px'><a href='".$url."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
 			</div>";
 		
 		}
@@ -1480,11 +1600,11 @@ class system_tools
 	{
 		if(strpos($type,'plugin_') === 0)
 		{
-			$config = e107::getPlugConfig(substr($type,7));
+			$config = e107::getPlugConfig((string) substr($type,7));
 		}
 		elseif(strpos($type,'theme_') === 0)
 		{
-			$config = e107::getThemeConfig(substr($type,6));
+			$config = e107::getThemeConfig((string) substr($type,6));
 		}
 		else
 		{
@@ -1621,11 +1741,11 @@ class system_tools
 
 		if(strpos($type,'plugin_') === 0)
 		{
-			$caption = LAN_PLUGIN . SEP . ucfirst(substr($type,7));
+			$caption = LAN_PLUGIN . SEP . ucfirst((string) substr($type,7));
 		}
 		elseif(strpos($type,'theme_') === 0)
 		{
-			$caption = LAN_THEME . SEP . ucfirst(substr($type,6));
+			$caption = LAN_THEME . SEP . ucfirst((string) substr($type,6));
 		}
 		else
 		{
@@ -1656,7 +1776,7 @@ class system_tools
 		{
 			foreach($fList as $file)
 			{
-				$scList[] = strtoupper(substr($file['fname'], 0, -4));
+				$scList[] = strtoupper((string) substr($file['fname'], 0, -4));
 			}
 			$scList = implode(',', $scList);
 		}
@@ -1669,7 +1789,7 @@ class system_tools
 		{
 			foreach($fList as $file)
 			{
-				$scList[] = substr($file['fname'], 0, -4);
+				$scList[] = (string) substr($file['fname'], 0, -4);
 			}
 			$scList = implode(',', $scList);
 		}
@@ -1749,9 +1869,8 @@ class system_tools
 		{
 			$plg->load($folder);
 			$plgClass->plugFolder = $folder;
-			// buildAddonPrefLists() above already rebuilt lan_global_list from installed plugins only.
-			// Refresh would re-add an uninstalled plugin (file-existence only, no install check), undoing
-			// that cleanup; uninstall removes its stale entry instead. https://github.com/e107inc/e107/issues/5709
+			// Uninstalled plugins take the 'uninstall' branch so no stale lan_log_list entry
+			// survives the scan. https://github.com/e107inc/e107/issues/5709
 			$plgClass->XmlLanguageFiles($plg->isInstalled() ? 'refresh' : 'uninstall');
 
 			$name   = $plg->getName();
@@ -1831,6 +1950,34 @@ class system_tools
 
 //XXX - what is this for (backup core)? <input type='hidden' name='sqltext' value='{$sqltext}' />
 
+/**
+ * @param string $mode value of $_GET['mode']
+ * @return bool whether the mode acts on this request and so must present an e-token
+ */
+function db_modeNeedsToken($mode)
+{
+	$acting = array('correct_perms', 'db_update', 'optimize_sql', 'plugin_scan', 'sc_override_scan');
+
+	if(e_AJAX_REQUEST)
+	{
+		$acting[] = 'backup';
+	}
+
+	return in_array($mode, $acting, true);
+}
+
+/**
+ * @param string $mode value for $_GET['mode']
+ * @param string $sep query-string separator, '&amp;' where the result lands in markup
+ * @return string
+ */
+function db_modeUrl($mode, $sep)
+{
+	$url = e_SELF."?mode=".$mode;
+
+	return db_modeNeedsToken($mode) ? $url.$sep."e-token=".defset('e_TOKEN') : $url;
+}
+
 function db_adminmenu() //FIXME - has problems when navigation is on the LEFT instead of the right. 
 {
 	global $st;
@@ -1840,7 +1987,7 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 	foreach($st->_options as $key=>$val)
 	{
 		$var[$key]['text'] = $val['label'];
-		$var[$key]['link'] = e_SELF."?mode=".$key;
+		$var[$key]['link'] = db_modeUrl($key, '&');
 		$var[$key]['image_src'] = $val['icon'];
 	}
 

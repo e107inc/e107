@@ -24,6 +24,12 @@ class language{
 	public $detect = false;
 	public $e_language = 'English'; // replaced later with $pref
 	public $_cookie_domain = '';
+
+	/**
+	 * Cached language select array, keyed by ISO code.
+	 * @var array|null
+	 */
+	public $_select_array = null;
 	
 	/**
 	 * Cached list of Installed Language Packs

@@ -36,7 +36,6 @@ e107::includeLan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
 require_once(e_ADMIN.'auth.php');
 
 require_once(e_PLUGIN.'login_menu/login_menu_class.php');
-$loginClass = new login_menu_class();
 $menuPref = e107::getConfig('menu');				// Pref object
 $loginPrefs = $menuPref->getPref('login_menu');		// Array of login-related values
 
@@ -86,24 +85,22 @@ if (isset($_POST['update_menu']))
     }
     //show/hide stats - End
 
-	unset($loginPrefs);
-	$loginPrefs = $_POST['pref'];
-	if (!isset($loginPrefs['new_news']))	{ $loginPrefs['new_news'] = '0';   }
-	if (!isset($loginPrefs['new_comments']))	{ $loginPrefs['new_comments'] = '0';  }
-	if (!isset($loginPrefs['new_members']))	{ $loginPrefs['new_members'] = '0'; }
+	$loginPrefs = array(
+		'new_news'       => varset($_POST['pref']['new_news'], '0'),
+		'new_comments'   => varset($_POST['pref']['new_comments'], '0'),
+		'new_members'    => varset($_POST['pref']['new_members'], '0'),
+		'external_links' => $_POST['pref']['external_links'],
+		'external_stats' => $_POST['pref']['external_stats'],
+	);
 
-    $menuPref->reset();
-	foreach($loginPrefs as $k => $v)
-	{
-		$menuPref->setPref('login_menu/'.$k, $v);
-	}
-	//$menuPref->setPref('login_menu', $loginPrefs);
+	$menuPref->setPref('login_menu', $loginPrefs);
 	$menuPref->save(false, true, false);
 	e107::getLog()->add('MISC_03','', E_LOG_INFORMATIVE,'');
-	//$ns->tablerender("", '<div style=\'text-align:center\'><b>'.LAN_SETSAVED.'</b></div>');
 	$mes->addSuccess(LAN_SAVED);
-	$ns->tablerender("", $mes->render() . $text); 
+	$ns->tablerender("", $mes->render());
 }
+
+$loginClass = new login_menu_class();
 
 if (!isset($loginPrefs['new_news']))
 {	// Assume no prefs defined

@@ -1,7 +1,7 @@
 <?php
 
 
-	class e_front_modelTest extends \Codeception\Test\Unit
+	class e_front_modelTest extends \Test\Unit
 	{
 
 		/** @var e_front_model */

@@ -9,7 +9,7 @@
 	 */
 
 
-	class eHelperTest extends \Codeception\Test\Unit
+	class eHelperTest extends \Test\Unit
 	{
 		/** @var eHelper */
 		protected $hp;

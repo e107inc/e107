@@ -3,7 +3,7 @@
 /**
  * @see https://github.com/e107inc/e107/issues/5870
  */
-class RssFeedResolverTest extends \Codeception\Test\Unit
+class RssFeedResolverTest extends \Test\Unit
 {
 	/**
 	 * Stands in for e107::getRssConfig('legacy') plus core's inline comments

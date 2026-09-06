@@ -91,7 +91,7 @@ class core_page_url extends eUrlConfig
 					 $page = '--FROM--';
 				}
 				
-				$url .= "id=".intval($params['id']).($page ? '.'.$page : '');	
+				$url .= "id=".intval(varset($params['id'])).($page ? '.'.$page : '');	
 			break;
 			
 			
@@ -122,7 +122,11 @@ class core_page_url extends eUrlConfig
 		return $admin;
 	}
 	
-	public function parse($pathInfo, $params = array(), eRequest|null $request = null, eRouter|null $router = null, $config = array())
+	/**
+     * @param \eRequest|null $request
+     * @param \eRouter|null $router
+     */
+    public function parse($pathInfo, $params = array(), $request = null, $router = null, $config = array())
 	{
 		// this config doesn't support parsing, it's done by the module entry script (news.php)
 		// this means News are not available via single entry point if this config is currently active

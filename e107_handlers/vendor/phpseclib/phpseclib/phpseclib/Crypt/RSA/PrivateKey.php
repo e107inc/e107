@@ -331,8 +331,8 @@ final class PrivateKey extends RSA implements Common\PrivateKey
             throw new \RuntimeException('Decryption error');
         }
 
-        $ps = substr($em, 2, strpos($em, chr(0), 2) - 2);
-        $m = substr($em, strlen($ps) + 3);
+        $ps = (string) substr($em, 2, strpos($em, chr(0), 2) - 2);
+        $m = (string) substr($em, strlen($ps) + 3);
 
         if (strlen($ps) < 8) {
             throw new \RuntimeException('Decryption error');
@@ -381,14 +381,14 @@ final class PrivateKey extends RSA implements Common\PrivateKey
 
         $lHash = $this->hash->hash($this->label);
         $y = ord($em[0]);
-        $maskedSeed = substr($em, 1, $this->hLen);
-        $maskedDB = substr($em, $this->hLen + 1);
+        $maskedSeed = (string) substr($em, 1, $this->hLen);
+        $maskedDB = (string) substr($em, $this->hLen + 1);
         $seedMask = $this->mgf1($maskedDB, $this->hLen);
         $seed = $maskedSeed ^ $seedMask;
         $dbMask = $this->mgf1($seed, $this->k - $this->hLen - 1);
         $db = $maskedDB ^ $dbMask;
-        $lHash2 = substr($db, 0, $this->hLen);
-        $m = substr($db, $this->hLen);
+        $lHash2 = (string) substr($db, 0, $this->hLen);
+        $m = (string) substr($db, $this->hLen);
         $hashesMatch = hash_equals($lHash, $lHash2);
         $leadingZeros = 1;
         $patternMatch = 0;
@@ -407,7 +407,7 @@ final class PrivateKey extends RSA implements Common\PrivateKey
 
         // Output the message M
 
-        return substr($m, $offset + 1);
+        return (string) substr($m, $offset + 1);
     }
 
     /**

@@ -44,7 +44,10 @@ function thumbFail($status, $message)
 	echo $message;
 }
 
-function thumbExceptionHandler(Throwable $e)
+/**
+ * @param \Throwable $e
+ */
+function thumbExceptionHandler($e)
 {
 	error_log(sprintf(
 		'thumb.php: %s in %s on line %d%s%s',
@@ -164,7 +167,7 @@ class e_thumbpage
 		{
 			$e107_paths = $config['paths'];
 			$sql_info = $config['database'];
-			$E107_CONFIG = $config['other'] ?? [];
+			$E107_CONFIG = isset($config['other']) ? $config['other'] : [];
 		}
 
 		$e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));

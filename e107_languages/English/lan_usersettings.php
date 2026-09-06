@@ -32,6 +32,8 @@ return [
     'LAN_USET_18' => "User data changed by admin: [x], login name: [y]",
     'LAN_USET_20' => "You must also change the user's password if you are changing their login name or email address",
     'LAN_USET_21' => "Please validate the changes by re-entering your password:",
+    'LAN_USET_CONFIRM_PASSWORD_CHANGE' => "Please confirm the changes by entering your current password:",
+    'LAN_USET_CHANGE_NOT_COMPLETED' => "Your changes were not completed. Please try again.",
     'LAN_USET_23' => "Leave blank to keep existing password",
     'LAN_USET_24' => "New password:",
     'LAN_USET_25' => "Re-type new password:",
@@ -61,4 +63,5 @@ return [
     'LAN_USET_54' => "Confirmation Email Sent",
     'LAN_USET_55' => "Please click the following link to complete the deletion of your account.",
     'LAN_USET_56' => "Your account has been successfully deleted.",
+    'LAN_USET_DELETE_LINK_INVALID' => "Your account has not been deleted, because that confirmation link is no longer valid. Ask for removal again below to receive a new one.",
 ];

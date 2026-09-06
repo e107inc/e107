@@ -8,6 +8,16 @@ class Unit extends E107Base
 {
 	protected $deployer_components = ['db'];
 
+	/**
+	 * e107_handlers/file_class.php arms a 600-second limit at include time, and the coverage report that follows the
+	 * suite has to finish inside whatever is left of it; on PHP 5.6 it no longer does.
+	 */
+	public function _afterSuite()
+	{
+		set_time_limit(0);
+		parent::_afterSuite();
+	}
+
 	public function _beforeSuite($settings = array())
 	{
 		parent::_beforeSuite($settings);

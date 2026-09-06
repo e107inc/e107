@@ -101,10 +101,7 @@ class e_pluginbuilder
 
 		//	$mes->addInfo($tp->toHTML($info,true));
 
-			$text = $frm->open('createPlugin','get', e_SELF);
-			$text .= $frm->hidden('action', 'build');
-
-			$text .= "<table class='table adminform'>
+			$text = "<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
@@ -112,10 +109,10 @@ class e_pluginbuilder
 						</colgroup>
 				<tr>
 					<td>".EPL_ADLAN_107."</td>
-					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir, false, 'size=xlarge').$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->checkbox('createFiles',1,1,EPL_ADLAN_255).$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->hidden('action', 'build').$frm->hidden('e-token', defset('e_TOKEN')).$frm->select("newplugin",$newDir, false, 'size=xlarge').$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->checkbox('createFiles',1,1,EPL_ADLAN_255).$frm->close()."</td>
 					<td><div class='alert alert-info'>".$info."</div></td>
 				</tr>
-				
+
 				<tr>
 					<td>".EPL_ADLAN_108."</td>
 					<td><div class='input-append form-inline'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir, false, 'size=xlarge').$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->close()."</td>
@@ -138,10 +135,8 @@ class e_pluginbuilder
 			$text .= "				
 				</table>
 				<div class='buttons-bar center'>
-				
-				</div>";
 
-			$text .= $frm->close();
+				</div>";
 
 			return $text;
 
@@ -216,7 +211,14 @@ class e_pluginbuilder
 
 			if(!empty($_GET['build']) && !file_exists($sqlFile))
 			{
-				$this->buildSQLFile($_GET['build'], $sqlFile);
+				if(defined('e_TOKEN') && empty($_GET['e-token']))
+				{
+					$mes->addError(defset('EPL_ADLAN_REFUSED_BUILD_TOKEN_MISSING', 'Invalid Token'));
+				}
+				else
+				{
+					$this->buildSQLFile($_GET['build'], $sqlFile);
+				}
 			}
 
 			$ret = array();

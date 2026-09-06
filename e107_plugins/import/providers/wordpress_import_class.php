@@ -37,10 +37,10 @@ class wordpress_import extends base_import_class
 	
 	function init()
 	{
-		
-		
+
+
 		$this->newsAuthor	= intval($_POST['news_author']);
-		
+
 	//	if($data = e107::getDb('phpbb')->retrieve('userclass_classes','userclass_id',"userclass_name='FORUM_MODERATOR' "))
 	//	{
 	//		$this->forum_moderator_class = $data;
@@ -169,7 +169,7 @@ class wordpress_import extends base_import_class
 		{
 			 $target['user_id'] = $source['ID'];
 		}
-		
+
 		$target['user_name'] 		= $source['user_nicename'];
 		$target['user_loginname'] 	= $source['user_login'];
 		$target['user_password'] 	= $source['user_pass'];   // needs to be salted!!!!
@@ -188,7 +188,7 @@ class wordpress_import extends base_import_class
 		$target['user_lastpost'] 	= $source['user_lastpost'];
 		$target['user_chats'] 		= $source['user_chats'];
 		$target['user_comments'] 	= $source['user_comments'];
-	
+
 		$target['user_ip'] 			= $source['user_ip'];
 		$target['user_prefs'] 		= $source['user_prefs'];
 		$target['user_visits'] 		= $source['user_visits'];
@@ -207,7 +207,7 @@ class wordpress_import extends base_import_class
 		$target['user_timezone'] 	= $source['user_timezone'];
 
 		$this->renderDebug($source,$target);
-		
+
 	//return $target;
 	}
 
