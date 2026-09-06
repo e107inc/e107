@@ -17,7 +17,7 @@ $FORUMPOLLPOSTED ="
 	<td class='fcaption' colspan='2'>{LAN=FORUM_3043}</td>
 </tr>
 <tr>
-	<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+	<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".defset('IMAGE_e')."&nbsp;</td>
 	<td style='vertical-align:middle; width:80%' class='forumheader2'>
 		<br />{LAN=FORUM_3045}<br />
 		<span class='defaulttext'><a class='forumlink' href='{THREADLINK}'>{LAN=FORUM_3046}</a><br />
@@ -32,7 +32,7 @@ $FORUMTHREADPOSTED = "
 	<td class='fcaption' colspan='2'>{LAN=FORUM_3043}</td>
 </tr>
 <tr>
-	<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+	<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".defset('IMAGE_e')."&nbsp;</td>
 	<td style='vertical-align:middle; width:80%' class='forumheader2'>
 		<br />{LAN=FORUM_3047}<br />
 		".(defined('F_MESSAGE') ? F_MESSAGE.'<br />' : '')."
@@ -49,7 +49,7 @@ $FORUMREPLYPOSTED = "
 	<td class='fcaption' colspan='2'>{LAN=FORUM_3043}</td>
 </tr>
 <tr>
-	<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+	<td style='text-align:right; vertical-align:middle; width:20%' class='forumheader2'>".defset('IMAGE_e')."&nbsp;</td>
 	<td style='vertical-align:middle; width:80%' class='forumheader2'>
 		<br />{LAN=FORUM_3049}<br />
 		".(defined('F_MESSAGE') ? F_MESSAGE.'<br />' : '')."

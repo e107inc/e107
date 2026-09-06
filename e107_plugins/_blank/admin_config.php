@@ -131,7 +131,7 @@ class plugin_blank_admin_ui extends e_admin_ui
 		protected $perPage = 20;
 
 		protected $batchDelete = true;
-		
+
 
 	//	protected \$sortField		= 'somefield_order';
 
@@ -311,8 +311,8 @@ class plugin_blank_admin_ui extends e_admin_ui
 			e107::getDebug()->log($pref);
 
 		}
-		
-		
+
+
 		public function custom1Page()
 		{
 			return "Hello World Customer Page 1!";
@@ -323,7 +323,7 @@ class plugin_blank_admin_ui extends e_admin_ui
 		{
 			return "Hello World Customer Page 2!";
 		}
-	
+
 		// left-panel help menu area. (replaces e_help.php used in old plugins)	
 		public function renderHelp()
 		{
@@ -342,13 +342,13 @@ class plugin_blank_admin_ui extends e_admin_ui
 
 class plugin_blank_admin_form_ui extends e_admin_form_ui
 {
-	
+
 	function blank_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function.
 	{
 		$frm = e107::getForm();
-		
+
 		$types = array('type_1'=>"Type 1", 'type_2' => 'Type 2');
-		
+
 		if($mode == 'read')
 		{
 			return vartrue($types[$curVal]).' (custom!)';
@@ -366,7 +366,7 @@ class plugin_blank_admin_form_ui extends e_admin_form_ui
 
 		return $frm->select('blank_type', $types, $curVal);
 	}
-	
+
 }
 
 

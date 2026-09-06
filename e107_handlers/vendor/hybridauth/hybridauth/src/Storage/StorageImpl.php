@@ -11,7 +11,7 @@ class StorageImpl implements StorageInterface {
     }
 
     public function get($key) {
-        return $this->data[$key] ?? null;
+        return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
     public function set($key, $value) {

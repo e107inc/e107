@@ -51,7 +51,7 @@ class bb_block extends e_bb_base
 		$parms = eHelper::scParams($parm);
 		
 		// add auto-generated class name and parameter class if available
-		$class = e107::getBB()->getClass('block').(varset($parms['class']) ? ' '.$parms['class'] : '');
+		$class = e107::getBB()->getClass('block').(varset($parms['class']) ? ' '.eHelper::secureClassAttr($parms['class']) : '');
 		$class = ' class="'.$class.'"';
 		
 		$id = vartrue($parms['id']) ? ' id="'.eHelper::secureIdAttr($parms['id']).'"' : '';

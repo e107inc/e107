@@ -339,7 +339,7 @@ class Salsa20 extends StreamCipher
             $ciphertext = '';
         } else {
             $ciphertext = $text ^ Strings::shift($buffer['ciphertext'], strlen($text));
-            $text = substr($text, strlen($ciphertext));
+            $text = (string) substr($text, strlen($ciphertext));
             if (!strlen($text)) {
                 return $ciphertext;
             }
@@ -372,7 +372,7 @@ class Salsa20 extends StreamCipher
                 $temp = static::salsa20($this->p1 . pack('V', $buffer['counter']++) . $this->p2);
             }
             $ciphertext .= $encrypted . ($text2 ^ $temp);
-            $buffer['ciphertext'] = substr($temp, $overflow);
+            $buffer['ciphertext'] = (string) substr($temp, $overflow);
         } elseif (!strlen($buffer['ciphertext'])) {
             if ($this->engine == self::ENGINE_OPENSSL) {
                 $iv = pack('V', $buffer['counter']) . $this->p2;

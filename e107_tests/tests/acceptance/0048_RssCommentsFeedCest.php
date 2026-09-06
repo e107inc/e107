@@ -368,6 +368,7 @@ class RssCommentsFeedCest
 // Fixture for 0037_RssCommentsFeedCest. Removed again in the Cest's _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 // Every request in the container arrives from the bridge address, so a Cest
 // that makes more than a handful of them bans itself part way through.

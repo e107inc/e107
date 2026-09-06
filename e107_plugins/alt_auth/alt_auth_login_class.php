@@ -117,7 +117,7 @@ class alt_login
 				$username = e107::getParser()->toDB($username);
 			}
 			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
-			$username = substr($username, 0, e107::getPref('loginname_maxlength'));
+			$username = (string) substr($username, 0, e107::getPref('loginname_maxlength'));
 
 			$aa_sql = e107::getDb('aa');
 			$userMethods = new UserHandler;
@@ -140,7 +140,7 @@ class alt_login
 			{
 				if (strpos($k,'x_') === 0)
 				{	// Extended field
-					$k = substr($k,2);
+					$k = (string) substr($k,2);
 					$xFields['user_'.$k] = $v;
 				}
 				else
@@ -386,7 +386,7 @@ class alt_login
 		else
 		{	// Legacy path merges the table defs when the envelope carries no types
 			$defs       = $db->getFieldDefs($table);
-			$fieldTypes = (is_array($defs) && isset($defs['_FIELD_TYPES'])) ? $defs['_FIELD_TYPES'] : array();
+			$fieldTypes = $db->getFieldTypes($table);
 			$notNull    = (is_array($defs) && isset($defs['_NOTNULL']))     ? $defs['_NOTNULL']     : array();
 		}
 

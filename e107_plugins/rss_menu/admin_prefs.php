@@ -140,7 +140,7 @@ class rss_ui extends e_admin_ui
 			$rssVals['rss_class'] = intval(varset($_POST['class'][$key], '0'));
 			$rssVals['rss_limit'] = intval(varset($_POST['limit'][$key], '0'));
 
-			$sql->createQueryBuilder()->insert('rss')->valuesTyped($rssVals, $sql->getFieldDefs('rss')['_FIELD_TYPES'])->execute();
+			$sql->createQueryBuilder()->insert('rss')->valuesTyped($rssVals)->execute();
 			e107::getLog()->addArray($rssVals)->save('RSS_04');
 			//	e107::getLog()->logArrayAll('RSS_04',$rssVals);
 		}

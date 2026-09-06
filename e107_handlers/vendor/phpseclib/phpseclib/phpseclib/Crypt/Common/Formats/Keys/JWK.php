@@ -38,7 +38,10 @@ abstract class JWK
         $key = preg_replace('#\s#', '', $key); // remove whitespace
 
         if (PHP_VERSION_ID >= 73000) {
-            $key = json_decode($key, null, 512, JSON_THROW_ON_ERROR);
+            $key = json_decode($key, true, 512, 0);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception(json_last_error_msg());
+            }
         } else {
             $key = json_decode($key);
             if (!$key) {

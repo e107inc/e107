@@ -37,6 +37,9 @@ if(!empty($_GET['iframe']) && !defined('e_IFRAME')) // global iframe support.
 	define('e_IFRAME', true);
 }
 
+$bootTokenRefused = (defined('e_TOKEN') && empty($_GET['e-token']));
+$bootTokenMessage = defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.');
+
 // .e-sef-generate routine.
 if(e_AJAX_REQUEST && ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_POST['source']))
 {
@@ -47,6 +50,13 @@ if(e_AJAX_REQUEST && ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 
 
 if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'core' && ($_GET['type'] == 'update'))
 {
+		if($bootTokenRefused)
+		{
+			header('HTTP/1.1 403 Forbidden', true, 403);
+			header('Content-type: application/json; charset=UTF-8');
+			echo json_encode(array('msg' => $bootTokenMessage, 'error' => true));
+			exit;
+		}
 
 		require_once(e_ADMIN.'update_routines.php');
 
@@ -71,6 +81,13 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'core' && ($_GET
 
 if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_GET['type'] == 'update'))
 {
+	if($bootTokenRefused)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+		echo $bootTokenMessage;
+		exit;
+	}
+
 	if(!E107_DEBUG_LEVEL)
 	{
 		e107::getSession()->set('addons-update-checked',true);
@@ -111,6 +128,12 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 
 if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'feed'))
 {
+	if($bootTokenRefused)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+		echo $bootTokenMessage;
+		exit;
+	}
 
 	$limit = 3;
 
@@ -154,6 +177,13 @@ if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type']
 
 if(ADMIN && (e_AJAX_REQUEST || deftrue('e_DEBUG_FEEDS')) && varset($_GET['mode']) == 'addons' )
 {
+	if($bootTokenRefused)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+		echo $bootTokenMessage;
+		exit;
+	}
+
 	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
 	// Versioned: the composed HTML is what gets cached, so an install upgrading
 	// into the encoding below must not be handed three more hours of the bytes
@@ -227,14 +257,13 @@ e107::coreLan('footer', true);
 // here mostly because of BC reasons
 //if(!deftrue('e_MINIMAL'))
 {
-	$_globalLans = e107::pref('core', 'lan_global_list'); 
 	$_plugins = e107::getPref('plug_installed');
 	$plugDir = e107::getFolder('plugins');
 
-	if(strpos(e_REQUEST_URI,$plugDir) !== false && !deftrue('e_ADMIN_UI') && !empty($_plugins) && !empty($_globalLans) && is_array($_plugins) && (count($_plugins) > 0))
+	if(strpos(e_REQUEST_URI,$plugDir) !== false && !deftrue('e_ADMIN_UI') && !empty($_plugins) && is_array($_plugins) && (count($_plugins) > 0))
 	{
 		$_plugins = array_keys($_plugins);
-		
+
 		foreach ($_plugins as $_p) 
 		{
 			if(defset('e_CURRENT_PLUGIN') != $_p)
@@ -242,11 +271,11 @@ e107::coreLan('footer', true);
 				continue;
 			}
 
-			if(in_array($_p, $_globalLans)) // filter out those with globals unless we are in a plugin folder.
+			if(e107\Language\GlobalLanguageList::has($_p)) // filter out those with globals unless we are in a plugin folder.
 			{
 				continue;
 			}
-			
+
 			e107::getDebug()->logTime('[boot.php: Loading LANS for '.$_p.']');
 			e107::loadLanFiles($_p, 'admin');
 		}

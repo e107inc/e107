@@ -106,7 +106,7 @@ if (varset($e107_popup) != 1)
 			}
 		}
 	}
-	
+
 	//
 	// B.2 Send footer template, stop timing, send simple page stats
 	//
@@ -116,7 +116,7 @@ if (varset($e107_popup) != 1)
 		$ADMIN_FOOTER = e107::getCoreTemplate('admin', 'footer', false);
 		e107::renderLayout($ADMIN_FOOTER, ['sc'=>'admin']);
 	}
-	
+
 	$eTimingStop = microtime();
 	global $eTimingStart;
 	$clockTime = e107::getSingleton('e107_traffic')->TimeDelta($eTimingStart, $eTimingStop);
@@ -127,7 +127,7 @@ if (varset($e107_popup) != 1)
 	$dbPercent = number_format($dbPercent); // DB as percent of clock
 	$memuse = eHelper::getMemoryUsage(); // Memory at end, in B/KB/MB/GB ;)
 	$rinfo = '';
-	
+
 	if (function_exists('getrusage') && !empty($eTimingStartCPU))
 	{
 		$ru = getrusage();
@@ -139,7 +139,7 @@ if (varset($e107_popup) != 1)
 		$cpuTot = $cpuUTime + $cpuSTime;
 		$cpuTime = $cpuTot - $cpuStart;
 		$cpuPct = 100.0 * $cpuTime / $rendertime; /* CPU load during known clock time */
-		
+
 		// Format for display or logging (Uncomment as needed for logging)
 		// User cpu
 		//$cpuUTime = number_format($cpuUTime, 3);
@@ -147,7 +147,7 @@ if (varset($e107_popup) != 1)
 		//$cpuSTime = number_format($cpuSTime, 3);
 		// Total (User+System)
 		//$cpuTot = number_format($cpuTot, 3);
-		
+
 		$cpuStart = number_format($cpuStart, 3); // Startup time (i.e. CPU used before class2.php)
 		$cpuTime = number_format($cpuTime, 3); // CPU while we were measuring the clock (cpuTot-cpuStart)
 		$cpuPct = number_format($cpuPct); // CPU Load (CPU/Clock)
@@ -158,7 +158,7 @@ if (varset($e107_popup) != 1)
 	//
 	//	$logname = "/home/mysite/public_html/queryspeed.log";
 	//	$logfp = fopen($logname, 'a+'); fwrite($logfp, "$cpuTot,$cpuPct,$cpuStart,$rendertime,$db_time\n"); fclose($logfp);
-	
+
 	if ($pref['displayrendertime'])
 	{
 		$rinfo .= CORE_LAN11;
@@ -181,7 +181,7 @@ if (varset($e107_popup) != 1)
 	{
 		$rinfo .= $cachestring.".";
 	}
-	
+
 	if (function_exists('theme_renderinfo'))
 	{
 		theme_renderinfo($rinfo);
@@ -194,7 +194,7 @@ if (varset($e107_popup) != 1)
 			echo($rinfo ? "\n<div class='e-footer-info muted center' style='padding-bottom:20px; margin-top:10px'><small>{$rinfo}</small></div>\n" : "");
 		}
 	}
-	
+
 } // End of regular-page footer (the above NOT done for popups)
 
 //
@@ -314,11 +314,11 @@ if (isset($footer_js) && is_array($footer_js))
 if (is_array($pref['e_footer_list']))
 {
 //	ob_start();
-	
+
 	foreach($pref['e_footer_list'] as $val)
 	{		
 		$fname = e_PLUGIN.$val."/e_footer.php"; // Do not place inside a function - BC $pref required. . 
-		
+
 		if(is_readable($fname))
 		{
 			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);

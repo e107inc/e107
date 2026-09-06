@@ -20,18 +20,13 @@ if (!defined("USER_WIDTH"))
 	 define("USER_WIDTH", "width:95%");
 }
 
-global $user_shortcodes, $pref, $user;
+global $user_shortcodes;
 //Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page
 define("HIDE_EMPTY_FIELDS", FALSE);
 
+$USER_TEMPLATE['extended']['start'] = "<tr><td colspan='2' class='forumheader center'>{EXTENDED_NAME}</td></tr>";
 
-
-
-/// --------------------- Start of Legacy Code --------------------------------------- //
-
-$EXTENDED_CATEGORY_START = "<tr><td colspan='2' class='forumheader center'>{EXTENDED_NAME}</td></tr>";
-
-$EXTENDED_CATEGORY_TABLE = "
+$USER_TEMPLATE['extended']['item'] = "
 	<tr>
 		<td style='width:30%' class='forumheader3'>{EXTENDED_ICON}{EXTENDED_NAME}
 		</td>
@@ -39,12 +34,9 @@ $EXTENDED_CATEGORY_TABLE = "
 	</tr>
 	";
 
-$EXTENDED_CATEGORY_END = "";
+$USER_TEMPLATE['extended']['end'] = "";
 
-/**
- * Preparing for huge markup/css changes
- */
-$USER_SHORT_TEMPLATE_START = "
+$USER_TEMPLATE['list']['start'] = "
 	<div class='content user-list'>
 	<div class='center'>".LAN_USER_56." {TOTAL_USERS}
 	<br />
@@ -70,13 +62,13 @@ $USER_SHORT_TEMPLATE_START = "
 	<tbody>
 	{SETIMAGE: w=40}
 ";
-$USER_SHORT_TEMPLATE_END = "
+$USER_TEMPLATE['list']['end'] = "
 </tbody>
 </table>
 </div>
 ";
 
-$USER_SHORT_TEMPLATE = "
+$USER_TEMPLATE['list']['item'] = "
 <tr>
 	<td class='forumheader3' style='width:2%'>{USER_PICTURE}</td>
 	<td class='forumheader3' style='width:20%'>{USER_ID}: {USER_NAME_LINK}</td>
@@ -85,59 +77,32 @@ $USER_SHORT_TEMPLATE = "
 </tr>
 ";
 
-$sc_style['USER_SIGNATURE']['pre'] = "<tr><td colspan='2' class='forumheader3 left'>";
-$sc_style['USER_SIGNATURE']['post'] = "</td></tr>";
+$USER_WRAPPER['view']['USER_SIGNATURE'] = "<tr><td colspan='2' class='forumheader3 left'>{---}</td></tr>";
 
-$sc_style['USER_COMMENTS_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3 left'>";
-$sc_style['USER_COMMENTS_LINK']['post'] = "</td></tr>";
+$USER_WRAPPER['view']['USER_COMMENTS_LINK'] = "<tr><td colspan='2' class='forumheader3 left'>{---}</td></tr>";
 
-$sc_style['USER_FORUM_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3 left'>";
-$sc_style['USER_FORUM_LINK']['post'] = "</td></tr>";
+$USER_WRAPPER['view']['USER_FORUM_LINK'] = "<tr><td colspan='2' class='forumheader3 left'>{---}</td></tr>";
 
-$sc_style['USER_UPDATE_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3 center'>";
-$sc_style['USER_UPDATE_LINK']['post'] = "</td></tr>";
+$USER_WRAPPER['view']['USER_UPDATE_LINK'] = "<tr><td colspan='2' class='forumheader3 center'>{---}</td></tr>";
 
-$sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>".LAN_RATING."</div><div class='f-right'>";
-$sc_style['USER_RATING']['post'] = "</div></td></tr>";
+$USER_WRAPPER['view']['USER_RATING'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>".LAN_RATING."</div><div class='f-right'>{---}</div></td></tr>";
 
-$sc_style['USER_LOGINNAME']['pre'] = " : ";
+$USER_WRAPPER['view']['USER_LOGINNAME'] = " : {---}";
 
-$sc_style['USER_COMMENTPOSTS']['pre'] = "<tr><td style='width:30%' class='forumheader3'>".LAN_USER_68."</td><td style='width:70%' class='forumheader3'>";
-$sc_style['USER_COMMENTPOSTS']['post'] = "";
+$USER_WRAPPER['view']['USER_COMMENTPOSTS'] = "<tr><td style='width:30%' class='forumheader3'>".LAN_USER_68."</td><td style='width:70%' class='forumheader3'>{---}";
 
-$sc_style['USER_COMMENTPER']['pre'] = " ( ";
-$sc_style['USER_COMMENTPER']['post'] = "% )</td></tr>";
+$USER_WRAPPER['view']['USER_COMMENTPER'] = " ( {---}% )</td></tr>";
 
-//FIXME TODO - Remove IF statements from template. 
-if(isset($pref['photo_upload']) && $pref['photo_upload'])
-{
-	$user_picture =  "{USER_PICTURE}";
-	$colspan = " colspan='2'";
-	$main_colspan = "";
-}
-else
-{
-	$user_picture =  "";
-	$colspan = "";
-	$main_colspan = " colspan = '2' ";
-}
+$main_colspan = e107::getPref('photo_upload') ? "" : " colspan = '2' ";
 
-$sc_style['USER_SENDPM']['pre'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>";
-$sc_style['USER_SENDPM']['post'] = "</div><div class='f-right'>".LAN_USER_62."</div></td></tr>";
+$USER_WRAPPER['view']['USER_SENDPM'] = "<tr><td colspan='2' class='forumheader3'><div class='f-left'>{---}</div><div class='f-right'>".LAN_USER_62."</div></td></tr>";
 
 // Determine which other bits are installed; let photo span those rows (can't do signature - will vary with user)
 $span = 4;
 if (e107::getParser()->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes)) $span++;
 $span = " rowspan='".$span."' ";
 
-//$sc_style['USER_PICTURE']['pre']="<td {$span} class='forumheader3 center middle' style='width:20%'>";
-//$sc_style['USER_PICTURE']['post']="</td>";
-
-
-
-
-
-$USER_FULL_TEMPLATE = "{SETIMAGE: w=250}
+$USER_TEMPLATE['view'] = "{SETIMAGE: w=250}
 <div class='content user user-legacy'>
 <table style='".USER_WIDTH."' class='table fborder'>
 <tr>
@@ -212,7 +177,7 @@ $USER_FULL_TEMPLATE = "{SETIMAGE: w=250}
 {PROFILE_COMMENT_FORM}
 ";
 
-$USER_EMBED_USERPROFILE_TEMPLATE = "
+$USER_TEMPLATE['addon'] = "
 <tr>
 	<td class='forumheader3'>{USER_ADDON_LABEL}</td>
 	<td class='forumheader3'>{USER_ADDON_TEXT}</td>

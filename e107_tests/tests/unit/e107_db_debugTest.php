@@ -7,7 +7,7 @@
 	 */
 
 
-	class e107_db_debugTest extends \Codeception\Test\Unit
+	class e107_db_debugTest extends \Test\Unit
 	{
 
 		/** @var e107_db_debug */

@@ -1,0 +1,3 @@
+/vendor/
+/.rector-cache/
+composer.phar

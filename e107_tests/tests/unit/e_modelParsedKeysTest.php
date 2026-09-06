@@ -14,7 +14,7 @@
  * isData('plug_installed/<plugin>'), while installing and uninstalling replace
  * the whole plug_installed array.
  */
-class e_modelParsedKeysTest extends \Codeception\Test\Unit
+class e_modelParsedKeysTest extends \Test\Unit
 {
 	/**
 	 * @param array $data

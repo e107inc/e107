@@ -2,11 +2,28 @@
 $class = e107::getBB()->getClass('stream');
 unset($stream_parms);
 
+$allowedAttributes = array('allowchangedisplaysize', 'allowscan', 'animationatstart', 'audiostream', 'autorewind',
+	'autosize', 'autostart', 'balance', 'baseurl', 'bufferingtime', 'captioningid', 'clicktoplay', 'currentmarker',
+	'currentposition', 'cursortype', 'defaultframe', 'displaybackcolor', 'displayforecolor', 'displaymode',
+	'displaysize', 'enablecontextmenu', 'enabled', 'enablefullscreencontrols', 'enablepositioncontrols',
+	'enabletracker', 'filename', 'fullscreen', 'height', 'invokeurls', 'language', 'loop', 'mute', 'playcount',
+	'previewmode', 'rate', 'samifilename', 'samilang', 'samistyle', 'selectionend', 'selectionstart',
+	'senderrorevents', 'sendkeyboardevents', 'sendmouseclickevents', 'sendmousemoveevents',
+	'sendopenstatechangeevents', 'sendplaystatechangeevents', 'sendwarningevents', 'showaudiocontrols',
+	'showcaptioning', 'showcontrols', 'showdisplay', 'showgotobar', 'showpositioncontrols', 'showstatusbar',
+	'showtracker', 'stretchtofit', 'transparentatstart', 'uimode', 'videoborder3d', 'videobordercolor',
+	'videoborderwidth', 'volume', 'width', 'windowlessvideo', 'wmode');
+
 if($parm)
 {
 	parse_str($parm,$tmp);
 	foreach($tmp as $p => $v)
 	{
+		if(!is_scalar($v) || !in_array(strtolower($p), $allowedAttributes, true))
+		{
+			continue;
+		}
+
 		$stream_parms[$p]=$v;
 	}
 }

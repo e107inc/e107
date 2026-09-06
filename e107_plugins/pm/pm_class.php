@@ -219,6 +219,11 @@ class private_message
 			$covered = $fl->protectDirectory($dir) && $covered;
 		}
 
+		if(!$covered)
+		{
+			e107::getLog()->add('PM_ADM_11', $this->attachmentRoot(), E_LOG_WARNING);
+		}
+
 		return $covered;
 	}
 
@@ -282,7 +287,7 @@ class private_message
 
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		$pmFieldTypes = $sql->getFieldDefs('private_msg')['_FIELD_TYPES'];	// field-typed user-data writes -> valuesTyped (byte-identical; pitfall #4)
+		$pmFieldTypes = $sql->getFieldTypes('private_msg');	// field-typed user-data writes -> valuesTyped (byte-identical; pitfall #4)
 		$pmsize = 0;
 		$attachlist = '';
 		$pm_options = '';
@@ -326,12 +331,12 @@ class private_message
 
 			$pm_subject = trim($tp->toDB($vars['pm_subject']));
 			$pm_message = trim($tp->toDB($vars['pm_message']));
-			
+
 			if (!$pm_subject && !$pm_message && !$attachlist)
 			{  // Error - no subject, no message body and no uploaded files
 				return LAN_PM_65;
 			}
-			
+
 			// Most of the pm info is fixed - just need to set the 'to' user on each send
 			$info = array(
 				'pm_from' => $vars['from_id'],
@@ -395,7 +400,7 @@ class private_message
 				set_time_limit(30);
 				$info['pm_to'] = intval($u['user_id']);		// Sending to a single user now
 
-				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info, $pmFieldTypes)->execute();
+				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info)->execute();
 				$pmid = ($pmOk !== false) ? $sql->lastInsertId() : false;	// guard lastInsertId() on execute() success
 				if($pmid)
 				{
@@ -426,7 +431,7 @@ class private_message
 				$info['pm_to'] = $toclass;		// Class info to put into outbox
 				$info['pm_sent_del'] = 0;
 				$info['pm_read_del'] = 1;
-				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info, $pmFieldTypes)->execute();
+				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info)->execute();
 				$pmid = ($pmOk !== false) ? $sql->lastInsertId() : false;	// guard lastInsertId() on execute() success
 				if(!$pmid)
 				{
@@ -442,7 +447,7 @@ class private_message
 
 
 
-			$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info, $pmFieldTypes)->execute();
+			$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info)->execute();
 			$pmid = ($pmOk !== false) ? $sql->lastInsertId() : false;	// guard lastInsertId() on execute() success
 			if($pmid)
 			{
@@ -605,19 +610,22 @@ class private_message
 
 		$url = e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 
+		$sender = e107::user((int) varset($pmInfo['from_id']));
+		$senderName = !empty($sender['user_name']) ? $sender['user_name'] : defset('USERNAME', '');
+
 		$data = array();
 		$data['PM_SUBJECT']     = $pmInfo['pm_subject'];
 		$data['PM_ATTACHMENTS'] = intval($attach_count);
 		$data['PM_DATE']        = e107::getParser()->toDate($pmInfo['pm_sent'], 'long');
 		$data['SITENAME']       = SITENAME;
-		$data['USERNAME']       = USERNAME;
+		$data['USERNAME']       = $senderName;
 		$data['PM_URL']         = $url;// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 		$data['PM_BUTTON']      = "<a class='btn btn-primary' href='".$url."'>".LAN_PM_113."</a>";// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 
 		$text = e107::getParser()->simpleParse($PM_NOTIFY, $data);
 
 		$eml = array();
-		$eml['email_subject']		= LAN_PM_100." ".USERNAME;
+		$eml['email_subject']		= LAN_PM_100." ".$senderName;
 		$eml['send_html']			= true;
 		$eml['email_body']			= $text;
 		$eml['template']			= 'default';
@@ -731,7 +739,7 @@ class private_message
 						'pm_block_from' => $from,
 						'pm_block_to' => $to,
 						'pm_block_datestamp' => time()
-					), $sql->getFieldDefs('private_msg_block')['_FIELD_TYPES'])->execute() !== false)
+					))->execute() !== false)
 				{
 					return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_47);
 				}

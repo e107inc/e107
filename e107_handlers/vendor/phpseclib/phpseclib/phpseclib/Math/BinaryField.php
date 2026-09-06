@@ -74,7 +74,7 @@ class BinaryField extends FiniteField
         $h = $bitLen & 7;
         $h = $h ? 8 - $h : 0;
 
-        $r = rtrim(substr($val, 0, -1), '0');
+        $r = rtrim((string) substr($val, 0, -1), '0');
         $u = [static::base2ToBase256(strrev($r))];
         for ($i = 1; $i < 8; $i++) {
             $u[] = static::base2ToBase256(strrev(str_repeat('0', $i) . $r));
@@ -93,7 +93,7 @@ class BinaryField extends FiniteField
                         $temp = $i - $m;
                         $j = $temp >> 3;
                         $k = $temp & 7;
-                        $t1 = $j ? substr($c, 0, -$j) : $c;
+                        $t1 = $j ? (string) substr($c, 0, -$j) : $c;
                         $length = strlen($t1);
                         if ($length) {
                             $t2 = str_pad($u[$k], $length, "\0", STR_PAD_LEFT);
@@ -103,7 +103,7 @@ class BinaryField extends FiniteField
                     }
                 }
             }
-            $c = substr($c, -$t);
+            $c = (string) substr($c, -$t);
             if (strlen($c) == $t) {
                 $c[0] = $c[0] & $finalMask;
             }

@@ -93,11 +93,11 @@ class CommentEditAuthzCest
 		// e107 bans an address once it has been seen enough times in a window.
 		$this->probe($I, 'act=flood');
 
-		// Pin the CSRF mode rather than inherit it. Unset resolves to the
-		// recommended browser check, which wants a Sec-Fetch-Site header
-		// PhpBrowser never sends, so the POSTs below would be refused before
-		// authorisation was ever considered and every refusal here would pass
-		// for the wrong reason.
+		// Pin the CSRF mode rather than inherit it. What an unset preference
+		// resolves to is a decision that moves between releases, and these tests
+		// are about authorisation: a POST refused by the CSRF gate would never
+		// reach the check under test, and every refusal here would pass for the
+		// wrong reason.
 		$this->probe($I, 'act=pref&k=csrf_enforce&v='.self::CSRF_TOKEN_ENFORCE);
 
 		// The AJAX edit route is behind this preference, and a fresh install
@@ -581,7 +581,7 @@ class CommentEditAuthzCest
 			throw new \RuntimeException('The comment page served no comment form');
 		}
 
-		if (!preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', substr($source, $form), $m))
+		if (!preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', (string) substr($source, $form), $m))
 		{
 			throw new \RuntimeException('No e-token published in the comment form');
 		}
@@ -787,6 +787,7 @@ class CommentEditAuthzCest
 // Fixture for CommentEditAuthzCest. Written per test, removed in _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';

@@ -23,7 +23,7 @@ class ForumReportCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
+		$I->resetForumReportThrottle();
 		$I->haveForumPluginInstalled();
 		$I->haveForumCsrfMode(2);
 

@@ -157,3 +157,30 @@ function pm_getInfo($which = 'inbox')
 	return $pm->pm_getInfo($which);
 
 }
+
+/**
+ * @param string $action pm.php action segment, e.g. "del" or "block"
+ * @return bool whether the action changes state and so must present an e-token
+ */
+function pm_actionNeedsToken($action)
+{
+	return in_array($action, array('block', 'del', 'delblocked', 'unblock'), true);
+}
+
+
+/**
+ * @param string $url pm.php url whose query string names the action, e.g. "pm.php?del.12.inbox"
+ * @param string $sep query-string separator, '&amp;' where the result lands in markup
+ * @return string the url, carrying an e-token where the action it names changes state
+ */
+function pm_actionUrl($url, $sep)
+{
+	$parts = array_pad(explode('?', $url, 2), 2, '');
+
+	if(!pm_actionNeedsToken(strtok($parts[1], '.')))
+	{
+		return $url;
+	}
+
+	return $url.$sep.'e-token='.defset('e_TOKEN');
+}

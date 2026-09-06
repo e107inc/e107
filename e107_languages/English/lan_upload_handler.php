@@ -29,4 +29,5 @@ return [
     'LANUPLOAD_17' => "Invalid name for uploaded file",
     'LANUPLOAD_18' => "The uploaded file exceeds allowable limits.",
     'LANUPLOAD_19' => "Too many files uploaded - excess deleted.",
+    'LANUPLOAD_REFUSED_TOKEN_MISSING' => "Nothing was uploaded, because the request carried no security token. Upload from the Media Manager rather than from a bookmark or a link on another site.",
 ];

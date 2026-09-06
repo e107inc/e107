@@ -245,7 +245,7 @@ JS;
 				// redirect to TestObserver/TestPage
 				case 'test':
 					$this->getRequest()
-						->setQuery(array())
+						->setQuery(array('e-token' => defset('e_TOKEN', '')))
 						->setMode('main')
 						->setAction('test')
 						->setId($_POST['userid']);
@@ -768,6 +768,13 @@ class users_admin_ui extends e_admin_ui
 			return false;
 		}
 
+		if(isset($new_data['user_class'])
+			&& $this->refusesClassChange($new_data['user_class'], varset($old_data['user_class'], '')))
+		{
+			$this->refuseAdminAction('Refused a user class change on user '.(int) $id);
+			return false;
+		}
+
 		$pwdField = 'user_password_'.$id;
 
 		if(!empty($new_data[$pwdField]))
@@ -885,6 +892,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListUnbanTrigger($userid)
 	{
+		if($this->refusesRowTrigger('unban', $userid))
+		{
+			return;
+		}
+
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$sysuser = e107::getSystemUser($userid, false);
@@ -904,6 +916,7 @@ class users_admin_ui extends e_admin_ui
 		$sql->createQueryBuilder()->delete('banlist')
 			->where('banlist_ip', $row['user_ip'])
 			->execute();
+		e107::getIPHandler()->regenerateFiles();
 
 		$vars = array('x'=>$sysuser->getId(), 'y'=> $sysuser->getName(), 'z'=> $sysuser->getValue('email'));
 
@@ -921,6 +934,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListBanTrigger($userid)
 	{
+		if($this->refusesRowTrigger('ban', $userid))
+		{
+			return;
+		}
+
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 		$admin_log = e107::getLog();
@@ -967,7 +985,7 @@ class users_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					if ($iph->add_ban(6, USRLAN_149.$row['user_name'].'/'.$row['user_loginname'], $row['user_ip'], USERID))
+					if ($iph->add_ban(eIPHandler::BAN_TYPE_USER, USRLAN_149.$row['user_name'].'/'.$row['user_loginname'], $row['user_ip'], USERID))
 					{
 						// Successful IP ban
 						$mes->addSuccess(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_137));
@@ -990,6 +1008,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListVerifyTrigger($userid)
 	{
+		if($this->refusesRowTrigger('verify', $userid))
+		{
+			return;
+		}
+
 		$e_event = e107::getEvent();
 		$admin_log = e107::getLog();
 		$sysuser = e107::getSystemUser($userid, false);
@@ -1078,7 +1101,7 @@ class users_admin_ui extends e_admin_ui
 			$user = e107::getUser();
 			
 			// TODO - lan
-			$mes->addSuccess('Successfully logged in as '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>')
+			$mes->addSuccess('Successfully logged in as '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas&amp;e-token='.defset('e_TOKEN').'">[logout]</a>')
 				->addSuccess('Please, <a href="'.SITEURL.'" rel="external">Leave Admin</a> to browse the system as this user. Use &quot;Logout&quot; option in Administration to end front-end session');
 			
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
@@ -1097,10 +1120,21 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Main admin logout as a system user trigger
+	 * Main admin logout as a system user trigger.
+	 *
+	 * Ending the impersonated session is a state change, so a GET has to carry
+	 * the e-token core's own links publish and {@see e_core_session::attest()}
+	 * decides whether it is the right one. The user list posts this action
+	 * instead, and a POST is policed by attest() already.
 	 */
 	public function LogoutasObserver()
 	{
+		if($this->refuseTokenlessGet())
+		{
+			$this->redirect('list', 'main', true);
+			return;
+		}
+
 		$user = e107::getUser();
 		$sysuser = e107::getSystemUser($user->getSessionDataAs(), false);
 
@@ -1280,6 +1314,12 @@ class users_admin_ui extends e_admin_ui
 	{
 		$batch_trigger = (string) $batch_trigger;
 
+		// The dispatcher returns on a posted cancel, so nothing runs to refuse.
+		if($this->getPosted('etrigger_cancel'))
+		{
+			return false;
+		}
+
 		// A plugin batch addon, dispatched by e_admin_ui rather than written to
 		// a column of this table.
 		if(strpos($batch_trigger, 'batch_') === 0)
@@ -1290,24 +1330,235 @@ class users_admin_ui extends e_admin_ui
 		$trigger = explode('__', $batch_trigger);
 		$type = $trigger[0];
 
-		// Neither of these names a column. handleListDeleteBatch() has its own
-		// guard, and the export batch reads.
-		if($type === 'delete' || $type === 'export')
+		// The export batch reads.
+		if($type === 'export')
 		{
 			return false;
 		}
 
-		$typed = array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach', 'addAll',
-			'clearAll', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall');
-
-		$field = in_array($type, $typed, true) ? varset($trigger[1], '') : $type;
-
-		if(!$this->getFieldAttr($field, 'batch', false))
+		if($this->batchSelectsProtectedAdmin())
 		{
 			return true;
 		}
 
+		// handleListDeleteBatch() has its own confirm screen and names no column.
+		if($type === 'delete')
+		{
+			return false;
+		}
+
+		$isTyped = $this->isTypedBatchTrigger($type);
+		$field = $isTyped ? varset($trigger[1], '') : $type;
+
+		if(!$this->isBatchField($field))
+		{
+			return true;
+		}
+
+		if($field === 'user_class')
+		{
+			return $this->refusesClassBatch($type, varset($trigger[$isTyped ? 2 : 1], ''));
+		}
+
 		return ($field === 'user_admin' || $field === 'user_perms') && !$this->canGrantAdmin();
+	}
+
+	/**
+	 * Whether a user_class batch writes or withdraws a class {@see users_admin_ui::checkAllowed()} bars.
+	 *
+	 * @param string $type leading segment of the posted batch trigger
+	 * @param string $named the segment of the trigger that names a class, if it has one
+	 * @return bool true when the batch must not run
+	 */
+	private function refusesClassBatch($type, $named)
+	{
+		if($type === 'ucdelall')
+		{
+			return false;
+		}
+
+		if($this->refusesClasses($this->classIdsIn($named)))
+		{
+			return true;
+		}
+
+		$attaches = array('attach', 'deattach', 'ucadd', 'ucremove');
+
+		return !in_array($type, $attaches, true) && $this->refusesClasses($this->selectedClassIds());
+	}
+
+	/**
+	 * The classes the selected accounts hold, which a wholesale batch takes away from them.
+	 *
+	 * @return array class id => class id
+	 */
+	private function selectedClassIds()
+	{
+		$classes = array();
+
+		foreach($this->batchSelection() as $id)
+		{
+			$id = (int) $id;
+
+			if($id < 1)
+			{
+				continue;
+			}
+
+			$classes += $this->classIdsIn(e107::getSystemUser($id, false)->get('user_class'));
+		}
+
+		return $classes;
+	}
+
+	/**
+	 * Whether every class the posted list adds or drops answers to {@see users_admin_ui::checkAllowed()}.
+	 *
+	 * @param string|array $posted
+	 * @param string|array $stored
+	 * @return bool true when the change must not be saved
+	 */
+	private function refusesClassChange($posted, $stored)
+	{
+		$posted = $this->classIdsIn($posted);
+		$stored = $this->classIdsIn($stored);
+
+		return $this->refusesClasses(array_diff($posted, $stored) + array_diff($stored, $posted));
+	}
+
+	/**
+	 * Whether any of these classes is one the caller may not assign or withdraw.
+	 *
+	 * @param array $classes class ids
+	 * @return bool
+	 */
+	private function refusesClasses($classes)
+	{
+		foreach($classes as $class)
+		{
+			if(!$this->checkAllowed($class))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * The class ids in a stored or posted class list, keyed by id so one class counts once.
+	 *
+	 * @param string|array $value comma-separated list, or an array of ids
+	 * @return array class id => class id
+	 */
+	private function classIdsIn($value)
+	{
+		$ids = array();
+
+		foreach(is_array($value) ? $value : explode(',', (string) $value) as $id)
+		{
+			$id = trim((string) $id);
+
+			if($id !== '')
+			{
+				$ids[(int) $id] = (int) $id;
+			}
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * The administrator rule against the rows a posted batch acts on, which writes through
+	 * {@see e_admin_tree_model::batchUpdate()} and so never reaches
+	 * {@see users_admin_ui::beforeUpdate()}.
+	 *
+	 * @return bool
+	 */
+	private function batchSelectsProtectedAdmin()
+	{
+		return $this->holdsProtectedAdmin($this->batchSelection());
+	}
+
+	/**
+	 * Whether any of these rows is an administrator this caller may not rewrite, which is the
+	 * rule {@see users_admin_ui::beforeUpdate()} applies on the edit route.
+	 *
+	 * @param array $ids rows the request acts on
+	 * @return bool
+	 */
+	private function holdsProtectedAdmin(array $ids)
+	{
+		if($this->canGrantAdmin())
+		{
+			return false;
+		}
+
+		$self = (int) e107::getUser()->getId();
+
+		foreach(array_unique($ids) as $id)
+		{
+			$id = (int) $id;
+
+			if($id < 1 || $id === $self)
+			{
+				continue;
+			}
+
+			$target = e107::getSystemUser($id, false);
+
+			if($target->getId() && $target->get('user_admin'))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * The administrator rule on a single-row trigger, with the refusal recorded when it bites.
+	 *
+	 * @param string $trigger posted trigger name, as the admin log records it
+	 * @param int $userid row the trigger acts on
+	 * @return bool true when the trigger must not write
+	 */
+	private function refusesRowTrigger($trigger, $userid)
+	{
+		if(!$this->holdsProtectedAdmin(array($userid)))
+		{
+			return false;
+		}
+
+		$this->refuseAdminAction('Refused the '.$trigger.' of administrator '.(int) $userid);
+
+		return true;
+	}
+
+	/**
+	 * Every row a posted batch acts on: the ticked selection, and the ids a confirmed delete
+	 * carries in delete_confirm_value instead of it.
+	 *
+	 * @return array
+	 */
+	private function batchSelection()
+	{
+		$selected = (array) $this->getPosted($this->getFieldAttr('checkboxes', 'toggle', 'multiselect'), array());
+
+		return array_merge($selected, $this->confirmedSelection());
+	}
+
+	/**
+	 * The ids a confirmed delete carries in delete_confirm_value, which is where the confirm
+	 * screen's second round trip puts them instead of the checkbox column.
+	 *
+	 * @return array
+	 */
+	private function confirmedSelection()
+	{
+		$confirmed = $this->getPosted('delete_confirm_value', '');
+
+		return is_scalar($confirmed) ? explode(',', (string) $confirmed) : array();
 	}
 
 	/**
@@ -1318,7 +1569,7 @@ class users_admin_ui extends e_admin_ui
 	{
 		if($this->refusesBatch($batch_trigger))
 		{
-			$this->refuseBatch($batch_trigger);
+			$this->refuseSubmission($batch_trigger);
 			return;
 		}
 
@@ -1336,7 +1587,7 @@ class users_admin_ui extends e_admin_ui
 	{
 		if($this->refusesBatch($batch_trigger))
 		{
-			$this->refuseBatch($batch_trigger);
+			$this->refuseSubmission($batch_trigger);
 			return;
 		}
 
@@ -1344,16 +1595,51 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Drop the whole submission, which is what a batch that ran would have done
-	 * through setTriggersEnabled(false).
+	 * The single-row delete route, which carries no rule of its own and reaches
+	 * {@see e_front_tree_model::delete()} without {@see e_admin_ui::beforeDelete()} whenever the
+	 * row is not on the loaded list page, so the rule cannot live in that callback.
 	 *
-	 * @param string $batch_trigger
+	 * @param array $posted rows the delete acts on, keyed by id
 	 * @return void
 	 */
-	private function refuseBatch($batch_trigger)
+	public function ListDeleteTrigger($posted)
 	{
-		$this->refuseAdminAction('Refused the batch '.e107::getParser()->toDB($batch_trigger));
+		if(!$this->getPosted('etrigger_cancel')
+			&& $this->holdsProtectedAdmin(array_merge(array_keys((array) $posted), $this->confirmedSelection())))
+		{
+			$this->refuseSubmission('delete');
+			return;
+		}
+
+		parent::ListDeleteTrigger($posted);
+	}
+
+	/**
+	 * Refuse a trigger and drop the whole submission, so no later trigger in the same request
+	 * reads the selection this one turned down.
+	 *
+	 * @param string $trigger posted trigger name, as the admin log records it
+	 * @return void
+	 */
+	private function refuseSubmission($trigger)
+	{
+		$this->refuseAdminAction('Refused the trigger '.e107::getParser()->toDB($trigger));
 		$this->setPosted(array());
+	}
+
+	/**
+	 * The export batch reads rather than writes, so the administrator rule stands aside for it;
+	 * what it writes out is narrowed instead, because e107Xml::e107Export() otherwise streams
+	 * every column of the row, the password hash and the session key included.
+	 *
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListExportBatch($selected)
+	{
+		$this->getTreeModel()->setParam('export_exclude', array('user_password', 'user_sess'));
+
+		parent::handleListExportBatch($selected);
 	}
 
 	/**
@@ -1580,13 +1866,13 @@ class users_admin_ui extends e_admin_ui
 					}
 				}
 				if ($messaccess == '') $messaccess = UCSLAN_12."\n";
-				
+
 				$message = USRLAN_256." ".$sysuser->getName().",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL." )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN;
 				//    $admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User class change",str_replace("\n","<br />",$message),FALSE,LOG_TO_ROLLING);
-				
+
 				$options['mail_subject'] = UCSLAN_2;
 				$options['mail_body'] = nl2br($message);
-				
+
 				$sysuser->email('email', $options);
 				//sendemail($send_to,$subject,$message);
 			}
@@ -1677,6 +1963,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListResendTrigger($userid)
 	{
+		if($this->refusesRowTrigger('resend', $userid))
+		{
+			return;
+		}
+
 		$this->resendActivation($userid);
 	}
 	
@@ -1775,10 +2066,42 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
+	 * An action that acts on a GET must carry an e-token; whether the value is
+	 * the right one is {@see e_core_session::check()}'s half.
+	 *
+	 * A POST is left to that check alone rather than guarded again here. The
+	 * site's {@see e_session::tokenCheckMode()} decides what a tokenless POST
+	 * costs, and in a mode that reads no token
+	 * {@see e_token_injector::process()} publishes none either, so the request
+	 * this refused would be the administrator's own submission. The same
+	 * reasoning already governs {@see e_admin_ui::checkTriggerToken()}.
+	 *
+	 * @return bool true when the request brought no proof and must not act
+	 */
+	protected function refuseTokenlessGet()
+	{
+		$isPost = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+
+		if($isPost || !defined('e_TOKEN') || !empty($_GET['e-token']))
+		{
+			return false;
+		}
+
+		e107::getMessage()->addError(defset('USRLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+
+		return true;
+	}
+
+	/**
 	 * Test user email observer
 	 */
 	public function TestObserver()
 	{
+		if($this->refuseTokenlessGet())
+		{
+			$this->redirect('list', 'main', true);
+		}
+
 		$sysuser = e107::getSystemUser($this->getId(), false);
 		$mes = e107::getMessage();
 		$email = $sysuser->getValue('email');
@@ -1872,6 +2195,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListReqverifyTrigger($userid)
 	{
+		if($this->refusesRowTrigger('reqverify', $userid))
+		{
+			return;
+		}
+
 		$sysuser = e107::getSystemUser($userid, false);
 		
 		if(!$sysuser->getId())
@@ -1935,6 +2263,12 @@ class users_admin_ui extends e_admin_ui
 		}
 		
 		$_POST['password2'] = $_POST['password1'] = $_POST['password'];
+
+		if($this->refusesClassChange(varset($_POST['class'], array()), ''))
+		{
+			$this->refuseAdminAction('Refused a user class grant on the quick-add route');
+			$error = true;
+		}
 
 		// #1728 - Default value, because user will always be part of 'Members'
 		$_POST['class'][] =  e_UC_MEMBER;
@@ -2128,9 +2462,9 @@ class users_admin_ui extends e_admin_ui
 		$e_userclass = e107::getUserClass();
 		$pref = e107::getPref();
 		$user_data = $this->getParam('user_data');
-		
+
 	// 	$this->addTitle(LAN_USER_QUICKADD);
-		
+
 		$text = "<div>".$frm->open("core-user-adduser-form",null,null,'autocomplete=0')."
 		<div style='display:none'><input type='password' id='_no_autocomplete_' /></div>
 		<fieldset id='core-user-adduser'>
@@ -2166,7 +2500,7 @@ class users_admin_ui extends e_admin_ui
 			<td>".$frm->password('password', '', 128, array('size' => 'xlarge', 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1, 'autocomplete' => 'new-password'))."
  			</td>
 		</tr>";
-		
+
 
 
 		$text .= "
@@ -2176,7 +2510,7 @@ class users_admin_ui extends e_admin_ui
 				".$frm->text('email', varset($user_data['user_email']), 100, array('size'=>'xlarge'))."
 				</td>
 			</tr>
-	
+
 			<tr>
 				<td>".USRLAN_239."</td>
 				<td>
@@ -2233,8 +2567,8 @@ class users_admin_ui extends e_admin_ui
 		</form>
 		</div>
 		";
-		
-		
+
+
 		return $text;
 		//$ns->tablerender(USRLAN_59,$mes->render().$text);
 	}	
@@ -2502,8 +2836,8 @@ class users_admin_ui extends e_admin_ui
 			{
 				list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $cbRow;
 				$datestamp = $obj->convert_date($cb_datestamp, "short");
-				$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
-				$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
+				$post_author_id = (string) substr($cb_nick, 0, strpos($cb_nick, "."));
+				$post_author_name = (string) substr($cb_nick, (strpos($cb_nick, ".")+1));
 				$text .= $bullet."
 					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>
 					<div class=\"mediumtext\">
@@ -2524,8 +2858,8 @@ class users_admin_ui extends e_admin_ui
 			{
 				list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $commentRow;
 				$datestamp = $obj->convert_date($comment_datestamp, "short");
-				$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
-				$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
+				$post_author_id = (string) substr($comment_author, 0, strpos($comment_author, "."));
+				$post_author_name = (string) substr($comment_author, (strpos($comment_author, ".")+1));
 				$text .= $bullet."
 					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>
 					<div class=\"mediumtext\">
@@ -2877,7 +3211,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			"<span class='label label-info label-status'>".LAN_BOUNCED."</span>",
 			"<span class='label label-important label-danger label-status'>".USRLAN_56."</span>", // Deleted
 		);
-		
+
 		if($mode == 'filter' || $mode == 'batch')
 		{
 			return 	$bo;
@@ -2895,7 +3229,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 			return $this->select('user_ban',$bo,$curval);
 		}	
-			
+
 		return vartrue($bo[$curval],' '); // ($curval == 1) ? ADMIN_TRUE_ICON : '';	
 	}	
 	
@@ -2903,13 +3237,13 @@ class users_admin_form_ui extends e_admin_form_ui
 	function options($val, $mode) // old drop-down options. 
 	{
 		$controller = $this->getController();
-		
+
 		if($controller->getMode() != 'main' || $controller->getAction() != 'list') return;
 		$row = $controller->getListModel()->getData();
-		
 
-	
-		
+
+
+
 	//	extract($row);
 
 		$user_id = intval($row['user_id']);
@@ -3048,7 +3382,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			$opts['deldiv'] = 'divider';
 			$opts['deluser'] = LAN_DELETE;
 		}
-		
+
 	//	$foot = "</select>";
 	//	$foot = "</div>";
 
@@ -3088,7 +3422,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		{
 			return '';
 		}
-		
+
 		// return ($text) ? $head.$text.$foot . $btn : "";
 	}
 

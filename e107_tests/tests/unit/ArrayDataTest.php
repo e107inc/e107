@@ -1,7 +1,7 @@
 <?php
 
 
-	class ArrayDataTest extends \Codeception\Test\Unit
+	class ArrayDataTest extends \Test\Unit
 	{
 
 		/** @var ArrayData */

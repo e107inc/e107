@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_pluginTest extends \Codeception\Test\Unit
+	class e_pluginTest extends \Test\Unit
 	{
 
 		/** @var e_plugin */
@@ -364,7 +364,7 @@
 		public function testIsValidAddonMarkup()
         {
             $content = '<?php    
-            
+
             ';
             $result = $this->ep->isValidAddonMarkup($content);
             $this->assertTrue($result);

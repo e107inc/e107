@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_admin_logTest extends \Codeception\Test\Unit
+	class e_admin_logTest extends \Test\Unit
 	{
 
 		/** @var e_admin_log */

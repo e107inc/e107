@@ -104,7 +104,7 @@ abstract class PKCS1 extends PKCS
         while (strlen($symkey) < $length) {
             $symkey .= md5($symkey . $password . $iv, true);
         }
-        return substr($symkey, 0, $length);
+        return (string) substr($symkey, 0, $length);
     }
 
     /**

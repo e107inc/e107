@@ -90,7 +90,7 @@ class download_request
 			$names = array(e_QUERY);
 			if(strpos(e_QUERY, 'pub_') === 0)
 			{
-				$names[] = substr(e_QUERY, 4);
+				$names[] = (string) substr(e_QUERY, 4);
 			}
 
 			foreach($names as $name)

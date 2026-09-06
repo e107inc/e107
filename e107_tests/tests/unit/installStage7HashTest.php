@@ -28,13 +28,26 @@
  * helper touches (e107_dirs and site_path).
  */
 
+use e107\Reflection\ReflectionMethod;
+use e107\Reflection\ReflectionProperty;
 
-class installStage7HashTest extends \Codeception\Test\Unit
+class installStage7HashTest extends \Test\Unit
 {
+
 	/** @var string */
 	private static $renamedClass = 'e_install_for_5631_test';
 
-	public static function setUpBeforeClass(): void
+	/**
+	 * Use Codeception's @beforeClass annotation rather than overriding
+	 * PHPUnit's setUpBeforeClass(): the latter requires a `: void` return
+	 * type on PHPUnit 8+, which the downgrade pipeline strips for PHP 5.6
+	 * targets. Annotation-driven lifecycle methods have no signature
+	 * contract, so they survive the strip and still execute on every
+	 * PHP version in the matrix.
+	 *
+	 * @beforeClass
+	 */
+	public static function loadRenamedInstallClass()
 	{
 		if (class_exists(self::$renamedClass, false))
 		{
@@ -223,14 +236,9 @@ class installStage7HashTest extends \Codeception\Test\Unit
 		$fakeE107->e107_dirs = $dirs;
 		$fakeE107->site_path = $sitePath;
 
-		// Private members are reachable by ReflectionProperty/Method
-		// directly since PHP 8.1; setAccessible() is a no-op and emits
-		// a deprecation notice on 8.5+. Codeception (5.x) already
-		// requires PHP 8.2+, so it is safe to elide the calls here.
-		$e107Property = $reflectionClass->getProperty('e107');
+		$e107Property = new ReflectionProperty(self::$renamedClass, 'e107');
+		$method = new ReflectionMethod(self::$renamedClass, 'resolveSitePathPlaceholders');
 		$e107Property->setValue($instance, $fakeE107);
-
-		$method = $reflectionClass->getMethod('resolveSitePathPlaceholders');
 		$method->invoke($instance);
 
 		return $fakeE107->e107_dirs;

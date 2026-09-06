@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 final class Query
@@ -16,8 +14,9 @@ final class Query
      *
      * @param string   $str         Query string to parse
      * @param int|bool $urlEncoding How the query string is encoded
+     * @return mixed[]
      */
-    public static function parse(string $str, $urlEncoding = true): array
+    public static function parse($str, $urlEncoding = true)
     {
         $result = [];
 
@@ -70,15 +69,16 @@ final class Query
      *                                    encode using RFC1738.
      * @param bool      $treatBoolsAsInts Set to true to encode as 0/1, and
      *                                    false as false/true.
+     * @return string
      */
-    public static function build(array $params, $encoding = PHP_QUERY_RFC3986, bool $treatBoolsAsInts = true): string
+    public static function build(array $params, $encoding = PHP_QUERY_RFC3986, $treatBoolsAsInts = true)
     {
         if (!$params) {
             return '';
         }
 
         if ($encoding === false) {
-            $encoder = function (string $str): string {
+            $encoder = function ($str) {
                 return $str;
             };
         } elseif ($encoding === PHP_QUERY_RFC3986) {

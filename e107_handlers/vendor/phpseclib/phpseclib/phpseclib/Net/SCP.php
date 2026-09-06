@@ -159,7 +159,7 @@ class SCP extends SSH2
 
         $sent = 0;
         while ($sent < $size) {
-            $temp = $mode & self::SOURCE_STRING ? substr($data, $sent, $packet_size) : fread($fp, $packet_size);
+            $temp = $mode & self::SOURCE_STRING ? (string) substr($data, $sent, $packet_size) : fread($fp, $packet_size);
             $this->send_channel_packet(self::CHANNEL_EXEC, $temp);
             $sent += strlen($temp);
 
@@ -247,7 +247,7 @@ class SCP extends SSH2
                 $diff = $size - $info['size'];
                 $offset = $length - $diff;
                 if ($data[$offset] === chr(0)) {
-                    $data = substr($data, 0, -$diff);
+                    $data = (string) substr($data, 0, -$diff);
                 } else {
                     $type = $data[$offset] === chr(1) ? 'warning' : 'error';
                     $this->scp_errors[] = "$type: " . substr($data, 1);

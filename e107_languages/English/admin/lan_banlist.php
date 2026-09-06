@@ -12,7 +12,7 @@
 // define("BANLAN_4", "Remove ban");
 
 return [
-    'BANLAN_5' => "Enter IP, email address, or host",
+    'BANLAN_5' => "Enter an IP address, an address range, an email address or a host name pattern",
     'BANLAN_7' => "Reason",
     'BANLAN_9' => "Ban users from site by email, IP or host address",
     'BANLAN_10' => "IP / Email / Reason",
@@ -112,4 +112,8 @@ return [
     'BANLAN_125' => "Use my IP",
     'BANLAN_126' => "IP / Email",
     'BANLAN_127' => "Delete all [x] failed logins from database",
+    'BANLAN_ENTRY_FORMATS' => "An address (10.77.66.65, 2001:db8::1), a range (10.77.66.0/24, 10.77.66.1-10.77.66.100, 10.77.66.*, 2001:db8::/32), an email address (user@example.com, *@example.com) or a host name pattern (*.example.com)",
+    'BANLAN_ENTRY_INVALID' => "This entry is not an address, a range, an email address or a host name pattern, so nothing would enforce it. It was not saved. A CIDR block starts at its network address: 10.77.66.0/24, not 10.77.66.65/24.",
+    'BANLAN_ENTRY_COVERS_YOU' => "This range includes your own address, [x], so saving it would lock you out of this site. It was not saved. Add your address to the whitelist first if you mean it.",
+    'BANLAN_ENTRY_NOT_ENFORCED' => "Not enforced",
 ];

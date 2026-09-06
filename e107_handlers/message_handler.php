@@ -921,7 +921,7 @@ class eMessage
 				{
 					$SESSION[$_type][$to_stack] = array();
 				}
-				$SESSION[$_type][$to_stack] = array_merge($SESSION[$_type][$to_stack], $this->_sysmsg[$_type][$from_stack]);
+				$SESSION[$_type][$to_stack] = array_merge($SESSION[$_type][$to_stack], $SESSION[$_type][$from_stack]);
 				unset($SESSION[$_type][$from_stack]);
 			}
 		}

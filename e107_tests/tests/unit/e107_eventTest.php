@@ -1,7 +1,7 @@
 <?php
 
 
-class e107_eventTest extends \Codeception\Test\Unit
+class e107_eventTest extends \Test\Unit
 {
 
 	/** @var e107_event */

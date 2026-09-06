@@ -33,9 +33,9 @@ class core_user_rewrite_url extends eUrlConfig
 			// rule set array
 			'rules' => array(
 				// simple matches first - PERFORMANCE
-				'' 					=> array('myprofile/view', 'defaultVars' => array('id' => 0)),
-				'settings' 			=> array('myprofile/edit', 'defaultVars' => array('id' => 0), 'legacy' => '{e_BASE}usersettings.php'),
-				'list' 				=> array('profile/list', 'allowVars' => array('page'), 'legacyQuery' => '{page}'),
+				'' 					=> array('myprofile/view'),
+				'settings' 			=> array('myprofile/edit', 'legacy' => '{e_BASE}usersettings.php'),
+				'list' 				=> array('profile/list', 'allowVars' => array('page', 'records', 'order'), 'legacyQuery' => '{page}.{records}.{order}'),
 				'login' 			=> array('login/index', 'legacy' => '{e_BASE}login.php'),
 				'register' 			=> array('register/index', 'legacy' => '{e_BASE}signup.php'),
 				

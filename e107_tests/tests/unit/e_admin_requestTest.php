@@ -1,6 +1,6 @@
 <?php
 
-class e_admin_requestTest extends \Codeception\Test\Unit
+class e_admin_requestTest extends \Test\Unit
 {
     /**
      * @var \e_admin_request

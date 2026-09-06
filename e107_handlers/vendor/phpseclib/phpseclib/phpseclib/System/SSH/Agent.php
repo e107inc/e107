@@ -136,7 +136,7 @@ class Agent
                 throw new \RuntimeException("Unable to connect to ssh-agent (Error $errno: $errstr)");
             }
         } else {
-            if (substr($address, 0, 9) != '\\\\.\\pipe\\' || strpos(substr($address, 9), '\\') !== false) {
+            if (substr($address, 0, 9) != '\\\\.\\pipe\\' || strpos((string) substr($address, 9), '\\') !== false) {
                 throw new \RuntimeException('Address is not formatted as a named pipe should be');
             }
 
@@ -191,8 +191,7 @@ class Agent
             }
             // resources are passed by reference by default
             if (isset($key)) {
-                $identity = (new Identity($this->fsock))
-                    ->withPublicKey($key)
+                $identity = (new Identity($this->fsock))->withPublicKey($key)
                     ->withPublicKeyBlob($key_blob)
                     ->withComment($comment);
                 $identities[] = $identity;

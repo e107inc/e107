@@ -8,7 +8,7 @@
  *
  */
 
-class private_messageAttachmentPathsTest extends \Codeception\Test\Unit
+class private_messageAttachmentPathsTest extends \Test\Unit
 {
 	/** @var private_message_attachment_double */
 	private $pm;
@@ -99,6 +99,28 @@ class private_messageAttachmentPathsTest extends \Codeception\Test\Unit
 	{
 		self::assertTrue($this->pm->protectStoredAttachments());
 		self::assertFalse(is_dir($this->root), 'Nothing to protect must not mean a directory gets made');
+	}
+
+	/**
+	 * The answer the install and upgrade hooks act on. A directory the rules
+	 * cannot be written into is the one an administrator has to hear about, and
+	 * PM_ADM_11 is written off this return.
+	 */
+	public function testProtectStoredAttachmentsRefusesADirectoryItCannotWriteInto()
+	{
+		if(function_exists('posix_geteuid') && posix_geteuid() === 0)
+		{
+			$this->markTestSkipped('root can write anywhere, so there is no unwritable directory to try');
+		}
+
+		mkdir($this->root, 0755, true);
+		mkdir($this->root . 'user_000012', 0555);
+
+		self::assertFalse($this->pm->protectStoredAttachments());
+		self::assertFileExists($this->root . '.htaccess', 'The directories it could cover are still covered');
+		self::assertFileDoesNotExist($this->root . 'user_000012/.htaccess');
+
+		chmod($this->root . 'user_000012', 0755);
 	}
 
 	/**

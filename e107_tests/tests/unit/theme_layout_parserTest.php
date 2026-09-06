@@ -8,7 +8,7 @@
 	 *
 	 */
 
-	class theme_layout_parserTest extends \Codeception\Test\Unit
+	class theme_layout_parserTest extends \Test\Unit
 	{
 		/** @var e_theme_layout_parser */
 		protected $parser;

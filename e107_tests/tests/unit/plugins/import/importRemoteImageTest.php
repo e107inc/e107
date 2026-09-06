@@ -15,8 +15,9 @@
  * answer is for payloads it would be awkward to serve, and it is what the
  * release/v2.3.x backport can be checked against on PHP 5.6.
  */
-class importRemoteImageTest extends \Codeception\Test\Unit
+class importRemoteImageTest extends \Test\Unit
 {
+
 	/** 2x2 images, so getimagesize() has something real to report. */
 	const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAC0lEQVQImWNgQAYAAA4AAbGa6gYAAAAASUVORK5CYII=';
 

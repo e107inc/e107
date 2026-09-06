@@ -33,6 +33,10 @@ $FAQS_TEMPLATE['all']['end'] = "
 
 $FAQS_TEMPLATE['caption'] = "{FAQ_CAPTION} <small>{FAQ_COUNT}</small>";
 
+// tablerender() captions of the search menu and the add/edit form. Omit for the plugin name, set '' for no heading; only the add/edit form has an FAQ for item shortcodes.
+//$FAQS_TEMPLATE['search']['caption'] = LAN_PLUGIN_FAQS_SEARCH;
+//$FAQS_TEMPLATE['add']['caption'] = LAN_PLUGIN_FAQS_FRONT_NAME;
+
 
 $FAQS_TEMPLATE['schema'] = '
 {

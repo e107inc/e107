@@ -2,9 +2,7 @@
 
 if (!defined('e107_INIT')) { exit; }    
 
-$sitetheme = e107::getPref('sitetheme');
-
-e107::themeLan('admin', $sitetheme, true);
+e107::themeLan('admin', basename(__DIR__), true);
 
 
 class theme_config implements e_theme_config

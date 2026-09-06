@@ -14,8 +14,9 @@
  *   - e_model::load() {ID} conduit (group 2)
  *   - e_front_tree_model::batchUpdate() value side (group 3)
  */
-class sqliDeferralBurndownTest extends \Codeception\Test\Unit
+class sqliDeferralBurndownTest extends \Test\Unit
 {
+
 	/** @var string prefixed scratch table for the batchUpdate test */
 	private $batchTable;
 
@@ -33,36 +34,16 @@ class sqliDeferralBurndownTest extends \Codeception\Test\Unit
 
 	/**
 	 * Build a minimal e_admin_ui exposing the protected search-field filter with
-	 * stubbed inputs. An anonymous class defined at runtime (after admin_ui.php
-	 * is required) avoids resolving e_admin_ui at test-file parse time, when the
-	 * e107 autoloader is not yet wired for handler classes.
+	 * stubbed inputs. The probe class lives in its own include, required at
+	 * runtime after admin_ui.php, so e_admin_ui is never resolved at test-file
+	 * parse time, when the e107 autoloader is not yet wired for handler classes.
 	 */
 	private function makeSearchfieldProbe(array $fields)
 	{
 		require_once(e_HANDLER . 'admin_ui.php');
+		require_once(__DIR__ . '/fixtures/AdminUiSearchfieldProbeFixture.php');
 
-		$probe = new class extends e_admin_ui {
-			public $probeFields = array();
-
-			public function __construct()
-			{
-			}
-
-			public function getFields()
-			{
-				return $this->probeFields;
-			}
-
-			public function getQuery($key = null, $default = null)
-			{
-				return 'needle';
-			}
-
-			public function probe($selected)
-			{
-				return $this->handleListSearchfieldFilter($selected);
-			}
-		};
+		$probe = new AdminUiSearchfieldProbeFixture();
 		$probe->probeFields = $fields;
 		return $probe;
 	}

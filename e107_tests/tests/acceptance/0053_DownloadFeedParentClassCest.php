@@ -50,7 +50,6 @@ class DownloadFeedParentClassCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->havePluginInstalled('download');
 		$I->havePluginInstalled('rss_menu');
 

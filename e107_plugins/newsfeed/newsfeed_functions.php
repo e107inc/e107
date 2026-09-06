@@ -99,17 +99,17 @@ class newsfeedClass
 			foreach ($rows as $row)
 			{
 				$nfID = $row['newsfeed_id'];
-				
+
 				if (!empty($row['newsfeed_data']))
 				{
 					$this->newsList[$nfID]['newsfeed_data'] = $row['newsfeed_data'];		// Pull out the actual news - might as well since we're here
 
-					
+
 					unset($row['newsfeed_data']);			// Don't keep this in memory twice!
 				}
 
 				$this->newsList[$nfID]['newsfeed_timestamp'] = $row['newsfeed_timestamp'];
-				
+
 				$this->feedList[$nfID] = $row;						// Put the rest into the feed data
 			}
 			$this->validFeedList = TRUE;
@@ -317,7 +317,7 @@ class newsfeedClass
 				if (($rss = $this->getFeed($nfID)))	// Call ensures that feed is updated if necessary
 				{
 					list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $feed['newsfeed_image']);
-					
+
 					$numtoshow = intval($where == 'main' ? $newsfeed_showmain : $newsfeed_showmenu);
 					$numtoshow = ($numtoshow > 0 ? $numtoshow : 999);
 
@@ -330,7 +330,7 @@ class newsfeedClass
 						? $this->renderChannelImage(varset($rss['channel_image'], array()))
 						: (!empty($newsfeed_image) ? "<img src='".$tp->toUrlAttribute($newsfeed_image)."' alt='' />" : '');
 					$vars['FEEDLANGUAGE'] = htmlspecialchars(varset($rss['channel']['language'], ''), ENT_QUOTES, 'UTF-8');
-					
+
 					if($rss['channel']['lastbuilddate'])
 					{
 						$pubbed = $rss['channel']['lastbuilddate'];
@@ -363,9 +363,9 @@ class newsfeedClass
 					{
 						$vars['LINKTOMAIN'] = "";
 					}
-	
+
 					$data = "";
-	
+
 					$numtoshow = min($numtoshow, count($rss['items']));
 					$i = 0;
 					while($i < $numtoshow)
@@ -373,7 +373,7 @@ class newsfeedClass
 						$item = $rss['items'][$i];
 
 
-						
+
 						$itemTitle                  = htmlspecialchars(varset($item['title'], ''), ENT_QUOTES, 'UTF-8');
 						$itemLink                   = $tp->toUrlAttribute(varset($item['link'], ''));
 

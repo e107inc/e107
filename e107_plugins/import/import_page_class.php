@@ -109,7 +109,7 @@ class page_import
 		}
 
 		$ok = $this->pageDB->createQueryBuilder()->insert('page')
-			->valuesTyped($row, isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array())
+			->valuesTyped($row)
 			->execute();
 		$result = ($ok !== false) ? $this->pageDB->lastInsertId() : false;
 
@@ -199,9 +199,8 @@ class pagechapter_import
 
 		// All _NOTNULL columns (chapter_id, chapter_meta_description) are present in
 		// $insert, so the legacy array-form _NOTNULL fill is a no-op here.
-		$chDefs = $this->pageDB->getFieldDefs('page_chapters');
 		$this->pageDB->createQueryBuilder()->insert('page_chapters')
-			->valuesTyped($insert, isset($chDefs['_FIELD_TYPES']) ? $chDefs['_FIELD_TYPES'] : array())
+			->valuesTyped($insert)
 			->execute(); // insert a default book.
 	}
 
@@ -250,7 +249,7 @@ class pagechapter_import
 		}
 
 		$ok = $this->pageDB->createQueryBuilder()->insert('page_chapters')
-			->valuesTyped($row, isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array())
+			->valuesTyped($row)
 			->execute();
 		$result = ($ok !== false) ? $this->pageDB->lastInsertId() : false;
 

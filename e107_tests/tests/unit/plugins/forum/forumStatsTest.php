@@ -25,7 +25,7 @@
  * because the LEFT JOIN hands back NULL for the user id, and no thread count
  * is ever keyed that way either.
  */
-class forumStatsTest extends \Codeception\Test\Unit
+class forumStatsTest extends \Test\Unit
 {
 	/** @var forumStats */
 	private $stats;

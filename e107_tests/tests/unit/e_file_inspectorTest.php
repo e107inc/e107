@@ -7,8 +7,9 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
-class e_file_inspectorTest extends \Codeception\Test\Unit
+class e_file_inspectorTest extends \Test\Unit
 {
+
     /**
      * @var e_file_inspector
      */

@@ -102,7 +102,7 @@ class OktaOIDC extends OAuth2
         $userProfile->lastName = $data->get('family_name');
         $userProfile->emailVerified = $data->get('email_verified');
 
-        $groupsKey = $this->config->get('groups_key') ?? 'groups';
+        $groupsKey = $this->config->get('groups_key') !== null ? $this->config->get('groups_key') : 'groups';
         if ($data->exists($groupsKey)) {
             $userProfile->data['groups'] = $data->get($groupsKey);
         }

@@ -283,7 +283,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		if(substr($this->var['forum_name'], 0, 1) === '*')
 		{
-			$this->var['forum_name'] = substr($this->var['forum_name'], 1);
+			$this->var['forum_name'] = (string) substr($this->var['forum_name'], 1);
 		}
 
 		$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');
@@ -1213,6 +1213,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 
 		$url = '';
+		$options = array();
 
 		if($this->forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thread_active'])
 		{
@@ -1220,7 +1221,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 
 		$replyUrl = "<a class='btn btn-primary" . ($url ? "" : " disabled") . "' "
-			. ($url ? "" : " data-toggle='tooltip' data-bs-toggle='tooltip' title='" . LAN_FORUM_0046 . "'
+			. ($url ? " data-forum-action='postreply'" : " data-toggle='tooltip' data-bs-toggle='tooltip' title='" . LAN_FORUM_0046 . "'
 	style='cursor: not-allowed; pointer-events: all !important;'") . " href='" . ($url ?: "#") . "'>" . LAN_FORUM_2006 . "</a>" . ($url ? "" : "<span>&nbsp;</span>");
 
 		if($this->forum->checkPerm($this->var['thread_forum_id'], 'post'))
@@ -1392,7 +1393,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$value = (e107::getPlugPref('forum', 'quickreply', 'default') === 'default') ? LAN_FORUM_2007 : LAN_FORUM_2006;
+			$value = LAN_FORUM_2007;
 		}
 
 		return "<input type='submit' data-token='" . defset('e_TOKEN') . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . $value . "' class='btn btn-success button' />";

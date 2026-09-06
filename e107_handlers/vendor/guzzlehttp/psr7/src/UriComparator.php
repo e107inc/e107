@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use Psr\Http\Message\UriInterface;
@@ -16,8 +14,9 @@ final class UriComparator
     /**
      * Determines if a modified URL should be considered cross-origin with
      * respect to an original URL.
+     * @return bool
      */
-    public static function isCrossOrigin(UriInterface $original, UriInterface $modified): bool
+    public static function isCrossOrigin(UriInterface $original, UriInterface $modified)
     {
         if (\strcasecmp($original->getHost(), $modified->getHost()) !== 0) {
             return true;
@@ -34,7 +33,10 @@ final class UriComparator
         return false;
     }
 
-    private static function computePort(UriInterface $uri): int
+    /**
+     * @return int
+     */
+    private static function computePort(UriInterface $uri)
     {
         $port = $uri->getPort();
 

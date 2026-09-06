@@ -14,8 +14,9 @@
 	 * structured, bindable predicate, and that structure binds cleanly through the
 	 * query builder (no value inlined into the SQL string).
 	 */
-	class userDeleteProviderTest extends \Codeception\Test\Unit
+	class userDeleteProviderTest extends \Test\Unit
 	{
+
 		public function testBundledUserProviderUsesStructuredWhere()
 		{
 			require_once(e_PLUGIN.'user/e_user.php');

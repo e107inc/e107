@@ -103,7 +103,14 @@ class e_signup
 
 			if($query === 'test')
 			{
-				$this->sendEmailPreview();
+				if(defined('e_TOKEN') && empty($_GET['e-token']))
+				{
+					echo "<div class='alert alert-danger'>".defset('LAN_SIGNUP_REFUSED_TOKEN_MISSING', 'Test email refused.')."</div>";
+				}
+				else
+				{
+					$this->sendEmailPreview();
+				}
 			}
 		}
 
@@ -185,7 +192,7 @@ class e_signup
 
 		if(trim($_POST['resend_password']) !="" && $new_email) // Need to change the email address - check password to make sure
 		{
-			if ($userMethods->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
+			if ($userMethods->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) !== PASSWORD_INVALID)
 			{
 				if (e107::getDb()->createQueryBuilder()->from('user')->where('user_email', $new_email)->count())
 				{	// Email address already used by someone
@@ -203,6 +210,10 @@ class e_signup
 			}
 			else
 			{
+				require_once(e_HANDLER.'login.php');
+				$usr = new userlogin();
+				$usr->noteFailedPassword($_POST['resend_email']);
+
 				message_handler("ALERT",LAN_INCORRECT_PASSWORD); // Incorrect Password.
 				return false;
 			}
