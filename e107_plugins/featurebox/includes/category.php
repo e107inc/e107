@@ -219,7 +219,7 @@ class plugin_featurebox_category extends e_model
 
 		if($visibleOnly)
 		{
-			$qb->whereIn('fb_category_class', array_map('intval', explode(',', USERCLASS_LIST)));
+			$qb->where(\e107\Userclass\Membership::current()->predicate('fb_category_class'));
 		}
 
 		foreach((array) $qb->fetchAll() as $row)

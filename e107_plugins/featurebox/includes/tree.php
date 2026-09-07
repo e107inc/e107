@@ -42,8 +42,10 @@ class plugin_featurebox_tree extends e_tree_model
 		$limit = $this->getParam('limit') ? ' LIMIT '.intval($this->getParam('from'), 0).','.intval($this->getParam('limit')) : '';
 		$ids = $this->getParam('ids') ? preg_replace('/[^0-9,]/', '', $this->getParam('ids')) : '';
 		$where = $ids ? ' AND fb_id IN('.$ids.')' : '';
-		$qry = 'SELECT SQL_CALC_FOUND_ROWS * FROM #featurebox WHERE fb_category='.intval($id).' AND fb_class IN('.USERCLASS_LIST.')'.$where.$order.$limit;
+		$rule = \e107\Userclass\Membership::current()->predicate('fb_class');
+		$qry = 'SELECT SQL_CALC_FOUND_ROWS * FROM #featurebox WHERE fb_category='.intval($id).' AND '.$rule->getSql().$where.$order.$limit;
 		$this->setParam('db_query', $qry);
+		$this->setParam('db_params', $rule->getParameters());
 		
 		parent::loadBatch($force);
 		
