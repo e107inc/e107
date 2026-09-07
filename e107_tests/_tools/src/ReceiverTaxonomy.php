@@ -83,18 +83,19 @@ final class ReceiverTaxonomy
             return self::VERDICT_EXCLUDE;
         }
 
-        if ($receiver instanceof Expr\Variable && is_string($receiver->name)) {
-            if (isset(self::INCLUDE_VARS[$receiver->name])) {
+        $name = Ast::variableName($receiver);
+        if ($name !== null) {
+            if (isset(self::INCLUDE_VARS[$name])) {
                 return self::VERDICT_INCLUDE;
             }
-            if (isset(self::EXCLUDE_VARS[$receiver->name])) {
+            if (isset(self::EXCLUDE_VARS[$name])) {
                 return self::VERDICT_EXCLUDE;
             }
             return self::VERDICT_UNKNOWN;
         }
 
-        if ($receiver instanceof Expr\PropertyFetch && $receiver->var instanceof Expr\Variable
-            && $receiver->var->name === 'this' && $receiver->name instanceof Node\Identifier) {
+        if ($receiver instanceof Expr\PropertyFetch && Ast::variableName($receiver->var) === 'this'
+            && $receiver->name instanceof Node\Identifier) {
             $prop = $receiver->name->name;
             if (isset(self::INCLUDE_PROPS[$prop])) {
                 return self::VERDICT_INCLUDE;
@@ -110,7 +111,7 @@ final class ReceiverTaxonomy
      */
     public function isBareThisCall(Expr\MethodCall $call): bool
     {
-        return $call->var instanceof Expr\Variable && $call->var->name === 'this';
+        return Ast::variableName($call->var) === 'this';
     }
 
     /**
@@ -121,15 +122,17 @@ final class ReceiverTaxonomy
         if ($this->isGetDbCall($receiver)) {
             return 'e107::getDb()';
         }
-        if ($receiver instanceof Expr\Variable && is_string($receiver->name)) {
-            return '$' . $receiver->name;
+        $name = Ast::variableName($receiver);
+        if ($name !== null) {
+            return '$' . $name;
         }
-        if ($receiver instanceof Expr\PropertyFetch && $receiver->var instanceof Expr\Variable
-            && $receiver->var->name === 'this' && $receiver->name instanceof Node\Identifier) {
+        if ($receiver instanceof Expr\PropertyFetch && Ast::variableName($receiver->var) === 'this'
+            && $receiver->name instanceof Node\Identifier) {
             return '$this->' . $receiver->name->name;
         }
-        if ($receiver instanceof Expr\MethodCall && $receiver->name instanceof Node\Identifier) {
-            return '...->' . $receiver->name->name . '()';
+        $method = Ast::methodName($receiver);
+        if ($method !== null) {
+            return '...->' . $method . '()';
         }
         return get_class($receiver);
     }
@@ -154,8 +157,7 @@ final class ReceiverTaxonomy
     {
         $node = $call->var;
         while ($node instanceof Expr\MethodCall) {
-            if ($node->name instanceof Node\Identifier
-                && $node->name->toLowerString() === 'createquerybuilder') {
+            if (Ast::methodCall($node, 'createQueryBuilder') !== null) {
                 return true;
             }
             $node = $node->var;
