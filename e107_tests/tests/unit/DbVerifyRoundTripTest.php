@@ -411,6 +411,38 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 	// --- helpers ----------------------------------------------------------
 
+	// --- userclass columns that hold "all but <class>" as a negative id (#6282) ---
+
+	public function testAClassColumnDeclaredUnsignedInOlderReleasesIsSignedOnRepair()
+	{
+		$this->snapshot('page_chapters');
+		$this->snapshot('generic');
+
+		$this->assertArrayHasKey(
+			'chapter_visibility',
+			$this->driftOf('page_chapters')->getModifiedColumns(),
+			'The v2.3.0 dump declares chapter_visibility unsigned, which the schema no longer does.'
+		);
+
+		$this->repair('page_chapters');
+		$this->repair('generic');
+
+		foreach(array(array('page_chapters', 'chapter_visibility', 'smallint'), array('generic', 'gen_intdata', 'int'), array('generic', 'gen_datestamp', 'bigint')) as $expected)
+		{
+			list($table, $column, $type) = $expected;
+			$live = $this->columnOf($table, $column);
+			$this->assertNotNull($live);
+			$this->assertStringStartsWith($type, strtolower($live['COLUMN_TYPE']));
+			$this->assertStringNotContainsString('unsigned', strtolower($live['COLUMN_TYPE']), $column.' must take the negative of a class id.');
+		}
+
+		$db = e107::getDb();
+		$id = (int) $db->insert('page_chapters', array('chapter_name' => 'dbvroundtrip', 'chapter_sef' => 'dbvroundtrip', 'chapter_parent' => 0, 'chapter_visibility' => -5));
+		$this->assertGreaterThan(0, $id, 'A chapter hidden from one class must save: '.$db->getLastErrorText());
+		$this->assertSame('-5', (string) $db->retrieve('page_chapters', 'chapter_visibility', 'chapter_id = '.$id));
+		$this->assertFalse($this->driftOf('page_chapters')->hasDrift(), 'The repaired page_chapters table must verify clean.');
+	}
+
 	/**
 	 * A db_verify whose declared corpus is narrowed to one core table, so a repair cannot reach past it.
 	 *

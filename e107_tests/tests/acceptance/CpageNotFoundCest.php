@@ -4,13 +4,15 @@
  * Issue #6391: a book or chapter that does not resolve for the visitor is a
  * not-found page carrying a 404, rather than a listing built out of a row that
  * was never fetched, and a chapter whose pages the visitor cannot see says so
- * rather than rendering an empty box.
+ * rather than rendering an empty box. One set to "all but" a class the visitor
+ * is outside of resolves like any other (#6282).
  */
 class CpageNotFoundCest
 {
 	const HIDDEN_NAME = 'Sweep hidden chapter 6391';
 	const HIDDEN_DIZ  = 'HIDDENDIZ6391';
 	const EMPTY_NAME  = 'Sweep empty chapter 6391';
+	const INVERTED_NAME = 'Sweep chapter hidden from admins 6282';
 
 	/** No visitor holds this class, so a chapter visible only to it resolves for nobody who is not logged in. */
 	const ADMIN_CLASS = 254;
@@ -24,6 +26,9 @@ class CpageNotFoundCest
 	/** @var int */
 	private $emptyId;
 
+	/** @var int */
+	private $invertedId;
+
 	public function _before(AcceptanceTester $I)
 	{
 		$this->hiddenId = $this->seedChapter($I, array(
@@ -36,6 +41,12 @@ class CpageNotFoundCest
 		$this->emptyId = $this->seedChapter($I, array(
 			'chapter_name' => self::EMPTY_NAME,
 			'chapter_sef'  => 'sweep-empty-6391',
+		));
+
+		$this->invertedId = $this->seedChapter($I, array(
+			'chapter_name'       => self::INVERTED_NAME,
+			'chapter_sef'        => 'sweep-inverted-6282',
+			'chapter_visibility' => -self::ADMIN_CLASS,
 		));
 	}
 
@@ -98,6 +109,26 @@ class CpageNotFoundCest
 
 		$I->seeResponseCodeIs(200);
 		$I->see('There are no pages');
+	}
+
+	public function aChapterHiddenOnlyFromAnotherClassIsFound(AcceptanceTester $I)
+	{
+		$I->wantTo('confirm a chapter set to all but a class the visitor is not in resolves');
+
+		$I->amOnPage('/page.php?ch='.$this->invertedId);
+
+		$I->seeResponseCodeIs(200);
+		$I->see(self::INVERTED_NAME);
+	}
+
+	public function aBookHiddenOnlyFromAnotherClassIsFound(AcceptanceTester $I)
+	{
+		$I->wantTo('confirm a book set to all but a class the visitor is not in resolves');
+
+		$I->amOnPage('/page.php?bk='.$this->invertedId);
+
+		$I->seeResponseCodeIs(200);
+		$I->see(self::INVERTED_NAME);
 	}
 
 	/**
