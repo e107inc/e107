@@ -550,6 +550,36 @@
 		}
 
 		/**
+		 * A handler may hand its where() over as a fragment carrying bound values,
+		 * which is how a userclass predicate travels. Both sort paths have to bind
+		 * them, because a cast to string keeps the placeholder and loses the value,
+		 * and both have to apply the clause: each row carries the keyword, so only
+		 * the bound value can single one out.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6282
+		 */
+		public function testSearchBindsAHandlerWhereFragmentOnBothSortPaths()
+		{
+			$first = \e107\Database\SqlFragment::raw('probe_id = :probe AND ', array('probe' => 1));
+			$second = \e107\Database\SqlFragment::raw('probe_id = :probe AND ', array('probe' => 2));
+
+			foreach(array(0 => 'PHP', 1 => 'MySQL') as $mysqlSort => $sort)
+			{
+				$firstOnly = $this->searchProbe('wibbleXwobble', $mysqlSort, 1, $first);
+				$secondOnly = $this->searchProbe('wibbleXwobble', $mysqlSort, 1, $second);
+
+				self::assertStringContainsString('Release wibble#wobble', $firstOnly,
+					$sort.'-sort: the bound value reached the statement, so the row it names is found.');
+				self::assertStringNotContainsString('Second entry', $firstOnly,
+					$sort.'-sort: the clause was applied, so the row it leaves out is withheld.');
+				self::assertStringContainsString('Second entry', $secondOnly,
+					$sort.'-sort: a different bound value returns the other row.');
+				self::assertStringNotContainsString('Release wibble#wobble', $secondOnly,
+					$sort.'-sort: and withholds the first, which both rows matching the keyword would not.');
+			}
+		}
+
+		/**
 		 * What a search handler declares around the keywords: its own WHERE
 		 * fragment, which ends in AND, and its own ordering.
 		 *

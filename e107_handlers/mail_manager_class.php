@@ -1902,14 +1902,13 @@ class e107MailManager
 		}
 		if ($count)
 		{
-			// LIMIT offset/row-count cannot be bound here: SQL_CALC_FOUND_ROWS
-			// needs an unbound statement so FOUND_ROWS()/total_results works.
 			// Casting to int closes the only injectable surface in the clause.
 			$query .= " LIMIT " . (int) $start . ", " . (int) $count;
 		}
 		//echo "{$start}, {$count} Mail query: {$query}<br />";
-		// Intentionally raw: SQL_CALC_FOUND_ROWS must run UNBOUND so total_results populates;
-		// the builder cannot express it. Identifiers validated, LIMIT int-cast above.
+		// Intentionally raw (sqli boundary): $filters arrive as SQL text and are
+		// imploded into the WHERE clause. Field list validated, ORDER BY quoted and
+		// LIMIT int-cast above.
 		$result = $this->db->execute($query);
 		if ($result !== false)
 		{
@@ -1994,14 +1993,12 @@ class e107MailManager
 		}
 		if ($count)
 		{
-			// LIMIT offset/row-count cannot be bound here: SQL_CALC_FOUND_ROWS
-			// needs an unbound statement so FOUND_ROWS()/total_results works.
 			// Casting to int closes the only injectable surface in the clause.
 			$query .= " LIMIT " . (int) $start . ", " . (int) $count;
 		}
 //		echo "{$start}, {$count} Target query: {$query}<br />";
-		// Intentionally raw: SQL_CALC_FOUND_ROWS must run UNBOUND so total_results populates;
-		// the builder cannot express it. Identifiers validated, LIMIT int-cast above.
+		// Intentionally raw (sqli boundary): field list validated, handle and LIMIT
+		// int-cast, ORDER BY quoted, each where it is built above.
 		$result = $this->db2->execute($query);
 		if ($result !== false)
 		{

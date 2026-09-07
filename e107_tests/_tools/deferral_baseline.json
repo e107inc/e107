@@ -182,7 +182,7 @@
         },
         {
             "file": "e107_handlers/search_class.php",
-            "method": "gen",
+            "method": "execute",
             "sql_excerpt": "{$sql_query}",
             "count": 1
         },
