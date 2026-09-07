@@ -97,12 +97,11 @@ class download_rss // plugin-folder + '_rss'
 		// Three columns decide whether a download may be named: the category's
 		// class, the item's own class and download_visible, which is the one
 		// admin labels "Visibility". download/e_list.php and download.php's own
-		// listings filter all three, with REGEXP rather than an exact match
-		// because each column may hold a comma-separated list of classes.
+		// listings filter all three.
 		$tmp = $qb->where('d.download_active', '>', 0)
-			->where($qb->expr()->regexp('dc.download_category_class', e_CLASS_REGEXP))
-			->where($qb->expr()->regexp('d.download_class', e_CLASS_REGEXP))
-			->where($qb->expr()->regexp('d.download_visible', e_CLASS_REGEXP))
+			->where(\e107\Userclass\Membership::current()->predicate('dc.download_category_class'))
+			->where(\e107\Userclass\Membership::current()->predicate('d.download_class'))
+			->where(\e107\Userclass\Membership::current()->predicate('d.download_visible'))
 			->orderBy('d.download_datestamp', 'DESC')
 			->setFirstResult(0)->setMaxResults((int) $limit)
 			->fetchAll();

@@ -35,7 +35,7 @@ class e_tagwords_download
 		$row = $qb
 			->select('d.*')->from('download', 'd')
 			->where('d.download_id', (int) $id)
-			->andWhere($qb->expr()->regexp('d.download_class', e_CLASS_REGEXP))
+			->andWhere(\e107\Userclass\Membership::current()->predicate('d.download_class'))
 			->fetchRow();
 
 		if($row)
