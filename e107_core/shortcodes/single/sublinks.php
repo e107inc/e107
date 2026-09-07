@@ -25,7 +25,16 @@ function sublinks_shortcode($parm)
 	}
 	else
 	{
-		$style = array('prelink' => '', 'postlink'=>'');
+		$style = array(
+			'linkdisplay'      => sitelinks::LINK_DISPLAY_FLAT,
+			'prelink'          => '',
+			'postlink'         => '',
+			'linkstart'        => '',
+			'linkend'          => '',
+			'linkclass'        => '',
+			'linkstart_hilite' => '',
+			'linkclass_hilite' => '',
+		);
 	}
 
 	$text = "\n\n<!-- Sublinks Start -->\n\n";
