@@ -71,7 +71,7 @@ if(!class_exists('tagcloud_menu'))
 			$qb = $sql->createQueryBuilder();
 			$result = $qb->select('news_id', 'news_meta_keywords')->from('news')
 				->where('news_meta_keywords', '!=', '')
-				->where($qb->expr()->regexp('news_class', e_CLASS_REGEXP))
+				->where(\e107\Userclass\Membership::current()->predicate('news_class'))
 				->where($qb->expr()->not($qb->expr()->regexp('news_class', $nobody_regexp)))
 				->where('news_start', '<', $now)
 				->where($qb->expr()->anyOf(
