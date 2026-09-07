@@ -81,19 +81,13 @@ final class SafetyRules
         }
 
         // intval(...) / floatval(...).
-        if ($expr instanceof Expr\FuncCall && $expr->name instanceof Node\Name) {
-            $fn = strtolower($expr->name->toString());
-            if (isset(self::SAFE_FUNCTIONS[$fn])) {
-                return true;
-            }
+        if (isset(self::SAFE_FUNCTIONS[strtolower(Ast::functionName($expr) ?? '')])) {
+            return true;
         }
 
         // escape(...) / toDB(...) method calls.
-        if ($expr instanceof Expr\MethodCall && $expr->name instanceof Node\Identifier) {
-            $method = strtolower($expr->name->name);
-            if (isset(self::SAFE_METHODS[$method])) {
-                return true;
-            }
+        if (isset(self::SAFE_METHODS[strtolower(Ast::methodName($expr) ?? '')])) {
+            return true;
         }
 
         // Non-user constants.
