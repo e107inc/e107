@@ -45,7 +45,7 @@ function sublinks_shortcode($parm)
 		$parent = (int) $row['link_id'];
 
 		$linkRows = $sql->createQueryBuilder()->select('*')->from('links')
-			->whereIn('link_class', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('link_class'))
 			->where('link_parent', $parent)
 			->orderBy('link_order', 'ASC')
 			->fetchAll();
