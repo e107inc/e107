@@ -200,7 +200,7 @@ class page_chapters_ui extends e_admin_ui
          	'chapter_meta_description'	=> array('title'=> 'LAN_DESCRIPTION',			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'writeParms'=>'size=xxlarge', 'readonly'=>FALSE),
 			'chapter_meta_keywords' 	=> array('title'=> 'LAN_KEYWORDS',			'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
 			'chapter_sef' 				=> array('title'=> 'LAN_SEFURL',	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'batch'=>true,  'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name',  ), // Display name
-			'chapter_manager' 			=> array('title'=> 'CUSLAN_55',		        'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
+			'chapter_manager' 			=> array('title'=> 'CUSLAN_55',		        'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE, 'writeParms' => array('classlist' => 'public,guest,nobody,member,admin,main,classes,no-excludes')),
 			'chapter_order' 			=> array('title'=> 'LAN_ORDER',				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),
 			'chapter_visibility' 		=> array('title'=> 'LAN_VISIBILITY',			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_fields'            => array('title'=> 'hidden',                 'type'=>'hidden'),
