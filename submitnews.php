@@ -249,13 +249,13 @@ class submitNews
 				  <tr>
 				    <td style='width:20%' class='forumheader3'>".LAN_NAME."</td>
 				    <td style='width:80%' class='forumheader3'>
-				      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toHTML($_POST['submitnew_name'],FALSE,'USER_TITLE')."' maxlength='100' required />
+				      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toAttribute(varset($_POST['submitnews_name'], ''), TRUE)."' maxlength='100' required />
 				    </td>
 				  </tr>
 				  <tr>
 				    <td style='width:20%' class='forumheader3'>".LAN_EMAIL."</td>
 				    <td style='width:80%' class='forumheader3'>
-				      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->filter($_POST['submitnews_email'], 'email')."' maxlength='100' required />
+				      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->toAttribute(varset($_POST['submitnews_email'], ''), TRUE)."' maxlength='100' required />
 				    </td>
 				  </tr>";
 			}
@@ -286,7 +286,7 @@ class submitNews
 			</tr>
 			<tr>
 			  <td style='width:20%' class='forumheader3'>".LAN_TITLE."</td>
-				<td style='width:80%' class='forumheader3'>".e107::getForm()->text('submitnews_title',$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE'),200, array('required'=>1))."
+				<td style='width:80%' class='forumheader3'>".e107::getForm()->text('submitnews_title',vartrue($_POST['submitnews_title']),200, array('required'=>1))."
 			    </td>
 			</tr>
 			<tr>
