@@ -501,6 +501,16 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertFalse($result);
 	}
 
+	public function testExecuteKeepsTheFoundRowsTotalOfABoundQuery()
+	{
+		$expected = (int) $this->db->count('user', '(*)', 'WHERE user_id >= 1');
+
+		$fetched = $this->db->execute('SELECT SQL_CALC_FOUND_ROWS user_id FROM `#user` WHERE user_id >= :id LIMIT 1', array('id' => 1));
+
+		$this->assertSame(1, $fetched);
+		$this->assertSame($expected, $this->db->total_results);
+	}
+
 	public function testResolveTableName()
 	{
 		$this->assertEquals(MPREFIX.'user', $this->db->resolveTableName('user'));

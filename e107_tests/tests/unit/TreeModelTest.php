@@ -593,4 +593,44 @@ class TreeModelTest extends \Test\Unit
 					'link_owner' => '',
 				),
 		);
+
+	public function testLoadBatchBindsDbParamsForTheRowsAndTheCount()
+	{
+		$sql = e107::getDb();
+		$expected = (int) $sql->count('user', '(*)', 'WHERE user_id >= 1');
+
+		$tree = new e_tree_model();
+		$tree->setModelTable('user');
+		$tree->setFieldIdName('user_id');
+		$tree->setParam('db_query', 'SELECT user_id FROM #user WHERE user_id >= :floor ORDER BY user_id LIMIT 1');
+		$tree->setParam('db_params', array('floor' => 1));
+		$tree->loadBatch();
+
+		$this->assertSame(array(1), array_map('intval', array_keys($tree->getTree())));
+		$this->assertSame($expected, $tree->getTotal(), 'The count query binds the same values as the row query.');
+	}
+
+	public function testCacheStringReadsTheBoundValuesNotThePlaceholderNames()
+	{
+		$first = new e_tree_model();
+		$first->setCacheString('probe');
+		$first->setParam('db_query', 'SELECT * FROM t WHERE a > :one AND b < :two');
+		$first->setParam('db_params', array('one' => 1, 'two' => 2));
+		$first->setCacheString();
+
+		$renamed = new e_tree_model();
+		$renamed->setCacheString('probe');
+		$renamed->setParam('db_query', 'SELECT * FROM t WHERE a > :uc7 AND b < :uc8');
+		$renamed->setParam('db_params', array('uc7' => 1, 'uc8' => 2));
+		$renamed->setCacheString();
+
+		$otherValues = new e_tree_model();
+		$otherValues->setCacheString('probe');
+		$otherValues->setParam('db_query', 'SELECT * FROM t WHERE a > :one AND b < :two');
+		$otherValues->setParam('db_params', array('one' => 1, 'two' => 3));
+		$otherValues->setCacheString();
+
+		$this->assertSame($first->getCacheString(), $renamed->getCacheString(), 'A placeholder name is not part of what the query asks for.');
+		$this->assertNotSame($first->getCacheString(), $otherValues->getCacheString(), 'A bound value is.');
+	}
 }
