@@ -92,7 +92,7 @@ tmpfs database, and its own dependency (vendor) volume. You can run several
 at once; `e107-tests list` shows every harness env on the machine, across
 all worktrees, and marks this worktree's active one with `*`.
 
-Validated PHP versions: `5.6`, `7.0`, `8.1`, `8.2`, `8.3`, `8.4`, `8.5`.
+Validated PHP versions: `5.6`, `7.0`, `7.4`, `8.1`, `8.2`, `8.3`, `8.4`, `8.5`.
 Validated DB images: `mariadb:10.6`, `mariadb:10.11`, `mariadb:11.4`,
 `mysql:5.7`, `mysql:8.0`. Anything supported by the upstream
 `php:<ver>-apache` or `mariadb`/`mysql` Docker Hub images should work.
@@ -106,14 +106,25 @@ DB flavor notes (the wrapper handles these automatically):
   clients can authenticate. `mysql:8.4` only gets the plugin enabled, and
   `mysql:9` removed it entirely; don't pair legacy PHP with those.
 
-## Legacy PHP (5.6 / 7.0)
+## Legacy PHP
 
-`php:5.6-apache` and `php:7.0-apache` are Debian Stretch images whose apt
-repositories moved to `archive.debian.org`. The Dockerfile detects the dead
-repos and rewires them (with the archive's signing constraints relaxed; these
-are throwaway test containers), picks version-appropriate gd/xdebug builds,
-and installs the same Composer bootstrap, which auto-selects Composer 2.2 LTS
-on old PHP.
+Each `php:<ver>-apache` image sits on whichever Debian release upstream last
+built it on. Debian publishes a release on `archive.debian.org` around the
+time it leaves support and drops it from the main mirrors some time later;
+while the two overlap, the main mirror's package pool is already being
+cleared behind indexes that still answer, so a build that stays there fails
+part-way through `apt-get install`. At build time `debian-archive.sh` probes
+the archive for every suite the image's apt sources name: once the archive
+serves any of them, the image uses the archive for those and drops the rest,
+and a release the archive does not know is left alone. If the archive cannot
+be asked at all, the sources stay as shipped and the build log says so; if it
+serves part of a release and could not be asked about the rest, the build
+stops rather than guess. apt authentication is relaxed only where apt reports
+the archive's repository as not signed, which is the case for the oldest
+releases; these are throwaway test containers. Nothing names a release, so
+the build keeps working as Bookworm and Trixie follow.
+The Dockerfile also picks version-appropriate gd/xdebug builds and installs
+the same Composer bootstrap, which auto-selects Composer 2.2 LTS on old PHP.
 
 `master`'s `e107_tests/composer.json` carries union constraints (for example
 `codeception/codeception: "^4.2 || >=5.0.11"`), and `composer.php5.6.lock`
@@ -365,7 +376,9 @@ during validation, so we don't rely on it. Treat `clean` as the canonical
 ## Files
 
 - `Dockerfile`: PHP + Apache + extensions, built once per `(PHP, xdebug)`
-  combo; handles EOL Debian bases for PHP 5.6/7.0.
+  combo.
+- `debian-archive.sh`: moves apt to `archive.debian.org` once the image's
+  Debian release is served there; see "Legacy PHP".
 - `compose.yml`: the db + web + selenium services, parameterized by env,
   plus the `e107.tests.*` labels that serve as the harness's state store.
 - `../composer.lock`, `../composer.php<floor>.lock`: one dependency lock per

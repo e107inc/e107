@@ -38,7 +38,7 @@ runs:
       uses: actions/cache@v5
       with:
         path: /tmp/e107-web.tar
-        key: web-image-${{ inputs.php }}${{ inputs.xdebug == 'yes' && '-xdebug' || '' }}-${{ hashFiles('e107_tests/docker/Dockerfile', 'e107_tests/docker/entrypoint.sh', 'e107_tests/docker/apache-vhost.conf', 'e107_tests/docker/php-overrides.ini') }}-${{ steps.key.outputs.month }}
+        key: web-image-${{ inputs.php }}${{ inputs.xdebug == 'yes' && '-xdebug' || '' }}-${{ hashFiles('e107_tests/docker/Dockerfile', 'e107_tests/docker/debian-archive.sh', 'e107_tests/docker/entrypoint.sh', 'e107_tests/docker/apache-vhost.conf', 'e107_tests/docker/php-overrides.ini') }}-${{ steps.key.outputs.month }}
 
     - name: Build the web image
       if: steps.web.outputs.cache-hit != 'true'
