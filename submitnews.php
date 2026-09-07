@@ -117,8 +117,8 @@ class submitNews
 					// Check if images is too small.
 					if(!empty($this->minWidth) && !empty($v['img-width']) && (intval($v['img-width']) < $this->minWidth || intval($v['img-width']) < $this->minHeight))
 					{
-						//TODO Lan and review wording.
-						$mes->addWarning("One of your images has dimensions smaller than ".$this->minWidth."px  x ".$this->minHeight."px. Please correct the attachment and submit the form again. ");
+						$rejected = defset('SUBNEWSLAN_ATTACH_TOO_SMALL', 'One of your images has dimensions smaller than [x]px × [y]px. Please correct the attachment and submit the form again.');
+						$mes->addWarning(str_replace(array('[x]', '[y]'), array($this->minWidth, $this->minHeight), $rejected));
 
 						return false;
 					}
@@ -225,154 +225,22 @@ class submitNews
 
 	function form()
 	{
+		$sc = e107::getScBatch('submitnews');
 
-		$tp = e107::getParser();
-		$sql = e107::getDb();
-		$ns = e107::getRender();
-		$pref = e107::pref('core');
-		$frm = e107::getForm();
-
-		$text = "";
-
-		if (!empty($pref['news_subheader']))
-		{
-			$text .= $tp->toHTML($pref['news_subheader'], true, "BODY");
-		}
-
-
-		$text .= "
-			<div>
-			  <form id='dataform' method='post' action='".e_SELF."' enctype='multipart/form-data' onsubmit='return frmVerify()'>
-			    <table class='table fborder'>";
-
-
-
-			if (!USER)
-			{
-			    $text .= "
-				  <tr>
-				    <td style='width:20%' class='forumheader3'>".LAN_NAME."</td>
-				    <td style='width:80%' class='forumheader3'>
-				      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toHTML($_POST['submitnew_name'],FALSE,'USER_TITLE')."' maxlength='100' required />
-				    </td>
-				  </tr>
-				  <tr>
-				    <td style='width:20%' class='forumheader3'>".LAN_EMAIL."</td>
-				    <td style='width:80%' class='forumheader3'>
-				      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->filter($_POST['submitnews_email'], 'email')."' maxlength='100' required />
-				    </td>
-				  </tr>";
-			}
-
-			$text .= "
-			<tr>
-			  <td style='width:20%' class='forumheader3'>".LAN_CATEGORY."</td>
-				<td style='width:80%' class='forumheader3'>";
-
-			$catList = $sql->createQueryBuilder()
+		$sc->setVars(array(
+			'categories' => e107::getDb()->createQueryBuilder()
 				->select('category_id', 'category_name')->from('news_category')
-				->fetchAll();
+				->fetchAll(),
+			'min_width'  => $this->minWidth,
+			'min_height' => $this->minHeight,
+		));
 
-			if (!$catList)
-			{
-				$text .= NWSLAN_10;
-			}
-			else
-			{
-				$text .= "<select name='cat_id' class='tbox form-control'>";
-				foreach ($catList as $cat)
-				{
-					$cat_id   = $cat['category_id'];
-					$cat_name = $cat['category_name'];
-					$sel = (varset($_POST['cat_id'],'') == $cat_id) ? "selected='selected'" : "";
-					$text .= "<option value='{$cat_id}' {$sel}>".$tp->toHTML($cat_name, FALSE, "defs")."</option>";
-				}
-				$text .= "</select>";
-			}
+		$sc->wrapper('submitnews/form');
 
-			$text .= "
-			  </td>
-			</tr>
-			<tr>
-			  <td style='width:20%' class='forumheader3'>".LAN_TITLE."</td>
-				<td style='width:80%' class='forumheader3'>".e107::getForm()->text('submitnews_title',$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE'),200, array('required'=>1))."
-			    </td>
-			</tr>
-			<tr>
-			    <td style='width:20%' class='forumheader3'>".LAN_135."</td>
-				<td style='width:80%' class='forumheader3'>
-					".e107::getForm()->bbarea('submitnews_item', $tp->toForm(vartrue($_POST['submitnews_item'])),null, null, 'large')."
-				</td>
-			</tr>
-			";
+		$template = e107::getCoreTemplate('submitnews', null, true, true);
 
-
-
-			/*  submitnews_keywords  varchar(255) NOT NULL default '',
-  submitnews_description text NOT NULL,
-  submitnews_summary text NOT NULL,
-  submitnews_media text NOT NULL,
-			*/
-			$fields = array();
-			$fields['submitnews_keywords']      = array('title'=>SUBNEWSLAN_9, 'type'=>'tags');
-			$fields['submitnews_summary']       = array('title'=>LAN_SUMMARY, 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
-			$fields['submitnews_description']   = array('title'=>LAN_META_DESCRIPTION, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
-			$fields['submitnews_media']         = array('title'=>SUBNEWSLAN_13, 'type'=>'method', 'method'=>'submitNewsForm::submitnews_media');
-
-
-			foreach($fields as $key=>$fld)
-			{
-				$text .= "<tr><td style='width:20%' class='forumheader3'>
-							".$fld['title']
-							."</td>
-							<td style='width:80%' class='forumheader3'>".$frm->renderElement($key, '', $fld)."</td>
-						</tr>";
-
-			}
-
-			if ($pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upload_class']) && FILE_UPLOADS)
-			{
-				  $text .= "
-				  <tr>
-				    <td style='width:20%' class='forumheader3'>".SUBNEWSLAN_5."<br /><span class='smalltext'>".SUBNEWSLAN_6."</span>";
-
-
-
-
-				   $text .= "
-				    </td>
-				    <td style='width:80%' class='forumheader3'>
-
-				      <input class='tbox' type='file' name='file_userfile[]' multiple='multiple' />
-				      ";
-
-				     if(!empty($this->minWidth))
-				   {
-				        $text .= "<div class='alert alert-warning'>Minimum Dimensions: ".$this->minWidth."px × ".$this->minHeight."px</div>";
-				   }
-
-				      $text .= "
-				    </td>
-				  </tr>";
-			}
-
-			$text .= "
-			      <tr>
-			        <td colspan='2' style='text-align:center' class='forumheader'>
-			          <input class='btn btn-success button' type='submit' name='submitnews_submit' value='".LAN_136."' />
-			           <input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
-			        </td>
-			      </tr>
-			    </table>
-			  </form>
-			</div>";
-
-			$ns->tablerender(LAN_136, $text);
-
-
+		e107::getRender()->tablerender(LAN_136, e107::getParser()->parseTemplate(varset($template['form'], ''), true, $sc));
 	}
-
-
 
 
 }
@@ -380,26 +248,13 @@ class submitNews
 class submitNewsForm extends e_form
 {
 
+	/**
+	 * @deprecated 2.4.0 Forwards to {@see submitnews_shortcodes::sc_submitnews_media()}, which the form now calls directly.
+	 * @return string
+	 */
 	function submitnews_media($cur, $mode, $att)
 	{
-		$text = '';
-
-		$placeholders = array(
-			'eg. http://www.youtube.com/watch?v=Mxhn11_fzJQ',
-			'eg. http://path-to-image/image.jpg',
-			'eg. http://path-to-audio/file.mp3'
-		);
-
-		for($i = 0; $i <8; $i++)
-		{
-			$help = (isset($placeholders[$i])) ? $placeholders[$i] : '';
-			$text .= "<div class='form-group'>";
-			$text .= $this->text('submitnews_media['.$i.']', varset($_POST['submitnews_media'][$i]), 255, array('placeholder'=>$help) );
-			$text .= "</div>";
-		}
-
-		return $text;
-
+		return e107::getScBatch('submitnews')->sc_submitnews_media();
 	}
 
 
