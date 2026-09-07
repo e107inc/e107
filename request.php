@@ -50,7 +50,7 @@ if(!empty($_GET['file'])) // eg. request.php?file=1
 		$qb->where('media_url', e107::getParser()->filter($fileName));
 	}
 
-	$qb->whereIn('media_userclass', array_map('intval', explode(',', USERCLASS_LIST)))->setMaxResults(1);
+	$qb->where(\e107\Userclass\Membership::current()->predicate('media_userclass'))->setMaxResults(1);
 
 	$row = $qb->fetchRow();
 	if (!empty($row))

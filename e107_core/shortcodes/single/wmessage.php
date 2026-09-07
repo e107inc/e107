@@ -64,7 +64,7 @@ function wmessage_shortcode($parm='')
 			$wmcaption = '';
 			$wmRows = $sql->createQueryBuilder()->select('*')->from('generic')
 				->where('gen_type', 'wmessage')
-				->whereIn('gen_intdata', explode(',', USERCLASS_LIST))
+				->where(\e107\Userclass\Membership::current()->predicate('gen_intdata'))
 				->fetchAll();
 			foreach ($wmRows as $row)
 			{

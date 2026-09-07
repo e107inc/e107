@@ -50,7 +50,7 @@ class banner_shortcodes extends e_shortcode
 			$qb->where('banner_campaign', $tp->toDB($campaign));
 		}
 
-		$qb->whereIn('banner_active', explode(',', USERCLASS_LIST));
+		$qb->where(\e107\Userclass\Membership::current()->predicate('banner_active'));
 
 		if($tags = e107::getRegistry('core/form/related'))
 		{

@@ -432,7 +432,7 @@ class e_media
 			$qb->where('media_cat_owner', $owner);
 		}
 
-		$qb->whereIn('media_cat_class', explode(',', USERCLASS_LIST))
+		$qb->where(\e107\Userclass\Membership::current()->predicate('media_cat_class'))
 			->orderBy($safeOrderBy);
 
 		$rows = $qb->fetchAll();
@@ -572,7 +572,7 @@ class e_media
 		$qb = e107::getDb()->createQueryBuilder();
 		$qb->select($fields)->from('core_media')
 			->where($qb->expr()->regexp('media_category', $catpattern))
-			->whereIn('media_userclass', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('media_userclass'))
 			->where($qb->expr()->like('media_type', $typepattern));
 
 		if($search)
@@ -625,7 +625,7 @@ class e_media
 
 		$qb = e107::getDb()->createQueryBuilder();
 		$qb->select('*')->from('core_media')
-			->whereIn('media_userclass', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('media_userclass'))
 			->where($qb->expr()->like('media_category', '_icon%'));
 
 		if($type)
