@@ -1479,7 +1479,7 @@ class news_front
 			->from('news', 'n')
 			->leftJoin('user', 'u', $qb->expr()->compareColumns('n.news_author', 'u.user_id'))
 			->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
-			->where($qb->expr()->regexp('n.news_class', e_CLASS_REGEXP))
+			->where(\e107\Userclass\Membership::current()->predicate('n.news_class'))
 			->whereNot(function (QueryBuilder $q)
 			{
 				$q->where($q->expr()->regexp('n.news_class', $this->nobodyRegexpValue));
