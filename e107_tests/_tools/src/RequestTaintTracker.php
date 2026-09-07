@@ -82,10 +82,10 @@ final class RequestTaintTracker
         do {
             $changed = false;
             foreach ($assignments as $assign) {
-                if (!$assign->var instanceof Expr\Variable || !is_string($assign->var->name)) {
+                $name = Ast::variableName($assign->var);
+                if ($name === null) {
                     continue;
                 }
-                $name = $assign->var->name;
                 if (isset($tainted[$name])) {
                     continue;
                 }
