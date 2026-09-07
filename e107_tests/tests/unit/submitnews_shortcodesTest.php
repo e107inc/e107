@@ -141,6 +141,45 @@ class submitnews_shortcodesTest extends \Test\Unit
 		self::assertStringContainsString("<td style='width:20%' class='forumheader3'>".LAN_NAME."</td>", $this->render());
 	}
 
+	public function testTheNameFieldKeepsWhatTheVisitorTyped()
+	{
+		$_POST['submitnews_name'] = "Ada O'Brien";
+
+		self::assertStringContainsString("value='Ada O&#039;Brien'", $this->sc->sc_submitnews_name());
+	}
+
+	public function testTheNameFieldLeavesPathConstantsAlone()
+	{
+		$_POST['submitnews_name'] = '{THEME}';
+
+		self::assertStringContainsString("value='{THEME}'", $this->sc->sc_submitnews_name());
+	}
+
+	public function testTheAddressAndTitleComeBackAsTyped()
+	{
+		$_POST['submitnews_email'] = 'josé@example.com';
+		$_POST['submitnews_title'] = 'Bob & Sons';
+
+		self::assertStringContainsString("value='josé@example.com'", $this->sc->sc_submitnews_email());
+
+		$title = $this->sc->sc_submitnews_title();
+		self::assertStringContainsString('Bob &amp; Sons', $title);
+		self::assertStringNotContainsString('&amp;amp;', $title);
+	}
+
+	public function testNeitherGuestFieldCanBreakOutOfItsAttribute()
+	{
+		$_POST['submitnews_name'] = "x' autofocus onfocus='alert(1)";
+		$_POST['submitnews_email'] = "x@example.com' autofocus onfocus='alert(1)";
+
+		foreach(array($this->sc->sc_submitnews_name(), $this->sc->sc_submitnews_email()) as $field)
+		{
+			self::assertSame(1, preg_match("~value='([^']*)'~", $field, $value));
+			self::assertStringContainsString('&#039;', $value[1]);
+			self::assertStringContainsString('autofocus', $value[1], 'everything typed has to stay inside the value attribute');
+		}
+	}
+
 	public function testGuestRowsVanishForAMember()
 	{
 		e107::getUser()->setId(1);

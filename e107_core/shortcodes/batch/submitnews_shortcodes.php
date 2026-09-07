@@ -43,7 +43,7 @@ class submitnews_shortcodes extends e_shortcode
 			return '';
 		}
 
-		$value = e107::getParser()->toHTML(varset($_POST['submitnew_name'], ''), false, 'USER_TITLE');
+		$value = e107::getParser()->toAttribute(varset($_POST['submitnews_name'], ''), true);
 
 		return "<input class='tbox' type='text' name='submitnews_name' size='60' value='".$value."' maxlength='100' required />";
 	}
@@ -58,7 +58,7 @@ class submitnews_shortcodes extends e_shortcode
 			return '';
 		}
 
-		$value = e107::getParser()->filter(varset($_POST['submitnews_email'], ''), 'email');
+		$value = e107::getParser()->toAttribute(varset($_POST['submitnews_email'], ''), true);
 
 		return "<input class='tbox' type='text' name='submitnews_email' size='60' value='".$value."' maxlength='100' required />";
 	}
@@ -89,9 +89,7 @@ class submitnews_shortcodes extends e_shortcode
 
 	function sc_submitnews_title($parm = null)
 	{
-		$value = e107::getParser()->toHTML(vartrue($_POST['submitnews_title']), true, 'USER_TITLE');
-
-		return e107::getForm()->text('submitnews_title', $value, 200, array('required' => 1));
+		return e107::getForm()->text('submitnews_title', vartrue($_POST['submitnews_title']), 200, array('required' => 1));
 	}
 
 	function sc_submitnews_body($parm = null)
