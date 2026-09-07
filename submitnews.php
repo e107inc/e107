@@ -11,7 +11,6 @@
  
 require_once("class2.php");
 e107::coreLan('submitnews');
-// e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(HEADERF);
 
@@ -89,7 +88,6 @@ class submitNews
 		$submitnews_email = (USER ? USEREMAIL : trim(check_email($tp->toDB($_POST['submitnews_email']))));
 		$submitnews_title = $tp->filter($_POST['submitnews_title']);
 		$submitnews_item  = $tp->toDB($_POST['submitnews_item']);
-	//	$submitnews_item  = str_replace("src=&quot;e107_images", "src=&quot;".SITEURL."e107_images", $submitnews_item);
 		$submitnews_file  = "";
 		$submitnews_error = false;
 		$submitnews_filearray = array();
@@ -200,7 +198,6 @@ class submitNews
 			}
 
 
-		//	$sql->insert("submitnews", "0, '$submitnews_user', '$submitnews_email', '$submitnews_title', '".intval($_POST['cat_id'])."', '$submitnews_item', '".time()."', '$ip', '0', '".implode(',',$submitnews_filearray)."' ");
 
 			$edata_sn = array("user" => $submitnews_user, "email" => $submitnews_email, "itemtitle" => $submitnews_title, "catid" => intval($_POST['cat_id']), "item" => $submitnews_item, "image" => $submitnews_file, "ip" => $ip);
 
@@ -209,15 +206,12 @@ class submitNews
 
 
 			$mes->addSuccess(LAN_134);
-		//	echo $mes->render();
 			unset($_POST);
 
-			// $ns->tablerender(LAN_THANK_YOU, "<div style='text-align:center'>".LAN_134."</div>");
 
 		}
 		else
 		{
-		//	message_handler("P_ALERT", $message);
 			$mes->addWarning($message);
 		}
 	}
