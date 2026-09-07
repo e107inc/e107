@@ -538,14 +538,14 @@ class download_request
 		$sql = e107::getDb();
 		$pref = e107::getPref();
 
-		$classList = explode(',', USERCLASS_LIST);
+		$visitor = \e107\Userclass\Membership::current();
 
 		// Check download count limits
 		$limits = $sql->createQueryBuilder()
 			->select('gen_intdata', 'gen_chardata')->addSelect(SqlFragment::raw('(gen_intdata/gen_chardata) AS count_perday'))
 			->from('generic')
 			->where('gen_type', 'download_limit')
-			->whereIn('gen_datestamp', $classList)
+			->where($visitor->predicate('gen_datestamp'))
 			->where('gen_chardata', '>=', 0)
 			->where('gen_intdata', '>=', 0)
 			->orderBy('count_perday', 'DESC')
@@ -572,7 +572,7 @@ class download_request
 			->select('gen_user_id', 'gen_ip')->addSelect(SqlFragment::raw('(gen_user_id/gen_ip) AS bw_perday'))
 			->from('generic')
 			->where('gen_type', 'download_limit')
-			->whereIn('gen_datestamp', $classList)
+			->where($visitor->predicate('gen_datestamp'))
 			->where('gen_user_id', '>=', 0)
 			->where('gen_ip', '>=', 0)
 			->orderBy('bw_perday', 'DESC')
