@@ -164,7 +164,7 @@ $qb->addSelect(SqlFragment::raw('n.*, u.user_id, u.user_name, u.user_customtitle
 	->from('news', 'n')
 	->leftJoin('user', 'u', $qb->expr()->compareColumns('n.news_author', 'u.user_id'))
 	->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
-	->whereIn('n.news_class', array_map('intval', explode(',', USERCLASS_LIST)))
+	->where(\e107\Userclass\Membership::current()->predicate('n.news_class'))
 	->where('n.news_start', '<', $_t)
 	->where($qb->expr()->anyOf($qb->expr()->eq('n.news_end', 0), $qb->expr()->gt('n.news_end', $_t)))
 	->where($qb->expr()->findInSet('n.news_render_type', 3))
