@@ -2114,18 +2114,23 @@ width: 35%;
   text-align: center;
 }
 
+   .navbar-nav .open { position: static; }
+
    .navbar-nav .open .dropdown-menu {
-    position: fixed;
-    top:100px;
+    position: absolute;
+    top: 100%;
+    bottom: calc(100% - 100vh + 5px);
     left:0;
-    right: auto;
-    width: calc(100vw);
+    right: 0;
+    width: auto;
     background-color: #212121;
     border: 0;
+    border-top: 1px solid rgba(255, 255, 255, .2);
+    background-clip: border-box;
     box-shadow: inherit;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
 
-    height: calc(100vh - 105px);
+    height: auto;
     overflow-y: scroll;
 	padding-bottom:15px;
   }
@@ -2136,8 +2141,8 @@ span.e-toggle-sidebar.close { display:none; }
 
 .navbar-nav .open .dropdown-menu > li > a { padding-top: 10px; padding-bottom: 10px; }
 
-  .nav ul.dropdown-menu.oversized {
-  width: calc(100vw);
+  .navbar-nav .open .dropdown-menu.oversized {
+  width: auto;
 }
 
 .nav ul.dropdown-menu.oversized li          { width: 50%; float:left; }
