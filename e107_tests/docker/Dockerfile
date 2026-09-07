@@ -15,9 +15,10 @@
 #     end-to-end inside the container.
 #   * No source code is COPY'd in. The worktree is bind-mounted at runtime,
 #     which is what makes the image reusable across worktrees.
-#   * Supports php:5.6 and php:7.0 (Debian Stretch) too: their apt repos
-#     moved to archive.debian.org, and gd/xdebug need version-appropriate
-#     builds. Those branches mirror release/v2.3.x CI.
+#   * An image whose Debian release has moved to archive.debian.org gets its
+#     apt sources moved there too (debian-archive.sh), so it keeps building
+#     after its base leaves support. gd/xdebug need version-appropriate
+#     builds on old PHP; those branches mirror release/v2.3.x CI.
 
 ARG PHP_VERSION=8.2
 FROM docker.io/library/php:${PHP_VERSION}-apache
@@ -28,27 +29,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_NO_INTERACTION=1
 
-# EOL Debian bases (Stretch, for php:5.6/7.0): the stock apt sources 404.
-# Rewire them to archive.debian.org and relax the archive's staleness
-# constraints. Throwaway test containers; a supported base skips all of this.
-RUN set -eux; \
-    if ! apt-get update; then \
-        for f in /etc/apt/sources.list /etc/apt/sources.list.d/debian.sources; do \
-            [ -f "$f" ] || continue; \
-            sed -i -e 's|https\?://deb\.debian\.org|http://archive.debian.org|g' \
-                   -e 's|https\?://security\.debian\.org|http://archive.debian.org|g' "$f"; \
-            sed -i -E '/-updates/d' "$f"; \
-        done; \
-        printf '%s\n' \
-            'Acquire::Check-Valid-Until "false";' \
-            'Acquire::AllowInsecureRepositories "true";' \
-            'APT::Get::AllowUnauthenticated "true";' \
-            > /etc/apt/apt.conf.d/99ignore-obsolete; \
-        apt-get update; \
-        apt-get -y full-upgrade; \
-        apt-get install -y debian-archive-keyring; \
-        rm -rf /var/lib/apt/lists/*; \
-    fi
+COPY debian-archive.sh /usr/local/bin/e107-debian-archive
+RUN chmod +x /usr/local/bin/e107-debian-archive && /usr/local/bin/e107-debian-archive
 
 RUN set -eux; \
     PHPV=$(php -r 'echo PHP_MAJOR_VERSION * 100 + PHP_MINOR_VERSION;'); \
