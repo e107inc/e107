@@ -31,7 +31,7 @@ class page_related // replace 'e_' with 'plugin-folder_'
 		$qb = $sql->createQueryBuilder();
 		$rows = $qb->select('*')->from('page')
 			->where('page_id', '!=', (int) $parm['current'])
-			->where($qb->expr()->regexp('page_class', e_CLASS_REGEXP))
+			->where(\e107\Userclass\Membership::current()->predicate('page_class'))
 			->where($qb->expr()->regexp('page_metakeys', $tag_regexp))
 			->orderBy('page_datestamp', 'DESC')
 			->setMaxResults((int) $parm['limit'])

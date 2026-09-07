@@ -278,7 +278,7 @@ class pageClass
 		$books = e107::getPref('listBooks',false) ? $sql->createQueryBuilder()
 			->select('*')->from('page_chapters')
 			->where('chapter_parent', 0)
-			->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('chapter_visibility'))
 			->orderBy('chapter_order', 'ASC')
 			->fetchAll() : array();
 
@@ -358,7 +358,7 @@ class pageClass
 			->select('chapter_name', 'chapter_template', 'chapter_meta_description', 'chapter_meta_keywords')
 			->from('page_chapters')
 			->where('chapter_id', (int) $book)
-			->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('chapter_visibility'))
 			->setMaxResults(1)
 			->fetchRow();
 		if(!$brow)
@@ -411,7 +411,7 @@ class pageClass
 		$chapters = $sql->createQueryBuilder()
 			->select('*')->from('page_chapters')
 			->where('chapter_parent', (int) $book)
-			->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('chapter_visibility'))
 			->orderBy('chapter_order', 'ASC')
 			->fetchAll();
 
@@ -554,16 +554,16 @@ class pageClass
 	//	$tmpl = e107::getCoreTemplate('chapter','docs', true, true); // always merge	
 			$template = $tmpl['listPages'];
 		
-			$userClasses = explode(',', USERCLASS_LIST);
+			$visitor = \e107\Userclass\Membership::current();
 			$qb = $sql->createQueryBuilder()->select('*')->from('page');
 
 			if($layout == 'panel') // When in 'panel' mode, allow Menus to be rendered while checking menu_class.
 			{
-				$qb->whereIn('menu_class', $userClasses);
+				$qb->where($visitor->predicate('menu_class'));
 			}
 			else
 			{
-				$qb->where('page_title', '!=', '')->whereIn('page_class', $userClasses);
+				$qb->where('page_title', '!=', '')->where($visitor->predicate('page_class'));
 			}
 
 			$pageArray = $qb->where('page_chapter', (int) $chapt)

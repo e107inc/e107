@@ -146,7 +146,7 @@ class page_sitelink // include plugin-folder in the name.
 
 		$qb = $sql->createQueryBuilder();
 		$qb->select('*')->from('page')
-			->whereIn('page_class', explode(',', USERCLASS_LIST));
+			->where(\e107\Userclass\Membership::current()->predicate('page_class'));
 
 		if(!empty($parm))
 		{
@@ -211,7 +211,7 @@ class page_sitelink // include plugin-folder in the name.
 		$data = $sql->createQueryBuilder()
 			->select('*')->from('page_chapters')
 			->where('chapter_parent', (int) $book)
-			->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('chapter_visibility'))
 			->orderBy('chapter_order', 'ASC')
 			->fetchAll();
 
@@ -249,7 +249,7 @@ class page_sitelink // include plugin-folder in the name.
 					->select('*')->from('page')
 					->where('page_title', '!=', '')
 					->whereIn('page_chapter', $ids)
-					->whereIn('page_class', explode(',', USERCLASS_LIST))
+					->where(\e107\Userclass\Membership::current()->predicate('page_class'))
 					->orderBy('page_order')
 					->fetchAll();
 				foreach($pages as $row)
@@ -346,7 +346,7 @@ class page_sitelink // include plugin-folder in the name.
 				});
 		}
 
-		$qb->whereIn('page_class', explode(',', USERCLASS_LIST))
+		$qb->where(\e107\Userclass\Membership::current()->predicate('page_class'))
 			->orderBy('page_order');
 
 		$data 		= $qb->fetchAll();
@@ -373,7 +373,7 @@ class page_sitelink // include plugin-folder in the name.
 			$title = $sql->createQueryBuilder()
 				->select('chapter_name')->from('page_chapters')
 				->where('chapter_id', (int) $options['chapter'])
-				->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+				->where(\e107\Userclass\Membership::current()->predicate('chapter_visibility'))
 				->fetchOne();
 			$outArray 	= array();
 
@@ -406,7 +406,7 @@ class page_sitelink // include plugin-folder in the name.
 		}
 		else
 		{
-			$qb->whereIn('chapter_visibility', explode(',', USERCLASS_LIST));
+			$qb->where(\e107\Userclass\Membership::current()->predicate('chapter_visibility'));
 		}
 
 		$books = $qb->orderBy('chapter_order', 'ASC')->fetchAll();
