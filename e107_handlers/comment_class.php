@@ -1740,7 +1740,7 @@ class comment
 							$nqb = $sql2->createQueryBuilder();
 							$row2 = $nqb->select('*')->from('news')
 								->where('news_id', $row['comment_item_id'])
-								->where($nqb->expr()->regexp('news_class', e_CLASS_REGEXP))
+								->where(\e107\Userclass\Membership::current()->predicate('news_class'))
 								->where($nqb->expr()->not($nqb->expr()->regexp('news_class', e_NOBODY_REGEXP)))
 								->where('news_start', '<', $now)
 								->where($nqb->expr()->anyOf(
@@ -1761,14 +1761,13 @@ class comment
 						case '1': //	article, review or content page - defunct category, but filter them out
 							break;
 						case '2': //	downloads
-							$classList = array_map('intval', explode(',', USERCLASS_LIST));
 							$dqb = $sql2->createQueryBuilder();
 							$row2 = $dqb->select('d.download_name', 'dc.download_category_class', 'dc.download_category_id', 'dc.download_category_name')
 								->from('download', 'd')
 								->innerJoin('download_category', 'dc', $dqb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
 								->where('d.download_id', $row['comment_item_id'])
-								->where($dqb->expr()->regexp('dc.download_category_class', e_CLASS_REGEXP))
-								->whereIn('d.download_visible', $classList)
+								->where(\e107\Userclass\Membership::current()->predicate('dc.download_category_class'))
+								->where(\e107\Userclass\Membership::current()->predicate('d.download_visible'))
 								->where('d.download_active', '>', 0)
 								->fetchRow();
 							if ($row2)
@@ -1809,7 +1808,7 @@ class comment
 							$pqb = $sql2->createQueryBuilder();
 							$row2 = $pqb->select('*')->from('page')
 								->where('page_id', $row['comment_item_id'])
-								->where($pqb->expr()->regexp('page_class', e_CLASS_REGEXP))
+								->where(\e107\Userclass\Membership::current()->predicate('page_class'))
 								->fetchRow();
 							if ($row2)
 							{
