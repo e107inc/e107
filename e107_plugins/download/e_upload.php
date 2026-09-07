@@ -72,7 +72,7 @@ class download_upload
 		$data = $sql->createQueryBuilder()
 			->select('download_category_id', 'download_category_name', 'download_category_parent')
 			->from('download_category')
-			->whereIn('download_category_class', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('download_category_class'))
 			->orderBy('download_category_order')->addOrderBy('download_category_parent')
 			->fetchAll();
 

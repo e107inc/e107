@@ -58,7 +58,7 @@ class downloadCategory
 		$this->cat_count = 0;
 		$this->down_count = 0;
 
-		$classList = ($load_cat_class != "") ? explode(',', $load_cat_class) : array();
+		$membership = ($load_cat_class != "") ? \e107\Userclass\Membership::fromList($load_cat_class) : null;
 
 		$qb = $sql2->createQueryBuilder();
 
@@ -74,15 +74,18 @@ class downloadCategory
 			->leftJoin('download_category', 'dc2', $qb->expr()->compareColumns('dc2.download_category_id', 'dc1.download_category_parent'));
 
 		$downloadOn = 'd.download_category = dc.download_category_id AND d.download_active > 0';
-		if ($classList)
+		$downloadParams = array();
+		if ($membership)
 		{
-			$downloadOn .= ' AND '.$qb->expr()->in('d.download_visible', $classList);
+			$visible = $membership->predicate('d.download_visible');
+			$downloadOn .= ' AND '.$visible->getSql();
+			$downloadParams = $visible->getParameters();
 		}
-		$qb->leftJoin('download', 'd', $qb->raw($downloadOn));
+		$qb->leftJoin('download', 'd', $qb->raw($downloadOn, $downloadParams));
 
-		if ($classList)
+		if ($membership)
 		{
-			$qb->where($qb->expr()->in('dc.download_category_class', $classList));
+			$qb->where($membership->predicate('dc.download_category_class'));
 		}
 
 		// This puts main categories first, then sub-cats, then sub-sub cats

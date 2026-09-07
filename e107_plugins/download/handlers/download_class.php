@@ -530,15 +530,15 @@ class download
 			$highlight_search = TRUE;
 		}
 
-		$classList = array_map('intval', explode(',', USERCLASS_LIST));
+		$visitor = \e107\Userclass\Membership::current();
 
 		$qb = e107::getDb()->createQueryBuilder();
 		$dlrow = $qb->select('d.*', 'dc.*')->from('download', 'd')
 			->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
 			->where('d.download_id', (int) $this->qry['id'])
 			->where('d.download_active', '>', 0)
-			->whereIn('d.download_visible', $classList)
-			->whereIn('dc.download_category_class', $classList)
+			->where($visitor->predicate('d.download_visible'))
+			->where($visitor->predicate('dc.download_category_class'))
 			->setMaxResults(1)
 			->fetchRow();
 
@@ -747,7 +747,7 @@ class download
 		$total_downloads = $countQb->from("download")
 			->where('download_category', (int) $this->qry['id'])
 			->where('download_active', '>', 0)
-			->where($countQb->expr()->regexp('download_visible', e_CLASS_REGEXP))
+			->where(\e107\Userclass\Membership::current()->predicate('download_visible'))
 			->count();
 		
 		
@@ -756,7 +756,8 @@ class download
 		{
 
 			/* there are subcats - display them ... */
-			$classList = array_map('intval', explode(',', USERCLASS_LIST));
+			$visitor = \e107\Userclass\Membership::current();
+			$visible = $visitor->predicate('d.download_visible');
 
 			$subQb = $sql->createQueryBuilder();
 			$subQb->select('dc.*')
@@ -767,9 +768,9 @@ class download
 				->selectAggregate('MAX', 'd.download_datestamp', 'd_last')
 				->selectAggregate('SUM', 'd.download_requested', 'd_requests')
 				->from('download_category', 'dc')
-				->leftJoin('download', 'd', $subQb->raw('dc.download_category_id = d.download_category AND d.download_active > 0 AND '.$subQb->expr()->in('d.download_visible', $classList)))
+				->leftJoin('download', 'd', $subQb->raw('dc.download_category_id = d.download_category AND d.download_active > 0 AND '.$visible->getSql(), $visible->getParameters()))
 				->leftJoin('download_category', 'dc2', $subQb->raw('dc2.download_category_id='.$subQb->createNamedParameter((int) $this->qry['id'])))
-				->whereIn('dc.download_category_class', $classList)
+				->where($visitor->predicate('dc.download_category_class'))
 				->where('dc.download_category_parent', (int) $this->qry['id'])
 				->groupBy('dc.download_category_id')
 				->orderBy('dc.download_category_order');
@@ -847,13 +848,11 @@ class download
 		}
 		$orderDir = (strtolower((string) $this->qry['sort']) === 'asc') ? 'ASC' : 'DESC';
 
-		$classList = array_map('intval', explode(',', USERCLASS_LIST));
-
 		$dlrows = $sql->createQueryBuilder()
 			->select('*')->from('download')
 			->where('download_category', (int) $this->qry['id'])
 			->where('download_active', '>', 0)
-			->whereIn('download_visible', $classList)
+			->where(\e107\Userclass\Membership::current()->predicate('download_visible'))
 			->orderBy($orderColumn, $orderDir)
 			->setFirstResult((int) $this->qry['from'])
 			->setMaxResults((int) $this->qry['view'])
@@ -1221,7 +1220,8 @@ class download
       global $sql,$parm;
      	$boxinfo = "\n";
 
-      $classList = array_map('intval', explode(',', USERCLASS_LIST));
+      $visitor = \e107\Userclass\Membership::current();
+      $parentClass = $visitor->predicate('dc1.download_category_class');
 
       $catQb = $sql->createQueryBuilder();
       $catQb->select(
@@ -1232,9 +1232,9 @@ class download
          )
          ->selectAs('dc1.download_category_parent', 'd_parent1')
          ->from('download_category', 'dc')
-         ->leftJoin('download_category', 'dc1', $catQb->raw('dc1.download_category_id=dc.download_category_parent AND '.$catQb->expr()->in('dc1.download_category_class', $classList)))
+         ->leftJoin('download_category', 'dc1', $catQb->raw('dc1.download_category_id=dc.download_category_parent AND '.$parentClass->getSql(), $parentClass->getParameters()))
          ->leftJoin('download_category', 'dc2', $catQb->expr()->compareColumns('dc2.download_category_id', 'dc1.download_category_parent'));
-      if (ADMIN === FALSE) $catQb->whereIn('dc.download_category_class', $classList);
+      if (ADMIN === FALSE) $catQb->where($visitor->predicate('dc.download_category_class'));
       // This puts main categories first, then sub-cats, then sub-sub cats
       $catQb->orderBy('dc2.download_category_order')
          ->addOrderBy('dc1.download_category_order')

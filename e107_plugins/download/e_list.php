@@ -39,14 +39,19 @@ class list_download
 
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
+		$visitor = \e107\Userclass\Membership::current();
+		$category = $visitor->predicate('dc.download_category_class');
+		$class = $visitor->predicate('d.download_class');
+		$visible = $visitor->predicate('d.download_visible');
+
 		$qry = "SELECT d.download_id, d.download_name, d.download_author, d.download_datestamp,
 		   dc.download_category_id, dc.download_category_name, dc.download_category_class
 		   FROM #download AS d
 		   LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id
-		   WHERE dc.download_category_class REGEXP '".e_CLASS_REGEXP."' AND d.download_class REGEXP '".e_CLASS_REGEXP."' AND d.download_visible REGEXP '".e_CLASS_REGEXP."' AND d.download_active != '0' ".$qry."
+		   WHERE ".$category->getSql()." AND ".$class->getSql()." AND ".$visible->getSql()." AND d.download_active != '0' ".$qry."
 		   ORDER BY download_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount'])." ";
 
-		$downloads = $this->parent->e107->sql->gen($qry);
+		$downloads = $this->parent->e107->sql->execute($qry, $category->getParameters() + $class->getParameters() + $visible->getParameters());
 		if($downloads == 0)
 		{
 			$list_data = LIST_DOWNLOAD_2;
