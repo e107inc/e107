@@ -1391,11 +1391,12 @@ TEST:
 
 VERSIONS:
   Pick any PHP and DB image you like. Validated combos:
-    PHP:  5.6, 7.0, 8.1, 8.2, 8.3, 8.4, 8.5
+    PHP:  5.6, 7.0, 7.4, 8.1, 8.2, 8.3, 8.4, 8.5
     DB:   mariadb:10.6, mariadb:10.11, mariadb:11.4, mysql:5.7, mysql:8.0
 
   Notes:
-    * PHP 5.6/7.0 images build from the Debian archive (their base is EOL).
+    * An image whose Debian base has moved to the Debian archive builds from
+      the archive; see docker/README.md.
     * mysql:8.0–8.3 get --default-authentication-plugin=mysql_native_password
       so old PHP clients can log in; mysql:9 dropped that plugin and does not
       support legacy PHP clients.
