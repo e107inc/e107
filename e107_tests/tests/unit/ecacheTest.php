@@ -3,6 +3,7 @@
 
 class ecacheTest extends \Codeception\Test\Unit
 {
+	use \Test\BootedCli;
 
 	/** @var ecache */
 	protected $cache;
@@ -230,6 +231,61 @@ class ecacheTest extends \Codeception\Test\Unit
 
 		$this->assertFalse($this->cache->retrieve('atomic_expired', 1, true));
 		$this->assertFileNotExists($file);
+	}
+
+	/**
+	 * An entry is keyed on the userclass list and nothing per-visitor, so a fragment
+	 * holding one visitor's CSRF token is served to the next, whose own post is then
+	 * refused. comment.php caches exactly such a fragment. No CLI request mints a
+	 * token, so the write has to be measured in a process that holds one.
+	 */
+	public function testAnEntryCarryingTheSessionTokenIsNotWritten()
+	{
+		$probe = <<<'PHP'
+define('e_TOKEN', 'e107t0ken0123456789abcdef0123456');
+
+$cache = e107::getCache();
+$files = array(
+	'content' => $cache->cache_fname('etoken_carrier'),
+	'control' => $cache->cache_fname('etoken_control'),
+	'system'  => $cache->cache_fname('etoken_system', true),
+);
+
+$cache->set('etoken_carrier', '<a href="index.php?logout&e-token='.e_TOKEN.'">Logout</a>', true);
+$cache->set('etoken_control', '<a href="index.php?logout">Logout</a>', true);
+$cache->set_sys('etoken_system', 'token '.e_TOKEN, true);
+
+$answer = array(
+	'content' => $cache->retrieve('etoken_carrier', false, true),
+	'control' => $cache->retrieve('etoken_control', false, true),
+	'system'  => $cache->retrieve_sys('etoken_system', false, true),
+	'files'   => array_map('is_file', $files),
+);
+
+foreach($files as $file)
+{
+	@unlink($file);
+}
+
+echo '@@'.json_encode($answer).'@@';
+PHP;
+
+		list($output, $status) = $this->runInBootedCli($probe);
+
+		$printed = implode("\n", $output);
+		$matches = array();
+
+		$this->assertSame(0, $status, "the probe exited ".$status.":\n".$printed);
+		$this->assertSame(1, preg_match('/@@(.*)@@/s', $printed, $matches), "the probe printed no answer:\n".$printed);
+
+		$answer = json_decode($matches[1], true);
+
+		$this->assertFalse($answer['content'], 'a content entry holding the token must not be readable back');
+		$this->assertFalse($answer['files']['content'], 'nor may the file exist');
+		$this->assertFalse($answer['system'], 'set_sys() writes through the same method and is refused too');
+		$this->assertFalse($answer['files']['system'], 'nor may that file exist');
+		$this->assertSame('<a href="index.php?logout">Logout</a>', $answer['control'],
+			'an entry with no token in it is still cached');
 	}
 
 	/**

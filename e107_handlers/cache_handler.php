@@ -224,6 +224,7 @@ class ecache {
 
 
 	/**
+	 * Write data under a tag, unless it carries the session token an entry's key does not distinguish
 	 *
 	 * @param string $CacheTag - name of tag for future retrieval - should NOT contain an MD5. 
 	 * @param string $Data - data to be cached
@@ -235,6 +236,13 @@ class ecache {
 	public function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false)
 	{
 		if(defined('E107_INSTALL') && E107_INSTALL === true)
+		{
+			return null;
+		}
+
+		$token = defset('e_TOKEN');
+
+		if($token !== '' && is_string($Data) && strpos($Data, $token) !== false)
 		{
 			return null;
 		}
