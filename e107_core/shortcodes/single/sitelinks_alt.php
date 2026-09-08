@@ -104,6 +104,8 @@ class sitelinks_alt
 	{
 			$tp = e107::getParser();
 
+			$cat_link = sitelinks::fillToken($cat_link);
+
 		//	$cat_link = (strpos($cat_link, '://') === FALSE && strpos($cat_link, 'mailto:') !== 0 ? e_HTTP.$cat_link : $cat_link);
 			
 			if ($cat_open == 4 || $cat_open == 5)
@@ -140,6 +142,7 @@ class sitelinks_alt
 			
 		//	$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
 			$cat_link = $tp->replaceConstants($cat_link, 'abs', TRUE);
+			$cat_link = sitelinks::fillToken($cat_link);
 			
 			if ($cat_open == 4 || $cat_open == 5)
 			{
