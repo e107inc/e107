@@ -736,15 +736,17 @@ trait ConnectionTrait
 	}
 
 	/**
-	 * Return a sorted list of parent/child tree with an optional where clause.
+	 * Return a sorted parent/child tree with an optional where clause: every row the clause
+	 * admits, in depth-first order, with the sort key as _treesort and the level as _depth.
+	 * The order is computed in PHP from one read of the id, parent and order columns and
+	 * joined back as bound values, so the account needs nothing beyond SELECT on the table.
 	 * @param string $table Name of table (without the prefix)
 	 * @param string $parent Name of the parent field
 	 * @param string $pid  Name of the primary id
-	 * @param string $where (Optional ) where condition. Caller-supplied SQL:
-	 *               never place user input here; bind it with {@see ConnectionInterface::execute()} instead.
 	 * @param string $order Name of the order field.
-	 * @todo Add extra params to each procedure so we only need 2 of them site-wide.
-	 * @return boolean | int with the addition of  _treesort and _depth fields in the results.
+	 * @param string|SqlFragment|null $where (Optional) where condition. A string is caller-supplied SQL:
+	 *               never place user input there; bind values through a {@see SqlFragment} instead.
+	 * @return bool|int row count, the rows readable with {@see ConnectionInterface::fetch()}; false on error
 	 */
 	public function selectTree($table, $parent, $pid, $order, $where=null)
 	{
@@ -763,77 +765,51 @@ trait ConnectionTrait
 			return $this->_refuse("invalid identifier in sql->selectTree()");
 		}
 
-		$sql = "DROP FUNCTION IF EXISTS `getDepth` ;";
+		$read = $this->createQueryBuilder()->selectAs($pid, 'id')->selectAs($parent, 'parent')->selectAs($order, 'ordering')->from($table);
 
-		$this->gen($sql);
-
-		$sql = "
-		CREATE FUNCTION `getDepth` (project_id INT) RETURNS int
-		BEGIN
-		    DECLARE depth INT;
-		    SET depth=1;
-
-		    WHILE project_id > 0 DO
-
-		        SELECT IFNULL(".$parent.",-1)
-		        INTO project_id
-		        FROM ( SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." = project_id) AS t;
-
-		        IF project_id > 0 THEN
-		            SET depth = depth + 1;
-		        END IF;
-
-		    END WHILE;
-
-		    RETURN depth;
-
-		END
-		;
-		";
-
-
-		$this->gen($sql);
-
-		$sql = "DROP FUNCTION IF EXISTS `getTreeSort`;";
-
-		$this->gen($sql);
-
-        $sql = "
-        CREATE FUNCTION getTreeSort(incid INT)
-        RETURNS CHAR(255)
-        BEGIN
-                SET @parentstr = CONVERT(incid, CHAR);
-                SET @parent = -1;
-                label1: WHILE @parent != 0 DO
-                        SET @parent = (SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." =incid);
-                        SET @order = (SELECT ".$order." FROM `#".$table."` WHERE ".$pid." =incid);
-                        SET @parentstr = CONCAT(if(@parent = 0,'',@parent), LPAD(@order,4,0), @parentstr);
-                        SET incid = @parent;
-                END WHILE label1;
-
-                RETURN @parentstr;
-        END
-   ;
-
-        ";
-
-
-        $this->gen($sql);
-
-        $qry =  "SELECT SQL_CALC_FOUND_ROWS *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
-
-		if($where !== null)
+		if($read->execute() === false)
 		{
-			$qry .= " WHERE ".$where;
+			return false;
 		}
 
+		$nodes = array();
 
-		$qry .= " ORDER BY _treesort";
+		while($row = $this->fetch())
+		{
+			$nodes[(int) $row['id']] = array('parent' => $row['parent'], 'order' => $row['ordering']);
+		}
 
+		if(!class_exists(TreeOrder::class))
+		{
+			require_once(__DIR__.'/TreeOrder.php');
+		}
 
-		return $this->gen($qry);
+		$positions = array();
 
+		foreach(TreeOrder::positions($nodes) as $id => $position)
+		{
+			$positions[] = array($id, $position['sort'], $position['depth']);
+		}
 
+		$qb = $this->createQueryBuilder();
+		$qb->select($this->resolveTableName($table).'.*', '_tree._treesort', '_tree._depth')
+			->from($table)
+			->joinValues(array('_treeid', '_treesort', '_depth'), $positions, '_tree', $qb->expr()->compareColumns('_tree._treeid', $pid))
+			->orderBy('_tree._treesort');
+
+		if($where instanceof SqlFragment)
+		{
+			$qb->where($where);
+		}
+		elseif($where !== null && $where !== '')
+		{
+			$qb->where($qb->raw($where));
+		}
+
+		$found = $qb->execute();
+		$this->total_results = $found;
+
+		return $found;
 	}
 
 	/**

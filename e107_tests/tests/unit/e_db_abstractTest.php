@@ -720,6 +720,80 @@ abstract class e_db_abstractTest extends \Test\Unit
 	}
 
 	/**
+	 * selectTree() orders the rows depth first with siblings in order-column order, reports each
+	 * row's level, applies the caller's where clause to the rows and not to the tree they sit in,
+	 * and needs nothing beyond SELECT on the table: no routine is created, so it runs for an
+	 * account without CREATE ROUTINE, or without SUPER on a binary-logging MySQL 8. Roots 1 and
+	 * 10 share an order, so a key built from the bare id would put 10's subtree among 1's children.
+	 */
+	public function testSelectTreeOrdersDepthFirstWithoutRoutines()
+	{
+		$db = $this->db;
+		$db->execute('DROP TABLE IF EXISTS `#tree`');
+		$db->execute('CREATE TABLE `#tree` (id int NOT NULL PRIMARY KEY, parent int NOT NULL, ordering int NOT NULL, grade int NOT NULL)');
+		$db->execute('INSERT INTO `#tree` (id, parent, ordering, grade) VALUES'
+			.' (1, 0, 1, 10), (2, 1, 2, 20), (3, 1, 1, 30), (4, 3, 1, 60), (10, 0, 1, 40), (11, 10, 1, 50)');
+		$db->resetTableList();
+
+		$found = $db->selectTree('tree', 'parent', 'id', 'ordering');
+		$error = (string) $db->getLastErrorText();
+		$rows = array();
+
+		while($row = $db->fetch())
+		{
+			$rows[(int) $row['id']] = $row;
+		}
+
+		$this->assertSame('', $error);
+		$this->assertSame(6, $found);
+		$this->assertSame(6, $db->foundRows());
+		$this->assertSame(array(1, 3, 4, 2, 10, 11), array_keys($rows));
+		$this->assertSame(array(1, 2, 3, 2, 1, 2), array_values(array_map('intval', array_column($rows, '_depth'))));
+		$this->assertStringStartsWith($rows[1]['_treesort'], $rows[3]['_treesort']);
+		$this->assertStringStartsWith($rows[3]['_treesort'], $rows[4]['_treesort']);
+		$this->assertArrayNotHasKey('_treeid', $rows[1]);
+		$this->assertSame('30', (string) $rows[3]['grade']);
+
+		$found = $db->selectTree('tree', 'parent', 'id', 'ordering',
+			\e107\Database\SqlFragment::raw('grade > :floor', array('floor' => 25)));
+		$error = (string) $db->getLastErrorText();
+		$ids = array();
+		$depths = array();
+
+		while($row = $db->fetch())
+		{
+			$ids[] = (int) $row['id'];
+			$depths[] = (int) $row['_depth'];
+		}
+
+		$this->assertSame('', $error);
+		$this->assertSame(4, $found);
+		$this->assertSame(array(3, 4, 10, 11), $ids);
+		$this->assertSame(array(2, 3, 1, 2), $depths);
+
+		$found = $db->selectTree('tree', 'parent', 'id', 'ordering', 'grade > 55');
+		$ids = array();
+
+		while($row = $db->fetch())
+		{
+			$ids[] = (int) $row['id'];
+		}
+
+		$this->assertSame(1, $found);
+		$this->assertSame(array(4), $ids);
+
+		$db->execute('DELETE FROM `#tree`');
+		$found = $db->selectTree('tree', 'parent', 'id', 'ordering');
+		$error = (string) $db->getLastErrorText();
+		$row = $db->fetch();
+		$db->execute('DROP TABLE IF EXISTS `#tree`');
+
+		$this->assertSame('', $error);
+		$this->assertSame(0, $found);
+		$this->assertFalse($row);
+	}
+
+	/**
 	 * select(), count(), delete() and fields() interpolate the table name unquoted into FROM, DELETE FROM or SHOW COLUMNS FROM, so a table name outside the identifier grammar has to fail closed on both backends.
 	 */
 	public function testCrudEntryPointsRejectHostileTableIdentifier()
