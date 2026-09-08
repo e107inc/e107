@@ -175,6 +175,9 @@ abstract class e_db_abstractTest extends \Test\Unit
 	}
 
 	/**
+	 * The server tells an account that could see the database that it does not exist (1049),
+	 * and any other account that access is denied (1044); either is the driver's number.
+	 *
 	 * @see https://github.com/e107inc/e107/issues/6040
 	 */
 	public function testARefusedDatabaseSelectionRecordsTheDriverErrorNumber()
@@ -183,7 +186,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 		$this->assertFalse($this->db->database('missing_database'),
 			'precondition: the database selection has to be refused');
-		$this->assertSame(1049, $this->db->getLastErrorNumber(),
+		$this->assertContains($this->db->getLastErrorNumber(), array(1044, 1049),
 			'a refused database selection has to report the driver error number');
 		$this->assertNotSame('', $this->db->getLastErrorText(),
 			'a refused database selection has to report the driver error text');
