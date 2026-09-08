@@ -855,50 +855,50 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 
 
 // e_QUERY not defined in single entry mod
-if (logout_refused())
+if (e107::getUser()->isUser())
 {
-	e107::getMessage()->addError(defset('LAN_LOGOUT_REFUSED_TOKEN_MISSING', 'You have not been logged out, because that link carried no security token. Use the logout link in this site\'s own menu rather than a bookmark or a link on another site.'));
-}
-elseif (logout_requested())
-{
-	if (USER)
+	if (logout_refused())
+	{
+		e107::getMessage()->addError(defset('LAN_LOGOUT_REFUSED_TOKEN_MISSING', 'You have not been logged out, because that link carried no security token. Use the logout link in this site\'s own menu rather than a bookmark or a link on another site.'));
+	}
+	elseif (logout_requested())
 	{
 		if (check_class(varset($pref['user_audit_class']))) // Need to note in user audit trail
 		{
-			e107::getLog()->user_audit(USER_AUDIT_LOGOUT, null, USERID, USERNAME);
+			e107::getLog()->user_audit(USER_AUDIT_LOGOUT, null, e107::getUser()->getId(), e107::getUser()->getName());
 		}
-	}
 
-	// $ip = e107::getIPHandler()->getIP(false);			Appears to not be used, so removed
-	$udata = (USER === true ? USERID.'.'.USERNAME : '0');
+		// $ip = e107::getIPHandler()->getIP(false);			Appears to not be used, so removed
+		$udata = e107::getUser()->getId().'.'.e107::getUser()->getName();
 
-	// TODO - should be done inside online handler, more core areas need it (session handler for example)
-	if (isset($pref['track_online']) && $pref['track_online'])
-	{
-		$sql->createQueryBuilder()->update('online')->set('online_user_id', 0)->increment('online_pagecount')->where('online_user_id', $udata)->execute();
-	}
+		// TODO - should be done inside online handler, more core areas need it (session handler for example)
+		if (isset($pref['track_online']) && $pref['track_online'])
+		{
+			$sql->createQueryBuilder()->update('online')->set('online_user_id', 0)->increment('online_pagecount')->where('online_user_id', $udata)->execute();
+		}
 	
-	// earlier event trigger with user data still available 
-	e107::getEvent()->trigger('logout');
+		// earlier event trigger with user data still available 
+		e107::getEvent()->trigger('logout');
 
-	$go = e107::getRedirect();
-	$prev = $go->getPreviousUrl();
+		$go = e107::getRedirect();
+		$prev = $go->getPreviousUrl();
 
-	// first model logout and session destroy..
-	e107::getUser()->logout();
+		// first model logout and session destroy..
+		e107::getUser()->logout();
 
-	cookie(e_COOKIE, '', (time() - 2592000));
+		cookie(e_COOKIE, '', (time() - 2592000));
 
-	if($prev) // allow scripts to set the logged out URL via setPreviousUrl()
-	{
-		$go->redirect($prev);
+		if($prev) // allow scripts to set the logged out URL via setPreviousUrl()
+		{
+			$go->redirect($prev);
+		}
+		else
+		{
+			$go->redirect(SITEURL);
+		}
+
+		exit();
 	}
-	else
-	{
-		$go->redirect(SITEURL);
-	}
-
-	exit();
 }
 
 
