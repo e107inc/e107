@@ -58,6 +58,15 @@ class ForcedLogoutCsrfCest
 	/** Where a theme publishes its user menu, and so its logout link. */
 	const FRONT_PAGE = '/index.php';
 
+	/** Table every visitor on the site has a row in while track_online is on. */
+	const ONLINE_TABLE = 'e107_online';
+
+	/** What online_user_id holds for a guest, whoever the guest is. */
+	const ONLINE_GUEST = '0';
+
+	/** RFC 5737 documentation address, so the row can only be the seeded one. */
+	const BYSTANDER_IP = '203.0.113.7';
+
 	/** The user list, and the route the impersonation is ended on. */
 	const USER_LIST = '/e107_admin/users.php?mode=main';
 
@@ -257,6 +266,62 @@ class ForcedLogoutCsrfCest
 	}
 
 	/**
+	 * Nobody who is not signed in can be signed out, so a guest's `?logout` has
+	 * nothing to refuse and nothing to say about a security token.
+	 */
+	public function aGuestIsToldNothingAboutATokenTheyWereNeverAskedFor(AcceptanceTester $I)
+	{
+		$I->resetAllCookies();
+
+		$I->amOnPage(self::FRONT_PAGE . '?logout');
+
+		$I->seeResponseCodeIs(200);
+		$I->dontSeeInSource(self::REFUSED);
+		$I->dontSeeInSource(self::UNAUTHORIZED);
+	}
+
+	/**
+	 * A guest carrying a token the site itself published used to reach the
+	 * logout in full. `online_user_id` is '0' for every guest on the site, and
+	 * the row the branch rewrote was matched on that value, so one visitor's
+	 * `?logout` incremented `online_pagecount` for all of them. That column is
+	 * what {@see e_online::goOnline()} auto-bans a guest address on.
+	 *
+	 * The bystander is seeded rather than browsed for, because the suite reaches
+	 * the site from one address and a table-wide write is only visible against a
+	 * row that address could not have touched.
+	 */
+	public function aGuestsTokenisedLogoutLeavesEveryOnlineRowAlone(AcceptanceTester $I)
+	{
+		$I->resetAllCookies();
+		$I->haveInDatabase(self::ONLINE_TABLE, array(
+			'online_timestamp' => time(),
+			'online_flag'      => 0,
+			'online_user_id'   => self::ONLINE_GUEST,
+			'online_ip'        => self::BYSTANDER_IP,
+			'online_location'  => self::FRONT_PAGE,
+			'online_pagecount' => 5,
+			'online_active'    => 0,
+			'online_agent'     => __CLASS__,
+			'online_language'  => 'en',
+		));
+
+		$before = $I->grabFromDatabase(self::ONLINE_TABLE, 'online_pagecount',
+			array('online_ip' => self::BYSTANDER_IP));
+
+		$token = $this->guestToken($I);
+
+		$I->stopFollowingRedirects();
+		$I->amOnPage(self::FRONT_PAGE . '?logout&e-token=' . $token);
+		$I->startFollowingRedirects();
+
+		$I->assertSame($before, $I->grabFromDatabase(self::ONLINE_TABLE, 'online_pagecount',
+			array('online_ip' => self::BYSTANDER_IP)),
+			'a logout nobody was signed in for must not touch another visitor\'s row');
+		$I->seeResponseCodeIs(200);
+	}
+
+	/**
 	 * usersettings.php redirects a visitor who holds no session, so the page it
 	 * answers with says whether one is still standing. Asked of the application
 	 * rather than of a page marker, so the oracle reads the same for the main
@@ -321,6 +386,27 @@ class ForcedLogoutCsrfCest
 		$I->amOnPage(self::FRONT_PAGE);
 
 		return $this->publishedLogoutLink($I, '#["\']([^"\']*index\.php\?logout[^"\']*)["\']#');
+	}
+
+	/**
+	 * A guest is handed a token like anybody else, in the head of every page and
+	 * in any form the theme renders, so obtaining one costs an attacker a page
+	 * view.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return string a token the guest's own session will accept
+	 */
+	private function guestToken(AcceptanceTester $I)
+	{
+		$I->amOnPage(self::FRONT_PAGE);
+
+		if(!preg_match('#name=[\'"]e-token[\'"][^>]*\s(?:content|value)=[\'"]([^\'"]+)[\'"]#',
+			$I->grabPageSource(), $matches))
+		{
+			throw new \RuntimeException('The front page published no token for a guest');
+		}
+
+		return $matches[1];
 	}
 
 	/**
