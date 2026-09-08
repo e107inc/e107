@@ -267,8 +267,7 @@ class admin_history_form_ui extends e_admin_form_ui
 			$restoreTitle = LAN_HISTORY_RESTORE_RECORD_BUTTON;
 
 			$type = $row['history_action'];
-			$name = ($type === 'delete') ? "restore_deleted[$id]" : "restore_updated[$id]";
-		
+			$name = ($type === 'delete') ? "restore_deleted[$id]" : "restore_updated[$id]";		
 			$text .= "<button class='btn btn-primary' type='submit' name='$name' title='".e107::getParser()->toAttribute($restoreTitle)."'><i class='admin-ui-option fa fa-undo fa-2x fa-fw'></i></button>";
 		}
 
