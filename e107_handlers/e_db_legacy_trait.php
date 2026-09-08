@@ -393,3 +393,79 @@
 			return false;
 		}
 	}
+
+	/**
+	 * Parent/child tree ordering shared by both database backends
+	 * Trait e_db_tree
+	 */
+	trait e_db_tree
+	{
+		/**
+		 * Return a sorted parent/child tree with an optional where clause: every row the clause
+		 * admits, in depth-first order, with the sort key as _treesort and the level as _depth.
+		 * The order is computed in PHP from one read of the id, parent and order columns and
+		 * joined back as literal rows, so the account needs nothing beyond SELECT on the table.
+		 * @param string $table Name of table (without the prefix)
+		 * @param string $parent Name of the parent field
+		 * @param string $pid  Name of the primary id
+		 * @param string $order Name of the order field.
+		 * @param string $where (Optional) where condition. Caller-supplied SQL: never place user input here.
+		 * @return boolean | integer row count, the rows readable with fetch(); false on error
+		 */
+		public function selectTree($table, $parent, $pid, $order, $where=null)
+		{
+
+			if(empty($table) || empty($parent) || empty($pid))
+			{
+				$this->mySQLlastErrText = "missing variables in sql->selectTree()";
+				return false;
+			}
+
+			if(($table = $this->_safeIdentifier($table)) === false
+				|| ($parent = $this->_safeIdentifier($parent, true)) === false
+				|| ($pid = $this->_safeIdentifier($pid, true)) === false
+				|| ($order = $this->_safeIdentifier($order, true)) === false)
+			{
+				return $this->_refuseIdentifier(__FUNCTION__);
+			}
+
+			if($this->gen("SELECT ".$pid." AS id, ".$parent." AS parent, ".$order." AS ordering FROM `#".$table."` ") === false)
+			{
+				return false;
+			}
+
+			$nodes = array();
+
+			while($row = $this->fetch())
+			{
+				$nodes[(int) $row['id']] = array('parent' => $row['parent'], 'order' => $row['ordering']);
+			}
+
+			if(!class_exists('e107\\Database\\TreeOrder'))
+			{
+				require_once(e_HANDLER.'Database/TreeOrder.php');
+			}
+
+			$arms = array();
+
+			foreach(\e107\Database\TreeOrder::positions($nodes) as $id => $position)
+			{
+				$arms[] = "SELECT ".(int) $id." AS _treeid, '".$position['sort']."' AS _treesort, ".(int) $position['depth']." AS _depth";
+			}
+
+			$tree = count($arms) > 0
+				? "(".implode(" UNION ALL ", $arms).")"
+				: "(SELECT NULL AS _treeid, NULL AS _treesort, NULL AS _depth LIMIT 0)";
+
+			$qry = "SELECT SQL_CALC_FOUND_ROWS `#".$table."`.*, _tree._treesort, _tree._depth FROM `#".$table."` INNER JOIN ".$tree." AS _tree ON _tree._treeid = ".$pid." ";
+
+			if($where !== null && $where !== '')
+			{
+				$qry .= "WHERE ".$where." ";
+			}
+
+			$qry .= "ORDER BY _tree._treesort";
+
+			return $this->gen($qry);
+		}
+	}
