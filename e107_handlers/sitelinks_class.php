@@ -32,6 +32,9 @@ class sitelinks
 	const LINK_DISPLAY_OTHER    = 3;
 	const LINK_DISPLAY_SLIDER   = 4;
 
+	/** The spelling an administrator writes into a stored link_url for {@see sitelinks::fillToken()} to replace */
+	const TOKEN_PLACEHOLDER     = '{E_TOKEN}';
+
 
 	/**
 	 * Build the shared sitelink query: all links visible to the current user's
@@ -407,6 +410,18 @@ class sitelinks
 
 
 	/**
+	 * Fill the {E_TOKEN} placeholder a stored link URL may carry with this session's CSRF token
+	 *
+	 * @param string $url a link_url, after {@see e_parse::replaceConstants()} has run over it
+	 * @return string
+	 */
+	public static function fillToken($url)
+	{
+		return str_replace(self::TOKEN_PLACEHOLDER, defset('e_TOKEN'), $url);
+	}
+
+
+	/**
 	 * @param $linkInfo
 	 * @param $submenu
 	 * @param $style
@@ -453,6 +468,7 @@ class sitelinks
 
 		// Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)
 		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'], TRUE, TRUE); // replace {e_xxxx}
+		$linkInfo['link_url'] = self::fillToken($linkInfo['link_url']);
 
 		if(strpos($linkInfo['link_url'],"{") !== false)
 		{

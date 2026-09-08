@@ -841,6 +841,11 @@ class links_admin_form_ui extends e_admin_form_ui
 				$curVal = e107::getParser()->replaceConstants($curVal,$opt);
 			}
 
+			if($mode == 'link_id')
+			{
+				$curVal = sitelinks::fillToken($curVal);
+			}
+
 			e107::getDebug()->log($curVal);
 
 			return $curVal; //  $this->linkFunctions[$curVal];
