@@ -27,4 +27,6 @@ return [
     'SUBNEWSLAN_9' => "Keywords",
     'SUBNEWSLAN_12' => "Used by Facebook etc.",
     'SUBNEWSLAN_13' => "Media URLs",
+    'SUBNEWSLAN_ATTACH_MIN_DIMENSIONS' => "Minimum dimensions: [x]px × [y]px",
+    'SUBNEWSLAN_ATTACH_TOO_SMALL' => "One of your images has dimensions smaller than [x]px × [y]px. Please correct the attachment and submit the form again.",
 ];
