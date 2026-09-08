@@ -9,10 +9,9 @@ if (!getperms('7'))
 	e107::redirect('admin');
 	exit;
 }
+
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_history.php");
-
 e107::css('inline', " td.history-data pre { max-width: 800px; } }");
-
 
 class history_adminArea extends e_admin_dispatcher
 {
@@ -56,7 +55,7 @@ class history_adminArea extends e_admin_dispatcher
 class admin_history_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'LAN_HISTORY';
+		protected $pluginTitle		= LAN_HISTORY;
 		protected $pluginName		= 'myplugin';
 	//	protected $eventName		= 'myplugin-admin_history'; // remove comment to enable event triggers in admin. 		
 		protected $table			= 'admin_history';
@@ -269,7 +268,8 @@ class admin_history_form_ui extends e_admin_form_ui
 
 			$type = $row['history_action'];
 			$name = ($type === 'delete') ? "restore_deleted[$id]" : "restore_updated[$id]";
-            $text .= "<button class='btn btn-primary' type='submit' name='$name' title='".e107::getParser()->toAttribute($restoreTitle)."'><i class='admin-ui-option fa fa-undo fa-2x fa-fw'></i></button>";
+		
+			$text .= "<button class='btn btn-primary' type='submit' name='$name' title='".e107::getParser()->toAttribute($restoreTitle)."'><i class='admin-ui-option fa fa-undo fa-2x fa-fw'></i></button>";
 		}
 
 		$att['readParms']['editClass'] = 999; // disable it.
