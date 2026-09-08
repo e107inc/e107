@@ -42,6 +42,10 @@ class CookieModeRemovedCest
 		$I->seeInSource('UID=0');
 	}
 
+	/**
+	 * Nobody is signed in here, so nothing is ended and nothing is cleared; see
+	 * {@see CookieModeRemovedCest::signingInAndBackOutClearsTheRetiredCookie()}.
+	 */
 	public function logoutLeavesAnUpgradedCookieModeSiteOnAWorkingLoginForm(AcceptanceTester $I)
 	{
 		$I->wantTo('log out cleanly on a site that was in cookie mode before the upgrade');
@@ -53,7 +57,7 @@ class CookieModeRemovedCest
 		$I->dontSeeInSource('Uncaught');
 
 		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
-		$I->seeInSource('COOKIE=0');
+		$I->seeInSource('COOKIE=1');
 		$I->seeInSource('UID=0');
 
 		$I->amOnPage('/login.php');
@@ -61,6 +65,34 @@ class CookieModeRemovedCest
 		$I->dontSeeInSource('Fatal error');
 		$I->seeElement('input', array('name' => 'username'));
 		$I->seeElement('input', array('name' => 'userpass'));
+	}
+
+	/**
+	 * Where the pre-upgrade cookie actually goes. {@see e_session::destroy()}
+	 * takes it out on every logout, so an upgraded site's visitor is rid of it
+	 * the first time they sign in and back out, which is the only way anybody
+	 * reaches a logout they own.
+	 */
+	public function signingInAndBackOutClearsTheRetiredCookie(AcceptanceTester $I)
+	{
+		$I->wantTo('clear the pre-upgrade auth cookie on its owner\'s own way out');
+
+		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->seeInSource('COOKIE=1');
+
+		$I->amOnPage('/login.php');
+		$I->fillField('username', \Helper\AdminLogin::ADMIN_USER);
+		$I->fillField('userpass', \Helper\AdminLogin::ADMIN_PASS);
+		$I->click('userlogin');
+
+		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->dontSeeInSource('UID=0');
+
+		$I->amOnPage('/index.php?logout&e-token='.$this->grabSessionToken($I));
+
+		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->seeInSource('COOKIE=0');
+		$I->seeInSource('UID=0');
 	}
 
 	public function theLoginFormOffersNoRememberMeControl(AcceptanceTester $I)
