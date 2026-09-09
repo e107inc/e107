@@ -129,6 +129,9 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * The server tells an account that could see the database that it does not exist (1049),
+	 * and any other account that access is denied (1044); either is the driver's number.
+	 *
 	 * @see https://github.com/e107inc/e107/issues/6040
 	 */
 	public function testARefusedDatabaseSelectionRecordsTheDriverErrorNumber()
@@ -137,10 +140,72 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$this->assertFalse($this->db->database('missing_database'),
 			'precondition: the database selection has to be refused');
-		$this->assertSame(1049, $this->db->getLastErrorNumber(),
+		$this->assertContains($this->db->getLastErrorNumber(), array(1044, 1049),
 			'a refused database selection has to report the driver error number');
 		$this->assertNotSame('', $this->db->getLastErrorText(),
 			'a refused database selection has to report the driver error text');
+	}
+
+	/**
+	 * selectTree() orders the rows depth first with siblings in order-column order, reports each
+	 * row's level, applies the caller's where clause to the rows and not to the tree they sit in,
+	 * and needs nothing beyond SELECT on the table: no routine is created, so it runs for an
+	 * account without CREATE ROUTINE, or without SUPER on a binary-logging MySQL 8. Roots 1 and
+	 * 10 share an order, so a key built from the bare id would put 10's subtree among 1's children.
+	 */
+	public function testSelectTreeOrdersDepthFirstWithoutRoutines()
+	{
+		$db = $this->db;
+		$db->gen('DROP TABLE IF EXISTS `#tree`');
+		$db->gen('CREATE TABLE `#tree` (id int NOT NULL PRIMARY KEY, parent int NOT NULL, ordering int NOT NULL, grade int NOT NULL)');
+		$db->gen('INSERT INTO `#tree` (id, parent, ordering, grade) VALUES'
+			.' (1, 0, 1, 10), (2, 1, 2, 20), (3, 1, 1, 30), (4, 3, 1, 60), (10, 0, 1, 40), (11, 10, 1, 50)');
+		$db->resetTableList();
+
+		$found = $db->selectTree('tree', 'parent', 'id', 'ordering');
+		$error = (string) $db->getLastErrorText();
+		$rows = array();
+
+		while($row = $db->fetch())
+		{
+			$rows[(int) $row['id']] = $row;
+		}
+
+		$this->assertSame('', $error);
+		$this->assertSame(6, $found);
+		$this->assertSame(6, $db->foundRows());
+		$this->assertSame(array(1, 3, 4, 2, 10, 11), array_keys($rows));
+		$this->assertSame(array(1, 2, 3, 2, 1, 2), array_values(array_map('intval', array_column($rows, '_depth'))));
+		$this->assertStringStartsWith($rows[1]['_treesort'], $rows[3]['_treesort']);
+		$this->assertStringStartsWith($rows[3]['_treesort'], $rows[4]['_treesort']);
+		$this->assertArrayNotHasKey('_treeid', $rows[1]);
+		$this->assertSame('30', (string) $rows[3]['grade']);
+
+		$found = $db->selectTree('tree', 'parent', 'id', 'ordering', 'grade > 25');
+		$error = (string) $db->getLastErrorText();
+		$ids = array();
+		$depths = array();
+
+		while($row = $db->fetch())
+		{
+			$ids[] = (int) $row['id'];
+			$depths[] = (int) $row['_depth'];
+		}
+
+		$this->assertSame('', $error);
+		$this->assertSame(4, $found);
+		$this->assertSame(array(3, 4, 10, 11), $ids);
+		$this->assertSame(array(2, 3, 1, 2), $depths);
+
+		$db->gen('DELETE FROM `#tree`');
+		$found = $db->selectTree('tree', 'parent', 'id', 'ordering');
+		$error = (string) $db->getLastErrorText();
+		$row = $db->fetch();
+		$db->gen('DROP TABLE IF EXISTS `#tree`');
+
+		$this->assertSame('', $error);
+		$this->assertSame(0, $found);
+		$this->assertFalse($row);
 	}
 
 	public function testDb_Mark_Time()

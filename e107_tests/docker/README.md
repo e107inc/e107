@@ -173,6 +173,10 @@ PHPUnit 5.7), and `check-platform-reqs` is checked on the real interpreter.
 - `up` builds the web image only if it is missing and reuses it otherwise, so a
   previously built or CI-cached image is picked up without a rebuild.
 - Database state lives on tmpfs. `down` is a true reset; no leftover state.
+- The suites, and a site from `up --install-site`, connect as the `e107`
+  account, which holds ALL PRIVILEGES on the one database and no global
+  privilege: what a hosting control panel issues, so a pass here is a pass
+  there. Root exists for `reset`, `sql` and `db-shell` only.
 
 ## State lives in Docker, not in files
 

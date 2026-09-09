@@ -151,8 +151,8 @@ db:
   # Database name; must exist already
   dbname: 'e107'
 
-  # Username; must exist already
-  user: 'root'
+  # Username; must exist already, with ALL PRIVILEGES on the database and nothing global
+  user: 'e107'
 
   # Password; set to blank string for no password
   password: ''
@@ -196,8 +196,8 @@ db:
   # Database name; must exist already
   dbname: 'e107'
 
-  # Username; must exist already
-  user: 'root'
+  # Username; must exist already, with ALL PRIVILEGES on the database and nothing global
+  user: 'e107'
 
   # Password; set to blank string for no password
   password: ''
@@ -305,8 +305,8 @@ db:
   # Database name; must exist already
   dbname: 'e107'
 
-  # Username; must exist already
-  user: 'root'
+  # Username; must exist already, with ALL PRIVILEGES on the database and nothing global
+  user: 'e107'
 
   # Password; set to blank string for no password
   password: ''
