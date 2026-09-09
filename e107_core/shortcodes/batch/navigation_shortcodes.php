@@ -150,6 +150,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 			}
 
 			$url = $tp->replaceConstants($url, 'full', true);
+			$url = sitelinks::fillToken($url);
 
 			if(strpos($url, "{") !== false)
 			{
