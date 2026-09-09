@@ -21,4 +21,5 @@ modules:
         - \Helper\AdminLogin:
         - \Helper\ForumFixture:
         - \Helper\MenuPrefFixture:
+        - \Helper\SitelinkFixture:
         - \Helper\ThemeFixture:

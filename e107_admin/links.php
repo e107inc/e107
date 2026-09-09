@@ -78,7 +78,8 @@ class links_admin_ui extends e_admin_ui
 		'link_category'		=> array('title'=> LAN_TEMPLATE,	'type'=>'dropdown',	'data'=>'str',	'inline'=>true,		'batch'=>true,			'filter'=>true,		'width'=>'auto', 'writeParms'=>array('size'=>'xlarge')),
 
 		'link_parent'		=> array('title'=> LAN_PARENT,		'type' => 'method',		'data'=>'int',		'width'=>'auto',		'batch'=>true,		'filter'=>true,		'thclass'=>'left first', 'writeParms'=>array('size'=>'xlarge')),
-		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
+		'link_preset'		=> array('title'=> LAN_LINKS_PRESET,	'type'=>'method', 'data'=>false, 'nolist'=>true, 'help'=>LAN_LINKS_PRESET_HELP),
+		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge', 'help'=>LAN_LINKS_URL_HELP, 'error'=>LAN_LINKS_URL_REQUIRED),
 		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>LCLAN_107),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
@@ -115,6 +116,30 @@ class links_admin_ui extends e_admin_ui
 	{
 		e107::getCache()->clearAll('content');
 	}	
+
+	public function beforeCreate($new_data, $old_data)
+	{
+		return $this->applyPreset($new_data);
+	}
+
+
+	public function beforeUpdate($new_data, $old_data, $id)
+	{
+		return $this->applyPreset($new_data);
+	}
+
+
+	/**
+	 * @param array $posted the submitted form
+	 * @return array the columns the chosen preset owns, empty when none was chosen
+	 */
+	private function applyPreset($posted)
+	{
+		$writeParms = $this->getFieldAttr('link_preset', 'writeParms', array());
+		$chosen = varset($posted['link_preset']);
+
+		return is_string($chosen) && isset($writeParms['presets'][$chosen]) ? $writeParms['presets'][$chosen] : array();
+	}
 	
 	
 
@@ -140,6 +165,14 @@ class links_admin_ui extends e_admin_ui
 			1 => LCLAN_23, // new window
 			4 => LCLAN_24, // 4 = miniwindow  600x400
 			5 => LINKLAN_1 // 5 = miniwindow  800x600
+		);
+
+		$this->fields['link_preset']['writeParms']['presets'] = array(
+			'logout' => array(
+				'link_name'  => LAN_LOGOUT,
+				'link_url'   => 'index.php?logout&e-token='.sitelinks::TOKEN_PLACEHOLDER,
+				'link_class' => e_UC_MEMBER,
+			),
 		);
 
 
@@ -192,6 +225,17 @@ class links_admin_ui extends e_admin_ui
 	}
 
 
+
+
+	public function EditObserver()
+	{
+		parent::EditObserver();
+
+		if(sitelinks::sefUrl($this->getModel()->getData()) !== '')
+		{
+			unset($this->fields['link_preset']);
+		}
+	}
 
 
 	public function ListAjaxObserver()
@@ -817,6 +861,38 @@ class links_admin_form_ui extends e_admin_form_ui
 			return $this->select('link_sefurl', $opts, $curVal, array('useValues'=>true,'defaultValue'=>'','default'=>'('.LAN_DISABLED.')'));
 		}
 
+	}
+
+	function link_preset($curVal, $mode, $parms = array())
+	{
+		if($mode !== 'write')
+		{
+			return '';
+		}
+
+		$labels = array();
+		$fill   = array();
+
+		foreach(varset($parms['presets'], array()) as $key => $preset)
+		{
+			$labels[$key] = $preset['link_name'];
+
+			foreach($preset as $field => $value)
+			{
+				$fill[$key][$this->name2id($field)] = $value;
+			}
+		}
+
+		$attributes = array(
+			'size'                     => 'xlarge',
+			'data-preset-fill'         => json_encode($fill),
+			'data-preset-fill-confirm' => LAN_LINKS_PRESET_OVERWRITE.' '.LAN_JSCONFIRM,
+		);
+
+		return $this->select_open('link_preset', $attributes)
+			.$this->option('('.LAN_NONE.')', '')
+			.$this->option_multi($labels, '')
+			.$this->select_close();
 	}
 
 	function link_url($curVal,$mode)

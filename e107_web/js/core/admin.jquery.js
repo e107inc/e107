@@ -166,6 +166,66 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		}
 	};
 
+	/**
+	 * Fills a set of fields from the preset its chooser was set to.
+	 *
+	 * @type {{attach: e107.behaviors.presetFill.attach}}
+	 */
+	e107.behaviors.presetFill = {
+		attach: function (context, settings)
+		{
+			$(context).find('select[data-preset-fill]').once('preset-fill').each(function ()
+			{
+				var $chooser = $(this);
+				var presets = $chooser.data('preset-fill') || {};
+				var confirmation = $chooser.attr('data-preset-fill-confirm');
+
+				$chooser.on('change', function ()
+				{
+					var preset = presets[$chooser.val()];
+
+					if(preset === undefined)
+					{
+						return;
+					}
+
+					var targets = [];
+					var occupied = false;
+
+					$.each(preset, function (id, value)
+					{
+						var $target = $('#' + id);
+
+						if($target.length === 0)
+						{
+							return;
+						}
+
+						targets.push({field: $target, value: value});
+
+						if(!$target.is('select') && $target.val() !== '' && $target.val() !== String(value))
+						{
+							occupied = true;
+						}
+					});
+
+					if(occupied && confirmation !== undefined && !window.confirm(confirmation))
+					{
+						$chooser.val('');
+						return;
+					}
+
+					$.each(targets, function (i, target)
+					{
+						target.field.val(target.value).trigger('change');
+					});
+
+					$chooser.val('');
+				});
+			});
+		}
+	};
+
 })(jQuery);
 
 (function (jQuery)

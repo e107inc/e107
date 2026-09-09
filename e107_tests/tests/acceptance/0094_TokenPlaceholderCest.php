@@ -25,9 +25,6 @@ class TokenPlaceholderCest
 	/** Where a bundled theme publishes {NAVIGATION=main}. */
 	const FRONT_PAGE = '/index.php';
 
-	/** Rendered whenever a signed-in visitor reaches usersettings.php. */
-	const SETTINGS_PAGE = '/usersettings.php';
-
 	/** A distinctive fragment of the refusal core answers a tokenless logout with. */
 	const REFUSED = 'no security token';
 
@@ -63,7 +60,7 @@ class TokenPlaceholderCest
 		if($this->linkCreated)
 		{
 			$I->loginAsAdmin();
-			$this->removeLink($I, self::FORM_PROBE);
+			$I->removeSitelink(self::FORM_PROBE);
 			$this->linkCreated = false;
 		}
 	}
@@ -92,13 +89,13 @@ class TokenPlaceholderCest
 		$I->amOnPage(self::FRONT_PAGE);
 
 		$I->dontSeeInSource('{E_TOKEN}');
-		$link = $this->navigationLogoutLink($I);
+		$link = $I->grabNavigationLogoutLink();
 		$I->assertStringContainsString('e-token=', $link, 'the stored placeholder has to reach the href as a token');
 
 		$I->amOnPage($link);
 
 		$I->dontSeeInSource(self::REFUSED);
-		$this->seeSignedOut($I);
+		$I->seeSignedOut();
 	}
 
 	/**
@@ -112,13 +109,13 @@ class TokenPlaceholderCest
 		$I->loginAsAdmin();
 		$I->amOnPage(self::FRONT_PAGE);
 
-		$link = $this->navigationLogoutLink($I);
+		$link = $I->grabNavigationLogoutLink();
 		$I->assertStringNotContainsString('e-token=', $link);
 
 		$I->amOnPage($link);
 
 		$I->seeInSource(self::REFUSED);
-		$this->seeStillSignedIn($I);
+		$I->seeStillSignedIn();
 	}
 
 	/**
@@ -133,19 +130,19 @@ class TokenPlaceholderCest
 
 		$I->loginAsAdmin();
 		$I->amOnPage(self::FRONT_PAGE);
-		$first = $this->navigationLogoutLink($I);
+		$first = $I->grabNavigationLogoutLink();
 
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
 		$I->amOnPage(self::FRONT_PAGE);
-		$second = $this->navigationLogoutLink($I);
+		$second = $I->grabNavigationLogoutLink();
 
 		$I->assertNotSame($first, $second, 'the second session was served the first one\'s token');
 
 		$I->amOnPage($second);
 
 		$I->dontSeeInSource(self::REFUSED);
-		$this->seeSignedOut($I);
+		$I->seeSignedOut();
 	}
 
 	/**
@@ -159,7 +156,7 @@ class TokenPlaceholderCest
 		$I->loginAsAdmin();
 		$I->amOnPage(self::LIST_PATH);
 
-		$I->seeInSource('index.php?logout&e-token='.$this->publishedToken($I));
+		$I->seeInSource('index.php?logout&e-token='.$I->grabPublishedToken());
 	}
 
 	/**
@@ -199,34 +196,7 @@ class TokenPlaceholderCest
 		$I->amOnPage('/news.php?extend.'.$id);
 
 		$I->seeInSource(self::PAYLOAD_HOST.'/?t=');
-		$I->dontSeeInSource(self::PAYLOAD_HOST.'/?t='.$this->publishedToken($I));
-	}
-
-	/**
-	 * A row the application created is a row nothing takes back out again, and one
-	 * left in a rendered navigation category would reach every later test. Deletes
-	 * through admin_ui's own trigger, so a run that died before the create still
-	 * lands here without asserting on a row that was never made.
-	 *
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 * @return void
-	 */
-	private function removeLink(AcceptanceTester $I, $name)
-	{
-		if($I->grabNumRecords('e107_links', array('link_name' => $name)) === 0)
-		{
-			return;
-		}
-
-		$id = (int) $I->grabFromDatabase('e107_links', 'link_id', array('link_name' => $name));
-
-		$I->sendPostRequest(self::LIST_PATH, array(
-			'etrigger_delete' => array($id => $id),
-			'e-token'         => $I->grabFreshAdminToken(self::LIST_PATH),
-		));
-
-		$I->dontSeeInDatabase('e107_links', array('link_name' => $name));
+		$I->dontSeeInSource(self::PAYLOAD_HOST.'/?t='.$I->grabPublishedToken());
 	}
 
 	/**
@@ -252,63 +222,5 @@ class TokenPlaceholderCest
 			'link_rel'         => '',
 			'link_owner'       => '',
 		);
-	}
-
-	/**
-	 * The navigation publishes an absolute URL, which is what tells the seeded link
-	 * apart from the root-relative one a theme's own user menu draws.
-	 *
-	 * @param AcceptanceTester $I
-	 * @return string path to follow, as the navigation published it
-	 */
-	private function navigationLogoutLink(AcceptanceTester $I)
-	{
-		$matches = array();
-
-		if(!preg_match('#["\']https?://[^"\']*?(index\.php\?logout[^"\']*)["\']#', $I->grabPageSource(), $matches))
-		{
-			throw new \RuntimeException('The navigation published no absolute logout link');
-		}
-
-		return '/'.str_replace('&amp;', '&', $matches[1]);
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @return string the token this session is publishing on this page
-	 */
-	private function publishedToken(AcceptanceTester $I)
-	{
-		$matches = array();
-
-		if(!preg_match('#<meta name="e-token" content="([^"]+)"#', $I->grabPageSource(), $matches))
-		{
-			throw new \RuntimeException('The page published no e-token');
-		}
-
-		return $matches[1];
-	}
-
-	/**
-	 * usersettings.php redirects a visitor who holds no session, so the page it
-	 * answers with says whether one is still standing.
-	 *
-	 * @param AcceptanceTester $I
-	 * @return void
-	 */
-	private function seeStillSignedIn(AcceptanceTester $I)
-	{
-		$I->amOnPage(self::SETTINGS_PAGE);
-		$I->seeInCurrentUrl(self::SETTINGS_PAGE);
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @return void
-	 */
-	private function seeSignedOut(AcceptanceTester $I)
-	{
-		$I->amOnPage(self::SETTINGS_PAGE);
-		$I->dontSeeCurrentUrlEquals(self::SETTINGS_PAGE);
 	}
 }
