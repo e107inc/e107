@@ -847,6 +847,79 @@ use e107\Reflection\ReflectionMethod;
 			});
 		}
 
+		public function testJoinValues()
+		{
+			$qb = $this->makeQb();
+			$qb->select('c.*', 'p.rank')
+				->from('download_category', 'c')
+				->joinValues(array('id', 'rank'), array(array(3, 1), array(7, 2)), 'p',
+					$qb->expr()->compareColumns('p.id', 'c.download_category_id'))
+				->orderBy('p.rank');
+
+			$this->assertSame(
+				'SELECT `c`.*, `p`.`rank` FROM `e107_download_category` AS `c`'
+				.' INNER JOIN (SELECT :qb1 AS `id`, :qb2 AS `rank` UNION ALL SELECT :qb3, :qb4) AS `p`'
+				.' ON `p`.`id` = `c`.`download_category_id` ORDER BY `p`.`rank` ASC',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 3, 'qb2' => 1, 'qb3' => 7, 'qb4' => 2), $qb->getParameters());
+
+			// no rows is an empty table of the same columns, so the join still compiles
+			$qb = $this->makeQb();
+			$qb->select('c.*')->from('download_category', 'c')
+				->joinValues(array('id', 'rank'), array(), 'p', $qb->expr()->compareColumns('p.id', 'c.download_category_id'));
+
+			$this->assertSame(
+				'SELECT `c`.* FROM `e107_download_category` AS `c`'
+				.' INNER JOIN (SELECT NULL AS `id`, NULL AS `rank` LIMIT 0) AS `p`'
+				.' ON `p`.`id` = `c`.`download_category_id`',
+				$qb->getSQL()
+			);
+			$this->assertSame(array(), $qb->getParameters());
+
+			// the bound values sit beside the query's own, numbered by the one owner
+			$qb = $this->makeQb();
+			$qb->select('c.*')->from('download_category', 'c')
+				->joinValues(array('id'), array(array(3)), 'p', $qb->expr()->compareColumns('p.id', 'c.download_category_id'))
+				->where('c.download_category_class', 0);
+
+			$this->assertSame(array('qb1' => 3, 'qb2' => 0), $qb->getParameters());
+
+			$self = $this;
+
+			// a row that is not one value per column
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$qb = $self->makeQb();
+				$qb->select('c.*')->from('download_category', 'c')
+					->joinValues(array('id', 'rank'), array(array(3)), 'p', $qb->expr()->compareColumns('p.id', 'c.download_category_id'));
+			});
+
+			// no columns at all
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$qb = $self->makeQb();
+				$qb->select('c.*')->from('download_category', 'c')
+					->joinValues(array(), array(), 'p', $qb->expr()->compareColumns('p.id', 'c.download_category_id'));
+			});
+
+			// a column name outside the identifier grammar
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$qb = $self->makeQb();
+				$qb->select('c.*')->from('download_category', 'c')
+					->joinValues(array('id) FROM x; --'), array(array(1)), 'p', $qb->expr()->compareColumns('p.id', 'c.download_category_id'));
+			});
+
+			// a bare-string condition, as for every join
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$qb = $self->makeQb();
+				$qb->select('c.*')->from('download_category', 'c')
+					->joinValues(array('id'), array(array(1)), 'p', 'p.id = c.download_category_id');
+			});
+		}
+
 		public function testMultiRowInsertAndModifiers()
 		{
 			$qb = $this->makeQb();

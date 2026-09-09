@@ -434,12 +434,16 @@ deployer: 'local'
 # The path component follows --base-path: the container aliases it onto the
 # same docroot, so a subdirectory install needs no separate deployment.
 url: '$(base_url)'
+# The suites connect as the site's own account, which holds ALL PRIVILEGES on
+# this one database and nothing global: the grant a hosting control panel
+# issues, so what passes here passes on such a host. Only the harness's own
+# reset, sql and db-shell commands use root.
 db:
   host: 'db'
   port: '3306'
   dbname: '$DEFAULT_DB_NAME'
-  user: 'root'
-  password: '$DEFAULT_DB_ROOT_PASSWORD'
+  user: '$DEFAULT_DB_USER'
+  password: '$DEFAULT_DB_PASSWORD'
   populate: true
   dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
 # WebDriver suite drives the dedicated 'selenium' service over the compose
@@ -693,8 +697,8 @@ install_site() {
     compose_p exec -T web sh -euc "
         SITE_PATH=\$(php -r 'echo substr(md5(\"$DEFAULT_DB_NAME.e107_\"), 0, 10);')
         sed -e 's/{{ mySQLserver }}/db/' \
-            -e 's/{{ mySQLuser }}/root/' \
-            -e 's/{{ mySQLpassword }}/$DEFAULT_DB_ROOT_PASSWORD/' \
+            -e 's/{{ mySQLuser }}/$DEFAULT_DB_USER/' \
+            -e 's/{{ mySQLpassword }}/$DEFAULT_DB_PASSWORD/' \
             -e 's/{{ mySQLdefaultdb }}/$DEFAULT_DB_NAME/' \
             -e 's/{{ mySQLprefix }}/e107_/' \
             -e \"s/000000test/\$SITE_PATH/\" \

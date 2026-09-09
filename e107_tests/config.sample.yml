@@ -49,8 +49,10 @@ db:
   # Database name; must exist already
   dbname: 'e107'
 
-  # Username; must exist already
-  user: 'root'
+  # Username; must exist already. Give it ALL PRIVILEGES on the database above
+  # and nothing global, the grant a hosting control panel issues: the suites
+  # must pass with that and no more, so do not point them at root.
+  user: 'e107'
 
   # Password; set to blank string for no password
   password: ''

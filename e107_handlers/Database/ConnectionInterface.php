@@ -1132,16 +1132,20 @@ use PDOStatement;
 
 		/**
 		 * Return a sorted parent/child tree with generated _treesort and _depth
-		 * fields, using temporary SQL functions.
+		 * fields: every row the where clause admits, in depth-first order with
+		 * siblings in order-field order, each with its sort key and its level.
+		 * Needs nothing beyond SELECT on the table; every row's position travels
+		 * in the statement, which suits a table of thousands of rows.
 		 *
 		 * @param string $table table name without the prefix; fails closed
 		 *                      outside the identifier grammar
 		 * @param string $parent parent-id field name
 		 * @param string $pid primary-id field name
 		 * @param string $order order field name
-		 * @param string $where optional WHERE clause. Caller-supplied SQL: never
-		 *                      place user input here
-		 * @return bool|int
+		 * @param string|SqlFragment|null $where optional WHERE clause. A string is
+		 *                      caller-supplied SQL: never place user input there;
+		 *                      bind values through a {@see SqlFragment} instead
+		 * @return bool|int row count, the rows readable with {@see ConnectionInterface::fetch()}; false on error
 		 */
 		public function selectTree($table, $parent, $pid, $order, $where = null);
 
