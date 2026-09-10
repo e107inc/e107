@@ -36,5 +36,10 @@ return [
     'BNRLAN_48' => "All selected campaigns (no box rendering)",
     'BNRLAN_50' => "Local",
     'BNRLAN_51' => "Remote",
+    'BNRLAN_HELP_IMPRESSIONS' => "0 = Unlimited",
+    'BNRLAN_HELP_KEYWORDS' => "When news or pages are loaded, this will limit banner result to matching keywords. Use with caution.",
     'BNRLAN_HELP_02' => "Use this plugin to manage advertising on your website.[br][br]When creating a new banner you can create a username and password for your client to login and check the progress of the campaign. [br][br]You can enable the banner menu using the menu manager and perform further configuration from there.",
-];
+    'BNRLAN_PLACEHOLDER_REMOTE_TEXT' => "This will override any local image you have set.",
+    'BNRLAN_PLACEHOLDER_OR_NEW_CLIENT' => "Or enter a new client",
+    'BNRLAN_PLACEHOLDER_OR_ENTER_CAMPAIGN' => "Enter a campaign name",
+    ];
