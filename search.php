@@ -892,7 +892,14 @@ class search_front extends e_shortcode
 						$res_display = "";
 					}
 					
-					$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".(isset($_GET[$advanced_caption['id']]) ? $advanced_caption['title'][$_GET[$advanced_caption['id']]] : $this->search_info[$key]['qtype']), $text, 'search_result');
+					$caption = array_map('strval', array(
+						LAN_SEARCH_11,
+						$res_display,
+						LAN_SEARCH_13,
+						isset($_GET[$advanced_caption['id']]) ? $advanced_caption['title'][$_GET[$advanced_caption['id']]] : $this->search_info[$key]['qtype']
+					));
+
+					$ns->tablerender(implode(" ", array_filter($caption, 'strlen')), $text, 'search_result');
 				}
 
 			}

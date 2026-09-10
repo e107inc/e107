@@ -29,7 +29,7 @@ class _blank_search extends e_search // include plugin-folder in the name.
 								'author'=> array('type'	=> 'author',	'text' => LAN_SEARCH_61)
 							),
 							
-			'return_fields'	=> array('blank_id', 'blank_name', 'blank_folder', 'blank_datestamp'),
+			'return_fields'	=> array('blank_id', 'blank_nick', 'blank_message', 'blank_datestamp'),
 			'search_fields'	=> array('blank_name' => '1', 'blank_folder' => '1'), // fields and weights.
 			
 			'order'			=> array('blank_datestamp' => 'DESC'),
@@ -52,7 +52,7 @@ class _blank_search extends e_search // include plugin-folder in the name.
 		$res = array();
 	
 		$res['link'] 		= e_PLUGIN."blank_menu/_blank.php?".$row['blank_id'].".fs";
-		$res['pre_title'] 	= LAN_SEARCH_7;
+		$res['pre_title'] 	= LAN_SEARCH_7." ";
 		$res['title'] 		= $user[2];
 		$res['summary'] 	= $row['blank_message'];
 		$res['detail'] 		= $tp->toDate($row['blank_datestamp'], "long");
