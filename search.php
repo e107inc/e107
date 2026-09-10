@@ -162,12 +162,13 @@ class search_front extends e_shortcode
 		{
 			$text .= "<button class='btn btn-primary dropdown-toggle' tabindex='-1' data-toggle='dropdown' data-bs-toggle='dropdown' type='button'>";
 
-			if(defined('BOOTSTRAP') && BOOTSTRAP !== 4)
+			if(defined('BOOTSTRAP') && (int) BOOTSTRAP < 4)
 			{
-				$text .= "<span class='caret'></span></button>";
+				$text .= "<span class='caret'></span>";
 			}
 
-			$text .= '<ul class="dropdown-menu dropdown-menu-end pull-right">
+			$text .= '</button>
+			<ul class="dropdown-menu dropdown-menu-end dropdown-menu-right pull-right">
 	          <li><a class="dropdown-item e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
 	        </ul>';
 		}
@@ -265,7 +266,7 @@ class search_front extends e_shortcode
 
 		if ($this->search_prefs['selector'] == 2) 
 		{
-			$dropdown = "<select name='t' id='t' class='tbox form-control e-ajax' data-src='".e_SELF."' data-target='search-advanced' >";
+			$dropdown = "<select name='t' id='t' class='tbox form-control form-select e-ajax' data-src='".e_SELF."' data-target='search-advanced' >";
 			
 			if ($this->search_prefs['multisearch']) 
 			{
@@ -434,7 +435,7 @@ class search_front extends e_shortcode
 					if ($adv_value['type'] == 'dropdown') 
 					{
 						$vars['SEARCH_ADV_A'] = $adv_value['text'];
-						$vars['SEARCH_ADV_B'] = "<select name='".$adv_key."' class='tbox form-control'>";
+						$vars['SEARCH_ADV_B'] = "<select name='".$adv_key."' class='tbox form-control form-select'>";
 						
 						foreach ($adv_value['list'] as $list_item) 
 						{
@@ -449,13 +450,13 @@ class search_front extends e_shortcode
 						
 						<div class='form-inline row row-cols-lg-auto g-3'>
 						<div class='col col-sm-3'>
-							<select id='on' name='on' class='tbox form-control'>
+							<select id='on' name='on' class='tbox form-control form-select'>
 							<option value='new' ".($_GET['on'] == 'new' ? "selected='selected'" : "").">".LAN_SEARCH_34."</option>
 							<option value='old' ".($_GET['on'] == 'old' ? "selected='selected'" : "").">".LAN_SEARCH_35."</option>
 							</select>&nbsp;
 						</div>
 						<div class='col'>
-							<select id='time' name='time' class='tbox form-control'>";
+							<select id='time' name='time' class='tbox form-control form-select'>";
 						
 						$time = array(LAN_SEARCH_36 => 'any', LAN_SEARCH_37 => 86400, LAN_SEARCH_38 => 172800, LAN_SEARCH_39 => 259200, LAN_SEARCH_40 => 604800, LAN_SEARCH_41 => 1209600, LAN_SEARCH_42 => 1814400, LAN_SEARCH_43 => 2628000, LAN_SEARCH_44 => 5256000, LAN_SEARCH_45 => 7884000, LAN_SEARCH_46 => 15768000, LAN_SEARCH_47 => 31536000, LAN_SEARCH_48 => 63072000, LAN_SEARCH_49 => 94608000);
 						
