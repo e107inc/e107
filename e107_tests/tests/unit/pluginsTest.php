@@ -237,11 +237,6 @@
 
 			$errors = [];
 
-			// 'NUL' is the null device on Windows only. Everywhere else it is an
-			// ordinary relative path, so redirecting to it drops a stray 'NUL'
-			// file into the docroot on every run.
-			$nullDevice = (DIRECTORY_SEPARATOR === '\\') ? 'NUL' : '/dev/null';
-
 			foreach($core as $plug)
 			{
 				$path = realpath(e107::getFolder('plugins') . $plug);
@@ -299,17 +294,9 @@
 					fwrite(STDOUT, " - $relativePath\n");
 				}
 
-				// Build the command
 				$requireStatements = '';
 				$firstFilePath = reset($pluginFiles);
 				$e107Root = realpath(dirname($firstFilePath) . '/../../');
-				$class2Path = $e107Root . '/class2.php';
-				if($class2Path === false || !file_exists($class2Path))
-				{
-					fwrite(STDOUT, "Error: Could not locate class2.php at $class2Path\n");
-					$errors[] = "Error: Could not locate class2.php for plugin {$plug}";
-					continue;
-				}
 				$lanAdminPath = $e107Root . '/e107_languages/English/admin/lan_admin.php';
 				if(!file_exists($lanAdminPath))
 				{
@@ -318,86 +305,23 @@
 					continue;
 				}
 
-				$requireStatements .= "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-				$requireStatements .= "require_once ('" . addslashes($class2Path) . "'); ";
 				$requireStatements .= "e107::includeLan( '" . addslashes($lanAdminPath) . "'); ";
 				$requireStatements .= "e107::plugLan('" . addslashes($plug) . "', 'global'); ";
 				$requireStatements .= "e107::getConfig()->setPref('plug_installed/" . addslashes($plug) . "', 1); ";
 				foreach($pluginFiles as $relativePath => $filePath)
 				{
-					$requireStatements .= "echo 'START: " . addslashes($relativePath) . "\\n'; ";
+					$requireStatements .= "echo PHP_EOL, 'START: " . addslashes($relativePath) . "', PHP_EOL; ";
 					$requireStatements .= "require_once '" . addslashes($filePath) . "'; ";
-					$requireStatements .= "echo 'END: " . addslashes($relativePath) . "\\n'; ";
+					$requireStatements .= "echo PHP_EOL, 'END: " . addslashes($relativePath) . "', PHP_EOL; ";
 				}
-				$runCommand = sprintf('php -r %s 1>%s 2>&1', escapeshellarg($requireStatements), $nullDevice);
 
-			//	fwrite(STDOUT, "Debug run command:\n$runCommand\n\n\n\n");
+				list($runOutput, $runExitCode) = $this->runInBootedCli($requireStatements, '', array());
 
-				// Execute and capture errors
-				exec($runCommand, $runOutput, $runExitCode);
-
-				if($runExitCode !== 0 || !empty($runOutput))
+				if($runExitCode !== 0)
 				{
-					$output = implode("\n", $runOutput);
-					if(!empty($output))
-					{
-						if(preg_match('/(Parse error|Fatal error|Warning|Notice):.*in\s+([^\s]+)\s+on\s+line\s+(\d+)/i', $output, $match))
-						{
-							$errorMessage = $match[0];
-							$errorFile = $match[2];
-							$relativePath = array_search($errorFile, $pluginFiles) ?: $plug . '/unknown';
-							$error = "Error in {$relativePath}: $errorMessage";
-							fwrite(STDOUT, "$error\n");
-							$errors[] = $error;
-						}
-						else
-						{
-							$firstLine = strtok($output, "\n");
-							$error = "Error in {$plug}: $firstLine";
-							fwrite(STDOUT, "$error\n");
-							$errors[] = $error;
-						}
-					}
-					else
-					{
-						// Sequentially check files to find the error
-						$lastGoodFile = null;
-						foreach($pluginFiles as $relativePath => $filePath)
-						{
-							$testCommand = sprintf('php -r %s 1>%s 2>&1', escapeshellarg(
-								"error_reporting(E_ALL); ini_set('display_errors', 1); " .
-								"require_once('" . addslashes($class2Path) . "'); " .
-								"e107::includeLan('" . addslashes($lanAdminPath) . "'); " .
-								"e107::plugLan('" . addslashes($plug) . "', 'global'); " .
-								"e107::getConfig()->setPref('plug_installed/" . addslashes($plug) . "', 1); " .
-								"e107::includeLan('" . addslashes($filePath) . "');"
-							), $nullDevice);
-							exec($testCommand, $testOutput, $testExitCode);
-							if($testExitCode !== 0)
-							{
-								$errorOutput = !empty($testOutput) ? implode("\n", $testOutput) : "Syntax error detected (exit code $testExitCode)";
-								if(preg_match('/(Parse error|Fatal error|Warning|Notice):.*in\s+([^\s]+)\s+on\s+line\s+(\d+)/i', $errorOutput, $match))
-								{
-									$errorMessage = $match[0];
-								}
-								else
-								{
-									$errorMessage = $errorOutput;
-								}
-								$error = "Error in {$relativePath}: $errorMessage";
-								fwrite(STDOUT, "$error\n");
-								$errors[] = $error;
-								break;
-							}
-							$lastGoodFile = $relativePath;
-						}
-						if(empty($errors) && $lastGoodFile)
-						{
-							$error = "Error after {$lastGoodFile}: Syntax error detected (exit code $runExitCode)";
-							fwrite(STDOUT, "$error\n");
-							$errors[] = $error;
-						}
-					}
+					$error = $this->diagnoseFailedPluginBoot($runOutput, $runExitCode, $plug);
+					fwrite(STDOUT, "$error\n");
+					$errors[] = $error;
 				}
 			}
 
@@ -405,6 +329,44 @@
 			{
 				self::fail("Errors found in plugin scripts:\n" . implode("\n", $errors));
 			}
+		}
+
+
+		/**
+		 * Names the file a plugin child died in, reading the last START the child announced and the diagnostics it printed after it.
+		 *
+		 * @param array $output the child's output lines
+		 * @param int $exitCode
+		 * @param string $plug
+		 * @return string
+		 */
+		private function diagnoseFailedPluginBoot(array $output, $exitCode, $plug)
+		{
+			$started = null;
+			$since = [];
+			$match = [];
+
+			foreach($output as $line)
+			{
+				if(preg_match('/^(START|END): (.+)$/', $line, $match))
+				{
+					$started = ($match[1] === 'START') ? $match[2] : null;
+					$since = [];
+					continue;
+				}
+
+				$since[] = $line;
+			}
+
+			$where = $started ?: $plug;
+			$text = implode("\n", $since);
+
+			if(preg_match_all('/(Parse error|Fatal error|Warning|Notice):.*in\s+([^\s]+)\s+on\s+line\s+(\d+)/i', $text, $match))
+			{
+				return "Error in {$where}: " . end($match[0]);
+			}
+
+			return "Error in {$where} (exit code {$exitCode}):\n" . implode("\n", array_slice($since, -20));
 		}
 
 
@@ -441,21 +403,16 @@
 			$this->assertNotFalse($adminConfig, 'faqs/admin_config.php not found.');
 
 			$e107Root = realpath(dirname($adminConfig) . '/../../');
-			$class2Path = $e107Root . '/class2.php';
 			$lanAdminPath = $e107Root . '/e107_languages/English/admin/lan_admin.php';
 
 			// Reproduce the admin context: core admin LAN loaded, plugin globals
 			// NOT autoloaded (plugLan flat=false does not define the array keys).
-			$code = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-			$code .= "require_once('" . addslashes($class2Path) . "'); ";
-			$code .= "e107::includeLan('" . addslashes($lanAdminPath) . "'); ";
+			$code = "e107::includeLan('" . addslashes($lanAdminPath) . "'); ";
 			$code .= "e107::plugLan('faqs', 'global'); ";
 			$code .= "e107::getConfig()->setPref('plug_installed/faqs', 1); ";
 			$code .= "require_once '" . addslashes($adminConfig) . "'; ";
 
-			$output = [];
-			$exitCode = 0;
-			exec(sprintf('php -r %s 2>&1', escapeshellarg($code)), $output, $exitCode);
+			list($output, $exitCode) = $this->runInBootedCli($code, '', array());
 			$out = implode("\n", $output);
 
 			$this->assertStringNotContainsString('Undefined constant "LAN_PLUGIN_FAQS', $out,
