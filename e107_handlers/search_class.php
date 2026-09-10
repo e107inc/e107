@@ -336,6 +336,16 @@ class e_search
 			}
 
 			$output_array = array('text' => array());
+			$whole_word = !empty($search_prefs['boundary']);
+			$highlight_patterns = array();
+
+			foreach (isset($this -> keywords['match']) ? $this -> keywords['match'] : array() as $match_id => $keyword)
+			{
+				$match_wildcard = $this -> keywords['wildcard'][$match_id];
+				$boundary_start = $whole_word && preg_match('#^\w#', $keyword) ? '(?<!\w)' : '';
+				$boundary_end = $whole_word && ($match_wildcard || preg_match('#\w$#', $keyword)) ? '(?!\w)' : '';
+				$highlight_patterns[$match_id] = "#(".$boundary_start.preg_quote($keyword, '#').($match_wildcard ? ".*?" : "").$boundary_end.")#i";
+			}
 
 			foreach ($display_row as $row) 
 			{
@@ -362,12 +372,6 @@ class e_search
 
 								foreach ($this -> keywords['match'] as $match_id => $this -> query) 
 								{
-									$boundary = $search_prefs['boundary'] ? '\b' : '';
-									if ($this -> keywords['wildcard'][$match_id]) {
-										$regex_append = ".*?".$boundary.")";
-									} else {
-										$regex_append = $boundary.")";	
-									}
 									$offset = $this->queryOffset($this -> text);
 									if ($offset !== FALSE) 
 									{
@@ -376,7 +380,7 @@ class e_search
 											$this -> parsesearch_crop();
 											$endcrop = TRUE;
 										}
-										$this -> text = preg_replace("#(".$boundary.$this -> query.$regex_append."#i", "<mark>\\1</mark>", $this -> text);
+										$this -> text = preg_replace($highlight_patterns[$match_id], "<mark>\\1</mark>", $this -> text);
 									}
 								}
 							}
