@@ -114,25 +114,19 @@ class sitelinksSubMenuTest extends \Test\Unit
 	/**
 	 * @param string $render statements that echo the markup between the markers
 	 * @param array $linklist the array to hand the renderer as $linklist
-	 * @param string $prelude statements to run before class2.php, for constants a theme would otherwise define
+	 * @param string $prelude statements to run before the render, for constants a theme would otherwise define
 	 * @return string the markup the subprocess produced
 	 */
 	private function render($render, $linklist = null, $prelude = '')
 	{
-		$php  = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-		$php .= $prelude;
-		$php .= "\$_E107 = array('cli' => true); ";
-		$php .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
+		$php  = $prelude;
 		$php .= "\$linklist = ".var_export($linklist === null ? self::stockShape() : $linklist, true)."; ";
 		$php .= $render;
 
-		$output = array();
-		$status = 0;
-		exec(sprintf('timeout 60 php -d memory_limit=64M -r %s 2>&1', escapeshellarg($php)), $output, $status);
+		list($output, $status) = $this->runInBootedCli($php, '-d memory_limit=64M');
 
 		$out = implode("\n", $output);
 
-		self::assertNotSame(124, $status, 'the subprocess wedged, so nothing was measured');
 		self::assertSame(0, $status, "the renderer never returned:\n".self::diagnosis($out));
 
 		$start = strpos($out, self::BEGIN);
@@ -303,7 +297,8 @@ class sitelinksSubMenuTest extends \Test\Unit
 		$markup = $this->render(
 			"error_reporting(E_ALL); ".$this->echoing("e107::getSitelinks()->get(1)"),
 			array(),
-			"define('LINKDISPLAY', 3); define('LINKCLASS_HILITE', 'active'); "
+			"define('LINKDISPLAY', 3); define('LINKCLASS_HILITE', 'active'); ".
+			"if(LINKDISPLAY !== 3 || LINKCLASS_HILITE !== 'active') { throw new RuntimeException('LINKDISPLAY or LINKCLASS_HILITE was defined before this prelude could set it'); } "
 		);
 
 		self::assertStringContainsString('Home', $markup,

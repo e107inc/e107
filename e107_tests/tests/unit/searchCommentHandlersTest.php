@@ -29,6 +29,9 @@ class searchCommentHandlersTest extends \Test\Unit
 	/** @var string path of the file holding the stored search_prefs row */
 	private $prefBackup;
 
+	/** @var bool whether the subprocess is known to have written that file */
+	private $prefSaved = false;
+
 	/**
 	 * The admin search page saves search_prefs whenever it finds a handler or
 	 * a default to add, so the row is put back after every test.
@@ -42,55 +45,53 @@ class searchCommentHandlersTest extends \Test\Unit
 	{
 		$this->prefBackup = tempnam(sys_get_temp_dir(), 'e107_search_prefs_');
 
-		$this->runIsolated(
+		$saved = $this->runIsolated(
 			"\$stored = e107::getDb()->createQueryBuilder()->select('e107_value')->from('core')->where('e107_name', 'search_prefs')->fetchOne(); " .
 			"file_put_contents('" . addslashes($this->prefBackup) . "', (string) \$stored); "
 		);
+
+		$this->assertBooted($saved);
+		self::assertSame(0, $saved['exit'],
+			"The pref row was never saved, so nothing may be restored over it.\n" . $saved['out']);
+
+		$this->prefSaved = true;
 	}
 
 	protected function _after()
 	{
-		$this->runIsolated(
-			"\$stored = file_get_contents('" . addslashes($this->prefBackup) . "'); " .
-			"\$qb = e107::getDb()->createQueryBuilder(); " .
-			"if(\$stored === '') { \$qb->delete('core')->where('e107_name', 'search_prefs')->execute(); } " .
-			"else { \$qb->replace('core')->values(array('e107_name' => 'search_prefs', 'e107_value' => \$stored))->execute(); } " .
-			"foreach(glob(e_BASE . 'e107_system/*/cache/content/S_Config_*.cache.php') ?: array() as \$cacheFile) { @unlink(\$cacheFile); } "
-		);
-
-		@unlink($this->prefBackup);
+		try
+		{
+			if($this->prefSaved)
+			{
+				$this->runIsolated(
+					"\$stored = file_get_contents('" . addslashes($this->prefBackup) . "'); " .
+					"\$qb = e107::getDb()->createQueryBuilder(); " .
+					"if(\$stored === '') { \$qb->delete('core')->where('e107_name', 'search_prefs')->execute(); } " .
+					"else { \$qb->replace('core')->values(array('e107_name' => 'search_prefs', 'e107_value' => \$stored))->execute(); } " .
+					"foreach(glob(e_BASE . 'e107_system/*/cache/content/S_Config_*.cache.php') ?: array() as \$cacheFile) { @unlink(\$cacheFile); } "
+				);
+			}
+		}
+		finally
+		{
+			@unlink($this->prefBackup);
+		}
 	}
 
 	/**
-	 * Run PHP in a subprocess, so a fatal is observable instead of killing
-	 * the test run, and so pref changes cannot leak into other tests.
+	 * Runs $code in a booted CLI subprocess, buffers flushed and the boot
+	 * marker on stderr where the buffers cannot swallow it.
 	 *
 	 * @param string $code PHP to run after class2.php has been loaded
 	 * @return array {out: string, exit: int}
 	 */
 	private function runIsolated($code)
 	{
-		// APP_PATH, not this file's location: with a deploy-based preparer the
-		// application under test runs from an isolated git worktree, and only
-		// that copy has the e107_config.php the suite generated.
-		$e107Root = APP_PATH;
-
-		// Boot e107 the way the suite's own bootstrap does. Without the cli
-		// flag, class2.php takes the browser path, tears down every output
-		// buffer and starts its own, and a command-line run can then finish
-		// having emitted nothing at all. The marker goes to stderr so that it
-		// survives whatever happens to the output buffers, and any buffer
-		// still open at the end is flushed rather than dropped.
-		$php = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-		$php .= "\$_E107 = array('cli' => true); ";
-		$php .= "require_once('" . addslashes($e107Root . '/class2.php') . "'); ";
-		$php .= "fwrite(STDERR, '" . self::BOOTED . "'); ";
+		$php  = "fwrite(STDERR, '" . self::BOOTED . "'); ";
 		$php .= $code;
 		$php .= "while(ob_get_level() > 0) { @ob_end_flush(); } ";
 
-		$output = array();
-		$exitCode = 0;
-		exec(sprintf('php -r %s 2>&1', escapeshellarg($php)), $output, $exitCode);
+		list($output, $exitCode) = $this->runInBootedCli($php);
 
 		return array('out' => implode("\n", $output), 'exit' => $exitCode);
 	}
