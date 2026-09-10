@@ -1937,7 +1937,7 @@ class themeHandler
 			{
 				if(self::isThemeConfigMarkupRow($field))
 				{
-					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div></td></tr>";
+					$text .= "<tr><td><b>".(isset($val['caption']) ? $val['caption'] : '')."</b>:</td><td colspan='2'>".(isset($val['html']) ? $val['html'] : '')."<div class='field-help'>".(isset($val['help']) ? $val['help'] : '')."</div></td></tr>";
 				}
 				else
 				{
@@ -2034,7 +2034,7 @@ class themeHandler
 	}
 	
 	/**
-	 * Whether a row of a theme's theme_config::config() is raw markup rather than a field declaration: {@see themeHandler::renderThemeConfig()} writes such a row out as it stands and {@see themeHandler::setThemeConfig()} stores nothing for it.
+	 * Whether a row of a theme's theme_config::config() is raw markup rather than a field declaration: {@see themeHandler::renderThemeConfig()} writes out the row's caption, html and help without rendering a form element, and {@see themeHandler::setThemeConfig()} stores nothing for it.
 	 *
 	 * @param int|string $field key of the row in a theme's theme_config::config()
 	 * @return bool
