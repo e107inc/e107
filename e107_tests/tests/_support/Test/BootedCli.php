@@ -32,7 +32,13 @@ trait BootedCli
 		$status = 0;
 		exec(sprintf('timeout %d php %s -r %s 2>&1', $timeout, $ini, escapeshellarg($boot.$php)), $output, $status);
 
-		self::assertNotSame(124, $status, 'the subprocess wedged, so nothing was measured');
+		if($status === 124)
+		{
+			$head = array_slice($output, 0, 20);
+
+			self::fail(sprintf("the subprocess wedged, so nothing was measured. The first %d of its %d line(s):\n%s",
+				count($head), count($output), implode("\n", $head)));
+		}
 
 		return array($output, $status);
 	}
