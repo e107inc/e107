@@ -775,7 +775,7 @@ class search_front extends e_shortcode
 	function renderResults()
 	{
 
-		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag, $advanced_caption;
+		global $query, $search_prefs, $pre_title, $pre_title_alt, $search_chars, $search_res, $result_flag, $advanced_caption;
 		
 		$ns = e107::getRender();
 
@@ -803,7 +803,8 @@ class search_front extends e_shortcode
 
 				//if (file_exists($this->search_info[$key]['sfile'])) 
 				{
-					$pre_title 		= ($this->search_info[$key]['pre_title'] == 2) ? $this->search_info[$key]['pre_title_alt'] : $this->search_info[$key]['pre_title'];
+					$pre_title 		= $this->search_info[$key]['pre_title'];
+					$pre_title_alt 	= $this->search_info[$key]['pre_title_alt'];
 					$search_chars 	= $this->search_info[$key]['chars'];
 					$search_res 	= $this->search_info[$key]['results'];
 			

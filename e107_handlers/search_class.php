@@ -107,7 +107,7 @@ class e_search
 	 */
 	public function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order)
 	{
-		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
+		global $query, $search_prefs, $pre_title, $pre_title_alt, $search_chars, $search_res, $result_flag;
 		
 		
 		$sql = e107::getDb('search');
@@ -379,17 +379,18 @@ class e_search
 
 							if($title) 
 							{
-								if ($pre_title == 0) 
-								{
-									$pre_title_output = "";
-								} 
-								else if ($pre_title == 1) 
+								if ($pre_title == 1)
 								{
 									$pre_title_output = $res['pre_title'];
-								} 
-								else if ($pre_title == 2) 
+								}
+								elseif ($pre_title == 2)
 								{
-									$pre_title_output = $pre_title;
+									$custom = trim(varset($pre_title_alt, ''));
+									$pre_title_output = $custom !== '' ? $custom.' ' : '';
+								}
+								else
+								{
+									$pre_title_output = '';
 								}
 
 								$this -> text = $this -> bullet."<h4><a class='title visit' href='".$res['link']."'>".$pre_title_output.$this -> text."</a></h4>{DETAILS}<div>".$res['pre_summary'];
