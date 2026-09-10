@@ -167,7 +167,7 @@ class sitelinks
 			return $data;
 		}
 
-		if(LINKDISPLAY == self::LINK_DISPLAY_SLIDER)
+		if(defset('LINKDISPLAY') == self::LINK_DISPLAY_SLIDER)
 		{
 			$sliderMenu = e_PLUGIN . 'ypslide_menu/ypslide_menu.php';
 
