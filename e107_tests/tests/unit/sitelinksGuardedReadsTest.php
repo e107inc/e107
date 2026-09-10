@@ -8,15 +8,16 @@
  */
 
 /**
- * sitelinks reads things its callers are not obliged to have supplied, starting
- * with LINKDISPLAY, which only sitelinks.sc defines and which a theme calling
- * get() directly never does.
+ * sitelinks reads two things its callers are not obliged to have supplied:
+ * LINKDISPLAY, which only sitelinks.sc defines and which a theme calling get()
+ * directly never does, and the frontpage pref, which a hand-edited or
+ * half-migrated pref row can leave absent or holding the pre-v2 bare string.
  *
- * The case runs in a subprocess. A constant cannot be undefined in-process, so
+ * Both cases run in a subprocess. A constant cannot be undefined in-process, so
  * an in-process LINKDISPLAY test would only pass while nothing else in the run
- * had defined it, and below PHP 8 the read is a notice rather than a fatal, so
- * what separates the guarded source from the unguarded one is the diagnostic
- * text the child writes under E_ALL rather than its exit status.
+ * had defined it, and below PHP 8 neither read is fatal, so what separates the
+ * guarded source from the unguarded one is the diagnostic text the child writes
+ * under E_ALL rather than its exit status.
  */
 class sitelinksGuardedReadsTest extends \Test\Unit
 {
@@ -53,5 +54,37 @@ class sitelinksGuardedReadsTest extends \Test\Unit
 
 		self::assertDoesNotMatchRegularExpression('/undefined constant/i', $printed,
 			"get() is public and a theme calling it defines no LINKDISPLAY:\n".$printed);
+	}
+
+	/**
+	 * The two shapes core cannot produce but a pref row can still hold, answered against
+	 * the empty array the guard makes them equivalent to and against a front page the
+	 * current request satisfies, which is built from e_SELF so that the match does not
+	 * depend on what a CLI boot makes of the site URL.
+	 */
+	public function testHiliteAnswersOnAFrontpagePrefThatIsNotAnArray()
+	{
+		$php = "\$sl = e107::getSitelinks(); \$cfg = e107::getConfig('core'); \$link = e_HTTP.'index.php'; "
+			."\$uc = current(explode(',', USERCLASS_LIST)); "
+			."\$cfg->setPref('frontpage', array()); \$answers = array(var_export(\$sl->hilite(\$link, true), true)); "
+			."\$cfg->setPref('frontpage', 'news.php'); \$answers[] = var_export(\$sl->hilite(\$link, true), true); "
+			."\$cfg->removePref('frontpage'); \$answers[] = var_export(\$sl->hilite(\$link, true), true); "
+			."\$cfg->setPref('frontpage', array(\$uc => e_SELF)); \$answers[] = var_export(\$sl->hilite(\$link, true), true); "
+			."echo '<<'.implode('|', \$answers).'>>'; ";
+
+		$printed = $this->probe($php);
+		$matches = array();
+
+		self::assertDoesNotMatchRegularExpression('/count\(\)|foreach|TypeError|frontpage/i', $printed,
+			"the frontpage pref is counted and walked without being an array:\n".$printed);
+
+		self::assertSame(1, preg_match('/<<(.*)>>/s', $printed, $matches), "the probe printed no answers:\n".$printed);
+
+		$answers = explode('|', $matches[1]);
+
+		self::assertSame('true', $answers[3], 'the guard must not switch the home highlight off');
+		self::assertNotSame($answers[3], $answers[0], 'an empty frontpage highlights nothing');
+		self::assertSame($answers[0], $answers[1], 'the pre-v2 string has to answer as the empty array does');
+		self::assertSame($answers[0], $answers[2], 'an absent pref has to answer as the empty array does');
 	}
 }

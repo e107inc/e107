@@ -636,7 +636,7 @@ class sitelinks
 	//	global $pref;
 		$pref = e107::pref();
 
-		if (($link_slf == e_HTTP."index.php") && count($pref['frontpage']))
+		if (($link_slf == e_HTTP."index.php") && !empty($pref['frontpage']) && is_array($pref['frontpage']))
 		{	// Only interested if the displayed page is index.php - see whether its the user's home (front) page
 			$full_url = 'news.php';					// Set a default in case
 			$uc_array = explode(',', USERCLASS_LIST);
