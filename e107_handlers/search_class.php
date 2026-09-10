@@ -348,15 +348,7 @@ class e_search
 
 						foreach ($matches as $this -> text) 
 						{
-							$this -> text = nl2br($this -> text);
-							$t_search = $tp->search;
-							$t_replace = $tp->replace;
-							$s_search = array('<br />', '[', ']');
-							$s_replace = array(' ', '<', '>');
-							$search = array_merge($t_search, $s_search);
-							$replace = array_merge($t_replace, $s_replace);
-
-							$this -> text = strip_tags(str_replace($search, $replace, $this -> text));
+							$this -> text = $this -> toExcerptText($this -> text);
 
 
 							if(!empty($this->keywords['match']))
@@ -439,6 +431,22 @@ class e_search
 			$ps['results'] = $sql->total_results;		// db class reads result of SELECT FOUND_ROWS() for us
 		}
 		return $ps;
+	}
+
+
+	/**
+	 * Reduce a matched database field to the plain text an excerpt is built from.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function toExcerptText($text)
+	{
+		$text = e107::getParser()->toHTML((string) $text, true, 'emotes_off,scripts_off,no_make_clickable,no_hook,lb_nl');
+		$text = strip_tags(str_ireplace(array('<br', '<hr'), array(' <br', ' <hr'), $text));
+		$text = preg_replace('/\[\/?\w+(?:=[^\]]*)?\]/', ' ', $text);
+
+		return trim(preg_replace('/\s+/', ' ', $text));
 	}
 
 
