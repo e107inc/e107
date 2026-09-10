@@ -161,6 +161,127 @@ class private_message
 
 
 	/**
+	 *	The directory releases before the media tree stored attachments in, still
+	 *	read when a stored name is resolved and still swept for orphans.
+	 *
+	 *	@return	string with a trailing separator
+	 */
+	protected function legacyAttachmentDir()
+	{
+		return e_PLUGIN . 'pm/attachments/';
+	}
+
+
+	/**
+	 *	The file a stored attachment name names, and the name the member gave it.
+	 *
+	 *	The owning member is read out of the stored name, which upload_handler
+	 *	builds as time_userid_random_originalname, so a name carrying no owner or
+	 *	an owner who did not send the message resolves to nothing.
+	 *
+	 *	@param	string $name - one entry of a pm_attachments list
+	 *	@param	int $sender - pm_from of the message the list belongs to
+	 *
+	 *	@return	array|bool 'path' on disk and 'name' as uploaded, FALSE when the name resolves to no file
+	 */
+	protected function attachmentFile($name, $sender)
+	{
+		$name = is_string($name) ? trim($name) : '';
+
+		if($name === '' || basename($name) !== $name)
+		{
+			return FALSE;
+		}
+
+		$nameParts = explode('_', $name, 4);
+
+		if(count($nameParts) < 4 || !ctype_digit($nameParts[1]) || (string) $nameParts[1] !== (string) $sender)
+		{
+			return FALSE;
+		}
+
+		foreach(array($this->legacyAttachmentDir(), $this->attachmentDir($nameParts[1])) as $dir)
+		{
+			if(is_file($dir . $name))
+			{
+				return array('path' => $dir . $name, 'name' => $nameParts[3]);
+			}
+		}
+
+		return FALSE;
+	}
+
+
+	/**
+	 *	Whether an attachment is still carried by a message other than $pmid,
+	 *	the recipients a bulk send has left for the cron task included.
+	 *
+	 *	One upload is named by every recipient's row and by the outbox copy, so
+	 *	the file outlives each of them individually.
+	 *
+	 *	@param	string $name - one entry of a pm_attachments list
+	 *	@param	int $pmid - the message being deleted, which does not count
+	 *
+	 *	@return	boolean
+	 */
+	protected function attachmentInUse($name, $pmid)
+	{
+		$sql = e107::getDb();
+		$qb = $sql->createQueryBuilder();
+
+		$rows = $qb->select('pm_attachments')->from('private_msg')
+			->where('pm_id', '!=', (int) $pmid)
+			->where($qb->expr()->contains('pm_attachments', $name))
+			->fetchAll();
+
+		foreach($rows as $row)
+		{
+			if($this->attachmentListNames($row['pm_attachments'], $name))
+			{
+				return TRUE;
+			}
+		}
+
+		$queued = $sql->createQueryBuilder()->select('gen_chardata')->from('generic')
+			->where('gen_type', 'pm_bulk')->fetchAll();
+
+		foreach($queued as $row)
+		{
+			$pmInfo = e107::unserialize($row['gen_chardata']);
+
+			if(isset($pmInfo['pm_attachments']) && $this->attachmentListNames($pmInfo['pm_attachments'], $name))
+			{
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
+
+
+	/**
+	 *	Whether a chr(0)-separated pm_attachments list names a given attachment.
+	 *
+	 *	@param	string $list
+	 *	@param	string $name
+	 *
+	 *	@return	boolean
+	 */
+	private function attachmentListNames($list, $name)
+	{
+		foreach(explode(chr(0), (string) $list) as $entry)
+		{
+			if(trim($entry) === $name)
+			{
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
+
+
+	/**
 	 *	Cover the directory an attachment is about to be stored in.
 	 *
 	 *	e107 keeps everything under the document root, so a deny rule is all that
@@ -241,7 +362,7 @@ class private_message
 		$root = $this->attachmentRoot();
 		$dirs = array();
 
-		foreach(array($root, e_PLUGIN . 'pm/attachments/') as $dir)
+		foreach(array($root, $this->legacyAttachmentDir()) as $dir)
 		{
 			if(is_dir($dir))
 			{
@@ -473,7 +594,8 @@ class private_message
 	/**
 	 *	Delete a PM from a user's inbox/outbox.
 	 *	PM is only actually deleted from DB once both sender and recipient have marked it as deleted
-	 *	When physically deleted, any attachments are deleted as well
+	 *	When physically deleted, an attachment goes with it unless another message,
+	 *	or a bulk send the cron task has yet to insert, still names the same file
 	 *
 	 *	@param int $pmid - ID of the PM
 	 *	@param boolean $force - set to TRUE to force deletion of unread PMs
@@ -519,11 +641,19 @@ class private_message
 				foreach($attachments as $a)
 				{
 					$a = trim($a);
-					if ($a)
+					if ($a === '' || $this->attachmentInUse($a, $pmid))
 					{
-						$filename = e_PLUGIN.'pm/attachments/'.$a;
-						if (unlink($filename)) $aCount[0]++; else $aCount[1]++;
+						continue;
 					}
+
+					$attachment = $this->attachmentFile($a, $row['pm_from']);
+
+					if ($attachment === FALSE)
+					{
+						continue;
+					}
+
+					if (unlink($attachment['path'])) $aCount[0]++; else $aCount[1]++;
 				}
 				if ($aCount[0] || $aCount[1])
 				{
@@ -1022,49 +1152,15 @@ class private_message
 			return false;
 		}
 
-		$fname = $attachments[$filenum];
+		$attachment = $this->attachmentFile($attachments[$filenum], $pm_info['pm_from']);
 
-		if($fname === '' || basename($fname) !== $fname)
+		if($attachment === FALSE)
 		{
 			return false;
 		}
 
-		$nameParts = explode("_", $fname, 4);
-
-		if(count($nameParts) < 4)
-		{
-			return false;
-		}
-
-		list($timestamp, $nameOwnerId, $rand, $file) = $nameParts;
-
-		if((string) $nameOwnerId !== (string) $pm_info['pm_from'])
-		{
-			return false;
-		}
-
-		$filename = false; // getcwd()."/attachments/{$fname}";
-
-		$pathList = array();
-		$pathList[] = e_PLUGIN."pm/attachments/"; // getcwd()."/attachments/"; // legacy path.
-		$pathList[] = e107::getFile()->getUserDir($nameOwnerId, false, 'attachments'); // new media path.
-
-		foreach($pathList as $path)
-		{
-			$tPath = $path.$fname;
-
-			if(is_file($tPath))
-			{
-				$filename = $tPath;
-				break;
-			}
-
-		}
-
-		if(empty($filename) || !is_file($filename))
-		{
-			return false;
-		}
+		$filename = $attachment['path'];
+		$file = $attachment['name'];
 
 	//	e107::getFile()->send($filename); // limited to Media and system folders. Won't work for legacy plugin path.
 	//	exit;
