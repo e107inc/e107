@@ -116,11 +116,11 @@ class banner_ui extends e_admin_ui
 		  'banner_clientpassword' 	=>   array ( 'title' => LAN_PASSWORD, 'type' => 'text',  'tab'=>1,'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'strength=1&password=1&required=0&generate=1&nomask=1', 'class' => 'center', 'thclass' => 'center',  ),
 		  'banner_image' 			=>   array ( 'title' => LAN_IMAGE, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => 'thumb=0x50&legacyPath={e_IMAGE}banners', 'writeParms' => 'media=banner&w=600&legacyPath={e_IMAGE}banners', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_clickurl' 		=>   array ( 'title' => BNRLAN_15, 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'size=xxlarge&required=1', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banner_impurchased' 		=>   array ( 'title' => BNRLAN_16, 	'type' => 'number', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center', 'help'=>'0 = unlimited' ),
+		  'banner_impurchased' 		=>   array ( 'title' => BNRLAN_16, 	'type' => 'number', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center', 'help'=>BNRLAN_HELP_IMPRESSIONS),
 		  'banner_tooltip' 		    =>   array ( 'title' => LAN_TOOLTIP, 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'center', 'thclass' => 'center',  ),
 
 		  'banner_description' 		=>   array ( 'title' => LAN_DESCRIPTION, 	'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banner_keywords' 		=>   array ( 'title' => LAN_KEYWORDS, 	'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => 'When news or pages are loaded, this will limit banner result to matching keywords. Use with caution.', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banner_keywords' 		=>   array ( 'title' => LAN_KEYWORDS, 	'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => BNRLAN_HELP_KEYWORDS, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 
 		  'banner_startdate' 		=>   array ( 'title' => LAN_START, 	'type' => 'datestamp',  'tab'=>1,'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'banner_enddate' 			=>   array ( 'title' => LAN_END, 	'type' => 'datestamp',  'tab'=>1, 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -482,7 +482,7 @@ class banner_form_ui extends e_admin_form_ui
 				$tab1 = $this->imagepicker('banner_image',$val1, null, $opts);
 
 
-				$tab2 = "<p>". $this->text('banner_image_remote',$val2, 255, array('size'=>'xxlarge', 'placeholder'=>'eg. http://some-website.com/banner-image.jpg', 'title'=>'This will override any local image you have set.'))."</p>";
+				$tab2 = "<p>". $this->text('banner_image_remote',$val2, 255, array('size'=>'xxlarge', 'placeholder'=>'eg. http://some-website.com/banner-image.jpg', 'title'=>BNRLAN_PLACEHOLDER_REMOTE_TEXT))."</p>";
 
 				if(!empty($val2))
 				{
@@ -524,7 +524,7 @@ class banner_form_ui extends e_admin_form_ui
 				if (count($this->clients)) 
 				{
 					$text = $frm->select('banner_clientname_sel',$this->clients, $curVal,'', LAN_SELECT."...");
-					$text .= $frm->text('banner_clientname','','',array('placeholder'=> 'Or enter a new client'));	
+					$text .= $frm->text('banner_clientname','','',array('placeholder'=>BNRLAN_PLACEHOLDER_OR_NEW_CLIENT));	
 				}
 				else
 				{
@@ -613,11 +613,11 @@ class banner_form_ui extends e_admin_form_ui
 				if (count($this->campaigns)) 
 				{
 					$text = $frm->select('banner_campaign_sel',$this->campaigns, $curVal,'',LAN_SELECT."...");
-					$text .= $frm->text('banner_campaign','','',array('size'=>'xlarge', 'class'=>'e-hideme','placeholder'=> 'Enter a campaign name'));
+					$text .= $frm->text('banner_campaign','','',array('size'=>'xlarge', 'class'=>'e-hideme','placeholder'=>BNRLAN_PLACEHOLDER_OR_ENTER_CAMPAIGN));
 				}
 				else
 				{
-					$text = $frm->text('banner_campaign',$curVal, '', array('size'=>'xlarge', 'placeholder'=> 'Enter a campaign name'));
+					$text = $frm->text('banner_campaign',$curVal, '', array('size'=>'xlarge', 'placeholder'=>BNRLAN_PLACEHOLDER_OR_ENTER_CAMPAIGN));
 				}
 				return $text; // $frm->text('banner_campaign',$curVal);		
 			break;
