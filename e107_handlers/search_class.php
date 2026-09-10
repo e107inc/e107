@@ -384,14 +384,14 @@ class e_search
 									} else {
 										$regex_append = $boundary.")";	
 									}
-									if (($match_start = $tp->ustristr($this -> text, $this -> query)) !== FALSE) 
+									$offset = $this->queryOffset($this -> text);
+									if ($offset !== FALSE) 
 									{
-										$this -> pos = $tp->ustrlen($this -> text) - $tp->ustrlen($match_start);
+										$this -> pos = $offset;
 										if (!$endcrop && !$title) {
 											$this -> parsesearch_crop();
 											$endcrop = TRUE;
 										}
-										$key = $tp->usubstr($this -> text, $this->pos, $tp->ustrlen($this -> query));
 										$this -> text = preg_replace("#(".$boundary.$this -> query.$regex_append."#i", "<mark>\\1</mark>", $this -> text);
 									}
 								}
@@ -462,17 +462,39 @@ class e_search
 	{
 		global $search_chars;
 		$tp = e107::getParser();
-		if (strlen($this -> text) > $search_chars) {
-			if ($this -> pos < ($search_chars - $tp->ustrlen($this -> query))) {
+		if ($tp->ustrlen($this -> text) > $search_chars) {
+			$offset = $this->queryOffset($this -> text);
+			$window = $search_chars - $tp->ustrlen($this -> query);
+			if ($offset === FALSE || $offset < $window) {
 				$this -> text = $tp->usubstr($this -> text, 0, $search_chars)."...";
-			} else if ($this -> pos > ($tp->ustrlen($this -> text) - ($search_chars - $tp->ustrlen($this -> query)))) {
-				$this -> text = "...".$tp->usubstr($this -> text, ($tp->ustrlen($this -> text) - ($search_chars - $tp->ustrlen($this -> query))));
+			} else if ($offset > ($tp->ustrlen($this -> text) - $window)) {
+				$this -> text = "...".$tp->usubstr($this -> text, ($tp->ustrlen($this -> text) - $window));
 			} else {
-				$this -> text = "...".$tp->usubstr($this -> text, ($this -> pos - round(($search_chars / 3))), $search_chars)."...";
+				$start = max(0, $offset - round(($search_chars / 3)));
+				$this -> text = ($start > 0 ? "..." : "").$tp->usubstr($this -> text, $start, $search_chars)."...";
 			}
-			$match_start = $tp->ustristr($this -> text, $this -> query);
-			$this -> pos = $tp->ustrlen($this -> text) - $tp->ustrlen($match_start);
+			$this -> pos = (int) $this->queryOffset($this -> text);
 		}
+	}
+
+
+	/**
+	 * Character offset of the first case-insensitive {@see e_search::$query} match in $text, or FALSE when the text does not carry one.
+	 *
+	 * @param string $text
+	 * @return int|bool
+	 */
+	private function queryOffset($text)
+	{
+		if ((string) $this -> query === '')
+		{
+			return FALSE;
+		}
+
+		$tp = e107::getParser();
+		$match_start = $tp->ustristr($text, $this -> query);
+
+		return $match_start === FALSE ? FALSE : $tp->ustrlen($text) - $tp->ustrlen($match_start);
 	}
 
 
