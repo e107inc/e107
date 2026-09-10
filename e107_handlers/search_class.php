@@ -135,6 +135,7 @@ class e_search
 			}
 
 			$field_operator = 'AND ';
+			$nonWordChar = '[^[:alnum:]_]';
 			foreach ($this -> keywords['match'] as $k_key => $key) 
 			{
 				$boolean_regex = '';
@@ -178,14 +179,14 @@ class e_search
 				}
 				else
 				{
-					$wildcard = '[[:>:]]';
+					$wildcard = '('.$nonWordChar.'|$)';
 				}
 
 				$key_count = 1;
 
 				foreach ($search_fields as $field)
 				{
-					$regexp = $search_prefs['boundary'] ? "[[:<:]]".$key.$wildcard : $key;
+					$regexp = $search_prefs['boundary'] ? '(^|'.$nonWordChar.')'.$key.$wildcard : $key;
 					$match_query .= " ".$field." ".$boolean_regex." REGEXP '".$regexp."' ";
 					if ($key_count != count($search_fields)) {
 						$match_query .= $key_operator;
