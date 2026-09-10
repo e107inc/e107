@@ -318,7 +318,7 @@
 		 */
 		private function openPref($prefid, $class = 'e_pref')
 		{
-			$this->rows[$prefid] = $prefid;
+			$this->expectRow($prefid);
 
 			$pref = $this->make($class);
 			$pref->__construct($prefid);
@@ -543,6 +543,81 @@
 			$this->assertFalse($saved);
 			$this->assertSame(3, $pref->rivals, 'every attempt should have lost its race');
 			$this->assertFalse($displayed, 'a caller asking for no messages should not get a red block');
+		}
+
+		/**
+		 * Register a row, and the cache file that stands for it, for removal in {@see e_prefTest::_after()}.
+		 *
+		 * @param string $prefid
+		 * @return string the row name, for the assertions that read it back
+		 */
+		private function expectRow($prefid)
+		{
+			$this->rows[$prefid] = $prefid;
+
+			return $prefid;
+		}
+
+		/**
+		 * A plugin or theme preference object, built the way a plugin builds one.
+		 *
+		 * @param string $class e_plugin_pref or e_theme_pref
+		 * @param string $id folder or theme name
+		 * @param string $multi_row
+		 * @return e_pref
+		 */
+		private function openOwnedPref($class, $id, $multi_row = '')
+		{
+			$pref = $this->make($class);
+			$pref->__construct($id, $multi_row, false);
+			$pref->load();
+
+			return $pref;
+		}
+
+		public function testPluginPrefDeleteRemovesTheRow()
+		{
+			$folder = 'e107help_pref_delete';
+			$row = $this->expectRow('plugin_'.$folder);
+
+			$this->openOwnedPref('e_plugin_pref', $folder)->set('kept', 'value')->save(false, true, false);
+			$this->assertSame(array('kept' => 'value'), $this->readStored($row));
+			$this->assertSame('value', $this->openOwnedPref('e_plugin_pref', $folder)->get('kept'));
+
+			$this->openOwnedPref('e_plugin_pref', $folder)->delete(null);
+
+			$this->assertSame(array(), $this->readStored($row));
+			$this->assertSame(array(), $this->openOwnedPref('e_plugin_pref', $folder)->getPref(), 'the cache file is where a deleted row lives on');
+		}
+
+		public function testThemePrefDeleteRemovesTheRow()
+		{
+			$theme = 'e107help_pref_delete';
+			$row = $this->expectRow('theme_'.$theme);
+
+			$this->openOwnedPref('e_theme_pref', $theme)->set('kept', 'value')->save(false, true, false);
+			$this->assertSame(array('kept' => 'value'), $this->readStored($row));
+
+			$this->openOwnedPref('e_theme_pref', $theme)->delete(null);
+
+			$this->assertSame(array(), $this->readStored($row));
+			$this->assertSame(array(), $this->openOwnedPref('e_theme_pref', $theme)->getPref());
+		}
+
+		public function testPluginPrefDeleteRemovesAMultiRowRow()
+		{
+			$folder = 'e107help_pref_delete';
+			$row = $this->expectRow('plugin_'.$folder.'_second');
+			$neighbour = $this->expectRow('plugin_'.$folder);
+
+			$this->openOwnedPref('e_plugin_pref', $folder)->set('kept', 'base')->save(false, true, false);
+			$this->openOwnedPref('e_plugin_pref', $folder, 'second')->set('kept', 'value')->save(false, true, false);
+			$this->assertSame(array('kept' => 'value'), $this->readStored($row));
+
+			$this->openOwnedPref('e_plugin_pref', $folder, 'second')->delete(null);
+
+			$this->assertSame(array(), $this->readStored($row), 'the row goes, whatever #6338 leaves in the base row\'s cache file');
+			$this->assertSame(array('kept' => 'base'), $this->readStored($neighbour), 'a row the object does not own must survive');
 		}
 
 	}
