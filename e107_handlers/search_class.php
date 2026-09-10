@@ -41,20 +41,7 @@ class e_search
 		$tp = e107::getParser();
 		$this->query = (string) $query;
 
-	/*	if(defined('GLYPH'))
-		{
-			$this->bullet = '<i class="'.GLYPH.'"></i>';
-		}
-		elseif(defined('BULLET'))
-		{
-			$this->bullet = '<img src="'.THEME_ABS.'images/'.BULLET.'" alt="" class="icon" />';
-		}
-		elseif(file_exists(THEME.'images/bullet2.gif'))
-		{
-			$this->bullet = '<img src="'.THEME_ABS.'images/bullet2.gif" alt="bullet" class="icon" />';
-		}*/
-
-		$this->bullet = ''; // Use CSS instead.
+		$this->bullet = '';
 
 		preg_match_all('/(\W?".*?")|(.*?)(\s|$)/', $this->query, $boolean_keys);
 		$this->keywords['split'] = array_unique(array_filter(str_replace('"', '', array_merge($boolean_keys[1], $boolean_keys[2]))));
