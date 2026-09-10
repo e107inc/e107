@@ -94,9 +94,10 @@ if (isset($_POST['update_menu']))
 	);
 
 	$menuPref->setPref('login_menu', $loginPrefs);
-	$menuPref->save(false, true, false);
-	e107::getLog()->add('MISC_03','', E_LOG_INFORMATIVE,'');
-	$mes->addSuccess(LAN_SAVED);
+	if($menuPref->save(false, true) === true)
+	{
+		e107::getLog()->add('MISC_03','', E_LOG_INFORMATIVE,'');
+	}
 	$ns->tablerender("", $mes->render());
 }
 
