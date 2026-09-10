@@ -268,9 +268,13 @@ class e_search
 		}
 
 
+		$ps = array('text' => '', 'results' => 0);
+
 		// Intentionally raw (sqli boundary): a single gen() consumes both branches; the MySQL-sort branch uses SQL_CALC_FOUND_ROWS read via $sql->total_results (builder cannot express), and both use a dynamic table (#$table), dynamic $return_fields and a raw developer $where fragment.
 		if ($ps['results'] = $sql->gen($sql_query))
 		{
+			$display_row = array();
+
 			if (!$search_prefs['mysql_sort'])
 			 {
 				$x = 0;
@@ -282,6 +286,7 @@ class e_search
 				while ($row = $sql->fetch())
 				{
 					$weight = 0;
+					$endweight = FALSE;
 					foreach ($crop_fields as $field_key => $field) 
 					{
 						$this -> text = $row[$field];
@@ -324,13 +329,13 @@ class e_search
 				}
 
 			} else {
-				$x = 0;
 				while ($row = $sql ->fetch())
 				{
 					$display_row[] = $row;
-					$x++;
 				}
 			}
+
+			$output_array = array('text' => array());
 
 			foreach ($display_row as $row) 
 			{
@@ -414,13 +419,7 @@ class e_search
 				}
 			}
 
-			$ps_limit = $output_array['text'];
-			$result_number = ($x < $search_res) ? $x : $search_res;
-			
-			for ($i = 0; $i < $result_number; $i++)
-			 {
-				$ps['text'] .= $ps_limit[$i];
-			}
+			$ps['text'] = implode('', $output_array['text']);
 		} 
 		else 
 		{
