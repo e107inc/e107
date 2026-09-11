@@ -1089,6 +1089,28 @@ class e_pref extends e_front_model
 		return $this;
 	}
 
+	/**
+	 * Delete the row this object reads and writes, along with the cached copy of it.
+	 *
+	 * @return int|false rows removed, or false on a delete that failed or had no row name to key on
+	 */
+	protected function deletePrefRow()
+	{
+		if(empty($this->prefid))
+		{
+			return false;
+		}
+
+		$removed = e107::getDb($this->prefid)->createQueryBuilder()->delete('core')
+			->where('e107_name', $this->prefid)
+			->execute();
+
+		$this->clearPrefCache();
+		$this->destroy();
+
+		return $removed;
+	}
+
     /**
      * Override
      */
@@ -1296,8 +1318,6 @@ class e_plugin_pref extends e_pref
 	 */
 	function __construct($plugin_id, $multi_row = '', $load = true)
 	{
-		// Sanitise like e_pref::__construct does for $prefid; $this->plugin_id is used
-		// directly in a DELETE WHERE clause by delete().
 		$this->plugin_id = preg_replace('/[^\w\-]/', '', $plugin_id);
 		if($multi_row)
 		{
@@ -1321,21 +1341,13 @@ class e_plugin_pref extends e_pref
 	}
 
 	/**
-	 * Delete plugin preferences
-	 * @see e107_handlers/e_pref#delete()
-	 * @return boolean
+	 * Delete plugin preferences, {@see e_pref::deletePrefRow()}
+	 *
+	 * @return int|false rows removed, or false on a delete that failed or had no row name to key on
 	 */
 	public function delete($ids, $destroy = true, $session_messages = false)
 	{
-		$ret = false;
-		if($this->plugin_id)
-		{
-			$ret = e107::getDb($this->plugin_id)->createQueryBuilder()->delete('core')
-				->where('e107_name', $this->plugin_id)
-				->execute();
-			$this->destroy();
-		}
-		return $ret;
+		return $this->deletePrefRow();
 	}
 }
 
@@ -1369,8 +1381,6 @@ class e_theme_pref extends e_pref
 	 */
 	function __construct($theme_id, $multi_row = '', $load = true)
 	{
-		// Sanitise like e_pref::__construct does for $prefid; $this->theme_id is used
-		// directly in a DELETE WHERE clause by delete().
 		$this->theme_id = preg_replace('/[^\w\-]/', '', $theme_id);
 		if($multi_row)
 		{
@@ -1394,21 +1404,13 @@ class e_theme_pref extends e_pref
 	}
 
 	/**
-	 * Delete plugin preferences
-	 * @see e107_handlers/e_pref#delete()
-	 * @return boolean
+	 * Delete theme preferences, {@see e_pref::deletePrefRow()}
+	 *
+	 * @return int|false rows removed, or false on a delete that failed or had no row name to key on
 	 */
 	public function delete($ids, $destroy = true, $session_messages = false)
 	{
-		$ret = false;
-		if($this->theme_id)
-		{
-			$ret = e107::getDb($this->theme_id)->createQueryBuilder()->delete('core')
-				->where('e107_name', $this->theme_id)
-				->execute();
-			$this->destroy();
-		}
-		return $ret;
+		return $this->deletePrefRow();
 	}
 }
 
