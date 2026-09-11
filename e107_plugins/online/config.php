@@ -35,21 +35,17 @@ if (isset($_POST['update_menu']))
 		'online_show_memberlist_extended',
 	)));
 
-	$menu_pref = e107::getConfig('menu')->getPref();
+	$menuPref = e107::getConfig('menu');
+	$menu_pref = $menuPref->getPref();
 
-	if (e107::getLog()->logArrayDiffs($temp,$menu_pref,'MISC_02'))
+	foreach ($temp as $k => $v)
 	{
-		$menuPref = e107::getConfig('menu');
-		foreach ($temp as $k => $v)
-		{
-			$menuPref->setPref($k, $v);
-		}
-		$menuPref->save(false, true, false);
-		$mes->addSuccess(LAN_SAVED);
+		$menuPref->setPref($k, $v);
 	}
-	else
+
+	if($menuPref->save(false, true) === true)
 	{
-		$mes->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE);
+		e107::getLog()->logArrayDiffs($temp, $menu_pref, 'MISC_02');
 	}
 	//$ns->tablerender('', "<div style='text-align:center'><b>".LAN_UPDATED.'</b></div>');
 	//e107::getRender()->tablerender(null, $mes->render() );
