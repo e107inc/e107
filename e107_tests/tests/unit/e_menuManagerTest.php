@@ -31,19 +31,11 @@
 		 */
 		private function previewInBareBootstrap($fragment)
 		{
-			$root = realpath(e_HANDLER . '..');
-			$this->assertNotFalse($root, 'Could not locate the e107 root.');
-
-			$code = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-			$code .= "\$_E107 = array('cli' => true, 'no_lan' => true); ";
-			$code .= "require_once('" . addslashes($root . '/class2.php') . "'); ";
-			$code .= "require_once('" . addslashes($root . '/e107_handlers/menumanager_class.php') . "'); ";
+			$code  = "require_once('" . addslashes(APP_PATH . '/e107_handlers/menumanager_class.php') . "'); ";
 			$code .= "\$reflection = new ReflectionClass('e_menuManager'); ";
 			$code .= "\$reflection->newInstanceWithoutConstructor()->checklayout('" . $fragment . "');";
 
-			$output = array();
-			$exitCode = 0;
-			exec(sprintf('php -r %s 2>&1', escapeshellarg($code)), $output, $exitCode);
+			list($output, $exitCode) = $this->runInBootedCli($code, '', array('cli' => true, 'no_lan' => true));
 
 			return array(implode("\n", $output), $exitCode);
 		}

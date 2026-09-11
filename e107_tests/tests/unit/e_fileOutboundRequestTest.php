@@ -1429,23 +1429,14 @@ class e_fileOutboundRequestTest extends \Test\Unit
 	 */
 	private function runPhp($body, $ini = '')
 	{
-		$php = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-		$php .= "\$_E107 = array('cli' => true); ";
-		$php .= "require_once('" . addslashes(APP_PATH . '/class2.php') . "'); ";
-		$php .= "require_once('" . addslashes(codecept_data_dir('e_fileOutboundRequestProbes.php')) . "'); ";
+		$php  = "require_once('" . addslashes(codecept_data_dir('e_fileOutboundRequestProbes.php')) . "'); ";
 		$php .= "echo \"\\nP3CURL:\" . var_export(function_exists('curl_init'), true) . ':END'; ";
 		$php .= $body;
 		$php .= "while(ob_get_level() > 0) { @ob_end_flush(); } ";
 
-		$output = array();
-		$status = 0;
-		exec(sprintf('timeout 60 php %s -r %s 2>&1', $ini, escapeshellarg($php)), $output, $status);
-		$out = implode("\n", $output);
+		list($output) = $this->runInBootedCli($php, $ini);
 
-		self::assertNotSame(124, $status,
-			"The subprocess wedged and had to be killed, so nothing below was measured.\n" . $out);
-
-		return $out;
+		return implode("\n", $output);
 	}
 
 	/**
