@@ -51,6 +51,9 @@ class ChatboxRequestSelfCest
 	/** One more than chat.php's page size, so the paginator has a second page. */
 	const SEEDED_POSTS = 31;
 
+	/** The query a link to the second page carries: the offset is named, and named out of the chatbox's own vocabulary so a visitor's own parameters cannot shadow it. */
+	const SECOND_PAGE_QUERY = 'cbfrom=30';
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled(self::PLUGIN);
@@ -137,10 +140,27 @@ class ChatboxRequestSelfCest
 
 		$source = $I->grabPageSource();
 
-		$I->assertStringContainsString(self::REWRITTEN . '/?30', $source,
+		$I->assertStringContainsString(self::REWRITTEN . '/?' . self::SECOND_PAGE_QUERY, $source,
 			'the page links have to keep the visitor on the address they asked for, with the trailing slash e_REQUEST_SELF adds so the query composes');
-		$I->assertStringNotContainsString('chat.php?30', $source,
+		$I->assertStringNotContainsString('chat.php?' . self::SECOND_PAGE_QUERY, $source,
 			'no page link may drop the visitor on the entry script');
+	}
+
+	public function thePaginatorAdvancesToTheNextPageOfPosts(AcceptanceTester $I)
+	{
+		$I->wantTo('reach the oldest chatbox posts by following a page link');
+
+		$this->seedPosts($I);
+
+		$I->haveHttpHeader('X-Rewrite-Url', self::REWRITTEN . '/?' . self::SECOND_PAGE_QUERY);
+		$I->amOnPage(self::CHAT_PAGE . '?' . self::REWRITE_TARGET_QUERY . '&' . self::SECOND_PAGE_QUERY);
+
+		$source = $I->grabPageSource();
+
+		$I->assertStringContainsString($this->seededMessage(self::SEEDED_POSTS - 1), $source,
+			'the offset a page link carries has to reach the query, on a rewritten address as much as a plain one');
+		$I->assertStringNotContainsString($this->seededMessage(0), $source,
+			'page two of the chatbox is page two, not page one under another address');
 	}
 
 	private function grabFormAction(AcceptanceTester $I, $pattern)
@@ -160,12 +180,17 @@ class ChatboxRequestSelfCest
 		{
 			$I->haveInDatabase('e107_chatbox', array(
 				'cb_nick'      => '1.e107tests',
-				'cb_message'   => 'Seeded by 0082_ChatboxRequestSelfCest, post ' . $i,
+				'cb_message'   => $this->seededMessage($i),
 				'cb_datestamp' => time() - $i,
 				'cb_blocked'   => 0,
 				'cb_ip'        => '127.0.0.1',
 			));
 		}
+	}
+
+	private function seededMessage($index)
+	{
+		return 'Seeded by 0082_ChatboxRequestSelfCest, post ' . $index;
 	}
 
 	private function probeSource()
