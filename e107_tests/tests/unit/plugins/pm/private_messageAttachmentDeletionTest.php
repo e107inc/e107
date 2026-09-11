@@ -44,12 +44,17 @@ class private_messageAttachmentDeletionTest extends \Test\Unit
 	/** @var array */
 	private $dirs = array();
 
+	/** @var bool */
+	private $createdTable = false;
+
 	protected function _before()
 	{
 		require_once(e_PLUGIN . 'pm/pm_class.php');
 		require_once(__DIR__ . '/private_message_attachment_double.php');
 
 		e107::includeLan(e_PLUGIN . 'pm/languages/' . e_LANGUAGE . '.php');
+
+		$this->requirePrivateMsgTable();
 
 		$this->root = e_TEMP . 'pm_attachment_deletion_' . uniqid() . '/';
 		$this->legacy = e_TEMP . 'pm_attachment_legacy_' . uniqid() . '/';
@@ -73,6 +78,12 @@ class private_messageAttachmentDeletionTest extends \Test\Unit
 		foreach($this->genIds as $id)
 		{
 			$db->createQueryBuilder()->delete('generic')->where('gen_id', (int) $id)->execute();
+		}
+
+		if($this->createdTable)
+		{
+			$db->schema()->dropTable('private_msg');
+			$this->createdTable = false;
 		}
 
 		foreach($this->files as $file)
@@ -213,6 +224,31 @@ class private_messageAttachmentDeletionTest extends \Test\Unit
 		self::assertFileExists($path, 'The fixture attachment was not written');
 
 		return $path;
+	}
+
+	/**
+	 * The unit install carries no plugin tables, so the table the pm plugin declares is built from its own schema file and dropped again.
+	 */
+	private function requirePrivateMsgTable()
+	{
+		$db = e107::getDb();
+
+		if($db->isTable('private_msg'))
+		{
+			return;
+		}
+
+		$catalogue = new \e107\Database\Schema\Declared\SqlFileCatalogue();
+		$declared = $catalogue->parse(file_get_contents(e_PLUGIN . 'pm/pm_sql.php'), 'pm');
+
+		self::assertArrayHasKey('private_msg', $declared, 'pm_sql.php no longer declares private_msg');
+
+		$created = $db->schema()->createTableRaw('private_msg',
+			$db->createQueryBuilder()->raw($declared['private_msg']->getBody()));
+
+		self::assertNotEmpty($created, 'Could not create the private_msg table pm_sql.php declares');
+
+		$this->createdTable = true;
 	}
 
 	/**
