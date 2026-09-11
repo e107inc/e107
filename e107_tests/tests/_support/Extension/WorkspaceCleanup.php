@@ -59,6 +59,8 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/tpstate1_onlinetpl',
 		'e107_themes/tpstate1_onlinedir',
 		'e107_themes/tpstate3_plain',
+		'e107_themes/tpstate3_bs4',
+		'e107_themes/tpstate3_bstrue',
 		'e107_themes/tpstate3_rootfpw',
 		'e107_themes/tpstate3_rootlogin',
 		'e107_themes/tpstate3_globalfpw',
