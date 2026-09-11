@@ -17,35 +17,27 @@ class signin_shortcodesTest extends \Test\Unit
 	/** @var plugin_signin_signin_shortcodes */
 	private $sc;
 
-	/** @var mixed the plug_installed pref as found, restored in _after() */
-	private $savedInstalled = null;
-
-	/** @var mixed the allowEmailLogin pref as found, restored in _after() */
-	private $savedEmailLogin = null;
+	/** @var array the prefs these tests write, as found, restored in _after() */
+	private $saved = array();
 
 	protected function _before()
 	{
 		require_once(e_PLUGIN.'signin/signin_shortcodes.php');
 
-		try
-		{
-			$this->sc = $this->make('plugin_signin_signin_shortcodes');
-		}
-		catch(Exception $e)
-		{
-			$this->fail($e->getMessage());
-		}
+		$this->sc = $this->buildBatch();
 
-		$this->sc->__construct();
-
-		$this->savedInstalled = e107::getConfig()->get('plug_installed');
-		$this->savedEmailLogin = e107::getConfig()->get('allowEmailLogin');
+		foreach(array('plug_installed', 'allowEmailLogin', 'user_reg_veri', 'auth_method') as $pref)
+		{
+			$this->saved[$pref] = e107::getConfig()->get($pref);
+		}
 	}
 
 	protected function _after()
 	{
-		e107::getConfig()->set('plug_installed', $this->savedInstalled);
-		e107::getConfig()->set('allowEmailLogin', $this->savedEmailLogin);
+		foreach($this->saved as $pref => $value)
+		{
+			e107::getConfig()->set($pref, $value);
+		}
 	}
 
 	/**
@@ -161,7 +153,48 @@ class signin_shortcodesTest extends \Test\Unit
 
 		self::assertStringContainsString(LAN_SIGNIN_SIGNIN, $html);
 		self::assertStringContainsString(LAN_SIGNIN_FPW, $html);
-		self::assertStringContainsString(LAN_SIGNIN_RESEND, $html);
+
+		$this->assertWrappedNameResolves('signin', 'SIGNIN_RESEND_HREF', LAN_SIGNIN_RESEND);
+	}
+
+	/** The button asked for a shortcode the batch never defined, so its href came out empty (issue #6139). */
+	public function testTheResendButtonLinksToTheResendForm()
+	{
+		$html = $this->renderSigninForm(array());
+
+		self::assertStringContainsString(
+			'<a href="'.e_SIGNUP.'?resend" class="btn btn-default btn-secondary btn-sm  btn-block">'.LAN_SIGNIN_RESEND.'</a>',
+			$html);
+	}
+
+	/** Each of these is a site where signup.php refuses the resend form, and a wrapper whose shortcode says nothing is markup no page renders. */
+	public function testTheResendButtonIsAbsentWhereTheResendFormRefuses()
+	{
+		$refusals = array(
+			'registration closed'       => array('regMode' => 0),
+			'login only'                => array('regMode' => 2),
+			'no verification'           => array('user_reg_veri' => '0'),
+			'verification never set'    => array('user_reg_veri' => null),
+			'admin approval'            => array('user_reg_veri' => '2'),
+			'another authentication'    => array('auth_method' => 'oauth'),
+		);
+
+		foreach($refusals as $case => $settings)
+		{
+			$html = $this->renderSigninForm($settings);
+
+			self::assertStringNotContainsString('?resend', $html, $case);
+			self::assertStringNotContainsString(LAN_SIGNIN_RESEND, $html, $case);
+		}
+	}
+
+	/** The signup link is the other caller of the gate the resend button shares, and registration has three settings rather than two. */
+	public function testTheSignupLinkIsGatedWithTheResendButton()
+	{
+		self::assertStringContainsString('<li class="nav-item"><a class="nav-link" href="'.e_SIGNUP.'">'.LAN_SIGNIN_SIGNUP.'</a></li>',
+			$this->renderSigninForm(array()));
+
+		self::assertStringNotContainsString(e_SIGNUP, $this->renderSigninForm(array('regMode' => 2)));
 	}
 
 	/**
@@ -171,24 +204,12 @@ class signin_shortcodesTest extends \Test\Unit
 	 */
 	public function testTheSignedInMenuResolvesEveryLanguageToken()
 	{
-		$tp = e107::getParser();
-		$html = $tp->parseTemplate(e107::getTemplate('signin', 'signin', 'signout'), true, $this->sc);
+		$html = e107::getParser()->parseTemplate(e107::getTemplate('signin', 'signin', 'signout'), true, $this->sc);
 
 		self::assertStringContainsString(LAN_SIGNIN_PROFILE, $html);
 
-		$wrapper = e107::getRegistry('templates/wrapper/signin');
-
-		$wrapped = array(
-			array($wrapper['signin']['SIGNIN_SIGNUP_HREF'], LAN_SIGNIN_SIGNUP),
-			array($wrapper['signout']['SIGNIN_ADMIN_HREF'], LAN_SIGNIN_ADMIN),
-		);
-
-		foreach($wrapped as $case)
-		{
-			list($markup, $name) = $case;
-
-			self::assertStringContainsString($name, $tp->parseTemplate($markup, true, $this->sc), $markup);
-		}
+		$this->assertWrappedNameResolves('signin', 'SIGNIN_SIGNUP_HREF', LAN_SIGNIN_SIGNUP);
+		$this->assertWrappedNameResolves('signout', 'SIGNIN_ADMIN_HREF', LAN_SIGNIN_ADMIN);
 	}
 
 	/**
@@ -201,12 +222,65 @@ class signin_shortcodesTest extends \Test\Unit
 		self::assertStringContainsString(">".LAN_PASSWORD."</label>", $this->sc->sc_signin_input_password());
 	}
 
+	/** Reads a name out of the wrapper markup that holds it, which no page renders until its shortcode answers. */
+	private function assertWrappedNameResolves($key, $code, $name)
+	{
+		$wrapper = e107::getRegistry('templates/wrapper/signin');
+
+		self::assertArrayHasKey($code, varset($wrapper[$key], array()), $key.'/'.$code.' has to be wrapped');
+		self::assertStringContainsString($name,
+			e107::getParser()->parseTemplate($wrapper[$key][$code], true, $this->sc), $code);
+	}
+
+	/** Renders the signed-out form against the settings the resend button needs, less whatever the case takes away. */
+	private function renderSigninForm(array $refusal)
+	{
+		$settings = $refusal + array('user_reg_veri' => '1', 'auth_method' => 'e107', 'regMode' => 1);
+
+		foreach(array('user_reg_veri', 'auth_method') as $pref)
+		{
+			if($settings[$pref] === null)
+			{
+				e107::getConfig()->remove($pref);
+			}
+			else
+			{
+				e107::getConfig()->set($pref, $settings[$pref]);
+			}
+		}
+
+		$sc = $this->buildBatch();
+
+		$regMode = new ReflectionProperty('plugin_signin_signin_shortcodes', 'regMode');
+		$regMode->setAccessible(true);
+		$regMode->setValue($sc, $settings['regMode']);
+
+		$sc->wrapper('signin/signin');
+
+		return e107::getParser()->parseTemplate(e107::getTemplate('signin', 'signin', 'signin'), true, $sc);
+	}
+
+	/** Builds the batch, which reads every pref it answers from exactly once, here. */
+	private function buildBatch()
+	{
+		try
+		{
+			$sc = $this->make('plugin_signin_signin_shortcodes');
+		}
+		catch(Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$sc->__construct();
+
+		return $sc;
+	}
+
 	/** Builds the batch against the pref as it stands, then reads the rendered field. */
 	private function assertUsernameFieldIsNamed($name, $case)
 	{
-		$sc = $this->make('plugin_signin_signin_shortcodes');
-		$sc->__construct();
-		$markup = $sc->sc_signin_input_username();
+		$markup = $this->buildBatch()->sc_signin_input_username();
 
 		self::assertStringContainsString("placeholder='".$name."'", $markup, $case);
 		self::assertStringContainsString(">".$name."</label>", $markup, $case);
