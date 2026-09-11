@@ -369,6 +369,22 @@
 			}
 		}
 
+		public function testRenderThemeConfigMarkupRowOmittingAKey()
+		{
+			$this->th->id             = e107::getPref('sitetheme');
+			$this->th->themeConfigObj = $this->themeConfigStub(array(
+				array('caption' => 'Markup', 'html' => "<input type='text' name='themeHandlerTest_raw' />"),
+				array(),
+				"<input type='text' name='themeHandlerTest_scalar' />",
+			));
+
+			$empty    = "<tr><td><b></b>:</td><td colspan='2'><div class='field-help'></div></td></tr>";
+			$expected = "<tr><td><b>Markup</b>:</td><td colspan='2'><input type='text' name='themeHandlerTest_raw' /><div class='field-help'></div></td></tr>"
+				. $empty . $empty;
+
+			$this->assertSame($expected, $this->th->renderThemeConfig(), 'a markup row leaving out caption, html or help renders as though it set them empty, the way _blank ships its second row, and a row that is not an array at all renders empty rather than bringing the page down');
+		}
+
 		/**
 		 * Field declarations whose rendered input name decides which empty {@see themeHandler::setThemeConfig()} stores when the field is absent from the POST; lanlist and layouts are left to the helper's own assertions because a first render of either in a unit context raises on the unrelated core faults #6085 and #6086.
 		 *
