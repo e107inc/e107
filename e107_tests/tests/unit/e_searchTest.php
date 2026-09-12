@@ -212,6 +212,58 @@
 				'A dot in the keyword matches a dot, not any character.');
 		}
 
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6330
+		 */
+		public function testWordBoundarySearchAsksForAPatternEveryServerAccepts()
+		{
+			e107::getDb('search')->resetLastError();
+			$this->searchProbe('builds', 0, 1);
+			$emitted = e107::getDb('search')->getLastQuery();
+
+			self::assertSame('', e107::getDb('search')->getLastErrorText(),
+				'A pattern the server refuses costs every row, not just the boundary.');
+			self::assertStringContainsString('REGEXP', $emitted,
+				'The PHP sort method is the branch that sends a pattern to the server.');
+			self::assertStringNotContainsString('[[:<:]]', $emitted,
+				'MySQL 8.0.4 dropped the word markers and refuses the whole pattern.');
+			self::assertStringNotContainsString('[[:>:]]', $emitted,
+				'MySQL 8.0.4 dropped the word markers and refuses the whole pattern.');
+		}
+
+		/**
+		 * The row itself has to come back, which is the half the highlighter cannot answer for.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6330
+		 */
+		public function testWordBoundarySearchFindsAKeywordThatEndsOnPunctuation()
+		{
+			self::assertStringContainsString('<mark>wibble-</mark>', $this->searchProbe('wibble-', 0, 1),
+				'A word boundary asks about the neighbouring character, not about the keyword.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6357
+		 */
+		public function testSearchDropsAKeywordThatIsOnlyAnOperator()
+		{
+			self::assertSame('nothing found', $this->searchProbe('+ zzzzabsent', 0, 1),
+				'A stray operator must not become an empty keyword that every row satisfies.');
+			self::assertStringContainsString('<mark>builds</mark>', $this->searchProbe('+ builds', 0, 1),
+				'Dropping the operator leaves the rest of the query to be searched.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6330
+		 */
+		public function testWordBoundarySearchStillMatchesWholeWordsOnly()
+		{
+			self::assertStringContainsString('<mark>builds</mark>', $this->searchProbe('builds', 0, 1),
+				'A whole word is still found with the boundary preference on.');
+			self::assertSame('nothing found', $this->searchProbe('build', 0, 1),
+				'A fragment of a longer word is still refused with the boundary preference on.');
+		}
+
 		public function testGetCommentHandlerPath()
 		{
 			self::assertSame(e_HANDLER . 'search/comments_news.php',
