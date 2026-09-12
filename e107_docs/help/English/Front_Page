@@ -1,6 +1,15 @@
+H1> Choosing the front page
 
-Q>	What's this section for?
-A>	This screen allows you to set what appears on the front page of your site, by default it's set to news.
+P> The Front Page admin decides what visitors see at the root URL of your site. By default it is the news listing, but you can route the front page to almost anything.
 
-Q>	What other pages can I display?
-A>	Any. You can either tick the preset ones (forum, downloads, etc.) or enter the address to the page you want to use.
+SHOT> front-page/admin-frontpage.png | Front Page selector with the preset routes
+
+Q> What's this section for?
+A> It controls the page rendered at `/` of your site. The default value is `news.php`.
+
+Q> What other pages can I display?
+A> Any. Tick one of the presets (news, forum, downloads, custom page, …) or paste a custom URL/path to send the front page wherever you need.
+
+TIP> Different user classes can be sent to different front pages. Useful when administrators want a dashboard while guests land on the public news.
+
+NOTE> The front page setting only affects requests to `/`. Direct links to other URLs continue to work as usual.

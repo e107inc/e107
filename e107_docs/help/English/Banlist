@@ -1,6 +1,13 @@
+H1> About the banlist
 
-Q>	What's this section for?
-A>	This page allows you to ban visitors to your site, either by their IP address and/or email address.
+P> The banlist blocks unwanted visitors at the door. You can ban by IP address, by email address, or by a wildcard pattern of either.
 
-Q>	Why do I have to give a reason?
-A>	You don't, that textbox is there so that other administrators can see the reason for the ban, or they might remove it by mistake.
+Q> What's this section for?
+A> It allows you to ban visitors to your site, either by their IP address and/or email address. Banned addresses are checked very early in the request lifecycle so blocked visitors never reach your content.
+
+Q> Why do I have to give a reason?
+A> You don't strictly have to, but it is strongly recommended. The reason field is shown to other administrators so they can understand why the ban exists – without it, somebody might lift the ban by mistake.
+
+TIP> Use the [b]Expiry[/b] field to schedule short-term bans (for example, 24 h cool-downs). Permanent bans should be reserved for repeat offenders.
+
+WARN> Banning by IP affects every user behind that IP – including legitimate visitors on shared connections (universities, mobile carriers, NAT). Prefer email/account bans whenever possible.

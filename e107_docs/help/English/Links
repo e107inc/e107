@@ -1,6 +1,13 @@
+H1> Managing links
 
-Q>	How can I enter a link so that it appears in my main navigation menu?
-A>	Any links in the Main category will appear in your main nav menu. All other categories appear on the Links page.
+P> The Links admin owns both the main navigation menu and the public Links page. Both share the same storage and category model.
 
-Q>	What's the link button text box for?
-A>	This allows you to display the button for the link on the Links page. If you leave it blank a blank button will be displayed.
+Q> How can I enter a link so that it appears in my main navigation menu?
+A> Add the link under the [b]Main[/b] category. Anything in that category renders inside the main navigation menu of the active theme. Links in any other category appear on the public Links page.
+
+Q> What's the link button text box for?
+A> It defines the button image used to represent the link on the Links page. If you leave it blank a placeholder/empty button is shown instead.
+
+TIP> Use clear, short captions for links in the Main category – the navigation menu has limited horizontal space and long captions wrap or truncate depending on the theme.
+
+NOTE> Visibility rules for links honour user classes (see the Classes help page), so you can publish "members-only" links that guests never see.

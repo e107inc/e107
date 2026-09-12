@@ -1,3 +1,28 @@
+H1> Managing users
 
-Q>	What's the Extended Field section for?
-A>	This allows you to add more sections to the Users page. For example, if you were running a clan, you could add a field for clan nickname, or average number of flags :) The new field will appear in the User Settings page, and also the Members list.
+P> The Users area lets you create accounts, group them in user classes, and extend their profile with custom fields. Two questions come up over and over from new admins.
+
+H1> Extended user fields
+
+Q> What's the Extended Field section for?
+A> It allows you to add more sections to the Users page. For example, if you run a clan you could add a field for clan nickname, or average number of flags. The new field appears both in the user's [b]Settings[/b] page and on the public [b]Members[/b] list.
+
+SHOT> users/user-classe-extended-fields.png | List of extended fields with type and visibility
+
+H2> Typical use cases
+
+STEP> Add a [b]Country[/b] dropdown so members can localise their profile.
+STEP> Add a [b]Discord handle[/b] text field for community contact.
+STEP> Add a date field for [b]birthday[/b] and use it in your theme to greet users.
+
+TIP> Mark sensitive fields as [b]private[/b] if they should never appear on the public profile – e107 still stores them and exposes them to admins only.
+
+H1> User classes
+
+P> Every account belongs to one or more user classes (Guests, Members, Admins, plus any custom class you create). Classes are the foundation of e107's permission model: menus, plugins, BBCodes and even individual news items can be restricted by class.
+
+SHOT> users/tree-user.png | User-class tree with built-in and custom classes
+
+NOTE> You can create a new class from [b]Admin → User Classes[/b]. Once created, the class becomes selectable in every visibility dropdown across the admin area.
+
+WARN> Removing a class that is referenced by content (news, pages, menus) does not delete that content, but it will fall back to the default visibility, which may expose private items. Audit references before deleting a class.
