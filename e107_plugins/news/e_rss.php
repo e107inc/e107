@@ -94,7 +94,7 @@ class news_rss // plugin-folder + '_rss'
 			->from('news', 'n')
 			->leftJoin('user', 'u', $qb->expr()->compareColumns('n.news_author', 'u.user_id'))
 			->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
-			->whereIn('n.news_class', array_map('intval', explode(',', USERCLASS_LIST)))
+			->where(\e107\Userclass\Membership::current()->predicate('n.news_class'))
 			->where($qb->expr()->not($qb->expr()->regexp('n.news_class', $nobody_regexp)))
 			->where('n.news_start', '<', $now)
 			->where($qb->expr()->anyOf($qb->expr()->eq('n.news_end', 0), $qb->expr()->gt('n.news_end', $now)));

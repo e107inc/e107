@@ -475,11 +475,8 @@ class rssCreate
 	}
 
 	/**
-	 * The userclass predicate core states for a comma separated class column.
-	 *
-	 * The column holds a list, so it is matched as one: an IN () would make
-	 * MySQL read '254,0' as the number 254, and would admit a list that names
-	 * both a class the visitor holds and e_UC_NOBODY.
+	 * The userclass predicate for a class column, plus the rule a feed adds: a
+	 * list that names e_UC_NOBODY is withheld even from a class it also names.
 	 *
 	 * @param \e107\Database\QueryBuilder $qb
 	 * @param string $column
@@ -487,7 +484,7 @@ class rssCreate
 	 */
 	private function whereClassPermits($qb, $column)
 	{
-		$qb->where($qb->expr()->regexp($column, e_CLASS_REGEXP))
+		$qb->where(\e107\Userclass\Membership::current()->predicate($column))
 			->where($qb->expr()->not($qb->expr()->regexp($column, e_NOBODY_REGEXP)));
 	}
 
@@ -500,7 +497,7 @@ class rssCreate
 	private function visibleComments($name, $parent, $limit)
 	{
 		$now = time();
-		$userclass = array_map('intval', explode(',', USERCLASS_LIST));
+		$visitor = \e107\Userclass\Membership::current();
 
 		$qb = e107::getDb()->createQueryBuilder();
 		$qb->select('c.*')
@@ -525,9 +522,9 @@ class rssCreate
 				// a feed is; download_class is who may then fetch the file.
 				$qb->innerJoin('download_category', 'dc',
 						$qb->expr()->compareColumns('dc.download_category_id', 'p.download_category'))
-					->whereIn('p.download_visible', $userclass)
-					->whereIn('p.download_class', $userclass)
-					->whereIn('dc.download_category_class', $userclass)
+					->where($visitor->predicate('p.download_visible'))
+					->where($visitor->predicate('p.download_class'))
+					->where($visitor->predicate('dc.download_category_class'))
 					->where('p.download_active', '!=', 0);
 				break;
 

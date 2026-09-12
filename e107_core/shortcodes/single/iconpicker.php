@@ -29,7 +29,7 @@ function iconpicker_shortcode($parm)
 
 		$qb = $sql->createQueryBuilder();
 		$qb->select('*')->from('core_media')
-			->whereIn('media_userclass', explode(',', USERCLASS_LIST));
+			->where(\e107\Userclass\Membership::current()->predicate('media_userclass'));
 		if(vartrue($sc_parameters))
 		{
 			$qb->where('media_category', $sc_parameters);

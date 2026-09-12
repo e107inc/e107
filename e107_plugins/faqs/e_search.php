@@ -58,7 +58,8 @@ class faqs_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-		$qry = " find_in_set(x.faq_info_class,'".USERCLASS_LIST."') AND ";
+		$rule = \e107\Userclass\Membership::current()->predicate('x.faq_info_class');
+		$qry = " ".$rule->getSql()." AND ";
 
 		/*
 		if (vartrue($parm['time']) && is_numeric($parm['time'])) 
@@ -71,7 +72,7 @@ class faqs_search extends e_search // include plugin-folder in the name.
 			$qry .= " cb_nick LIKE '%".$tp -> toDB($parm['author'])."%' AND";
 		}*/
 
-		return $qry;
+		return \e107\Database\SqlFragment::raw($qry, $rule->getParameters());
 	}
 
 

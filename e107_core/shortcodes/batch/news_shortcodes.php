@@ -1331,6 +1331,7 @@ class news_shortcodes extends e_shortcode
 		$var = $this->getScVar('news_item');
 
 		$db = e107::getDb();
+		$rule = \e107\Userclass\Membership::current()->predicate('n.news_class');
 
 		// The comparison operator and sort direction are chosen from a fixed
 		// ternary (no user input) and inlined as static keywords. Every value is
@@ -1342,11 +1343,10 @@ class news_shortcodes extends e_shortcode
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class REGEXP :classRegexp AND NOT (n.news_class REGEXP :nobodyRegexp)
+				WHERE ".$rule->getSql()." AND NOT (n.news_class REGEXP :nobodyRegexp)
 				AND n.news_start < :now1 AND (n.news_end=0 || n.news_end > :now2)
 				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
-				AND n.news_datestamp ".(($type === 'next') ? '>=' : '<=')." :newsDatestamp AND n.news_id != :newsId ORDER by n.news_datestamp ".(($type === 'next') ? 'ASC' : 'DESC')." LIMIT 1", array(
-			'classRegexp'   => e_CLASS_REGEXP,
+				AND n.news_datestamp ".(($type === 'next') ? '>=' : '<=')." :newsDatestamp AND n.news_id != :newsId ORDER by n.news_datestamp ".(($type === 'next') ? 'ASC' : 'DESC')." LIMIT 1", $rule->getParameters() + array(
 			'nobodyRegexp'  => $nobody_regexp,
 			'now1'          => time(),
 			'now2'          => time(),

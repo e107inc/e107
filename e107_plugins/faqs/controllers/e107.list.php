@@ -70,7 +70,7 @@ class plugin_faqs_list_controller extends eControllerFront
 		$qb = $sql->createQueryBuilder();
 		$qb->select('f.*', 'cat.*')->from('faqs', 'f')
 			->leftJoin('faqs_info', 'cat', $qb->expr()->compareColumns('f.faq_parent', 'cat.faq_info_id'))
-			->whereIn('cat.faq_info_class', explode(',', USERCLASS_LIST));
+			->where(\e107\Userclass\Membership::current()->predicate('cat.faq_info_class'));
 
 		if($category)
 		{

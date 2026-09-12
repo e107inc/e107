@@ -64,12 +64,12 @@ final class CallSiteVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        if (!$node instanceof Expr\MethodCall || !$node->name instanceof Node\Identifier) {
+        if (!$node instanceof Expr\MethodCall) {
             return null;
         }
 
-        $method = $node->name->name;
-        if (!$this->catalog->isMethodOfInterest($method)) {
+        $method = Ast::methodName($node);
+        if ($method === null || !$this->catalog->isMethodOfInterest($method)) {
             return null;
         }
 

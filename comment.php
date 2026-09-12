@@ -381,14 +381,15 @@ elseif ($action == 'comment')
 		switch ($table)
 		{
 			case 'news' :
+				$rule = \e107\Userclass\Membership::current()->predicate('n.news_class');
 				if (!$sql->execute(
 					"SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 					LEFT JOIN #user AS u ON n.news_author = u.user_id
 					LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-					WHERE n.news_class REGEXP :news_class
+					WHERE ".$rule->getSql()."
 					AND n.news_id = :news_id
 					AND n.news_allow_comments = 0",
-					array('news_class' => e_CLASS_REGEXP, 'news_id' => (int) $id)
+					$rule->getParameters() + array('news_id' => (int) $id)
 				))
 				{
 					e107::redirect();

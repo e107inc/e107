@@ -15,7 +15,9 @@ use PhpParser\Node\Scalar;
  *
  *  - static              no dynamic parts in the SQL string.
  *  - bound-safe          every dynamic part is provably safe (cast/escape/toDB/
- *                        const/numeric), or it is an array-form CRUD payload
+ *                        const/numeric, or a fragment's getSql() whose
+ *                        getParameters() rides in execute()'s params), or it is
+ *                        an array-form CRUD payload
  *                        whose values e107 binds and whose WHERE element (if any)
  *                        is itself safe.
  *  - assumed-safe-array  insert/update/replace whose payload is a plain variable
@@ -156,11 +158,11 @@ final class SafetyClassifier
 
         /** @var list<DynamicPart> $allParts */
         $allParts = [];
-        $hasParams = false;
+        $params = null;
 
         foreach ($roles as $index => $role) {
             if ($role === 'params') {
-                $hasParams = $this->argExpr($args, $index) !== null;
+                $params = $this->argExpr($args, $index);
                 continue;
             }
             $expr = $this->argExpr($args, $index);
@@ -172,11 +174,12 @@ final class SafetyClassifier
             }
         }
 
+        $allParts = $this->admitBoundFragments($allParts, $params);
         $unsafe = $this->unsafeParts($allParts);
 
         if (empty($allParts)) {
             $reason = $method === 'execute'
-                ? ($hasParams ? 'static SQL with bound params' : 'fully static SQL')
+                ? ($params !== null ? 'static SQL with bound params' : 'fully static SQL')
                 : 'no dynamic parts';
             return new SafetyResult(CallSite::SAFETY_STATIC, $allParts, $reason);
         }
@@ -185,7 +188,7 @@ final class SafetyClassifier
             return new SafetyResult(
                 CallSite::SAFETY_BOUND,
                 $allParts,
-                'all dynamic parts safe (cast/escape/toDB/const/numeric)'
+                'all dynamic parts safe (cast/escape/toDB/const/numeric/bound fragment)'
             );
         }
 
@@ -194,6 +197,63 @@ final class SafetyClassifier
             $allParts,
             $this->describeUnsafe($unsafe)
         );
+    }
+
+    /**
+     * Admits a getSql() operand whose variable's getParameters() is bound by execute()'s params argument.
+     *
+     * @param list<DynamicPart> $parts
+     * @return list<DynamicPart>
+     */
+    private function admitBoundFragments(array $parts, ?Expr $params): array
+    {
+        $bound = $params === null ? [] : $this->fragmentsBoundBy($params);
+        if ($bound === []) {
+            return $parts;
+        }
+        return array_map(
+            fn (DynamicPart $part) => !$part->safe && !$part->identifierPosition && $this->isSqlOfOneOf($part->expr, $bound)
+                ? new DynamicPart(true, false, $part->description, $part->expr)
+                : $part,
+            $parts
+        );
+    }
+
+    /**
+     * The variables whose getParameters() the params argument, a + chain or array_merge() carries.
+     *
+     * @return list<string>
+     */
+    private function fragmentsBoundBy(Expr $params): array
+    {
+        $call = Ast::methodCall($params, 'getParameters');
+        if ($call !== null) {
+            $name = Ast::variableName($call->var);
+            return $name === null ? [] : [$name];
+        }
+        if ($params instanceof Expr\BinaryOp\Plus) {
+            return array_merge($this->fragmentsBoundBy($params->left), $this->fragmentsBoundBy($params->right));
+        }
+        $merge = Ast::functionCall($params, 'array_merge');
+        if ($merge !== null) {
+            $names = [];
+            foreach ($merge->args as $arg) {
+                if ($arg instanceof Arg && !$arg->unpack) {
+                    $names = array_merge($names, $this->fragmentsBoundBy($arg->value));
+                }
+            }
+            return $names;
+        }
+        return [];
+    }
+
+    /**
+     * @param list<string> $variables
+     */
+    private function isSqlOfOneOf(Expr $expr, array $variables): bool
+    {
+        $call = Ast::methodCall($expr, 'getSql');
+        return $call !== null && in_array(Ast::variableName($call->var), $variables, true);
     }
 
     /**

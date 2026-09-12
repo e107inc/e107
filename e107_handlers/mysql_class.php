@@ -395,7 +395,7 @@ class e_db_mysql implements e_db
 
 
 
-		if (!is_array($query) && (strpos($query,'EXPLAIN') !==0) && (strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
+		if ($sQryRes !== false && (strpos($statement,'EXPLAIN') !==0) && (strpos($statement,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($statement,'SELECT') !== false))
 		{
 
 			$fr = mysqli_query($this->mySQLaccess, 'SELECT FOUND_ROWS()');
