@@ -17,6 +17,15 @@
 		/** @var bool */
 		private $multibyteBefore;
 
+		/** @var array */
+		private $globalsBefore;
+
+		/** @var string */
+		private $probeTable;
+
+		/** @var bool */
+		private $probeBuilt = false;
+
 		protected function _before()
 		{
 			require_once(e_HANDLER . 'search_class.php');
@@ -25,13 +34,182 @@
 			// original list back before any other test can read it.
 			$this->installedBefore = e107::getConfig()->get('plug_installed');
 			$this->multibyteBefore = e107::getParser()->ustrlen('é') === 1;
+
+			$this->probeTable = MPREFIX . 'search_highlight_probe';
+			$this->globalsBefore = array();
+
+			foreach($this->searchGlobals() as $name)
+			{
+				$this->globalsBefore[$name] = isset($GLOBALS[$name]) ? $GLOBALS[$name] : null;
+			}
 		}
 
 		protected function _after()
 		{
 			e107::getConfig()->set('plug_installed', $this->installedBefore);
 			e107::getParser()->setMultibyte($this->multibyteBefore);
-			unset($GLOBALS['search_chars']);
+
+			foreach($this->globalsBefore as $name => $value)
+			{
+				if(is_null($value))
+				{
+					unset($GLOBALS[$name]);
+					continue;
+				}
+
+				$GLOBALS[$name] = $value;
+			}
+
+			if($this->probeBuilt)
+			{
+				e107::getDb()->execute('DROP TABLE IF EXISTS `' . $this->probeTable . '`');
+				$this->probeBuilt = false;
+			}
+		}
+
+		/**
+		 * The page-scope globals {@see e_search::parsesearch()} reads instead of taking arguments.
+		 */
+		private function searchGlobals()
+		{
+			return array('query', 'search_prefs', 'pre_title', 'search_chars', 'search_res', 'result_flag');
+		}
+
+		/**
+		 * One row of known text, indexed per column because MATCH() needs an index over exactly its own column list.
+		 */
+		private function buildProbe()
+		{
+			$sql = e107::getDb();
+			$sql->execute('DROP TABLE IF EXISTS `' . $this->probeTable . '`');
+			$this->probeBuilt = true;
+			$sql->execute('CREATE TABLE `' . $this->probeTable . '` ('
+				. 'probe_id INT NOT NULL, probe_title VARCHAR(255) NOT NULL, probe_summary TEXT NOT NULL,'
+				. ' FULLTEXT KEY probe_title (probe_title), FULLTEXT KEY probe_summary (probe_summary)'
+				. ') ENGINE=MyISAM');
+			$sql->execute('INSERT INTO `' . $this->probeTable
+				. '` (probe_id, probe_title, probe_summary) VALUES (1, :title, :summary)',
+				array(
+					'title'   => 'Release wibble#wobble notes for wibble- builds',
+					'summary' => 'Upgrade notes for wibble.wobble and for wibbleXwobble. See #wobble on its own.',
+				));
+		}
+
+		/**
+		 * Searches the probe row the way a search handler does, returning the rendered result list.
+		 */
+		private function searchProbe($searchQuery, $mysqlSort, $boundary)
+		{
+			global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
+
+			$this->buildProbe();
+
+			$query = $searchQuery;
+			$search_prefs = array('mysql_sort' => $mysqlSort, 'boundary' => $boundary,
+				'php_limit' => 10, 'relevance' => 0);
+			$pre_title = 0;
+			$search_chars = 200;
+			$search_res = 10;
+			$result_flag = 0;
+
+			$search = new e_search($searchQuery);
+			$ps = $search->parsesearch('search_highlight_probe', 'probe_id, probe_title, probe_summary',
+				array('probe_title', 'probe_summary'), array(1.2, 0.6), array($this, 'searchProbeResult'),
+				'nothing found', '', array());
+
+			return $ps['text'];
+		}
+
+		/**
+		 * Stands in for a plugin's search compile function; {@see e_search::parsesearch()} calls it per row.
+		 */
+		public function searchProbeResult($row)
+		{
+			return array(
+				'link'         => 'index.php',
+				'pre_title'    => '',
+				'title'        => $row['probe_title'],
+				'summary'      => $row['probe_summary'],
+				'detail'       => '',
+				'pre_summary'  => '',
+				'post_summary' => '',
+				'omit_result'  => false,
+			);
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6311
+		 */
+		public function testHighlightingKeepsAResultMatchedByAKeywordThatIsNotAPattern()
+		{
+			self::assertStringContainsString('<mark>wibble#wobble</mark>',
+				$this->searchProbe('wibble#wobble', 0, 0),
+				'A keyword carrying the pattern delimiter must be highlighted, not blanked.');
+		}
+
+		/**
+		 * The shipped default: MySQL sorting, and the word boundary the admin panel writes.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6311
+		 */
+		public function testHighlightingKeepsAResultWithWordBoundariesOn()
+		{
+			self::assertStringContainsString('<mark>wibble#wobble</mark>',
+				$this->searchProbe('wibble#wobble', 1, 1),
+				'A word boundary must not cost the highlight of a keyword that ends in punctuation.');
+		}
+
+		/**
+		 * A keyword whose edge is not a word character is the case a word boundary cannot assert beside.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6311
+		 */
+		public function testHighlightingKeepsAKeywordThatEndsOnPunctuation()
+		{
+			self::assertStringContainsString('<mark>wibble-</mark>',
+				$this->searchProbe('wibble-', 1, 1),
+				'A word boundary asks about the neighbouring character, not about the keyword.');
+		}
+
+		/**
+		 * The other edge, where the neighbour is the word character and the keyword's own edge is not.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6311
+		 */
+		public function testHighlightingKeepsAKeywordThatStartsOnPunctuation()
+		{
+			$text = $this->searchProbe('#wobble', 1, 1);
+
+			self::assertStringContainsString('wibble<mark>#wobble</mark>', $text,
+				'A keyword that starts on punctuation is marked where it follows a word character.');
+			self::assertStringContainsString('See <mark>#wobble</mark>', $text,
+				'The same keyword standing on its own is marked as well.');
+		}
+
+		/**
+		 * A wildcard runs the mark to the end of the word, whatever the keyword's own last character is.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6311
+		 */
+		public function testHighlightingExtendsAWildcardToTheEndOfTheWord()
+		{
+			self::assertStringContainsString('<mark>wibble</mark>', $this->searchProbe('wibb*', 1, 1),
+				'A wildcard keyword marks the whole of the word it matched.');
+			self::assertStringContainsString('<mark>wibble#wobble</mark>', $this->searchProbe('wibble#*', 1, 1),
+				'A keyword ending on punctuation keeps its wildcard.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6311
+		 */
+		public function testHighlightingMarksOnlyTheKeywordItself()
+		{
+			$text = $this->searchProbe('wibble.wobble', 0, 0);
+
+			self::assertStringContainsString('<mark>wibble.wobble</mark>', $text,
+				'The keyword the reader typed is what gets marked.');
+			self::assertStringNotContainsString('<mark>wibbleXwobble</mark>', $text,
+				'A dot in the keyword matches a dot, not any character.');
 		}
 
 		public function testGetCommentHandlerPath()
