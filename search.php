@@ -432,10 +432,13 @@ class search_front extends e_shortcode
 				} 
 				else 
 				{
+					$vars['SEARCH_ADV_ID'] = '';
+
 					if ($adv_value['type'] == 'dropdown') 
 					{
 						$vars['SEARCH_ADV_A'] = $adv_value['text'];
-						$vars['SEARCH_ADV_B'] = "<select name='".$adv_key."' class='tbox form-control form-select'>";
+						$vars['SEARCH_ADV_ID'] = $adv_key;
+						$vars['SEARCH_ADV_B'] = "<select id='".$adv_key."' name='".$adv_key."' class='tbox form-control form-select'>";
 						
 						foreach ($adv_value['list'] as $list_item) 
 						{
@@ -446,6 +449,7 @@ class search_front extends e_shortcode
 					else if ($adv_value['type'] == 'date') 
 					{
 						$vars['SEARCH_ADV_A'] = $adv_value['text'];
+						$vars['SEARCH_ADV_ID'] = 'on';
 						$vars['SEARCH_ADV_B'] = "
 						
 						<div class='form-inline row row-cols-lg-auto g-3'>
@@ -471,8 +475,11 @@ class search_front extends e_shortcode
 					} 
 					else if ($adv_value['type'] == 'author') 
 					{
+						$frm = e107::getForm();
+						$fieldName = $adv_key."_name";
 						$vars['SEARCH_ADV_A'] = $adv_value['text'];
-						$vars['SEARCH_ADV_B'] = e107::getForm()->userpicker($adv_key."_name",$adv_key,$_GET[$adv_key]);
+						$vars['SEARCH_ADV_ID'] = $frm->name2id($fieldName);
+						$vars['SEARCH_ADV_B'] = $frm->userpicker($fieldName,$adv_key,$_GET[$adv_key]);
 					} 
 					else if ($adv_value['type'] == 'dual') 
 					{
