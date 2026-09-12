@@ -505,6 +505,10 @@ class e_search
 	{
 		global $search_prefs;
 		$tp = e107::getParser();
+		if (trim($key, '+-*') === '') {
+			$this -> stop_keys[] = $key;
+			return TRUE;
+		}
 		if ($search_prefs['mysql_sort'] && ($key[0] == '+')) {
 			$key = $tp->usubstr($key, 1);
 		}
