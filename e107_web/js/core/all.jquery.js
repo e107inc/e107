@@ -1608,10 +1608,16 @@ $(document).ready(function()
 
 
 
-	// Store selected textarea.
-	$('.tbox.bbarea').click(function() {
-		storeCaret(this);
-	});
+	function storeBbareaCaret(event)
+	{
+		if($(event.target).closest('.bbarea').length)
+		{
+			storeCaret(event.target);
+		}
+	}
+
+	document.addEventListener('mousedown', storeBbareaCaret, true);
+	document.addEventListener('focus', storeBbareaCaret, true);
 		
 			
 		
@@ -1834,12 +1840,19 @@ function mozSwap(txtarea, newtext){
 }
 */
 
+	/** Takes the field itself, or any element inside the bbarea or form that owns one. */
 	function storeCaret (textAr){
-		e107_selectedInputArea = textAr;
-		/* TODO: @SecretR - Object of removal - not needed anymore
-		if (textAr.createTextRange){
-			e107_selectedRange = document.selection.createRange().duplicate();
-		}*/
+		var field = $(textAr);
+
+		if(!field.is('textarea, input'))
+		{
+			field = field.closest('.bbarea, form').find('textarea');
+		}
+
+		if(field.length === 1)
+		{
+			e107_selectedInputArea = field.get(0);
+		}
 	}
 
 /**
