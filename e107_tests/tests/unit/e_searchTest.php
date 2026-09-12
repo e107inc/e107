@@ -87,9 +87,7 @@
 
 		/**
 		 * Searches the probe rows the way a search handler does, returning the rendered result list.
-		 * $where and $order stand in for what a handler's own where() and order declare, and a PHP-sort
-		 * case asks for whole words off because the markers that branch still sends are the ones
-		 * MySQL 8.0.4 removed (#6330).
+		 * $where and $order stand in for what a handler's own where() and order declare.
 		 */
 		private function searchProbe($searchQuery, $mysqlSort, $boundary, $where = '', $order = array())
 		{
@@ -561,5 +559,48 @@
 			self::assertSame('nothing found',
 				$this->searchProbe('builds', 0, 0, 'probe_id = 2 AND ', array('probe_id' => 'DESC')),
 				'A handler fragment that excludes the row is still applied.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6330
+		 */
+		public function testWordBoundarySearchAsksForAPatternEveryServerAccepts()
+		{
+			e107::getDb('search')->resetLastError();
+			$this->searchProbe('builds', 0, 1);
+			$emitted = e107::getDb('search')->getLastQuery();
+
+			self::assertSame('', e107::getDb('search')->getLastErrorText(),
+				'A pattern the server refuses costs every row, not just the boundary.');
+			self::assertStringContainsString('REGEXP', $emitted,
+				'The PHP sort method is the branch that sends a pattern to the server.');
+			self::assertStringNotContainsString('[[:<:]]', $emitted,
+				'MySQL 8.0.4 dropped the word markers and refuses the whole pattern.');
+			self::assertStringNotContainsString('[[:>:]]', $emitted,
+				'MySQL 8.0.4 dropped the word markers and refuses the whole pattern.');
+		}
+
+		/**
+		 * The row itself has to come back, which is the half the highlighter cannot answer for.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6330
+		 */
+		public function testWordBoundarySearchFindsAKeywordThatEndsOnPunctuation()
+		{
+			self::assertStringContainsString('<mark>wibble-</mark>', $this->searchProbe('wibble-', 0, 1),
+				'A word boundary asks about the neighbouring character, not about the keyword.');
+		}
+
+		/**
+		 * What the replacement must go on meaning; the markers answer alike here, so only the MySQL 8 leg reds on a revert.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6330
+		 */
+		public function testWordBoundarySearchStillMatchesWholeWordsOnly()
+		{
+			self::assertStringContainsString('<mark>builds</mark>', $this->searchProbe('builds', 0, 1),
+				'A whole word is still found with the boundary preference on.');
+			self::assertSame('nothing found', $this->searchProbe('build', 0, 1),
+				'A fragment of a longer word is still refused with the boundary preference on.');
 		}
 	}
