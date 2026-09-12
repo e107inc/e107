@@ -87,7 +87,8 @@ $PM_WRAPPER['PM_RECEIPT']= "<tr><td class='forumheader3'>".LAN_PM_9.": </td><td 
 $PM_WRAPPER['PM_REPLY']= "<tr><td class='forumheader' style='text-align:center'>{---}</td></tr>";
 
 //$PM_SEND_PM = "<div id='pm-send-pm'>
-$PM_TEMPLATE['send'] = "<div id='pm-send-pm'>
+$PM_TEMPLATE['send']['caption'] = "{LAN=LAN_PM}";
+$PM_TEMPLATE['send']['main'] = "<div id='pm-send-pm'>
 <table class='table fborder'>
 <thead>
 <tr>
@@ -117,6 +118,7 @@ $PM_TEMPLATE['send'] = "<div id='pm-send-pm'>
 ";
 
 //$PM_INBOX_HEADER = "
+$PM_TEMPLATE['inbox']['caption'] = "{LAN=LAN_PM}";
 $PM_TEMPLATE['inbox']['start'] = "
 <table class='table table-striped fborder'>
 <thead>
@@ -168,6 +170,7 @@ $PM_TEMPLATE['inbox']['end'] = "
 ";
 
 //$PM_OUTBOX_HEADER = "
+$PM_TEMPLATE['outbox']['caption'] = "{LAN=LAN_PM}";
 $PM_TEMPLATE['outbox']['start'] = "
 <table class='table table-striped fborder'>
 <thead>
