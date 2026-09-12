@@ -693,10 +693,7 @@
 			$code = "\$_E107 = array('cli' => true); ";
 			$code .= "require_once('" . addslashes($root . '/class2.php') . "');";
 
-			$output = array();
-			$status = 0;
-			exec(sprintf('HTTP_HOST=mta.example.com %s -r %s 2>&1',
-				escapeshellarg(PHP_BINARY), escapeshellarg($code)), $output, $status);
+			list($output, $status) = $this->runInCli($code, '', array('HTTP_HOST' => 'mta.example.com'));
 
 			self::assertSame(array(), $output,
 				'the refusal says nothing, so a line here is the child interpreter failing for another reason');

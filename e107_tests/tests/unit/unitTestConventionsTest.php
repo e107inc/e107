@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * Guards the one convention the cross-PHP matrix depends on.
+	 * Guards the guarantees \Test\Unit makes to every unit test.
 	 *
 	 * The unit suite runs against two PHPUnit generations (PHPUnit 10+ via
 	 * Codeception 5.x on PHP 8.1+, PHPUnit 5.7 / 6.x via Codeception 4.x on the
@@ -69,6 +69,55 @@
 				. "\\Helper\\PhpUnitCompat, without which the PHPUnit 8/9-era assertion\n"
 				. "names (assertMatchesRegularExpression, assertFileDoesNotExist,\n"
 				. "assertDirectoryDoesNotExist) fatal on the PHP 5.6 and 7.0 cells."
+			);
+		}
+
+		/**
+		 * A child process that outlives its timeout fails the test that started it instead of stalling every test behind it.
+		 */
+		public function testASubprocessThatNeverReturnsFailsItsOwnTest()
+		{
+			try
+			{
+				$this->runInCli('sleep(30);', '', array(), 0.1);
+			}
+			catch (\Exception $wedged)
+			{
+				$this->assertStringContainsString('wedged', $wedged->getMessage());
+
+				return;
+			}
+
+			self::fail(
+				"A subprocess that never returns has to fail the test that started it.\n"
+				. "\\Test\\Unit::runInCli() runs every child it starts under the timeout\n"
+				. "utility for exactly that reason, and asserts on the status it reports."
+			);
+		}
+
+		/**
+		 * A timeout too small for the wrapper to express fails the test that asked for it instead of running the child unbounded.
+		 */
+		public function testATimeoutTooSmallToExpressFailsItsOwnTest()
+		{
+			$sentinel = sys_get_temp_dir().'/'.uniqid('runInCli-', true);
+
+			try
+			{
+				$this->runInCli('touch('.var_export($sentinel, true).');', '', array(), 0.0004);
+			}
+			catch (\Exception $unbounded)
+			{
+				$this->assertStringContainsString('only a duration above zero', $unbounded->getMessage());
+				$this->assertFileDoesNotExist($sentinel, 'The child ran before its budget was refused, so the refusal came too late to bound it.');
+
+				return;
+			}
+
+			self::fail(
+				"A budget the wrapper renders as zero leaves the child unbounded,\n"
+				. "which is the one thing \\Test\\Unit::runInCli() exists to prevent, so it\n"
+				. "refuses the budget rather than running the child without a timeout."
 			);
 		}
 

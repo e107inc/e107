@@ -63,12 +63,12 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * Runs $php in a subprocess that has booted class2.php in CLI mode.
+	 * Runs $php in a subprocess that has booted class2.php, in CLI mode unless $e107 says otherwise.
 	 *
 	 * @param string $php
 	 * @param string $ini extra php command-line arguments, e.g. '-d memory_limit=64M'
 	 * @param array $e107 what $_E107 holds when class2.php boots
-	 * @param int $timeout seconds
+	 * @param float $timeout seconds, to the millisecond
 	 * @return array the output lines, stdout and stderr interleaved, then the exit status
 	 */
 	protected function runInBootedCli($php, $ini = '', $e107 = array('cli' => true), $timeout = 60)
@@ -77,9 +77,41 @@ class Unit extends \Codeception\Test\Unit
 		$boot .= "\$_E107 = ".var_export($e107, true)."; ";
 		$boot .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
 
+		return $this->runInCli($boot.$php, $ini, array(), $timeout);
+	}
+
+	/**
+	 * Runs $php in a subprocess of the interpreter running the suite, booting nothing; {@see Unit::runInBootedCli()} boots e107 on top of this.
+	 *
+	 * @param string $php
+	 * @param string $ini extra php command-line arguments, e.g. '-d memory_limit=64M'
+	 * @param array $env environment variables to export to the child, e.g. array('HTTP_HOST' => 'example.com')
+	 * @param float $timeout seconds, to the millisecond
+	 * @return array the output lines, stdout and stderr interleaved, then the exit status
+	 */
+	protected function runInCli($php, $ini = '', $env = array(), $timeout = 60)
+	{
+		$exports = '';
+		foreach($env as $name => $value)
+		{
+			if(!preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $name))
+			{
+				self::fail("'$name' is not a shell identifier, so the shell would run it as a command rather than export it");
+			}
+
+			$exports .= $name.'='.escapeshellarg($value).' ';
+		}
+
+		$duration = sprintf('%.3F', $timeout);
+		if((float) $duration <= 0)
+		{
+			self::fail("a timeout of $timeout second(s) renders as $duration, and only a duration above zero bounds the child");
+		}
+
 		$output = array();
 		$status = 0;
-		exec(sprintf('timeout %d php %s -r %s 2>&1', $timeout, $ini, escapeshellarg($boot.$php)), $output, $status);
+		exec(sprintf('%stimeout %s %s %s -r %s 2>&1',
+			$exports, $duration, escapeshellarg(PHP_BINARY), $ini, escapeshellarg($php)), $output, $status);
 
 		if($status === 124)
 		{
