@@ -92,7 +92,7 @@ class news_front
 			$this->addDebug("Possible Issue", "missing category_name on this->currentRow");
 		}
 
-		$categoryName = e107::getParser()->toHTML($this->currentRow['category_name'],true, 'TITLE');
+		$categoryName = e107::getParser()->toHTML(isset($this->currentRow['category_name']) ? $this->currentRow['category_name'] : '',true, 'TITLE');
 
 		switch($this->route)
 		{
@@ -103,7 +103,7 @@ class news_front
 
 			case "news/view/item":
 
-				$itemName = e107::getParser()->toHTML($this->currentRow['news_title'],true, 'TITLE');
+				$itemName = e107::getParser()->toHTML(isset($this->currentRow['news_title']) ? $this->currentRow['news_title'] : '',true, 'TITLE');
 
 				$breadcrumb[] = array('text'=> $categoryName, 'url'=>e107::getUrl()->create('news/list/category', $this->currentRow));
 				$breadcrumb[] = array('text'=> $itemName, 'url'=> null);
@@ -1484,6 +1484,8 @@ class news_front
 		$interval = $this->pref['newsposts'];
 
 		global $NEWSSTYLE;
+
+		$sub_action = 0;
 
 		switch ($this->action)
 		{
