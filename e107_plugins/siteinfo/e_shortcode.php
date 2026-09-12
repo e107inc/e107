@@ -189,7 +189,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		}
 		elseif(!deftrue('BOOTSTRAP'))
 		{
-			$dimensions = getimagesize($path);
+			$dimensions = @getimagesize($path);
 		}
 
 		$class = 'logo img-responsive img-fluid';
