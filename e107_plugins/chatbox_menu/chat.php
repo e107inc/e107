@@ -115,10 +115,6 @@ if (strpos(e_QUERY, "fs") !== false) {
 }
 // end search
 
-//if (e_QUERY ? $from = intval(e_QUERY) : $from = 0) {
-
-//}
-
 $chat_total = $sql->createQueryBuilder()->from('chatbox')->count();
 
 /**
@@ -140,7 +136,7 @@ $chatboxQuery = static function () use ($sql) {
 };
 
 
-$from = 0;
+$from = max(0, (int) varset($_GET['cbfrom']));
 // when coming from search.php calculate page number
 if ($fs) {
 
@@ -207,7 +203,7 @@ if (CB_MOD) {
 
 }
 
-$parms = "{$chat_total},30,{$from}," . e_REQUEST_SELF . '?[FROM]';
+$parms = "{$chat_total},30,{$from}," . e_REQUEST_SELF . '?cbfrom=[FROM]';
 
 $text .= "<div class='nextprev'>" . $tp->parseTemplate("{NEXTPREV={$parms}}") . '</div>';
 
