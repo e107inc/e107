@@ -483,13 +483,8 @@ if (!function_exists('r_emote'))
 		$('.addEmote').click(function(){
 
 			var val = $(this).attr('data-emote');
-			var area = $(this).closest('form').find('textarea');
 
-			if(area.length === 1)
-			{
-				storeCaret(area.get(0));
-			}
-
+			storeCaret(this);
 			addtext(val,true);
 			return false;
 		});
