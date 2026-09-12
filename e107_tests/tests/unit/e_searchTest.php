@@ -17,6 +17,21 @@
 		/** @var bool */
 		private $multibyteBefore;
 
+		/** @var bool whether a case has put the news item below into the database */
+		private $newsSeeded = false;
+
+		/** Matched by the seeded news item alone, and long enough to clear the minimum query length. */
+		const SEARCH_QUERY = 'zorblattonium';
+
+		const NEWS_TITLE = 'Zorblattonium supplies';
+
+		/** The seeded title as the renderer emits it, with the matched keyword marked up. */
+		const HIGHLIGHTED_TITLE = '<mark>Zorblattonium</mark> supplies';
+
+		const CATEGORY_NAME = 'Rare metals';
+
+		const CUSTOM_PREFIX = 'From the archive:';
+
 		protected function _before()
 		{
 			require_once(e_HANDLER . 'search_class.php');
@@ -32,6 +47,11 @@
 			e107::getConfig()->set('plug_installed', $this->installedBefore);
 			e107::getParser()->setMultibyte($this->multibyteBefore);
 			unset($GLOBALS['search_chars']);
+
+			if($this->newsSeeded)
+			{
+				$this->runInBootedCli(self::removeNewsItem());
+			}
 		}
 
 		public function testGetCommentHandlerPath()
@@ -337,5 +357,123 @@
 			$method->setAccessible(true);
 
 			return $method->invoke(new e_search(''), $text);
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6327
+		 */
+		public function testTheCustomPrefixIsRenderedBeforeTheTitle()
+		{
+			$result = $this->renderSearchPage(2, self::CUSTOM_PREFIX);
+
+			self::assertSame(self::CUSTOM_PREFIX . ' ' . self::HIGHLIGHTED_TITLE, self::headingOf($result['out']),
+				"A handler set to its own prefix text renders that text, then one space, then the title.\n" . $result['out']);
+			self::assertStringNotContainsString('pre_title_output', $result['out'],
+				"The prefix a handler renders must never be left undefined.\n" . $result['out']);
+			self::assertSame(0, $result['exit'], $result['out']);
+		}
+
+		public function testAnEmptyCustomPrefixLeavesTheTitleAlone()
+		{
+			$result = $this->renderSearchPage(2, '');
+
+			self::assertSame(self::HIGHLIGHTED_TITLE, self::headingOf($result['out']),
+				"An empty prefix text puts nothing before the title, not even a space.\n" . $result['out']);
+			self::assertSame(0, $result['exit'], $result['out']);
+		}
+
+		public function testTheHandlerSuppliesItsOwnPrefixAndSeparator()
+		{
+			$result = $this->renderSearchPage(1, self::CUSTOM_PREFIX);
+
+			self::assertSame(self::CATEGORY_NAME . ' | ' . self::HIGHLIGHTED_TITLE, self::headingOf($result['out']),
+				"The news handler's own prefix is the category name and the separator it carries with it.\n" . $result['out']);
+			self::assertSame(0, $result['exit'], $result['out']);
+		}
+
+		public function testADisabledPrefixRendersTheTitleOnly()
+		{
+			$result = $this->renderSearchPage(0, self::CUSTOM_PREFIX);
+
+			self::assertSame(self::HIGHLIGHTED_TITLE, self::headingOf($result['out']),
+				"A disabled prefix renders neither the handler's own text nor the site's.\n" . $result['out']);
+			self::assertSame(0, $result['exit'], $result['out']);
+		}
+
+		/**
+		 * Renders the search page for the news handler in a subprocess, over a news item seeded there.
+		 *
+		 * Word boundaries stay off so that the one regular expression path runs the same on MySQL 5.7 and 8.
+		 *
+		 * @param int $preTitle the pre_title pref: 0 none, 1 the handler's own, 2 the text in $preTitleAlt
+		 * @param string $preTitleAlt the pre_title_alt pref
+		 * @return array {out: string, exit: int}
+		 */
+		private function renderSearchPage($preTitle, $preTitleAlt)
+		{
+			$php = "chdir('" . addslashes(APP_PATH) . "'); ";
+			$php .= "register_shutdown_function(function() { while(ob_get_level() > 0) { @ob_end_flush(); } }); ";
+			$php .= self::seedNewsItem();
+			$php .= "e107::getConfig()->setPref('e_search_list', array('news' => 'news')); ";
+			$php .= "e107::getConfig('search')->setPref('plug_handlers/news', array('class' => '0', 'chars' => 150, 'results' => 10, "
+				. "'pre_title' => " . (int) $preTitle . ", 'pre_title_alt' => '" . addslashes($preTitleAlt) . "', 'order' => 1)); ";
+			$php .= "e107::getConfig('search')->setPref('mysql_sort', 0); ";
+			$php .= "e107::getConfig('search')->setPref('boundary', 0); ";
+			$php .= "\$_GET = array('q' => '" . self::SEARCH_QUERY . "', 't' => 'news', 'r' => 0); ";
+			$php .= "require_once('" . addslashes(APP_PATH . '/search.php') . "'); ";
+
+			$this->newsSeeded = true;
+			list($output, $status) = $this->runInBootedCli($php);
+
+			return array('out' => implode("\n", $output), 'exit' => $status);
+		}
+
+		/**
+		 * PHP that seeds one categorised news item, which only {@see e_searchTest::removeNewsItem()} takes out again.
+		 *
+		 * @return string
+		 */
+		private static function seedNewsItem()
+		{
+			$category = "'" . self::CATEGORY_NAME . "'";
+			$title = "'" . self::NEWS_TITLE . "'";
+
+			$php = "e107::getDb()->createQueryBuilder()->insert('news_category')"
+				. "->values(array('category_name' => " . $category . "))->execute(); ";
+			$php .= "\$category = e107::getDb()->createQueryBuilder()->select('category_id')->from('news_category')"
+				. "->where('category_name', " . $category . ")->fetchOne(); ";
+			$php .= "e107::getDb()->createQueryBuilder()->insert('news')->values(array("
+				. "'news_title' => " . $title . ", 'news_body' => '', 'news_extended' => '', 'news_summary' => '', "
+				. "'news_meta_description' => '', 'news_thumbnail' => '', 'news_category' => \$category, "
+				. "'news_datestamp' => time() - 60, 'news_start' => 0, 'news_end' => 0, 'news_class' => 0, "
+				. "'news_render_type' => 0))->execute(); ";
+
+			return $php;
+		}
+
+		/**
+		 * PHP that takes the seeded news item back out, run from here because a subprocess killed on its timeout cleans nothing up.
+		 *
+		 * @return string
+		 */
+		private static function removeNewsItem()
+		{
+			return "e107::getDb()->createQueryBuilder()->delete('news')"
+				. "->where('news_title', '" . self::NEWS_TITLE . "')->execute(); "
+				. "e107::getDb()->createQueryBuilder()->delete('news_category')"
+				. "->where('category_name', '" . self::CATEGORY_NAME . "')->execute(); ";
+		}
+
+		/**
+		 * The text of the first result's link, which is the prefix and the title.
+		 *
+		 * @param string $html the rendered page
+		 * @return string
+		 */
+		private static function headingOf($html)
+		{
+			$found = preg_match("~<h4><a class='title visit' href='[^']*'>(.*?)</a></h4>~s", $html, $matches);
+
+			return $found ? $matches[1] : '';
 		}
 	}
