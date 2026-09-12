@@ -7,6 +7,7 @@ $SIGNIN_TEMPLATE = [];
 
 
 $SIGNIN_WRAPPER['signin']['SIGNIN_SIGNUP_HREF'] = '<li class="nav-item"><a class="nav-link" href="{---}">{LAN=LAN_SIGNIN_SIGNUP}</a></li>';
+$SIGNIN_WRAPPER['signin']['SIGNIN_RESEND_HREF'] = '<a href="{---}" class="btn btn-default btn-secondary btn-sm  btn-block">{LAN=LAN_SIGNIN_RESEND}</a>';
 
 $SIGNIN_TEMPLATE['signin'] = '
 			<ul class="navbar-nav nav-right">
@@ -27,7 +28,7 @@ $SIGNIN_TEMPLATE['signin'] = '
 					<div class="d-grid gap-2" style="padding-bottom:15px">
 					<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="bs3-userlogin" value="{LAN=LAN_SIGNIN_SIGNIN}">			
 					<a href="{SIGNIN_FPW_HREF}" class="btn btn-default btn-secondary btn-sm  btn-block">{LAN=LAN_SIGNIN_FPW}</a>
-					<a href="{SIGNIN_RESEND_LINK=href}" class="btn btn-default btn-secondary btn-sm  btn-block">{LAN=LAN_SIGNIN_RESEND}</a>
+					{SIGNIN_RESEND_HREF}
 					</div>
 					{SIGNIN_FORM=end}
 					</div>

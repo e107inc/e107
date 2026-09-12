@@ -27,6 +27,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 	private $allowEmailLogin;
 	private $authMethod;
 	private $regMode;
+	private $verifyMode;
 
 	function __construct()
 	{
@@ -50,6 +51,8 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 		}
 
 		$this->regMode = (int) defset('USER_REGISTRATION');
+
+		$this->verifyMode = (int) varset($pref['user_reg_veri'], 0);
 
 		$this->authMethod = vartrue($pref['auth_method'], 'e107');
 
@@ -157,10 +160,16 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 
 
+	/** Both signup links lead into signup.php, which turns every visitor away unless e107's own registration is open. */
+	private function signupIsAvailable()
+	{
+		return $this->regMode === 1 && $this->authMethod === 'e107';
+	}
+
 	function sc_signin_signup_href($parm = '')
 	{
 
-		if ($this->regMode !== 1 || $this->authMethod !== 'e107')
+		if (!$this->signupIsAvailable())
 		{
 			return null;
 		}
@@ -183,7 +192,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 	
 	function sc_signin_resend_href($parm=null)
 	{
-		if ($this->regMode !== 1 || $this->authMethod !== 'e107')
+		if (!$this->signupIsAvailable() || $this->verifyMode !== 1)
 		{
 			return null;
 		}
