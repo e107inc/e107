@@ -592,6 +592,22 @@
 		}
 
 		/**
+		 * @see https://github.com/e107inc/e107/issues/6357
+		 */
+		public function testSearchDropsAKeywordThatIsOnlyAnOperator()
+		{
+			self::assertSame('nothing found', $this->searchProbe('+ zzzzabsent', 0, 1),
+				'A stray operator must not become an empty keyword that every row satisfies.');
+
+			$text = $this->searchProbe('+ builds', 0, 1);
+
+			self::assertStringContainsString('<mark>builds</mark>', $text,
+				'Dropping the operator leaves the rest of the query to be searched.');
+			self::assertStringNotContainsString('Second entry', $text,
+				'The rows that come back are the ones holding the word, not every row an empty keyword reaches.');
+		}
+
+		/**
 		 * What the replacement must go on meaning; the markers answer alike here, so only the MySQL 8 leg reds on a revert.
 		 *
 		 * @see https://github.com/e107inc/e107/issues/6330
