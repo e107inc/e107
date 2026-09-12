@@ -52,7 +52,7 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 		$res = array();
 
 		$res['link'] 		= e_PLUGIN."chatbox_menu/chat.php?".$row['cb_id'].".fs";
-		$res['pre_title'] 	= LAN_SEARCH_7;
+		$res['pre_title'] 	= LAN_SEARCH_7." ";
 		$res['title'] 		= $user[2];
 		$res['summary'] 	= $row['cb_message'];
 		$res['detail'] 		= $tp->toDate($row['cb_datestamp'], "long");
