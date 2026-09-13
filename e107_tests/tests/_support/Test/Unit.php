@@ -28,6 +28,14 @@ class Unit extends \Codeception\Test\Unit
 	use \Helper\PhpUnitCompat;
 
 	/**
+	 * Settings of the one {@see \e107::getParser()} a unit process shares, which every test after this one inherits.
+	 *
+	 * @var string[]
+	 */
+	private static $parserSettings = array('staticUrl', 'modRewriteMedia', 'fontawesome', 'bootstrap', 'multibyte',
+		'thumbWidth', 'thumbHeight', 'thumbCrop');
+
+	/**
 	 * Copies a fixture tree, e.g. a theme out of tests/_data into e_THEME, journaled so the run takes it back out.
 	 *
 	 * @param string $src
@@ -177,5 +185,50 @@ class Unit extends \Codeception\Test\Unit
 		}
 
 		return array($output, $status);
+	}
+
+	/**
+	 * What the shared parser is configured with right now, to hand back to {@see Unit::restoreParserState()} afterwards.
+	 *
+	 * @return array
+	 */
+	protected function parserState()
+	{
+		$parser = \e107::getParser();
+		$state = array();
+
+		foreach(self::$parserSettings as $setting)
+		{
+			$state[$setting] = $this->parserProperty($setting)->getValue($parser);
+		}
+
+		return $state;
+	}
+
+	/**
+	 * Puts back the settings {@see Unit::parserState()} found, and the map and round-robin position the replaced static URL derived.
+	 *
+	 * @param array $state from {@see Unit::parserState()}
+	 * @return void
+	 */
+	protected function restoreParserState($state)
+	{
+		$parser = \e107::getParser();
+
+		foreach($state as $setting => $value)
+		{
+			$this->parserProperty($setting)->setValue($parser, $value);
+		}
+
+		$parser->setStaticUrl($state['staticUrl']);
+	}
+
+	/**
+	 * @param string $setting a property of {@see \e_parse}, which writes these settings through casting setters and reads most of them back nowhere
+	 * @return \e107\Reflection\ReflectionProperty
+	 */
+	private function parserProperty($setting)
+	{
+		return new \e107\Reflection\ReflectionProperty('e_parse', $setting);
 	}
 }
