@@ -16,6 +16,9 @@ class e_formTest extends \Test\Unit
 	/** @var e_form */
 	protected $_frm;
 
+	/** @var array */
+	private $foundParserState;
+
 	protected $_id = 567; // simulated record number.
 
 
@@ -191,6 +194,8 @@ class e_formTest extends \Test\Unit
 
 	protected function _before()
 	{
+		$this->foundParserState = $this->parserState();
+
 		e107::loadAdminIcons();
 
 		try
@@ -214,6 +219,11 @@ class e_formTest extends \Test\Unit
 
 		$this->writeAppFile('e107_files/downloadimages/butterfly.jpg',
 			file_get_contents(e_PLUGIN.'gallery/images/butterfly.jpg'));
+	}
+
+	protected function _after()
+	{
+		$this->restoreParserState($this->foundParserState);
 	}
 
 
