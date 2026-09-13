@@ -38,6 +38,13 @@ abstract class Deployer
 		"but the configured deployer ".get_class($this)." is not capable of doing that.");
 	}
 
+	/**
+	 * Put $contents at $relative_path in the app, creating parents as needed.
+	 *
+	 * @param string $relative_path path relative to the app root
+	 * @param string $contents
+	 * @return string[] absolute paths of the directories this write created, deepest first
+	 */
 	public function writeAppFile($relative_path, $contents)
 	{
 		throw new \PHPUnit\Framework\SkippedTestError("Test wants to write \"$relative_path\" into the app, ".

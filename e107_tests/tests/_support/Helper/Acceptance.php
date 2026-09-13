@@ -80,26 +80,6 @@ class Acceptance extends E107Base
 	}
 
 	/**
-	 * Write an arbitrary file into the deployed docroot.
-	 *
-	 * Goes through the deployer rather than file_put_contents() so it works
-	 * when the app under test is remote (CI deploys over SFTP). Parent
-	 * directories are created.
-	 *
-	 * A fixture that boots e107 in the docroot goes through
-	 * {@see ProbeGuard::contain()} first, which refuses one that reserved no
-	 * room for the guard.
-	 *
-	 * @param string $relative_path path relative to the app root
-	 * @param string $contents
-	 * @return void
-	 */
-	public function writeAppFile($relative_path, $contents)
-	{
-		$this->deployer->writeAppFile($relative_path, ProbeGuard::contain($relative_path, $contents));
-	}
-
-	/**
 	 * Show the run's probe secret on every request, so a fixture in the docroot
 	 * answers this suite and nobody else, and start with e107's counters clear.
 	 *
@@ -217,17 +197,6 @@ class Acceptance extends E107Base
 		\PHPUnit\Framework\Assert::assertTrue(
 			strpos($location, $needle) !== false,
 			"Response must redirect to: $needle (Location: $location)");
-	}
-
-	/**
-	 * Remove a file previously written by writeAppFile().
-	 *
-	 * @param string $relative_path path relative to the app root
-	 * @return void
-	 */
-	public function deleteAppFile($relative_path)
-	{
-		$this->deployer->unlinkAppFile($relative_path);
 	}
 
 	/**
@@ -375,7 +344,7 @@ class Acceptance extends E107Base
 	 */
 	private function runPluginProbe($act, $plugin)
 	{
-		if (!$this->pluginProbeWritten)
+		if (!$this->pluginProbeWritten || AppFileRegistry::wasReaped(self::PLUGIN_PROBE_FILE))
 		{
 			$this->writeAppFile(self::PLUGIN_PROBE_FILE, self::pluginProbeSource());
 			$this->pluginProbeWritten = true;

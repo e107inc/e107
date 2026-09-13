@@ -2,8 +2,10 @@
 namespace Extension;
 
 use Codeception\Event\SuiteEvent;
+use Codeception\Event\TestEvent;
 use Codeception\Events;
 use Codeception\Extension;
+use Helper\AppFileRegistry;
 
 /**
  * Removes what a test run leaves in the app root, so a run no longer has to
@@ -28,9 +30,13 @@ class WorkspaceCleanup extends Extension
 	 * e107_config.php at e107_config.php.bak in its _beforeSuite and renames it
 	 * back in its _afterSuite, so the sweep has to be ahead of it on the way in
 	 * and behind it on the way out.
+	 *
+	 * TEST_AFTER runs after every module's _after(), which Codeception dispatches in registration order, so a fixture module can still use its probe in teardown.
 	 */
 	public static $events = [
 		Events::SUITE_BEFORE => ['beforeSuite', 100],
+		Events::TEST_BEFORE  => ['beforeTest', 100],
+		Events::TEST_AFTER   => ['afterTest', -100],
 		Events::SUITE_AFTER  => ['afterSuite', -100],
 	];
 
@@ -158,16 +164,41 @@ class WorkspaceCleanup extends Extension
 	/** @var string|false bytes of e107.htaccess as the suite found them */
 	private $htaccess = false;
 
+	/** @var resource|null the exclusive hold this run has on the app tree */
+	private $lock;
+
 	public function beforeSuite(SuiteEvent $event)
 	{
 		if (!$this->appRunsInPlace())
 		{
 			return;
 		}
+		$this->acquireWorkspaceLock();
+		AppFileRegistry::enable();
+		AppFileRegistry::recover($this->deployer());
+		AppFileRegistry::scope(AppFileRegistry::SCOPE_SUITE);
 		$this->restoreConfigBackup();
 		$this->restoreParked();
 		$this->htaccess = @file_get_contents(APP_PATH.'/e107.htaccess');
 		$this->sweep();
+	}
+
+	public function beforeTest(TestEvent $event)
+	{
+		if (!$this->appRunsInPlace())
+		{
+			return;
+		}
+		AppFileRegistry::scope(AppFileRegistry::SCOPE_TEST);
+	}
+
+	public function afterTest(TestEvent $event)
+	{
+		if (!$this->appRunsInPlace())
+		{
+			return;
+		}
+		AppFileRegistry::reap(AppFileRegistry::SCOPE_TEST, $this->deployer());
 	}
 
 	public function afterSuite(SuiteEvent $event)
@@ -176,10 +207,78 @@ class WorkspaceCleanup extends Extension
 		{
 			return;
 		}
+		AppFileRegistry::reap(AppFileRegistry::SCOPE_TEST, $this->deployer());
+		AppFileRegistry::reap(AppFileRegistry::SCOPE_SUITE, $this->deployer());
 		$this->restoreConfigBackup();
 		$this->restoreParked();
 		$this->restoreHtaccess();
 		$this->sweep();
+		$this->releaseWorkspaceLock();
+	}
+
+	/**
+	 * Hold the app tree for the length of the suite.
+	 *
+	 * recover() replays whatever journal it finds and reap() rewrites it,
+	 * and E107Preparer deletes e107_system/<site_path> and
+	 * e107_media/<site_path> at both edges. Each of those is another run's
+	 * live state whenever two runs share one tree, and what that produces
+	 * does not look like a locking problem: it looks like ordinary flakes,
+	 * scattered over unrelated tests, and a fixture left behind with no
+	 * journal line left to say who wrote it.
+	 *
+	 * Helper\E107Base already takes a lock, but it is keyed on the browser
+	 * URL, returns early without one, and is taken after this extension has
+	 * already replayed the journal. This one is keyed on the tree itself and
+	 * taken first.
+	 *
+	 * @return void
+	 */
+	private function acquireWorkspaceLock()
+	{
+		$path = sys_get_temp_dir().'/e107-workspace-'.md5(APP_PATH).'.lock';
+
+		$this->lock = fopen($path, 'w');
+		if ($this->lock === false)
+		{
+			$this->lock = null;
+			codecept_debug('WorkspaceCleanup: cannot open '.$path.', running unlocked');
+
+			return;
+		}
+
+		if (!flock($this->lock, LOCK_EX | LOCK_NB))
+		{
+			codecept_debug('WorkspaceCleanup: another run holds '.APP_PATH.', waiting for it to finish');
+			flock($this->lock, LOCK_EX);
+		}
+
+		ftruncate($this->lock, 0);
+		fwrite($this->lock, json_encode(array(
+			'pid'      => getmypid(),
+			'app'      => APP_PATH,
+			'acquired' => time(),
+		)));
+		fflush($this->lock);
+	}
+
+	/**
+	 * Released after the closing reap, and after Helper\E107Base has given
+	 * back the deployment lock it took second. Both are always taken in that
+	 * order, which is what keeps a pair of runs from deadlocking on each other.
+	 *
+	 * @return void
+	 */
+	private function releaseWorkspaceLock()
+	{
+		if ($this->lock === null)
+		{
+			return;
+		}
+
+		flock($this->lock, LOCK_UN);
+		fclose($this->lock);
+		$this->lock = null;
 	}
 
 	/**
