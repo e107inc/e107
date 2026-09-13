@@ -590,13 +590,6 @@ class search_front extends e_shortcode
 		
 		$search_info = array();
 		
-		/*
-		if ($search_info['news'] = $this->search_info('news', 'core', false, array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_SEARCH_98, 'refpage' => 'news.php', 'advanced' => e_HANDLER.'search/advanced_news.php', 'id' => 'news'))) {
-		   //	$search_id++;
-		} else {
-			unset($search_info['news']);
-		}
-		*/
 		if(e107::getConfig()->get('comments_disabled')!=1)  // Only when comments are enabled.
 		{
 			if ($search_info['comments'] = $this->search_info('comments', 'core', false, array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_COMMENTS, 'refpage' => 'comment.php', 'advanced' => e_HANDLER.'search/advanced_comment.php', 'id' => 'comment'))) {
@@ -607,26 +600,6 @@ class search_front extends e_shortcode
 			}
 		}
 		
-		/* BELOW CODE HAS BEEN MOVED TO e107_plugins/user/e_search.php)
-		if(e107::getConfig('core')->get('user_reg')==1) // Only when user-registration is enabled.
-		{
-			if ($search_info['users'] = $this->search_info('users', 'core', false, array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php', 'advanced' => e_HANDLER.'search/advanced_user.php', 'id' => 'user'))) {
-				//	$search_id++;
-				$search_info['users']['listorder']  = $this->search_prefs['core_handlers']['users']['order'];
-
-			} else {
-				unset($search_info['users']);
-			}
-		}
-		*/
-		
-	/*
-		if ($search_info['pages'] = $this->search_info('pages', 'core', false, array('sfile' => e_HANDLER.'search/search_pages.php', 'qtype' => LAN_418, 'refpage' => 'page.php', 'advanced' => e_HANDLER.'search/advanced_pages.php', 'id' => 'pages'))) {
-		   //	$search_id++;
-		} else {
-			unset($search_info['pages']);
-		}
-	*/
 		 $e_searchList = e107::getConfig()->get('e_search_list');
 
 		 if(empty($this->search_prefs['plug_handlers']))
