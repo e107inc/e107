@@ -21,9 +21,6 @@ class admin_shortcodesLogoTest extends \Test\Unit
 	/** @var string the shipped logo the third branch reads */
 	private $logo;
 
-	/** @var string where the shipped logo is parked while it has to be absent */
-	private $parked;
-
 	protected function _before()
 	{
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
@@ -33,12 +30,6 @@ class admin_shortcodesLogoTest extends \Test\Unit
 		$this->sc = $this->make('admin_shortcodes');
 
 		$this->logo = e_IMAGE.'adminlogo.png';
-		$this->parked = e_IMAGE.'e107_tests_5999_adminlogo.png';
-	}
-
-	protected function _after()
-	{
-		$this->restoreLogo();
 	}
 
 	/**
@@ -54,11 +45,16 @@ class admin_shortcodesLogoTest extends \Test\Unit
 		self::assertSame($expected, $this->sc->sc_admin_logo());
 	}
 
+	/**
+	 * The logo is tracked by git, so it is parked with the registry, and put back here as well: the deployer can be a remote one.
+	 */
 	public function testAMissingLogoRendersWithoutDimensions()
 	{
 		$expected = "<img class='logo admin_logo' src='".e_IMAGE_ABS."adminlogo.png' alt='".ADLAN_153."' />\n";
 
-		self::assertTrue(rename($this->logo, $this->parked));
+		\Helper\AppFileRegistry::park('e107_images/adminlogo.png');
+		$shipped = file_get_contents($this->logo);
+		$this->deleteAppFile($this->logo);
 
 		try
 		{
@@ -66,18 +62,7 @@ class admin_shortcodesLogoTest extends \Test\Unit
 		}
 		finally
 		{
-			$this->restoreLogo();
-		}
-	}
-
-	/**
-	 * Idempotent, so the failure path and {@see admin_shortcodesLogoTest::_after()} can both call it.
-	 */
-	private function restoreLogo()
-	{
-		if(is_file($this->parked))
-		{
-			rename($this->parked, $this->logo);
+			$this->writeAppFile($this->logo, $shipped);
 		}
 	}
 }

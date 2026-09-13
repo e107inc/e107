@@ -132,7 +132,7 @@ class forumStatsTest extends \Test\Unit
 	 * replies, so the share of all replies has no denominator. On PHP 8 that
 	 * is a DivisionByZeroError, which takes the whole page down.
 	 *
-	 * @see e107_tests/tests/acceptance/0052_ForumFeedParentClassCest.php,
+	 * @see e107_tests/tests/acceptance/ForumFeedParentClassCest.php,
 	 *      whose fixture has to plant a reply to get past this.
 	 */
 	public function testAForumWithNoRepliesYetStillRenders()

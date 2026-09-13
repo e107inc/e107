@@ -8,8 +8,6 @@
 	 *
 	 */
 
-
-
 	class e_admin_controller_uiTest extends \Test\Unit
 	{
 
@@ -30,8 +28,6 @@
 				$this::fail("Couldn't load e_admin_controller_ui object: " . $e->getMessage());
 			}
 		}
-
-
 
 		public function testJoinAlias()
 		{
@@ -252,416 +248,69 @@
 
 		}
 
-		public function test_ModifyListQrySearch_FromJsonFiles()
+		/**
+		 * Replays a list query the banlist admin page once ran, recorded with its inputs and the SQL it produced.
+		 *
+		 * @dataProvider recordedListQueries
+		 * @param string $file
+		 */
+		public function testModifyListQrySearchReproducesARecordedQuery($file)
 		{
-
-			// For Banlist test.
-
 			require_once(__DIR__ . '/fixtures/AdminUiBanlistSearchFixture.php');
 			$this->ui = $this->make(AdminUiBanlistSearchFixture::class);
 			$this->ui->setRequest($this->req);
 
+			$data = json_decode(file_get_contents($file), true);
+			$this::assertNotNull($data, basename($file) . ' does not decode: ' . json_last_error_msg());
 
+			$call = $data['methodInvocation'];
+			$prepared = $data['preProcessedData'];
 
-			// The directory where the JSON files are stored
-			$directory = e_BASE . "e107_tests/tests/_data/e_admin_ui/_modifyListQrySearch/";
-			if (!is_dir($directory))
+			if(!empty($prepared['listOrder']))
 			{
-				$this::fail("Directory does not exist: " . $directory);
+				$this->ui->setListOrder($prepared['listOrder']);
 			}
 
-			// Scan the directory for JSON files
-			$files = glob($directory . '*.json');
+			$this->ui->setFields($prepared['fields']);
 
-			$this::assertNotEmpty($files, "No JSON files found in the specified directory!");
-
-			foreach ($files as $fl)
+			if(!empty($call['searchTerm']))
 			{
-				// Ensure the JSON file exists
-				$file = realpath(codecept_data_dir().str_replace('/', DIRECTORY_SEPARATOR, '/e_admin_ui/_modifyListQrySearch/') . basename($fl));
-				if (!file_exists($file))
-				{
-					$this::fail("File doesn't exist: " . $file);
-				}
-
-				// Load JSON content
-				$jsonContent = file_get_contents($file);
-				if (empty($jsonContent))
-				{
-					$this::fail("Failed to read JSON file: " . $file);
-				}
-
-				// Decode JSON
-				$data = json_decode($jsonContent, true);
-				if ($data === null)
-				{
-					$error = json_last_error_msg(); // Get a readable explanation of the problem
-					$this::fail("JSON decoding failed for file: $file. Error: " . $error);
-				}
-
-				// Ensure JSON data is valid
-				$this::assertNotEmpty($data, "Failed to decode JSON file: " . $file);
-
-				// Extract input parameters from JSON structure
-				$methodInvocation   = $data['methodInvocation'];
-				$preProcessedData   = $data['preProcessedData'];
-				$expected           = $data['expected'];
-
-
-
-				// Verify fields are present in the JSON
-				if (empty($preProcessedData['fields']))
-				{
-					$this::fail("Fields are not defined in the JSON file: " . $file);
-				}
-
-				if(!empty($preProcessedData['listOrder']))
-				{
-					$this->ui->setListOrder($preProcessedData['listOrder']);
-				}
-
-				$this->ui->setFields($preProcessedData['fields']);
-
-				$queryValue = $this->ui->getQuery('searchquery');
-
-				if(!empty($methodInvocation['searchTerm']))
-				{
-					$this->ui->setQuery('searchquery', $methodInvocation['searchTerm']);
-				}
-
-				if(!empty($methodInvocation['handleAction']))
-				{
-					$this->req->setAction($methodInvocation['handleAction']);
-				}
-
-				$query = $this->ui->_modifyListQrySearch(
-					$methodInvocation['listQry'],
-					$methodInvocation['searchTerm'],
-					$methodInvocation['filterOptions'],
-					$methodInvocation['tablePath'],
-					$methodInvocation['tableFrom'],
-					$methodInvocation['primaryName'],
-					$methodInvocation['raw'],
-					$methodInvocation['orderField'],
-					$methodInvocation['qryAsc'],
-					$methodInvocation['forceFrom'],
-					$methodInvocation['qryFrom'],
-					$methodInvocation['forceTo'],
-					$methodInvocation['perPage'],
-					$methodInvocation['qryField'],
-					$methodInvocation['isfilter'],
-					$methodInvocation['handleAction']
-				);
-
-				$this::assertEquals($expected, $query, "Test failed for JSON file: " . $file);
+				$this->ui->setQuery('searchquery', $call['searchTerm']);
 			}
+
+			if(!empty($call['handleAction']))
+			{
+				$this->req->setAction($call['handleAction']);
+			}
+
+			$query = $this->ui->_modifyListQrySearch(
+				$call['listQry'], $call['searchTerm'], $call['filterOptions'], $call['tablePath'],
+				$call['tableFrom'], $call['primaryName'], $call['raw'], $call['orderField'],
+				$call['qryAsc'], $call['forceFrom'], $call['qryFrom'], $call['forceTo'],
+				$call['perPage'], $call['qryField'], $call['isfilter'], $call['handleAction']
+			);
+
+			$this::assertEquals($data['expected'], $query);
 		}
 
-
-
-
-
-
-/*
-		public function testGetSortParent()
+		/**
+		 * @return array one case per file under _data/e_admin_ui/_modifyListQrySearch/, named for it
+		 */
+		public function recordedListQueries()
 		{
+			$cases = array();
 
+			foreach(glob(codecept_data_dir('e_admin_ui/_modifyListQrySearch/*.json')) as $file)
+			{
+				$cases[basename($file, '.json')] = array($file);
+			}
+
+			if(empty($cases))
+			{
+				throw new RuntimeException('No recorded list queries to replay under _data/e_admin_ui/_modifyListQrySearch/');
+			}
+
+			return $cases;
 		}
-
-		public function testGetFieldPref()
-		{
-
-		}
-
-		public function testGetTreeModelSorted()
-		{
-
-		}
-
-		public function testManageColumns()
-		{
-
-		}
-
-		public function testGetJoinField()
-		{
-
-		}
-
-		public function testGetBatchFeaturebox()
-		{
-
-		}
-
-		public function testSetModel()
-		{
-
-		}
-
-		public function testGetTableFromAlias()
-		{
-
-		}
-
-		public function testGetFieldAttr()
-		{
-
-		}
-
-		public function testSetJoinData()
-		{
-
-		}
-
-		public function testGetPrimaryName()
-		{
-
-		}
-
-		public function testGetTableName()
-		{
-
-		}
-
-		public function testGetUrl()
-		{
-
-		}
-
-		public function testGetParentChildQry()
-		{
-
-		}
-
-		public function testSetListModel()
-		{
-
-		}
-
-		public function testGetPerPage()
-		{
-
-		}
-
-		public function testGetSortField()
-		{
-
-		}
-
-		public function testGetUserPref()
-		{
-
-		}
-
-		public function testGetFormQuery()
-		{
-
-		}
-
-		public function testGetBatchCopy()
-		{
-
-		}
-
-		public function testGetTabs()
-		{
-
-		}
-
-		public function testSetBatchDelete()
-		{
-
-		}
-
-		public function testGetTreePrefix()
-		{
-
-		}
-
-		public function testGetPrefs()
-		{
-
-		}
-*/
-/*		public function testGetConfig()
-		{
-			$result = $this->ui->getConfig();
-
-		}*/
-/*
-		public function testGetBatchExport()
-		{
-
-		}
-
-		public function testGetFieldVar()
-		{
-
-		}
-
-		public function testSetFieldAttr()
-		{
-
-		}
-
-		public function testSetTreeModel()
-		{
-
-		}
-
-		public function testGetEventTriggerName()
-		{
-
-		}
-
-		public function testGetBatchDelete()
-		{
-
-		}
-
-		public function testGetAfterSubmitOptions()
-		{
-
-		}
-
-		public function testGetValidationRules()
-		{
-
-		}
-
-		public function testGetPrefTabs()
-		{
-
-		}
-
-		public function testGetDefaultOrder()
-		{
-
-		}
-
-		public function testGetModel()
-		{
-
-		}
-
-		public function testSetBatchCopy()
-		{
-
-		}
-
-		public function testGetEventName()
-		{
-
-		}
-
-		public function testGetFields()
-		{
-
-		}
-
-		public function testAddTab()
-		{
-
-		}
-
-		public function testGetTreeModel()
-		{
-
-		}
-
-		public function testGetPluginName()
-		{
-
-		}
-
-		public function testGetPluginTitle()
-		{
-
-		}
-
-		public function testGetUI()
-		{
-
-		}
-
-		public function testParentChildSort_r()
-		{
-
-		}
-
-		public function testGetGrid()
-		{
-
-		}
-
-		public function testSetUI()
-		{
-
-		}
-
-		public function testGetJoinData()
-		{
-
-		}
-
-		public function testGetBatchLink()
-		{
-
-		}
-
-		public function testGetDefaultOrderField()
-		{
-
-		}
-
-		public function testGetFeaturebox()
-		{
-
-		}
-
-		public function testGetIfTableAlias()
-		{
-
-		}
-
-		public function testGetDataFields()
-		{
-
-		}
-
-		public function testGetListModel()
-		{
-
-		}
-
-		public function testGetBatchOptions()
-		{
-
-		}
-
-		public function testSetUserPref()
-		{
-
-		}
-	*/
-
-	/*	public function testSetConfig()
-		{
-			$cfg = e107::getConfig('core',true, true);
-
-			$this->assertIsObject($cfg);
-
-			$before = $cfg->get('sitename');
-			$this->ui->setConfig($cfg);
-
-			$pref = $this->ui->getConfig();
-			$after = $pref->get('sitename');
-
-			$this->assertSame($after, $before);
-
-		}*/
-
-
-
 
 	}

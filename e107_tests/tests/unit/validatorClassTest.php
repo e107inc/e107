@@ -152,12 +152,6 @@
              );
 
 		}
-/*
-		public function testAddFieldTypes()
-		{
-
-		}
-*/
 		public function testDbValidateArray()
 		{
 
@@ -181,23 +175,6 @@
 			$this->assertSame($expected, $posted);
 
 		}
-/*
-		public function testFindChanges()
-		{
-
-		}
-
-		public function testCheckMandatory()
-		{
-
-
-		}
-
-		public function testMakeErrorList()
-		{
-
-		}
-*/
 		public function testValidateFields()
 		{
 
@@ -236,10 +213,6 @@
 			$this->assertSame($expected, $result);
 
 		}
-
-
-
-
 
 		/** Two spellings of one number are two different passwords, on every form whose confirmation goes through the validator. */
 		public function testTwoSpellingsOfOneNumberAreNotAMatchingPasswordPair()

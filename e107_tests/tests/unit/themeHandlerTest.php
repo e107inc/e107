@@ -37,8 +37,6 @@
 			}
 		}
 
-
-
 		public function testSetThemeConfig()
 		{
 			$config        = e107::getThemeConfig(e107::getPref('sitetheme'));
@@ -520,42 +518,6 @@
 
 			e107::getConfig()->set('sitetheme_pref', $siteThemePref)->save(false, true, false);
 		}
-/*
-		public function testTheme_adminlog()
-		{
-
-		}
-
-		public function testPostObserver()
-		{
-
-		}
-
-		public function testInstallContent()
-		{
-
-		}
-
-		public function testRenderTheme()
-		{
-
-		}
-
-		public function testSetAdminStyle()
-		{
-
-		}
-
-		public function testRenderThemeInfo()
-		{
-
-		}
-
-		public function testRenderUploadForm()
-		{
-
-		}
-*/
 		/**
 		 * A theme declaring no layouts renders no custom-pages field, so nothing named custompages reaches {@see themeHandler::postObserver()}.
 		 * @see https://github.com/e107inc/e107/issues/6064
@@ -615,120 +577,5 @@
 			$this->assertSame('https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/quartz/bootstrap.min.css', $result);
 
 		}
-/*
-		public function testGetThemes()
-		{
-
-		}
-
-		public function testRenderOnline()
-		{
-
-		}
-
-		public function testShowThemes()
-		{
-
-		}
-
-		public function testSetLayouts()
-		{
-
-		}
-
-		public function testRenderThemeConfig()
-		{
-
-		}
-
-		public function testGetThemeCategory()
-		{
-
-		}
-
-		public function testShowPreview()
-		{
-
-		}
-
-		public function testLoadThemeConfig()
-		{
-
-		}
-
-		public function testParse_theme_php()
-		{
-
-		}
-
-		public function testRenderThemeHelp()
-		{
-
-		}
-
-		public function testSetAdminTheme()
-		{
-
-		}
-
-		public function testRefreshPage()
-		{
-
-		}
-*/
-
-/*
-		public function testThemeUpload()
-		{
-
-		}
-
-		public function testInstallContentCheck()
-		{
-
-		}
-
-		public function testSetStyle()
-		{
-
-		}
-
-		public function testGetMarketplace()
-		{
-
-		}
-
-		public function testRenderPresets()
-		{
-
-		}
-
-		public function testRenderPlugins()
-		{
-
-		}
-
-		public function testThemePreview()
-		{
-
-		}
-
-		public function testSetCustomPages()
-		{
-
-		}
-
-		public function testGetThemeInfo()
-		{
-
-		}
-
-		public function testSetTheme()
-		{
-
-		}
-
-	*/
-
 
 	}

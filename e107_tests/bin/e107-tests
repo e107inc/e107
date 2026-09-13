@@ -91,10 +91,14 @@ find_harness_worktree() {
     return 1
 }
 
+DOCKER_CHECKED=
+
 require_docker() {
+    [ -n "$DOCKER_CHECKED" ] && return 0
     have docker || err "docker is required but not on PATH"
     docker compose version >/dev/null 2>&1 \
         || err "the 'docker compose' plugin is required (got: $(docker compose version 2>&1 || true))"
+    DOCKER_CHECKED=1
 }
 
 # Slug an arbitrary string into something safe for compose project names.
@@ -809,7 +813,8 @@ cmd_up() {
          e107-tests up --php $PHP --db $DB${XDEBUG_TAG:+ --xdebug}"
     fi
     heal_dns
-    deps_install
+    ensure_web_exec
+    deps_ensure
     if [ "$INSTALL_SITE" = yes ]; then
         install_site
     fi
@@ -1091,15 +1096,10 @@ cmd_reset() {
 cmd_clean() {
     note ">> Cleaning acceptance-test artifacts from $APP_PATH"
 
-    local docroot_files='e107_config.php e107_config.php.bak e107Install.log e107_system/e107Install.log NUL'
-    local hash_dirs='e107_system/000000test e107_media/000000test
-                     e107_system/416f4602e3 e107_media/416f4602e3'
-    # e107_files/public is a test fixture, never part of an install. Its
-    # absence is load-bearing when reproducing GHSA-87hm-vh32-7c3r, so an
-    # interrupted run must not leave it lying around.
-    local theme_copies='e107_themes/basic-light e107_themes/testcore
-                        e107_themes/testkubrick e107_plugins/thing
-                        e107_files/public'
+    local docroot_files='e107_config.php e107_config.php.bak e107Install.log e107_system/e107Install.log e107_media/.htaccess'
+    local hash_dirs='e107_system/000000test e107_media/000000test'
+    local journal="$TESTS_DIR/tests/_output/app-writes.jsonl"
+    local backups="$TESTS_DIR/tests/_output/app-backup"
 
     cd -- "$APP_PATH" || err "cannot cd to $APP_PATH"
 
@@ -1117,7 +1117,9 @@ cmd_clean() {
     _rm() {
         case $remover in
             container)
-                compose_p exec -T -w "$WEB_APP_DIR" web rm -rf -- "$@" ;;
+                # stdin closed: docker forwards it to the container, which
+                # would swallow the rest of a pipe feeding a loop that calls this.
+                compose_p exec -T -w "$WEB_APP_DIR" web rm -rf -- "$@" </dev/null ;;
             unshare)
                 podman unshare rm -rf -- "$@" ;;
             *)
@@ -1136,11 +1138,26 @@ cmd_clean() {
             _rm "$d" && removed=$((removed + 1))
         fi
     done
-    for d in $theme_copies; do
-        if [ -d "$d" ] && [ -z "$(git ls-files -- "$d" 2>/dev/null)" ]; then
-            _rm "$d" && removed=$((removed + 1))
-        fi
-    done
+    # Helper\AppFileRegistry's journal, replayed innermost first as the
+    # registry itself would on the next run: a backed-up path is put back,
+    # anything else is removed unless git tracks it.
+    if [ -r "$journal" ]; then
+        local line p r
+        while IFS= read -r line; do
+            p=$(printf '%s\n' "$line" | sed -n 's/.*"p":"\([^"]*\)".*/\1/p')
+            r=$(printf '%s\n' "$line" | sed -n 's/.*"r":"\([^"]*\)".*/\1/p')
+            case $p in ''|/*|*..*) continue ;; esac
+            if [ -n "$r" ]; then
+                if [ -f "$backups/$r" ]; then
+                    _rm "$p" && cp -- "$backups/$r" "$p" && rm -f -- "$backups/$r" \
+                        && removed=$((removed + 1)) && note "restored $p"
+                fi
+            elif [ -e "$p" ] && [ -z "$(git ls-files -- "$p" 2>/dev/null)" ]; then
+                _rm "$p" && removed=$((removed + 1))
+            fi
+        done < <(tac -- "$journal")
+        rm -f -- "$journal"
+    fi
 
     # Restore tracked files modified by acceptance installs.
     # `git restore` is a no-op on files that aren't modified.

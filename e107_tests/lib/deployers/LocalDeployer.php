@@ -21,9 +21,10 @@ class LocalDeployer extends NoopDeployer
 		self::println("Writing file \"$relative_path\" to deployed test location…");
 		$target = APP_PATH."/$relative_path";
 		$dir = dirname($target);
+		$created = array();
 		if (!is_dir($dir))
 		{
-			self::makeAppDir($dir);
+			$created = self::makeAppDir($dir);
 		}
 		if (file_put_contents($target, $contents) === false)
 		{
@@ -34,6 +35,8 @@ class LocalDeployer extends NoopDeployer
 		// production (e.g. e107_config.php written by a same-user installer).
 		@chmod($target, 0666);
 		self::println("Wrote file \"$relative_path\" to deployed test location");
+
+		return $created;
 	}
 
 	/**
@@ -47,7 +50,7 @@ class LocalDeployer extends NoopDeployer
 	 * an attachment of its own there was refused by the filesystem.
 	 *
 	 * @param string $dir
-	 * @return void
+	 * @return string[] absolute paths created, deepest first
 	 */
 	private static function makeAppDir($dir)
 	{
@@ -72,6 +75,8 @@ class LocalDeployer extends NoopDeployer
 		{
 			@chmod($path, 0777);
 		}
+
+		return $missing;
 	}
 
 	public function removeAppPaths(array $relative_paths)

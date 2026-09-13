@@ -78,8 +78,6 @@
 
 		}
 
-
-
 		function testCheckClass()
 		{
 			// All calls below pass an explicit $userclass list, which
@@ -128,8 +126,6 @@
 			self::assertFalse($result);
 		}
 
-
-
 		function testCheckEmail()
 		{
 			$result = check_email("test@somewhere.com"); // good email.
@@ -142,8 +138,6 @@
 			self::assertEquals('test@somewhere.technology',$result);
 
 		}
-
-
 
 		function testSystemTimeZoneIsValid()
 		{
@@ -602,21 +596,6 @@
 		/**
 		 * Will vary from system to system.
 		 */
-		/*function testSystemTimeZones()
-		{
-			$expected = self::getExpectedZones();
-
-		//	self::echoMem();
-			$zones = systemTimeZones();
-
-		//	self::echoMem();
-
-			$zoneKeys = array_keys($zones);
-			$expectedKeys = array_keys($expected);
-
-
-			self::assertSame($expectedKeys, $zoneKeys);
-		}*/
 
 
 		public function testDiagnosticsSilencedWithTheAtOperatorAreNotCollected()

@@ -166,43 +166,6 @@
 
 		}
 
-
-
-/*
-
-		public function testConvertImageToJpeg()
-		{
-
-		}
-
-
-
-
-		public function testCheckDupe()
-		{
-
-		}
-
-		public function testBrowserIndicators()
-		{
-
-		}
-
-		public function testMediaData()
-		{
-
-		}
-
-		public function testImport()
-		{
-
-		}
-
-		public function testBrowserCarouselItem()
-		{
-
-		}
-*/
 		public function testImportFile()
 		{
 			/* FIXME: https://github.com/e107inc/e107/issues/4033 */
@@ -229,57 +192,6 @@
 			}
 
 		}
-/*
-		public function testBrowserCarousel()
-		{
-
-		}
-
-		public function testCountImages()
-		{
-
-		}
-
-		public function testMediaSelect()
-		{
-
-		}
-
-		public function testCreateCategory()
-		{
-
-		}
-
-		public function testGetImages()
-		{
-
-		}
-
-		public function testRemoveCat()
-		{
-
-		}
-
-		public function testRemovePath()
-		{
-
-		}
-
-		public function testCreateUserCategory()
-		{
-
-		}
-
-		public function testGetFiles()
-		{
-
-		}
-
-		public function testListIcons()
-		{
-
-		}
-*/
 
 		private function compileFontAwesomeMeta($version)
 		{
@@ -377,22 +289,6 @@
 			 $this->assertContains('myprefix-500px', $prefixTest);
 
 		}
-/*
-		public function testImportIcons()
-		{
-
-		}
-
-		public function testCreateCategories()
-		{
-
-		}
-
-		public function testDeleteCategory()
-		{
-
-		}
-*/
 		public function testResizeImage()
 		{
 			$tests = array(
@@ -418,12 +314,6 @@
 			}
 
 		}
-/*
-		public function testPreviewTag()
-		{
-
-		}
-*/
 		public function testDetectType()
 		{
 			$tests = array(
@@ -456,8 +346,6 @@
 					'expected' => 'video'
 				),
 
-
-
 			);
 
 			foreach($tests as $index => $var)
@@ -468,52 +356,6 @@
 
 
 		}
-/*
-		public function testGetVideos()
-		{
-
-		}
-
-		public function testSaveThumb()
-		{
-
-		}
-
-		public function testGetAudios()
-		{
-
-		}
-
-		public function testDebug()
-		{
-
-		}
-
-		public function testGetCategories()
-		{
-
-		}
-
-		public function testGetThumb()
-		{
-
-		}
-
-		public function testDeleteAllCategories()
-		{
-
-		}
-
-		public function testLog()
-		{
-
-		}
-
-		public function testGetIcons()
-		{
-
-		}
-*/
 		public function testGetPath()
 		{
 			$result = $this->md->getPath('image/jpeg');

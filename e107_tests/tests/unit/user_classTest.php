@@ -27,37 +27,6 @@
 			}
 		}
 
-/*
-		public function testGetFixedClassDescription()
-		{
-
-		}
-
-		public function testGet_all_user_classes()
-		{
-
-		}
-
-		public function testUc_get_classname()
-		{
-
-		}
-
-		public function testUc_required_class_list()
-		{
-
-		}
-
-		public function testGetIdentifier()
-		{
-
-		}
-
-		public function testGetID()
-		{
-
-		}
-*/
 		/**
 		 * @todo
 		 */
@@ -73,17 +42,6 @@
 
 			$this->assertEquals($expected, $actual, 'ucAdd returned a wrong result');
 		}
-/*
-		public function testUc_get_classlist()
-		{
-
-		}
-
-		public function testCheckbox()
-		{
-
-		}
-*/
 		public function testGetUsersInClass()
 		{
 			$result = $this->uc->getUsersInClass(e_UC_MEMBER);
@@ -146,42 +104,6 @@
 
 
 		}
-/*
-		public function testGet_editable_classes()
-		{
-
-		}
-
-		public function testCheckbox_desc()
-		{
-
-		}
-
-		public function testIsEditableClass()
-		{
-
-		}
-
-		public function testGetClassList()
-		{
-
-		}
-
-		public function testGetClassFromKey()
-		{
-
-		}
-
-		public function testStripFixedClasses()
-		{
-
-		}
-
-		public function testUc_get_classdescription()
-		{
-
-		}
-*/
 		public function testUcRemove()
 		{
 			$expected = '1,4,6,9';
@@ -194,72 +116,6 @@
 
 			$this->assertEquals($expected, $actual, 'ucRemove returned a wrong result');
 		}
-/*
-		public function testReadTree()
-		{
-
-		}
-
-		public function testIsAdmin()
-		{
-
-		}
-
-		public function testUc_get_classicon()
-		{
-
-		}
-
-		public function testClearCache()
-		{
-
-		}
-
-		public function testGetDescription()
-		{
-
-		}
-
-		public function testUc_dropdown()
-		{
-
-		}
-
-		public function testUc_checkboxes()
-		{
-
-		}
-
-		public function testNormalise_classes()
-		{
-
-		}
-
-		public function testSelect()
-		{
-
-		}
-
-		public function testMergeClassLists()
-		{
-
-		}
-
-		public function testGetName()
-		{
-
-		}
-
-		public function testUcGetClassIDFromName()
-		{
-
-		}
-
-		public function testVetted_tree()
-		{
-
-		}
-*/
 
 
 	}

@@ -141,55 +141,6 @@ class e107_eventTest extends \Test\Unit
 		);
 	}
 
-
-/*
-	public function testTrigger()
-	{
-	}
-
-	public function testOldCoreList()
-	{
-
-	}
-
-	public function testDebug()
-	{
-
-	}
-
-	public function testInit()
-	{
-
-	}
-
-	public function testTriggerAdminEvent()
-	{
-
-	}
-
-	public function testCoreList()
-	{
-
-	}
-
-	public function test__construct()
-	{
-
-	}
-
-	public function testRegister()
-	{
-
-	}
-
-	public function testTriggerHook()
-	{
-
-	}
-*/
-
-
-
 }
 
 if(!function_exists('e107help_event_halt'))

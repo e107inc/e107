@@ -556,8 +556,6 @@
 			$this->pluginUninstall('tagcloud');
 		}
 
-
-
 		public function testRefreshExtendedFields()
 		{
 
@@ -579,62 +577,7 @@
 
 			$this->pluginUninstall('_blank');
 
-
-
 		}
-
-/*
-		public function testThirdParty()
-		{
-
-
-
-
-			$coreList = e107::getPlug()->getCorePluginList();
-			$all = scandir(e_PLUGIN);
-			unset($all[0], $all[1]);
-
-			$diff = array_diff($all, $coreList);
-
-			foreach($diff as $plug)
-			{
-				if(!is_dir(e_PLUGIN.$plug) || !is_dir(e_PLUGIN.$plug.'/tests'))
-				{
-					continue;
-				}
-
-				$tests = scandir(e_PLUGIN.$plug.'/tests');
-				unset($tests[0], $tests[1]);
-
-				foreach($tests as $t)
-				{
-					require_once(e_PLUGIN.$plug.'/tests/'.$t);
-					$Codecept = new \Codeception\Codecept(array(
-					    'steps' => true,
-					    'verbosity' => 1,
-					    // some other options (see Codeception docs/sources)
-					 ));
-
-				//	 var_export($Codecept);
-
-					 $Codecept->run('unit');
-		//			require_once '/path/to/codeception/autoload.php';
-
-
-
-				}
-
-
-
-			}
-
-
-			//array_intersect(
-
-
-
-		}*/
-
 
 		public function testplugInstalledStatus()
 		{
@@ -720,16 +663,10 @@
 						$this->assertEmpty($result, $folder." > ".$this_addon." returned error #".$result.$errMsg);
 					}
 
-
-
-
-
 			}
 
 
 		}
-
-
 
 		public function testRemotePlugin()
 		{
@@ -774,8 +711,6 @@
 
 			$this->assertFalse($status,"nofollow plugin still exists, despite opt to have it removed during uninstall.");
 
-
-
 		}
 
 		private function pluginRefresh($pluginDir)
@@ -818,8 +753,6 @@
 					'delete_files'   => 0
 				);
 			}
-
-
 
 			e107::getPlugin()->uninstall($pluginDir, $opts);
 

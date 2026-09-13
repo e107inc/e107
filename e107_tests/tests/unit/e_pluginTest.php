@@ -90,29 +90,11 @@
 		 */
 		public function testIgnoringOfInvalidPlugin()
 		{
-
-			$dir = e_PLUGIN."temptest";
-			$file = e_PLUGIN."temptest/plugin.php";
-
-			mkdir($dir,0755);
-			file_put_contents($file, "\n");
+			$this->writeAppFile('e107_plugins/temptest/plugin.php', "\n");
 
 			$detected = $this->ep->clearCache()->getDetected();
 
-			foreach($detected as $path)
-			{
-				if($path == 'temptest')
-				{
-					$this->assertFalse(true);
-				}
-			}
-
-			unlink($file);
-			rmdir($dir);
-
-			$this->assertFalse(false);
-
-
+			$this->assertNotContains('temptest', $detected);
 		}
 
 		public function testClearCache()
@@ -142,9 +124,6 @@
 			$this->assertEquals($num,$det);
 
 		}
-
-
-
 
 		public function testBuildAddonPrefList()
 		{
@@ -185,17 +164,6 @@
 			$this->assertFalse($result);
 
 		}
-/*
-		public function testGetUpgradableList()
-		{
-
-		}
-
-		public function testIsLegacy()
-		{
-
-		}
-*/
 
 		public function testSetInstalled()
 		{
@@ -229,42 +197,6 @@
 
 			$this->assertTrue($hasUser);
 		}
-/*
-		public function testGetCompat()
-		{
-
-		}
-
-		public function testGetKeywords()
-		{
-
-		}
-
-		public function testGetId()
-		{
-
-		}
-
-		public function testGetAdminUrl()
-		{
-
-		}
-
-		public function testGetAddons()
-		{
-
-		}
-
-		public function testGetCategoryList()
-		{
-
-		}
-
-		public function testGetAddonErrors()
-		{
-
-		}
-*/
 		public function testGetIcon()
 		{
 			$result = $this->ep->clearCache()->load('gallery')->getIcon(32);
@@ -283,11 +215,6 @@
 			$this->assertNotEmpty($result['user']);
 
 		}
-/*
-		public function testGetVersion()
-		{
-
-		}*/
 
 		public function testGetFields()
 		{
@@ -303,41 +230,6 @@
 
 			e107::getDb()->truncate('user_extended_struct');// reset.
 		}
-/*
-		public function testGetAdminCaption()
-		{
-
-		}
-
-		public function testGetDescription()
-		{
-
-		}
-
-		public function testGetAuthor()
-		{
-
-		}
-
-		public function testGetName()
-		{
-
-		}
-
-		public function testBuildAddonPrefLists()
-		{
-
-		}
-
-		public function testClearCache()
-		{
-
-		}
-
-
-
-
-*/
 
 		/**
 		 * Test check for global lan file.
@@ -385,24 +277,4 @@
             $this->assertTrue($result);
 
         }
-/*
-		public function testLoad()
-		{
-
-		}
-
-		public function testGetCategory()
-		{
-
-		}
-
-		public function testGetInstalledWysiwygEditors()
-		{
-
-		}
-
-		public function testGetDate()
-		{
-
-		}*/
 	}

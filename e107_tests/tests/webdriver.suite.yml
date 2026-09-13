@@ -2,6 +2,10 @@
 # the JavaScript flows the PhpBrowser acceptance suite cannot exercise.
 # Parameters resolve through e107_tests/lib/config.php (see codeception.yml).
 actor: WebDriverTester
+extensions:
+    enabled:
+        # Takes back what a run writes into the app root, pass, fail or killed.
+        - Extension\WorkspaceGuard
 shuffle: false
 coverage:
     enabled: false
@@ -44,6 +48,7 @@ modules:
         - \Helper\Webdriver
         # Fixture themes and the site switched onto them, shared with acceptance.
         - \Helper\ThemeFixture
+        - \Helper\Probe
         # After DelayedDb: the dump load leaves e107's pref cache stale.
         - \Helper\PrefCacheReset
         # After PrefCacheReset: starts each test logged out.

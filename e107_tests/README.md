@@ -78,10 +78,6 @@ If you prefer to wire tests into your own LAMP stack — local, SFTP, cPanel, or
      ```sh
      ./vendor/bin/codecept run unit
      ```
-   * **Functional tests:**
-     ```sh
-     ./vendor/bin/codecept run functional
-     ```
    * **Acceptance tests:**
      ```sh
      ./vendor/bin/codecept run acceptance
@@ -323,7 +319,7 @@ db:
 
 ## Code Coverage
 
-You can generate code coverage reports for all PHP files in the app.  Code coverage is enabled for local tests (unit and functional tests) but disabled for remote tests (acceptance tests) by default.
+You can generate code coverage reports for all PHP files in the app.  Code coverage is enabled for the unit suite but disabled for the browser suites (acceptance and webdriver) by default.
 
 The reports may take minutes to be generated.
 

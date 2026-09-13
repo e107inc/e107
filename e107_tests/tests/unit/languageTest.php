@@ -133,8 +133,6 @@
 				$this->assertNotEmpty($result, $path. " was empty." );
 			}
 
-
-
 		}
 
 		/**
@@ -159,73 +157,5 @@
 			$this->assertSame(array(), $errors, 'getLanSelectArray() complained on its first call.');
 			$this->assertNotEmpty($select, 'getLanSelectArray() returned no languages.');
 		}
-
-/*
-		public function testDetect()
-		{
-
-		}
-
-		public function testGetCookieDomain()
-		{
-
-		}
-
-		public function testToNative()
-		{
-
-		}
-
-		public function testSet()
-		{
-
-		}
-
-		public function testSubdomainUrl()
-		{
-
-		}
-
-		public function testIsLangDomain()
-		{
-
-		}
-
-		public function testGetList()
-		{
-
-		}
-
-		public function testTranslate()
-		{
-
-		}
-
-		public function testBcDefs()
-		{
-
-		}
-
-		public function testInstalled()
-		{
-
-		}
-
-		public function testGetLanSelectArray()
-		{
-
-		}
-
-		public function testIsValid()
-		{
-
-		}
-
-		public function testSetDefs()
-		{
-
-		}
-*/
-
 
 	}

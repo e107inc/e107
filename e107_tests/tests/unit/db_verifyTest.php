@@ -232,37 +232,6 @@ class db_verifyTest extends \Test\Unit
 	}
 
 
-	/*
-			public function testClearCache()
-			{
-
-			}
-
-			public function testRenderNotes()
-			{
-
-			}
-
-			public function testCompareAll()
-			{
-
-			}
-
-			public function testRenderTableName()
-			{
-
-			}
-
-			public function testGetId()
-			{
-
-			}
-
-			public function testGetSqlData()
-			{
-
-			}
-	*/
 	public function testGetIndex()
 	{
 
@@ -403,29 +372,6 @@ DATA;
 	/**
 	 * FIXME: This test has no assertions!
 	 */
-	/*
-	public function testCompare()
-	{
-
-		e107::getDb()->gen('ALTER TABLE `#submitnews` CHANGE `submitnews_id` `submitnews_id` INT(10) UNSIGNED NOT NULL;');
-		e107::getDb()->gen('ALTER TABLE `#submitnews` DROP INDEX submitnews_id;');
-
-		$this->dbv->__construct();
-
-	//	print_r($this->dbv->sqlFileTables);
-
-		$this->dbv->compare('core');
-		$this->dbv->compileResults();
-
-
-		//FIXME
-
-	//	print_r($this->dbv->errors);
-	//	print_r($this->dbv->results['submitnews']);
-	//	print_r($this->dbv->indices['submitnews']);
-	//	print_r($this->dbv->results);
-	}
-	*/
 
 	public function testGetFixQuery()
 	{
@@ -605,34 +551,6 @@ DATA;
 
 	}
 
-	/*
-
-
-			public function testRenderTableSelect()
-			{
-
-			}
-
-			public function testVerify()
-			{
-
-			}
-
-			public function testGetPrevious()
-			{
-
-			}
-
-			public function testRenderResults()
-			{
-
-			}
-
-			public function testErrors()
-			{
-
-			}
-	*/
 	public function testGetSqlFileTables()
 	{
 
@@ -1176,28 +1094,6 @@ DATA;
 
 	}
 
-
-	/*
-			public function testFixForm()
-			{
-
-			}
-
-			public function testRunComparison()
-			{
-
-			}
-
-			public function testCompileResults()
-			{
-
-			}
-
-			public function testGetSqlLanguages()
-			{
-
-			}*/
-
 	public function testGetCanonicalStorageEngine()
 	{
 
@@ -1517,11 +1413,6 @@ DATA;
 		self::assertContains('convert', $fixList['core']['core_media']['all']);
 	}
 
-	/*function testGetAvailableStorageEngines()
-	{
-		$result = $this->dbv->getAvailableStorageEngines();
-
-	}*/
 
 	public function testRunFix()
 	{

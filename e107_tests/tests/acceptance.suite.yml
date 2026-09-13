@@ -12,7 +12,7 @@ extensions:
     enabled:
         # Sweeps the artifacts an acceptance run writes into the app root, on
         # the way in and on the way out, pass or fail.
-        - Extension\WorkspaceCleanup
+        - Extension\WorkspaceGuard
 modules:
     enabled:
         - PhpBrowser:
@@ -23,3 +23,5 @@ modules:
         - \Helper\MenuPrefFixture:
         - \Helper\SitelinkFixture:
         - \Helper\ThemeFixture:
+        - \Helper\Probe:
+        - \Helper\MemberFixture:

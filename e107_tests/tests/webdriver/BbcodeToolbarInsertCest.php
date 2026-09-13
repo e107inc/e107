@@ -35,12 +35,7 @@ class BbcodeToolbarInsertCest
 
 	public function _before(\WebDriverTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-	}
-
-	public function _after(\WebDriverTester $I)
-	{
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 	}
 
 	public function aBoldTagGoesInWithoutClickingTheFieldFirst(\WebDriverTester $I)
@@ -81,7 +76,7 @@ class BbcodeToolbarInsertCest
 
 	private function amOnProbe(\WebDriverTester $I)
 	{
-		$I->amOnPage('/' . self::PROBE_FILE . '?' . \Helper\ProbeGuard::query());
+		$I->amOnProbe();
 		$I->dontSee(\Helper\ProbeGuard::REFUSAL);
 		$I->waitForElement('#firstarea a', self::TIMEOUT);
 	}
@@ -93,7 +88,7 @@ class BbcodeToolbarInsertCest
 
 		return <<<PHP
 <?php
-// Fixture for BbcodeToolbarInsertCest. Removed again in the Cest's _after().
+// Fixture for BbcodeToolbarInsertCest.
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 require_once(HEADERF);

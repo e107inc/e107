@@ -18,6 +18,12 @@ class E107Preparer implements Preparer
 		return $this->appPath;
 	}
 
+	/** Written by install.php and e_file::blockScriptExecution(), so they belong to the installer rather than to a test. */
+	const INSTALL_ARTEFACTS = array(
+		'e107_system/e107Install.log',
+		'e107_media/.htaccess',
+	);
+
 	public function snapshot()
 	{
 		return $this->deleteHashDirs();
@@ -28,6 +34,19 @@ class E107Preparer implements Preparer
 		return $this->deleteHashDirs();
 	}
 
+	/**
+	 * The directory name a real install keeps its state under. {@see \e107::makeSiteHash()}
+	 *
+	 * @return string
+	 */
+	private static function siteHash()
+	{
+		$params = unserialize(PARAMS_SERIALIZED);
+		$dbname = isset($params['db']['dbname']) ? $params['db']['dbname'] : '';
+
+		return substr(md5($dbname.'.'.\Helper\E107Base::E107_MYSQL_PREFIX), 0, 10);
+	}
+
 	protected function deleteHashDirs()
 	{
 		$system = APP_PATH."/e107_system/".self::TEST_HASH;
@@ -35,6 +54,15 @@ class E107Preparer implements Preparer
 
 		$media = APP_PATH."/e107_media/".self::TEST_HASH;
 		$this->deleteDir($media);
+
+		$hash = self::siteHash();
+		$this->deleteDir(APP_PATH."/e107_system/".$hash);
+		$this->deleteDir(APP_PATH."/e107_media/".$hash);
+
+		foreach(self::INSTALL_ARTEFACTS as $artefact)
+		{
+			@unlink(APP_PATH."/".$artefact);
+		}
 
 		if(is_dir($system))
 		{
@@ -77,10 +105,6 @@ class E107Preparer implements Preparer
 			catch (Exception $e)
 			{
 				echo $e->getMessage()."\n";
-			/*	echo "Contents: \n";
-				$list = scandir($dirPath);
-				var_export($list);*/
-			   // do something
 			}
 		}
 	}

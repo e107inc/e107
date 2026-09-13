@@ -300,22 +300,6 @@
 		}
 
 
-/*
-		public function testProcessConfigPost()
-		{
-
-		}
-
-		public function testGetTabId()
-		{
-
-		}
-
-		public function testGetFieldTypes()
-		{
-
-		}
-*/
 		public function testRenderConfigForm()
 		{
 			$this->cf->loadConfig($this->config)->loadData($this->data);
@@ -326,64 +310,4 @@
 			$this->assertStringNotContainsString('__tab__', $result);
 
 		}
-/*
-		public function testGetFieldValue()
-		{
-
-		}
-
-		public function testSetAdminUIConfig()
-		{
-
-		}
-
-		public function testSetAdminUIData()
-		{
-
-		}
-
-		public function testGetFieldTitle()
-		{
-
-		}
-
-		public function testProcessDataPost()
-		{
-
-		}
-
-		public function testLoadConfig()
-		{
-
-		}
-
-		public function testRenderTest()
-		{
-
-		}
-
-		public function testSetTab()
-		{
-
-		}
-
-		public function testLoadData()
-		{
-
-		}
-
-		public function testGetConfig()
-		{
-
-		}
-
-		public function testGetTabLabel()
-		{
-
-		}
-
-		public function testGetData()
-		{
-
-		}*/
 	}

@@ -45,7 +45,7 @@
 class e_fileOutboundRequestTest extends \Test\Unit
 {
 
-	/** Fixture written into the served tree. @see WorkspaceCleanup */
+	/** Fixture written into the served tree. */
 	const HOP_FIXTURE = 'e107_tests_p3_hop.php';
 
 	/** Emitted by the fixture only once it has stopped redirecting. */
@@ -81,9 +81,6 @@ class e_fileOutboundRequestTest extends \Test\Unit
 	/** @var e_file */
 	protected $fl;
 
-	/** @var string absolute path of the fixture in the served tree */
-	private $fixturePath;
-
 	/** @var string file getRemoteFile() downloads into */
 	private $downloadPath;
 
@@ -111,15 +108,13 @@ class e_fileOutboundRequestTest extends \Test\Unit
 		$this->hitPath = e_TEMP . 'e107_tests_p3_hits.txt';
 		$this->resetFixtureHits();
 
-		$this->fixturePath = APP_PATH . '/' . self::HOP_FIXTURE;
-		file_put_contents($this->fixturePath, $this->fixtureSource());
+		$this->writeAppFile(self::HOP_FIXTURE, $this->fixtureSource());
 
 		$this->locateFixtureServer();
 	}
 
 	protected function _after()
 	{
-		@unlink($this->fixturePath);
 		@unlink($this->downloadPath);
 		@unlink($this->hitPath);
 	}

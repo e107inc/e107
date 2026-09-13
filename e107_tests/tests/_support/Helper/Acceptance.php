@@ -30,11 +30,7 @@ class Acceptance extends E107Base
 	 */
 	const FULLTEXT_ENGINE_FALLBACK = ['Aria', 'Maria', 'MyISAM'];
 
-	/**
-	 * Dropped into the docroot for as long as a plugin install is needed.
-	 * Registered in Extension\WorkspaceCleanup so a crashed run does not leave
-	 * it there.
-	 */
+	/** Dropped into the docroot for as long as a plugin install is needed. */
 	const PLUGIN_PROBE_FILE = 'e107_tests_plugin_install_probe.php';
 
 	/**
@@ -76,8 +72,8 @@ class Acceptance extends E107Base
 	/**
 	 * Stand a site up once per run, so a Cest can be named on its own.
 	 *
-	 * A run starts from an uninstalled app every time: Extension\WorkspaceCleanup
-	 * removes e107_system/000000test and e107_media/000000test on the way in, and
+	 * A run starts from an uninstalled app every time: E107Preparer removes
+	 * e107_system/000000test and e107_media/000000test on the way in, and
 	 * E107Base parks e107_config.php beside it. Only the two install Cests put a
 	 * site back, so naming any later Cest on its own answered with the installer's
 	 * language page for every one of its tests, and the whole suite had to be run
@@ -648,7 +644,7 @@ class Acceptance extends E107Base
 	 */
 	private function runPluginProbe($act, $plugin)
 	{
-		if (!$this->pluginProbeWritten)
+		if (!$this->pluginProbeWritten || AppFileRegistry::wasReaped(self::PLUGIN_PROBE_FILE))
 		{
 			$this->writeAppFile(self::PLUGIN_PROBE_FILE, self::pluginProbeSource());
 			$this->pluginProbeWritten = true;

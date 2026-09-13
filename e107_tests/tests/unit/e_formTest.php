@@ -104,8 +104,6 @@ class e_formTest extends \Test\Unit
 
 		//	'lanlist_001'       => array('title'=>'Lanlist' ,   'type'=>'lanlist',      'inline'=>false),
 
-
-
 	);
 
 	// simulated database/form values.
@@ -191,9 +189,6 @@ class e_formTest extends \Test\Unit
 		//		'lanlist_001'       => 'German',
 	);
 
-
-
-
 	protected function _before()
 	{
 		e107::loadAdminIcons();
@@ -217,53 +212,11 @@ class e_formTest extends \Test\Unit
 		include_once(e_PLUGIN.'forum/forum_class.php');
 		require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
 
-		$legacyDir = APP_PATH."/e107_files/downloadimages/";
-		$legacyFile = APP_PATH."/e107_files/downloadimages/butterfly.jpg";
-
-		if(!is_dir($legacyDir))
-		{
-			mkdir($legacyDir, 0775, true);
-		}
-
-		if(!file_exists($legacyFile))
-		{
-			copy(APP_PATH."/e107_plugins/gallery/images/butterfly.jpg", $legacyFile);
-		}
-
-		if(!file_exists($legacyFile))
-		{
-			self::fail("Couldn't copy legacy image 'butterfly.jpg' to e107_files folder");
-		}
-
-	}
-
-	protected function _after()
-	{
-		unlink(APP_PATH."/e107_files/downloadimages/butterfly.jpg");
+		$this->writeAppFile('e107_files/downloadimages/butterfly.jpg',
+			file_get_contents(e_PLUGIN.'gallery/images/butterfly.jpg'));
 	}
 
 
-	/*
-			public function testAddWarning()
-			{
-
-			}
-
-			public function testOpen()
-			{
-
-			}
-
-			public function testClose()
-			{
-
-			}
-
-			public function testCountry()
-			{
-
-			}
-*/
 	public function testGetCountry()
 	{
 
@@ -282,8 +235,6 @@ class e_formTest extends \Test\Unit
 		$actual = $this->_frm->getCountry();
 		self::assertArrayHasKey('au',$actual);
 
-
-
 	}
 
 
@@ -292,22 +243,6 @@ class e_formTest extends \Test\Unit
 		$result = $this->_frm->help('my tip');
 		self::assertSame("<i class='admin-ui-help-tip far fa-question-circle' ><!-- --></i><div class=\"field-help\" data-placement=\"left\" style=\"display:none\">my tip</div>", $result);
 	}
-/*
-			public function testGetRequiredString()
-			{
-
-			}
-
-			public function testSetRequiredString()
-			{
-
-			}
-
-			public function testTags()
-			{
-
-			}
-*/
 
 	public function testTabs()
 	{
@@ -385,12 +320,6 @@ class e_formTest extends \Test\Unit
 		self::assertStringContainsString('<pre class="e-copyable-text" dir="ltr">* * * * * php -q cron.php</pre>', $plain);
 	}
 
-/*
-			public function testUrl()
-			{
-
-			}
-	*/
 
 	public function testText()
 	{
@@ -412,41 +341,6 @@ class e_formTest extends \Test\Unit
 		);
 	}
 
-	/*
-			public function testNumber()
-			{
-
-			}
-
-			public function testEmail()
-			{
-
-			}
-
-			public function testIconpreview()
-			{
-
-			}
-
-			public function testIconpicker()
-			{
-
-			}
-
-			public function testAvatarpicker()
-			{
-
-			}
-
-			public function testImagepicker()
-			{
-
-			}
-
-			public function testFilepicker()
-			{
-
-			}*/
 
 	public function testDatepicker()
 	{
@@ -473,42 +367,6 @@ class e_formTest extends \Test\Unit
 				self::assertStringContainsString("<option value='1'>" . \Helper\AdminLogin::ADMIN_USER . "</option>", $list);
 
 			}
-/*
-			public function testUserpicker()
-			{
-
-			}
-
-			public function testRate()
-			{
-
-			}
-
-			public function testLike()
-			{
-
-			}
-
-			public function testFile()
-			{
-
-			}
-
-			public function testUpload()
-			{
-
-			}
-
-			public function testPassword()
-			{
-
-			}
-
-			public function testPagination()
-			{
-
-			}
-*/
 			public function testProgressBar()
 			{
 				$tests = array(
@@ -528,17 +386,6 @@ class e_formTest extends \Test\Unit
 				}
 
 			}
-/*
-			public function testTextarea()
-			{
-
-			}
-
-			public function testBbarea()
-			{
-
-			}
-*/
 			public function testCheckbox()
 			{
 
@@ -570,72 +417,6 @@ class e_formTest extends \Test\Unit
 				self::assertEquals($expected,$result);
 
 			}
-/*
-			public function testCheckbox_label()
-			{
-
-			}
-
-			public function testCheckbox_switch()
-			{
-
-			}
-
-			public function testCheckbox_toggle()
-			{
-
-			}
-
-			public function testUc_checkbox()
-			{
-
-			}
-
-			public function test_uc_checkbox_cb()
-			{
-
-			}
-
-			public function testUc_label()
-			{
-
-			}
-
-			public function testRadio()
-			{
-
-			}
-
-			public function testRadio_switch()
-			{
-
-			}
-
-			public function testFlipswitch()
-			{
-
-			}
-
-			public function testLabel()
-			{
-
-			}
-
-			public function testHelp()
-			{
-
-			}
-
-			public function testSelect_open()
-			{
-
-			}
-
-			public function testSelectbox()
-			{
-
-			}
-	*/
 	public function testSelect()
 	{
 		$this->_frm->__construct(true);
@@ -692,17 +473,6 @@ class e_formTest extends \Test\Unit
 
 
 	}
-	/*
-			public function testUserclass()
-			{
-
-			}
-
-			public function testSearch()
-			{
-
-			}
-	*/
 
 	public function testUcSelect()
 	{
@@ -724,12 +494,7 @@ class e_formTest extends \Test\Unit
 			self::assertStringContainsString($var['expected'],$result);
 		}
 
-
-
-
 	}
-
-
 
 	public function testUc_select_single_numeric()
 	{
@@ -786,17 +551,6 @@ class e_formTest extends \Test\Unit
 		self::assertEquals($expected, $actual);
 	}
 
-	/*
-			public function test_uc_select_cb()
-			{
-
-			}
-
-			public function testOptgroup_open()
-			{
-
-			}
-	*/
 	public function testOption()
 	{
 		$options = array('disabled'=>true);
@@ -890,43 +644,11 @@ class e_formTest extends \Test\Unit
 		}
 
 	}
-/*
-			public function testOptgroup_close()
-			{
-
-			}
-
-			public function testSelect_close()
-			{
-
-			}
-*/
 			public function testHidden()
 			{
 				$result = $this->_frm->hidden('name','on',['id'=>'my-field']);
 				self::assertSame("<input type='hidden' name='name' value='on' id='my-field' />", $result);
 			}
-/*
-			public function testToken()
-			{
-
-			}
-
-			public function testSubmit()
-			{
-
-			}
-
-			public function testSubmit_image()
-			{
-
-			}
-
-			public function testAdmin_trigger()
-			{
-
-			}
-*/
 			public function testButton()
 			{
 				$tests = array(
@@ -987,17 +709,6 @@ class e_formTest extends \Test\Unit
 
 			//	var_export($ret);
 			}
-/*
-			public function testBreadcrumb()
-			{
-
-			}
-
-			public function testInstantEditButton()
-			{
-
-			}
-*/
 			public function testAdmin_button()
 			{
 				$result = $this->_frm->admin_button('update_id', "Update", 'update');
@@ -1085,32 +796,6 @@ class e_formTest extends \Test\Unit
 				self::assertStringContainsString('class="dropdown-menu my-ul"', $decorated);
 				self::assertStringContainsString('class="dropdown-item my-li"', $decorated);
 			}
-/*
-			public function testDefaultButtonClassExists()
-			{
-
-			}
-
-			public function testGetDefaultButtonClassByAction()
-			{
-
-			}
-
-			public function testGetNext()
-			{
-
-			}
-
-			public function testGetCurrent()
-			{
-
-			}
-
-			public function testResetTabindex()
-			{
-
-			}
-*/
 			public function testGet_attributes()
 			{
 				$options = array(
@@ -1141,12 +826,6 @@ class e_formTest extends \Test\Unit
 
 				self::assertSame($expected, $actual);
 			}
-/*
-			public function test_format_id()
-			{
-
-			}
-*/
 			public function testName2id()
 			{
 				$text       = "Something?hello=there and test";
@@ -1164,52 +843,6 @@ class e_formTest extends \Test\Unit
 				self::assertEquals($expected, $result);
 
 			}
-/*
-			public function testFormat_options()
-			{
-
-			}
-
-			public function test_default_options()
-			{
-
-			}
-
-			public function testColumnSelector()
-			{
-
-			}
-
-			public function testColGroup()
-			{
-
-			}
-
-			public function testThead()
-			{
-
-			}
-
-			public function testRenderHooks()
-			{
-
-			}
-
-			public function testRenderRelated()
-			{
-
-			}
-
-			public function testRenderTableRow()
-			{
-
-			}
-
-			public function testRenderInline()
-			{
-
-			}
-	*/
 	public function testRenderValue()
 	{
 		date_default_timezone_set('America/Phoenix');
@@ -1385,8 +1018,6 @@ class e_formTest extends \Test\Unit
 			//	'lanlist_001'       => 'German', // only works with multiple languages installed.
 		);
 
-
-
 		foreach($this->_fields as $field=>$att)
 		{
 
@@ -1512,51 +1143,6 @@ class e_formTest extends \Test\Unit
 			self::assertSame(1, substr_count($tags['a'][0]['data-source'], '"text":"PRIVATEMENU"'), 'A class already in the classlist must not be offered twice.');
 
 	}
-	/*
-			public function testRenderListForm()
-			{
-
-			}
-
-			public function testRenderGridForm()
-			{
-
-			}
-
-			public function testRenderCreateForm()
-			{
-
-			}
-
-			public function testRenderCreateFieldset()
-			{
-
-			}
-
-			public function testRenderCreateButtonsBar()
-			{
-
-			}
-
-			public function testRenderForm()
-			{
-
-			}
-
-			public function testRenderFieldset()
-			{
-
-			}
-
-			public function testRenderValueTrigger()
-			{
-
-			}
-
-			public function testRenderElementTrigger()
-			{
-
-			}*/
 
 	public function testInlineTokenGeneratedOnlyOnce()
 	{
@@ -1603,8 +1189,6 @@ class e_formTest extends \Test\Unit
 
 		);
 
-
-
 		try
 		{
 			/** @var e_admin_model $model */
@@ -1623,37 +1207,17 @@ class e_formTest extends \Test\Unit
 		e107::setRegistry('core/adminUI/currentListModel', $model);
 		e107::setRegistry('core/adminUI/currentPlugin', 'rss_menu');
 
-
-
 		foreach($tests as $t)
 		{
 			$result = $this->_frm->renderLink($t['value'], $t['parms'], 3);
 			self::assertEquals($t['expected'],$result);
 		}
 
-
-
 	}
 
 	/**
 	 * Loads snipper from e107_themes/bootstrap/snippets/form_checkbox.html
-	 *//*
-	public function testSnippet()
-	{
-		$this->_frm->_snippets = true;
-
-		$result = $this->_frm->checkbox('myname', 3, true, ['readonly'=>true]);
-		$expected = "<label class='checkbox form-check'>
-<input id='myname-3' class='form-check-input' type='checkbox'  readonly='readonly' checked='checked' />
-<span></span>
-</label>";
-
-		self::assertSame($expected, $result);
-
-		$this->_frm->_snippets = false;
-
-	}*/
-
+	 */
 	/**
 	 * @see https://github.com/e107inc/e107/issues/5674
 	 */

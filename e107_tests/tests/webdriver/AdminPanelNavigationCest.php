@@ -24,17 +24,16 @@ class AdminPanelNavigationCest
 
 	public function _before(\WebDriverTester $I)
 	{
-		$I->writeAppFile(self::PROBE, $this->probeSource());
-		$I->amOnPage('/'.self::PROBE.'?'.\Helper\ProbeGuard::query().'&act=install');
+		$I->haveProbe(self::PROBE, $this->probeSource());
+		$I->amOnProbe('act=install');
 		$I->see('PROBE_OK');
 		$I->loginAsAdmin();
 	}
 
 	public function _after(\WebDriverTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE.'?'.\Helper\ProbeGuard::query().'&act=uninstall');
+		$I->amOnProbe('act=uninstall');
 		$I->see('PROBE_OK');
-		$I->deleteAppFile(self::PROBE);
 	}
 
 	/**

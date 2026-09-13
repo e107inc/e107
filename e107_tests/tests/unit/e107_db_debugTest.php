@@ -28,11 +28,6 @@
 
             $this->dbg->active(false);
 		}
-/*
-		public function testShowIf()
-		{
-
-		}*/
 
 		public function testShow_Log()
 		{
@@ -44,11 +39,6 @@
 		{
             $result = $this->dbg->Show_Includes();
             $this::assertEmpty($result);
-		}
-
-		public function testSave()
-		{
-
 		}
 
 		public function testShow_DEPRECATED()
@@ -92,94 +82,11 @@
 
 		}
 
-	/*	public function testGetSqlDetails()
-		{
-			$this->dbg->setSQLDetails(null);
-			$result = $this->dbg->getSQLDetails();
-			$this::assertEmpty($result);
-
-			$this->dbg->active(true);
-			$this->dbg->setSQLDetails(null);
-
-		    e107::getDb()->retrieve('SELECT * FROM #user');
-			e107::getDb()->retrieve("SELECT DISTINCT dblog_eventcode,dblog_title FROM #admin_log",true);
-
-			$result = $this->dbg->getSQLDetails();
-			$this::assertNotEmpty($result);
-			$result = array_values($result);
-
-			$expected = [
-				0 => 'SELECT * FROM e107_user ',
-				1 => 'SELECT DISTINCT dblog_eventcode,dblog_title FROM e107_admin_log ',
-
-			];
-
-
-
-			foreach($expected as $i => $expected_query)
-			{
-
-				$this::assertSame($expected_query, $result[$i]['query']);
-			}
-
-		}*/
 
 		public function testShow_SC_BB()
 		{
             $result = $this->dbg->Show_SC_BB();
             $this::assertEmpty($result);
 		}
-/*
-		public function testLogCode()
-		{
-
-		}
-
-		public function testLogDeprecated()
-		{
-
-		}
-
-		public function test__construct()
-		{
-
-		}
-
-		public function testE107_db_debug()
-		{
-
-		}
-
-
-
-		public function testShow_All()
-		{
-
-		}
-
-		public function testCountLabel()
-		{
-
-		}
-
-		public function testMark_Time()
-		{
-
-		}
-
-		public function testMark_Query()
-		{
-
-		}
-
-
-
-		public function testDump()
-		{
-
-		}
-*/
-
-
 
 	}

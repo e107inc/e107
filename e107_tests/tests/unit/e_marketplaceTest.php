@@ -14,6 +14,20 @@
 		/** @var e_marketplace */
 		private $mp;
 
+		/** Downloaded into e_PLUGIN by testDownload(), removed again in _after(). */
+		const DOWNLOADED_PLUGIN = 'thing';
+
+		protected function _after()
+		{
+			foreach(array(e_PLUGIN, e_TEMP) as $dir)
+			{
+				if(is_dir($dir.self::DOWNLOADED_PLUGIN))
+				{
+					e107::getFile()->removeDir($dir.self::DOWNLOADED_PLUGIN);
+				}
+			}
+		}
+
 		protected function _before()
 		{
 			require_once(e_HANDLER."e_marketplace.php");
@@ -66,12 +80,6 @@ DATA
 			}
 		}
 
-/*
-		public function testRenderLoginForm()
-		{
-
-		}
-*/
 		public function testDownload()
 		{
 			$path = e_PLUGIN."thing";
@@ -99,44 +107,4 @@ DATA
 			$this->assertTrue($exists,"plugin folder is missing files.");
 
 		}
-/*
-		public function testGenerateAuthKey()
-		{
-
-		}
-
-		public function testCall()
-		{
-
-		}
-
-		public function testGetVersionList()
-		{
-
-		}
-
-		public function testHasAuthKey()
-		{
-
-		}
-
-		public function testAdapter()
-		{
-
-		}
-
-		public function testMakeAuthKey()
-		{
-
-		}
-
-		public function testSetAuthKey()
-		{
-
-		}
-
-		public function testGetDownloadModal()
-		{
-
-		}*/
 	}
