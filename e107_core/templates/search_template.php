@@ -18,7 +18,7 @@ $SEARCH_TEMPLATE['form']['start'] = '
 
 $SEARCH_TEMPLATE['form']['advanced'] = '
 						<div class="form-group">
-						    <label for="t" class="col-sm-3 control-label">{SEARCH_ADV_A}</label>
+						    <label for="{SEARCH_ADV_ID}" class="col-sm-3 control-label">{SEARCH_ADV_A}</label>
 						    <div class="col-sm-9">	
 						        
 						      {SEARCH_ADV_B}
