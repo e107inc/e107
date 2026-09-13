@@ -11,9 +11,11 @@
  * @group plugins
  *
  * Covers the optional 'caption' key of the $FAQS_TEMPLATE 'search' and 'add'
- * sections, resolved by {@see faqs_shortcodes::caption()} for issue #5983.
+ * sections, resolved by {@see faqs_shortcodes::caption()} for issue #5983, and
+ * the parameter shapes {@see faqs_shortcodes::sc_faq_question()} is handed by
+ * the shipped templates, for issue #6376.
  */
-class faqsCaptionTest extends \Test\Unit
+class faqs_shortcodesTest extends \Test\Unit
 {
 	/** @var faqs_shortcodes */
 	protected $sc;
@@ -133,5 +135,33 @@ class faqsCaptionTest extends \Test\Unit
 				$file . ' defines a ' . $section . ' caption, so this change is no longer a no-op'
 			);
 		}
+	}
+
+	public function testAQuestionWithNoParametersIsParsedAsATitle()
+	{
+		$this->assertSame(
+			e107::getParser()->toHTML($this->faqQuestion, true, 'TITLE'),
+			$this->sc->sc_faq_question()
+		);
+	}
+
+	/**
+	 * The colon form arrives already parsed, so the pipe form's two sets are
+	 * absent rather than empty and reading them warns on every render.
+	 */
+	public function testTheColonFormAsTheSchemaTemplateWritesIt()
+	{
+		$this->assertSame(
+			e107::getParser()->toText($this->faqQuestion),
+			$this->sc->sc_faq_question(array('html' => 0))
+		);
+	}
+
+	public function testThePipeFormStillReachesTheSecondSet()
+	{
+		$this->assertSame(
+			e107::getParser()->toHTML($this->faqQuestion, true, 'TITLE'),
+			$this->sc->sc_faq_question('|tags=1')
+		);
 	}
 }
