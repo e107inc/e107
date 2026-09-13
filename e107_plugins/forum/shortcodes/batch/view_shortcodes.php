@@ -942,7 +942,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		$text .= '
     		</button>
-    		<ul class="dropdown-menu pull-right dropdown-menu-end float-right text-right text-end">';
+    		<ul class="dropdown-menu dropdown-menu-right dropdown-menu-end text-right text-end">';
 
 
 		$text .= "<li class='text-right text-end float-right float-right'><a class='dropdown-item' href='" . e_HTTP . "email.php?plugin:forum." . $threadID . "'>" . LAN_FORUM_2044 . " " . $tp->toGlyph('fa-envelope') . "</a></li>";
@@ -1261,7 +1261,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$text .= '
     	<span class="sr-only">Toggle Dropdown</span>
     	</button>
-    	<ul class="dropdown-menu pull-right dropdown-menu-end float-right">
+    	<ul class="dropdown-menu dropdown-menu-right dropdown-menu-end">
     	';
 
 		foreach($options as $key => $val)
