@@ -631,7 +631,7 @@ class forumStats
 
 		$qry = "
 		SELECT
-			t.*, u.user_name, ul.user_name AS user_last, f.forum_name
+			t.*, u.user_name, ul.user_name AS user_last, f.forum_id, f.forum_name, f.forum_sef
 		FROM `#forum_thread` as t
 		LEFT JOIN `#forum` AS f ON f.forum_id = t.thread_forum_id
 		LEFT JOIN `#user` AS u ON u.user_id = t.thread_user
@@ -667,8 +667,10 @@ class forumStats
 					$POSTER = $row['thread_user_anon'];
 				}
 
-			//	$LINKTOTHREAD = e107::url('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
-			//	$LINKTOFORUM = e107::url('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
+				$row['thread_sef'] = $forum->getThreadSef($row);
+
+				$LINKTOTHREAD = e107::url('forum', 'topic', $row);
+				$LINKTOFORUM = e107::url('forum', 'forum', $row);
 
 				$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 
