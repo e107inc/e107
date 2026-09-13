@@ -804,7 +804,8 @@ cmd_up() {
          e107-tests up --php $PHP --db $DB${XDEBUG_TAG:+ --xdebug}"
     fi
     heal_dns
-    deps_install
+    ensure_web_exec
+    deps_ensure
     if [ "$INSTALL_SITE" = yes ]; then
         install_site
     fi
