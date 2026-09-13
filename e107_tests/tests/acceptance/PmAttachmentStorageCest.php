@@ -230,7 +230,7 @@ class PmAttachmentStorageCest
 	/**
 	 * The guard files have to survive the plugin's own maintenance sweep.
 	 *
-	 * pm_conf.php builds a fresh e_file, calls get_files() on the attachment
+	 * admin_config.php builds a fresh e_file, calls get_files() on the attachment
 	 * directory and unlinks everything no message names. Nothing but the default
 	 * fileFilter in file_class.php keeps the rules this package writes off that
 	 * list, and an administrator running the sweep once would otherwise
@@ -645,7 +645,7 @@ switch($act)
 		break;
 
 	case 'orphans':
-		// What the plugin's own maintenance sweep sees. pm_conf.php builds a
+		// What the plugin's own maintenance sweep sees. admin_config.php builds a
 		// fresh e_file and unlinks every file get_files() returns that no message
 		// names, so anything of ours on this list is deleted the first time an
 		// administrator runs it.
