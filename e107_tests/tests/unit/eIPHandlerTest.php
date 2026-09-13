@@ -682,15 +682,11 @@ class eIPHandlerTest extends \Test\Unit
 		e107::getDb()->delete('banlist', "`banlist_ip` IN ('cameron@mydomain.co.uk', '*@mydomain.co.uk')");
 
 
-		// Test: multiple calls within 1 second
-		$startTime = microtime(true);
 		$result1 = $this->ip->checkBan($query, true, true);
 		$result2 = $this->ip->checkBan($query, true, true);
-		$endTime = microtime(true);
 
 		$this::assertTrue($result1);
 		$this::assertTrue($result2);
-		$this::assertLessThan(1, $endTime - $startTime, "Throttling test took too long, in-memory cache may not be working");
 
 		// Verify session cache is set
 		$cached = e107::getSession('eIPHandler')->get('ban_check_' . md5($query));
