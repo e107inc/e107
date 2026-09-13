@@ -26,8 +26,13 @@ class e_parse_shortcodeTest extends \Test\Unit
 	 */
 	private $tempBatchFiles = array();
 
+	/** @var array */
+	private $foundParserState;
+
 	public function _before()
 	{
+		$this->foundParserState = $this->parserState();
+
 		e107::loadAdminIcons();
 		e107::getParser()->setFontAwesome(5);
 
@@ -59,6 +64,8 @@ class e_parse_shortcodeTest extends \Test\Unit
 
 	public function _after()
 	{
+		$this->restoreParserState($this->foundParserState);
+
 		e107::setRegistry('core/e107/singleton/e_render', $this->original_e_render);
 		e107::setRegistry('core/e107/singleton/e_date', $this->original_e_date);
 
