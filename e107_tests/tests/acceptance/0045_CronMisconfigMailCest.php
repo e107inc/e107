@@ -292,13 +292,13 @@ class CronMisconfigMailCest
 	}
 
 	/**
-	 * A task on '* * * * *' is due for the first 45 seconds of each minute.
+	 * A task on '* * * * *' is due for the first 45 seconds of each minute; the three requests that follow need to land inside it.
 	 */
 	private function waitForTheDueWindow()
 	{
 		\Test\Poll::until(function ()
 		{
-			return (int) date('s') < 38;
+			return (int) date('s') < 30;
 		}, 60);
 	}
 
