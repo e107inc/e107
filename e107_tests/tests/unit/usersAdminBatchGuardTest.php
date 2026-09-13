@@ -30,28 +30,28 @@ class usersAdminBatchGuardTest extends \Test\Unit
 	{
 		foreach(array('ListBatchTrigger', 'GridBatchTrigger') as $trigger)
 		{
-			$this->assertContains('refusesBatch', $this->callsIn($trigger),
+			$this->assertContains('refusesBatch', $this->namesIn($this->page, $trigger),
 				$trigger . '() must ask refusesBatch() before it dispatches.');
 		}
 	}
 
 	public function testTheGuardAppliesTheAdministratorRule()
 	{
-		$this->assertContains('batchSelectsProtectedAdmin', $this->callsIn('refusesBatch'),
+		$this->assertContains('batchSelectsProtectedAdmin', $this->namesIn($this->page, 'refusesBatch'),
 			'refusesBatch() must refuse a selection holding an administrator the caller may not edit.');
-		$this->assertContains('canGrantAdmin', $this->callsIn('holdsProtectedAdmin'),
+		$this->assertContains('canGrantAdmin', $this->namesIn($this->page, 'holdsProtectedAdmin'),
 			'The administrator rule is permission 3, the same one beforeUpdate() asks for.');
-		$this->assertContains('batchSelection', $this->callsIn('batchSelectsProtectedAdmin'),
+		$this->assertContains('batchSelection', $this->namesIn($this->page, 'batchSelectsProtectedAdmin'),
 			'The rule must read every row the batch acts on, not only the ticked ones.');
 	}
 
 	public function testTheGuardAppliesTheUserClassRule()
 	{
-		$this->assertContains('refusesClassBatch', $this->callsIn('refusesBatch'),
+		$this->assertContains('refusesClassBatch', $this->namesIn($this->page, 'refusesBatch'),
 			'refusesBatch() must refuse a batch writing a user class the caller may not manage.');
-		$this->assertContains('checkAllowed', $this->callsIn('refusesClasses'),
+		$this->assertContains('checkAllowed', $this->namesIn($this->page, 'refusesClasses'),
 			'The user class rule is checkAllowed(), the one the Set user class page applies.');
-		$this->assertContains('selectedClassIds', $this->callsIn('refusesClassBatch'),
+		$this->assertContains('selectedClassIds', $this->namesIn($this->page, 'refusesClassBatch'),
 			'A batch that rewrites the column is measured on the classes the selection holds too.');
 	}
 
@@ -66,91 +66,23 @@ class usersAdminBatchGuardTest extends \Test\Unit
 		foreach(array('ListBanTrigger', 'ListUnbanTrigger', 'ListVerifyTrigger',
 			'ListReqverifyTrigger', 'ListResendTrigger') as $trigger)
 		{
-			$this->assertContains('refusesRowTrigger', $this->callsIn($trigger),
+			$this->assertContains('refusesRowTrigger', $this->namesIn($this->page, $trigger),
 				$trigger . '() must ask the administrator rule before it writes.');
 		}
 
-		$this->assertContains('holdsProtectedAdmin', $this->callsIn('refusesRowTrigger'),
+		$this->assertContains('holdsProtectedAdmin', $this->namesIn($this->page, 'refusesRowTrigger'),
 			'The single-row rule must be the rule the batch route applies, not a second one.');
-		$this->assertContains('holdsProtectedAdmin', $this->callsIn('ListDeleteTrigger'),
+		$this->assertContains('holdsProtectedAdmin', $this->namesIn($this->page, 'ListDeleteTrigger'),
 			'The single-row delete must ask the rule about every row it is given.');
 	}
 
 	public function testTheGuardStillAsksWhetherTheFieldOffersABatch()
 	{
-		$calls = $this->callsIn('refusesBatch');
+		$calls = $this->namesIn($this->page, 'refusesBatch');
 
 		$this->assertContains('isTypedBatchTrigger', $calls,
 			'refusesBatch() must read the field segment the dispatcher reads.');
 		$this->assertContains('isBatchField', $calls,
 			'refusesBatch() must put the field to the same test the dispatcher puts it to.');
-	}
-
-	/**
-	 * Names called inside one method of the page, read with the tokenizer.
-	 */
-	private function callsIn($method)
-	{
-		$this->assertFileExists($this->page);
-
-		$tokens = token_get_all(file_get_contents($this->page));
-		$start = null;
-
-		foreach($tokens as $i => $token)
-		{
-			if(!is_array($token) || $token[0] !== T_FUNCTION)
-			{
-				continue;
-			}
-
-			for($j = $i + 1, $n = count($tokens); $j < $n; $j++)
-			{
-				if(is_array($tokens[$j]) && $tokens[$j][0] === T_WHITESPACE)
-				{
-					continue;
-				}
-				if(is_array($tokens[$j]) && $tokens[$j][0] === T_STRING && $tokens[$j][1] === $method)
-				{
-					$start = $j;
-				}
-				break;
-			}
-
-			if($start !== null)
-			{
-				break;
-			}
-		}
-
-		$this->assertNotNull($start, $method . '() must be declared in ' . $this->page . '.');
-
-		$calls = array();
-		$depth = 0;
-		$open = false;
-
-		for($i = $start, $n = count($tokens); $i < $n; $i++)
-		{
-			if($tokens[$i] === '{')
-			{
-				$depth++;
-				$open = true;
-				continue;
-			}
-			if($tokens[$i] === '}')
-			{
-				$depth--;
-				if($open && $depth === 0)
-				{
-					break;
-				}
-				continue;
-			}
-			if($open && is_array($tokens[$i]) && $tokens[$i][0] === T_STRING)
-			{
-				$calls[] = $tokens[$i][1];
-			}
-		}
-
-		return $calls;
 	}
 }
