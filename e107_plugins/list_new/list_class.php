@@ -116,7 +116,7 @@ class listclass
 		if (empty(	$listPrefs))
 		{
        		$listPrefs = $this->list_pref = $this->getDefaultPrefs();
-       		e107::getPlugConfig('list_new')->reset()->setPref($listPrefs)->save(true);
+       		e107::getPlugConfig('list_new')->reset()->setPref($listPrefs)->save(false, true, false);
     	}
     	return $listPrefs;
 		/*
@@ -173,6 +173,8 @@ class listclass
 	 */
 	function prepareSectionArray($mode)
 	{
+		$arr = array();
+
 		//section reference
 		for($i=0, $iMax = count($this->sections); $i< $iMax; $i++)
 		{
@@ -781,6 +783,8 @@ class listclass
 				$this->row['timelapse'] .= $rs->form_option($a, ($timelapse == $a ? '1' : '0'), $url.".".$a);
 			}
 			$this->row['timelapse'] .= $rs->form_select_close();
+
+			$this->shortcodes->row = $this->row;
 
 			return $this->parseTemplate('TIMELAPSE_TABLE');
 		}
