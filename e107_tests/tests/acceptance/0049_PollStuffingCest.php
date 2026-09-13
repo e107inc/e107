@@ -29,18 +29,17 @@ class PollStuffingCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->havePluginInstalled('poll');
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=reset');
+		$I->amOnProbe('act=reset');
 		$I->seeInSource('PROBE_OK');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=reset');
+		$I->amOnProbe('act=reset');
 		$I->dropPluginInstall('poll');
 		$I->dropPluginProbe();
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	/**
@@ -52,8 +51,7 @@ class PollStuffingCest
 	 */
 	private function havePoll(AcceptanceTester $I, $multiple, $phantom = 0)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=poll&multiple='.(int) $multiple.'&phantom='.(int) $phantom);
-		$out = $I->grabPageSource();
+		$out = $I->grabProbe('act=poll&multiple='.(int) $multiple.'&phantom='.(int) $phantom);
 
 		$matched = preg_match('/POLL_ID=(\d+)/', $out, $m);
 		$I->assertSame(1, $matched, 'the fixture must be able to seed a poll');
@@ -74,9 +72,7 @@ class PollStuffingCest
 	 */
 	private function tallies(AcceptanceTester $I, $pollId)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=votes&id='.$pollId);
-
-		$matched = preg_match('/VOTES=(\S*)/', $I->grabPageSource(), $m);
+		$matched = preg_match('/VOTES=(\S*)/', $I->grabProbe('act=votes&id='.$pollId), $m);
 		$I->assertSame(1, $matched, 'the fixture must be able to read the tallies back');
 
 		$parts = explode(chr(1), base64_decode($m[1]));
@@ -213,7 +209,7 @@ class PollStuffingCest
 
 		return <<<PHP
 <?php
-// Fixture for 0038_PollStuffingCest. Removed again in the Cest's _after().
+// Fixture for 0038_PollStuffingCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

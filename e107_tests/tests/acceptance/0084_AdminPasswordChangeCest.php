@@ -38,16 +38,10 @@ class AdminPasswordChangeCest
 	const MISTYPED = '1e3';
 	const MISTYPED_CONFIRMATION = '1000';
 
-	/** Known only to this run, so the probe answers this Cest and nothing else. */
-	private $probeKey;
-
 	public function _before(AcceptanceTester $I)
 	{
-		$this->probeKey = md5(uniqid('', true));
-
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage($this->probeUrl('setup'));
-		$I->seeInSource('PROBE_OK');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->probe('act=setup');
 
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
@@ -55,9 +49,7 @@ class AdminPasswordChangeCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('teardown'));
-		$I->seeInSource('PROBE_OK');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=teardown');
 	}
 
 	public function theScreenStoresThePasswordThatWasTyped(AcceptanceTester $I)
@@ -150,10 +142,8 @@ class AdminPasswordChangeCest
 	 */
 	private function grabStoredPasswordCheck(AcceptanceTester $I, $password)
 	{
-		$I->amOnPage($this->probeUrl('read').'&pass='.urlencode($password));
-
 		$matches = array();
-		if (!preg_match('/PROBE_OK (.+)/', $I->grabPageSource(), $matches))
+		if (!preg_match('/PROBE_OK (.+)/', $I->grabProbe('act=read&pass='.urlencode($password)), $matches))
 		{
 			throw new RuntimeException('The stored-password probe published nothing.');
 		}
@@ -162,32 +152,17 @@ class AdminPasswordChangeCest
 	}
 
 	/**
-	 * @param string $act
-	 * @return string
-	 */
-	private function probeUrl($act)
-	{
-		return '/'.self::PROBE_FILE.'?key='.$this->probeKey.'&act='.$act;
-	}
-
-	/**
 	 * @return string
 	 */
 	private function probeSource()
 	{
-		return str_replace('%PROBE_KEY%', $this->probeKey, <<<'PHP'
+		return <<<'PHP'
 <?php
-// Fixture for 0084_AdminPasswordChangeCest. Removed again in the Cest's _after().
+// Fixture for 0084_AdminPasswordChangeCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
-
-if(!isset($_GET['key']) || !hash_equals('%PROBE_KEY%', $_GET['key']))
-{
-	echo "not this run\n";
-	return;
-}
 
 $adminId = 1;
 $backupKey = 'e107_tests_admin_password_backup';
@@ -267,7 +242,6 @@ switch($act)
 	default:
 		echo "unknown action\n";
 }
-PHP
-		);
+PHP;
 	}
 }

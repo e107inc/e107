@@ -78,7 +78,7 @@ class AdminConfirmTokenCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->startFollowingRedirects();
 		$this->reset($I);
 	}
@@ -87,7 +87,6 @@ class AdminConfirmTokenCest
 	{
 		$I->startFollowingRedirects();
 		$this->reset($I);
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	// -----------------------------------------------------------------
@@ -159,7 +158,7 @@ class AdminConfirmTokenCest
 		$I->amOnPage(self::ROUTE_PLUGIN_UPLOAD);
 		$I->seeResponseCodeIs(200);
 
-		$token = $this->grabToken($I);
+		$token = $I->grabToken();
 
 		$I->stopFollowingRedirects();
 		$I->sendPostRequest(self::ROUTE_PLUGIN_UPLOAD, array(
@@ -187,7 +186,7 @@ class AdminConfirmTokenCest
 		$I->loginAsAdmin();
 		$I->amOnPage(self::ROUTE_PLUGIN_UPLOAD);
 
-		$token = $this->grabToken($I);
+		$token = $I->grabToken();
 		$confirm = $this->grabConfirmToken($I);
 
 		$I->stopFollowingRedirects();
@@ -226,7 +225,7 @@ class AdminConfirmTokenCest
 		$I->amOnPage(self::ROUTE_THEME_UPLOAD);
 		$I->seeResponseCodeIs(200);
 
-		$token = $this->grabToken($I);
+		$token = $I->grabToken();
 
 		$I->sendPostRequest(self::ROUTE_THEME, array(
 			'upload'        => 1,
@@ -251,7 +250,7 @@ class AdminConfirmTokenCest
 		$I->loginAsAdmin();
 		$I->amOnPage(self::ROUTE_THEME_UPLOAD);
 
-		$token = $this->grabToken($I);
+		$token = $I->grabToken();
 		$confirm = $this->grabConfirmToken($I);
 
 		$I->sendPostRequest(self::ROUTE_THEME, array(
@@ -285,23 +284,8 @@ class AdminConfirmTokenCest
 			'password'        => 'p7ct-Str0ng-Pass',
 			'sendconfemail'   => 0,
 			'ac'              => $this->grabConfirmToken($I),
-			'e-token'         => $this->grabToken($I),
+			'e-token'         => $I->grabToken(),
 		);
-	}
-
-	/**
-	 * @return string the CSRF token on the page currently loaded
-	 */
-	private function grabToken(AcceptanceTester $I)
-	{
-		$matches = array();
-
-		if(!preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', $I->grabPageSource(), $matches))
-		{
-			throw new \RuntimeException('The current page rendered no e-token to post back.');
-		}
-
-		return $matches[1];
 	}
 
 	/**
@@ -326,7 +310,7 @@ class AdminConfirmTokenCest
 	 */
 	private function reset(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=reset');
+		$I->amOnProbe('act=reset');
 
 		$body = $I->grabPageSource();
 
@@ -343,7 +327,7 @@ class AdminConfirmTokenCest
 	{
 		return <<<PHP
 <?php
-// Fixture for 0041_AdminConfirmTokenCest. Removed again in the Cest's _after().
+// Fixture for 0041_AdminConfirmTokenCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

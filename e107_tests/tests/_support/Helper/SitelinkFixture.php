@@ -2,8 +2,6 @@
 
 namespace Helper;
 
-use Codeception\Module as CodeceptionModule;
-
 /**
  * The stored navigation link an acceptance Cest reads, follows and takes back out.
  *
@@ -17,7 +15,7 @@ use Codeception\Module as CodeceptionModule;
  * are what every Cest about a stored logout link asserts on, so they have one home
  * rather than a copy per Cest to keep in step with the markup.
  */
-class SitelinkFixture extends CodeceptionModule
+class SitelinkFixture extends AppFixture
 {
 	/** Navigation » Manage, which carries the delete trigger. */
 	const LIST_PATH = '/e107_admin/links.php?mode=main&action=list';
@@ -99,30 +97,6 @@ class SitelinkFixture extends CodeceptionModule
 	{
 		$this->browser()->amOnPage(self::SETTINGS_PAGE);
 		$this->browser()->seeInCurrentUrl(self::SETTINGS_PAGE);
-	}
-
-	/**
-	 * @return \Helper\Acceptance
-	 */
-	private function app()
-	{
-		return $this->getModule('\Helper\Acceptance');
-	}
-
-	/**
-	 * @return \Codeception\Module\PhpBrowser
-	 */
-	private function browser()
-	{
-		return $this->getModule('PhpBrowser');
-	}
-
-	/**
-	 * @return \Helper\DelayedDb
-	 */
-	private function db()
-	{
-		return $this->getModule('\Helper\DelayedDb');
 	}
 
 	/**

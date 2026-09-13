@@ -37,14 +37,9 @@ class ForumUpgradeSweepCest
 	/** @var string */
 	private $token;
 
-	/** @var string */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled('forum');
-
-		$this->secret = md5(uniqid('forum-sweep', true).mt_rand());
 
 		$I->loginAsAdmin();
 		$this->token = $I->grabForumToken('/e107_plugins/forum/forum.php');
@@ -52,7 +47,6 @@ class ForumUpgradeSweepCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->deleteAppFile(self::DEPRECATED);
 		$I->dropPluginProbe();
 	}
 
@@ -66,10 +60,14 @@ class ForumUpgradeSweepCest
 
 		$I->writeAppFile(self::DEPRECATED, $this->standInSource());
 
+		$I->deleteHeader(\Helper\ProbeGuard::HEADER);
+
 		$I->amOnPage('/'.self::DEPRECATED);
 
 		$I->seeResponseCodeIs(403);
 		$I->dontSeeInSource(self::SURVIVED);
+
+		$I->haveHttpHeader(\Helper\ProbeGuard::HEADER, \Helper\ProbeGuard::secret());
 	}
 
 	/**
@@ -131,7 +129,7 @@ class ForumUpgradeSweepCest
 	 */
 	private function standIn()
 	{
-		return '/'.self::DEPRECATED.'?s='.$this->secret;
+		return '/'.self::DEPRECATED;
 	}
 
 	/**
@@ -154,21 +152,11 @@ class ForumUpgradeSweepCest
 		$source = <<<'PHP'
 <?php
 require_once(__DIR__.'/../../class2.php');
-
-if(!isset($_GET['s']) || !hash_equals('%SECRET%', (string) $_GET['s']))
-{
-	http_response_code(403);
-	echo 'forum-deprecated-file-refused';
-	exit;
-}
+{{E107_TEST_PROBE_GUARD}}
 
 echo '%SURVIVED%';
 PHP;
 
-		return str_replace(
-			array('%SECRET%', '%SURVIVED%'),
-			array($this->secret, self::SURVIVED),
-			$source
-		);
+		return str_replace('%SURVIVED%', self::SURVIVED, $source);
 	}
 }

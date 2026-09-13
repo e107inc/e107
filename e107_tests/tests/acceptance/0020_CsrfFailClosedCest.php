@@ -20,13 +20,12 @@ class CsrfFailClosedCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
 		$this->setMode($I, 2); // e_session::TOKEN_CHECK_ENFORCE, the default
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	public function tokenlessFrontEndPostIsRefused(AcceptanceTester $I)
@@ -48,7 +47,7 @@ class CsrfFailClosedCest
 	{
 		$I->wantTo('Leave GET requests behaving exactly as before');
 
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->seeInSource('PROBE_REACHED');
 	}
@@ -147,7 +146,7 @@ class CsrfFailClosedCest
 	 */
 	private function acquireCookies(AcceptanceTester $I)
 	{
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnProbe();
 		$I->seeInSource('PROBE_REACHED');
 	}
 
@@ -165,7 +164,7 @@ class CsrfFailClosedCest
 	 */
 	private function setMode(AcceptanceTester $I, $mode)
 	{
-		$I->amOnPage('/' . self::PROBE_FILE . '?csrf_probe_mode=' . (int) $mode);
+		$I->amOnProbe('csrf_probe_mode=' . (int) $mode);
 		$I->seeInSource('PROBE_MODE_SET');
 	}
 
@@ -176,7 +175,7 @@ class CsrfFailClosedCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0020_CsrfFailClosedCest. Removed again in the Cest's _after().
+// Fixture for 0020_CsrfFailClosedCest.
 // A GET carrying csrf_probe_mode stores the csrf_enforce preference, so the
 // POST that follows is decided by the same production path an operator uses.
 $_E107['allow_guest'] = true;

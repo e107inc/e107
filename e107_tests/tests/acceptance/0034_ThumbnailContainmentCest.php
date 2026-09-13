@@ -103,7 +103,7 @@ class ThumbnailContainmentCest
 		$I->stopFollowingRedirects();
 		$I->resetAllCookies();
 
-		$I->writeAppFile(self::PROBE, $this->probeSource());
+		$I->haveProbe(self::PROBE, $this->probeSource());
 
 		// Three jobs, one request. e107 bans an address after fifty requests in
 		// a window and every request here arrives from the same bridge address,
@@ -149,7 +149,6 @@ class ThumbnailContainmentCest
 	public function _after(AcceptanceTester $I)
 	{
 		$this->probe($I, 'cleanup');
-		$I->deleteAppFile(self::PROBE);
 	}
 
 	/**
@@ -1541,15 +1540,11 @@ class ThumbnailContainmentCest
 	 */
 	private function probe(AcceptanceTester $I, $act, $params = array())
 	{
-		$query = http_build_query(array_merge(array('act' => $act), $params));
-
-		$I->amOnPage('/'.self::PROBE.'?'.$query);
-
-		$body = $I->grabResponseBody();
+		$body = $I->grabProbe(http_build_query(array_merge(array('act' => $act), $params)));
 
 		if(strpos($body, 'THUMBPROBE_OK') === false)
 		{
-			throw new \RuntimeException('Thumbnail probe failed for "'.$act.'": '.trim(strip_tags($body)));
+			throw new \RuntimeException('Thumbnail probe failed for "'.$act.'": '.strip_tags($body));
 		}
 
 		$env = array();
@@ -1579,7 +1574,7 @@ class ThumbnailContainmentCest
 
 		return <<<PHP
 <?php
-// Fixture for 0034_ThumbnailContainmentCest. Removed again in the Cest's _after().
+// Fixture for 0034_ThumbnailContainmentCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

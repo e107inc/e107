@@ -30,7 +30,7 @@ class SessionRekeyUpgradeCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->loginAsAdmin();
 
 		$I->assertSame(
@@ -39,13 +39,12 @@ class SessionRekeyUpgradeCest
 			'The site has to start with nothing outstanding, or a pending update here proves nothing about the rows this seeds.'
 		);
 
-		$this->probe($I, 'seed&rows='.self::SEEDED_ROWS);
+		$I->probe('act=seed&rows='.self::SEEDED_ROWS);
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->probe($I, 'teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=teardown');
 	}
 
 	public function everySessionKeyedByItsRawIdIsRekeyedInPlace(AcceptanceTester $I)
@@ -58,7 +57,7 @@ class SessionRekeyUpgradeCest
 			'The seeded table has to look like a site that has not been upgraded yet.'
 		);
 
-		$this->probe($I, 'upgrade');
+		$I->probe('act=upgrade');
 
 		$I->assertSame(
 			array('raw' => 0, 'hashed' => self::SEEDED_ROWS, 'intact' => self::SEEDED_ROWS, 'needed' => 0),
@@ -71,8 +70,8 @@ class SessionRekeyUpgradeCest
 	{
 		$I->wantTo('leave the re-keyed sessions alone when the upgrade runs again');
 
-		$this->probe($I, 'upgrade');
-		$this->probe($I, 'upgrade');
+		$I->probe('act=upgrade');
+		$I->probe('act=upgrade');
 
 		$I->assertSame(
 			array('raw' => 0, 'hashed' => self::SEEDED_ROWS, 'intact' => self::SEEDED_ROWS, 'needed' => 0),
@@ -88,33 +87,14 @@ class SessionRekeyUpgradeCest
 	 */
 	private function state(AcceptanceTester $I, $rows)
 	{
-		$body = $this->probe($I, 'state&rows='.$rows);
+		$body = $I->probe('act=state&rows='.$rows);
 
 		if(!preg_match('/PROBE_OK (\{.*\})/', $body, $matches))
 		{
-			throw new RuntimeException('The session probe published no counts: '.trim(strip_tags($body)));
+			throw new RuntimeException('The session probe published no counts: '.strip_tags($body));
 		}
 
 		return json_decode($matches[1], true);
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query probe action and its parameters
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act='.$query);
-
-		$body = $I->grabPageSource();
-
-		if(strpos($body, 'PROBE_OK') === false)
-		{
-			throw new RuntimeException('The session probe failed for "'.$query.'": '.trim(strip_tags($body)));
-		}
-
-		return $body;
 	}
 
 	/**
@@ -124,7 +104,7 @@ class SessionRekeyUpgradeCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0077_SessionRekeyUpgradeCest. Removed again in the Cest's _after().
+// Fixture for 0077_SessionRekeyUpgradeCest.
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');

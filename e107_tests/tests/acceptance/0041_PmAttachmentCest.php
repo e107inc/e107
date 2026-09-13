@@ -65,14 +65,14 @@ class PmAttachmentCest
 		// turn every refusal below into a refusal about the wrong thing.
 		$I->havePluginInstalled(self::PLUGIN);
 
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$this->probe($I, 'act=reset');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->probe('act=reset');
 
 		$this->alice = $I->haveForumMember('pmalice');
 		$this->bob = $I->haveForumMember('pmbob');
 		$this->carol = $I->haveForumMember('pmcarol');
 
-		$body = $this->probe($I, 'act=pm&from='.$this->alice.'&to='.$this->bob
+		$body = $I->probe('act=pm&from='.$this->alice.'&to='.$this->bob
 			.'&body='.urlencode(self::SECRET));
 
 		$this->pmId = (int) $this->grab('/PM_ID=(\d+)/', $body);
@@ -84,7 +84,6 @@ class PmAttachmentCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->deleteAppFile(self::PROBE_FILE);
 		$I->dropPluginInstall(self::PLUGIN);
 		$I->dropPluginProbe();
 	}
@@ -148,7 +147,7 @@ class PmAttachmentCest
 	 */
 	public function aMemberCannotNameAnotherMembersAttachmentInTheirOwnMessage(AcceptanceTester $I)
 	{
-		$body = $this->probe($I, 'act=pm&from='.$this->carol.'&to='.$this->carol
+		$body = $I->probe('act=pm&from='.$this->carol.'&to='.$this->carol
 			.'&fname='.urlencode($this->attachment));
 		$forged = (int) $this->grab('/PM_ID=(\d+)/', $body);
 
@@ -194,7 +193,7 @@ class PmAttachmentCest
 			'e-token'        => $this->formToken($I),
 		));
 
-		$body = $this->probe($I, 'act=lastpm');
+		$body = $I->probe('act=lastpm');
 		$forged = (int) $this->grab('/PM_ID=(\d+)/', $body);
 
 		$I->assertGreaterThan($this->pmId, $forged, 'Carol must have sent a message');
@@ -225,7 +224,7 @@ class PmAttachmentCest
 	 */
 	public function aMemberIsRefusedAnOutboxCopyAddressedToAClassNamedAfterTheirId(AcceptanceTester $I)
 	{
-		$body = $this->probe($I, 'act=pm&from='.$this->alice
+		$body = $I->probe('act=pm&from='.$this->alice
 			.'&to_name='.urlencode($this->carol.' Newsletter')
 			.'&fname='.urlencode($this->attachment));
 		$classRow = (int) $this->grab('/PM_ID=(\d+)/', $body);
@@ -320,24 +319,6 @@ class PmAttachmentCest
 	}
 
 	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.$query);
-		$body = $I->grabPageSource();
-
-		if (strpos($body, 'PROBE_OK') === false)
-		{
-			throw new \RuntimeException('PM fixture probe failed for "'.$query.'": '.trim(strip_tags($body)));
-		}
-
-		return $body;
-	}
-
-	/**
 	 * @param string $pattern
 	 * @param string $body
 	 * @return string
@@ -368,7 +349,7 @@ class PmAttachmentCest
 	{
 		$php = <<<'PHP'
 <?php
-// Fixture for PmAttachmentCest. Written per test, removed in _after().
+// Fixture for PmAttachmentCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

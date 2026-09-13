@@ -47,7 +47,7 @@ class UsersettingsConfirmationPayloadCest
 		$I->wantTo('Refuse a confirmation payload the member rewrote');
 
 		$userId = $this->haveMember($I, 'forge');
-		$this->loginAsMember($I, 'forge');
+		$I->loginAsMember('forge', self::MEMBER_PASS);
 
 		// As the unfixed code vouched for it before the HMAC went in: one constant per
 		// session, so the form's own key validated anything.
@@ -82,7 +82,7 @@ class UsersettingsConfirmationPayloadCest
 		$I->wantTo('Apply the change the member asked for and ignore what the form carried back');
 
 		$userId = $this->haveMember($I, 'ignored');
-		$this->loginAsMember($I, 'ignored');
+		$I->loginAsMember('ignored', self::MEMBER_PASS);
 
 		$token = $this->startEmailChange($I, 'ignored-new@example.test');
 		$fields = $this->confirmationFields($I);
@@ -109,7 +109,7 @@ class UsersettingsConfirmationPayloadCest
 		$I->wantTo('Refuse a confirmation that is not the change now waiting');
 
 		$userId = $this->haveMember($I, 'displaced');
-		$this->loginAsMember($I, 'displaced');
+		$I->loginAsMember('displaced', self::MEMBER_PASS);
 
 		$this->startEmailChange($I, 'displaced-first@example.test');
 		$first = $this->confirmationFields($I);
@@ -145,7 +145,7 @@ class UsersettingsConfirmationPayloadCest
 		$I->wantTo('Refuse a confirmation the server has nothing pending for');
 
 		$userId = $this->haveMember($I, 'nothingheld');
-		$this->loginAsMember($I, 'nothingheld');
+		$I->loginAsMember('nothingheld', self::MEMBER_PASS);
 
 		$this->startEmailChange($I, 'nothingheld-new@example.test');
 		$fields = $this->confirmationFields($I);
@@ -177,9 +177,10 @@ class UsersettingsConfirmationPayloadCest
 		$I->wantTo('Refuse a confirmation the member invented rather than asked for');
 
 		$userId = $this->haveMember($I, 'coldpost');
-		$this->loginAsMember($I, 'coldpost');
+		$I->loginAsMember('coldpost', self::MEMBER_PASS);
 
-		$token = $this->grabToken($I);
+		$I->amOnPage('/usersettings.php');
+		$token = $I->grabToken();
 
 		$I->sendPostRequest('/usersettings.php', array(
 			'SaveValidatedInfo' => '1',
@@ -206,7 +207,7 @@ class UsersettingsConfirmationPayloadCest
 		$I->wantTo('Report a confirmed change the database refused');
 
 		$userId = $this->haveMember($I, 'failedwrite');
-		$this->loginAsMember($I, 'failedwrite');
+		$I->loginAsMember('failedwrite', self::MEMBER_PASS);
 
 		$this->startEmailChange($I, 'failedwrite-new@example.test', array('username' => 'takenname'));
 		$fields = $this->confirmationFields($I);
@@ -284,7 +285,8 @@ class UsersettingsConfirmationPayloadCest
 	 */
 	private function startEmailChange(AcceptanceTester $I, $email, array $extra = array())
 	{
-		$token = $this->grabToken($I);
+		$I->amOnPage('/usersettings.php');
+		$token = $I->grabToken();
 
 		$I->sendPostRequest('/usersettings.php', array_merge(array(
 			'email'          => $email,
@@ -347,57 +349,17 @@ class UsersettingsConfirmationPayloadCest
 
 	/**
 	 * @param AcceptanceTester $I
-	 * @return string
-	 */
-	private function grabToken(AcceptanceTester $I)
-	{
-		$I->amOnPage('/usersettings.php');
-
-		$matches = array();
-		$found = preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', $I->grabPageSource(), $matches);
-		$I->assertNotEmpty($found, 'usersettings.php renders an e-token');
-
-		return $matches[1];
-	}
-
-	/**
-	 * @param AcceptanceTester $I
 	 * @param string $name
 	 * @param string $displayName
 	 * @return int
 	 */
 	private function haveMember(AcceptanceTester $I, $name, $displayName = self::MEMBER)
 	{
-		return $I->haveInDatabase('e107_user', array(
-			'user_name'      => $displayName,
-			'user_loginname' => $name,
-			'user_login'     => $name,
-			'user_password'  => password_hash(self::MEMBER_PASS, PASSWORD_DEFAULT),
-			'user_email'     => $name . '@example.test',
-			'user_join'      => time(),
-			'user_ban'       => 0,
-			'user_admin'     => 0,
-			'user_class'     => '',
-			'user_perms'     => '',
-			'user_prefs'     => '',
-			'user_signature' => '',
-			'user_realm'     => '',
-			'user_xup'       => '',
+		return $I->haveMember($name, self::MEMBER_PASS, array(
+			'user_name'     => $displayName,
+			'user_password' => password_hash(self::MEMBER_PASS, PASSWORD_DEFAULT),
+			'user_email'    => $name . '@example.test',
+			'user_class'    => '',
 		));
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 */
-	private function loginAsMember(AcceptanceTester $I, $name)
-	{
-		$I->resetAllCookies();
-		$I->amOnPage('/login.php');
-		$I->fillField('username', $name);
-		$I->fillField('userpass', self::MEMBER_PASS);
-		$I->click('userlogin');
-		$I->amOnPage('/usersettings.php');
-		$I->seeInSource($name);
 	}
 }

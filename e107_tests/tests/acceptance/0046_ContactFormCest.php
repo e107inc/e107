@@ -70,15 +70,14 @@ class ContactFormCest
 		$this->bannedId = $this->seedUser($I, 'p6cban'.$suffix, $this->bannedEmail,
 			(string) self::CONTACT_CLASS, 1);
 
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=setup');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->amOnProbe('act=setup');
 		$I->seeInSource('PROBE_OK');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->amOnProbe('act=teardown');
 	}
 
 	/**
@@ -107,18 +106,6 @@ class ContactFormCest
 	}
 
 	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.$query);
-
-		return $I->grabPageSource();
-	}
-
-	/**
 	 * A CAPTCHA answer that the application will accept.
 	 *
 	 * The answer is held in the visitor's session against the public code, so
@@ -132,7 +119,7 @@ class ContactFormCest
 	 */
 	private function captcha(AcceptanceTester $I)
 	{
-		$out = $this->probe($I, 'act=captcha');
+		$out = $I->grabProbe('act=captcha');
 
 		preg_match('/RAND=(\S+)/', $out, $rand);
 		preg_match('/CODE=(\S+)/', $out, $code);
@@ -194,7 +181,7 @@ class ContactFormCest
 		$matched = preg_match('/name=[\'"]rand_num[\'"] value=[\'"]([^\'"]+)[\'"]/', $source, $m);
 		$I->assertSame(1, $matched, 'the rendered form must carry a rand_num field');
 
-		$out = $this->probe($I, 'act=captchasecret&rand='.urlencode($m[1]));
+		$out = $I->grabProbe('act=captchasecret&rand='.urlencode($m[1]));
 
 		preg_match('/CODE=(\S+)/', $out, $code);
 
@@ -210,7 +197,7 @@ class ContactFormCest
 	 */
 	private function mailLog(AcceptanceTester $I)
 	{
-		return $this->probe($I, 'act=maillog');
+		return $I->grabProbe('act=maillog');
 	}
 
 	/**
@@ -233,7 +220,7 @@ class ContactFormCest
 	{
 		$I->wantTo('refuse a contact message addressed to a user the selector never offered');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		foreach(array($this->unlistedId => $this->unlistedEmail, $this->bannedId => $this->bannedEmail) as $id => $email)
 		{
@@ -261,7 +248,7 @@ class ContactFormCest
 	{
 		$I->wantTo('keep delivering a contact message to a listed contact');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$ids = array_keys($this->listed);
 		$id = $ids[0];
@@ -304,7 +291,7 @@ class ContactFormCest
 		$I->wantTo('refuse a contact submission that presents no CSRF token at all');
 
 		$captcha = $this->captcha($I);
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$I->resetAllCookies();
 		$I->sendPostRequest('/contact.php', array_merge($this->submission(), $captcha));
@@ -329,10 +316,10 @@ class ContactFormCest
 		// 0 off, 2 token enforced, 4 same-site, which is CSRF_CHECK_RECOMMENDED.
 		foreach(array(0, 2, 4) as $mode)
 		{
-			$this->probe($I, 'act=csrf&m='.$mode);
+			$I->probe('act=csrf&m='.$mode);
 
 			$captcha = $this->captcha($I);
-			$this->probe($I, 'act=clearmaillog');
+			$I->probe('act=clearmaillog');
 
 			$I->resetAllCookies();
 			$I->haveHttpHeader('X-Forwarded-Proto', 'https');
@@ -343,7 +330,7 @@ class ContactFormCest
 				'a cookieless, tokenless POST must not reach the mailer in csrf_enforce mode '.$mode);
 		}
 
-		$this->probe($I, 'act=csrf&m=default');
+		$I->probe('act=csrf&m=default');
 	}
 
 	/**
@@ -355,8 +342,8 @@ class ContactFormCest
 	{
 		$I->wantTo('keep a real browser sending contact mail in the recommended CSRF mode');
 
-		$this->probe($I, 'act=csrf&m=4');
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=csrf&m=4');
+		$I->probe('act=clearmaillog');
 
 		$I->haveHttpHeader('X-Forwarded-Proto', 'https');
 		$I->amOnPage('/contact.php');
@@ -369,7 +356,7 @@ class ContactFormCest
 		$I->deleteHeader('X-Forwarded-Proto');
 
 		$log = $this->mailLog($I);
-		$this->probe($I, 'act=csrf&m=default');
+		$I->probe('act=csrf&m=default');
 
 		$I->assertStringContainsString('Mail-ID=', $log,
 			'a submission the browser vouched for must still be delivered');
@@ -384,7 +371,7 @@ class ContactFormCest
 	{
 		$I->wantTo('put the CAPTCHA into a contact form whose template leaves it out');
 
-		$menu = $this->probe($I, 'act=menu');
+		$menu = $I->grabProbe('act=menu');
 
 		$I->assertNotFalse(strpos($menu, "name='rand_num'"),
 			'the contact menu must carry the CAPTCHA token its handler requires');
@@ -404,7 +391,7 @@ class ContactFormCest
 	{
 		$I->wantTo('leave a form alone when a plugin has already put its CAPTCHA on it');
 
-		$out = $this->probe($I, 'act=overridden');
+		$out = $I->grabProbe('act=overridden');
 
 		preg_match('/WIDGETS=(\d+)/', $out, $m);
 
@@ -421,7 +408,7 @@ class ContactFormCest
 	{
 		$I->wantTo('give every form on the page its own CAPTCHA');
 
-		$menu = $this->probe($I, 'act=formthenmenu');
+		$menu = $I->grabProbe('act=formthenmenu');
 
 		$I->assertNotFalse(strpos($menu, "name='code_verify'"),
 			'the contact menu must carry the CAPTCHA answer field its handler requires');
@@ -438,7 +425,7 @@ class ContactFormCest
 	{
 		$I->wantTo('append a CAPTCHA to every form on the page that needs one');
 
-		$out = $this->probe($I, 'act=menutwice');
+		$out = $I->grabProbe('act=menutwice');
 
 		preg_match('/TOKENS=(\d+)/', $out, $m);
 
@@ -455,7 +442,7 @@ class ContactFormCest
 	{
 		$I->wantTo('keep the contact form a visitor is served submittable as rendered');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$I->amOnPage('/contact.php');
 		$source = $I->grabPageSource();
@@ -478,7 +465,7 @@ class ContactFormCest
 	{
 		$I->wantTo('refuse a contact submission that simply omits the CAPTCHA field');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$token = $this->openFormAndGrabToken($I);
 		$I->sendPostRequest('/contact.php',
@@ -500,7 +487,7 @@ class ContactFormCest
 		$captcha = $this->captcha($I);
 		$captcha['code_verify'] = 'definitely-not-the-code';
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$token = $this->openFormAndGrabToken($I);
 		$I->sendPostRequest('/contact.php',
@@ -517,8 +504,8 @@ class ContactFormCest
 	{
 		$I->wantTo('refuse a contact submission from a visitor who is not shown the form');
 
-		$this->probe($I, 'act=visibility&v=253'); // members only
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=visibility&v=253'); // members only
+		$I->probe('act=clearmaillog');
 
 		// Everything a member's submission would carry, from a guest.
 		$token = $this->openFormAndGrabToken($I);
@@ -526,7 +513,7 @@ class ContactFormCest
 		$I->sendPostRequest('/contact.php', $post);
 
 		$log = $this->mailLog($I);
-		$this->probe($I, 'act=visibility&v=0');
+		$I->probe('act=visibility&v=0');
 
 		$I->assertStringNotContainsString('Mail-ID=', $log,
 			'a guest must not send mail through a members-only contact form');
@@ -540,7 +527,7 @@ class ContactFormCest
 	{
 		$I->wantTo('keep a complete guest submission working on a public contact form');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$token = $this->openFormAndGrabToken($I);
 		$post = array_merge($this->submission(), $this->captcha($I), array('e-token' => $token));
@@ -557,7 +544,7 @@ class ContactFormCest
 	{
 		$I->wantTo('find the sender address in the contact message as delivered');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$token = $this->openFormAndGrabToken($I);
 		$submission = $this->submission();
@@ -591,7 +578,7 @@ class ContactFormCest
 	{
 		$I->wantTo('read a contact message as what was typed rather than as markup');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$token = $this->openFormAndGrabToken($I);
 		$post = array_merge($this->submission(), $this->captcha($I), array(
@@ -631,7 +618,7 @@ class ContactFormCest
 
 		return <<<PHP
 <?php
-// Fixture for 0035_ContactFormCest. Removed again in the Cest's _after().
+// Fixture for 0035_ContactFormCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

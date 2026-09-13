@@ -44,7 +44,7 @@ class FaqsAnonymousWriteCest
 	public function _before(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled('faqs');
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 	}
 
 	public function _after(AcceptanceTester $I)
@@ -52,7 +52,6 @@ class FaqsAnonymousWriteCest
 		$this->haveCsrfMode($I, 'default');
 		$I->dropPluginInstall('faqs');
 		$I->dropPluginProbe();
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	/**
@@ -199,7 +198,7 @@ class FaqsAnonymousWriteCest
 	 */
 	private function havePermissions(AcceptanceTester $I, $class)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=prefs&add='.(int) $class.'&ask='.(int) $class);
+		$I->amOnProbe('act=prefs&add='.(int) $class.'&ask='.(int) $class);
 		$I->seeInSource('PROBE_OK');
 	}
 
@@ -210,7 +209,7 @@ class FaqsAnonymousWriteCest
 	 */
 	private function haveCsrfMode(AcceptanceTester $I, $mode)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=csrf&mode='.urlencode($mode));
+		$I->amOnProbe('act=csrf&mode='.urlencode($mode));
 		$I->seeInSource('PROBE_OK');
 	}
 
@@ -235,7 +234,7 @@ class FaqsAnonymousWriteCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for FaqsAnonymousWriteCest. Written per test, removed in _after().
+// Fixture for FaqsAnonymousWriteCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

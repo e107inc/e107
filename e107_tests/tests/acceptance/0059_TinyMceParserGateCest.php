@@ -41,8 +41,8 @@ class TinyMceParserGateCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=reset');
+		$I->haveProbe(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
+		$I->amOnProbe('p8=reset');
 		$I->see('P8_OK reset');
 		$I->stopFollowingRedirects();
 	}
@@ -50,8 +50,7 @@ class TinyMceParserGateCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=cleanup');
-		$I->deleteAppFile(\Helper\P8Fixture::PROBE_FILE);
+		$I->amOnProbe('p8=cleanup');
 	}
 
 	/**
@@ -192,8 +191,7 @@ class TinyMceParserGateCest
 	private function grabProbeToken(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=constants');
-		$source = $I->grabPageSource();
+		$source = $I->grabProbe('p8=constants');
 		$I->stopFollowingRedirects();
 
 		$matches = array();
@@ -225,14 +223,9 @@ class TinyMceParserGateCest
 	private function loginAsMember(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=member');
+		$I->amOnProbe('p8=member');
 		$I->see('P8_OK member');
-
-		$I->resetAllCookies();
-		$I->amOnPage('/login.php');
-		$I->fillField('username', \Helper\P8Fixture::MEMBER_NAME);
-		$I->fillField('userpass', \Helper\P8Fixture::MEMBER_PASS);
-		$I->click('userlogin');
+		$I->loginAsMember(\Helper\P8Fixture::MEMBER_NAME, \Helper\P8Fixture::MEMBER_PASS);
 		$I->stopFollowingRedirects();
 	}
 }

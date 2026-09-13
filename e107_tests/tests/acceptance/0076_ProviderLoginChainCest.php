@@ -35,8 +35,8 @@ class ProviderLoginChainCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$this->linkedId = $this->haveMember($I, 'xuplinked', self::LINKED_XUP);
-		$this->plainId  = $this->haveMember($I, 'xupplain', '');
+		$this->linkedId = $I->haveMember('xuplinked', self::MEMBER_PASS, array('user_xup' => self::LINKED_XUP));
+		$this->plainId  = $I->haveMember('xupplain', self::MEMBER_PASS, array('user_xup' => ''));
 	}
 
 	public function _after(AcceptanceTester $I)
@@ -96,7 +96,7 @@ class ProviderLoginChainCest
 	{
 		$I->wantTo('Refuse a posted user_xup on a profile update (GHSA-m8v8-wc99-3h82)');
 
-		$this->loginAsMember($I, 'xuplinked');
+		$I->loginAsMember('xuplinked', self::MEMBER_PASS);
 		$this->saveProfile($I, $this->linkedId, array('user_xup' => self::CHOSEN_XUP));
 
 		$I->seeInDatabase('e107_user', array('user_id' => $this->linkedId, 'user_xup' => self::LINKED_XUP));
@@ -111,7 +111,7 @@ class ProviderLoginChainCest
 	{
 		$I->wantTo('Save a profile update that also carries a rejected user_xup');
 
-		$this->loginAsMember($I, 'xupplain');
+		$I->loginAsMember('xupplain', self::MEMBER_PASS);
 		$this->saveProfile($I, $this->plainId, array(
 			'realname' => 'Legitimate Real Name',
 			'user_xup' => self::CHOSEN_XUP,
@@ -120,28 +120,6 @@ class ProviderLoginChainCest
 		$I->seeInDatabase('e107_user', array(
 			'user_id'    => $this->plainId,
 			'user_login' => 'Legitimate Real Name',
-		));
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 * @param string $xup
-	 * @return int user id
-	 */
-	private function haveMember(AcceptanceTester $I, $name, $xup)
-	{
-		// Plain md5: UserHandler::getHashType() reads any 32 character hash as
-		// PASSWORD_E107_MD5 whatever the site's configured encoding is.
-		return $I->haveInDatabase('e107_user', array(
-			'user_name' => $name, 'user_loginname' => $name, 'user_login' => $name,
-			'user_password' => md5(self::MEMBER_PASS),
-			'user_email' => $name.'@example.com',
-			'user_join' => time(), 'user_ban' => 0,
-			'user_lastvisit' => time() - 86400, 'user_currentvisit' => time() - 86400,
-			'user_class' => '253',
-			'user_admin' => 0, 'user_perms' => '',
-			'user_prefs' => '', 'user_signature' => '', 'user_realm' => '', 'user_xup' => $xup,
 		));
 	}
 
@@ -164,18 +142,6 @@ class ProviderLoginChainCest
 			'e-token'   => $token,
 		));
 		$I->startFollowingRedirects();
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 */
-	private function loginAsMember(AcceptanceTester $I, $name)
-	{
-		$I->amOnPage('/login.php');
-		$I->fillField('username', $name);
-		$I->fillField('userpass', self::MEMBER_PASS);
-		$I->click('userlogin');
 	}
 
 	/**
@@ -226,12 +192,7 @@ class ProviderLoginChainCest
 	{
 		$I->amOnPage($page);
 
-		if (!preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', $I->grabPageSource(), $m))
-		{
-			throw new \RuntimeException('No e-token published on '.$page);
-		}
-
-		return $m[1];
+		return $I->grabToken();
 	}
 
 	/**

@@ -78,7 +78,7 @@ class ThemeHandlerFrontEndCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->startFollowingRedirects();
 		$this->otherTheme = null;
 		$this->reset($I);
@@ -88,7 +88,6 @@ class ThemeHandlerFrontEndCest
 	{
 		$I->startFollowingRedirects();
 		$this->reset($I);
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	/**
@@ -208,7 +207,7 @@ class ThemeHandlerFrontEndCest
 			'admincss'          => self::LEGITIMATE_ADMINCSS,
 			'adminstyle'        => 'p7th-legitimate',
 			'adminpref'         => 1,
-			'e-token'           => $this->grabToken($I),
+			'e-token'           => $I->grabToken(),
 		));
 
 		$after = $this->dump($I);
@@ -250,13 +249,12 @@ class ThemeHandlerFrontEndCest
 			return $this->otherTheme;
 		}
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=themes');
-		$body = $I->grabPageSource();
+		$body = $I->grabProbe('act=themes');
 		$matches = array();
 
 		if(!preg_match('/PROBE_SITETHEME=(\S*)\s+PROBE_THEMES=(\S*)/', $body, $matches))
 		{
-			throw new \RuntimeException('The probe reported no theme list: '.trim(strip_tags($body)));
+			throw new \RuntimeException('The probe reported no theme list: '.strip_tags($body));
 		}
 
 		foreach(explode(',', $matches[2]) as $theme)
@@ -281,12 +279,7 @@ class ThemeHandlerFrontEndCest
 	 */
 	private function allowMemberThemeSelect(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=allow');
-
-		if(strpos($I->grabPageSource(), 'PROBE_OK') === false)
-		{
-			throw new \RuntimeException('Could not open allow_theme_select to members.');
-		}
+		$I->probe('act=allow');
 	}
 
 	/**
@@ -320,9 +313,7 @@ class ThemeHandlerFrontEndCest
 			'e-token'   => $this->grabSessionToken($I),
 		));
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
-
-		$I->assertStringContainsString('PROBE_USER='.$memberId, $I->grabPageSource(),
+		$I->assertStringContainsString('PROBE_USER='.$memberId, $I->grabProbe('act=whoami'),
 			'The member did not sign in, so every assertion below would pass against a logged-out '
 			.'session that never reaches the theme handler at all.');
 
@@ -334,14 +325,12 @@ class ThemeHandlerFrontEndCest
 	 */
 	private function dump(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=dump');
-
-		$body = $I->grabPageSource();
+		$body = $I->grabProbe('act=dump');
 		$matches = array();
 
 		if(!preg_match('/PROBE_DUMP(.*)PROBE_END/s', $body, $matches))
 		{
-			throw new \RuntimeException('Fixture dump failed: '.trim(strip_tags($body)));
+			throw new \RuntimeException('Fixture dump failed: '.strip_tags($body));
 		}
 
 		$decoded = json_decode(trim($matches[1]), true);
@@ -355,22 +344,6 @@ class ThemeHandlerFrontEndCest
 	}
 
 	/**
-	 * @return string the CSRF token on the page currently loaded
-	 */
-	private function grabToken(AcceptanceTester $I)
-	{
-		$source = $I->grabPageSource();
-		$matches = array();
-
-		if(!preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', $source, $matches))
-		{
-			throw new \RuntimeException('The current page rendered no e-token to post back.');
-		}
-
-		return $matches[1];
-	}
-
-	/**
 	 * The front page renders no form of its own on a default install, so the
 	 * session's token is read from the application rather than scraped.
 	 *
@@ -381,11 +354,9 @@ class ThemeHandlerFrontEndCest
 	 */
 	private function grabSessionToken(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=token');
-
 		$matches = array();
 
-		if(!preg_match('/PROBE_TOKEN=(\S+)/', $I->grabPageSource(), $matches))
+		if(!preg_match('/PROBE_TOKEN=(\S+)/', $I->grabProbe('act=token'), $matches))
 		{
 			throw new \RuntimeException('The probe reported no session token.');
 		}
@@ -399,14 +370,7 @@ class ThemeHandlerFrontEndCest
 	 */
 	private function reset(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=reset');
-
-		$body = $I->grabPageSource();
-
-		if(strpos($body, 'PROBE_OK') === false)
-		{
-			throw new \RuntimeException('Fixture reset failed: '.trim(strip_tags($body)));
-		}
+		$I->probe('act=reset');
 	}
 
 	/**
@@ -416,7 +380,7 @@ class ThemeHandlerFrontEndCest
 	{
 		return <<<PHP
 <?php
-// Fixture for 0042_ThemeHandlerFrontEndCest. Removed again in the Cest's _after().
+// Fixture for 0042_ThemeHandlerFrontEndCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

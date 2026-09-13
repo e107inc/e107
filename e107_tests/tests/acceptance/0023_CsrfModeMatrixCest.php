@@ -32,14 +32,14 @@ class CsrfModeMatrixCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 
 		// Each test here makes a dozen or so requests in quick succession, and
 		// e107 bans an address at fifty. Left alone the suite bans itself part
 		// way through and every later request comes back empty. Localhost is
 		// exempt, but the client address inside the container is the bridge, so
 		// the counter is reset per test rather than the protection turned off.
-		$I->amOnPage('/' . self::PROBE_FILE . '?csrf_matrix_reset=1');
+		$I->amOnProbe('csrf_matrix_reset=1');
 		$I->seeInSource('RESET_DONE');
 
 		// Present every request as a TLS terminating proxy would.
@@ -58,7 +58,6 @@ class CsrfModeMatrixCest
 	public function _after(AcceptanceTester $I)
 	{
 		$this->setMode($I, 'default');
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	/**
@@ -304,10 +303,10 @@ class CsrfModeMatrixCest
 		{
 			$this->setMode($I, $mode);
 
-			$I->amOnPage('/' . self::PROBE_FILE . '?e-token=any-non-empty-string');
+			$I->amOnProbe('e-token=any-non-empty-string');
 			$I->seeInSource('Unauthorized access!');
 
-			$I->amOnPage('/' . self::PROBE_FILE . '?e-token=' . $this->grabToken($I));
+			$I->amOnProbe('e-token=' . $this->grabToken($I));
 			$I->seeInSource('PROBE_REACHED');
 		}
 
@@ -316,11 +315,11 @@ class CsrfModeMatrixCest
 			$this->setMode($I, $mode);
 
 			$I->deleteHeader('Sec-Fetch-Site');
-			$I->amOnPage('/' . self::PROBE_FILE . '?e-token=any-non-empty-string');
+			$I->amOnProbe('e-token=any-non-empty-string');
 			$I->seeInSource('Unauthorized access!');
 
 			$I->haveHttpHeader('Sec-Fetch-Site', 'same-origin');
-			$I->amOnPage('/' . self::PROBE_FILE . '?e-token=any-non-empty-string');
+			$I->amOnProbe('e-token=any-non-empty-string');
 			$I->seeInSource('PROBE_REACHED');
 			$I->deleteHeader('Sec-Fetch-Site');
 		}
@@ -339,7 +338,7 @@ class CsrfModeMatrixCest
 		// first. It also resets any header left over from the previous call.
 		$I->deleteHeader('Sec-Fetch-Site');
 		$I->deleteHeader('Origin');
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnProbe();
 
 		if($secFetchSite !== null)
 		{
@@ -363,7 +362,7 @@ class CsrfModeMatrixCest
 	{
 		$I->deleteHeader('Sec-Fetch-Site');
 		$I->deleteHeader('Origin');
-		$I->amOnPage('/' . self::PROBE_FILE . '?csrf_matrix_mode=' . $mode);
+		$I->amOnProbe('csrf_matrix_mode=' . $mode);
 		$I->seeInSource('MODE_SET');
 	}
 
@@ -373,11 +372,9 @@ class CsrfModeMatrixCest
 	 */
 	private function grabToken(AcceptanceTester $I)
 	{
-		$I->amOnPage('/' . self::PROBE_FILE);
-
 		// A guest's token is a JWT on master and an md5 on release/v2.3.x, so this
 		// accepts base64url and the dots that separate a JWT's three parts.
-		if(!preg_match('/TOKEN:([A-Za-z0-9._-]+)/', $I->grabPageSource(), $matches))
+		if(!preg_match('/TOKEN:([A-Za-z0-9._-]+)/', $I->grabProbe(), $matches))
 		{
 			throw new \RuntimeException('The probe did not publish a token');
 		}
@@ -391,9 +388,7 @@ class CsrfModeMatrixCest
 	 */
 	private function ourOrigin(AcceptanceTester $I)
 	{
-		$I->amOnPage('/' . self::PROBE_FILE);
-
-		if(!preg_match('/HOST:(\S+)/', $I->grabPageSource(), $matches))
+		if(!preg_match('/HOST:(\S+)/', $I->grabProbe(), $matches))
 		{
 			throw new \RuntimeException('The probe did not publish its host');
 		}
@@ -408,7 +403,7 @@ class CsrfModeMatrixCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0023_CsrfModeMatrixCest. Removed again in the Cest's _after().
+// Fixture for 0023_CsrfModeMatrixCest.
 // A GET carrying csrf_matrix_mode stores the csrf_enforce preference, so the
 // POST that follows is decided by the same production path an operator uses.
 // 'default' removes it, which is how the recommended setting is stored.

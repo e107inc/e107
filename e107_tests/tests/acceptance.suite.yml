@@ -24,3 +24,5 @@ modules:
         - \Helper\MenuPrefFixture:
         - \Helper\SitelinkFixture:
         - \Helper\ThemeFixture:
+        - \Helper\Probe:
+        - \Helper\MemberFixture:

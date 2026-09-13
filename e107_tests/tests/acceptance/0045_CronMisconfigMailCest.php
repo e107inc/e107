@@ -36,40 +36,14 @@ class CronMisconfigMailCest
 	{
 		$this->marker = 'P6CRONMARKER'.uniqid('', false);
 
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=setup');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->amOnProbe('act=setup');
 		$I->seeInSource('PROBE_OK');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.$query);
-
-		return $I->grabPageSource();
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return array|null the JSON the probe printed after PROBE_OK
-	 */
-	private function probeJson(AcceptanceTester $I, $query)
-	{
-		$out = $this->probe($I, $query);
-		$json = trim((string) substr($out, strpos($out, "\n")));
-
-		return json_decode($json, true);
+		$I->amOnProbe('act=teardown');
 	}
 
 	/**
@@ -82,17 +56,17 @@ class CronMisconfigMailCest
 	{
 		$I->wantTo('stop an anonymous caller mailing the site owner the server environment on demand');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$burst = 6;
 		for($i = 0; $i < $burst; $i++)
 		{
-			$out = $this->probe($I, 'act=validate&token='.$this->marker);
+			$out = $I->grabProbe('act=validate&token='.$this->marker);
 			$I->assertStringContainsString('VALIDATE=0', $out,
 				'the wrong token must not validate (request '.($i + 1).')');
 		}
 
-		$log = $this->probe($I, 'act=maillog');
+		$log = $I->grabProbe('act=maillog');
 
 		$I->assertSame(array(), $this->mailProblems($log, $burst),
 			"cron misconfiguration mail, after $burst anonymous requests with the wrong token:\n  - "
@@ -149,12 +123,12 @@ class CronMisconfigMailCest
 	{
 		$I->wantTo('keep a correctly configured cron working silently');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
-		$out = $this->probe($I, 'act=validate&token='.$this->cronPassword());
+		$out = $I->grabProbe('act=validate&token='.$this->cronPassword());
 		$I->assertStringContainsString('VALIDATE=1', $out, 'the configured token must validate');
 
-		$log = $this->probe($I, 'act=maillog');
+		$log = $I->grabProbe('act=maillog');
 		$I->assertSame(0, substr_count($log, 'Mail-ID='),
 			'a cron run with the right token must mail nobody');
 	}
@@ -163,7 +137,7 @@ class CronMisconfigMailCest
 	{
 		$I->wantTo('run the scheduled tasks from a web request that carries the token');
 
-		$this->probe($I, 'act=unlinkstamp');
+		$I->probe('act=unlinkstamp');
 
 		$I->amOnPage('/cron.php?token='.$this->cronPassword());
 		$I->seeResponseCodeIs(200);
@@ -171,10 +145,10 @@ class CronMisconfigMailCest
 		$I->assertStringContainsString('no-store', $I->grabHttpHeader('Cache-Control'));
 		$I->assertSame("OK\n", $I->grabResponseBody());
 
-		$I->assertStringContainsString('STAMP=1', $this->probe($I, 'act=stamp'),
+		$I->assertStringContainsString('STAMP=1', $I->grabProbe('act=stamp'),
 			'an accepted web request must reach the scheduler');
 
-		$run = $this->probeJson($I, 'act=lastrun');
+		$run = $I->grabProbeJson('act=lastrun');
 		$I->assertSame('http', $run['via']);
 	}
 
@@ -182,9 +156,9 @@ class CronMisconfigMailCest
 	{
 		$I->wantTo('refuse a wrong token over HTTP without saying anything useful to the caller');
 
-		$this->probe($I, 'act=clearmaillog');
-		$this->probe($I, 'act=clearrefusals');
-		$this->probe($I, 'act=unlinkstamp');
+		$I->probe('act=clearmaillog');
+		$I->probe('act=clearrefusals');
+		$I->probe('act=unlinkstamp');
 
 		$burst = 6;
 		for($i = 0; $i < $burst; $i++)
@@ -197,14 +171,14 @@ class CronMisconfigMailCest
 			$I->assertStringNotContainsString('OK', $body);
 		}
 
-		$I->assertStringContainsString('STAMP=0', $this->probe($I, 'act=stamp'),
+		$I->assertStringContainsString('STAMP=0', $I->grabProbe('act=stamp'),
 			'a refused request must not reach the scheduler');
 
-		$log = $this->probe($I, 'act=maillog');
+		$log = $I->grabProbe('act=maillog');
 		$I->assertSame(array(), $this->mailProblems($log, $burst),
 			"after $burst wrong-token web requests:\n  - ".implode("\n  - ", $this->mailProblems($log, $burst))."\n");
 
-		$refusal = $this->probeJson($I, 'act=refusal');
+		$refusal = $I->grabProbeJson('act=refusal');
 		$I->assertNotNull($refusal, 'the refusals must be recorded for the admin page');
 		$I->assertGreaterThanOrEqual($burst, $refusal['count']);
 		$I->assertSame('wrong', $refusal['token']);
@@ -215,17 +189,17 @@ class CronMisconfigMailCest
 	{
 		$I->wantTo('refuse a request with no token at all, silently');
 
-		$this->probe($I, 'act=clearmaillog');
-		$this->probe($I, 'act=clearrefusals');
+		$I->probe('act=clearmaillog');
+		$I->probe('act=clearrefusals');
 
 		$I->amOnPage('/cron.php');
 		$I->seeResponseCodeIs(403);
 		$I->assertStringNotContainsString($this->cronPassword(), $I->grabResponseBody());
 
-		$log = $this->probe($I, 'act=maillog');
+		$log = $I->grabProbe('act=maillog');
 		$I->assertSame(0, substr_count($log, 'Mail-ID='), 'a request without a token is noise, not a misconfiguration');
 
-		$refusal = $this->probeJson($I, 'act=refusal');
+		$refusal = $I->grabProbeJson('act=refusal');
 		$I->assertSame('missing', $refusal['token']);
 	}
 
@@ -233,7 +207,7 @@ class CronMisconfigMailCest
 	{
 		$I->wantTo('keep cron.php runnable from the command line');
 
-		$out = $this->probe($I, 'act=cli&token='.$this->cronPassword());
+		$out = $I->grabProbe('act=cli&token='.$this->cronPassword());
 
 		$I->assertStringContainsString('CLI_STATUS=0', $out,
 			'a command line run must finish, and within its timeout');
@@ -242,7 +216,7 @@ class CronMisconfigMailCest
 		$I->assertStringNotContainsString('OK', (string) substr($out, strpos($out, 'CLI_OUT:')),
 			'a command line run does not print the HTTP answer');
 
-		$run = $this->probeJson($I, 'act=lastrun');
+		$run = $I->grabProbeJson('act=lastrun');
 		$I->assertSame('cli', $run['via']);
 	}
 
@@ -250,8 +224,8 @@ class CronMisconfigMailCest
 	{
 		$I->wantTo('tell a crontab that its token was refused through the exit status');
 
-		$this->probe($I, 'act=clearmaillog');
-		$out = $this->probe($I, 'act=cli&token='.$this->marker);
+		$I->probe('act=clearmaillog');
+		$out = $I->grabProbe('act=cli&token='.$this->marker);
 
 		$I->assertStringContainsString('CLI_STATUS=1', $out);
 		$I->assertStringContainsString('CLI_RAN=0', $out);
@@ -269,13 +243,13 @@ class CronMisconfigMailCest
 	{
 		$I->wantTo('answer as a web request whenever the environment says a web server sent it');
 
-		$out = $this->probe($I, 'act=cli&env=1&token='.$this->cronPassword());
+		$out = $I->grabProbe('act=cli&env=1&token='.$this->cronPassword());
 
 		$I->assertStringContainsString('CLI_RAN=1', $out, 'the request environment must still reach the scheduler');
 		$I->assertStringContainsString('OK', (string) substr($out, strpos($out, 'CLI_OUT:')),
 			'an invocation carrying REQUEST_METHOD answers as HTTP whatever the SAPI is');
 
-		$run = $this->probeJson($I, 'act=lastrun');
+		$run = $I->grabProbeJson('act=lastrun');
 		$I->assertSame('http', $run['via']);
 	}
 
@@ -284,27 +258,27 @@ class CronMisconfigMailCest
 		$I->wantTo('run tasks as a guest over HTTP and as the administrator from the command line');
 
 		$I->writeAppFile(self::ADDON_DIR.'/e_cron.php', $this->addonSource());
-		$this->probe($I, 'act=addcron');
+		$I->probe('act=addcron');
 
 		try
 		{
 			$this->waitForTheDueWindow();
-			$this->probe($I, 'act=delrecord');
+			$I->probe('act=delrecord');
 			$I->amOnPage('/cron.php?token='.$this->cronPassword());
 			$I->seeResponseCodeIs(200);
 
-			$http = $this->probeJson($I, 'act=readrecord');
+			$http = $I->grabProbeJson('act=readrecord');
 			$I->assertNotNull($http, 'the probe task must have run over HTTP');
 			$I->assertFalse($http['admin'], 'a web request must not run tasks as an administrator');
 			$I->assertSame(0, $http['userid']);
 			$I->assertFalse($http['cli']);
 
 			$this->waitForTheDueWindow();
-			$this->probe($I, 'act=delrecord');
-			$out = $this->probe($I, 'act=cli&token='.$this->cronPassword());
+			$I->probe('act=delrecord');
+			$out = $I->grabProbe('act=cli&token='.$this->cronPassword());
 			$I->assertStringContainsString('CLI_STATUS=0', $out);
 
-			$cli = $this->probeJson($I, 'act=readrecord');
+			$cli = $I->grabProbeJson('act=readrecord');
 			$I->assertNotNull($cli, 'the probe task must have run from the command line');
 			$I->assertTrue($cli['admin']);
 			$I->assertSame(1, $cli['userid']);
@@ -312,7 +286,7 @@ class CronMisconfigMailCest
 		}
 		finally
 		{
-			$this->probe($I, 'act=delcron');
+			$I->probe('act=delcron');
 			$I->deleteAppFile(self::ADDON_DIR.'/e_cron.php');
 		}
 	}
@@ -373,7 +347,7 @@ PHP;
 
 		return <<<PHP
 <?php
-// Fixture for 0045_CronMisconfigMailCest. Removed again in the Cest's _after().
+// Fixture for 0045_CronMisconfigMailCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

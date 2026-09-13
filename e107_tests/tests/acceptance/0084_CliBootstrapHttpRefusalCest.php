@@ -44,21 +44,15 @@ class CliBootstrapHttpRefusalCest
 	/** Documentation-range address, so the fixture ban reaches no real host. */
 	const BAN_IP = '192.0.2.107';
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->writeAppFile(self::ENTRY_FILE, $this->entrySource());
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
-		$I->deleteAppFile(self::ENTRY_FILE);
+		$I->probe('act=teardown');
 	}
 
 	/**
@@ -129,10 +123,12 @@ class CliBootstrapHttpRefusalCest
 	{
 		$I->wantTo('get nothing out of either fixture without the secret this run minted');
 
-		$I->assertStringContainsString('BANS=1', $this->probe($I, 'act=seedban'),
+		$I->assertStringContainsString('BANS=1', $I->probe('act=seedban'),
 			'the fixture ban has to be there for its survival to mean anything');
-		$I->assertStringContainsString('CANARY=0', $this->probe($I, 'act=clearcanary'),
+		$I->assertStringContainsString('CANARY=0', $I->probe('act=clearcanary'),
 			'the canary has to start absent for its appearance to mean anything');
+
+		$I->deleteHeader(\Helper\ProbeGuard::HEADER);
 
 		$I->amOnPage('/'.self::PROBE_FILE.'?act=request&target=probe&ua=1');
 		$I->seeResponseCodeIs(403);
@@ -140,16 +136,18 @@ class CliBootstrapHttpRefusalCest
 		$I->amOnPage('/'.self::ENTRY_FILE);
 		$I->seeResponseCodeIs(403);
 
-		$I->assertStringContainsString('BANS=1', $this->probe($I, 'act=countban'),
+		$I->haveHttpHeader(\Helper\ProbeGuard::HEADER, \Helper\ProbeGuard::secret());
+
+		$I->assertStringContainsString('BANS=1', $I->probe('act=countban'),
 			'a refused caller must not have emptied the flood bans');
-		$I->assertStringContainsString('CANARY=0', $this->probe($I, 'act=readcanary'),
+		$I->assertStringContainsString('CANARY=0', $I->probe('act=readcanary'),
 			'a refused caller must not have reached the command line entry point');
 
 		$this->request($I, 'target=entry&ua=1');
 
-		$I->assertStringContainsString('BANS=0', $this->probe($I, 'act=countban'),
+		$I->assertStringContainsString('BANS=0', $I->probe('act=countban'),
 			'the same request carrying the secret does empty the flood bans');
-		$I->assertStringContainsString('CANARY=1', $this->probe($I, 'act=readcanary'),
+		$I->assertStringContainsString('CANARY=1', $I->probe('act=readcanary'),
 			'the same request carrying the secret does reach the entry point');
 	}
 
@@ -164,7 +162,7 @@ class CliBootstrapHttpRefusalCest
 	 */
 	private function request(AcceptanceTester $I, $query)
 	{
-		$out = $this->probe($I, 'act=request&'.$query);
+		$out = $I->probe('act=request&'.$query);
 		$answered = (strpos($query, 'target=bounce') === false) ? '200' : '(200|403)';
 
 		$I->assertStringNotContainsString('CONNECT_FAILED', $out,
@@ -175,41 +173,15 @@ class CliBootstrapHttpRefusalCest
 		return $out;
 	}
 
-	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::PROBE_FILE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage($this->probeUrl($query));
-		$out = $I->grabPageSource();
-
-		$I->assertStringContainsString('PROBE_OK', $out, 'the probe itself must answer');
-
-		return $out;
-	}
-
 	private function clearBounceLog(AcceptanceTester $I)
 	{
-		$I->assertStringContainsString('BOUNCE_LOG=0', $this->probe($I, 'act=clearbounce'),
+		$I->assertStringContainsString('BOUNCE_LOG=0', $I->probe('act=clearbounce'),
 			'the bounce log has to start absent for its reappearance to mean anything');
 	}
 
 	private function seeTheBounceHandlerDidNotRun(AcceptanceTester $I)
 	{
-		$I->assertStringContainsString('BOUNCE_LOG=0', $this->probe($I, 'act=readbounce'),
+		$I->assertStringContainsString('BOUNCE_LOG=0', $I->probe('act=readbounce'),
 			'the handler appends to the bounce log before it does anything else, '
 			.'so a log written by that request means it ran');
 	}
@@ -219,19 +191,12 @@ class CliBootstrapHttpRefusalCest
 	 */
 	private function entrySource()
 	{
-		$secret = $this->secret;
 		$canary = self::CANARY_FILE;
 		$marker = self::ENTRY_MARKER;
 
 		return <<<PHP
 <?php
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
-
+{{E107_TEST_PROBE_GUARD}}
 file_put_contents(__DIR__."/$canary", 'reached');
 \$_E107['cli'] = true;
 require_once(__DIR__."/class2.php");
@@ -240,34 +205,33 @@ PHP;
 	}
 
 	/**
+	 * The raw request it issues carries the secret its own caller showed, in the guard's header.
+	 *
 	 * @return string a docroot file that answers ordinary web requests and
 	 *                issues raw ones of its own
 	 */
 	private function probeSource()
 	{
-		$secret = $this->secret;
 		$entry = self::ENTRY_FILE;
 		$handler = self::BOUNCE_HANDLER;
 		$probe = self::PROBE_FILE;
 		$canary = self::CANARY_FILE;
 		$banIp = self::BAN_IP;
+		$header = \Helper\ProbeGuard::HEADER;
+		$headerKey = 'HTTP_'.strtoupper(str_replace('-', '_', $header));
+		$parameter = \Helper\ProbeGuard::PARAMETER;
 
 		return <<<PHP
 <?php
-require_once(__DIR__."/class2.php");
-
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
+require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 
 \$targets = array(
-	'probe'  => '$probe?probe=$secret',
-	'entry'  => '$entry?probe=$secret',
+	'probe'  => '$probe',
+	'entry'  => '$entry',
 	'bounce' => '$handler',
 );
+\$secret = isset(\$_SERVER['$headerKey']) ? \$_SERVER['$headerKey'] : \$_GET['$parameter'];
 \$log = e_LOG.'bounce.log';
 \$canary = __DIR__."/$canary";
 \$bans = "banlist_ip = '$banIp' AND banlist_bantype = -2";
@@ -330,6 +294,7 @@ switch(\$act)
 		\$lines = array(
 			'GET '.\$base.\$targets[\$_GET['target']].' HTTP/1.0',
 			'Host: '.\$_SERVER['HTTP_HOST'],
+			'$header: '.\$secret,
 			'Connection: close',
 		);
 
