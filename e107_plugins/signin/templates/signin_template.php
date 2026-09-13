@@ -1,7 +1,6 @@
 <?php
 
 // Do not use constants.. use {LAN=xxx} instead.
-// Template compatible with Bootstrap 5 only.
 
 $SIGNIN_TEMPLATE = [];
 
@@ -15,7 +14,7 @@ $SIGNIN_TEMPLATE['signin'] = '
 				<li class="divider-vertical"></li>
 				<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" data-toggle="dropdown" role="button" aria-expanded="false">{LAN=LAN_SIGNIN_SIGNIN} <strong class="caret" aria-hidden="true"></strong></a>
-					<div class="dropdown-menu dropdown-menu-end col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
+					<div class="dropdown-menu dropdown-menu-right dropdown-menu-end col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
 					
 					{SIGNIN_FORM=start}
 					<p>{SIGNIN_INPUT_USERNAME}</p>
@@ -48,7 +47,7 @@ $SIGNIN_TEMPLATE['signout'] = '
 		<ul class="navbar-nav navbar-right">
 			{SIGNIN_PM_NAV}
 			<li class="dropdown dropdown-avatar"><a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown" role="button" aria-expanded="false">{USER_AVATAR: w=30&h=30&crop=1&shape=circle} {SIGNIN_USERNAME} <b class="caret" aria-hidden="true"></b></a>
-				<ul class="dropdown-menu dropdown-menu-end">
+				<ul class="dropdown-menu dropdown-menu-right dropdown-menu-end">
 				<li>
 					<a class="dropdown-item" href="{SIGNIN_USERSETTINGS_HREF}"><span class="fa fa-cog" aria-hidden="true"></span> {LAN=LAN_SETTINGS}</a>
 				</li>
