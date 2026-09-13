@@ -14,10 +14,6 @@
  */
 class CommentPostAuthzCest
 {
-	/**
-	 * Registered in Extension\WorkspaceCleanup so a crashed run does not leave
-	 * it in the docroot.
-	 */
 	const PROBE_FILE = 'e107_tests_comment_post_authz_probe.php';
 
 	/** e_session::TOKEN_CHECK_ENFORCE. Pinned; see _before(). */

@@ -10,7 +10,7 @@ namespace Helper;
  * A run that is killed leaves it there, and the docroot is a live site.
  *
  * Every fixture that boots e107 in the app root reserves {@see self::MARKER}
- * on the line after its bootstrap, and {@see \Helper\Acceptance::writeAppFile()}
+ * on the line after its bootstrap, and {@see \Helper\E107Base::writeAppFile()}
  * substitutes the guard for it on the way to the docroot, refusing a fixture
  * that reserved no room. A caller that cannot show the run's secret is
  * answered 403 having done nothing.

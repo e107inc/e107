@@ -43,11 +43,7 @@ class AdminPreAuthCest
 {
 	const PROBE_FILE = 'e107_tests_preauth_probe.php';
 
-	/**
-	 * Written by the payload, from inside the web container, as the web
-	 * account. Registered in Extension\WorkspaceCleanup so a crashed run does
-	 * not leave it in the docroot.
-	 */
+	/** Written by the payload, from inside the web container, as the web account. */
 	const CANARY_FILE = 'e107_tests_preauth_canary.txt';
 
 	/** Ships with the gallery plugin and is a real JPEG, so thumb.php resizes it. */
@@ -400,7 +396,7 @@ class AdminPreAuthCest
 	 *
 	 * The canary is read inside the web process, through the probe, because
 	 * that is the only place it would land. APP_PATH is the runner's own tree
-	 * and Extension\WorkspaceCleanup::appRunsInPlace() documents that under a
+	 * and Extension\WorkspaceGuard::appRunsInPlace() documents that under a
 	 * deploying deployer the app is served from somewhere else entirely, where
 	 * a filesystem assertion on APP_PATH would be true against a fully
 	 * exploitable site.

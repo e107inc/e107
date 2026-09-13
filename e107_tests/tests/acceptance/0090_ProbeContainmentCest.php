@@ -7,9 +7,10 @@
  * takes them away again. Each one boots e107 and then does what the query
  * string asks: rewrites core preferences, empties the online and banlist
  * tables, installs and uninstalls plugins, deletes users, writes files into
- * the media tree. Extension\WorkspaceCleanup removes them on the way in as
- * well as on the way out, so an ordinary run leaves nothing behind, but a run
- * that is killed does, and the docroot is a live site.
+ * the media tree. Helper\AppFileRegistry takes each one back at the end of
+ * the test that wrote it, and on the way into the next run when this one is
+ * killed, but until that next run the docroot is a live site with a probe in
+ * it.
  *
  * Helper\ProbeGuard closes that window. Every fixture that boots e107 in the
  * app root reserves a line for the guard, writeAppFile() substitutes it on the
@@ -25,7 +26,7 @@
  *
  * @see \Helper\ProbeGuard
  * @see \Helper\ForumFixture
- * @see \Extension\WorkspaceCleanup
+ * @see \Helper\AppFileRegistry
  */
 class ProbeContainmentCest
 {

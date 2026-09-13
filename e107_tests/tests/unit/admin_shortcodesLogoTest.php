@@ -15,14 +15,10 @@
  */
 class admin_shortcodesLogoTest extends \Codeception\Test\Unit
 {
+	const LOGO = 'e107_images/adminlogo.png';
+
 	/** @var admin_shortcodes */
 	private $sc;
-
-	/** @var string the shipped logo the third branch reads */
-	private $logo;
-
-	/** @var string where the shipped logo is parked while it has to be absent */
-	private $parked;
 
 	protected function _before()
 	{
@@ -31,14 +27,6 @@ class admin_shortcodesLogoTest extends \Codeception\Test\Unit
 		require_once(e_CORE.'shortcodes/batch/admin_shortcodes.php');
 
 		$this->sc = $this->make('admin_shortcodes');
-
-		$this->logo = e_IMAGE.'adminlogo.png';
-		$this->parked = e_IMAGE.'e107_tests_5999_adminlogo.png';
-	}
-
-	protected function _after()
-	{
-		$this->restoreLogo();
 	}
 
 	/**
@@ -46,7 +34,7 @@ class admin_shortcodesLogoTest extends \Codeception\Test\Unit
 	 */
 	public function testTheDimensionsOfAReadableLogoAreRendered()
 	{
-		$dimensions = getimagesize($this->logo);
+		$dimensions = getimagesize(APP_PATH.'/'.self::LOGO);
 
 		$expected = "<img class='logo admin_logo' src='".e_IMAGE_ABS."adminlogo.png' style='width: "
 			.$dimensions[0].'px; height: '.$dimensions[1]."px' alt='".ADLAN_153."' />\n";
@@ -54,11 +42,17 @@ class admin_shortcodesLogoTest extends \Codeception\Test\Unit
 		self::assertSame($expected, $this->sc->sc_admin_logo());
 	}
 
+	/**
+	 * The logo is tracked by git, so it is parked with the registry, and put back here as well: the deployer can be a remote one.
+	 */
 	public function testAMissingLogoRendersWithoutDimensions()
 	{
+		\Helper\AppFileRegistry::park(self::LOGO);
 		$expected = "<img class='logo admin_logo' src='".e_IMAGE_ABS."adminlogo.png' alt='".ADLAN_153."' />\n";
 
-		self::assertTrue(rename($this->logo, $this->parked));
+		$app = $this->getModule('\Helper\Unit');
+		$shipped = file_get_contents(APP_PATH.'/'.self::LOGO);
+		$app->deleteAppFile(self::LOGO);
 
 		try
 		{
@@ -66,18 +60,7 @@ class admin_shortcodesLogoTest extends \Codeception\Test\Unit
 		}
 		finally
 		{
-			$this->restoreLogo();
-		}
-	}
-
-	/**
-	 * Idempotent, so the failure path and {@see admin_shortcodesLogoTest::_after()} can both call it.
-	 */
-	private function restoreLogo()
-	{
-		if(is_file($this->parked))
-		{
-			rename($this->parked, $this->logo);
+			$app->writeAppFile(self::LOGO, $shipped);
 		}
 	}
 }

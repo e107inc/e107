@@ -20,9 +20,6 @@ namespace Helper;
  * from the query string. That is the systemic shape the package is about: it
  * stands in for every caller in the tree that passes request data to go(), and
  * it measures go()'s own default rather than any one call site's care.
- *
- * The filename is registered in {@see \Extension\WorkspaceCleanup} so a crashed
- * run does not leave it behind.
  */
 class P19Fixture
 {

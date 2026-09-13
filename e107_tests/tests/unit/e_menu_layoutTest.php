@@ -19,6 +19,13 @@
 			require_once(e_HANDLER."menumanager_class.php");
 		}
 
+		/**
+		 * Copies a fixture theme out of tests/_data into e_THEME, journaled so the run takes it back out.
+		 *
+		 * @param string $src
+		 * @param string $dst inside APP_PATH
+		 * @return bool false when there is nothing to copy or the destination is already there
+		 */
 		private function copydir( $src, $dst )
 		{
 			if(!is_dir($src) || is_dir($dst))
@@ -27,6 +34,14 @@
 				return false;
 			}
 
+			\Helper\AppFileRegistry::didWrite($this->appRelativePath($dst));
+			self::copyTree($src, $dst);
+
+			return true;
+		}
+
+		private static function copyTree($src, $dst)
+		{
 			mkdir($dst);
 
 			$DS = DIRECTORY_SEPARATOR ;
@@ -41,7 +56,7 @@
 				{
 					if(is_dir($src . $DS . $file))
 					{
-						$this->copydir($src . $DS . $file, $dst . $DS . $file);
+						self::copyTree($src . $DS . $file, $dst . $DS . $file);
 					}
 					else
 					{
@@ -49,8 +64,23 @@
 					}
 				}
 			}
+		}
 
-			// closedir($dir);
+		/**
+		 * @param string $path under APP_PATH, absolute or relative to the working directory; the last segment need not exist yet
+		 * @return string the same path relative to the app root
+		 */
+		private function appRelativePath($path)
+		{
+			$root = realpath(APP_PATH);
+			$parent = realpath(dirname(rtrim($path, '/')));
+
+			if($root === false || $parent === false || strpos($parent.'/', $root.'/') !== 0)
+			{
+				self::fail("$path is not inside the app root ".APP_PATH);
+			}
+
+			return ltrim(substr($parent, strlen($root)).'/'.basename(rtrim($path, '/')), '/');
 		}
 
 		public function testGetLayouts()

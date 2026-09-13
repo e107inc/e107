@@ -210,29 +210,8 @@ class e_formTest extends \Codeception\Test\Unit
 		include_once(e_PLUGIN.'forum/forum_class.php');
 		require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
 
-		$legacyDir = APP_PATH."/e107_files/downloadimages/";
-		$legacyFile = APP_PATH."/e107_files/downloadimages/butterfly.jpg";
-
-		if(!is_dir($legacyDir))
-		{
-			mkdir($legacyDir, 0775, true);
-		}
-
-		if(!file_exists($legacyFile))
-		{
-			copy(APP_PATH."/e107_plugins/gallery/images/butterfly.jpg", $legacyFile);
-		}
-
-		if(!file_exists($legacyFile))
-		{
-			self::fail("Couldn't copy legacy image 'butterfly.jpg' to e107_files folder");
-		}
-
-	}
-
-	protected function _after()
-	{
-		unlink(APP_PATH."/e107_files/downloadimages/butterfly.jpg");
+		$this->getModule('\Helper\Unit')->writeAppFile('e107_files/downloadimages/butterfly.jpg',
+			file_get_contents(e_PLUGIN.'gallery/images/butterfly.jpg'));
 	}
 
 

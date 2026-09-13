@@ -7,11 +7,7 @@ namespace Helper;
 class Acceptance extends E107Base
 {
 
-	/**
-	 * Dropped into the docroot for as long as a plugin install is needed.
-	 * Registered in Extension\WorkspaceCleanup so a crashed run does not leave
-	 * it there.
-	 */
+	/** Dropped into the docroot for as long as a plugin install is needed. */
 	const PLUGIN_PROBE_FILE = 'e107_tests_plugin_install_probe.php';
 
 	protected $deployer_components = ['db', 'fs'];

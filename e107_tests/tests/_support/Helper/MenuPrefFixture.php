@@ -25,9 +25,6 @@ use Codeception\Module as CodeceptionModule;
  * A run killed between the two halves leaves the stash behind. The next seed
  * finds it and restores from it before stashing again, so a crashed run costs
  * the run it crashed and nothing after it.
- *
- * The probe filename is registered in {@see \Extension\WorkspaceCleanup} so a
- * crashed run does not leave the file behind either.
  */
 class MenuPrefFixture extends CodeceptionModule
 {
