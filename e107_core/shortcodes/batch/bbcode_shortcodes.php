@@ -359,7 +359,7 @@ class bbcode_shortcodes extends e_shortcode
 				$text .= '</a>';
 				$text .= "<div class='dropdown-menu' style='white-space:normal;padding:10px; width:170px'>";
 						
-				$text .= $this->renderEmotes();
+				$text .= r_emote();
 	
 				$text .= "</div>";
 				$text .= "</div>";
@@ -376,7 +376,7 @@ class bbcode_shortcodes extends e_shortcode
 				<div style='position:absolute; bottom:30px; right:75px; width:221px; height:133px; overflow:auto;'>
 					<table class='fborder' style='background-color:#fff;'>
 					<tr><td class='forumheader3'>
-					".$this->renderEmotes()."
+					".r_emote()."
 					</td></tr></table>
 				</div>
 			</div><!-- End of Emoticon selector -->";
@@ -385,27 +385,6 @@ class bbcode_shortcodes extends e_shortcode
 		}
 	}	
 
-
-	function renderEmotes()
-	{
-		$emotes = e107::getEmote()->getList();
-		$pref = e107::getPref();
-		$text = "";
-		
-		foreach($emotes as $key=>$value)
-		{
-			$key = str_replace("!", ".", $key);					// Usually '.' was replaced by '!' when saving
-			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
-			$key = e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
-						$value2 = (string) substr($value, 0, strpos($value, " "));
-			$value = ($value2 ? $value2 : $value);
-			$value = ($value == '&|') ? ':((' : $value;
-			$text .= "<a style='display:inline-block; margin:2px; padding:2px' href=\"javascript:addtext('$value ',true)\"><img src='$key' alt='' /></a>";
-			
-		}
-		
-		return $text;
-	}
 
 
 

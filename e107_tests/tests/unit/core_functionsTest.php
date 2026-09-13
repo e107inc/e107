@@ -54,14 +54,14 @@
 
 
 
-		public function testREmoteStoresTheFormsSoleTextareaBeforeInserting()
+		public function testREmoteStoresTheCaretFromTheClickedAnchorBeforeInserting()
 		{
 			$script = $this->registeredEmoteScript();
 
 			$this->assertMatchesRegularExpression(
-				"#closest\\(\\s*'form'\\s*\\).+?find\\(\\s*'textarea'\\s*\\).+?length\\s*===\\s*1.+?storeCaret\\(\\s*area\\.get\\(\\s*0\\s*\\)\\s*\\).+?addtext\\(\\s*val\\s*,\\s*true\\s*\\)#s",
+				"#storeCaret\\(\\s*this\\s*\\).+?addtext\\(\\s*val\\s*,\\s*true\\s*\\)#s",
 				$script,
-				"r_emote() must hand storeCaret() the textarea node itself before addtext() runs, or the emote lands on a jQuery wrapper, or in whichever field the visitor happened to touch last."
+				"r_emote() must hand storeCaret() the clicked anchor before addtext() runs, so that the field resolved is the one under the panel rather than whichever the visitor happened to touch last."
 			);
 		}
 
