@@ -25,90 +25,6 @@
 
 		}
 
-/*		public function testRemoveData()
-		{
-
-		}
-
-		public function testClearPrefCache()
-		{
-
-		}
-
-		public function testValidate()
-		{
-
-		}
-
-		public function testReset()
-		{
-
-		}
-
-		public function test__construct()
-		{
-
-		}
-
-		public function testSetPref()
-		{
-
-		}
-
-		public function testLoadData()
-		{
-
-		}
-
-		public function testSave()
-		{
-
-		}
-
-		public function testGet()
-		{
-
-		}
-
-		public function testRemovePref()
-		{
-
-		}
-
-		public function testLoad()
-		{
-
-		}
-
-		public function testSetOptionSerialize()
-		{
-
-		}
-
-		public function testRemove()
-		{
-
-		}
-
-		public function testSetData()
-		{
-
-		}
-
-		public function testAddData()
-		{
-
-		}
-
-		public function testDelete()
-		{
-
-		}
-
-		public function testUpdatePref()
-		{
-
-		}*/
 
 		public function testGetPref()
 		{
@@ -118,27 +34,6 @@
 			$this->assertArrayHasKey('maintainance_flag', $result);
 
 		}
-/*
-		public function testSetOptionBackup()
-		{
-
-		}
-
-		public function testSet()
-		{
-
-		}
-
-		public function testUpdate()
-		{
-
-		}
-
-		public function testAdd()
-		{
-
-		}
-*/
 		public function testAddPref()
 		{
 			$this->pref->addPref('test_preference', "my custom preference");

@@ -71,43 +71,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 		$this->tempBatchFiles = array();
 	}
 
-//	public function testShortcode_SITELINKS_ALT()
-//	{
-//		$output = $this->scParser->parseCodes('{SITELINKS_ALT=/e107_themes/jayya/images/arrow.png+noclick}');
-//		var_export($output);
-//	}
 
-	/*
-	public function testIsBatchOverride()
-	{
-
-	}
-
-	public function testIsRegistered()
-	{
-
-	}
-
-	public function testIsOverride()
-	{
-
-	}
-
-	public function testResetScClass()
-	{
-
-	}
-
-	public function testDoCode()
-	{
-
-	}
-
-	public function testGetScObject()
-	{
-
-	}
-*/
 	/**
 	 * An unregistered shortcode name is turned straight into a filename and
 	 * included, with no check on what is in it.
@@ -352,8 +316,6 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
         $this->processShortcodeMethods($sc);
 
     }
-
-
 
     public function testContactShortcodes()
     {
@@ -697,10 +659,6 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
             ),
 		 );
 
-
-
-
-
         $this->processShortcodeMethods($sc, null, $exclude);
 
     }
@@ -850,8 +808,6 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			'A social icon must never be an anchor to the current page.');
 
     }
-
-
 
     public function testUserShortcodes()
     {
@@ -1225,8 +1181,6 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 
 	}
-
-
 
     public function testForumShortcodes()
     {
@@ -1689,8 +1643,6 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
-
-
 	public function testSigninShortcodes()
     {
         require_once(e_PLUGIN."signin/signin_shortcodes.php");
@@ -1753,9 +1705,6 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
     }
 
-
-
-
 	/*
 
 
@@ -1803,8 +1752,6 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 
         }
-
-
 
     }
 
@@ -1887,15 +1834,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 				'pm_class'  => '0',
 			),
 
-
-
-
-
         );
-
-
-
-
 
         $list = e107::getPlug()->getCorePluginList();
 
@@ -1947,54 +1886,9 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 				$result = $sc->$meth();
 			}
 
-
-
-
-
-
-
         }
 
-
-
-
-
-
-
     }
-
-
-/*
-	public function testInitShortcodeClass()
-	{
-
-	}
-
-	public function testRegisterShortcode()
-	{
-
-	}
-
-	public function testSetScVar()
-	{
-
-	}
-
-	public function testCallScFunc()
-	{
-
-	}
-
-	public function testIsScClass()
-	{
-
-	}
-
-	public function testLoadThemeShortcodes()
-	{
-
-	}
-	*/
 
 	private function writeBatchFile($dir)
 	{

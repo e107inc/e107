@@ -396,6 +396,7 @@ class e_db_mysql implements e_db
 		$db_mySQLQueryCount++;
 
 		$this->mySQLlastQuery = $query;
+		$this->forgetTableListFor($query);
 
 		if ($debug == 'now')
 		{
@@ -2156,6 +2157,22 @@ class e_db_mysql implements e_db
 	public function resetTableList()
 	{
 		$this->db_ResetTableList();
+	}
+
+	/**
+	 * Forget the cached table list ahead of a statement that changes which tables exist, so {@see isTable()} reads the set again.
+	 *
+	 * @param string|array $query the statement about to run, or a PREPARE map
+	 * @return void
+	 */
+	protected function forgetTableListFor($query)
+	{
+		$sql = is_array($query) ? (isset($query['PREPARE']) ? $query['PREPARE'] : '') : $query;
+
+		if(preg_match('/^\s*(?:(?:CREATE|DROP|RENAME)\s+(?:TEMPORARY\s+)?TABLE|ALTER\s+TABLE\b.*\bRENAME)\b/is', (string) $sql))
+		{
+			$this->resetTableList();
+		}
 	}
 
 	/**

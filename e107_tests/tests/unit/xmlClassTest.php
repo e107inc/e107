@@ -70,12 +70,6 @@
 			}
 
 		}
-/*
-		public function testXml_convert_to_array()
-		{
-
-		}
-*/
 		public function testLoadXMLfile()
 		{
 			$feed = 'https://www.youtube.com/feeds/videos.xml?channel_id=UC7vv3cBq14FRXajteZt6FEg';
@@ -86,17 +80,6 @@
 			// print_r($contents);
 
 		}
-/*
-		public function testSetOptFilter()
-		{
-
-		}
-
-		public function testSetOptStringTags()
-		{
-
-		}
-*/
 		public function testParseXml()
 		{
 			$raw = self::RAW_XML;
@@ -107,47 +90,6 @@
 
 
 		}
-/*
-		public function testE107ExportValue()
-		{
-
-		}
-
-		public function testSetOptArrayTags()
-		{
-
-		}
-
-		public function testParseStringTags()
-		{
-
-		}
-
-		public function testGetErrors()
-		{
-
-		}
-
-		public function testSetOptAddRoot()
-		{
-
-		}
-
-		public function testE107ImportValue()
-		{
-
-		}
-
-		public function testGetLastErrorMessage()
-		{
-
-		}
-
-		public function testSetOptStripComments()
-		{
-
-		}
-*/
 		public function testGetRemoteFile()
 		{
 			$feed = 'https://www.youtube.com/feeds/videos.xml?channel_id=UC7vv3cBq14FRXajteZt6FEg';
@@ -156,17 +98,6 @@
 			$this->assertStringContainsString('<?xml version="1.0" encoding="UTF-8"?>',$contents);
 
 		}
-/*
-		public function testSetOptForceArray()
-		{
-
-		}
-
-		public function testSetOptValueKey()
-		{
-
-		}
-*/
 		public function testE107ImportPrefs()
 		{
 			$file = e_CORE."xml/default_install.xml";
@@ -174,8 +105,6 @@
 			$checks = array('ssl_enabled', 'smtp_server', 'e_jslib_core', 'e_jslib_plugin');
 
 			$xmlArray = $this->_xml->loadXMLfile($file, 'advanced');
-
-
 
 			$arr = array();
 
@@ -393,27 +322,6 @@
 
 			$this->assertSame($expected, $resolved);
 		}
-/*
-		public function testSetFeedUrl()
-		{
-
-		}
-
-		public function testXml2array()
-		{
-
-		}
-*/
-		public function testE107Import()
-		{
-
-		}
-/*
-		public function testSetUrlPrefix()
-		{
-
-		}
-*/
 
 		public function testE107Export()
 		{

@@ -92,16 +92,6 @@ class e_parseTest extends \Codeception\Test\Unit
 
 	}
 
-	/*
-			public function testHtmlAbuseFilter()
-			{
-
-			}
-
-			public function testE_highlight()
-			{
-
-			}*/
 
 	public function testToHTML()
 	{
@@ -181,12 +171,6 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testUstrpos()
-			{
-
-			}
-	*/
 	public function testThumbUrlDecode()
 	{
 		$tests = array(
@@ -564,22 +548,6 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testCreateConstants()
-			{
-
-			}
-
-			public function testThumbEncode()
-			{
-
-			}
-
-			public function testEmailObfuscate()
-			{
-
-			}
-	*/
 	public function testToFlatArray()
 	{
 		$input = [
@@ -642,17 +610,6 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testUstristr()
-			{
-
-			}
-
-			public function testThumbDimensions()
-			{
-
-			}
-	*/
 	public function testToASCII()
 	{
 
@@ -681,24 +638,7 @@ EXPECTED;
 		$result = $this->tp->toNumber('v3.5');
 		$this->assertSame(3.5, $result);
 	}
-	/*
-			public function testthumbUrlSEF()
-			{
-			//	$this->tp->thumbUrlSEF($url);
-
-
-
-
-			}
-	*/
-	/*	public function testTextclean()
-		{
-			$string = "\n\n\nSomething\n\n\n";
-			$result = $this->tp->textclean($string);
-			var_export($result);
-			//$this->assertSame();
-		}*/
-
+	
 	public function testMultibyteOn()
 	{
 
@@ -777,39 +717,6 @@ EXPECTED;
 
 
 	}
-
-	/*
-			public function testUstrlen()
-			{
-
-			}
-
-			public function testAmpEncode()
-			{
-
-			}
-
-			public function testThumbUrlScale()
-			{
-
-			}
-
-			public function testToEmail()
-			{
-
-			}
-
-			public function testUsubstr()
-			{
-
-			}
-
-			public function testThumbCrop()
-			{
-
-			}
-	*/
-
 
 	public function testToDB()
 	{
@@ -967,18 +874,6 @@ EXPECTED;
 
 	}
 
-	/*
-
-			public function testToJSONhelper()
-			{
-
-			}
-
-			public function testToJSON()
-			{
-
-			}
-	*/
 	public function testPostToForm()
 	{
 		$text = "<div class='something'>My Test</div>";
@@ -1054,17 +949,6 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testCheckHighlighting()
-			{
-
-			}
-
-			public function testThumbWidth()
-			{
-
-			}
-	*/
 	public function testReplaceConstants()
 	{
 		$tests = array(
@@ -1165,12 +1049,6 @@ EXPECTED;
 	}
 
 
-	/*
-			public function testPreFilter()
-			{
-
-			}
-	*/
 	public function testThumbUrl()
 	{
 		$urls = array(
@@ -1256,27 +1134,6 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testParseBBCodes()
-			{
-
-			}
-
-			public function testGetEmotes()
-			{
-
-			}
-
-			public function testThumbHeight()
-			{
-
-			}
-
-			public function testDataFilter()
-			{
-
-			}
-	*/
 	public function testToAttributeReplaceConstants()
 	{
 		$input = "This is e_THEME: {e_THEME}";
@@ -1548,17 +1405,6 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testSetThumbSize()
-			{
-
-			}
-
-			public function testToJS()
-			{
-
-			}
-	*/
 	public function testSimpleParse()
 	{
 		$vars = array(
@@ -1852,22 +1698,6 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testUstrtolower()
-			{
-
-			}
-
-			public function testObfuscate()
-			{
-
-			}
-
-			public function testDoReplace()
-			{
-
-			}
-	*/
 	public function testStaticUrl()
 	{
 
@@ -1912,17 +1742,6 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testGetUrlConstants()
-			{
-
-			}
-
-			public function testUstrrpos()
-			{
-
-			}
-	*/
 	public function testPost_toHTML()
 	{
 		$text = "<di style='width:100%'>Test</di>"; // invalid html.
@@ -1936,22 +1755,6 @@ EXPECTED;
 
 	}
 
-	/*
-	public function testAddAllowedTag()
-	{
-
-	}
-
-	public function testAddAllowedAttribute()
-	{
-
-	}
-
-	public function testSetAllowedTags()
-	{
-
-	}
-*/
 	public function testSetScriptAccess()
 	{
 		$this->tp->setScriptAccess(e_UC_PUBLIC);
@@ -1959,12 +1762,6 @@ EXPECTED;
 		$this->assertEquals(e_UC_PUBLIC, $result);
 	}
 
-	/*
-			public function testGetAllowedTags()
-			{
-
-			}
-	*/
 	public function testGetScriptAccess()
 	{
 		$result = $this->tp->getScriptAccess();
@@ -2199,22 +1996,6 @@ EXPECTED;
 		//  $this->assertTrue($true);
 	}
 
-	/*
-			public function testSetScriptTags()
-			{
-
-			}
-
-			public function testLeadingZeros()
-			{
-
-			}
-
-			public function testLanVars()
-			{
-
-			}
-	*/
 	public function testGetTags()
 	{
 		$html = "<div><img src='#' alt='whatever' /></div>";
@@ -2385,22 +2166,6 @@ EXPECTED;
 		$this->tp->setFontAwesome(5);
 	}
 
-	/*
-			public function testToBadge()
-			{
-
-			}
-
-			public function testToLabel()
-			{
-
-			}
-
-			public function testToFile()
-			{
-
-			}
-	*/
 	public function testToAvatar()
 	{
 		$icon = codecept_data_dir() . "icon_64.png";
@@ -2838,22 +2603,6 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testIsJSON()
-			{
-
-			}
-
-			public function testIsUTF8()
-			{
-
-			}
-
-			public function testIsVideo()
-			{
-
-			}
-	*/
 	public function testIsImage()
 	{
 		$this->assertTrue($this->tp->isImage('/path-to-file/myfile.jpg'));
@@ -3104,12 +2853,6 @@ Your browser does not support the audio tag.
 
 	}
 
-	/*
-			public function testParseBBTags()
-			{
-
-			}
-	*/
 	public function testFilter()
 	{
 		$url = 'http://www.domain.com/folder/folder2//1234_1_0.jpg';
@@ -3343,29 +3086,7 @@ Your browser does not support the audio tag.
 	}
 
 
-	/*
-			public function testSecureAttributeValue()
-			{
-
-			}
-
-			public function testInvalidAttributeValue()
-			{
-
-			}
-	*/
-	/*
-			public function testGrantScriptAccess()
-			{
-				$before = $this->tp->getAllowedAttributes();
-
-				$this->tp->grantScriptAccess();
-
-				$after = $this->tp->getAllowedAttributes();
-
-
-			}*/
-	private function avatarTag($html)
+		private function avatarTag($html)
 	{
 		$doc = new DOMDocument();
 		$doc->loadHTML('<body>' . $html . '</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);

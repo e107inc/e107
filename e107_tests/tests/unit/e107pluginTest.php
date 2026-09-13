@@ -29,8 +29,6 @@
 				$this->assertTrue(false, "Couldn't e107_plugin object");
 			}
 
-
-
 		}
 
 		/**
@@ -117,128 +115,6 @@
 		}
 
 
-/*
-
-		public function testDisplayArray()
-		{
-
-		}
-
-		public function testExecute_function()
-		{
-
-		}
-
-		public function testManage_plugin_prefs()
-		{
-
-		}
-
-		public function testInstall()
-		{
-
-		}
-
-		public function testGetall()
-		{
-
-		}
-
-		public function testXmlPrefs()
-		{
-
-		}
-
-		public function testParse_plugin_php()
-		{
-
-		}
-
-		public function testRefresh()
-		{
-
-		}
-
-		public function testUninstall()
-		{
-
-		}
-
-		public function testManage_icons()
-		{
-
-		}
-
-		public function testParse_plugin()
-		{
-
-		}
-
-		public function testManage_comments()
-		{
-
-		}
-
-		public function testManage_search()
-		{
-
-		}
-
-		public function testInstall_plugin_xml()
-		{
-
-		}
-
-		public function testGetAddonsDiz()
-		{
-
-		}
-
-		public function testUpdate_plugins_table()
-		{
-
-		}
-
-		public function testXmlBBcodes()
-		{
-
-		}
-
-		public function testInstall_plugin()
-		{
-
-		}
-
-		public function testManage_extended_field_sql()
-		{
-
-		}
-
-		public function testUpdateRequired()
-		{
-
-		}
-
-		public function testGetCorePlugins()
-		{
-
-		}
-
-		public function testManage_prefs()
-		{
-
-		}
-
-		public function testGetPerm()
-		{
-
-		}
-
-		public function testGetAddonsList()
-		{
-
-		}
-*/
 		public function testXmlExtendedFields()
 		{
 			// $ret = $this->ep->parse_plugin_xml('_blank');
@@ -281,8 +157,6 @@
 					'source' => 'plugin_test',
 				), 
 			); 
-			
-			
 
 			$result = $this->ep->XmlExtendedFields('test', $extendedVars);
 
@@ -292,41 +166,6 @@
 
 
 		}
-/*
-		public function testGetAddons()
-		{
-
-		}
-
-		public function testUe_field_type()
-		{
-
-		}
-
-		public function testManage_userclass()
-		{
-
-		}
-*/
-/*
-		public function testXmlAdminIcons()
-		{
-			$plugin = e107::getPlug();
-			$installed = $plugin->getInstalled();
-			fwrite(STDERR, print_r($installed, true));
-
-			if(!$data = $plugin->load('_blank')->getMeta())
-			{
-				$this::fail("Couldn't load plugin meta");
-			}
-
-			$this::assertNotEmpty($data['adminLinks']);
-
-			$status = $this->ep->XmlAdminIcons('install', '_blank', $data['adminLinks']);
-
-			fwrite(STDERR, print_r($status, true));
-		}
-*/
 
 		public function testXmlSiteLinks()
 		{
@@ -513,124 +352,4 @@
 
 
 		}
-/*
-		public function testGetIcon()
-		{
-
-		}
-
-		public function testGetId()
-		{
-
-		}
-
-		public function testXmlLanguageFileCheck()
-		{
-
-		}
-
-		public function testSetUe()
-		{
-
-		}
-
-		public function testManage_tables()
-		{
-
-		}
-
-		public function testInstall_plugin_php()
-		{
-
-		}
-
-		public function testXmlMediaCategories()
-		{
-
-		}
-
-		public function testXmlDependencies()
-		{
-
-		}
-
-		public function testXmlTables()
-		{
-
-		}
-
-		public function testXmlUserClasses()
-		{
-
-		}
-
-		public function testCheckAddon()
-		{
-
-		}
-
-		public function testManage_notify()
-		{
-
-		}
-
-		public function testUe_field_type_name()
-		{
-
-		}
-
-		public function testManage_link()
-		{
-
-		}
-
-		public function testUe_field_name()
-		{
-
-		}
-
-		public function testIsUsedByAnotherPlugin()
-		{
-
-		}
-
-		public function testGetOtherPlugins()
-		{
-
-		}
-
-		public function testGetLog()
-		{
-
-		}
-
-		public function testManage_category()
-		{
-
-		}
-
-		public function testGetinfo()
-		{
-
-		}
-
-		public function testXmlAdminLinks()
-		{
-
-		}
-
-		public function testXmlLanguageFiles()
-		{
-
-		}
-
-		public function testManage_extended_field()
-		{
-
-		}
-
-		public function testParse_plugin_xml()
-		{
-
-		}*/
 	}

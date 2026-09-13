@@ -2,8 +2,6 @@
 
 namespace Helper;
 
-use Codeception\Module as CodeceptionModule;
-
 /**
  * The shared `menu` preference row, borrowed for a test and put back.
  *
@@ -25,11 +23,8 @@ use Codeception\Module as CodeceptionModule;
  * A run killed between the two halves leaves the stash behind. The next seed
  * finds it and restores from it before stashing again, so a crashed run costs
  * the run it crashed and nothing after it.
- *
- * The probe filename is registered in {@see \Extension\WorkspaceCleanup} so a
- * crashed run does not leave the file behind either.
  */
-class MenuPrefFixture extends CodeceptionModule
+class MenuPrefFixture extends AppFixture
 {
 	const PROBE_FILE = 'e107_tests_menu_prefs_probe.php';
 
@@ -109,7 +104,7 @@ class MenuPrefFixture extends CodeceptionModule
 	 */
 	private function probe($act, array $payload = array())
 	{
-		if (!$this->probeWritten)
+		if (!$this->probeWritten || AppFileRegistry::wasReaped(self::PROBE_FILE))
 		{
 			$this->app()->writeAppFile(self::PROBE_FILE, $this->probeSource());
 			$this->probeWritten = true;
@@ -126,38 +121,6 @@ class MenuPrefFixture extends CodeceptionModule
 		}
 
 		return $body;
-	}
-
-	/**
-	 * @return \Helper\Acceptance|\Helper\Webdriver
-	 */
-	private function app()
-	{
-		foreach (array('\Helper\Acceptance', '\Helper\Webdriver') as $name)
-		{
-			if ($this->hasModule($name))
-			{
-				return $this->getModule($name);
-			}
-		}
-
-		throw new \RuntimeException('MenuPrefFixture needs Helper\Acceptance or Helper\Webdriver');
-	}
-
-	/**
-	 * @return \Codeception\Module\PhpBrowser|\Codeception\Module\WebDriver
-	 */
-	private function browser()
-	{
-		foreach (array('PhpBrowser', 'WebDriver') as $name)
-		{
-			if ($this->hasModule($name))
-			{
-				return $this->getModule($name);
-			}
-		}
-
-		throw new \RuntimeException('MenuPrefFixture needs PhpBrowser or WebDriver');
 	}
 
 	/**

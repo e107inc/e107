@@ -281,33 +281,4 @@
 			return codecept_data_dir('library_headers/');
 		}
 
-/*
-		public function testInfo()
-		{
-
-		}
-
-		public function testGetProperty()
-		{
-
-		}
-
-		public function testLoad()
-		{
-
-		}
-
-		public function testGetExcludedLibraries()
-		{
-
-		}
-
-		public function testGetPath()
-		{
-
-		}
-*/
-
-
-
 	}

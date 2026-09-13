@@ -172,6 +172,8 @@ class SFTPDeployer extends Deployer
 			throw new RuntimeException("Failed to write \"$relative_path\" to deployed test location (ssh exit $retcode): ".trim((string) $stderr));
 		}
 		self::println("Wrote file \"$relative_path\" to deployed test location");
+
+		return array();
 	}
 
 	// Deliberately no removeAppPaths(): the only caller sweeps the tree the

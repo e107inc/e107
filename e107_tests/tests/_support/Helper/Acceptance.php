@@ -7,11 +7,7 @@ namespace Helper;
 class Acceptance extends E107Base
 {
 
-	/**
-	 * Dropped into the docroot for as long as a plugin install is needed.
-	 * Registered in Extension\WorkspaceCleanup so a crashed run does not leave
-	 * it there.
-	 */
+	/** Dropped into the docroot for as long as a plugin install is needed. */
 	const PLUGIN_PROBE_FILE = 'e107_tests_plugin_install_probe.php';
 
 	protected $deployer_components = ['db', 'fs'];
@@ -77,26 +73,6 @@ class Acceptance extends E107Base
 	public function resetAllCookies()
 	{
 		$this->getModule('PhpBrowser')->client->getCookieJar()->clear();
-	}
-
-	/**
-	 * Write an arbitrary file into the deployed docroot.
-	 *
-	 * Goes through the deployer rather than file_put_contents() so it works
-	 * when the app under test is remote (CI deploys over SFTP). Parent
-	 * directories are created.
-	 *
-	 * A fixture that boots e107 in the docroot goes through
-	 * {@see ProbeGuard::contain()} first, which refuses one that reserved no
-	 * room for the guard.
-	 *
-	 * @param string $relative_path path relative to the app root
-	 * @param string $contents
-	 * @return void
-	 */
-	public function writeAppFile($relative_path, $contents)
-	{
-		$this->deployer->writeAppFile($relative_path, ProbeGuard::contain($relative_path, $contents));
 	}
 
 	/**
@@ -217,17 +193,6 @@ class Acceptance extends E107Base
 		\PHPUnit\Framework\Assert::assertTrue(
 			strpos($location, $needle) !== false,
 			"Response must redirect to: $needle (Location: $location)");
-	}
-
-	/**
-	 * Remove a file previously written by writeAppFile().
-	 *
-	 * @param string $relative_path path relative to the app root
-	 * @return void
-	 */
-	public function deleteAppFile($relative_path)
-	{
-		$this->deployer->unlinkAppFile($relative_path);
 	}
 
 	/**
@@ -375,7 +340,7 @@ class Acceptance extends E107Base
 	 */
 	private function runPluginProbe($act, $plugin)
 	{
-		if (!$this->pluginProbeWritten)
+		if (!$this->pluginProbeWritten || AppFileRegistry::wasReaped(self::PLUGIN_PROBE_FILE))
 		{
 			$this->writeAppFile(self::PLUGIN_PROBE_FILE, self::pluginProbeSource());
 			$this->pluginProbeWritten = true;

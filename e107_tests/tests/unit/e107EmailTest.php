@@ -32,17 +32,6 @@
 			$this->eml->Mailer = "smtp";
 		}
 
-/*
-		public function testAllSent()
-		{
-
-		}
-
-		public function testProcessShortcodes()
-		{
-
-		}
-*/
 
 		public function testArraySet()
 		{
@@ -164,9 +153,6 @@
 			$this::assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
 		}
 
-
-
-
 		public function testArraySetNotifyTemplate()
 		{
 			$eml = array(
@@ -190,18 +176,6 @@
 			$this::assertStringContainsString("<div class='unsubscribe'></div>", $this->eml->Body);
 			$this::assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
 		}
-/*
-		public function testMakePrintableAddress()
-		{
-
-		}
-
-
-		public function testAddInlineImages()
-		{
-
-		}
-*/
 		public function testMsgHTML()
 		{
 			$html = "\n
@@ -228,48 +202,6 @@ Admin<br />
 			$this::assertSame($expected, $result);
 
 		}
-/*
-		public function testSendEmail()
-		{
-
-				$eml = array(
-					'subject' 		=> "[URGENT EXAMPLE] ",
-					'sender_email'	=> "noreply@test.com",
-					'sender_name'	=> "Test",
-					'replyto'		=> "",
-					'html'			=> true,
-					'priority'      => 1,
-					'template'		=> 'default',
-					'body'			=> "This is the body text",
-					'cc'            => ''
-				);
-
-
-			$this->eml->sendEmail('test@nowhere.com',"This is the subject", $eml);
-
-		}
-
-		public function testSetDebug()
-		{
-
-		}
-
-		public function testAddAddressList()
-		{
-
-		}
-
-		public function testAttach()
-		{
-
-		}
-
-		public function testMakeBody()
-		{
-
-		}
-
-*/
 
 		function testSentMimeMessage()
 		{

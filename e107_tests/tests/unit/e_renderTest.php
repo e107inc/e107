@@ -47,30 +47,6 @@ class e_renderTest extends \Codeception\Test\Unit
 
 	}
 
-	/*		public function test_init()
-			{
-
-			}
-
-			public function testSetStyle()
-			{
-
-			}
-
-			public function testSetUniqueId()
-			{
-
-			}
-
-			public function testGetContent()
-			{
-
-			}
-
-			public function testGetStyle()
-			{
-
-			}*/
 
 	public function testTablerender()
 	{
@@ -78,31 +54,5 @@ class e_renderTest extends \Codeception\Test\Unit
 		$result = $this->ns->tablerender("My Caption", "<p>My Content</p>", 'default', true);
 		$this->assertStringContainsString('<h2 class="caption">My Caption</h2><p>My Content</p>', $result);
 	}
-/*
-	public function testGetMagicShortcodes()
-	{
-
-	}
-
-	public function testGetUniqueId()
-	{
-
-	}
-
-	public function testSetContent()
-	{
-
-	}
-
-	public function testInit()
-	{
-
-	}
-
-	public function testGetMainCaption()
-	{
-
-	}
-*/
 
 }

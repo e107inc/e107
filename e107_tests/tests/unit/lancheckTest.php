@@ -19,9 +19,6 @@
 		/** @var string What the confirmation screen rendered on the last write. */
 		protected $rendered;
 
-		/** @var string Scratch plugin directory for the language-pack tests. */
-		protected $scratchPlugin;
-
 		protected function _before()
 		{
 			require_once(e_ADMIN."lancheck.php");
@@ -54,18 +51,6 @@
 			if($this->target && is_file($this->target))
 			{
 				unlink($this->target);
-			}
-
-			if($this->scratchPlugin && is_dir($this->scratchPlugin))
-			{
-				foreach(glob($this->scratchPlugin.'languages/*') as $file)
-				{
-					unlink($file);
-				}
-
-				rmdir($this->scratchPlugin.'languages');
-				rmdir($this->scratchPlugin);
-				$this->scratchPlugin = null;
 			}
 		}
 
@@ -136,17 +121,6 @@
 		}
 
 
-/*
-		public function testCheck_lan_errors()
-		{
-
-		}
-
-		public function testCheckLog()
-		{
-
-		}
-*/
 		public function testFill_phrases_array()
 		{
 
@@ -173,37 +147,6 @@
 
 		}
 
-/*
-		public function testThirdPartyPlugins()
-		{
-
-		}
-
-		public function testInit()
-		{
-
-		}
-
-		public function testCheck_lanfiles()
-		{
-
-		}
-
-		public function testGetFilePaths()
-		{
-
-		}
-
-		public function testGetOnlineLanguagePacks()
-		{
-
-		}
-
-		public function testGet_comp_lan_phrases()
-		{
-
-		}
-*/
 		public function testIs_utf8()
 		{
 			$strings = array(
@@ -575,10 +518,7 @@
 		}
 
 		/**
-		 * Write a scratch plugin language pack, which _after() then removes.
-		 *
-		 * The directory name is fixed so that WorkspaceCleanup's sweep can carry
-		 * it and heal a run that dies before _after().
+		 * Write a scratch plugin language pack, which the run takes back out after the test.
 		 *
 		 * @param array $files file name => pack body, without the opening tag
 		 * @return string the plugin's directory name
@@ -586,14 +526,10 @@
 		protected function writeScratchPlugin($files)
 		{
 			$plugin = 'temptest6109';
-			$this->scratchPlugin = e_PLUGIN.$plugin.'/';
-
-			mkdir($this->scratchPlugin.'languages', 0755, true);
 
 			foreach($files as $name => $body)
 			{
-				file_put_contents($this->scratchPlugin.'languages/'.$name, "<?php
-".$body);
+				$this->getModule('\Helper\Unit')->writeAppFile('e107_plugins/'.$plugin.'/languages/'.$name, "<?php\n".$body);
 			}
 
 			return $plugin;
@@ -668,69 +604,5 @@
 
 			$this->assertStringContainsString($plugin, $text);
 		}
-
-/*
-		public function testCountFiles()
-		{
-
-		}
-
-		public function test__construct()
-		{
-
-		}
-
-		public function testCleanFile()
-		{
-
-		}
-
-		public function testGetLocalLanguagePacks()
-		{
-
-		}
-
-		public function testCheck_core_lanfiles()
-		{
-
-		}
-
-		public function testRemoveLanguagePack()
-		{
-
-		}
-
-		public function testErrorsOnly()
-		{
-
-		}
-
-		public function testCheck_all()
-		{
-
-		}
-
-		public function testZipLang()
-		{
-
-		}
-
-		public function testGet_lan_file_phrases()
-		{
-
-		}
-
-		public function testNewFile()
-		{
-
-		}
-
-		public function testEdit_lanfiles()
-		{
-
-		}
-
-*/
-
 
 	}

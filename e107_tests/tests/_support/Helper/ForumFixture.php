@@ -2,8 +2,6 @@
 
 namespace Helper;
 
-use Codeception\Module as CodeceptionModule;
-
 /**
  * A forum to test against.
  *
@@ -28,7 +26,7 @@ use Codeception\Module as CodeceptionModule;
  * docroot for the duration, the same shape 0020, 0022 and 0023 use. Rows go in
  * through haveInDatabase so the Db module removes them after each test.
  */
-class ForumFixture extends CodeceptionModule
+class ForumFixture extends AppFixture
 {
 	const PROBE_FILE = 'e107_tests_forum_fixture_probe.php';
 
@@ -46,56 +44,12 @@ class ForumFixture extends CodeceptionModule
 	private $pluginInstalled = false;
 
 	// -----------------------------------------------------------------
-	// collaborators
-	// -----------------------------------------------------------------
-
-	/**
-	 * @return \Helper\Acceptance|\Helper\Webdriver
-	 */
-	private function app()
-	{
-		foreach (array('\Helper\Acceptance', '\Helper\Webdriver') as $name)
-		{
-			if ($this->hasModule($name))
-			{
-				return $this->getModule($name);
-			}
-		}
-
-		throw new \RuntimeException('ForumFixture needs Helper\Acceptance or Helper\Webdriver');
-	}
-
-	/**
-	 * @return \Codeception\Module\PhpBrowser|\Codeception\Module\WebDriver
-	 */
-	private function browser()
-	{
-		foreach (array('PhpBrowser', 'WebDriver') as $name)
-		{
-			if ($this->hasModule($name))
-			{
-				return $this->getModule($name);
-			}
-		}
-
-		throw new \RuntimeException('ForumFixture needs PhpBrowser or WebDriver');
-	}
-
-	/**
-	 * @return \Helper\DelayedDb
-	 */
-	private function db()
-	{
-		return $this->getModule('\Helper\DelayedDb');
-	}
-
-	// -----------------------------------------------------------------
 	// the probe
 	// -----------------------------------------------------------------
 
 	public function haveForumProbe()
 	{
-		if ($this->probeWritten)
+		if ($this->probeWritten && !AppFileRegistry::wasReaped(self::PROBE_FILE))
 		{
 			return;
 		}

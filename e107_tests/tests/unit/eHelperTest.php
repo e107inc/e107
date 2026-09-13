@@ -27,38 +27,6 @@
 
 		}
 
-/*
-
-		public function testFormatMetaTitle()
-		{
-
-		}
-
-		public function testFormatMetaKeys()
-		{
-
-		}
-
-		public function testGetMemoryUsage()
-		{
-
-		}
-
-		public function testUnderscore()
-		{
-
-		}
-
-		public function testFormatMetaDescription()
-		{
-
-		}
-
-		public function testSecureIdAttr()
-		{
-
-		}
-*/
 		public function testTitle2sefFromPlainText()
 		{
 			$actual = $this->hp->title2sef('Plain text test');
@@ -91,57 +59,4 @@
 			$this->assertEquals($expected, $actual);
 		}
 
-/*
-		public function testCamelize()
-		{
-
-		}
-
-		public function testScParams()
-		{
-
-		}
-
-		public function testLabelize()
-		{
-
-		}
-
-		public function testSecureClassAttr()
-		{
-
-		}
-
-		public function testSecureStyleAttr()
-		{
-
-		}
-
-		public function testScDualParams()
-		{
-
-		}
-
-		public function testDasherize()
-		{
-
-		}
-
-		public function testParseMemorySize()
-		{
-
-		}
-
-		public function testBuildAttr()
-		{
-
-		}
-
-		public function testSecureSef()
-		{
-
-		}*/
-
-
-		
 	}

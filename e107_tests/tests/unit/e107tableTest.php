@@ -36,17 +36,6 @@ class e107tableTest extends \Codeception\Test\Unit
 
 	}
 
-	/*
-			public function testGetStyle()
-			{
-
-			}
-
-			public function testSetUniqueId()
-			{
-
-			}
-	*/
 
 	public function testSetGetContent()
 	{
@@ -70,37 +59,6 @@ class e107tableTest extends \Codeception\Test\Unit
 
 
 	}
-	/*
-			public function testGetMagicShortcodes()
-			{
-
-			}
-
-			public function testGetContent()
-			{
-
-			}
-
-			public function testGetMainCaption()
-			{
-
-			}
-
-			public function testTablerender()
-			{
-
-			}
-
-			public function testSetStyle()
-			{
-
-			}
-
-			public function testGetUniqueId()
-			{
-
-			}
-	*/
 
 
 }

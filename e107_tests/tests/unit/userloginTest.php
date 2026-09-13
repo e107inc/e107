@@ -30,17 +30,6 @@
 			$this->lg->__construct();
 
 		}
-/*
-		public function testGetUserData()
-		{
-
-		}
-
-		public function testGetLookupQuery()
-		{
-
-		}
-*/
 		public function testLogin()
 		{
 			$tests = array(
@@ -98,8 +87,6 @@
 
 
 		}
-
-
 
 		/**
 		 * GHSA-9gr7-g6pw-5244: 'provider' arrived as the $autologin argument, which

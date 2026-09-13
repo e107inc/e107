@@ -28,11 +28,6 @@
 			}
 
 		}
-/*
-		public function testCompare_field_lists()
-		{
-
-		}*/
 
 		public function testParse_field_defs()
 		{
@@ -171,10 +166,6 @@
 
 		}
 
-/*		public function testUpdate_table_structure()
-		{
-
-		}*/
 
 		public function testMake_field_types()
 		{
@@ -318,11 +309,6 @@
 
 			$this->assertSame($expected, $result);
 		}
-/*
-		public function testCreateTable()
-		{
-
-		}*/
 
 		public function testGet_current_table()
 		{
@@ -359,37 +345,5 @@
 			$this->assertSame($expected, $result);
 
 		}
-
-
-
-
-/*
-		public function testMake_changes_list()
-		{
-
-		}
-
-		public function testMake_field_list()
-		{
-
-		}
-
-		public function testGet_table_def()
-		{
-
-		}
-
-		public function testMake_table_list()
-		{
-
-		}
-
-		public function testMake_def()
-		{
-
-		}
-*/
-
-
 
 	}

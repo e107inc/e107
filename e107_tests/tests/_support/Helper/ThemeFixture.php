@@ -2,10 +2,8 @@
 
 namespace Helper;
 
-use Codeception\Module as CodeceptionModule;
-
-/** A theme out of tests/_data and the site switched onto it, both put back by {@see ThemeFixture::dropThemeFixtures()}; every fixture name is registered in {@see \Extension\WorkspaceCleanup}. */
-class ThemeFixture extends CodeceptionModule
+/** A theme out of tests/_data and the site switched onto it, both put back by {@see ThemeFixture::dropThemeFixtures()}. */
+class ThemeFixture extends AppFixture
 {
 	const PROBE_FILE = 'e107_tests_theme_fixture_probe.php';
 
@@ -91,7 +89,7 @@ class ThemeFixture extends CodeceptionModule
 	 */
 	private function probe($act, $name)
 	{
-		if (!$this->probeWritten)
+		if (!$this->probeWritten || AppFileRegistry::wasReaped(self::PROBE_FILE))
 		{
 			$this->app()->writeAppFile(self::PROBE_FILE, $this->probeSource());
 			$this->probeWritten = true;
@@ -108,38 +106,6 @@ class ThemeFixture extends CodeceptionModule
 		}
 
 		return $body;
-	}
-
-	/**
-	 * @return \Helper\Acceptance|\Helper\Webdriver
-	 */
-	private function app()
-	{
-		foreach (array('\Helper\Acceptance', '\Helper\Webdriver') as $name)
-		{
-			if ($this->hasModule($name))
-			{
-				return $this->getModule($name);
-			}
-		}
-
-		throw new \RuntimeException('ThemeFixture needs Helper\Acceptance or Helper\Webdriver');
-	}
-
-	/**
-	 * @return \Codeception\Module\PhpBrowser|\Codeception\Module\WebDriver
-	 */
-	private function browser()
-	{
-		foreach (array('PhpBrowser', 'WebDriver') as $name)
-		{
-			if ($this->hasModule($name))
-			{
-				return $this->getModule($name);
-			}
-		}
-
-		throw new \RuntimeException('ThemeFixture needs PhpBrowser or WebDriver');
 	}
 
 	/**

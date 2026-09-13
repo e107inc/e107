@@ -8,8 +8,6 @@
 	 *
 	 */
 
-
-
 	class eIPHandlerTest extends \Codeception\Test\Unit
 	{
 
@@ -28,65 +26,6 @@
 			}
 		}
 
-/*		public function testMakeEmailQuery()
-		{
-
-		}
-
-		public function testGet_host_name()
-		{
-
-		}
-
-		public function testSetIP()
-		{
-
-		}
-
-		public function testIpDecode()
-		{
-
-		}
-
-		public function testWhatIsThis()
-		{
-
-		}
-
-		public function testIp6AddWildcards()
-		{
-
-		}
-
-		public function testIsUserLogged()
-		{
-
-		}
-
-		public function testCheckFilePerms()
-		{
-
-		}
-
-		public function test__construct()
-		{
-
-		}
-
-		public function testCheckBan()
-		{
-
-		}
-
-		public function testPermsToString()
-		{
-
-		}
-
-		public function testMakeDomainQuery()
-		{
-
-		}*/
 
 		public function testAdd_ban()
 		{
@@ -111,48 +50,6 @@
 
 
 		}
-/*
-		public function testGetIP()
-		{
-
-		}
-
-		public function testGetConfigDir()
-		{
-
-		}
-
-		public function testRegenerateFiles()
-		{
-
-		}
-
-		public function testBan()
-		{
-
-		}
-
-		public function testIsAddressRoutable()
-		{
-
-		}
-
-		public function testIpEncode()
-		{
-
-		}
-
-		public function testDebug()
-		{
-
-		}
-
-		public function testGetUserToken()
-		{
-
-		}
-
-	*/
 
 
 	}

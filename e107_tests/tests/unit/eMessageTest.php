@@ -22,57 +22,6 @@
 			}
 
 		}
-/*
-		public function testMoveStack()
-		{
-
-		}
-
-		public function testAdd()
-		{
-
-		}
-
-		public function testGetSession()
-		{
-
-		}
-
-		public function testIsType()
-		{
-
-		}
-
-		public function testMoveToSession()
-		{
-
-		}
-
-		public function testGetAllSession()
-		{
-
-		}
-
-		public function testGetSessionHandler()
-		{
-
-		}
-
-		public function testReset()
-		{
-
-		}
-
-		public function test__construct()
-		{
-
-		}
-
-		public function testAddDebug()
-		{
-
-		}
-*/
 		public function testGetAll()
 		{
 			$this->mes->reset();
@@ -87,52 +36,6 @@
 
 
 		}
-/*
-		public function testAddWarning()
-		{
-
-		}
-
-		public function testSetSessionId()
-		{
-
-		}
-
-		public function testSetUnique()
-		{
-
-		}
-
-		public function testRender()
-		{
-
-		}
-
-		public function testFormatMessage()
-		{
-
-		}
-
-		public function testAddSuccess()
-		{
-
-		}
-
-		public function testSetIcon()
-		{
-
-		}
-
-		public function testAddError()
-		{
-
-		}
-
-		public function testMergeWithSession()
-		{
-
-		}
-*/
 		public function testHasMessage()
 		{
 			$this->mes->reset();
@@ -187,72 +90,6 @@
 
 			$this->mes->resetSession(false, 'default');
 		}
-/*
-		public function testGetInstance()
-		{
-
-		}
-
-		public function testAddInfo()
-		{
-
-		}
-
-		public function testSetTitle()
-		{
-
-		}
-
-		public function testGet()
-		{
-
-		}
-
-		public function testSetClose()
-		{
-
-		}
-
-		public function testResetSession()
-		{
-
-		}
-
-		public function testAddSessionStack()
-		{
-
-		}
-
-		public function test__call()
-		{
-
-		}
-
-		public function testMoveSessionStack()
-		{
-
-		}
-
-		public function testAddAuto()
-		{
-
-		}
-
-		public function testAddSession()
-		{
-
-		}
-
-		public function testAddStack()
-		{
-
-		}
-
-		public function testGetTitle()
-		{
-
-		}
-*/
 
 
 	}

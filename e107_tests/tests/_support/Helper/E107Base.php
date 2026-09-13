@@ -26,6 +26,55 @@ abstract class E107Base extends Base
 	}
 
 	/**
+	 * Write an arbitrary file into the deployed docroot.
+	 *
+	 * Goes through the deployer rather than file_put_contents() so it works
+	 * when the app under test is remote (CI deploys over SFTP). Parent
+	 * directories are created.
+	 *
+	 * Lives here rather than on Acceptance because the unit suite writes
+	 * fixtures into the app too; both suites reach the same app the same way.
+	 *
+	 * A fixture that boots e107 in the docroot goes through
+	 * {@see ProbeGuard::contain()} first, which refuses one that reserved no
+	 * room for the guard. {@see AppFileRegistry} records the write, so the
+	 * test that made it takes it back out.
+	 *
+	 * @param string $relative_path path relative to the app root
+	 * @param string $contents
+	 * @return void
+	 */
+	public function writeAppFile($relative_path, $contents)
+	{
+		AppFileRegistry::park($relative_path);
+		$created = $this->deployer->writeAppFile($relative_path, ProbeGuard::contain($relative_path, $contents));
+		AppFileRegistry::didWrite($relative_path, $created);
+	}
+
+	/**
+	 * Remove a file from the app, whether a test or the app wrote it. A test
+	 * that removes a tracked file calls {@see AppFileRegistry::park()} first.
+	 *
+	 * @param string $relative_path path relative to the app root
+	 * @return void
+	 */
+	public function deleteAppFile($relative_path)
+	{
+		$this->deployer->unlinkAppFile($relative_path);
+	}
+
+	/**
+	 * Remove a path from the app, directory or file, present or not.
+	 *
+	 * @param string $relative_path path relative to the app root
+	 * @return void
+	 */
+	public function removeAppPath($relative_path)
+	{
+		$this->deployer->removeAppPaths(array($relative_path));
+	}
+
+	/**
 	 * Empty the tables e107 counts requests in and records an auto-ban in.
 	 *
 	 * @return void
