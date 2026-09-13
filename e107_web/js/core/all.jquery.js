@@ -1608,16 +1608,16 @@ $(document).ready(function()
 
 
 
-	function storeBbareaCaret(event)
+	function storeBbcodeCaret(event)
 	{
-		if($(event.target).closest('.bbarea').length)
+		if($(event.target).closest('.bbarea, .bbcode-panel').length)
 		{
 			storeCaret(event.target);
 		}
 	}
 
-	document.addEventListener('mousedown', storeBbareaCaret, true);
-	document.addEventListener('focus', storeBbareaCaret, true);
+	document.addEventListener('mousedown', storeBbcodeCaret, true);
+	document.addEventListener('focus', storeBbcodeCaret, true);
 		
 			
 		
