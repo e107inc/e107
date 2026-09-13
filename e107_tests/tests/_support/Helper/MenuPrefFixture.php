@@ -109,7 +109,7 @@ class MenuPrefFixture extends CodeceptionModule
 	 */
 	private function probe($act, array $payload = array())
 	{
-		if (!$this->probeWritten)
+		if (!$this->probeWritten || AppFileRegistry::wasReaped(self::PROBE_FILE))
 		{
 			$this->app()->writeAppFile(self::PROBE_FILE, $this->probeSource());
 			$this->probeWritten = true;

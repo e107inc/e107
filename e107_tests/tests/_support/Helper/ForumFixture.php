@@ -95,7 +95,7 @@ class ForumFixture extends CodeceptionModule
 
 	public function haveForumProbe()
 	{
-		if ($this->probeWritten)
+		if ($this->probeWritten && !AppFileRegistry::wasReaped(self::PROBE_FILE))
 		{
 			return;
 		}

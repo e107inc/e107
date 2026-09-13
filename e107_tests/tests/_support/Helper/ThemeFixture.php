@@ -101,7 +101,7 @@ class ThemeFixture extends CodeceptionModule
 	 */
 	private function probe($act, $name)
 	{
-		if (!$this->probeWritten)
+		if (!$this->probeWritten || AppFileRegistry::wasReaped(self::PROBE_FILE))
 		{
 			$this->app()->writeAppFile(self::PROBE_FILE, $this->probeSource());
 			$this->probeWritten = true;

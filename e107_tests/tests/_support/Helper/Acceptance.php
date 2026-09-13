@@ -648,7 +648,7 @@ class Acceptance extends E107Base
 	 */
 	private function runPluginProbe($act, $plugin)
 	{
-		if (!$this->pluginProbeWritten)
+		if (!$this->pluginProbeWritten || AppFileRegistry::wasReaped(self::PLUGIN_PROBE_FILE))
 		{
 			$this->writeAppFile(self::PLUGIN_PROBE_FILE, self::pluginProbeSource());
 			$this->pluginProbeWritten = true;
