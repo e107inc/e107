@@ -16,6 +16,12 @@ if (!defined('e107_INIT')) { exit; }
 
 class private_message
 {
+	/** gen_type of a bulk send still waiting in the queue for the cron task */
+	const QUEUE_TYPE = 'pm_bulk';
+
+	/** gen_type of a queued send a cron run has claimed and is part way through inserting */
+	const QUEUE_TYPE_RUNNING = 'pm_bulk_running';
+
 	protected 	$e107;
 	protected	$pmPrefs;
 
@@ -234,6 +240,10 @@ class private_message
 	 *	the file outlives each of them individually. An unanswerable question
 	 *	counts as in use: a query that fails must not license a delete.
 	 *
+	 *	The queue is read before the messages are, because a run drops its
+	 *	claimed row only once the messages it stood for are in the table: read
+	 *	the other way round, a delete could miss both.
+	 *
 	 *	@param	string $name - one entry of a pm_attachments list
 	 *	@param	int $pmid - the message being deleted, which does not count
 	 *	@param	int $sender - pm_from of that message, and of every row that can name the same file
@@ -242,6 +252,13 @@ class private_message
 	 */
 	protected function attachmentInUse($name, $pmid, $sender)
 	{
+		$queued = $this->queuedAttachments();
+
+		if($queued === FALSE || in_array($name, $queued, TRUE))
+		{
+			return TRUE;
+		}
+
 		$sql = e107::getDb();
 		$qb = $sql->createQueryBuilder();
 
@@ -263,9 +280,7 @@ class private_message
 			}
 		}
 
-		$queued = $this->queuedAttachments();
-
-		return $queued === FALSE || in_array($name, $queued, TRUE);
+		return FALSE;
 	}
 
 
@@ -273,7 +288,8 @@ class private_message
 	private $queuedAttachmentNames = NULL;
 
 	/**
-	 *	The attachments the rows a bulk send left for the cron task still owe.
+	 *	The attachments the rows a bulk send left for the cron task still owe,
+	 *	the row a run has claimed and is part way through inserting included.
 	 *
 	 *	Read once and kept, because the answer is the same for every attachment
 	 *	of every message deleted in the request, and the queue holds one row per
@@ -281,7 +297,7 @@ class private_message
 	 *
 	 *	@return	array|bool stored names, or FALSE when the queue could not be read
 	 */
-	private function queuedAttachments()
+	protected function queuedAttachments()
 	{
 		if($this->queuedAttachmentNames !== NULL)
 		{
@@ -291,7 +307,7 @@ class private_message
 		$sql = e107::getDb();
 
 		$query = $sql->createQueryBuilder()->select('gen_chardata')->from('generic')
-			->where('gen_type', 'pm_bulk');
+			->whereIn('gen_type', array(self::QUEUE_TYPE, self::QUEUE_TYPE_RUNNING));
 
 		if($query->execute() === FALSE)
 		{
@@ -535,7 +551,7 @@ class private_message
 
 				$pmInfo = $info;
 				$genInfo = array(
-					'gen_type' => 'pm_bulk',
+					'gen_type' => self::QUEUE_TYPE,
 					'gen_datestamp' => time(),
 					'gen_user_id' => USERID,
 					'gen_ip' => ''
