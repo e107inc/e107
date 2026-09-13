@@ -248,105 +248,69 @@
 
 		}
 
-		public function test_ModifyListQrySearch_FromJsonFiles()
+		/**
+		 * Replays a list query the banlist admin page once ran, recorded with its inputs and the SQL it produced.
+		 *
+		 * @dataProvider recordedListQueries
+		 * @param string $file
+		 */
+		public function testModifyListQrySearchReproducesARecordedQuery($file)
 		{
-
-			// For Banlist test.
-
 			require_once(__DIR__ . '/fixtures/AdminUiBanlistSearchFixture.php');
 			$this->ui = $this->make(AdminUiBanlistSearchFixture::class);
 			$this->ui->setRequest($this->req);
 
-			// The directory where the JSON files are stored
-			$directory = e_BASE . "e107_tests/tests/_data/e_admin_ui/_modifyListQrySearch/";
-			if (!is_dir($directory))
+			$data = json_decode(file_get_contents($file), true);
+			$this::assertNotNull($data, basename($file) . ' does not decode: ' . json_last_error_msg());
+
+			$call = $data['methodInvocation'];
+			$prepared = $data['preProcessedData'];
+
+			if(!empty($prepared['listOrder']))
 			{
-				$this::fail("Directory does not exist: " . $directory);
+				$this->ui->setListOrder($prepared['listOrder']);
 			}
 
-			// Scan the directory for JSON files
-			$files = glob($directory . '*.json');
+			$this->ui->setFields($prepared['fields']);
 
-			$this::assertNotEmpty($files, "No JSON files found in the specified directory!");
-
-			foreach ($files as $fl)
+			if(!empty($call['searchTerm']))
 			{
-				// Ensure the JSON file exists
-				$file = realpath(codecept_data_dir().str_replace('/', DIRECTORY_SEPARATOR, '/e_admin_ui/_modifyListQrySearch/') . basename($fl));
-				if (!file_exists($file))
-				{
-					$this::fail("File doesn't exist: " . $file);
-				}
-
-				// Load JSON content
-				$jsonContent = file_get_contents($file);
-				if (empty($jsonContent))
-				{
-					$this::fail("Failed to read JSON file: " . $file);
-				}
-
-				// Decode JSON
-				$data = json_decode($jsonContent, true);
-				if ($data === null)
-				{
-					$error = json_last_error_msg(); // Get a readable explanation of the problem
-					$this::fail("JSON decoding failed for file: $file. Error: " . $error);
-				}
-
-				// Ensure JSON data is valid
-				$this::assertNotEmpty($data, "Failed to decode JSON file: " . $file);
-
-				// Extract input parameters from JSON structure
-				$methodInvocation   = $data['methodInvocation'];
-				$preProcessedData   = $data['preProcessedData'];
-				$expected           = $data['expected'];
-
-				// Verify fields are present in the JSON
-				if (empty($preProcessedData['fields']))
-				{
-					$this::fail("Fields are not defined in the JSON file: " . $file);
-				}
-
-				if(!empty($preProcessedData['listOrder']))
-				{
-					$this->ui->setListOrder($preProcessedData['listOrder']);
-				}
-
-				$this->ui->setFields($preProcessedData['fields']);
-
-				$queryValue = $this->ui->getQuery('searchquery');
-
-				if(!empty($methodInvocation['searchTerm']))
-				{
-					$this->ui->setQuery('searchquery', $methodInvocation['searchTerm']);
-				}
-
-				if(!empty($methodInvocation['handleAction']))
-				{
-					$this->req->setAction($methodInvocation['handleAction']);
-				}
-
-				$query = $this->ui->_modifyListQrySearch(
-					$methodInvocation['listQry'],
-					$methodInvocation['searchTerm'],
-					$methodInvocation['filterOptions'],
-					$methodInvocation['tablePath'],
-					$methodInvocation['tableFrom'],
-					$methodInvocation['primaryName'],
-					$methodInvocation['raw'],
-					$methodInvocation['orderField'],
-					$methodInvocation['qryAsc'],
-					$methodInvocation['forceFrom'],
-					$methodInvocation['qryFrom'],
-					$methodInvocation['forceTo'],
-					$methodInvocation['perPage'],
-					$methodInvocation['qryField'],
-					$methodInvocation['isfilter'],
-					$methodInvocation['handleAction']
-				);
-
-				$this::assertEquals($expected, $query, "Test failed for JSON file: " . $file);
+				$this->ui->setQuery('searchquery', $call['searchTerm']);
 			}
+
+			if(!empty($call['handleAction']))
+			{
+				$this->req->setAction($call['handleAction']);
+			}
+
+			$query = $this->ui->_modifyListQrySearch(
+				$call['listQry'], $call['searchTerm'], $call['filterOptions'], $call['tablePath'],
+				$call['tableFrom'], $call['primaryName'], $call['raw'], $call['orderField'],
+				$call['qryAsc'], $call['forceFrom'], $call['qryFrom'], $call['forceTo'],
+				$call['perPage'], $call['qryField'], $call['isfilter'], $call['handleAction']
+			);
+
+			$this::assertEquals($data['expected'], $query);
+		}
+
+		/**
+		 * @return array one case per file under _data/e_admin_ui/_modifyListQrySearch/, named for it
+		 */
+		public function recordedListQueries()
+		{
+			$cases = array();
+
+			foreach(glob(codecept_data_dir('e_admin_ui/_modifyListQrySearch/*.json')) as $file)
+			{
+				$cases[basename($file, '.json')] = array($file);
+			}
+
+			if(empty($cases))
+			{
+				throw new RuntimeException('No recorded list queries to replay under _data/e_admin_ui/_modifyListQrySearch/');
+			}
+
+			return $cases;
 		}
 
 	}

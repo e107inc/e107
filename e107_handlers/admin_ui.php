@@ -5427,7 +5427,6 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function _modifyListQrySearch($listQry, $searchTerm, $filterOptions, $tablePath,  $tableFrom, $primaryName, $raw, $orderField, $qryAsc, $forceFrom, $qryFrom, $forceTo, $perPage, $qryField,  $isfilter, $handleAction)
 	{
-		$generateTest = false;
 		$tp       = e107::getParser();
 		$fields   = $this->getFields();
 		$joinData = $this->getJoinData();
@@ -5445,41 +5444,6 @@ class e_admin_controller_ui extends e_admin_controller
 		$searchFilter = $this->_parseFilterRequest($filterOptions);
 
 		$listQry = $this->listQry; // check for modification during parseFilterRequest();
-
-		$debugData = [
-			'uri'    => e_REQUEST_URI,
-		    'methodInvocation' => [
-		        'listQry'      => (string) $listQry,
-		        'searchTerm'   => $searchTerm,
-		        'filterOptions'=> $filterOptions,
-		        'tablePath'    => $tablePath,
-		        'tableFrom'    => $tableFrom,
-		        'primaryName'  => $primaryName,
-		        'raw'          => (bool) $raw,
-		        'orderField'   => $orderField,
-		        'qryAsc'       => $qryAsc,
-		        'forceFrom'    => $forceFrom,
-		        'qryFrom'      => $qryFrom,
-		        'forceTo'      => $forceTo,
-		        'perPage'      => $perPage,
-		        'qryField'     => $qryField,
-		        'isfilter'     => $isfilter,
-		        'handleAction' => $handleAction
-		    ],
-		    'preProcessedData' => [
-		        'fields'   => $fields,
-		        'joinData' => $joinData,
-		        'listOrder' => $this->listOrder,
-		    ],
-		    'intermediateStates' => [
-		        'searchTerm'  => $searchTerm,
-		        'searchQuery' => $searchQuery,
-		        'searchFilter'=> $searchFilter,
-		        'listQry'     => $this->listQry
-		    ]
-		];
-
-
 
 		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 		{
@@ -5928,30 +5892,6 @@ class e_admin_controller_ui extends e_admin_controller
 		// print_a($this->fields);
 
 		$this->_log('listQry: ' . str_replace('#', MPREFIX, $qry));
-
-		// JSON encode the debug data
-		$debugData['intermediateStates']['listQryBeforeFinal'] = $listQry;
-
-		$debugData['expected'] = $qry;
-		$jsonDebugInfo = json_encode($debugData, JSON_PRETTY_PRINT);
-
-		// Optionally log the JSON data to a file for inspection
-		if($generateTest && !e107::isCli())
-		{
-			$path = e_BASE."e107_tests/tests/_data/e_admin_ui/_modifyListQrySearch/".sha1($jsonDebugInfo).".json";
-			if(file_put_contents($path, $jsonDebugInfo . PHP_EOL, FILE_APPEND))
-			{
-				e107::getMessage()->addDebug('Saved test info to ' . $path);
-			}
-		}
-
-
-		// Print to the debug interface (optional, can overload logs)
-			if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
-			{
-				e107::getMessage()->addDebug('<pre>' . $jsonDebugInfo . '</pre>');
-			}
-
 
 		return $qry;
 	}
