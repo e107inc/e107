@@ -18,6 +18,8 @@ if (!defined('e107_INIT')) { exit; }
 
 class list_download
 {
+	public $parent;
+
 	function __construct($parent)
 	{
 		$this->parent = $parent;
