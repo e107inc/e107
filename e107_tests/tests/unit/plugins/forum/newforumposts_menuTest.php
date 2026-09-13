@@ -60,7 +60,7 @@ class newforumposts_menuTest extends \Codeception\Test\Unit
 		self::assertStringContainsString($this->threadName, $printed,
 			"the menu rendered nothing, so nothing was measured:\n".$printed);
 
-		self::assertDoesNotMatchRegularExpression('/Undefined variable \$?total_(topics|views|replies)/i', $printed,
+		self::assertSame(0, preg_match('/Undefined variable \$?total_(topics|views|replies)/i', $printed),
 			"the menu counts into variables it never declared:\n".$printed);
 	}
 }

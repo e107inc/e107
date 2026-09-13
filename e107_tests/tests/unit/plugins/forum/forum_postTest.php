@@ -65,7 +65,7 @@ class forum_postTest extends \Codeception\Test\Unit
 	{
 		$printed = $this->openThePostForm(array('f' => 'nt', 'id' => '1'));
 
-		self::assertDoesNotMatchRegularExpression('/Undefined array key "post"/i', $printed,
+		self::assertSame(0, preg_match('/Undefined array key "post"/i', $printed),
 			"starting a topic carries no post id:\n".$printed);
 	}
 
@@ -77,10 +77,10 @@ class forum_postTest extends \Codeception\Test\Unit
 	{
 		$printed = $this->openThePostForm(array('id' => '1'));
 
-		self::assertDoesNotMatchRegularExpression('/Undefined array key "(f|post)"/i', $printed,
+		self::assertSame(0, preg_match('/Undefined array key "(f|post)"/i', $printed),
 			"the form reads query keys that are not there:\n".$printed);
 
-		self::assertDoesNotMatchRegularExpression('/trim\(\): Passing null/i', $printed,
+		self::assertSame(0, preg_match('/trim\(\): Passing null/i', $printed),
 			"a missing action is handed to trim() as null:\n".$printed);
 	}
 }
