@@ -91,10 +91,14 @@ find_harness_worktree() {
     return 1
 }
 
+DOCKER_CHECKED=
+
 require_docker() {
+    [ -n "$DOCKER_CHECKED" ] && return 0
     have docker || err "docker is required but not on PATH"
     docker compose version >/dev/null 2>&1 \
         || err "the 'docker compose' plugin is required (got: $(docker compose version 2>&1 || true))"
+    DOCKER_CHECKED=1
 }
 
 # Slug an arbitrary string into something safe for compose project names.
