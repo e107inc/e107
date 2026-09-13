@@ -413,7 +413,7 @@ class forumStats
 
 		$qb = $sql->createQueryBuilder();
 		$rows = $qb
-			->select('t.*', 'u.user_name')->selectAs('ul.user_name', 'user_last')->addSelect('f.forum_name')
+			->select('t.*', 'u.user_name')->selectAs('ul.user_name', 'user_last')->addSelect('f.forum_id', 'f.forum_name', 'f.forum_sef')
 			->from('forum_thread', 't')
 			->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
 			->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 't.thread_user'))
@@ -448,8 +448,10 @@ class forumStats
 					$POSTER = $row['thread_user_anon'];
 				}
 
-			//	$LINKTOTHREAD = e107::url('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
-			//	$LINKTOFORUM = e107::url('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
+				$row['thread_sef'] = $forum->getThreadSef($row);
+
+				$LINKTOTHREAD = e107::url('forum', 'topic', $row);
+				$LINKTOFORUM = e107::url('forum', 'forum', $row);
 
 				$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 

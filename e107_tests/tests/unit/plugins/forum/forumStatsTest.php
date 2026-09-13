@@ -27,8 +27,15 @@
  */
 class forumStatsTest extends \Test\Unit
 {
+	use \Test\ForumRows;
+
 	/** @var forumStats */
 	private $stats;
+
+	public function _after()
+	{
+		$this->dropForumRows();
+	}
 
 	public function _before()
 	{
@@ -153,5 +160,40 @@ class forumStatsTest extends \Test\Unit
 		$this->assertEquals(0, $result[0]['user_forums']);
 		$this->assertEquals(0, $result[0]['percentage'],
 			'No replies at all is 0%, not a fatal error.');
+	}
+
+	/**
+	 * The most active threads name a thread and the forum it sits in, and both
+	 * are links. The two URLs behind them were commented out when the rest of
+	 * the row moved to the URL builder, leaving every row with two links that
+	 * had nothing to go to.
+	 */
+	public function testTheMostActiveThreadsLinkToTheThreadAndToItsForum()
+	{
+		$lan = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'_front.php';
+
+		self::assertTrue(is_readable($lan), 'the forum front language file is not where the page looks for it: '.$lan);
+
+		e107::includeLan($lan, true);
+
+		self::assertTrue(defined('LAN_1'), 'loading '.$lan.' defined none of the terms the table headings read');
+
+		$this->haveForumTables();
+
+		$category = $this->haveForum('e107help stats probe category');
+		$forumId = $this->haveForum('e107help stats probe forum', $category);
+
+		$threadName = 'e107help stats probe thread '.time();
+		$this->haveForumThread($threadName, $forumId);
+
+		ob_start();
+		$this->stats->mostActiveTopics();
+		$rendered = ob_get_clean();
+
+		self::assertStringContainsString($threadName, $rendered,
+			'the seeded thread is missing from the most active threads');
+
+		self::assertStringNotContainsString("href=''", $rendered,
+			'a thread or forum name is rendered as a link that goes nowhere');
 	}
 }
