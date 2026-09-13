@@ -193,6 +193,10 @@ if(!class_exists('forum_newforumposts_menu'))
 //					$list = $tp->parseTemplate($template['start'], true);
 					$text = $tp->parseTemplate($template['start'], true);
 
+					$total_topics = 0;
+					$total_views = 0;
+					$total_replies = 0;
+
 					while($row = $sql->fetch())
 					{
 //						var_dump ($row);
