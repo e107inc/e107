@@ -81,6 +81,10 @@ class e_online
 		//global $members_online, $total_online;						// Not needed as globals
 		global $listuserson; // FIXME - remove it, make it property, call e_online signleton - e107::getOnline()
 
+		$member_list = '';
+		$members_online = 0;
+		$listuserson = array();
+
 		if($online_tracking == false || $flood_control == false)
 		{
 			define('e_TRACKING_DISABLED', true);		// Used in forum, online menu
@@ -326,10 +330,6 @@ class e_online
 				if ($total_online = $sql->gen('SELECT o.*,u.user_image FROM `#online` AS o LEFT JOIN `#user` AS u ON o.online_user_id = u.user_id WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
 			//	if ($total_online = $sql->gen('SELECT o  FROM `#online`  WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
 				{
-					$member_list = '';
-					$members_online = 0;
-					$listuserson = array();
-
 					$dbg->logTime('Go online (db fetch) Line:'.__LINE__);
 					while ($row = $sql->fetch())
 					{
