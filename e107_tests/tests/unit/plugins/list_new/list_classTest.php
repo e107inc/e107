@@ -51,7 +51,8 @@ class list_classTest extends \Test\Unit
 		$php = "require_once(e_PLUGIN.'list_new/list_class.php'); \$rc = new listclass(); "
 			."\$prf = \$rc->getDefaultPrefs(); "
 			."echo '<<'.\$prf['new_menu_caption'].'|'.\$prf['recent_page_caption']"
-			.".'|'.(isset(\$prf['news_new_page_display']) ? 'sections' : 'no sections').'>>'; ";
+			.".'|'.(isset(\$prf['news_new_page_display']) ? 'sections' : 'no sections')"
+			.".'|'.\$prf['recent_page_welcometext'].'>>'; ";
 
 		$printed = $this->probe($php);
 		$matches = array();
@@ -66,6 +67,8 @@ class list_classTest extends \Test\Unit
 		self::assertSame('sections', $answers[2], 'the per-section preferences are what the sections are listed for');
 		self::assertNotSame('LIST_ADMIN_15', $answers[0], 'an unloaded language file stores the constant name as the caption');
 		self::assertNotSame('LIST_ADMIN_14', $answers[1], 'an unloaded language file stores the constant name as the caption');
+		self::assertStringNotContainsString('SITENAME', $answers[3],
+			'the welcome text saved into the site\'s preferences greets the visitor with the constant name');
 	}
 
 	/**
