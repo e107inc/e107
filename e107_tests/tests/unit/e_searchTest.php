@@ -124,20 +124,27 @@
 		}
 
 		/**
+		 * The only result keys {@see e_search::parsesearch()} renders; a key outside this set reaches no page.
+		 *
+		 * @return array
+		 */
+		private static function renderedResultKeys()
+		{
+			return array('omit_result', 'pre_title', 'title', 'link', 'pre_summary', 'summary', 'detail', 'post_summary');
+		}
+
+		/**
 		 * Stands in for a plugin's search compile function; {@see e_search::parsesearch()} calls it per row.
 		 */
 		public function searchProbeResult($row)
 		{
-			return array(
-				'link'         => 'index.php',
-				'pre_title'    => '',
-				'title'        => $row['probe_title'],
-				'summary'      => $row['probe_summary'],
-				'detail'       => '',
-				'pre_summary'  => '',
-				'post_summary' => '',
-				'omit_result'  => false,
-			);
+			$res = array_fill_keys(self::renderedResultKeys(), '');
+
+			$res['link'] = 'index.php';
+			$res['title'] = $row['probe_title'];
+			$res['summary'] = $row['probe_summary'];
+
+			return $res;
 		}
 
 		/**
@@ -793,5 +800,40 @@
 				'The forum result detail must put a space between the label and the author.');
 			self::assertStringContainsString(' '.LAN_SEARCH_8.' ', $res['detail'],
 				'The forum result detail must space the date label away from the author and the date.');
+		}
+
+		/**
+		 * A key the results page never reads renders nothing, so an addon that sets one is describing output it does not have.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6326
+		 */
+		public function testNoSearchAddonReturnsAKeyTheResultsPageIgnores()
+		{
+			e107::coreLan('search');
+
+			foreach($this->searchAddonRows() as $plugin => $row)
+			{
+				$res = $this->compileSearchAddon($plugin, $row);
+				$ignored = array_values(array_diff(array_keys($res), self::renderedResultKeys()));
+
+				self::assertSame(array(), $ignored,
+					$plugin.' returns a key the results page never reads, so whatever it holds reaches no page.');
+			}
+		}
+
+		/**
+		 * The forum search selects no thread_parent, so a row carrying one anyway must still be titled from the thread name beside it.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6326
+		 */
+		public function testForumResultIsTitledWithTheThreadTheRowBelongsTo()
+		{
+			e107::coreLan('search');
+
+			$rows = $this->searchAddonRows();
+			$res = $this->compileSearchAddon('forum', $rows['forum'] + array('thread_parent' => 1));
+
+			self::assertStringEndsWith(' | '.$rows['forum']['thread_name'], $res['title'],
+				'A forum result must be titled with the thread its post belongs to, including on a row that carries a thread_parent.');
 		}
 	}
