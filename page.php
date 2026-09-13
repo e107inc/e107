@@ -355,7 +355,7 @@ class pageClass
 		
 		// retrieve book information.
 		$brow = $sql->createQueryBuilder()
-			->select('chapter_name', 'chapter_template', 'chapter_meta_description', 'chapter_meta_keywords')
+			->select('chapter_name', 'chapter_template', 'chapter_icon', 'chapter_meta_description', 'chapter_meta_keywords')
 			->from('page_chapters')
 			->where('chapter_id', (int) $book)
 			->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
@@ -400,13 +400,8 @@ class pageClass
 		
 		$caption = $tp->parseTemplate($template['caption'], true, $bvar);
 
-        if($brow)
-        {
-            e107::title(eHelper::formatMetaTitle($brow['chapter_name']));
-            if($brow['chapter_meta_description']) define('META_DESCRIPTION', eHelper::formatMetaDescription($brow['chapter_meta_description']));
-            if($brow['chapter_meta_keywords']) define('META_KEYWORDS', eHelper::formatMetaKeys($brow['chapter_meta_keywords']));
-        }
-		
+		$this->setChapterMeta('listChapters', $brow);
+
 		
 		$chapters = $sql->createQueryBuilder()
 			->select('*')->from('page_chapters')
@@ -486,6 +481,35 @@ class pageClass
 	}
 
 
+	/**
+	 * Set the document title and meta tags from a chapter row, but only when the request asked for that view.
+	 * @param string $action the view this row belongs to: listChapters or listPages
+	 * @param array $row page_chapters row
+	 * @return void
+	 */
+	private function setChapterMeta($action, $row)
+	{
+		$request = e107::getRegistry('core/page/request');
+
+		if(empty($row) || !isset($request['action']) || $request['action'] !== $action)
+		{
+			return;
+		}
+
+		e107::title(eHelper::formatMetaTitle($row['chapter_name']));
+
+		if($row['chapter_meta_description'])
+		{
+			define('META_DESCRIPTION', eHelper::formatMetaDescription($row['chapter_meta_description']));
+		}
+
+		if($row['chapter_meta_keywords'])
+		{
+			define('META_KEYWORDS', eHelper::formatMetaKeys($row['chapter_meta_keywords']));
+		}
+	}
+
+
 	
 	function listPages($chapt=0)
 	{
@@ -511,13 +535,8 @@ class pageClass
 			$layout = vartrue($row['chapter_template'],'default');
 		}
 
-        if($row)
-        {
-            e107::title(eHelper::formatMetaTitle($row['chapter_name']));
-            if($row['chapter_meta_description']) define('META_DESCRIPTION', eHelper::formatMetaDescription($row['chapter_meta_description']));
-            if($row['chapter_meta_keywords']) define('META_KEYWORDS', eHelper::formatMetaKeys($row['chapter_meta_keywords']));
-        }
-		
+		$this->setChapterMeta('listPages', $row);
+
 		//$bookId = $row['chapter_parent'];
 		$bookSef = $this->getSef($row['chapter_parent']);
 		$bookTitle = $this->getName($row['chapter_parent']);
