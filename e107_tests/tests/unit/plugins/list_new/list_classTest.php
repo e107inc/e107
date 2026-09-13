@@ -10,13 +10,14 @@
 /**
  * @group plugins
  *
- * The two states a fresh install puts list_new in, neither of which the admin
- * page ever reaches: preferences that have never been written, and a section
- * with nothing new to list.
+ * The states a fresh install puts list_new in, none of which the admin page
+ * ever reaches: preferences that have never been written, a section with
+ * nothing new to list, a section whose plugin has been uninstalled, and the
+ * day selector the 'new' page is built around.
  *
- * The first runs in a subprocess. The defaults are built once and then saved,
- * so a second in-process build would be measuring whatever the rest of the
- * shuffled suite had already defined and stored.
+ * The two that build the defaults run in a subprocess. They are built once
+ * and then saved, so a second in-process build would be measuring whatever
+ * the rest of the shuffled suite had already defined and stored.
  */
 class list_classTest extends \Test\Unit
 {
@@ -133,6 +134,29 @@ class list_classTest extends \Test\Unit
 		));
 
 		self::assertIsString($text, 'a section with no plugin behind it stops the page instead of rendering nothing');
+	}
+
+	/**
+	 * The selector is assembled into the list class's own row, and the only
+	 * shortcode that prints it reads the row on the shortcode object, so the
+	 * control the 'new' page is built around renders as an empty div unless
+	 * the row is handed over.
+	 */
+	public function testTheTimelapseSelectorReachesTheShortcodeThatPrintsIt()
+	{
+		require_once(e_PLUGIN.'list_new/list_class.php');
+		require_once(e_HANDLER.'form_handler.php');
+
+		global $rs;
+		$rs = new form();
+
+		$rc = new listclass();
+		$rc->list_pref = array('new_page_timelapse' => '1', 'new_page_timelapse_days' => '3');
+
+		$text = $rc->displayTimelapse();
+
+		self::assertStringContainsString(LIST_MENU_6, $text, 'the selector renders as an empty div');
+		self::assertStringContainsString('<select', $text, 'the selector renders without the days to choose from');
 	}
 
 	/**
