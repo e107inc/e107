@@ -13,6 +13,8 @@ if (!defined('e107_INIT')) { exit; }
 
 class list_chatbox_menu
 {
+	public $parent;
+
 	function __construct($parent)
 	{
 		$this->parent = $parent;
