@@ -2323,7 +2323,7 @@ class e_mm_layout
 
 		foreach($layouts['menus'] as $name => $areas)
 		{
-			$text .= '<ul class="dropdown-menu e-mm-selector ' . $name . '" >
+			$text .= '<ul class="dropdown-menu dropdown-menu-right dropdown-menu-end e-mm-selector ' . $name . '" >
 					<li><div>';
 
 			foreach($areas as $menu_act)
