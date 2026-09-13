@@ -6,6 +6,9 @@ class browserProbesShowTheSecretTest extends \Test\Unit
 {
 	const SUITE = 'tests/webdriver';
 
+	/** The actor methods of {@see \Helper\Probe}, which put the secret in every URL they load. */
+	private static $fetchers = array('amOnProbe', 'grabProbe', 'grabProbeJson', 'probe');
+
 	public function testEveryGuardedWebdriverProbeIsLoadedWithTheSecret()
 	{
 		$findings = array();
@@ -19,9 +22,9 @@ class browserProbesShowTheSecretTest extends \Test\Unit
 		}
 
 		$this->assertSame(array(), $findings,
-			"These files write a fixture that carries " . \Helper\ProbeGuard::MARKER . " and never call \\Helper\\ProbeGuard::query().\n"
-			. "A browser cannot send the " . \Helper\ProbeGuard::HEADER . " header, so the fixture answers "
-			. \Helper\ProbeGuard::REFUSAL . " unless its URL carries '?' . \\Helper\\ProbeGuard::query().");
+			"These files write a fixture that carries " . \Helper\ProbeGuard::MARKER . " and neither call \\Helper\\ProbeGuard::query()\n"
+			. "nor load it through \\Helper\\Probe. A browser cannot send the " . \Helper\ProbeGuard::HEADER . " header, so the\n"
+			. "fixture answers " . \Helper\ProbeGuard::REFUSAL . " unless its URL carries '?' . \\Helper\\ProbeGuard::query().");
 	}
 
 	/**
@@ -45,6 +48,8 @@ class browserProbesShowTheSecretTest extends \Test\Unit
 			'the marker and an imported query' => array("\$src = '{$marker}'; \$I->amOnPage('/p.php?' . ProbeGuard::query());", false),
 			'the marker and a query with spacing around the operator' => array("\$src = '{$marker}'; ProbeGuard :: query();", false),
 			'the marker and a differently named static' => array("\$src = '{$marker}'; ProbeGuard::secret();", true),
+			'the marker and the probe module loading it' => array("\$src = '{$marker}'; \$I->amOnProbe('act=x');", false),
+			'the marker and a fetcher of the Cest\'s own' => array("\$src = '{$marker}'; \$this->probe(\$I, 'act=x');", true),
 			'the marker only in a comment' => array("// {$marker}", false),
 			'no marker at all' => array("\$I->amOnPage('/p.php');", false),
 		);
@@ -78,9 +83,33 @@ class browserProbesShowTheSecretTest extends \Test\Unit
 			{
 				$shown = true;
 			}
+
+			if ($tokens[$i][0] === T_STRING && in_array($tokens[$i][1], self::$fetchers, true) && $this->isCalledOnAnActor($tokens, $i))
+			{
+				$shown = true;
+			}
 		}
 
 		return $reserved && !$shown;
+	}
+
+	/**
+	 * @param array $tokens
+	 * @param int $i index of a name token
+	 * @return bool whether $tokens[$i] is a method called on a variable other than $this, which is how a Cest reaches a module
+	 */
+	private function isCalledOnAnActor(array $tokens, $i)
+	{
+		$arrow = $this->neighbourIndex($tokens, $i, -1);
+
+		if ($arrow === null || !is_array($tokens[$arrow]) || $tokens[$arrow][0] !== T_OBJECT_OPERATOR)
+		{
+			return false;
+		}
+
+		$object = $this->neighbour($tokens, $arrow, -1);
+
+		return is_array($object) && $object[0] === T_VARIABLE && $object[1] !== '$this';
 	}
 
 	/**

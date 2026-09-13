@@ -75,15 +75,11 @@ class AdminMiscCsrfCest
 
 	private $memberId = 0;
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->loginAsAdmin();
-		$I->amOnPage($this->probeUrl('act=arm'));
+		$I->amOnProbe('act=arm');
 		$I->seeInSource('P9_OK arm');
 
 		$source = $I->grabPageSource();
@@ -97,8 +93,7 @@ class AdminMiscCsrfCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('act=cleanup'));
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->amOnProbe('act=cleanup');
 	}
 
 	/**
@@ -119,7 +114,7 @@ class AdminMiscCsrfCest
 	 */
 	public function aTokenlessGetDoesNotEndTheLoginAsSession(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('act=loginas&id='.$this->memberId));
+		$I->amOnProbe('act=loginas&id='.$this->memberId);
 		$I->seeInSource('P9_OK loginas');
 
 		$I->amOnPage(self::USERS.'?mode=main&action=logoutas');
@@ -249,7 +244,7 @@ class AdminMiscCsrfCest
 	 */
 	public function theUserListsOwnBatchActionStillEndsTheLoginAsSession(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('act=loginas&id='.$this->memberId));
+		$I->amOnProbe('act=loginas&id='.$this->memberId);
 		$I->seeInSource('P9_OK loginas');
 
 		$I->amOnPage(self::USERS.'?mode=main&action=list');
@@ -270,7 +265,7 @@ class AdminMiscCsrfCest
 	 */
 	public function theLoginAsBannersOwnLinkStillLogsOut(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('act=loginas&id='.$this->memberId));
+		$I->amOnProbe('act=loginas&id='.$this->memberId);
 		$I->seeInSource('P9_OK loginas');
 
 		$I->amOnPage($this->publishedLink($I, self::DASHBOARD,
@@ -363,39 +358,14 @@ class AdminMiscCsrfCest
 	}
 
 	/**
-	 * The probe inserts a member, rewrites a core preference and deletes the
-	 * upgrade notice's flag file, so a caller that cannot show this run's
-	 * secret has to get nothing at all. A probe left in the docroot by a run
-	 * that died is otherwise an anonymous way to change what the site stores.
-	 */
-	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=cleanup');
-
-		$I->seeResponseCodeIs(403);
-		$this->seeProbeReports($I, 'member=1');
-	}
-
-	/**
 	 * @param AcceptanceTester $I
 	 * @param string $expected a fragment of the probe's state line
 	 * @return void
 	 */
 	private function seeProbeReports(AcceptanceTester $I, $expected)
 	{
-		$I->amOnPage($this->probeUrl('act=state'));
+		$I->amOnProbe('act=state');
 		$I->seeInSource($expected);
-	}
-
-	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::PROBE_FILE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
 	}
 
 	/**
@@ -425,7 +395,6 @@ class AdminMiscCsrfCest
 	 */
 	private function probeSource()
 	{
-		$secret = $this->secret;
 		$lan = self::SCRATCH_LAN;
 		$name = self::MEMBER_NAME;
 		$email = self::MEMBER_EMAIL;
@@ -434,13 +403,6 @@ class AdminMiscCsrfCest
 <?php
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
-
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
 
 header('Content-Type: text/plain');
 

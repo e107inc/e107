@@ -16,8 +16,8 @@ class SubmitNewsBbcodeSaveCest
 	public function _before(AcceptanceTester $I)
 	{
 		$this->emptyQueue($I);
-		$this->haveMember($I);
-		$this->loginAsMember($I);
+		$I->haveMember(self::MEMBER, self::MEMBER_PASS);
+		$I->loginAsMember(self::MEMBER, self::MEMBER_PASS);
 	}
 
 	public function _after(AcceptanceTester $I)
@@ -51,41 +51,6 @@ class SubmitNewsBbcodeSaveCest
 			'the submission has to reach the queue for this to be testing anything');
 		$I->assertStringNotContainsString('onload', $stored,
 			'the bbcode save pass has to drop a parameter that is not on the [img] whitelist');
-	}
-
-	/**
-	 * A member, because subnews_class ships as e_UC_MEMBER and post_html does not.
-	 *
-	 * @param AcceptanceTester $I
-	 * @return int user id
-	 */
-	private function haveMember(AcceptanceTester $I)
-	{
-		return $I->haveInDatabase('e107_user', array(
-			'user_name' => self::MEMBER, 'user_loginname' => self::MEMBER, 'user_login' => self::MEMBER,
-			'user_password' => md5(self::MEMBER_PASS),
-			'user_email' => self::MEMBER.'@example.com',
-			'user_join' => time(), 'user_ban' => 0,
-			'user_lastvisit' => time() - 86400, 'user_currentvisit' => time() - 86400,
-			'user_class' => '253',
-			'user_admin' => 0, 'user_perms' => '',
-			'user_prefs' => '', 'user_signature' => '', 'user_realm' => '', 'user_xup' => '',
-		));
-	}
-
-	/**
-	 * The stored password is a plain md5, which UserHandler reads as PASSWORD_E107_MD5 whatever the site is set to.
-	 *
-	 * @param AcceptanceTester $I
-	 * @return void
-	 */
-	private function loginAsMember(AcceptanceTester $I)
-	{
-		$I->resetAllCookies();
-		$I->amOnPage('/login.php');
-		$I->fillField('username', self::MEMBER);
-		$I->fillField('userpass', self::MEMBER_PASS);
-		$I->click('userlogin');
 	}
 
 	/**

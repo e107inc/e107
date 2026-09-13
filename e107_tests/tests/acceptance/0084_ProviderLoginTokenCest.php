@@ -48,19 +48,13 @@ class ProviderLoginTokenCest
 	/** @var string a CSRF token minted for this client */
 	private $token = '';
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled('social');
 
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage($this->probeUrl('act=setup'));
-		$I->seeInSource('PROBE_OK setup');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 
-		preg_match('#^TOKEN:(.*)$#m', $I->grabPageSource(), $match);
+		preg_match('#^TOKEN:(.*)$#m', $I->probe('act=setup'), $match);
 		$this->token = trim($match[1]);
 
 		$I->stopFollowingRedirects();
@@ -69,9 +63,7 @@ class ProviderLoginTokenCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage($this->probeUrl('act=teardown'));
-		$I->seeInSource('PROBE_OK teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=teardown');
 		$I->dropPluginProbe();
 	}
 
@@ -105,21 +97,6 @@ class ProviderLoginTokenCest
 	}
 
 	/**
-	 * The probe turns social login on and off for the whole site and hands out
-	 * a token, so a caller that cannot show this run's secret has to get
-	 * nothing at all. A probe left in the docroot by a run that died is
-	 * otherwise an anonymous switch for the site's social login configuration.
-	 */
-	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=teardown');
-
-		$I->seeResponseCodeIs(403);
-		$I->assertSame('ENABLED=1 FACEBOOK=1', $this->providerConfig($I),
-			'A refused caller must not have switched social login off');
-	}
-
-	/**
 	 * What Hybridauth stored for the provider on the last request, read back
 	 * through the probe because it lives in the PHP session rather than in any
 	 * response. Empty when no handshake was begun.
@@ -129,40 +106,9 @@ class ProviderLoginTokenCest
 	 */
 	private function authorizationState(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('act=state'));
-		$I->seeInSource('PROBE_OK state');
-
-		preg_match('#^STATE:(.*)$#m', $I->grabPageSource(), $match);
+		preg_match('#^STATE:(.*)$#m', $I->probe('act=state'), $match);
 
 		return isset($match[1]) ? trim($match[1]) : '';
-	}
-
-	/**
-	 * The social login configuration the fixture put in place, read back
-	 * through the probe because it lives in the site's preferences.
-	 *
-	 * @param AcceptanceTester $I
-	 * @return string
-	 */
-	private function providerConfig(AcceptanceTester $I)
-	{
-		$I->amOnPage($this->probeUrl('act=config'));
-		$I->seeInSource('PROBE_OK config');
-
-		preg_match('#^CONFIG:(.*)$#m', $I->grabPageSource(), $match);
-
-		return isset($match[1]) ? trim($match[1]) : '';
-	}
-
-	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::PROBE_FILE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
 	}
 
 	/**
@@ -170,63 +116,48 @@ class ProviderLoginTokenCest
 	 */
 	private function probeSource()
 	{
-		$secret = $this->secret;
-
-		return <<<PHP
+		return <<<'PHP'
 <?php
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
-
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
 
 header('Content-Type: text/plain');
 
 require_once(e_PLUGIN.'social/includes/social_login_config.php');
 
-\$act = isset(\$_GET['act']) ? \$_GET['act'] : '';
-\$manager = new social_login_config(e107::getConfig('core'));
+$act = isset($_GET['act']) ? $_GET['act'] : '';
+$manager = new social_login_config(e107::getConfig('core'));
 
-switch(\$act)
+switch($act)
 {
 	case 'setup':
-		\$manager->setProviderConfig('Facebook', array(
+		$manager->setProviderConfig('Facebook', array(
 			'enabled' => 1,
 			'keys' => array('id' => 'e107testsclientid', 'secret' => 'e107testsclientsecret'),
 		));
-		\$manager->saveConfig();
-		\$manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, true);
-		echo "PROBE_OK setup\\n";
-		echo 'TOKEN:'.defset('e_TOKEN')."\\n";
+		$manager->saveConfig();
+		$manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, true);
+		echo "PROBE_OK setup\n";
+		echo 'TOKEN:'.defset('e_TOKEN')."\n";
 		break;
 
 	case 'state':
-		\$state = '';
-		\$store = isset(\$_SESSION['HYBRIDAUTH::STORAGE']) ? \$_SESSION['HYBRIDAUTH::STORAGE'] : array();
-		foreach(\$store as \$key => \$value)
+		$state = '';
+		$store = isset($_SESSION['HYBRIDAUTH::STORAGE']) ? $_SESSION['HYBRIDAUTH::STORAGE'] : array();
+		foreach($store as $key => $value)
 		{
-			if(strpos(\$key, 'authorization_state') !== false) \$state = \$value;
+			if(strpos($key, 'authorization_state') !== false) $state = $value;
 		}
-		echo "PROBE_OK state\\n";
-		echo 'STATE:'.\$state."\\n";
-		break;
-
-	case 'config':
-		echo "PROBE_OK config\\n";
-		echo 'CONFIG:ENABLED='.(\$manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL) ? 1 : 0)
-			.' FACEBOOK='.(\$manager->isProviderEnabled('Facebook') ? 1 : 0)."\\n";
+		echo "PROBE_OK state\n";
+		echo 'STATE:'.$state."\n";
 		break;
 
 	case 'teardown':
-		\$manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, false);
-		\$manager->forgetProvider('Facebook');
-		\$manager->saveConfig();
-		unset(\$_SESSION['HYBRIDAUTH::STORAGE']);
-		echo "PROBE_OK teardown\\n";
+		$manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, false);
+		$manager->forgetProvider('Facebook');
+		$manager->saveConfig();
+		unset($_SESSION['HYBRIDAUTH::STORAGE']);
+		echo "PROBE_OK teardown\n";
 		break;
 }
 PHP;

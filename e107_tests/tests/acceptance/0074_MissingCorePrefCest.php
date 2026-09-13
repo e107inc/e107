@@ -14,16 +14,15 @@ class MissingCorePrefCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=setup');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->amOnProbe('act=setup');
 		$I->seeInSource('PROBE_OK');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=teardown');
+		$I->amOnProbe('act=teardown');
 		$I->seeInSource('PROBE_OK');
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	public function theFrontPageStillAnswersWithoutUrlConfig(AcceptanceTester $I)
@@ -54,7 +53,7 @@ class MissingCorePrefCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0074_MissingCorePrefCest. Removed again in the Cest's _after().
+// Fixture for 0074_MissingCorePrefCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

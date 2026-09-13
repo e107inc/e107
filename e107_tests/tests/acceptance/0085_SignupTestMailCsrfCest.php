@@ -52,22 +52,17 @@ class SignupTestMailCsrfCest
 	 */
 	const UNAUTHORIZED = 'Unauthorized access!';
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->loginAsAdmin();
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$this->probe($I, 'act=setup');
-		$this->probe($I, 'act=clearmaillog');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->probe('act=setup');
+		$I->probe('act=clearmaillog');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=teardown');
 	}
 
 	/**
@@ -136,20 +131,6 @@ class SignupTestMailCsrfCest
 	}
 
 	/**
-	 * The probe rewrites core preferences, so a caller that cannot show this
-	 * run's secret has to get nothing at all. A probe left in the docroot by a
-	 * run that died is otherwise an anonymous way to stop the site sending mail.
-	 */
-	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=teardown');
-
-		$I->seeResponseCodeIs(403);
-		$I->assertSame('MAILLOG=1,1 COPPA=0', trim($this->probe($I, 'act=state')),
-			'a refused caller must not have put the mail preferences back');
-	}
-
-	/**
 	 * @param AcceptanceTester $I
 	 * @return string path to follow, tokenised exactly as the signup page
 	 *   published it
@@ -172,30 +153,7 @@ class SignupTestMailCsrfCest
 	 */
 	private function mailLog(AcceptanceTester $I)
 	{
-		return $this->probe($I, 'act=maillog');
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage($this->probeUrl($query));
-
-		return $I->grabPageSource();
-	}
-
-	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::PROBE_FILE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
+		return $I->grabProbe('act=maillog');
 	}
 
 	/**
@@ -203,63 +161,50 @@ class SignupTestMailCsrfCest
 	 */
 	private function probeSource()
 	{
-		$secret = $this->secret;
-
-		return <<<PHP
+		return <<<'PHP'
 <?php
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
-
 header('Content-Type: text/plain');
 
-\$act = isset(\$_GET['act']) ? \$_GET['act'] : '';
-\$config = e107::getConfig('core');
-\$logFile = e_LOG.'mailoutlog.log';
+$act = isset($_GET['act']) ? $_GET['act'] : '';
+$config = e107::getConfig('core');
+$logFile = e_LOG.'mailoutlog.log';
 
-switch(\$act)
+switch($act)
 {
 	case 'setup':
-		\$config->set('e107_tests_signup_mail_backup', \$config->get('mail_log_options', ''));
-		\$config->set('e107_tests_signup_coppa_backup', \$config->get('use_coppa', ''));
-		\$config->set('mail_log_options', '1,1');
-		\$config->set('use_coppa', '0');
-		\$config->save(false, true, false);
-		echo "PROBE_OK\\n";
+		$config->set('e107_tests_signup_mail_backup', $config->get('mail_log_options', ''));
+		$config->set('e107_tests_signup_coppa_backup', $config->get('use_coppa', ''));
+		$config->set('mail_log_options', '1,1');
+		$config->set('use_coppa', '0');
+		$config->save(false, true, false);
+		echo "PROBE_OK\n";
 		break;
 
 	case 'teardown':
-		\$config->set('mail_log_options', \$config->get('e107_tests_signup_mail_backup', ''));
-		\$config->set('use_coppa', \$config->get('e107_tests_signup_coppa_backup', ''));
-		\$config->remove('e107_tests_signup_mail_backup');
-		\$config->remove('e107_tests_signup_coppa_backup');
-		\$config->save(false, true, false);
-		@unlink(\$logFile);
-		echo "PROBE_OK\\n";
+		$config->set('mail_log_options', $config->get('e107_tests_signup_mail_backup', ''));
+		$config->set('use_coppa', $config->get('e107_tests_signup_coppa_backup', ''));
+		$config->remove('e107_tests_signup_mail_backup');
+		$config->remove('e107_tests_signup_coppa_backup');
+		$config->save(false, true, false);
+		@unlink($logFile);
+		echo "PROBE_OK\n";
 		break;
 
 	case 'clearmaillog':
-		@unlink(\$logFile);
-		echo "PROBE_OK\\n";
+		@unlink($logFile);
+		echo "PROBE_OK\n";
 		break;
 
 	case 'maillog':
-		echo "PROBE_OK\\n";
-		echo is_readable(\$logFile) ? file_get_contents(\$logFile) : '';
-		break;
-
-	case 'state':
-		echo 'MAILLOG='.\$config->get('mail_log_options', '').' COPPA='.\$config->get('use_coppa', '');
+		echo "PROBE_OK\n";
+		echo is_readable($logFile) ? file_get_contents($logFile) : '';
 		break;
 
 	default:
-		echo "PROBE_UNKNOWN\\n";
+		echo "PROBE_UNKNOWN\n";
 		break;
 }
 PHP;

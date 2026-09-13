@@ -1,7 +1,5 @@
 <?php
 
-use Helper\ProbeGuard;
-
 /** The date picker's calendar stays folded on a theme that loads no Bootstrap, because backcompat.css carries the dropdown rule the widget leaves to Bootstrap. */
 class DatePickerWithoutBootstrapCest
 {
@@ -11,17 +9,12 @@ class DatePickerWithoutBootstrapCest
 	{
 		$I->haveThemeFixture('tpstate3_plain');
 		$I->haveSiteTheme('tpstate3_plain');
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-	}
-
-	public function _after(WebDriverTester $I)
-	{
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 	}
 
 	public function calendarStaysFoldedUntilTheFieldIsClicked(WebDriverTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.ProbeGuard::query());
+		$I->amOnProbe();
 		$I->seeElement('input.e-date');
 		$I->dontSeeElement('.datetimepicker.dropdown-menu');
 
@@ -38,7 +31,7 @@ class DatePickerWithoutBootstrapCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for DatePickerWithoutBootstrapCest. Removed again in the Cest's _after().
+// Fixture for DatePickerWithoutBootstrapCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

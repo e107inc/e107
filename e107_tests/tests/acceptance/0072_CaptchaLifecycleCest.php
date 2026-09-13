@@ -32,15 +32,14 @@ class CaptchaLifecycleCest
 	public function _before(AcceptanceTester $I)
 	{
 		$I->resetAllCookies();
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=setup');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->amOnProbe('act=setup');
 		$I->seeInSource('PROBE_OK');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->amOnProbe('act=teardown');
 	}
 
 	/**
@@ -95,7 +94,7 @@ class CaptchaLifecycleCest
 	{
 		$I->wantTo('deliver a contact message that answers the CAPTCHA as rendered');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$I->sendPostRequest('/contact.php', $this->answeredSubmission($I));
 
@@ -107,7 +106,7 @@ class CaptchaLifecycleCest
 	{
 		$I->wantTo('refuse a contact message that answers the CAPTCHA wrongly');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$post = $this->answeredSubmission($I);
 		$post['code_verify'] = 'not-the-answer';
@@ -129,7 +128,7 @@ class CaptchaLifecycleCest
 	{
 		$I->wantTo('refuse a second attempt at a challenge that was already answered wrongly');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$post = $this->answeredSubmission($I);
 		$right = $post['code_verify'];
@@ -151,7 +150,7 @@ class CaptchaLifecycleCest
 	{
 		$I->wantTo('refuse a solved challenge that is submitted a second time');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$post = $this->answeredSubmission($I);
 		$I->sendPostRequest('/contact.php', $post);
@@ -159,7 +158,7 @@ class CaptchaLifecycleCest
 		$I->assertStringContainsString('Mail-ID=', $this->mailLog($I),
 			'the first submission must be accepted before the replay is tested');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 		$I->sendPostRequest('/contact.php', $post);
 
 		$I->assertStringNotContainsString('Mail-ID=', $this->mailLog($I),
@@ -178,7 +177,7 @@ class CaptchaLifecycleCest
 	{
 		$I->wantTo('refuse a challenge that was issued for a different form');
 
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 
 		$I->amOnPage('/fpw.php');
 		$foreign = $this->tokenFromSource($I, $I->grabPageSource());
@@ -230,12 +229,12 @@ class CaptchaLifecycleCest
 
 		$opened = $this->snapshot($I);
 
-		$this->probe($I, 'act=fpwcode&v=0');
+		$I->probe('act=fpwcode&v=0');
 		$I->amOnPage('/fpw.php');
 		$I->dontSeeInSource('rand_num');
 		$without = $this->footprint($I, array('/fpw.php'));
 
-		$this->probe($I, 'act=fpwcode&v=1');
+		$I->probe('act=fpwcode&v=1');
 		$I->amOnPage('/fpw.php');
 		$I->seeInSource('rand_num');
 		$with = $this->footprint($I, array('/fpw.php'));
@@ -257,7 +256,7 @@ class CaptchaLifecycleCest
 
 		// The control. An answered challenge does write, and the instrument
 		// above has to be able to see it.
-		$this->probe($I, 'act=clearmaillog');
+		$I->probe('act=clearmaillog');
 		$I->sendPostRequest('/contact.php', $this->answeredSubmission($I));
 		$I->assertStringContainsString('Mail-ID=', $this->mailLog($I),
 			'the control submission must be accepted, or it wrote no marker to find');
@@ -450,7 +449,7 @@ class CaptchaLifecycleCest
 	 */
 	private function solve(AcceptanceTester $I, $token)
 	{
-		$out = $this->probe($I, 'act=solve&t='.urlencode($token));
+		$out = $I->grabProbe('act=solve&t='.urlencode($token));
 
 		$matched = preg_match('/ANSWER=(\S*)/', $out, $m);
 		$I->assertSame(1, $matched, 'the probe must answer with a solution line');
@@ -472,8 +471,8 @@ class CaptchaLifecycleCest
 	 */
 	private function snapshot(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=snapshot');
-		$out = $this->probe($I, 'act=snapshot');
+		$I->probe('act=snapshot');
+		$out = $I->grabProbe('act=snapshot');
 
 		$snapshot = array();
 
@@ -493,19 +492,7 @@ class CaptchaLifecycleCest
 	 */
 	private function mailLog(AcceptanceTester $I)
 	{
-		return $this->probe($I, 'act=maillog');
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.$query);
-
-		return $I->grabPageSource();
+		return $I->grabProbe('act=maillog');
 	}
 
 	/**
@@ -515,7 +502,7 @@ class CaptchaLifecycleCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0072_CaptchaLifecycleCest. Removed again in the Cest's _after().
+// Fixture for 0072_CaptchaLifecycleCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

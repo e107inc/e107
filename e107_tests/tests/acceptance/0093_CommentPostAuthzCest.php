@@ -62,16 +62,16 @@ class CommentPostAuthzCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 
 		// Pin the CSRF mode rather than inherit it. What an unset preference
 		// resolves to is a decision that moves between releases, and this file is
 		// about authorisation: a POST refused by the CSRF gate would never reach
 		// the check under test and every refusal would pass for the wrong reason.
-		$this->probe($I, 'act=pref&k=csrf_enforce&v='.self::CSRF_TOKEN_ENFORCE);
+		$I->probe('act=pref&k=csrf_enforce&v='.self::CSRF_TOKEN_ENFORCE);
 
 		// What a fresh install ships. One test turns it on.
-		$this->probe($I, 'act=pref&k=profile_comments&v=0');
+		$I->probe('act=pref&k=profile_comments&v=0');
 
 		// The tables, not the plugin. comment.php asks neither plugin whether it
 		// is installed, and installing and uninstalling around every test would
@@ -88,8 +88,8 @@ class CommentPostAuthzCest
 		$this->pollOn = $this->havePoll($I, 'vhf5 poll on', 1);
 		$this->pollOff = $this->havePoll($I, 'vhf5 poll off', 0);
 
-		$this->member = $this->haveMember($I, 'vhf5carol');
-		$this->profile = $this->haveMember($I, 'vhf5dave');
+		$this->member = $I->haveMember('vhf5carol', self::MEMBER_PASS);
+		$this->profile = $I->haveMember('vhf5dave', self::MEMBER_PASS);
 
 		$this->parentOn = $this->haveComment($I, 'vhf5 parent on', $this->newsOn);
 		$this->parentOff = $this->haveComment($I, 'vhf5 parent off', $this->newsOff);
@@ -105,9 +105,8 @@ class CommentPostAuthzCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=prefdel&k=csrf_enforce');
-		$this->probe($I, 'act=pref&k=profile_comments&v=0');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=prefdel&k=csrf_enforce');
+		$I->probe('act=pref&k=profile_comments&v=0');
 	}
 
 	/**
@@ -235,7 +234,7 @@ class CommentPostAuthzCest
 
 	public function aProfileStillAcceptsACommentWhileProfileCommentsIsOn(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=pref&k=profile_comments&v=1');
+		$I->probe('act=pref&k=profile_comments&v=1');
 
 		foreach ($this->profileTypes() as $table)
 		{
@@ -450,19 +449,24 @@ class CommentPostAuthzCest
 	 */
 	private function loginAs(AcceptanceTester $I, $name, $userId)
 	{
-		$I->resetAllCookies();
+		$I->loginAsMember($name, self::MEMBER_PASS);
 
-		$I->amOnPage('/login.php');
-		$I->fillField('username', $name);
-		$I->fillField('userpass', self::MEMBER_PASS);
-		$I->click('userlogin');
+		$body = $I->probe('act=whoami');
 
-		$body = $this->probe($I, 'act=whoami');
-
-		if (strpos($body, 'USERID='.$userId."\n") === false)
+		if (!self::says($body, 'USERID='.$userId))
 		{
-			throw new \RuntimeException('Could not sign in as "'.$name.'": '.trim(strip_tags($body)));
+			throw new \RuntimeException('Could not sign in as "'.$name.'": '.strip_tags($body));
 		}
+	}
+
+	/**
+	 * @param string $body what the probe answered
+	 * @param string $line
+	 * @return bool whether $line is one whole line of $body
+	 */
+	private static function says($body, $line)
+	{
+		return preg_match('/^'.preg_quote($line, '/').'$/m', $body) === 1;
 	}
 
 	/**
@@ -545,31 +549,6 @@ class CommentPostAuthzCest
 	}
 
 	/**
-	 * A member who can actually sign in.
-	 *
-	 * The password is stored as a plain md5: UserHandler::getHashType() reads any
-	 * 32 character hash as PASSWORD_E107_MD5 and CheckPassword() accepts it
-	 * whatever the site's configured encoding is, so the plaintext is known here.
-	 *
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 * @return int user id
-	 */
-	private function haveMember(AcceptanceTester $I, $name)
-	{
-		return $I->haveInDatabase('e107_user', array(
-			'user_name' => $name, 'user_loginname' => $name, 'user_login' => $name,
-			'user_password' => md5(self::MEMBER_PASS),
-			'user_email' => $name.'@example.com',
-			'user_join' => time(), 'user_ban' => 0,
-			'user_lastvisit' => time() - 86400, 'user_currentvisit' => time() - 86400,
-			'user_class' => '253',
-			'user_admin' => 0, 'user_perms' => '',
-			'user_prefs' => '', 'user_signature' => '', 'user_realm' => '', 'user_xup' => '',
-		));
-	}
-
-	/**
 	 * @param AcceptanceTester $I
 	 * @param string $text
 	 * @param int $itemId news item this comment belongs to
@@ -589,25 +568,6 @@ class CommentPostAuthzCest
 	}
 
 	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.$query);
-
-		$body = $I->grabPageSource();
-
-		if (strpos($body, 'PROBE_OK') === false)
-		{
-			throw new \RuntimeException('Comment post authz probe failed for "'.$query.'": '.trim(strip_tags($body)));
-		}
-
-		return $body;
-	}
-
-	/**
 	 * Core preferences live serialised inside a single e107_core row, so no
 	 * database assertion can read or write one. Boot the application instead.
 	 *
@@ -617,7 +577,7 @@ class CommentPostAuthzCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for CommentPostAuthzCest. Written per test, removed in _after().
+// Fixture for CommentPostAuthzCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

@@ -2,10 +2,8 @@
 
 namespace Helper;
 
-use Codeception\Module as CodeceptionModule;
-
 /** A theme out of tests/_data and the site switched onto it, put back in _after(). */
-class ThemeFixture extends CodeceptionModule
+class ThemeFixture extends AppFixture
 {
 	const PROBE_FILE = 'e107_tests_theme_fixture_probe.php';
 
@@ -118,38 +116,6 @@ class ThemeFixture extends CodeceptionModule
 		}
 
 		return $body;
-	}
-
-	/**
-	 * @return \Helper\Acceptance|\Helper\Webdriver
-	 */
-	private function app()
-	{
-		foreach (array('\Helper\Acceptance', '\Helper\Webdriver') as $name)
-		{
-			if ($this->hasModule($name))
-			{
-				return $this->getModule($name);
-			}
-		}
-
-		throw new \RuntimeException('ThemeFixture needs Helper\Acceptance or Helper\Webdriver');
-	}
-
-	/**
-	 * @return \Codeception\Module\PhpBrowser|\Codeception\Module\WebDriver
-	 */
-	private function browser()
-	{
-		foreach (array('PhpBrowser', 'WebDriver') as $name)
-		{
-			if ($this->hasModule($name))
-			{
-				return $this->getModule($name);
-			}
-		}
-
-		throw new \RuntimeException('ThemeFixture needs PhpBrowser or WebDriver');
 	}
 
 	/**

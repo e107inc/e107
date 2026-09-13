@@ -61,7 +61,7 @@ class OnlineMemberListLinkCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->writeAppFile(self::TEMPLATE_FILE, $this->templateSource());
 
 		$this->newestId = $I->haveForumMember(self::NEWEST_NAME, '253', time() + 60);
@@ -88,7 +88,6 @@ class OnlineMemberListLinkCest
 		{
 			$I->dropForumProbe();
 			$I->deleteAppFile(self::TEMPLATE_FILE);
-			$I->deleteAppFile(self::PROBE_FILE);
 		}
 	}
 
@@ -101,7 +100,7 @@ class OnlineMemberListLinkCest
 		$I->wantTo('build the online member list through the URL handler');
 
 		$I->loginAsAdmin();
-		$I->amOnPage('/'.self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->seeInSource("<a href='".$this->grabProbeValue($I, 'HANDLER')."'>");
 	}
@@ -115,7 +114,7 @@ class OnlineMemberListLinkCest
 		$I->wantTo('still name the member in the online member list');
 
 		$I->loginAsAdmin();
-		$I->amOnPage('/'.self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->seeInSource('>'.$this->grabProbeValue($I, 'MEMBER_NAME').'</a>');
 	}
@@ -132,11 +131,11 @@ class OnlineMemberListLinkCest
 		$I->wantTo('build the online member list through the URL handler for a guest');
 
 		$I->loginAsAdmin();
-		$I->amOnPage('/'.self::PROBE_FILE);
+		$I->amOnProbe();
 		$handler = $this->grabProbeValue($I, 'HANDLER');
 
 		$I->resetAllCookies();
-		$I->amOnPage('/'.self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->seeInSource("<a href='".$handler."'>");
 	}
@@ -191,7 +190,7 @@ class OnlineMemberListLinkCest
 	 */
 	private function grabNewestLink(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=link&id='.$this->newestId);
+		$I->amOnProbe('act=link&id='.$this->newestId);
 		$link = $this->grabProbeValue($I, 'LINK');
 
 		$I->assertSame(false, strpos($link, 'user.php?id.'),
@@ -242,7 +241,7 @@ class OnlineMemberListLinkCest
 
 		return <<<PHP
 <?php
-// Fixture for 0081_OnlineMemberListLinkCest. Removed again in the Cest's _after().
+// Fixture for 0081_OnlineMemberListLinkCest.
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');

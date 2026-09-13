@@ -27,16 +27,15 @@ class SessionAuthTokenCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=setup');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->amOnProbe('act=setup');
 		$I->seeInSource('PROBE_OK');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=teardown');
+		$I->amOnProbe('act=teardown');
 		$I->seeInSource('PROBE_OK');
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	public function theCorrectTokenAuthenticatesASession(AcceptanceTester $I)
@@ -78,7 +77,7 @@ class SessionAuthTokenCest
 	{
 		$I->wantTo('keep the session table from holding a value that is itself a session cookie');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=stored_key');
+		$I->amOnProbe('act=stored_key');
 		$I->seeInSource('PROBE_OK');
 		$I->seeInSource('LIVE_ROW=0');
 		$I->seeInSource('HASHED_ROW=1');
@@ -88,7 +87,7 @@ class SessionAuthTokenCest
 	{
 		$I->wantTo('keep a session that predates the storage key, and re-key it in place');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=adopted');
+		$I->amOnProbe('act=adopted');
 		$I->seeInSource('PROBE_OK');
 		$I->dontSeeInSource('FIXTURE=0');
 		$I->seeInSource('RESULT=AUTHENTICATED');
@@ -102,7 +101,8 @@ class SessionAuthTokenCest
 	 */
 	private function seeProbeAuthenticates(AcceptanceTester $I, $act)
 	{
-		$this->runProbe($I, $act);
+		$I->probe('act='.$act);
+		$I->dontSeeInSource('FIXTURE=0');
 		$I->seeInSource('RESULT=AUTHENTICATED');
 	}
 
@@ -112,20 +112,10 @@ class SessionAuthTokenCest
 	 */
 	private function seeProbeRefuses(AcceptanceTester $I, $act)
 	{
-		$this->runProbe($I, $act);
+		$I->probe('act='.$act);
+		$I->dontSeeInSource('FIXTURE=0');
 		$I->seeInSource('RESULT=ANONYMOUS');
 		$I->seeInSource('UID=0');
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $act probe action
-	 */
-	private function runProbe(AcceptanceTester $I, $act)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act='.$act);
-		$I->seeInSource('PROBE_OK');
-		$I->dontSeeInSource('FIXTURE=0');
 	}
 
 	/**
@@ -135,7 +125,7 @@ class SessionAuthTokenCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0075_SessionAuthTokenCest. Removed again in the Cest's _after().
+// Fixture for 0075_SessionAuthTokenCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

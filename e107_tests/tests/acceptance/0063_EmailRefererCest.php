@@ -29,8 +29,8 @@ class EmailRefererCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
-		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
+		$I->haveProbe(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
+		$I->amOnProbe('p8=reset');
 		$I->see('P8_OK reset');
 		$this->loginAsMember($I);
 	}
@@ -38,8 +38,7 @@ class EmailRefererCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->deleteHeader('Referer');
-		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=cleanup');
-		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
+		$I->amOnProbe('p8=cleanup');
 	}
 
 	public function theRefererIsEncodedForItsAttribute(AcceptanceTester $I)
@@ -89,13 +88,8 @@ class EmailRefererCest
 	 */
 	private function loginAsMember(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=member');
+		$I->amOnProbe('p8=member');
 		$I->see('P8_OK member');
-
-		$I->resetAllCookies();
-		$I->amOnPage('/login.php');
-		$I->fillField('username', \Helper\OutputEncodingFixture::MEMBER_NAME);
-		$I->fillField('userpass', \Helper\OutputEncodingFixture::MEMBER_PASS);
-		$I->click('userlogin');
+		$I->loginAsMember(\Helper\OutputEncodingFixture::MEMBER_NAME, \Helper\OutputEncodingFixture::MEMBER_PASS);
 	}
 }

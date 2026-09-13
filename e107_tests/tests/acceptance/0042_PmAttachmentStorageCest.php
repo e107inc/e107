@@ -89,18 +89,18 @@ class PmAttachmentStorageCest
 		// the plugin being absent.
 		$I->havePluginInstalled(self::PLUGIN);
 
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$this->probe($I, 'act=reset');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->probe('act=reset');
 
 		$this->alice = $I->haveForumMember('pmstorealice');
 		$this->bob = $I->haveForumMember('pmstorebob');
 
 		$this->legacyUrl = $this->grab('/LEGACY_FILE=(\S+)/',
-			$this->probe($I, 'act=legacy&create=1'));
+			$I->probe('act=legacy&create=1'));
 
 		// A member who holds an attachment directory and is not the sender, so
 		// that what the send reads can be told from what it does not.
-		$this->probe($I, 'act=dirs&plugin=pm&user='.$this->bob.'&create=1');
+		$I->probe('act=dirs&plugin=pm&user='.$this->bob.'&create=1');
 
 		$this->upload = sys_get_temp_dir().'/e107_pm_storage_'.getmypid().'.pdf';
 		file_put_contents($this->upload, "%PDF-1.4\n".self::SECRET."\n%%EOF\n");
@@ -109,15 +109,15 @@ class PmAttachmentStorageCest
 		$this->sendWithAttachment($I);
 		$I->logoutFromForum();
 
-		$row = $this->probe($I, 'act=lastpm');
+		$row = $I->probe('act=lastpm');
 		$this->pmId = (int) $this->grab('/PM_ID=(\d+)/', $row);
 		$attachment = $this->grab('/PM_ATTACH=(\S+)/', $row);
 
 		$this->attachmentUrl = $this->grab('/USER_DIR=(\S+)/',
-			$this->probe($I, 'act=dirs&plugin=pm&user='.$this->alice)).$attachment;
+			$I->probe('act=dirs&plugin=pm&user='.$this->alice)).$attachment;
 
 		$this->forumUrl = $this->grab('/USER_DIR=(\S+)/',
-			$this->probe($I, 'act=dirs&plugin=forum&user='.$this->alice.'&create=1')).'note.txt';
+			$I->probe('act=dirs&plugin=forum&user='.$this->alice.'&create=1')).'note.txt';
 		$I->writeAppFile($this->forumUrl, self::FORUM_BYTES);
 	}
 
@@ -132,7 +132,6 @@ class PmAttachmentStorageCest
 
 		$I->removeAppPath('e107_plugins/pm/attachments');
 
-		$I->deleteAppFile(self::PROBE_FILE);
 		$I->dropPluginInstall(self::PLUGIN);
 		$I->dropPluginProbe();
 	}
@@ -203,7 +202,7 @@ class PmAttachmentStorageCest
 	 */
 	public function theForumAttachmentDirectoryCarriesNoDenyRule(AcceptanceTester $I)
 	{
-		$dirs = $this->probe($I, 'act=dirs&plugin=forum&user='.$this->alice);
+		$dirs = $I->probe('act=dirs&plugin=forum&user='.$this->alice);
 
 		$I->assertSame('0', $this->grab('/USER_HT=(\d)/', $dirs),
 			'A forum attachment directory must carry no deny rule');
@@ -220,7 +219,7 @@ class PmAttachmentStorageCest
 	 */
 	public function theForumUploadHelperWritesNoDenyRule(AcceptanceTester $I)
 	{
-		$upload = $this->probe($I, 'act=upload&plugin=forum');
+		$upload = $I->probe('act=upload&plugin=forum');
 
 		$I->assertSame('0', $this->grab('/USER_HT=(\d)/', $upload),
 			'e_file::getUploaded() must not protect the directory it stores into');
@@ -239,12 +238,12 @@ class PmAttachmentStorageCest
 	 */
 	public function theMaintenanceSweepDoesNotSeeTheGuardFiles(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=setup');
+		$I->probe('act=setup');
 
-		$I->assertSame('1', $this->grab('/LEGACY_HT=(\d)/', $this->probe($I, 'act=legacy')),
+		$I->assertSame('1', $this->grab('/LEGACY_HT=(\d)/', $I->probe('act=legacy')),
 			'The directory the sweep reads carries no deny rule, so this proves nothing');
 
-		$orphans = $this->grab('/ORPHANS=(\S*)/', $this->probe($I, 'act=orphans'));
+		$orphans = $this->grab('/ORPHANS=(\S*)/', $I->probe('act=orphans'));
 		$names = explode(',', $orphans);
 
 		$I->assertNotContains('.htaccess', $names, 'The sweep must not see the deny rule');
@@ -283,7 +282,7 @@ class PmAttachmentStorageCest
 	{
 		$this->seeFileIsReallyThere($I, $this->legacyUrl);
 
-		$this->probe($I, 'act=setup');
+		$I->probe('act=setup');
 
 		$I->resetAllCookies();
 		$I->stopFollowingRedirects();
@@ -310,25 +309,25 @@ class PmAttachmentStorageCest
 	 */
 	public function installingThePluginProtectsAttachmentsAlreadyOnDisk(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=reset');
+		$I->probe('act=reset');
 
-		$legacy = $this->grab('/LEGACY_FILE=(\S+)/', $this->probe($I, 'act=legacy&create=1'));
+		$legacy = $this->grab('/LEGACY_FILE=(\S+)/', $I->probe('act=legacy&create=1'));
 		$stored = $this->grab('/USER_DIR=(\S+)/',
-			$this->probe($I, 'act=dirs&plugin=pm&user='.$this->alice.'&create=1')).'stale.pdf';
+			$I->probe('act=dirs&plugin=pm&user='.$this->alice.'&create=1')).'stale.pdf';
 		$I->writeAppFile($stored, "%PDF-1.4\n".self::SECRET."\n%%EOF\n");
 
-		$bare = $this->probe($I, 'act=dirs&plugin=pm&user='.$this->alice);
+		$bare = $I->probe('act=dirs&plugin=pm&user='.$this->alice);
 		$I->assertSame('0', $this->grab('/ROOT_HT=(\d)/', $bare),
 			'The reset must leave the attachment directories bare, or this proves nothing');
 
 		$I->dropPluginInstall(self::PLUGIN);
 		$I->havePluginInstalled(self::PLUGIN);
 
-		$pm = $this->probe($I, 'act=dirs&plugin=pm&user='.$this->alice);
+		$pm = $I->probe('act=dirs&plugin=pm&user='.$this->alice);
 
 		$I->assertSame('1', $this->grab('/ROOT_HT=(\d)/', $pm), 'attachment root deny rule');
 		$I->assertSame('1', $this->grab('/USER_HT=(\d)/', $pm), 'member directory deny rule');
-		$I->assertSame('1', $this->grab('/LEGACY_HT=(\d)/', $this->probe($I, 'act=legacy')),
+		$I->assertSame('1', $this->grab('/LEGACY_HT=(\d)/', $I->probe('act=legacy')),
 			'legacy directory deny rule');
 
 		$this->seeFileIsReallyThere($I, $stored);
@@ -361,14 +360,14 @@ class PmAttachmentStorageCest
 	 */
 	public function theGuardFilesAreWrittenWhenAnAttachmentIsStored(AcceptanceTester $I)
 	{
-		$pm = $this->probe($I, 'act=dirs&plugin=pm&user='.$this->alice);
+		$pm = $I->probe('act=dirs&plugin=pm&user='.$this->alice);
 
 		$I->assertSame('1', $this->grab('/ROOT_HT=(\d)/', $pm), 'attachment root deny rule');
 		$I->assertSame('1', $this->grab('/ROOT_IDX=(\d)/', $pm), 'attachment root index.html');
 		$I->assertSame('1', $this->grab('/USER_HT=(\d)/', $pm), 'member directory deny rule');
 		$I->assertSame('1', $this->grab('/USER_IDX=(\d)/', $pm), 'member directory index.html');
 
-		$bystander = $this->probe($I, 'act=dirs&plugin=pm&user='.$this->bob);
+		$bystander = $I->probe('act=dirs&plugin=pm&user='.$this->bob);
 
 		$I->assertSame('1', $this->grab('/USER_EXISTS=(\d)/', $bystander),
 			'The other member has no directory, so finding nothing in it proves nothing');
@@ -389,7 +388,7 @@ class PmAttachmentStorageCest
 	private function seeFileIsReallyThere(AcceptanceTester $I, $path)
 	{
 		$I->assertSame('1',
-			$this->grab('/STAT_EXISTS=(\d)/', $this->probe($I, 'act=stat&path='.urlencode($path))),
+			$this->grab('/STAT_EXISTS=(\d)/', $I->probe('act=stat&path='.urlencode($path))),
 			'Nothing is at '.$path.', so refusing it proves nothing');
 	}
 
@@ -444,24 +443,6 @@ class PmAttachmentStorageCest
 	}
 
 	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.$query);
-		$body = $I->grabPageSource();
-
-		if (strpos($body, 'PROBE_OK') === false)
-		{
-			throw new \RuntimeException('PM storage probe failed for "'.$query.'": '.trim(strip_tags($body)));
-		}
-
-		return $body;
-	}
-
-	/**
 	 * @param string $pattern
 	 * @param string $body
 	 * @return string
@@ -490,7 +471,7 @@ class PmAttachmentStorageCest
 	{
 		$php = <<<'PHP'
 <?php
-// Fixture for PmAttachmentStorageCest. Written per test, removed in _after().
+// Fixture for PmAttachmentStorageCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

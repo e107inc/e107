@@ -112,7 +112,7 @@ class AdminPreAuthCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->startFollowingRedirects();
 		$this->reset($I);
 	}
@@ -132,7 +132,6 @@ class AdminPreAuthCest
 		$I->startFollowingRedirects();
 		$this->reset($I);
 
-		$I->deleteAppFile(self::PROBE_FILE);
 		$I->deleteAppFile(self::CANARY_FILE);
 	}
 
@@ -669,7 +668,7 @@ class AdminPreAuthCest
 	{
 		$I->wantTo('Keep serving thumbnails through the ImageMagick branch');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=imagemagick');
+		$I->amOnProbe('act=imagemagick');
 		$I->seeInSource('PROBE_OK');
 
 		$I->amOnPage('/e107_images/thumb.php?'.self::SOURCE_IMAGE.'+100');
@@ -984,7 +983,7 @@ class AdminPreAuthCest
 	 */
 	private function reset(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=reset');
+		$I->amOnProbe('act=reset');
 
 		$body = $I->grabPageSource();
 
@@ -1000,7 +999,7 @@ class AdminPreAuthCest
 	private function dump(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=dump');
+		$I->amOnProbe('act=dump');
 
 		$body = $I->grabPageSource();
 
@@ -1104,6 +1103,7 @@ class AdminPreAuthCest
 // Fixture for 0033_AdminPreAuthCest. Removed again in the Cest's _after().
 \$_E107['no_online'] = true;
 require_once(__DIR__.'/../../class2.php');
+{{E107_TEST_PROBE_GUARD}}
 
 // class2.php loads these only when it recognises the file as an admin page,
 // and e_admin_dispatcher::\$pageTitles has LAN_MANAGE in a property default,
@@ -1143,7 +1143,7 @@ PHP;
 
 		return <<<PHP
 <?php
-// Fixture for 0033_AdminPreAuthCest. Removed again in the Cest's _after().
+// Fixture for 0033_AdminPreAuthCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

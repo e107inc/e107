@@ -82,7 +82,7 @@ class MagicHashComparisonCest
 
 		$I->amOnPage(self::ROUTE);
 		$served = $this->grabConfirmValue($I);
-		$token = $this->grabToken($I);
+		$token = $I->grabToken();
 
 		$I->assertTrue((bool) preg_match('/^0e\d{30}$/', $served),
 			'The seeded user_pwchange renders '.$served.', which is not a magic hash, so this case '
@@ -113,7 +113,7 @@ class MagicHashComparisonCest
 		$I->amOnPage(self::ROUTE);
 
 		$I->sendPostRequest(self::ROUTE,
-			$this->payload($this->grabConfirmValue($I), $this->grabToken($I)));
+			$this->payload($this->grabConfirmValue($I), $I->grabToken()));
 
 		$I->assertStringContainsString(self::PAST_THE_GATE_MARKER, $I->grabPageSource(),
 			'updateadmin.php no longer enters its handler for the ac value its own form renders, so '
@@ -130,7 +130,7 @@ class MagicHashComparisonCest
 
 		$I->amOnPage(self::ROUTE);
 
-		$I->sendPostRequest(self::ROUTE, $this->payload(self::WRONG_VALUE, $this->grabToken($I)));
+		$I->sendPostRequest(self::ROUTE, $this->payload(self::WRONG_VALUE, $I->grabToken()));
 
 		$I->assertStringNotContainsString(self::PAST_THE_GATE_MARKER, $I->grabPageSource(),
 			'updateadmin.php entered its password-change handler for ac = '.self::WRONG_VALUE.'.');
@@ -169,21 +169,6 @@ class MagicHashComparisonCest
 		if(!preg_match('/name=[\'"]ac[\'"][^>]*value=[\'"]([^\'"]*)[\'"]/', $I->grabPageSource(), $matches))
 		{
 			throw new \RuntimeException('updateadmin.php rendered no ac field to post back.');
-		}
-
-		return $matches[1];
-	}
-
-	/**
-	 * @return string the CSRF token on the page currently loaded
-	 */
-	private function grabToken(AcceptanceTester $I)
-	{
-		$matches = array();
-
-		if(!preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', $I->grabPageSource(), $matches))
-		{
-			throw new \RuntimeException('The current page rendered no e-token to post back.');
 		}
 
 		return $matches[1];

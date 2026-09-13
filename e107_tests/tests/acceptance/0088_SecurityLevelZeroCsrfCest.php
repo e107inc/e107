@@ -55,27 +55,22 @@ class SecurityLevelZeroCsrfCest
 	/** What attest() answers a token it cannot validate with. */
 	const UNAUTHORIZED = 'Unauthorized access!';
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->loginAsAdmin();
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 
-		$this->probe($I, 'act=setup');
-		$this->probe($I, 'act=lower');
+		$I->probe('act=setup');
+		$I->probe('act=lower');
 
-		$I->assertSame('LEVEL=0 TOKEN=0 STALE=1 UPLOADED=0', $this->probe($I, 'act=state'),
+		$I->assertSame('LEVEL=0 TOKEN=0 STALE=1 UPLOADED=0', $I->grabProbe('act=state'),
 			'the fixture must be able to take an install below SECURITY_LEVEL_LOW');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=restore');
-		$this->probe($I, 'act=teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=restore');
+		$I->probe('act=teardown');
 	}
 
 	/**
@@ -108,7 +103,7 @@ class SecurityLevelZeroCsrfCest
 		$I->amOnPage($link);
 
 		$I->dontSeeInSource(self::REFUSED);
-		$I->assertStringContainsString(self::SENT, $this->probe($I, 'act=maillog'),
+		$I->assertStringContainsString(self::SENT, $I->grabProbe('act=maillog'),
 			'the administrator must still be able to send themselves a test');
 	}
 
@@ -123,7 +118,7 @@ class SecurityLevelZeroCsrfCest
 		$I->amOnPage($url.'&name='.self::UPLOAD);
 
 		$I->dontSeeInSource(self::REFUSED);
-		$I->assertStringContainsString('STALE=0', $this->probe($I, 'act=state'),
+		$I->assertStringContainsString('STALE=0', $I->grabProbe('act=state'),
 			'the Media Manager must still be able to reach the uploader');
 	}
 
@@ -138,29 +133,14 @@ class SecurityLevelZeroCsrfCest
 	{
 		$ballot = $this->publishedBallot($I);
 
-		$this->probe($I, 'act=restore');
-		$I->assertStringContainsString('TOKEN=1', $this->probe($I, 'act=state'),
+		$I->probe('act=restore');
+		$I->assertStringContainsString('TOKEN=1', $I->grabProbe('act=state'),
 			'the fixture must be able to put the install back above SECURITY_LEVEL_LOW');
 
 		$I->amOnPage($ballot);
 
 		$I->dontSeeInSource(self::UNAUTHORIZED);
 		$I->seeInSource(self::REFUSED);
-	}
-
-	/**
-	 * The probe rewrites e107_config.php, so a caller that cannot show this
-	 * run's secret has to get nothing at all. A probe left in the docroot by a
-	 * run that died is otherwise an anonymous way to turn token minting off
-	 * for every request the site serves.
-	 */
-	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=restore');
-
-		$I->seeResponseCodeIs(403);
-		$I->assertSame('LEVEL=0 TOKEN=0 STALE=1 UPLOADED=0', $this->probe($I, 'act=state'),
-			'a refused caller must not have put the security level back');
 	}
 
 	/**
@@ -180,7 +160,7 @@ class SecurityLevelZeroCsrfCest
 	 */
 	private function publishedBallot(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('act=ratebox'));
+		$I->amOnProbe('act=ratebox');
 
 		if(!preg_match("#<option value='([^']+)'>10</option>#", $I->grabPageSource(), $matches))
 		{
@@ -223,34 +203,10 @@ class SecurityLevelZeroCsrfCest
 	}
 
 	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::PROBE_FILE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage($this->probeUrl($query));
-
-		return trim($I->grabPageSource());
-	}
-
-	/**
 	 * @return string
 	 */
 	private function probeSource()
 	{
-		$secret = $this->secret;
 		$table = self::TABLE;
 		$upload = self::UPLOAD;
 
@@ -258,13 +214,6 @@ class SecurityLevelZeroCsrfCest
 <?php
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
-
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
 
 header('Content-Type: text/plain');
 

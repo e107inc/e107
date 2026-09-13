@@ -36,14 +36,9 @@ class SessionFixationCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->resetAllCookies();
 		$I->startFollowingRedirects();
-	}
-
-	public function _after(AcceptanceTester $I)
-	{
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	/**
@@ -198,9 +193,7 @@ class SessionFixationCest
 	 */
 	private function probe(AcceptanceTester $I, $mark = null)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.(null === $mark ? '' : '?mark='.urlencode($mark)));
-
-		$body = $I->grabPageSource();
+		$body = $I->grabProbe(null === $mark ? '' : 'mark='.urlencode($mark));
 		$read = array();
 
 		foreach(array('SESSION_NAME', 'SESSION_ID', 'COOKIE_PATH', 'USER_ID', 'USER_TRACKING',
@@ -210,7 +203,7 @@ class SessionFixationCest
 
 			if(!preg_match('/^'.$key.':(.*)$/m', $body, $matches))
 			{
-				throw new \RuntimeException('Probe reported no '.$key.': '.trim(strip_tags($body)));
+				throw new \RuntimeException('Probe reported no '.$key.': '.strip_tags($body));
 			}
 
 			$read[$key] = trim($matches[1]);
@@ -226,7 +219,7 @@ class SessionFixationCest
 	{
 		return <<<PHP
 <?php
-// Fixture for 0076_SessionFixationCest. Removed again in the Cest's _after().
+// Fixture for 0076_SessionFixationCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

@@ -38,7 +38,7 @@ class UsersettingsPasswordReauthCest
 		$I->wantTo('Refuse a self-service password change that carries no current password');
 
 		$userId = $this->haveMember($I, 'norefuse');
-		$this->loginAsMember($I, 'norefuse');
+		$I->loginAsMember('norefuse', self::MEMBER_PASS);
 		$before = $this->grabHash($I, $userId);
 
 		$this->postSettings($I, 'norefuse', array(
@@ -61,7 +61,7 @@ class UsersettingsPasswordReauthCest
 		$I->wantTo('Keep the email confirmation when a password change rides along');
 
 		$userId = $this->haveMember($I, 'combined');
-		$this->loginAsMember($I, 'combined');
+		$I->loginAsMember('combined', self::MEMBER_PASS);
 		$before = $this->grabHash($I, $userId);
 
 		$this->postSettings($I, 'combined', array(
@@ -86,7 +86,7 @@ class UsersettingsPasswordReauthCest
 		$I->wantTo('Keep the email confirmation when a validation error rides along with the password');
 
 		$userId = $this->haveMember($I, 'errored');
-		$this->loginAsMember($I, 'errored');
+		$I->loginAsMember('errored', self::MEMBER_PASS);
 		$before = $this->grabHash($I, $userId);
 
 		$this->postSettings($I, 'errored', array(
@@ -115,7 +115,7 @@ class UsersettingsPasswordReauthCest
 		$I->wantTo('Save a password change once the current password is confirmed');
 
 		$userId = $this->haveMember($I, 'confirmed');
-		$this->loginAsMember($I, 'confirmed');
+		$I->loginAsMember('confirmed', self::MEMBER_PASS);
 
 		$this->postSettings($I, 'confirmed', array(
 			'password1' => self::NEW_PASS,
@@ -126,13 +126,7 @@ class UsersettingsPasswordReauthCest
 		$I->assertTrue(password_verify(self::NEW_PASS, $this->grabHash($I, $userId)),
 			'the new password is the stored credential');
 
-		$I->resetAllCookies();
-		$I->amOnPage('/login.php');
-		$I->fillField('username', 'confirmed');
-		$I->fillField('userpass', self::NEW_PASS);
-		$I->click('userlogin');
-		$I->amOnPage('/usersettings.php');
-		$I->seeInSource('confirmed');
+		$I->loginAsMember('confirmed', self::NEW_PASS);
 	}
 
 	/**
@@ -145,7 +139,7 @@ class UsersettingsPasswordReauthCest
 		$I->wantTo('Save an email and a password change together once confirmed');
 
 		$userId = $this->haveMember($I, 'both');
-		$this->loginAsMember($I, 'both');
+		$I->loginAsMember('both', self::MEMBER_PASS);
 
 		$this->postSettings($I, 'both', array(
 			'email'     => 'both-new@example.test',
@@ -167,7 +161,7 @@ class UsersettingsPasswordReauthCest
 		$I->wantTo('Save nothing when the confirmation carries the wrong password');
 
 		$userId = $this->haveMember($I, 'wrongpass');
-		$this->loginAsMember($I, 'wrongpass');
+		$I->loginAsMember('wrongpass', self::MEMBER_PASS);
 		$before = $this->grabHash($I, $userId);
 
 		$this->postSettings($I, 'wrongpass', array(
@@ -197,7 +191,7 @@ class UsersettingsPasswordReauthCest
 		$I->wantTo('Report a validation error rather than ask to confirm a change that cannot be saved');
 
 		$userId = $this->haveMember($I, 'baddata');
-		$this->loginAsMember($I, 'baddata');
+		$I->loginAsMember('baddata', self::MEMBER_PASS);
 		$before = $this->grabHash($I, $userId);
 
 		$this->postSettings($I, 'baddata', array(
@@ -228,7 +222,7 @@ class UsersettingsPasswordReauthCest
 		$I->wantTo('Drop a password change the member abandoned at the confirmation');
 
 		$userId = $this->haveMember($I, 'abandoned');
-		$this->loginAsMember($I, 'abandoned');
+		$I->loginAsMember('abandoned', self::MEMBER_PASS);
 
 		$this->postSettings($I, 'abandoned', array(
 			'signature' => 'walked away from this one',
@@ -268,20 +262,14 @@ class UsersettingsPasswordReauthCest
 		$I->wantTo('Still complete an email-only change through the confirmation form');
 
 		$userId = $this->haveMember($I, 'emailonly');
-		$this->loginAsMember($I, 'emailonly');
+		$I->loginAsMember('emailonly', self::MEMBER_PASS);
 
 		$this->postSettings($I, 'emailonly', array('email' => 'emailonly-new@example.test'));
 		$this->confirmWith($I, self::MEMBER_PASS);
 
 		$I->assertSame('emailonly-new@example.test', $this->grabEmail($I, $userId));
 
-		$I->resetAllCookies();
-		$I->amOnPage('/login.php');
-		$I->fillField('username', 'emailonly');
-		$I->fillField('userpass', self::MEMBER_PASS);
-		$I->click('userlogin');
-		$I->amOnPage('/usersettings.php');
-		$I->seeInSource('emailonly');
+		$I->loginAsMember('emailonly', self::MEMBER_PASS);
 	}
 
 	/**
@@ -346,35 +334,12 @@ class UsersettingsPasswordReauthCest
 	 */
 	private function haveMember(AcceptanceTester $I, $name)
 	{
-		return $I->haveInDatabase('e107_user', array(
-			'user_name'      => self::MEMBER,
-			'user_loginname' => $name,
-			'user_login'     => $name,
-			'user_password'  => password_hash(self::MEMBER_PASS, PASSWORD_DEFAULT),
-			'user_email'     => $name . '@example.test',
-			'user_join'      => time(),
-			'user_ban'       => 0,
-			'user_class'     => '',
-			'user_perms'     => '',
-			'user_prefs'     => '',
-			'user_signature' => '',
-			'user_realm'     => '',
+		return $I->haveMember($name, self::MEMBER_PASS, array(
+			'user_name'     => self::MEMBER,
+			'user_password' => password_hash(self::MEMBER_PASS, PASSWORD_DEFAULT),
+			'user_email'    => $name . '@example.test',
+			'user_class'    => '',
 		));
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 */
-	private function loginAsMember(AcceptanceTester $I, $name)
-	{
-		$I->resetAllCookies();
-		$I->amOnPage('/login.php');
-		$I->fillField('username', $name);
-		$I->fillField('userpass', self::MEMBER_PASS);
-		$I->click('userlogin');
-		$I->amOnPage('/usersettings.php');
-		$I->seeInSource($name);
 	}
 
 	/**
@@ -472,11 +437,7 @@ class UsersettingsPasswordReauthCest
 	{
 		$I->amOnPage($path);
 
-		$matches = array();
-		$found = preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', $I->grabPageSource(), $matches);
-		$I->assertNotEmpty($found, $path . ' renders an e-token');
-
-		return $matches[1];
+		return $I->grabToken();
 	}
 
 	/**

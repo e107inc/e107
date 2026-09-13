@@ -120,7 +120,7 @@ class ForumAttachmentServingCest
 
 		$I->haveForumPluginInstalled();
 
-		$I->writeAppFile(self::PROBE, $this->probeSource());
+		$I->haveProbe(self::PROBE, $this->probeSource());
 
 		// thumb.php keys a cache entry on the request parameters and serves it
 		// back without looking at the source again, so an entry a vulnerable run
@@ -192,7 +192,6 @@ class ForumAttachmentServingCest
 	public function _after(AcceptanceTester $I)
 	{
 		$this->probe($I, 'cleanup');
-		$I->deleteAppFile(self::PROBE);
 		$I->dropForumProbe();
 	}
 
@@ -1077,15 +1076,11 @@ class ForumAttachmentServingCest
 	 */
 	private function probe(AcceptanceTester $I, $act, $params = array())
 	{
-		$query = http_build_query(array_merge(array('act' => $act), $params));
-
-		$I->amOnPage('/'.self::PROBE.'?'.$query);
-
-		$body = $I->grabResponseBody();
+		$body = $I->grabProbe(http_build_query(array_merge(array('act' => $act), $params)));
 
 		if(strpos($body, 'P18PROBE_OK') === false)
 		{
-			throw new \RuntimeException('P18 probe failed for "'.$act.'": '.trim(strip_tags($body)));
+			throw new \RuntimeException('P18 probe failed for "'.$act.'": '.strip_tags($body));
 		}
 
 		$env = array();
@@ -1121,7 +1116,7 @@ class ForumAttachmentServingCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0047_ForumAttachmentServingCest. Removed again in the Cest's _after().
+// Fixture for 0047_ForumAttachmentServingCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

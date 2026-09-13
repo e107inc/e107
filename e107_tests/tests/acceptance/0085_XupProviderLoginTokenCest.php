@@ -64,19 +64,13 @@ class XupProviderLoginTokenCest
 	/** @var string a CSRF token minted for this client */
 	private $token = '';
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled('social');
 
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage($this->probeUrl('act=setup'));
-		$I->seeInSource('PROBE_OK setup');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 
-		preg_match('#^TOKEN:(.*)$#m', $I->grabPageSource(), $match);
+		preg_match('#^TOKEN:(.*)$#m', $I->probe('act=setup'), $match);
 		$this->token = trim($match[1]);
 
 		$I->stopFollowingRedirects();
@@ -85,9 +79,7 @@ class XupProviderLoginTokenCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage($this->probeUrl('act=teardown'));
-		$I->seeInSource('PROBE_OK teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=teardown');
 		$I->dropPluginProbe();
 	}
 
@@ -139,10 +131,7 @@ class XupProviderLoginTokenCest
 	{
 		$I->wantTo('hand a visitor sign-in buttons that the guard will accept');
 
-		$I->amOnPage($this->probeUrl('act=buttons'));
-		$I->seeInSource('PROBE_OK buttons');
-
-		preg_match('#^BUTTONS:(.*)$#m', $I->grabPageSource(), $match);
+		preg_match('#^BUTTONS:(.*)$#m', $I->probe('act=buttons'), $match);
 		$buttons = isset($match[1]) ? $match[1] : '';
 
 		$I->assertStringContainsString('route=system/xup/login', $buttons,
@@ -269,33 +258,6 @@ class XupProviderLoginTokenCest
 	}
 
 	/**
-	 * Seeding that store is exactly how a returning leg is recognised, so a
-	 * caller that cannot show this run's secret has to get nothing at all. A
-	 * probe left in the docroot by a run that died would otherwise let another
-	 * site plant a handshake record in a visitor's session and walk the very
-	 * refusal the first case pins straight past the guard.
-	 *
-	 * Planting an OpenID profile is worse still, because that is the state the
-	 * forced login needs and the probe writes it in one request, so the gate is
-	 * pinned on that action as well as on the one that seeds a handshake.
-	 */
-	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
-	{
-		$this->clearStore($I);
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=seed&key='.urlencode(self::OAUTH2_HANDSHAKE).'&value=e107tests-forged');
-
-		$I->seeResponseCodeIs(403);
-		$I->assertSame('', $this->storedValue($I, self::OAUTH2_HANDSHAKE),
-			'A refused caller must not have planted a handshake record');
-
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=connect');
-
-		$I->seeResponseCodeIs(403);
-		$I->assertSame('', $this->storedValue($I, strtolower(self::OPENID_PROVIDER).'.user'),
-			'A refused caller must not have planted an OpenID profile');
-	}
-
-	/**
 	 * Sign the client out and give it back the profile of an earlier OpenID
 	 * sign-in, so that every OpenID case below starts from the one session
 	 * state the risk needs and differs only in what the browser says.
@@ -305,10 +267,8 @@ class XupProviderLoginTokenCest
 	 */
 	private function reconnectOpenId(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('act=signout'));
-		$I->seeInSource('PROBE_OK signout');
-		$I->amOnPage($this->probeUrl('act=connect'));
-		$I->seeInSource('PROBE_OK connect');
+		$I->probe('act=signout');
+		$I->probe('act=connect');
 	}
 
 	/**
@@ -341,10 +301,7 @@ class XupProviderLoginTokenCest
 		$I->deleteHeader('Sec-Fetch-Site');
 		$I->deleteHeader('Sec-Fetch-Dest');
 
-		$I->amOnPage($this->probeUrl('act=whoami'));
-		$I->seeInSource('PROBE_OK whoami');
-
-		preg_match('#^USER:(.*)$#m', $I->grabPageSource(), $match);
+		preg_match('#^USER:(.*)$#m', $I->probe('act=whoami'), $match);
 
 		return isset($match[1]) ? trim($match[1]) : '';
 	}
@@ -355,8 +312,7 @@ class XupProviderLoginTokenCest
 	 */
 	private function clearStore(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('act=clear'));
-		$I->seeInSource('PROBE_OK clear');
+		$I->probe('act=clear');
 	}
 
 	/**
@@ -367,8 +323,7 @@ class XupProviderLoginTokenCest
 	 */
 	private function seedStore(AcceptanceTester $I, $key, $value)
 	{
-		$I->amOnPage($this->probeUrl('act=seed&key='.urlencode($key).'&value='.urlencode($value)));
-		$I->seeInSource('PROBE_OK seed');
+		$I->probe('act=seed&key='.urlencode($key).'&value='.urlencode($value));
 	}
 
 	/**
@@ -381,23 +336,9 @@ class XupProviderLoginTokenCest
 	 */
 	private function storedValue(AcceptanceTester $I, $key)
 	{
-		$I->amOnPage($this->probeUrl('act=peek&key='.urlencode($key)));
-		$I->seeInSource('PROBE_OK peek');
-
-		preg_match('#^VALUE:(.*)$#m', $I->grabPageSource(), $match);
+		preg_match('#^VALUE:(.*)$#m', $I->probe('act=peek&key='.urlencode($key)), $match);
 
 		return isset($match[1]) ? trim($match[1]) : '';
-	}
-
-	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::PROBE_FILE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
 	}
 
 	/**
@@ -405,7 +346,6 @@ class XupProviderLoginTokenCest
 	 */
 	private function probeSource()
 	{
-		$secret = $this->secret;
 		$provider = self::OPENID_PROVIDER;
 		$identifier = self::OPENID_LOGINNAME;
 		$username = self::OPENID_USER;
@@ -416,13 +356,6 @@ class XupProviderLoginTokenCest
 <?php
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
-
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
 
 header('Content-Type: text/plain');
 

@@ -75,7 +75,9 @@ class RssImportCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->startFollowingRedirects();
+
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 
 		$I->writeAppFile(self::FIXTURE_DIR.'/shell.php', $this->shellFixture());
 		$I->writeAppFile(self::FIXTURE_DIR.'/polyglot.php', $this->polyglotFixture());
@@ -85,14 +87,14 @@ class RssImportCest
 		$I->writeAppFile(self::FIXTURE_DIR.'/photo.jpg', base64_decode(self::JPG));
 		$I->writeAppFile(self::FIXTURE_DIR.'/blocked.jpg', base64_decode(self::JPG));
 
-		$this->probe($I, 'act=reset');
+		$I->probe('act=reset');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
 
-		$this->probe($I, 'act=reset');
+		$I->probe('act=reset');
 
 		$I->deleteAppFile(self::FIXTURE_DIR.'/shell.php');
 		$I->deleteAppFile(self::FIXTURE_DIR.'/polyglot.php');
@@ -101,7 +103,6 @@ class RssImportCest
 		$I->deleteAppFile(self::FIXTURE_DIR.'/png.jpg');
 		$I->deleteAppFile(self::FIXTURE_DIR.'/photo.jpg');
 		$I->deleteAppFile(self::FIXTURE_DIR.'/blocked.jpg');
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	/**
@@ -114,7 +115,7 @@ class RssImportCest
 	 */
 	public function aGenuineImageStillImports(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=import&feed=photo&save=1&fixture=photo.jpg');
+		$run = $I->probe('act=import&feed=photo&save=1&fixture=photo.jpg');
 		$stored = $this->grab('/FILES=(\S*)/', $run);
 
 		$I->assertMatchesRegularExpression('/^photo_[0-9a-f]{10}\.jpg$/', $stored,
@@ -140,7 +141,7 @@ class RssImportCest
 	 */
 	public function theImportedImageIsStillServedByTheWebServer(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=import&feed=photo&save=1&fixture=photo.jpg');
+		$run = $I->probe('act=import&feed=photo&save=1&fixture=photo.jpg');
 
 		$url = $this->grab('/MEDIA_URL=(\S+)/', $run).$this->grab('/RELPATH=(\S+)/', $run)
 			.'/'.$this->grab('/FILES=(\S*)/', $run);
@@ -164,7 +165,7 @@ class RssImportCest
 	 */
 	public function theOptOutStopsTheImporterWritingAnything(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=import&feed=off&save=0&fixture=photo.jpg');
+		$run = $I->probe('act=import&feed=off&save=0&fixture=photo.jpg');
 
 		$I->assertSame('?', $this->grab('/FILES=(\S*)/', $run),
 			'With image saving off, no file may be written');
@@ -179,7 +180,7 @@ class RssImportCest
 	 */
 	public function theNewsImportRouteHonoursTheOptOut(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=news&feed=news&save=0&fixture=photo.jpg');
+		$run = $I->probe('act=news&feed=news&save=0&fixture=photo.jpg');
 
 		$I->assertSame('?', $this->grab('/FILES=(\S*)/', $run),
 			'copyNewsData() must not download when image saving is off');
@@ -197,7 +198,7 @@ class RssImportCest
 	 */
 	public function theNewsImportRouteStillImportsWhenAskedTo(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=news&feed=newson&save=1&fixture=photo.jpg');
+		$run = $I->probe('act=news&feed=newson&save=1&fixture=photo.jpg');
 		$stored = $this->grab('/FILES=(\S*)/', $run);
 
 		$I->assertMatchesRegularExpression('/^photo_[0-9a-f]{10}\.jpg$/', $stored,
@@ -213,7 +214,7 @@ class RssImportCest
 	 */
 	public function bytesThatAreNotAnImageAreNotWritten(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=import&feed=script&save=1&fixture=script.jpg&names=script.jpg');
+		$run = $I->probe('act=import&feed=script&save=1&fixture=script.jpg&names=script.jpg');
 
 		$I->assertSame('0', $this->grab('/FILE:script\.jpg=(\d)/', $run),
 			'A payload that is not an image must not be written whatever the URL claims');
@@ -228,7 +229,7 @@ class RssImportCest
 	 */
 	public function aPayloadNamedPhpIsNeitherStoredNorExecuted(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=import&feed=shell&save=1&fixture=shell.php&names=shell.php');
+		$run = $I->probe('act=import&feed=shell&save=1&fixture=shell.php&names=shell.php');
 
 		$url = $this->grab('/MEDIA_URL=(\S+)/', $run).$this->grab('/RELPATH=(\S+)/', $run).'/shell.php';
 
@@ -254,7 +255,7 @@ class RssImportCest
 	 */
 	public function aPolyglotIsStoredUnderTheExtensionItsBytesCallFor(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=import&feed=poly&save=1&fixture=polyglot.php&names=polyglot.php');
+		$run = $I->probe('act=import&feed=poly&save=1&fixture=polyglot.php&names=polyglot.php');
 		$stored = $this->grab('/FILES=(\S*)/', $run);
 
 		$I->assertSame('0', $this->grab('/FILE:polyglot\.php=(\d)/', $run),
@@ -279,7 +280,7 @@ class RssImportCest
 	 */
 	public function theExtensionComesFromTheBytesAndNotFromTheUrl(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=import&feed=png&save=1&fixture=png.jpg&names=png.jpg');
+		$run = $I->probe('act=import&feed=png&save=1&fixture=png.jpg&names=png.jpg');
 
 		$I->assertSame('0', $this->grab('/FILE:png\.jpg=(\d)/', $run),
 			'The extension the URL asked for must not be used');
@@ -295,7 +296,7 @@ class RssImportCest
 	 */
 	public function aRedirectToAPermittedAddressIsStillFollowed(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=redirect&fixture=photo.jpg');
+		$run = $I->probe('act=redirect&fixture=photo.jpg');
 
 		$I->assertSame('1', $this->grab('/FETCHED=(\d)/', $run),
 			'A redirect to an address the policy permits must still be followed');
@@ -310,7 +311,7 @@ class RssImportCest
 	 */
 	public function aRedirectToARefusedAddressIsNotFollowed(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=redirect&fixture=blocked.jpg');
+		$run = $I->probe('act=redirect&fixture=blocked.jpg');
 
 		$I->assertSame('0', $this->grab('/FETCHED=(\d)/', $run),
 			'A redirect to an address the policy refuses must not be followed');
@@ -324,7 +325,7 @@ class RssImportCest
 	 */
 	public function theMediaTreeDoesNotExecuteWhatItHolds(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=canary');
+		$run = $I->probe('act=canary');
 
 		$I->assertSame('1', $this->grab('/CANARY_PHP=(\d)/', $run),
 			'The canary is not on disk, so refusing it proves nothing');
@@ -347,8 +348,8 @@ class RssImportCest
 	 */
 	public function aForeignRuleInTheMediaTreeIsAddedToRatherThanSkipped(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=foreign');
-		$run = $this->probe($I, 'act=canary');
+		$I->probe('act=foreign');
+		$run = $I->probe('act=canary');
 
 		$I->assertSame('1', $this->grab('/CANARY_PHP=(\d)/', $run),
 			'The canary is not on disk, so refusing it proves nothing');
@@ -372,7 +373,7 @@ class RssImportCest
 	 */
 	public function theMediaTreeStillServesAnImage(AcceptanceTester $I)
 	{
-		$run = $this->probe($I, 'act=canary');
+		$run = $I->probe('act=canary');
 
 		$I->assertSame('1', $this->grab('/CANARY_GIF=(\d)/', $run),
 			'The canary is not on disk, so serving it proves nothing');
@@ -384,25 +385,6 @@ class RssImportCest
 		$I->seeResponseCodeIs(200);
 		$I->assertSame('GIF8', substr($I->grabPageSource(), 0, 4),
 			'An image under e107_media must still be served byte for byte');
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->startFollowingRedirects();
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.$query);
-		$body = $I->grabPageSource();
-
-		if (strpos($body, 'PROBE_OK') === false)
-		{
-			throw new \RuntimeException('RSS import probe failed for "'.$query.'": '.trim(strip_tags($body)));
-		}
-
-		return $body;
 	}
 
 	/**
@@ -500,7 +482,7 @@ class RssImportCest
 	{
 		$php = <<<'PHP'
 <?php
-// Fixture for RssImportCest. Written per test, removed in _after().
+// Fixture for RssImportCest.
 //
 // The fixture host is the container serving this request, so its address is
 // private and e_file::isUrlSafe() would refuse it before the importer was

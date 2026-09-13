@@ -88,20 +88,8 @@ class ForcedLogoutCsrfCest
 	/** @var bool whether this test wrote NO_TOKEN_PROBE into the docroot */
 	private $probeWritten = false;
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
-	public function _before(AcceptanceTester $I)
-	{
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
-	}
-
 	/**
-	 * Taking the probe away is what stops it outliving the case, so it cannot
-	 * be conditional on the restore round trip that precedes it answering:
-	 * one failed request would otherwise leave an anonymous caller a file that
-	 * rewrites e107_config.php. The restore still throws where it fails, and
-	 * the parked copy heals the security level whichever way that goes.
+	 * The restore throws where it fails, and the parked copy heals the security level whichever way that goes.
 	 *
 	 * @param AcceptanceTester $I
 	 * @return void
@@ -112,16 +100,12 @@ class ForcedLogoutCsrfCest
 		{
 			if($this->probeWritten)
 			{
-				$this->probe($I, 'act=restore');
+				$I->probe('act=restore');
 			}
 		}
 		finally
 		{
-			if($this->probeWritten)
-			{
-				$I->deleteAppFile(self::NO_TOKEN_PROBE);
-				$this->probeWritten = false;
-			}
+			$this->probeWritten = false;
 
 			if($this->xupOpened)
 			{
@@ -436,8 +420,8 @@ class ForcedLogoutCsrfCest
 		$this->xupTestPageIsOpen($I);
 		$this->noTokenProbeIsInPlace($I);
 
-		$I->assertSame('PROBE_OK', $this->probe($I, 'act=lower'));
-		$I->assertSame('LEVEL=0 TOKEN=0', $this->probe($I, 'act=state'),
+		$I->probe('act=lower');
+		$I->assertSame('LEVEL=0 TOKEN=0', $I->grabProbe('act=state'),
 			'the fixture must be able to take an install below SECURITY_LEVEL_LOW');
 
 		$I->amOnPage('/?route=system/xup/test&logout=true&e-token=');
@@ -459,30 +443,10 @@ class ForcedLogoutCsrfCest
 	{
 		$this->noTokenProbeIsInPlace($I);
 
-		$I->assertSame('PROBE_OK', $this->probe($I, 'act=lower'));
+		$I->probe('act=lower');
 
-		$I->assertSame('PARKED=1 LOWERED=0', $this->probe($I, 'act=parked'),
+		$I->assertSame('PARKED=1 LOWERED=0', $I->grabProbe('act=parked'),
 			'a killed run must find a config beside the lowered one to heal from');
-	}
-
-	/**
-	 * The probe rewrites e107_config.php, so a caller that cannot show this
-	 * run's secret has to get nothing at all. A probe left in the docroot by a
-	 * run that died is otherwise an anonymous way to stop the site minting
-	 * tokens, which by e_core_session::check() turns attest() off for every
-	 * request the site serves, this branch's own guards included.
-	 */
-	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
-	{
-		$this->noTokenProbeIsInPlace($I);
-		$I->assertStringContainsString('TOKEN=1', $this->probe($I, 'act=state'),
-			'the install must be minting tokens before the forged call');
-
-		$I->amOnPage('/'.self::NO_TOKEN_PROBE.'?act=lower');
-
-		$I->seeResponseCodeIs(403);
-		$I->assertStringContainsString('TOKEN=1', $this->probe($I, 'act=state'),
-			'a refused caller must not have stopped the site minting tokens');
 	}
 
 	/**
@@ -574,31 +538,8 @@ class ForcedLogoutCsrfCest
 	 */
 	private function noTokenProbeIsInPlace(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::NO_TOKEN_PROBE, $this->noTokenProbeSource());
+		$I->haveProbe(self::NO_TOKEN_PROBE, $this->noTokenProbeSource());
 		$this->probeWritten = true;
-	}
-
-	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::NO_TOKEN_PROBE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage($this->probeUrl($query));
-
-		return trim($I->grabPageSource());
 	}
 
 	/**
@@ -626,51 +567,42 @@ class ForcedLogoutCsrfCest
 	 */
 	private function noTokenProbeSource()
 	{
-		$secret = $this->secret;
-
-		return <<<PHP
+		return <<<'PHP'
 <?php
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
-
 header('Content-Type: text/plain');
 
-\$act = isset(\$_GET['act']) ? \$_GET['act'] : '';
-\$config = __DIR__.'/e107_config.php';
-\$backup = \$config.'.bak';
-\$line = "define('e_SECURITY_LEVEL', 0);\\n";
+$act = isset($_GET['act']) ? $_GET['act'] : '';
+$config = __DIR__.'/e107_config.php';
+$backup = $config.'.bak';
+$line = "define('e_SECURITY_LEVEL', 0);\n";
 
-switch(\$act)
+switch($act)
 {
 	case 'lower':
 	case 'restore':
-		\$src = str_replace("\\n".\$line, '', file_get_contents(\$config));
+		$src = str_replace("\n".$line, '', file_get_contents($config));
 
-		if(\$act === 'lower')
+		if($act === 'lower')
 		{
-			\$parked = file_exists(\$backup) ? file_get_contents(\$backup) : \$src;
-			file_put_contents(\$backup, str_replace("\\n".\$line, '', \$parked));
+			$parked = file_exists($backup) ? file_get_contents($backup) : $src;
+			file_put_contents($backup, str_replace("\n".$line, '', $parked));
 
-			\$at = strpos(\$src, '<?php') + 5;
-			\$src = substr(\$src, 0, \$at)."\\n".\$line.substr(\$src, \$at);
+			$at = strpos($src, '<?php') + 5;
+			$src = substr($src, 0, $at)."\n".$line.substr($src, $at);
 		}
 
-		file_put_contents(\$config, \$src);
+		file_put_contents($config, $src);
 		echo 'PROBE_OK';
 		break;
 
 	case 'parked':
 		clearstatcache();
-		\$parked = file_exists(\$backup);
-		echo 'PARKED='.(\$parked ? 1 : 0)
-			.' LOWERED='.((\$parked && strpos(file_get_contents(\$backup), \$line) !== false) ? 1 : 0);
+		$parked = file_exists($backup);
+		echo 'PARKED='.($parked ? 1 : 0)
+			.' LOWERED='.(($parked && strpos(file_get_contents($backup), $line) !== false) ? 1 : 0);
 		break;
 
 	default:

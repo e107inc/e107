@@ -52,8 +52,8 @@ class PmAttachmentSendCest
 		// false, which would turn a dropped attachment into a missing plugin.
 		$I->havePluginInstalled(self::PLUGIN);
 
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$this->probe($I, 'act=reset&class='.self::CLASS_MEMBER.'&size='.self::LIMIT_KB);
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->probe('act=reset&class='.self::CLASS_MEMBER.'&size='.self::LIMIT_KB);
 
 		$this->alice = $I->haveForumMember('pmsendalice');
 		$this->bob = $I->haveForumMember('pmsendbob');
@@ -85,7 +85,6 @@ class PmAttachmentSendCest
 			}
 		}
 
-		$I->deleteAppFile(self::PROBE_FILE);
 		$I->dropPluginInstall(self::PLUGIN);
 		$I->dropPluginProbe();
 	}
@@ -104,7 +103,7 @@ class PmAttachmentSendCest
 
 		$this->sendWithAttachment($I);
 
-		$row = $this->probe($I, 'act=lastpm');
+		$row = $I->probe('act=lastpm');
 
 		$I->assertSame((string) $this->alice, $this->grab('/PM_FROM=(\d+)/', $row),
 			'Alice must have sent a message');
@@ -121,7 +120,7 @@ class PmAttachmentSendCest
 	 */
 	public function aMemberWhoMayNotAttachFilesIsToldSo(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=reset&class='.self::CLASS_NOBODY.'&size='.self::LIMIT_KB);
+		$I->probe('act=reset&class='.self::CLASS_NOBODY.'&size='.self::LIMIT_KB);
 
 		$I->loginToForum('pmsendalice');
 
@@ -130,7 +129,7 @@ class PmAttachmentSendCest
 		$I->seeResponseCodeIs(200);
 		$I->see('You are not allowed to send attachments');
 
-		$I->assertSame('', $this->grab('/PM_STORED=(\S*)/', $this->probe($I, 'act=lastpm')),
+		$I->assertSame('', $this->grab('/PM_STORED=(\S*)/', $I->probe('act=lastpm')),
 			'Nothing may be stored for a member who may not attach files');
 	}
 
@@ -143,7 +142,7 @@ class PmAttachmentSendCest
 	 */
 	public function anAttachmentOverTheSizeLimitIsNotAttached(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=reset&class='.self::CLASS_MEMBER.'&size='.self::LIMIT_KB_TOO_SMALL);
+		$I->probe('act=reset&class='.self::CLASS_MEMBER.'&size='.self::LIMIT_KB_TOO_SMALL);
 
 		$I->loginToForum('pmsendalice');
 
@@ -151,7 +150,7 @@ class PmAttachmentSendCest
 
 		$I->see('exceeds size limit');
 
-		$row = $this->probe($I, 'act=lastpm');
+		$row = $I->probe('act=lastpm');
 
 		$I->assertSame('', $this->grab('/PM_ATTACH=(\S*)/', $row),
 			'The message must carry no attachment it was told exceeded the limit');
@@ -168,7 +167,7 @@ class PmAttachmentSendCest
 	 */
 	public function onlyTheAttachmentsUnderTheLimitAreSentWithTheMessage(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=reset&class='.self::CLASS_MEMBER.'&size='.self::LIMIT_KB_TOO_SMALL);
+		$I->probe('act=reset&class='.self::CLASS_MEMBER.'&size='.self::LIMIT_KB_TOO_SMALL);
 
 		$I->loginToForum('pmsendalice');
 
@@ -176,7 +175,7 @@ class PmAttachmentSendCest
 
 		$I->see('exceeds size limit');
 
-		$row = $this->probe($I, 'act=lastpm');
+		$row = $I->probe('act=lastpm');
 		$stored = $this->grab('/PM_STORED=(\S*)/', $row);
 
 		$I->assertStringNotContainsString(',', $stored,
@@ -220,24 +219,6 @@ class PmAttachmentSendCest
 	}
 
 	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.$query);
-		$body = $I->grabPageSource();
-
-		if (strpos($body, 'PROBE_OK') === false)
-		{
-			throw new \RuntimeException('PM send probe failed for "'.$query.'": '.trim(strip_tags($body)));
-		}
-
-		return $body;
-	}
-
-	/**
 	 * @param string $pattern
 	 * @param string $body
 	 * @return string
@@ -266,7 +247,7 @@ class PmAttachmentSendCest
 	{
 		$php = <<<'PHP'
 <?php
-// Fixture for PmAttachmentSendCest. Written per test, removed in _after().
+// Fixture for PmAttachmentSendCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

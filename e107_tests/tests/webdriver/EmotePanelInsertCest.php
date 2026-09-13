@@ -45,12 +45,7 @@ class EmotePanelInsertCest
 
 	public function _before(\WebDriverTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-	}
-
-	public function _after(\WebDriverTester $I)
-	{
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 	}
 
 	public function aSmileyGoesInWithoutClickingTheFieldFirst(\WebDriverTester $I)
@@ -103,7 +98,7 @@ class EmotePanelInsertCest
 
 	private function amOnProbe(\WebDriverTester $I)
 	{
-		$I->amOnPage('/' . self::PROBE_FILE . '?' . \Helper\ProbeGuard::query());
+		$I->amOnProbe();
 		$I->dontSee(\Helper\ProbeGuard::REFUSAL);
 		$I->waitForElement('.addEmote', self::TIMEOUT);
 	}
@@ -116,7 +111,7 @@ class EmotePanelInsertCest
 
 		return <<<PHP
 <?php
-// Fixture for EmotePanelInsertCest. Removed again in the Cest's _after().
+// Fixture for EmotePanelInsertCest.
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 require_once(HEADERF);

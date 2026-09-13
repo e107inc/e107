@@ -96,18 +96,23 @@ class AdminLogin extends CodeceptionModule
 	 */
 	public function grabFreshAdminToken($adminPagePath = self::LOGIN_PATH)
 	{
-		$browser = $this->resolveBrowserModule();
+		$this->resolveBrowserModule()->amOnPage($adminPagePath);
 
-		$browser->amOnPage($adminPagePath);
-		$source = $browser->grabPageSource();
+		return $this->grabToken();
+	}
 
+	/**
+	 * The `e-token` the page the browser is on renders in a form.
+	 *
+	 * @return string
+	 * @throws \RuntimeException When the page renders no `e-token` field.
+	 */
+	public function grabToken()
+	{
 		$matches = array();
-		if (!preg_match(self::TOKEN_FIELD_PATTERN, $source, $matches))
+		if (!preg_match(self::TOKEN_FIELD_PATTERN, $this->resolveBrowserModule()->grabPageSource(), $matches))
 		{
-			throw new \RuntimeException(
-				"Could not locate an e-token on '{$adminPagePath}'. "
-				. "Ensure the session is authenticated and the page renders an admin form."
-			);
+			throw new \RuntimeException('The current page rendered no e-token to post back.');
 		}
 
 		return $matches[1];

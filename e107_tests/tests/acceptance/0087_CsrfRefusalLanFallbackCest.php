@@ -41,21 +41,16 @@ class CsrfRefusalLanFallbackCest
 	/** rate_table the forged ballot names, so no real content is disturbed. */
 	const TABLE = 'ratelanfallback';
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->loginAsAdmin();
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
 		\Helper\AppFileRegistry::park('e107_languages/English/lan_rate.php');
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=restore');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=restore');
 	}
 
 	/**
@@ -64,7 +59,7 @@ class CsrfRefusalLanFallbackCest
 	 */
 	public function theSignupRefusalSurvivesAnUnloadedLanguageFile(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl(''));
+		$I->amOnProbe();
 
 		$I->seeInSource(self::SIGNUP_FALLBACK);
 	}
@@ -76,8 +71,8 @@ class CsrfRefusalLanFallbackCest
 	 */
 	public function theRateRefusalSurvivesALanguageFileMissingTheTerm(AcceptanceTester $I)
 	{
-		$I->assertSame('PROBE_OK', $this->probe($I, 'act=strip'));
-		$I->assertSame('TERM=0', $this->probe($I, 'act=state'),
+		$I->probe('act=strip');
+		$I->assertSame('TERM=0', $I->grabProbe('act=state'),
 			'the fixture must be able to leave the term undefined');
 
 		$I->amOnPage('/rate.php?'.self::TABLE.'^1^/^10');
@@ -86,87 +81,41 @@ class CsrfRefusalLanFallbackCest
 	}
 
 	/**
-	 * The probe rewrites a language file, so a caller that cannot show this
-	 * run's secret has to get nothing at all. A probe left in the docroot by a
-	 * run that died is otherwise an anonymous way to delete a shipped string.
-	 */
-	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=strip');
-
-		$I->seeResponseCodeIs(403);
-		$I->assertSame('TERM=1', $this->probe($I, 'act=state'),
-			'a refused caller must not have stripped the language file');
-	}
-
-	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::PROBE_FILE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage($this->probeUrl($query));
-
-		return trim($I->grabPageSource());
-	}
-
-	/**
 	 * @return string
 	 */
 	private function probeSource()
 	{
-		$secret = $this->secret;
-
-		return <<<PHP
+		return <<<'PHP'
 <?php
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
-
 header('Content-Type: text/plain');
 
-\$act = isset(\$_GET['act']) ? \$_GET['act'] : '';
-\$lan = e_LANGUAGEDIR.e_LANGUAGE.'/lan_rate.php';
-\$backup = \$lan.'.bak';
+$act = isset($_GET['act']) ? $_GET['act'] : '';
+$lan = e_LANGUAGEDIR.e_LANGUAGE.'/lan_rate.php';
+$backup = $lan.'.bak';
 
-switch(\$act)
+switch($act)
 {
 	case 'strip':
-		if(!file_exists(\$backup))
+		if(!file_exists($backup))
 		{
-			copy(\$lan, \$backup);
+			copy($lan, $backup);
 		}
 
-		\$src = preg_replace('/^.*RATELAN_REFUSED_TOKEN_MISSING.*\\n/m', '', file_get_contents(\$backup));
-		unlink(\$lan);
-		file_put_contents(\$lan, \$src);
+		$src = preg_replace('/^.*RATELAN_REFUSED_TOKEN_MISSING.*\n/m', '', file_get_contents($backup));
+		unlink($lan);
+		file_put_contents($lan, $src);
 		clearstatcache();
 		echo 'PROBE_OK';
 		break;
 
 	case 'restore':
-		if(file_exists(\$backup))
+		if(file_exists($backup))
 		{
-			unlink(\$lan);
-			rename(\$backup, \$lan);
+			unlink($lan);
+			rename($backup, $lan);
 			clearstatcache();
 		}
 
@@ -174,15 +123,15 @@ switch(\$act)
 		break;
 
 	case 'state':
-		e107::includeLan(\$lan);
+		e107::includeLan($lan);
 		echo 'TERM='.(defined('RATELAN_REFUSED_TOKEN_MISSING') ? 1 : 0);
 		break;
 
 	default:
 		require_once(e_HANDLER.'e_signup_class.php');
 
-		\$suObj = new e_signup;
-		\$suObj->run('test');
+		$suObj = new e_signup;
+		$suObj->run('test');
 		break;
 }
 PHP;

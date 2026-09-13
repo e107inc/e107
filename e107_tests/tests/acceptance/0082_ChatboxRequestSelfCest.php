@@ -54,12 +54,11 @@ class ChatboxRequestSelfCest
 	public function _before(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled(self::PLUGIN);
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->deleteAppFile(self::PROBE_FILE);
 		$I->dropPluginInstall(self::PLUGIN);
 		$I->dropPluginProbe();
 	}
@@ -70,7 +69,7 @@ class ChatboxRequestSelfCest
 
 		$I->loginAsAdmin();
 		$I->haveHttpHeader('X-Rewrite-Url', self::REWRITTEN);
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->assertSame(200, $I->grabResponseCode());
 		$I->assertStringEndsWith(
@@ -86,7 +85,7 @@ class ChatboxRequestSelfCest
 
 		$I->loginAsAdmin();
 		$I->haveHttpHeader('X-Rewrite-Url', self::REWRITTEN_QUERY);
-		$I->amOnPage('/' . self::PROBE_FILE . '?' . self::REWRITE_TARGET_QUERY);
+		$I->amOnProbe(self::REWRITE_TARGET_QUERY);
 
 		$action = $this->grabFormAction($I, "#<form id='chatbox' method='post' action='([^']*)'#");
 
@@ -172,7 +171,7 @@ class ChatboxRequestSelfCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0082_ChatboxRequestSelfCest. Removed again in the Cest's _after().
+// Fixture for 0082_ChatboxRequestSelfCest.
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 require_once(HEADERF);

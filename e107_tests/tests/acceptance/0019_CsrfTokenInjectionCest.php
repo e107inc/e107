@@ -17,19 +17,14 @@ class CsrfTokenInjectionCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-	}
-
-	public function _after(AcceptanceTester $I)
-	{
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 	}
 
 	public function sameOriginPostFormGetsTheToken(AcceptanceTester $I)
 	{
 		$I->wantTo('Add an e-token to a raw same-origin POST form that never asked for one');
 
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->seeInSource('id="probe-same"><input type="hidden" name="e-token" value="');
 	}
@@ -38,7 +33,7 @@ class CsrfTokenInjectionCest
 	{
 		$I->wantTo('Leave a GET form alone, so the token stays out of the query string');
 
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->seeInSource('id="probe-get"><input name="q" /></form>');
 	}
@@ -47,7 +42,7 @@ class CsrfTokenInjectionCest
 	{
 		$I->wantTo('Leave an off-site POST form alone, so no third party is handed the token');
 
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->seeInSource('id="probe-cross"><input name="b" /></form>');
 	}
@@ -59,7 +54,7 @@ class CsrfTokenInjectionCest
 	{
 		$I->wantTo('Return form markup inside a textarea byte-identical');
 
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->seeInSource('<textarea id="probe-textarea"><form method="post" action="/x">inner</form></textarea>');
 	}
@@ -68,7 +63,7 @@ class CsrfTokenInjectionCest
 	{
 		$I->wantTo('Publish the token in a meta tag so scripts find it on a form-less page');
 
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnProbe();
 
 		$I->seeInSource('<meta name="e-token" content="');
 	}
@@ -81,7 +76,7 @@ class CsrfTokenInjectionCest
 	{
 		$I->wantTo('Leave a non-HTML response alone entirely');
 
-		$I->amOnPage('/' . self::PROBE_FILE . '?xml=1');
+		$I->amOnProbe('xml=1');
 
 		$I->seeInSource('<feed><form method="post" action="" id="probe-xml"><input name="a" /></form></feed>');
 		$I->dontSeeInSource('e-token');
@@ -94,7 +89,7 @@ class CsrfTokenInjectionCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0019_CsrfTokenInjectionCest. Removed again in the Cest's _after().
+// Fixture for 0019_CsrfTokenInjectionCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

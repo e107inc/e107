@@ -81,7 +81,7 @@ class ThumbMediaUserclassCest
 		$I->stopFollowingRedirects();
 		$I->resetAllCookies();
 
-		$I->writeAppFile(self::PROBE, $this->probeSource());
+		$I->haveProbe(self::PROBE, $this->probeSource());
 
 		// One request, three jobs. e107 bans an address after fifty requests in
 		// a window and every request here arrives from the same bridge address.
@@ -120,7 +120,6 @@ class ThumbMediaUserclassCest
 	public function _after(AcceptanceTester $I)
 	{
 		$this->probe($I, 'cleanup');
-		$I->deleteAppFile(self::PROBE);
 	}
 
 	// ------------------------------------------------------------------
@@ -771,13 +770,11 @@ class ThumbMediaUserclassCest
 	 */
 	private function probe(AcceptanceTester $I, $act)
 	{
-		$I->amOnPage('/'.self::PROBE.'?act='.$act);
-
-		$body = $I->grabResponseBody();
+		$body = $I->grabProbe('act='.$act);
 
 		if(strpos($body, 'P16PROBE_OK') === false)
 		{
-			throw new \RuntimeException('Media userclass probe failed for "'.$act.'": '.trim(strip_tags($body)));
+			throw new \RuntimeException('Media userclass probe failed for "'.$act.'": '.strip_tags($body));
 		}
 
 		$env = array();
@@ -812,7 +809,7 @@ class ThumbMediaUserclassCest
 
 		return <<<PHP
 <?php
-// Fixture for 0040_ThumbMediaUserclassCest. Removed again in the Cest's _after().
+// Fixture for 0040_ThumbMediaUserclassCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

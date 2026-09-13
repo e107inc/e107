@@ -38,14 +38,9 @@ class InstallPrefDuplicatesCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->haveFreshInstall();
 		$I->resetAllCookies();
-	}
-
-	public function _after(AcceptanceTester $I)
-	{
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	/**
@@ -147,7 +142,7 @@ class InstallPrefDuplicatesCest
 	{
 		$I->wantTo('see that a configured social URL still reaches the footer');
 
-		$this->probe($I, 'xurl&url='.urlencode(self::CONTROL_URL));
+		$I->probe('act=xurl&url='.urlencode(self::CONTROL_URL));
 
 		$I->amOnPage('/');
 
@@ -200,7 +195,7 @@ class InstallPrefDuplicatesCest
 	{
 		$I->wantTo('see the core update repair a contact recipient stored as a string');
 
-		$this->probe($I, 'sitecontacts&value='.self::POISON);
+		$I->probe('act=sitecontacts&value='.self::POISON);
 
 		$prefs = $this->grabPrefs($I);
 		$I->assertSame(self::POISON, $prefs['sitecontacts'],
@@ -210,7 +205,7 @@ class InstallPrefDuplicatesCest
 		// the run that asks it to repair a preference has to be a main admin.
 		$I->loginAsAdmin();
 
-		$this->probe($I, 'update');
+		$I->probe('act=update');
 
 		$prefs = $this->grabPrefs($I);
 		$I->assertSame('250', $prefs['sitecontacts'],
@@ -265,33 +260,14 @@ class InstallPrefDuplicatesCest
 	 */
 	private function grabPrefs(AcceptanceTester $I)
 	{
-		$body = $this->probe($I, 'prefs');
+		$body = $I->probe('act=prefs');
 
 		if(!preg_match('/PROBE_OK (\{.*\})/', $body, $matches))
 		{
-			throw new RuntimeException('The probe published no preferences: '.trim($body));
+			throw new RuntimeException('The probe published no preferences: '.$body);
 		}
 
 		return json_decode($matches[1], true);
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act='.$query);
-
-		$body = $I->grabPageSource();
-
-		if(strpos($body, 'PROBE_OK') === false)
-		{
-			throw new RuntimeException('Preference probe failed for "'.$query.'": '.trim(strip_tags($body)));
-		}
-
-		return $body;
 	}
 
 	/**
@@ -301,7 +277,7 @@ class InstallPrefDuplicatesCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0033_InstallPrefDuplicatesCest. Removed again in the Cest's _after().
+// Fixture for 0033_InstallPrefDuplicatesCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

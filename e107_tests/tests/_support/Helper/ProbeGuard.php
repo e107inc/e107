@@ -31,9 +31,6 @@ class ProbeGuard
 	 */
 	const MARKER = '{{E107_TEST_PROBE_GUARD}}';
 
-	/** The bootstrap that makes a docroot fixture a probe rather than a payload. */
-	const BOOTSTRAP = "require_once(__DIR__.'/class2.php');";
-
 	/** Request header the acceptance suite shows the secret in. */
 	const HEADER = 'X-E107-Test-Probe';
 
@@ -76,7 +73,7 @@ class ProbeGuard
 	 */
 	public static function contain($relative_path, $contents)
 	{
-		if (strpos($contents, self::BOOTSTRAP) === false)
+		if (!self::bootsE107($contents))
 		{
 			return $contents;
 		}
@@ -85,10 +82,40 @@ class ProbeGuard
 		{
 			throw new \RuntimeException($relative_path
 				.' boots e107 in the docroot, so it must carry '.self::MARKER
-				.' on the line after its bootstrap');
+				.' where the guard is to run');
 		}
 
 		return str_replace(self::MARKER, self::source(), $contents);
+	}
+
+	/**
+	 * @param string $contents
+	 * @return bool whether an include statement in $contents names class2.php, however the path to it is spelled or quoted
+	 */
+	private static function bootsE107($contents)
+	{
+		$including = false;
+
+		foreach (token_get_all($contents) as $token)
+		{
+			if (!is_array($token))
+			{
+				$including = $including && $token !== ';';
+				continue;
+			}
+
+			if (in_array($token[0], array(T_REQUIRE, T_REQUIRE_ONCE, T_INCLUDE, T_INCLUDE_ONCE), true))
+			{
+				$including = true;
+			}
+			elseif ($including && in_array($token[0], array(T_CONSTANT_ENCAPSED_STRING, T_ENCAPSED_AND_WHITESPACE), true)
+				&& substr(rtrim($token[1], "'\" \t\r\n"), -10) === 'class2.php')
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

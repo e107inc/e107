@@ -163,7 +163,7 @@ class AdminRoutePermsCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->startFollowingRedirects();
 		$this->reset($I);
 	}
@@ -172,7 +172,6 @@ class AdminRoutePermsCest
 	{
 		$I->startFollowingRedirects();
 		$this->reset($I);
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	// -----------------------------------------------------------------
@@ -584,7 +583,7 @@ class AdminRoutePermsCest
 		$I->sendPostRequest(self::ROUTE_PREFS, array(
 			'etrigger_save'   => 'Save Settings',
 			'user_new_period' => self::PREF_ATTACK,
-			'e-token'         => $this->grabToken($I),
+			'e-token'         => $I->grabToken(),
 		));
 
 		$after = $this->dump($I);
@@ -1524,7 +1523,7 @@ class AdminRoutePermsCest
 			'value'   => $value,
 			'pk'      => $id,
 			'token'   => $this->grabInlineToken($I),
-			'e-token' => $this->grabToken($I),
+			'e-token' => $I->grabToken(),
 		));
 	}
 
@@ -1651,7 +1650,7 @@ class AdminRoutePermsCest
 			'password'        => 'p7rp-Str0ng-Pass',
 			'sendconfemail'   => 0,
 			'ac'              => md5((string) self::PWCHANGE),
-			'e-token'         => $token === null ? $this->grabToken($I) : $token,
+			'e-token'         => $token === null ? $I->grabToken() : $token,
 		);
 
 		if($perms !== null)
@@ -1692,7 +1691,7 @@ class AdminRoutePermsCest
 			'user_image'            => '',
 			'user_hideemail'        => 1,
 			'user_ban'              => 0,
-			'e-token'               => $this->grabToken($I),
+			'e-token'               => $I->grabToken(),
 		);
 	}
 
@@ -1712,23 +1711,7 @@ class AdminRoutePermsCest
 	{
 		$I->amOnPage($route);
 
-		return $this->grabToken($I);
-	}
-
-	/**
-	 * @return string the CSRF token on the page currently loaded
-	 */
-	private function grabToken(AcceptanceTester $I)
-	{
-		$source = $I->grabPageSource();
-		$matches = array();
-
-		if(!preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', $source, $matches))
-		{
-			throw new \RuntimeException('The current page rendered no e-token to post back.');
-		}
-
-		return $matches[1];
+		return $I->grabToken();
 	}
 
 	/**
@@ -1885,7 +1868,7 @@ class AdminRoutePermsCest
 	 */
 	private function reset(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=reset');
+		$I->amOnProbe('act=reset');
 
 		$body = $I->grabPageSource();
 
@@ -1901,7 +1884,7 @@ class AdminRoutePermsCest
 	private function dump(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=dump');
+		$I->amOnProbe('act=dump');
 
 		$body = $I->grabPageSource();
 		$matches = array();
@@ -1930,7 +1913,7 @@ class AdminRoutePermsCest
 
 		return <<<PHP
 <?php
-// Fixture for 0040_AdminRoutePermsCest. Removed again in the Cest's _after().
+// Fixture for 0040_AdminRoutePermsCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

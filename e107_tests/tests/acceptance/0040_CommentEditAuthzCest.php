@@ -83,36 +83,36 @@ class CommentEditAuthzCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 
 		// Every request from the container arrives from the bridge address, and
 		// e107 bans an address once it has been seen enough times in a window.
-		$this->probe($I, 'act=flood');
+		$I->probe('act=flood');
 
 		// Pin the CSRF mode rather than inherit it. What an unset preference
 		// resolves to is a decision that moves between releases, and these tests
 		// are about authorisation: a POST refused by the CSRF gate would never
 		// reach the check under test, and every refusal here would pass for the
 		// wrong reason.
-		$this->probe($I, 'act=pref&k=csrf_enforce&v='.self::CSRF_TOKEN_ENFORCE);
+		$I->probe('act=pref&k=csrf_enforce&v='.self::CSRF_TOKEN_ENFORCE);
 
 		// The AJAX edit route is behind this preference, and a fresh install
 		// ships it off.
-		$this->probe($I, 'act=pref&k=allowCommentEdit&v=1');
+		$I->probe('act=pref&k=allowCommentEdit&v=1');
 
 		// ANON, which is what getCommentPermissions() grants a caller with no
 		// account. Without it enter_comment() turns a guest away for a reason
 		// that has nothing to do with who owns the comment.
-		$this->probe($I, 'act=pref&k=anon_post&v=1');
+		$I->probe('act=pref&k=anon_post&v=1');
 
 		$this->newsId = $this->haveNews($I, 'Comment authz fixture', 'comment-authz-fixture');
 		$this->lockedNewsId = $this->haveNews($I, 'Comment authz lock fixture', 'comment-authz-lock-fixture');
 
-		$this->alice = $this->haveMember($I, 'authzalice');
-		$this->mallory = $this->haveMember($I, 'authzmallory');
+		$this->alice = $I->haveMember('authzalice', self::MEMBER_PASS);
+		$this->mallory = $I->haveMember('authzmallory', self::MEMBER_PASS);
 		// Not a main admin: user_perms '0' short-circuits every permission test
 		// in e107, so it would make a moderator control pass without a moderator.
-		$this->moderator = $this->haveMember($I, 'authzmod', 1, 'B');
+		$this->moderator = $I->haveMember('authzmod', self::MEMBER_PASS, array('user_admin' => 1, 'user_perms' => 'B'));
 
 		$this->aliceComment = $this->haveComment($I, self::ORIGINAL, $this->alice, 'authzalice');
 		$this->anonComment = $this->haveComment($I, self::ORIGINAL_ANON, 0, 'Guest');
@@ -126,10 +126,9 @@ class CommentEditAuthzCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=prefdel&k=csrf_enforce');
-		$this->probe($I, 'act=pref&k=allowCommentEdit&v=0');
-		$this->probe($I, 'act=pref&k=anon_post&v=0');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=prefdel&k=csrf_enforce');
+		$I->probe('act=pref&k=allowCommentEdit&v=0');
+		$I->probe('act=pref&k=anon_post&v=0');
 	}
 
 	// -----------------------------------------------------------------
@@ -523,7 +522,7 @@ class CommentEditAuthzCest
 	 */
 	private function switchCommentEditingOff(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=pref&k=allowCommentEdit&v=0');
+		$I->probe('act=pref&k=allowCommentEdit&v=0');
 	}
 
 	/**
@@ -599,13 +598,22 @@ class CommentEditAuthzCest
 	{
 		$I->resetAllCookies();
 
-		$body = $this->probe($I, 'act=whoami');
+		$body = $I->probe('act=whoami');
 
-		if (strpos($body, "USERID=0\n") === false || strpos($body, "ANON=1\n") === false
-			|| strpos($body, "MODERATOR=0\n") === false)
+		if (!self::says($body, 'USERID=0') || !self::says($body, 'ANON=1') || !self::says($body, 'MODERATOR=0'))
 		{
-			throw new \RuntimeException('Not an anonymous caller who may comment: '.trim(strip_tags($body)));
+			throw new \RuntimeException('Not an anonymous caller who may comment: '.strip_tags($body));
 		}
+	}
+
+	/**
+	 * @param string $body what the probe answered
+	 * @param string $line
+	 * @return bool whether $line is one whole line of $body
+	 */
+	private static function says($body, $line)
+	{
+		return preg_match('/^'.preg_quote($line, '/').'$/m', $body) === 1;
 	}
 
 	/**
@@ -628,23 +636,18 @@ class CommentEditAuthzCest
 	 */
 	private function loginAs(AcceptanceTester $I, $name, $userId, $moderator = false)
 	{
-		$I->resetAllCookies();
+		$I->loginAsMember($name, self::MEMBER_PASS);
 
-		$I->amOnPage('/login.php');
-		$I->fillField('username', $name);
-		$I->fillField('userpass', self::MEMBER_PASS);
-		$I->click('userlogin');
+		$body = $I->probe('act=whoami');
 
-		$body = $this->probe($I, 'act=whoami');
-
-		if (strpos($body, 'USERID='.$userId."\n") === false)
+		if (!self::says($body, 'USERID='.$userId))
 		{
-			throw new \RuntimeException('Could not sign in as "'.$name.'": '.trim(strip_tags($body)));
+			throw new \RuntimeException('Could not sign in as "'.$name.'": '.strip_tags($body));
 		}
 
-		if (strpos($body, 'MODERATOR='.($moderator ? '1' : '0')."\n") === false)
+		if (!self::says($body, 'MODERATOR='.($moderator ? '1' : '0')))
 		{
-			throw new \RuntimeException('"'.$name.'" is not the kind of actor this test needs: '.trim(strip_tags($body)));
+			throw new \RuntimeException('"'.$name.'" is not the kind of actor this test needs: '.strip_tags($body));
 		}
 	}
 
@@ -703,33 +706,6 @@ class CommentEditAuthzCest
 	}
 
 	/**
-	 * A member who can actually sign in.
-	 *
-	 * The password is stored as a plain md5: UserHandler::getHashType() reads any
-	 * 32 character hash as PASSWORD_E107_MD5 and CheckPassword() accepts it
-	 * whatever the site's configured encoding is, so the plaintext is known here.
-	 *
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 * @param int $admin
-	 * @param string $perms
-	 * @return int user id
-	 */
-	private function haveMember(AcceptanceTester $I, $name, $admin = 0, $perms = '')
-	{
-		return $I->haveInDatabase('e107_user', array(
-			'user_name' => $name, 'user_loginname' => $name, 'user_login' => $name,
-			'user_password' => md5(self::MEMBER_PASS),
-			'user_email' => $name.'@example.com',
-			'user_join' => time(), 'user_ban' => 0,
-			'user_lastvisit' => time() - 86400, 'user_currentvisit' => time() - 86400,
-			'user_class' => '253',
-			'user_admin' => $admin, 'user_perms' => $perms,
-			'user_prefs' => '', 'user_signature' => '', 'user_realm' => '', 'user_xup' => '',
-		));
-	}
-
-	/**
 	 * @param AcceptanceTester $I
 	 * @param string $text
 	 * @param int $authorId
@@ -752,25 +728,6 @@ class CommentEditAuthzCest
 	}
 
 	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?'.$query);
-
-		$body = $I->grabPageSource();
-
-		if (strpos($body, 'PROBE_OK') === false)
-		{
-			throw new \RuntimeException('Comment authz probe failed for "'.$query.'": '.trim(strip_tags($body)));
-		}
-
-		return $body;
-	}
-
-	/**
 	 * Core preferences live serialised inside a single e107_core row, so no
 	 * database assertion can read or write one. Boot the application instead.
 	 *
@@ -780,7 +737,7 @@ class CommentEditAuthzCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for CommentEditAuthzCest. Written per test, removed in _after().
+// Fixture for CommentEditAuthzCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

@@ -19,24 +19,23 @@ class CookieModeRemovedCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=setup');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->amOnProbe('act=setup');
 		$I->seeInSource('PROBE_OK');
 		$I->seeInSource('TOKEN=1');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=teardown');
+		$I->amOnProbe('act=teardown');
 		$I->seeInSource('PROBE_OK');
-		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
 	public function aLegacyAuthCookieSignsNobodyIn(AcceptanceTester $I)
 	{
 		$I->wantTo('refuse the auth cookie a cookie-mode site handed out before the upgrade');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->amOnProbe('act=whoami');
 		$I->seeInSource('MODE=cookie');
 		$I->seeInSource('COOKIE=1');
 		$I->seeInSource('UID=0');
@@ -50,13 +49,12 @@ class CookieModeRemovedCest
 	{
 		$I->wantTo('log out cleanly on a site that was in cookie mode before the upgrade');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
 		$I->amOnPage('/index.php?logout&e-token='.$this->grabSessionToken($I));
 		$I->seeResponseCodeIs(200);
 		$I->dontSeeInSource('Fatal error');
 		$I->dontSeeInSource('Uncaught');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->amOnProbe('act=whoami');
 		$I->seeInSource('COOKIE=1');
 		$I->seeInSource('UID=0');
 
@@ -77,7 +75,7 @@ class CookieModeRemovedCest
 	{
 		$I->wantTo('clear the pre-upgrade auth cookie on its owner\'s own way out');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->amOnProbe('act=whoami');
 		$I->seeInSource('COOKIE=1');
 
 		$I->amOnPage('/login.php');
@@ -85,12 +83,12 @@ class CookieModeRemovedCest
 		$I->fillField('userpass', \Helper\AdminLogin::ADMIN_PASS);
 		$I->click('userlogin');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->amOnProbe('act=whoami');
 		$I->dontSeeInSource('UID=0');
 
 		$I->amOnPage('/index.php?logout&e-token='.$this->grabSessionToken($I));
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->amOnProbe('act=whoami');
 		$I->seeInSource('COOKIE=0');
 		$I->seeInSource('UID=0');
 	}
@@ -108,7 +106,7 @@ class CookieModeRemovedCest
 	{
 		$I->wantTo('leave a theme that still asks for the deleted shortcodes rendering cleanly');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=legacy_template');
+		$I->amOnProbe('act=legacy_template');
 		$I->seeInSource('PROBE_OK');
 		$I->seeInSource('BRACES=0');
 		$I->seeInSource('CHECKBOX=0');
@@ -123,16 +121,13 @@ class CookieModeRemovedCest
 		$I->fillField('userpass', \Helper\AdminLogin::ADMIN_PASS);
 		$I->click('userlogin');
 
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->amOnProbe('act=whoami');
 		$I->seeInSource('MODE=cookie');
 		$I->dontSeeInSource('UID=0');
 	}
 
 	/**
-	 * @return string
-	 */
-	/**
-	 * The session's own e-token, read off the probe's last response.
+	 * The session's own e-token, as the probe publishes it.
 	 *
 	 * A logout that carries no token is refused, and the browser here is
 	 * anonymous, so no page it can reach publishes a logout link to follow.
@@ -142,7 +137,7 @@ class CookieModeRemovedCest
 	 */
 	private function grabSessionToken(AcceptanceTester $I)
 	{
-		if(!preg_match('/ETOKEN:?=([^\s]*)/', $I->grabPageSource(), $matches))
+		if(!preg_match('/ETOKEN:?=([^\s]*)/', $I->grabProbe('act=whoami'), $matches))
 		{
 			throw new \RuntimeException('The probe did not publish ETOKEN');
 		}
@@ -154,7 +149,7 @@ class CookieModeRemovedCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for 0076_CookieModeRemovedCest. Removed again in the Cest's _after().
+// Fixture for 0076_CookieModeRemovedCest.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}

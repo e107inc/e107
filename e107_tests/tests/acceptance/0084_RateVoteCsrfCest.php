@@ -49,22 +49,16 @@ class RateVoteCsrfCest
 	 */
 	const UNAUTHORIZED = 'Unauthorized access!';
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->loginAsAdmin();
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage($this->probeUrl('act=reset'));
-		$I->seeInSource('PROBE_OK');
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->probe('act=reset');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl('act=reset'));
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->probe('act=reset');
 	}
 
 	/**
@@ -111,23 +105,6 @@ class RateVoteCsrfCest
 	}
 
 	/**
-	 * The probe deletes rows, so a caller that cannot show this run's secret has
-	 * to get nothing at all. A probe left in the docroot by a run that died is
-	 * otherwise an anonymous way to wipe out what the site recorded.
-	 */
-	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
-	{
-		$I->amOnPage($this->publishedBallot($I));
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=reset');
-
-		$I->seeResponseCodeIs(403);
-		$I->seeInDatabase('e107_rate', array(
-			'rate_table'  => self::TABLE,
-			'rate_itemid' => self::ITEM,
-		));
-	}
-
-	/**
 	 * @param AcceptanceTester $I
 	 * @return void
 	 */
@@ -154,7 +131,7 @@ class RateVoteCsrfCest
 	 */
 	private function publishedBallot(AcceptanceTester $I)
 	{
-		$I->amOnPage($this->probeUrl(''));
+		$I->amOnProbe();
 
 		if(!preg_match("#<option value='([^']+)'>10</option>#", $I->grabPageSource(), $matches))
 		{
@@ -165,22 +142,10 @@ class RateVoteCsrfCest
 	}
 
 	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::PROBE_FILE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
-	}
-
-	/**
 	 * @return string
 	 */
 	private function probeSource()
 	{
-		$secret = $this->secret;
 		$table = self::TABLE;
 		$item = self::ITEM;
 
@@ -188,13 +153,6 @@ class RateVoteCsrfCest
 <?php
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
-
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
 
 if(isset(\$_GET['act']) && \$_GET['act'] === 'reset')
 {

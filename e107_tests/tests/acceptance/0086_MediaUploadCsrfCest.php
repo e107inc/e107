@@ -52,22 +52,17 @@ class MediaUploadCsrfCest
 	 */
 	const UNAUTHORIZED = 'Unauthorized access!';
 
-	/** @var string what a caller shows to prove it is this run of this case */
-	private $secret;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->loginAsAdmin();
-		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->assertSame('STALE=1 UPLOADED=0', $this->probe($I, 'act=seed'),
+		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+		$I->assertSame('STALE=1 UPLOADED=0', $I->grabProbe('act=seed'),
 			'the fixture must be able to leave a stale .part file in e_IMPORT');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->probe($I, 'act=clean');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->grabProbe('act=clean');
 	}
 
 	/**
@@ -78,7 +73,7 @@ class MediaUploadCsrfCest
 		$I->amOnPage(self::ENDPOINT.'?name='.self::UPLOAD);
 		$answer = $I->grabPageSource();
 
-		$I->assertSame('STALE=1 UPLOADED=0', $this->probe($I, 'act=state'),
+		$I->assertSame('STALE=1 UPLOADED=0', $I->grabProbe('act=state'),
 			'a query string alone must not reach the uploader');
 		$I->assertStringContainsString(self::REFUSED, $answer,
 			'the uploader must answer with the reason it refused');
@@ -93,7 +88,7 @@ class MediaUploadCsrfCest
 		$I->amOnPage(self::ENDPOINT.'?name='.self::UPLOAD.'&e-token=not-even-close');
 		$answer = $I->grabPageSource();
 
-		$I->assertSame('STALE=1 UPLOADED=0', $this->probe($I, 'act=state'),
+		$I->assertSame('STALE=1 UPLOADED=0', $I->grabProbe('act=state'),
 			'a token that does not validate must not reach the uploader');
 		$I->assertStringContainsString(self::UNAUTHORIZED, $answer,
 			'a token that does not validate must be refused by the framework');
@@ -110,23 +105,8 @@ class MediaUploadCsrfCest
 
 		$I->dontSeeInSource(self::REFUSED);
 		$I->dontSeeInSource(self::UNAUTHORIZED);
-		$I->assertStringContainsString('STALE=0', $this->probe($I, 'act=state'),
+		$I->assertStringContainsString('STALE=0', $I->grabProbe('act=state'),
 			'the Media Manager must still be able to reach the uploader');
-	}
-
-	/**
-	 * The probe writes and deletes files in e_IMPORT, so a caller that cannot
-	 * show this run's secret has to get nothing at all. A probe left in the
-	 * docroot by a run that died is otherwise an anonymous way to disturb what
-	 * the uploader keeps there.
-	 */
-	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=clean');
-
-		$I->seeResponseCodeIs(403);
-		$I->assertSame('STALE=1 UPLOADED=0', $this->probe($I, 'act=state'),
-			'a refused caller must not have swept e_IMPORT');
 	}
 
 	/**
@@ -147,47 +127,16 @@ class MediaUploadCsrfCest
 	}
 
 	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage($this->probeUrl($query));
-
-		return trim($I->grabPageSource());
-	}
-
-	/**
-	 * @param string $query
-	 * @return string
-	 */
-	private function probeUrl($query)
-	{
-		$url = '/'.self::PROBE_FILE.'?probe='.$this->secret;
-
-		return ($query === '') ? $url : $url.'&'.$query;
-	}
-
-	/**
 	 * @return string
 	 */
 	private function probeSource()
 	{
-		$secret = $this->secret;
 		$upload = self::UPLOAD;
 
 		return <<<PHP
 <?php
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
-
-if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
-{
-	header('HTTP/1.1 403 Forbidden', true, 403);
-	echo 'Unauthorized access!';
-	exit;
-}
 
 header('Content-Type: text/plain');
 
