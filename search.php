@@ -167,7 +167,7 @@ class search_front extends e_shortcode
 				$text .= "<span class='caret'></span></button>";
 			}
 
-			$text .= '<ul class="dropdown-menu dropdown-menu-end pull-right">
+			$text .= '<ul class="dropdown-menu dropdown-menu-right dropdown-menu-end">
 	          <li><a class="dropdown-item e-expandit" href="#" data-target="search-advanced,search-enhanced"><small>'.LAN_SEARCH_202.'</small></a></li>
 	        </ul>';
 		}
