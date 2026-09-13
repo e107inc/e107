@@ -61,6 +61,13 @@ class AdminGetCsrfPluginThemeMenuCest
 		$I->loginAsAdmin();
 	}
 
+	/** The builder and the theme manager write these from inside the app, so no host-side record sees them. */
+	public function _after(AcceptanceTester $I)
+	{
+		$I->removeAppPath('e107_plugins/'.self::BUILT.'/'.self::BUILT.'_sql.php');
+		$I->removeAppPath('e107_themes/'.self::THEME_COPY);
+	}
+
 	/**
 	 * gitPull() shell_execs `git reset --hard` and `git pull` in the plugin
 	 * folder, so a hostile page could discard an administrator's local edits and

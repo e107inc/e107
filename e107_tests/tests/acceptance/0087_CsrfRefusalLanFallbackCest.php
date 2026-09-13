@@ -20,19 +20,14 @@
  * only half of the scenario that decides anything: what the file is missing,
  * not which pack it came from.
  *
- * That language file is tracked by git, so the copy the fixture takes of it is
- * parked beside it and registered with Extension\WorkspaceCleanup, which puts
- * a parked copy back on the way into a run as well as on the way out. A backup
- * in a temp directory can be discarded on its own - a rebuild, a different
- * container, down --volumes - and the next run would then take its copy of the
- * stripped file and strip it again to no effect, leaving a shipped English
- * string deleted for good while the case still passed.
+ * That language file is tracked by git, so the fixture parks a copy through
+ * {@see \Helper\AppFileRegistry::park()}, which puts it back when the test
+ * ends and on the way into the next run if this one dies first.
  *
  * e107_web/js/plupload/upload.php already read its own string through
  * defset(). This holds the other two refusals to the same standard.
  *
  * @see e107_handlers/e107_class.php  e107::includeLan()
- * @see Extension\WorkspaceCleanup    restoreBackups()
  */
 class CsrfRefusalLanFallbackCest
 {
@@ -53,6 +48,7 @@ class CsrfRefusalLanFallbackCest
 	{
 		$I->loginAsAdmin();
 		$this->secret = substr(hash('sha256', uniqid('', true).mt_rand()), 0, 32);
+		\Helper\AppFileRegistry::park('e107_languages/English/lan_rate.php');
 		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
 	}
 

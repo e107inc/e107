@@ -90,29 +90,11 @@
 		 */
 		public function testIgnoringOfInvalidPlugin()
 		{
-
-			$dir = e_PLUGIN."temptest";
-			$file = e_PLUGIN."temptest/plugin.php";
-
-			mkdir($dir,0755);
-			file_put_contents($file, "\n");
+			$this->writeAppFile('e107_plugins/temptest/plugin.php', "\n");
 
 			$detected = $this->ep->clearCache()->getDetected();
 
-			foreach($detected as $path)
-			{
-				if($path == 'temptest')
-				{
-					$this->assertFalse(true);
-				}
-			}
-
-			unlink($file);
-			rmdir($dir);
-
-			$this->assertFalse(false);
-
-
+			$this->assertNotContains('temptest', $detected);
 		}
 
 		public function testClearCache()

@@ -450,7 +450,7 @@ class ForcedLogoutCsrfCest
 	/**
 	 * The lowering outlives the process that made it, so whatever heals it has
 	 * to be on disk before the level goes down rather than in an _after that a
-	 * killed run never reaches. Extension\WorkspaceCleanup puts e107_config.php
+	 * killed run never reaches. Extension\WorkspaceGuard puts e107_config.php
 	 * back from the copy beside it on its way into a run, and Helper\E107Base
 	 * puts it back at the end of a suite, so what both need is that a lowered
 	 * config always has that copy and that the copy carries no lowering.
@@ -614,7 +614,7 @@ class ForcedLogoutCsrfCest
 	 * Lowering the level first parks a copy of the config at
 	 * e107_config.php.bak with any lowering taken out of it, preferring
 	 * whatever is parked there already to the live file. That is the one name
-	 * Extension\WorkspaceCleanup puts back on its way into a run, and it is
+	 * Extension\WorkspaceGuard puts back on its way into a run, and it is
 	 * also what Helper\E107Base hands back at the end of a suite, so a run
 	 * killed between the lowering and the restore no longer leaves the site
 	 * below SECURITY_LEVEL_LOW: whichever of the two gets there first finds a

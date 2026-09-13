@@ -4,7 +4,7 @@ namespace Helper;
 
 use Codeception\Module as CodeceptionModule;
 
-/** A theme out of tests/_data and the site switched onto it, put back in _after(); every fixture name is registered in {@see \Extension\WorkspaceCleanup}. */
+/** A theme out of tests/_data and the site switched onto it, put back in _after(). */
 class ThemeFixture extends CodeceptionModule
 {
 	const PROBE_FILE = 'e107_tests_theme_fixture_probe.php';

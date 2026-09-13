@@ -2,6 +2,10 @@
 # the JavaScript flows the PhpBrowser acceptance suite cannot exercise.
 # Parameters resolve through e107_tests/lib/config.php (see codeception.yml).
 actor: WebDriverTester
+extensions:
+    enabled:
+        # Takes back what a run writes into the app root, pass, fail or killed.
+        - Extension\WorkspaceGuard
 shuffle: false
 coverage:
     enabled: false

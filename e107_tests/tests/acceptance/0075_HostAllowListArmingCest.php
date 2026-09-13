@@ -68,6 +68,7 @@ class HostAllowListArmingCest
 	{
 		$this->restore($I);
 		$I->deleteAppFile(self::PROBE_FILE);
+		$I->deleteAppFile(self::SNAPSHOT_FILE);
 	}
 
 	/**

@@ -130,6 +130,8 @@ class PmAttachmentStorageCest
 			unlink($this->upload);
 		}
 
+		$I->removeAppPath('e107_plugins/pm/attachments');
+
 		$I->deleteAppFile(self::PROBE_FILE);
 		$I->dropPluginInstall(self::PLUGIN);
 		$I->dropPluginProbe();

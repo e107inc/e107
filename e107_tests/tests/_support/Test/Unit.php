@@ -28,10 +28,10 @@ class Unit extends \Codeception\Test\Unit
 	use \Helper\PhpUnitCompat;
 
 	/**
-	 * Copies a fixture tree, e.g. a theme out of tests/_data into e_THEME.
+	 * Copies a fixture tree, e.g. a theme out of tests/_data into e_THEME, journaled so the run takes it back out.
 	 *
 	 * @param string $src
-	 * @param string $dst
+	 * @param string $dst absolute, inside APP_PATH
 	 * @return bool false when there is nothing to copy or the destination is already there
 	 */
 	protected function copydir($src, $dst)
@@ -41,6 +41,14 @@ class Unit extends \Codeception\Test\Unit
 			return false;
 		}
 
+		\Helper\AppFileRegistry::didWrite($this->appRelativePath($dst));
+		self::copyTree($src, $dst);
+
+		return true;
+	}
+
+	private static function copyTree($src, $dst)
+	{
 		mkdir($dst);
 
 		foreach(scandir($src) as $file)
@@ -52,14 +60,61 @@ class Unit extends \Codeception\Test\Unit
 
 			if(is_dir($src.DIRECTORY_SEPARATOR.$file))
 			{
-				$this->copydir($src.DIRECTORY_SEPARATOR.$file, $dst.DIRECTORY_SEPARATOR.$file);
+				self::copyTree($src.DIRECTORY_SEPARATOR.$file, $dst.DIRECTORY_SEPARATOR.$file);
 				continue;
 			}
 
 			copy($src.DIRECTORY_SEPARATOR.$file, $dst.DIRECTORY_SEPARATOR.$file);
 		}
+	}
 
-		return true;
+	/**
+	 * Writes $contents into the app through the deployer, journaled so the run takes it back out.
+	 *
+	 * @param string $path relative to the app root, or the absolute or ./ form e107's path constants give
+	 * @param string $contents
+	 * @return void
+	 */
+	protected function writeAppFile($path, $contents)
+	{
+		$this->getModule('\Helper\Unit')->writeAppFile($this->appPath($path), $contents);
+	}
+
+	/**
+	 * Removes a file from the app through the deployer; one the run did not write is backed up first and comes back when the test ends.
+	 *
+	 * @param string $path relative to the app root, or the absolute or ./ form e107's path constants give
+	 * @return void
+	 */
+	protected function deleteAppFile($path)
+	{
+		$this->getModule('\Helper\Unit')->deleteAppFile($this->appPath($path));
+	}
+
+	/**
+	 * @param string $path relative to the app root, or the absolute or ./ form e107's path constants give
+	 * @return string the same path relative to the app root
+	 */
+	private function appPath($path)
+	{
+		return strpos($path, '/') === 0 || strpos($path, './') === 0 ? $this->appRelativePath($path) : $path;
+	}
+
+	/**
+	 * @param string $path under APP_PATH, absolute or relative to the working directory, which class2.php makes the app root; the last segment need not exist yet
+	 * @return string the same path relative to the app root
+	 */
+	private function appRelativePath($path)
+	{
+		$root = realpath(APP_PATH);
+		$parent = realpath(dirname(rtrim($path, '/')));
+
+		if($root === false || $parent === false || strpos($parent.'/', $root.'/') !== 0)
+		{
+			self::fail("$path is not inside the app root ".APP_PATH);
+		}
+
+		return ltrim(substr($parent, strlen($root)).'/'.basename(rtrim($path, '/')), '/');
 	}
 
 	/**

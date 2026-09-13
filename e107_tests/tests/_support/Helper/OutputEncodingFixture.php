@@ -14,9 +14,6 @@ namespace Helper;
  * and the second install's site_path is the literal string 000000test, so
  * deriving it from a hash of the database name names a directory nothing ever
  * reads.
- *
- * Every filename this class writes is registered in
- * {@see \Extension\WorkspaceCleanup} so a crashed run does not leave it behind.
  */
 class OutputEncodingFixture
 {

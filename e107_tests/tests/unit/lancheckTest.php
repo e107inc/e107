@@ -23,9 +23,6 @@
 		/** @var string Scratch language pack directory for the findLocale() tests. */
 		protected $scratchLang;
 
-		/** @var string Scratch plugin directory for the language-pack tests. */
-		protected $scratchPlugin;
-
 		protected function _before()
 		{
 			require_once(e_ADMIN."lancheck.php");
@@ -69,18 +66,6 @@
 
 				rmdir($this->scratchLang);
 				$this->scratchLang = null;
-			}
-
-			if($this->scratchPlugin && is_dir($this->scratchPlugin))
-			{
-				foreach(glob($this->scratchPlugin.'languages/*') as $file)
-				{
-					unlink($file);
-				}
-
-				rmdir($this->scratchPlugin.'languages');
-				rmdir($this->scratchPlugin);
-				$this->scratchPlugin = null;
 			}
 		}
 
@@ -678,10 +663,7 @@
 		}
 
 		/**
-		 * Write a scratch plugin language pack, which _after() then removes.
-		 *
-		 * The directory name is fixed so that WorkspaceCleanup's sweep can carry
-		 * it and heal a run that dies before _after().
+		 * Write a scratch plugin language pack, which the run takes back out after the test.
 		 *
 		 * @param array $files file name => pack body, without the opening tag
 		 * @return string the plugin's directory name
@@ -689,14 +671,10 @@
 		protected function writeScratchPlugin($files)
 		{
 			$plugin = 'temptest6109';
-			$this->scratchPlugin = e_PLUGIN.$plugin.'/';
-
-			mkdir($this->scratchPlugin.'languages', 0755, true);
 
 			foreach($files as $name => $body)
 			{
-				file_put_contents($this->scratchPlugin.'languages/'.$name, "<?php
-".$body);
+				$this->writeAppFile('e107_plugins/'.$plugin.'/languages/'.$name, "<?php\n".$body);
 			}
 
 			return $plugin;
