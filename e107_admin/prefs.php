@@ -1639,7 +1639,7 @@ $text .= "
             // $systemSaveMethod => PRFLAN_276,
                 $text .= "
 	                <tr>
-						<td><label for='session-save-method'>".PRFLAN_282."</label></td>
+						<td><label for='session-save-method'>".PRFLAN_282."</label>".$frm->help(PRFLAN_SESSION_SAVE_METHOD_OVERRIDDEN)."</td>
 						<td class='form-inline'>
 							".$frm->select('session_save_method', [ 'db'=>'Database', 'files'=>'Files'], varset($pref['session_save_method']))."
 
