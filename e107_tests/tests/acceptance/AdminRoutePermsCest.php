@@ -1300,12 +1300,20 @@ class AdminRoutePermsCest
 		$victimId = $this->seedVictim($I, self::BARRED_CLASS);
 		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
 
+		$this->sendBatch($I, self::ROUTE_LIST, 'deattach_all__user_class', $victimId);
+
+		$I->assertSame((string) self::BARRED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'A delegated administrator holding 4 emptied user_class on '.self::VICTIM_USER
+			.', which held class '.self::BARRED_CLASS.'. The batch menu\'s own "(Clear All)" spelling '
+			.'withdraws whichever options the field declares.');
+
 		$this->sendBatch($I, self::ROUTE_LIST, 'clearAll__user_class__', $victimId);
 
 		$I->assertSame((string) self::BARRED_CLASS,
 			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
 			'A delegated administrator holding 4 emptied user_class on '.self::VICTIM_USER
-			.', which held class '.self::BARRED_CLASS.'. clearAll with no list blanks the column.');
+			.' with the spelling the dispatcher carried before #6089, which names no column of the table.');
 
 		$this->sendBatch($I, self::ROUTE_LIST, 'ucaddall__user_class', $victimId);
 

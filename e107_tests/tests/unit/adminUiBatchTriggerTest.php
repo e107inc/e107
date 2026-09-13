@@ -15,6 +15,10 @@
  * field, unless the screen declares a handler for that field itself.
  * e_front_tree_model::batchUpdate() refuses a name outside the identifier grammar rather than
  * letting the query builder throw.
+ *
+ * The two sides of that dropdown must also agree on the batch options a field's optArray asks
+ * for: the menu spells them attach_all__<field> and deattach_all__<field>, and what it offers
+ * one at a time is what those two entries write.
  */
 class adminUiBatchTriggerTest extends \Test\Unit
 {
@@ -83,7 +87,21 @@ class adminUiBatchTriggerTest extends \Test\Unit
 			'checkboxes'    => array('title' => '', 'type' => null, 'forced' => '1', 'toggle' => 'e-multiselect'),
 			'gen_ip'        => array('title' => 'IP', 'type' => 'ip', 'data' => 'str', 'batch' => true),
 			'gen_chardata'  => array('title' => 'Description', 'type' => 'method', 'data' => 'str',
-				'writeParms' => array('classlist' => 'member')),
+				'writeParms' => array('classlist' => 'member', 'addAll' => 1, 'clearAll' => 1)),
+			'gen_options'   => array('title' => 'Options', 'type' => 'comma', 'data' => 'str', 'batch' => true,
+				'writeParms' => array('optArray' => array(1 => 'Red', 2 => 'Blue', 'addAll' => 1, 'clearAll' => 1))),
+			'gen_simple'    => array('title' => 'Tags', 'type' => 'comma', 'data' => 'str', 'batch' => true,
+				'writeParms' => array('optArray' => array('Red', 'Blue', 'addAll' => 1), 'simple' => 1)),
+			'gen_multiple'  => array('title' => 'Pick', 'type' => 'dropdown', 'data' => 'str', 'batch' => true,
+				'writeParms' => array('multiple' => 1, 'optArray' => array(3 => 'Green', 4 => 'Grey',
+					'addAll' => 1, 'clearAll' => 1))),
+			'gen_checks'    => array('title' => 'Boxes', 'type' => 'checkboxes', 'data' => 'str', 'batch' => true,
+				'writeParms' => array('optArray' => array(7 => 'Seven', 8 => 'Eight',
+					'addAll' => 1, 'clearAll' => 1))),
+			'gen_empty'     => array('title' => 'Nothing', 'type' => 'comma', 'data' => 'str', 'batch' => true,
+				'writeParms' => array('optArray' => array('addAll' => 1, 'clearAll' => 1))),
+			'gen_method'    => array('title' => 'Custom', 'type' => 'method', 'data' => 'str', 'batch' => true,
+				'writeParms' => array('classlist' => 'member', 'addAll' => 1, 'clearAll' => 1)),
 			'gen_user_id'   => array('title' => 'Flag', 'type' => 'boolean', 'data' => 'int', 'batch' => true),
 			'gen_type'      => array('title' => 'Classes', 'type' => 'userclasses', 'data' => 'str', 'batch' => true),
 			'gen_sef'       => array('title' => 'SEF', 'type' => 'text', 'data' => 'str', 'batch' => true,
@@ -141,15 +159,15 @@ class adminUiBatchTriggerTest extends \Test\Unit
 	public function unbatchedTypedTriggers()
 	{
 		return array(
-			'sefgen'      => array('sefgen__gen_chardata__gen_ip'),
-			'bool'        => array('bool__gen_chardata__1'),
-			'boolreverse' => array('boolreverse__gen_chardata'),
-			'attach'      => array('attach__gen_chardata__253'),
-			'deattach'    => array('deattach__gen_chardata__253'),
-			'addAll'      => array('addAll__gen_chardata__253'),
-			'clearAll'    => array('clearAll__gen_chardata__253'),
-			'ucaddall'    => array('ucaddall__gen_chardata'),
-			'ucdelall'    => array('ucdelall__gen_chardata'),
+			'sefgen'       => array('sefgen__gen_chardata__gen_ip'),
+			'bool'         => array('bool__gen_chardata__1'),
+			'boolreverse'  => array('boolreverse__gen_chardata'),
+			'attach'       => array('attach__gen_chardata__253'),
+			'deattach'     => array('deattach__gen_chardata__253'),
+			'attach_all'   => array('attach_all__gen_chardata'),
+			'deattach_all' => array('deattach_all__gen_chardata'),
+			'ucaddall'     => array('ucaddall__gen_chardata'),
+			'ucdelall'     => array('ucdelall__gen_chardata'),
 		);
 	}
 
@@ -207,6 +225,114 @@ class adminUiBatchTriggerTest extends \Test\Unit
 		$this->assertCount(1, $dispatched, 'A comma field the dropdown offers must still be batched.');
 		$this->assertSame('attach', $dispatched[0]['handler']);
 		$this->assertSame('gen_type', $dispatched[0]['field']);
+	}
+
+	public function testAddAllBatchOptionReachesTheCommaHandler()
+	{
+		$dispatched = $this->dispatchOf('attach_all__gen_options');
+
+		$this->assertCount(1, $dispatched, 'The "(Add all)" entry the batch dropdown renders must be dispatched.');
+		$this->assertSame('addAll', $dispatched[0]['handler']);
+		$this->assertSame('gen_options', $dispatched[0]['field']);
+		$this->assertSame(array(1, 2), $dispatched[0]['value'],
+			'The field is written its own option list, keyed as the record stores it and without the two menu keys.');
+	}
+
+	public function testClearAllBatchOptionReachesTheCommaHandler()
+	{
+		$dispatched = $this->dispatchOf('deattach_all__gen_options');
+
+		$this->assertCount(1, $dispatched, 'The "(Clear all)" entry the batch dropdown renders must be dispatched.');
+		$this->assertSame('clearAll', $dispatched[0]['handler']);
+		$this->assertSame('gen_options', $dispatched[0]['field']);
+		$this->assertSame(array(1, 2), $dispatched[0]['value'],
+			'Only the options the field declares may be withdrawn, which is what the userclass spelling hands over.');
+	}
+
+	public function testBatchOptionListFollowsTheSimpleOptionShape()
+	{
+		$dispatched = $this->dispatchOf('attach_all__gen_simple');
+
+		$this->assertCount(1, $dispatched);
+		$this->assertSame(array('Red', 'Blue'), $dispatched[0]['value'],
+			'A simple optArray stores its labels, so the menu offers the values and so must the batch.');
+	}
+
+	public function testBatchOptionListFollowsTheDropdownThatTakesMultipleValues()
+	{
+		$dispatched = $this->dispatchOf('attach_all__gen_multiple');
+
+		$this->assertCount(1, $dispatched);
+		$this->assertSame(array(3, 4), $dispatched[0]['value'],
+			'The menu reads a multiple dropdown as a comma field, and the batch must read it the same way.');
+	}
+
+	public function testBatchOptionTriggersStopOnAFieldThatOffersNoSuchEntry()
+	{
+		$this->assertSame(array(), $this->dispatchOf('attach_all__gen_type'),
+			'A field that declares no "(Add all)" entry must not have one dispatched, whatever its writeParms hold.');
+		$this->assertSame(array(), $this->dispatchOf('deattach_all__gen_simple'),
+			'Nor "(Clear all)" on a field that declares only "(Add all)".');
+		$this->assertSame(array(), $this->dispatchOf('attach_all__gen_method'),
+			'Nor on a field whose type puts no such entry on the menu, whose writeParms would otherwise '
+			.'be written into the record as if they were its options.');
+	}
+
+	public function testTheBatchMenuAndTheDispatcherAgreeOnEveryOptionListEntry()
+	{
+		$menu = $this->renderedBatchMenu();
+
+		$this->assertCount(9, $menu['entries'],
+			'The declaration set offers (Add all) on five fields and (Clear all) on four.');
+
+		foreach($menu['entries'] as $trigger => $field)
+		{
+			$dispatched = $this->dispatchOf($trigger);
+			$offered = isset($menu['options'][$field]) ? $menu['options'][$field] : array();
+
+			if(empty($offered))
+			{
+				$this->assertSame(array(), $dispatched, $trigger . ' is offered for a field the same '
+					.'dropdown lists no options for, so there is nothing to write.');
+				continue;
+			}
+
+			$this->assertCount(1, $dispatched,
+				$trigger . ' is on the batch dropdown, so the dispatcher must accept that spelling.');
+			$this->assertSame($offered, array_map('strval', $dispatched[0]['value']),
+				$trigger . ' must write the options the same dropdown offers one at a time.');
+		}
+	}
+
+	/**
+	 * The batch dropdown makeProbe()'s fields render: its (Add all) and (Clear all) triggers by
+	 * field, and the option values it offers one at a time for each of them.
+	 *
+	 * @return array
+	 */
+	private function renderedBatchMenu()
+	{
+		$form = new e_admin_form_ui($this->makeProbe(array()));
+		preg_match_all('/value=([\'"])((?:attach|deattach)[^\'"]*)\1/',
+			$form->renderBatchFilter('batch'), $found);
+
+		$menu = array('entries' => array(), 'options' => array());
+
+		foreach($found[2] as $trigger)
+		{
+			$segment = explode('__', $trigger);
+
+			if($segment[0] === 'attach_all' || $segment[0] === 'deattach_all')
+			{
+				$menu['entries'][$trigger] = $segment[1];
+			}
+			elseif($segment[0] === 'attach' && isset($segment[2]))
+			{
+				$menu['options'][$segment[1]][] = $segment[2];
+			}
+		}
+
+		return $menu;
 	}
 
 	public function testAddonFieldOutsideTheTableNeverReachesBatchUpdate()
