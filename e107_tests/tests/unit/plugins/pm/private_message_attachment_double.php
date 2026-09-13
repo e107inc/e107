@@ -37,3 +37,26 @@ class private_message_attachment_double extends private_message
 		return isset($this->legacy) ? $this->legacy : parent::legacyAttachmentDir();
 	}
 }
+
+/**
+ * Lets a test slip a cron run in between the two reads the survivor check
+ * makes, which is the interleaving the order of those reads exists for.
+ */
+class private_message_queue_race_double extends private_message_attachment_double
+{
+	/** @var callable|null run once, when the delete reads the queue and before it is read */
+	public $onQueueRead;
+
+	protected function queuedAttachments()
+	{
+		if(isset($this->onQueueRead))
+		{
+			$finish = $this->onQueueRead;
+			$this->onQueueRead = NULL;
+
+			call_user_func($finish, $this);
+		}
+
+		return parent::queuedAttachments();
+	}
+}
