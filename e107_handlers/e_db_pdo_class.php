@@ -279,6 +279,7 @@ class e_db_pdo implements e_db
 
 		$this->_getMySQLaccess();
 		$this->mySQLlastQuery = $query;
+		$this->forgetTableListFor($query);
 
 		if ($debug == 'now')
 		{

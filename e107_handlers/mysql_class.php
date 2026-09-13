@@ -329,6 +329,7 @@ class e_db_mysql implements e_db
 		$db_mySQLQueryCount++;
 
 		$this->mySQLlastQuery = $query;
+		$this->forgetTableListFor($query);
 
 		if ($debug == 'now')
 		{

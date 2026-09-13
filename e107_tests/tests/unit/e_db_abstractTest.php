@@ -1800,6 +1800,23 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->db->dropTable('test_duplicate_key');
 	}
 
+	public function testIsTableFollowsATableThisConnectionCreatesAndDrops()
+	{
+		$table = 'test_is_table_cache';
+
+		$this->db->dropTable($table);
+		$this->assertFalse($this->db->isTable($table), 'precondition: the table must start absent');
+
+		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` (`id` INT NOT NULL, PRIMARY KEY (`id`))'),
+			'precondition: the table has to be created');
+		$this->assertTrue($this->db->isTable($table),
+			'isTable() answered from the list it cached before the CREATE TABLE');
+
+		$this->db->dropTable($table);
+		$this->assertFalse($this->db->isTable($table),
+			'isTable() answered from the list it cached before the DROP TABLE');
+	}
+
 	/**
 	 * The map a typed write consults to stand in for a null it was handed.
 	 * Wider than '_NOTNULL', which carries only the NOT NULL columns declaring no
