@@ -41,6 +41,7 @@ class listclass
 	public $admin;
 	public $settings;
 	public $row;
+	public $mode_content;
 
 	/**
 	 * constructor
@@ -302,6 +303,12 @@ class listclass
 	 */
 	function getDefaultPrefs()
 	{
+		if(empty($this->sections))
+		{
+			$this->getSections();
+		}
+
+		e107::includeLan($this->plugin_dir."languages/".e_LANGUAGE."_admin_list_new.php");
 
 		$pref = e107::getPref();
 
@@ -494,14 +501,12 @@ class listclass
 			return;
 		}
 
-		//echo "parse: ".$area."_START<br />";
 		$text = $this->parseTemplate($area.'_START');
 		if(is_array($this->data['records']))
 		{
 			foreach($this->data['records'] as $this->row)
 			{
 				$this->shortcodes->row = $this->row;
-				//echo "parse: ".$area."<br />";
 				$text .= $this->parseTemplate($area);
 			}
 		}
@@ -509,13 +514,11 @@ class listclass
 		{
 			if($this->list_pref[$this->mode."_showempty"])
 			{
-//				$this->row['heading'] = $this->data['records'];
-				$this->shortcodes->row['heading'] = $this->data['records'];
-				//echo "parse: ".$area."<br />";
+				$this->row['heading'] = $this->data['records'];
+				$this->shortcodes->row = $this->row;
 				$text .= $this->parseTemplate($area);
 			}
 		}
-		//echo "parse: ".$area."_END<br />";
 		$text .= $this->parseTemplate($area.'_END');
 		return $text;
 	}
