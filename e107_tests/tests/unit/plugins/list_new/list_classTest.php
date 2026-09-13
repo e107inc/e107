@@ -106,4 +106,50 @@ class list_classTest extends \Codeception\Test\Unit
 		self::assertStringContainsString(LIST_COMMENT_2, $text, 'a guest has no last visit, so the section has nothing new to show');
 		self::assertSame($rc->row, $rc->shortcodes->row, 'the shortcodes render from the row the section prepared');
 	}
+
+	/**
+	 * A section stays in the stored preferences after the plugin behind it is
+	 * uninstalled, and the page still has to render for everything else.
+	 */
+	public function testASectionWhoseProviderIsGoneLeavesTheRestOfThePageStanding()
+	{
+		require_once(e_PLUGIN.'list_new/list_class.php');
+
+		$rc = new listclass();
+		$rc->mode = 'new_page';
+		$rc->list_pref = array('new_page_showempty' => '1');
+		$rc->shortcodes->list_pref = $rc->list_pref;
+
+		$text = $rc->displaySection(array(
+			'section'  => 'e107help_uninstalled_section',
+			'caption'  => 'Gone',
+			'open'     => '1',
+			'icon'     => '',
+			'amount'   => '5',
+			'author'   => '1',
+			'category' => '1',
+			'date'     => '1',
+		));
+
+		self::assertIsString($text, 'a section with no plugin behind it stops the page instead of rendering nothing');
+	}
+
+	/**
+	 * The defaults the front end builds have to survive the request that built
+	 * them; until they are stored, every request rebuilds them from scratch.
+	 */
+	public function testTheDefaultPreferencesAreStoredOnceTheFrontEndHasBuiltThem()
+	{
+		$php = "e107::getPlugConfig('list_new')->reset()->save(false, true, false); "
+			."require_once(e_PLUGIN.'list_new/list_class.php'); \$rc = new listclass(); \$rc->getListPrefs(); "
+			."\$stored = e107::getDb()->retrieve('core', 'e107_value', \"e107_name = 'plugin_list_new'\"); "
+			."echo '<<'.(strpos((string) \$stored, 'recent_page_caption') === false ? 'nothing stored' : 'stored').'>>'; ";
+
+		$printed = $this->probe($php);
+		$matches = array();
+
+		self::assertSame(1, preg_match('/<<(.*)>>/s', $printed, $matches), "the probe printed nothing:\n".$printed);
+		self::assertSame('stored', $matches[1],
+			"the preferences the front end built are gone again by the next request:\n".$printed);
+	}
 }
