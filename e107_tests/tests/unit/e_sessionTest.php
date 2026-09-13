@@ -768,5 +768,55 @@
 			$this::assertSame([], $this->sess->getData());
 		}
 
+		/**
+		 * #6302: Disallow multiple logins signs the earlier session out, and the
+		 * session table is the only index of an account's sessions there is, so
+		 * the preference decides where sessions are stored while it is on.
+		 *
+		 * @return void
+		 */
+		public function testSaveMethodIsTheDatabaseWhileMultipleLoginsAreDisallowed()
+		{
+			$resolve = new ReflectionMethod('e_session', 'resolveSaveMethod');
+
+			$this->withPrefs(array('disallowMultiLogin' => 1, 'session_save_method' => 'files'), function() use ($resolve) {
+				$this::assertSame('db', $resolve->invoke($this->sess, 'files'));
+			});
+		}
+
+		/**
+		 * Untick it and the admin's own choice is back, including handlers the
+		 * preference page has no entry for.
+		 *
+		 * @return void
+		 */
+		public function testSaveMethodFollowsThePreferenceWhenMultipleLoginsAreAllowed()
+		{
+			$resolve = new ReflectionMethod('e_session', 'resolveSaveMethod');
+
+			$this->withPrefs(array('disallowMultiLogin' => 0, 'session_save_method' => 'redis'), function() use ($resolve) {
+				$this::assertSame('redis', $resolve->invoke($this->sess, 'files'));
+			});
+		}
+
+		/**
+		 * #6302: the two halves have to meet. What setDefaultSystemConfig() gives a
+		 * session is the coupling the eviction rests on, not what the resolver
+		 * returns in isolation, and in this process it returns early because a
+		 * session is already running. A subprocess has none.
+		 *
+		 * @return void
+		 */
+		public function testAFreshSessionTakesTheStorageThePreferenceForces()
+		{
+			$child = "e107::getConfig()->set('disallowMultiLogin', 1)->set('session_save_method', 'files'); "
+				."\$sess = new e_session(); \$sess->setDefaultSystemConfig(); "
+				."echo 'SAVE_METHOD='.\$sess->getSaveMethod();";
+
+			list($output) = $this->runInBootedCli($child);
+
+			$this::assertStringContainsString('SAVE_METHOD=db', implode("\n", $output));
+		}
+
 		/* Commented tests remain unchanged */
 	}
