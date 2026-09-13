@@ -3,7 +3,7 @@
 /**
  * The browser half of the "Predefined link" chooser in Admin Area » Settings »
  * Navigation. The server applies the preset on save whatever the browser did, which
- * is what 0095_LinkPresetCest measures; what only a browser can say is that the
+ * is what LinkPresetCest measures; what only a browser can say is that the
  * administrator sees the URL, the name and the user class arrive in the fields before
  * they save, and that the answer to the overwrite question is honoured.
  *
