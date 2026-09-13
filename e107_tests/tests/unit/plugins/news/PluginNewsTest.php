@@ -109,6 +109,105 @@ class PluginNewsTest extends \Test\Unit
 	}
 
 	/**
+	 * @see https://github.com/e107inc/e107/issues/6156
+	 */
+	public function testTheDefaultNewsPageDoesNotWarnWhenTheThemeSetsNewsstyle()
+	{
+		include_once e_PLUGIN . "news/news.php";
+
+		e107::getCache()->clear("news.php_default_");
+
+		$marker = "news-front-6156-rendered";
+		$GLOBALS['NEWSSTYLE'] = $marker . " {NEWSTITLE}";
+		$obLevel = ob_get_level();
+		$caught  = array();
+		set_error_handler(function ($errno, $errstr) use (&$caught)
+		{
+			$caught[] = $errstr;
+
+			return true;
+		}, E_WARNING | E_NOTICE);
+
+		try
+		{
+			ob_start();
+			$news = new news_front();
+		}
+		finally
+		{
+			while(ob_get_level() > $obLevel)
+			{
+				ob_end_clean();
+			}
+			restore_error_handler();
+			unset($GLOBALS['NEWSSTYLE']);
+		}
+
+		$property = new ReflectionProperty($news, "text");
+		$this->assertStringContainsString(
+			$marker,
+			$property->getValue($news),
+			"The two assertions below mean nothing until the \$NEWSSTYLE render has actually "
+			. "run. renderDefaultTemplate() returns early on a cache hit and on a news list "
+			. "the visitor cannot see, and an empty set of captured warnings proves nothing "
+			. "in either case."
+		);
+
+		$this->assertEmpty(
+			preg_grep('/sub_action/', $caught),
+			"news_front::renderDefaultTemplate() reads \$sub_action on every route it renders, "
+			. "so the variable has to be defined before the switch rather than only in the list "
+			. "and item arms."
+		);
+		$this->assertEmpty(
+			preg_grep('/category_name/', $caught),
+			"A theme that sets \$NEWSSTYLE leaves news_front::\$currentRow empty, and "
+			. "news_front::setBreadcrumb() reads category_name out of it either way."
+		);
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6156
+	 */
+	public function testTheItemBreadcrumbSurvivesARenderPathThatNeverSetCurrentRow()
+	{
+		include_once e_PLUGIN . "news/news.php";
+
+		$news = new news_front();
+
+		$property = new ReflectionProperty($news, "currentRow");
+		$property->setValue($news, array());
+
+		$property = new ReflectionProperty($news, "route");
+		$property->setValue($news, "news/view/item");
+
+		$caught = array();
+		set_error_handler(function ($errno, $errstr) use (&$caught)
+		{
+			$caught[] = $errstr;
+
+			return true;
+		}, E_WARNING | E_NOTICE);
+
+		try
+		{
+			$method = new ReflectionMethod($news, "setBreadcrumb");
+			$method->invoke($news);
+		}
+		finally
+		{
+			restore_error_handler();
+		}
+
+		$this->assertEmpty(
+			preg_grep('/news_title/', $caught),
+			"A render path can leave news_front::\$currentRow with no news_title in it: "
+			. "renderViewTemplate() on a cache hit assigns whatever the row cache held, which "
+			. "is an empty array when that entry is missing. The item breadcrumb has to cope."
+		);
+	}
+
+	/**
 	 * @param $payload  array
 	 * @param $sefType  string
 	 * @param $expected string
