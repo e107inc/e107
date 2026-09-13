@@ -15,9 +15,10 @@
  * nothing new to list, a section whose plugin has been uninstalled, and the
  * day selector the 'new' page is built around.
  *
- * The two that build the defaults run in a subprocess. They are built once
- * and then saved, so a second in-process build would be measuring whatever
- * the rest of the shuffled suite had already defined and stored.
+ * Four of the five run in a subprocess, because the plugin's files, its
+ * template and its preferences are each loaded or written once per process:
+ * in-process they would be measuring whatever the rest of a shuffled suite
+ * had already defined, included and stored.
  */
 class list_classTest extends \Test\Unit
 {
@@ -76,37 +77,36 @@ class list_classTest extends \Test\Unit
 	 * "New since your last visit" is empty for a visitor who has no last visit,
 	 * which is every guest, so the empty row is the common case rather than the
 	 * odd one. The template reads the same fields there as it does for a record.
+	 *
+	 * In a subprocess as well: the section file and the template are included
+	 * once per process, and their globals are whatever the rest of a shuffled
+	 * suite has left behind by the time this runs.
 	 */
 	public function testASectionWithNothingToListRendersTheFieldsTheTemplateReads()
 	{
-		require_once(e_PLUGIN.'list_new/list_class.php');
+		$php = "require_once(e_PLUGIN.'list_new/list_class.php'); "
+			."\$rc = new listclass(); \$rc->mode = 'new_page'; "
+			."\$rc->list_pref = array('new_page_showempty' => '1', 'new_page_icon_use' => '1', "
+			."'new_page_icon_default' => '1', 'new_page_char_heading' => '', 'new_page_char_postfix' => '', "
+			."'new_page_datestyle' => '%d %b', 'new_page_datestyletoday' => '%H:%M'); "
+			."\$rc->shortcodes->list_pref = \$rc->list_pref; "
+			."\$text = \$rc->displaySection(array('section' => 'comment', 'caption' => 'Comments', "
+			."'open' => '1', 'icon' => '', 'amount' => '5', 'author' => '1', 'category' => '1', 'date' => '1')); "
+			."echo '<<'.(strpos(\$text, LIST_COMMENT_2) === false ? 'nothing' : 'the section')"
+			.".'|'.(\$rc->row === \$rc->shortcodes->row ? 'one row' : 'two rows').'>>'; ";
 
-		$rc = new listclass();
-		$rc->mode = 'new_page';
-		$rc->list_pref = array(
-			'new_page_showempty'       => '1',
-			'new_page_icon_use'        => '1',
-			'new_page_icon_default'    => '1',
-			'new_page_char_heading'    => '',
-			'new_page_char_postfix'    => '',
-			'new_page_datestyle'       => '%d %b',
-			'new_page_datestyletoday'  => '%H:%M',
-		);
-		$rc->shortcodes->list_pref = $rc->list_pref;
+		$printed = $this->probe($php);
+		$matches = array();
 
-		$text = $rc->displaySection(array(
-			'section'  => 'comment',
-			'caption'  => 'Comments',
-			'open'     => '1',
-			'icon'     => '',
-			'amount'   => '5',
-			'author'   => '1',
-			'category' => '1',
-			'date'     => '1',
-		));
+		self::assertSame(0, preg_match('/Undefined array key/i', $printed),
+			"the template reads fields the empty section's row does not carry:\n".$printed);
 
-		self::assertStringContainsString(LIST_COMMENT_2, $text, 'a guest has no last visit, so the section has nothing new to show');
-		self::assertSame($rc->row, $rc->shortcodes->row, 'the shortcodes render from the row the section prepared');
+		self::assertSame(1, preg_match('/<<(.*)>>/s', $printed, $matches), "the probe printed nothing:\n".$printed);
+
+		$answers = explode('|', $matches[1]);
+
+		self::assertSame('the section', $answers[0], 'a guest has no last visit, so the section has nothing new to show');
+		self::assertSame('one row', $answers[1], 'the shortcodes render from the row the section prepared');
 	}
 
 	/**
@@ -144,19 +144,22 @@ class list_classTest extends \Test\Unit
 	 */
 	public function testTheTimelapseSelectorReachesTheShortcodeThatPrintsIt()
 	{
-		require_once(e_PLUGIN.'list_new/list_class.php');
-		require_once(e_HANDLER.'form_handler.php');
+		$php = "require_once(e_PLUGIN.'list_new/list_class.php'); require_once(e_HANDLER.'form_handler.php'); "
+			."\$rs = new form(); \$rc = new listclass(); "
+			."\$rc->list_pref = array('new_page_timelapse' => '1', 'new_page_timelapse_days' => '3'); "
+			."\$text = \$rc->displayTimelapse(); "
+			."echo '<<'.(strpos(\$text, LIST_MENU_6) === false ? 'nothing' : 'the label')"
+			.".'|'.(strpos(\$text, '<select') === false ? 'no days' : 'the days').'>>'; ";
 
-		global $rs;
-		$rs = new form();
+		$printed = $this->probe($php);
+		$matches = array();
 
-		$rc = new listclass();
-		$rc->list_pref = array('new_page_timelapse' => '1', 'new_page_timelapse_days' => '3');
+		self::assertSame(1, preg_match('/<<(.*)>>/s', $printed, $matches), "the probe printed nothing:\n".$printed);
 
-		$text = $rc->displayTimelapse();
+		$answers = explode('|', $matches[1]);
 
-		self::assertStringContainsString(LIST_MENU_6, $text, 'the selector renders as an empty div');
-		self::assertStringContainsString('<select', $text, 'the selector renders without the days to choose from');
+		self::assertSame('the label', $answers[0], 'the selector renders as an empty div');
+		self::assertSame('the days', $answers[1], 'the selector renders without the days to choose from');
 	}
 
 	/**
