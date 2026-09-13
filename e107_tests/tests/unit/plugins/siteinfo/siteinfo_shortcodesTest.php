@@ -10,8 +10,16 @@ class siteinfo_shortcodesTest extends \Test\Unit
 	/** @var siteinfo_shortcodes */
 	protected $sc;
 
+	/** @var string the media logo this class writes, named so that no site keeps a file there */
+	private $logoFile;
+
+	/** @var array the site logo preference and thumbnail settings as this test found them */
+	private $found;
+
 	protected function _before()
 	{
+
+		$this->logoFile = e_MEDIA_IMAGE.'e107_tests_6358_logo.png';
 
 		try
 		{
@@ -23,6 +31,63 @@ class siteinfo_shortcodesTest extends \Test\Unit
 			self::fail($e->getMessage());
 		}
 
+		$this->found = $this->siteinfoState();
+
+	}
+
+	protected function _after()
+	{
+		$this->restoreSiteinfoState($this->found);
+	}
+
+	/**
+	 * The site logo preference and the parser settings {@see siteinfo_shortcodesTest::testSc_logo()} writes.
+	 */
+	private function siteinfoState()
+	{
+		$tp = e107::getParser();
+
+		return array(
+			'sitelogo'        => e107::getConfig()->get('sitelogo'),
+			'thumbWidth'      => $tp->thumbWidth(),
+			'thumbHeight'     => $tp->thumbHeight(),
+			'thumbCrop'       => $tp->thumbCrop(),
+			'modRewriteMedia' => $this->parserProperty('modRewriteMedia')->getValue($tp),
+			'staticUrl'       => $this->parserProperty('staticUrl')->getValue($tp),
+		);
+	}
+
+	/**
+	 * Reaches what {@see e_parse} takes through a setter and gives back through no getter.
+	 */
+	private function parserProperty($name)
+	{
+		$property = new ReflectionProperty('e_parse', $name);
+		$property->setAccessible(true);
+
+		return $property;
+	}
+
+	/**
+	 * Idempotent, and tolerates the state a failed {@see siteinfo_shortcodesTest::_before()} never captured.
+	 */
+	private function restoreSiteinfoState($state)
+	{
+		if(empty($state))
+		{
+			return;
+		}
+
+		$tp = e107::getParser();
+
+		$this->parserProperty('modRewriteMedia')->setValue($tp, $state['modRewriteMedia']);
+		$tp->setStaticUrl($state['staticUrl']);
+		$tp->thumbWidth($state['thumbWidth']);
+		$tp->thumbHeight($state['thumbHeight']);
+		$tp->thumbCrop($state['thumbCrop']);
+		e107::getConfig()->set('sitelogo', $state['sitelogo']);
+
+		@unlink($this->logoFile);
 	}
 
 	public function testSc_sitename()
@@ -86,37 +151,61 @@ class siteinfo_shortcodesTest extends \Test\Unit
 	public function testSc_logo()
 	{
 		$tp = e107::getParser();
+		$found = $this->siteinfoState();
 
-		$result = $this->sc->sc_logo(['w'=>200, 'h'=>100]);
-		$expected = '<img class="logo img-responsive img-fluid" src="/thumb.php?src=e_IMAGE%2FlogoHD.png&amp;w=200&amp;h=100" alt="e107" srcset="/thumb.php?src=e_IMAGE%2FlogoHD.png&amp;w=400&amp;h=200 2x" width="200" height="100"  />';
-		self::assertSame($expected, $result);
+		try
+		{
+			$result = $this->sc->sc_logo(['w'=>200, 'h'=>100]);
+			$expected = '<img class="logo img-responsive img-fluid" src="/thumb.php?src=e_IMAGE%2FlogoHD.png&amp;w=200&amp;h=100" alt="e107" srcset="/thumb.php?src=e_IMAGE%2FlogoHD.png&amp;w=400&amp;h=200 2x" width="200" height="100"  />';
+			self::assertSame($expected, $result);
 
-		$tp->setStaticUrl('https://my.cdn.com/');
-		$result = $this->sc->sc_logo(['w'=>240, 'h'=>120]);
-		$expected = '<img class="logo img-responsive img-fluid" src="https://my.cdn.com/thumb.php?src=e_IMAGE%2FlogoHD.png&amp;w=240&amp;h=120" alt="e107" srcset="https://my.cdn.com/thumb.php?src=e_IMAGE%2FlogoHD.png&amp;w=480&amp;h=240 2x" width="240" height="120"  />';
-		self::assertSame($expected, $result);
+			$tp->setStaticUrl('https://my.cdn.com/');
+			$result = $this->sc->sc_logo(['w'=>240, 'h'=>120]);
+			$expected = '<img class="logo img-responsive img-fluid" src="https://my.cdn.com/thumb.php?src=e_IMAGE%2FlogoHD.png&amp;w=240&amp;h=120" alt="e107" srcset="https://my.cdn.com/thumb.php?src=e_IMAGE%2FlogoHD.png&amp;w=480&amp;h=240 2x" width="240" height="120"  />';
+			self::assertSame($expected, $result);
 
-		file_put_contents(e_MEDIA_IMAGE.'logo.png','dummy image content');
-		e107::getConfig()->set('sitelogo', '{e_MEDIA_IMAGE}logo.png');
-		$tp->setStaticUrl('https://my.cdn.com/');
-		$tp->thumbWidth(100);
-		$tp->thumbHeight(0);
-		$tp->thumbCrop(0);
-		$result = $this->sc->sc_logo();
-		$expected = '<img class="logo img-responsive img-fluid" src="https://my.cdn.com/thumb.php?src=e_MEDIA_IMAGE%2Flogo.png&amp;w=100&amp;h=0" alt="e107" srcset="https://my.cdn.com/thumb.php?src=e_MEDIA_IMAGE%2Flogo.png&amp;w=200&amp;h=0 2x" width="100"  />';
-		self::assertSame($expected, $result);
+			file_put_contents($this->logoFile, 'dummy image content');
+			e107::getConfig()->set('sitelogo', '{e_MEDIA_IMAGE}e107_tests_6358_logo.png');
+			$tp->setStaticUrl('https://my.cdn.com/');
+			$tp->thumbWidth(100);
+			$tp->thumbHeight(0);
+			$tp->thumbCrop(0);
+			$result = $this->sc->sc_logo();
+			$expected = '<img class="logo img-responsive img-fluid" src="https://my.cdn.com/thumb.php?src=e_MEDIA_IMAGE%2Fe107_tests_6358_logo.png&amp;w=100&amp;h=0" alt="e107" srcset="https://my.cdn.com/thumb.php?src=e_MEDIA_IMAGE%2Fe107_tests_6358_logo.png&amp;w=200&amp;h=0 2x" width="100"  />';
+			self::assertSame($expected, $result);
 
 
-		$tp->setmodRewriteMedia(true);
-		$result = $this->sc->sc_logo(['w'=>240, 'h'=>120]);
-		$expected = '<img class="logo img-responsive img-fluid" src="https://my.cdn.com/media/img/240x120/logo.png" alt="e107" srcset="https://my.cdn.com/media/img/480x240/logo.png 2x" width="240" height="120"  />';
+			$tp->setmodRewriteMedia(true);
+			$result = $this->sc->sc_logo(['w'=>240, 'h'=>120]);
+			$expected = '<img class="logo img-responsive img-fluid" src="https://my.cdn.com/media/img/240x120/e107_tests_6358_logo.png" alt="e107" srcset="https://my.cdn.com/media/img/480x240/e107_tests_6358_logo.png 2x" width="240" height="120"  />';
 
-		self::assertSame($expected, $result);
+			self::assertSame($expected, $result);
+		}
+		finally
+		{
+			$this->restoreSiteinfoState($found);
+		}
 
-		// Reset for other tests.
-		$tp->setmodRewriteMedia(false);
-		$tp->setStaticUrl(null);
+	}
 
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6358
+	 */
+	public function testSc_logoLeavesTheSiteLogoAndItsFileAsItFoundThem()
+	{
+		$tp = e107::getParser();
+		$config = e107::getConfig();
+
+		$config->set('sitelogo', '');
+		$tp->thumbWidth(321);
+		$tp->thumbHeight(123);
+		$tp->thumbCrop(1);
+		$seeded = $this->siteinfoState();
+
+		$this->testSc_logo();
+
+		self::assertSame($seeded, $this->siteinfoState(), 'the shortcode test left a shared setting changed');
+		self::assertFileDoesNotExist($this->logoFile, 'the media logo file was left behind');
 	}
 
 	/**
