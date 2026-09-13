@@ -37,6 +37,9 @@
 		/** Generous for a script that loads in well under a second. */
 		const TIMEOUT_SECONDS = 60;
 
+		/** The probe's exit status for a target the bootstrap had already loaded. */
+		const NOT_JUDGED = 4;
+
 		/**
 		 * Every child gets its own address out of TEST-NET-2 (RFC 5737).
 		 *
@@ -52,11 +55,6 @@
 		public function testAdminScripts()
 		{
 			$exclude = array(
-				// Defines e_ADMIN_AREA, USER_AREA and ADMIN_AREA before it
-				// loads class2.php, and the sweep has already loaded
-				// class2.php by the time it gets here, so the block is skipped
-				// and a plugin's e_header.php then reads USER_AREA undefined.
-				'menus.php',
 				// Included by admin.php, never requested on their own, and
 				// covered by every case that passes --admin-header.
 				'header.php',
@@ -94,6 +92,55 @@
 			);
 
 			$this->sweep(e_BASE, $exclude);
+		}
+
+		/**
+		 * Every top-level script of every bundled plugin, one per process.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6336
+		 */
+		public function testPluginScripts()
+		{
+			$exclude = array(
+				// Announces itself as an admin page the 0.7 way, by setting
+				// $eplug_admin just before it requires class2.php. The sweep
+				// has loaded class2.php already, so the marker is never read
+				// and the page would run in a state a browser cannot produce.
+				'pm/pm_conf.php',
+				// Every list_new entry point fatals until the plugin's
+				// preferences have been stored, and the first one to run
+				// stores them, so which of them fails is a coin toss in a
+				// sweep that runs eight at a time. See #6424.
+				'list_new/admin_list_config.php',
+				'list_new/list.php',
+				'list_new/list_new_menu.php',
+				'list_new/list_recent_menu.php',
+				// Each of these loads, and reports a defect of its own that
+				// belongs to its plugin rather than to the sweep. See #6424.
+				'banner/banner_template.php',
+				'blogcalendar_menu/config.php',
+				'download/download.php',
+				'faqs/admin_config.php',
+				'faqs/faqs.php',
+				'newsfeed/e_help.php',
+				'newsletter/nl_archive.php',
+				'page/page_navigation_menu.php',
+			);
+
+			$paths = array();
+
+			foreach(e107::getPlug()->getCorePluginList() as $plug)
+			{
+				$folder = e_PLUGIN . $plug;
+
+				if(!is_dir($folder)) { continue; }
+
+				$paths = array_merge($paths, $this->scriptsIn($folder, $this->skippedIn($plug, $exclude)));
+			}
+
+			$this->assertNotEmpty($paths, 'No bundled plugin scripts to sweep');
+
+			$this->judge('bundled plugins', $paths);
 		}
 
 		public function testACleanScriptReportsClean()
@@ -165,12 +212,52 @@
 
 			$this->assertNotEmpty($paths, 'No scripts to sweep in ' . $folder);
 
-			$started = microtime(true);
-			$reports = $this->runScripts($paths, $flags);
+			$this->judge($folder, $paths, $flags);
+		}
 
-			fwrite(STDOUT, sprintf("\n%s: %d scripts in %.2fs\n", $folder, count($reports), microtime(true) - $started));
+		/**
+		 * @param string $what what the sweep covered, for the timing line
+		 */
+		private function judge($what, array $paths, array $flags = array())
+		{
+			$started   = microtime(true);
+			$reports   = $this->runScripts($paths, $flags);
+			$notJudged = array();
+
+			foreach($reports as $report)
+			{
+				if($this->wasNotJudged($report)) { $notJudged[] = basename(dirname($report['path'])) . '/' . $report['name']; }
+			}
+
+			fwrite(STDOUT, sprintf(
+				"\n%s: %d scripts in %.2fs%s\n",
+				$what,
+				count($reports),
+				microtime(true) - $started,
+				empty($notJudged) ? '' : ', not judged: ' . implode(', ', $notJudged)
+			));
 
 			$this->assertScriptsAreClean($reports);
+		}
+
+		/**
+		 * @param string $plug    plugin folder name
+		 * @param array  $exclude entries written as plugin/file.php
+		 * @return array file names to skip in that plugin's folder
+		 */
+		private function skippedIn($plug, array $exclude)
+		{
+			$names = array();
+
+			foreach($exclude as $entry)
+			{
+				if(strpos($entry, $plug . '/') === 0)
+				{
+					$names[] = (string) substr($entry, strlen($plug) + 1);
+				}
+			}
+
+			return $names;
 		}
 
 		/**
@@ -185,6 +272,9 @@
 			{
 				if(pathinfo($file, PATHINFO_EXTENSION) !== 'php') { continue; }
 				if(in_array($file, $exclude, true)) { continue; }
+				// Schema for the plugin installer to run, not a script: PHP
+				// outside its tags is output, so requiring one proves nothing.
+				if(substr($file, -8) === '_sql.php') { continue; }
 
 				$path = realpath($folder . $file);
 
@@ -389,13 +479,22 @@
 			return $report['exitCode'] === 0 && trim($report['stderr']) === '' && !$report['timedOut'];
 		}
 
+		/**
+		 * A script the bootstrap had loaded before the sweep reached it, which the probe
+		 * reports apart because the bootstrap raises its diagnostics where nothing sees them.
+		 */
+		private function wasNotJudged(array $report)
+		{
+			return $report['exitCode'] === self::NOT_JUDGED;
+		}
+
 		private function assertScriptsAreClean(array $reports)
 		{
 			$failures = array();
 
 			foreach($reports as $report)
 			{
-				if($this->isClean($report)) { continue; }
+				if($this->isClean($report) || $this->wasNotJudged($report)) { continue; }
 
 				$failures[] = $this->describe($report);
 			}
