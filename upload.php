@@ -161,7 +161,7 @@ class userUpload
 
 	    	if(!empty($_POST['category']))
 		    {
-		        list($catOwner, $catID) = explode("__",$_POST['category'],2);
+		        list($catOwner, $catID) = array_pad(explode("__",$_POST['category'],2), 2, '');
 		    }
 		    else
 		    {
@@ -212,14 +212,14 @@ class userUpload
 		                'upload_id'             => 0,
 		                'upload_poster'         => $poster,
 		                'upload_email'          => $postemail,
-		                'upload_website'        => $tp->toDB($_POST['file_website']),
+		                'upload_website'        => $tp->toDB(varset($_POST['file_website'])),
 		                'upload_datestamp'      => $file_time,
 		                'upload_name'           => $tp->toDB($_POST['file_name']),
-		                'upload_version'        => $tp->toDB($_POST['file_version']),
+		                'upload_version'        => $tp->toDB(varset($_POST['file_version'])),
 		                'upload_file'           => $file,
 		                'upload_ss'             => $image,
 		                'upload_description'    => $tp->toDB($_POST['file_description']),
-		                'upload_demo'           => $tp->toDB($_POST['file_demo']),
+		                'upload_demo'           => $tp->toDB(varset($_POST['file_demo'])),
 		                'upload_filesize'       => $filesize,
 		                'upload_active'         => 0,
 		                'upload_category'       => intval($catID),
@@ -298,7 +298,7 @@ class userUpload
 			$newArray[$name] = $opts;
 		}
 
-		$text .= e107::getForm()->select('category', $newArray, $_POST['category'], array('default'=>''));
+		$text .= e107::getForm()->select('category', $newArray, varset($_POST['category']), array('default'=>''));
 
 		
 		$text .= "</td>
@@ -358,24 +358,24 @@ class userUpload
 		{	
 		  $text .= "<tr>
 			<td class='forumheader3'>".LAN_61."</td>
-			<td class='forumheader3'>".$frm->text('file_poster',$_POST['file_poster'],100, 'required=1')."</td>
+			<td class='forumheader3'>".$frm->text('file_poster',varset($_POST['file_poster']),100, 'required=1')."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_112."</span></td>
-			<td class='forumheader3'>".$frm->text('file_email',$_POST['file_email'],100, 'required=1')."</td>
+			<td class='forumheader3'>".$frm->text('file_email',varset($_POST['file_email']),100, 'required=1')."</td>
 			</tr>";
 		}
 
 		$text .= "
 			<tr>
 			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_409."</span></td>
-			<td class='forumheader3'>".$frm->text('file_name', $_POST['file_name'], 100, 'required=1')."</td>
+			<td class='forumheader3'>".$frm->text('file_name', varset($_POST['file_name']), 100, 'required=1')."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'>".LAN_410."</td>
-			<td class='forumheader3'>".$frm->text('file_version',$_POST['file_version'],10)."</td>
+			<td class='forumheader3'>".$frm->text('file_version',varset($_POST['file_version']),10)."</td>
 			</tr>
 		
 		
@@ -391,17 +391,17 @@ class userUpload
 		
 			<tr>
 			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_413."</span></td>
-			<td class='forumheader3'>".$frm->textarea('file_description', $_POST['file_description'], 6, 59, 'size=block-level&required=1')."</td>
+			<td class='forumheader3'>".$frm->textarea('file_description', $tp->post_toForm(varset($_POST['file_description'])), 6, 59, 'size=block-level&required=1')."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'>".LAN_144."</td>
-			<td class='forumheader3'>".$frm->text('file_website', $_POST['file_website'], 100)."</td>
+			<td class='forumheader3'>".$frm->text('file_website', varset($_POST['file_website']), 100)."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'>".LAN_414."<br /><span class='smalltext'>".LAN_415."</span></td>
-			<td class='forumheader3'>".$frm->text('file_demo', $_POST['file_demo'], 100)."</td>
+			<td class='forumheader3'>".$frm->text('file_demo', varset($_POST['file_demo']), 100)."</td>
 			</tr>
 		
 			<tr>
