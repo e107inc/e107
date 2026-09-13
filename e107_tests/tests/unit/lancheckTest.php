@@ -132,17 +132,6 @@
 		}
 
 
-/*
-		public function testCheck_lan_errors()
-		{
-
-		}
-
-		public function testCheckLog()
-		{
-
-		}
-*/
 		public function testFill_phrases_array()
 		{
 
@@ -259,37 +248,6 @@
 			$this->assertEquals($expected, $actual, 'fill_phrases_array() must register the type for phrase-less files.');
 		}
 
-/*
-		public function testThirdPartyPlugins()
-		{
-
-		}
-
-		public function testInit()
-		{
-
-		}
-
-		public function testCheck_lanfiles()
-		{
-
-		}
-
-		public function testGetFilePaths()
-		{
-
-		}
-
-		public function testGetOnlineLanguagePacks()
-		{
-
-		}
-
-		public function testGet_comp_lan_phrases()
-		{
-
-		}
-*/
 		public function testIs_utf8()
 		{
 			$strings = array(
@@ -749,69 +707,5 @@
 
 			$this->assertStringContainsString($plugin, $text);
 		}
-
-/*
-		public function testCountFiles()
-		{
-
-		}
-
-		public function test__construct()
-		{
-
-		}
-
-		public function testCleanFile()
-		{
-
-		}
-
-		public function testGetLocalLanguagePacks()
-		{
-
-		}
-
-		public function testCheck_core_lanfiles()
-		{
-
-		}
-
-		public function testRemoveLanguagePack()
-		{
-
-		}
-
-		public function testErrorsOnly()
-		{
-
-		}
-
-		public function testCheck_all()
-		{
-
-		}
-
-		public function testZipLang()
-		{
-
-		}
-
-		public function testGet_lan_file_phrases()
-		{
-
-		}
-
-		public function testNewFile()
-		{
-
-		}
-
-		public function testEdit_lanfiles()
-		{
-
-		}
-
-*/
-
 
 	}

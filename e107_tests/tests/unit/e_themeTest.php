@@ -30,24 +30,11 @@ class e_themeTest extends \Test\Unit
 		e107::getTheme()->clearCache();
 	}
 
-
-
 	public function testCssAttribute()
 	{
 		$result = e107::getTheme('bootstrap5')->cssAttribute('front','name');
 		$this->assertSame('style.css', $result);
 	}
-/*
-			public function testUpgradeThemeCode()
-			{
-
-			}
-
-			public function testGetThemeList()
-			{
-
-			}
-	*/
 	public function testGetScope()
 	{
 
@@ -509,12 +496,6 @@ class e_themeTest extends \Test\Unit
 
 	}
 
-	/*
-			public function testParse_theme_php()
-			{
-
-			}
-*/
 	public function testGetThemeInfo()
 	{
 		$themeObj = $this->tm;
@@ -621,22 +602,6 @@ class e_themeTest extends \Test\Unit
 
 	}
 
-	/*
-					public function testClearCache()
-					{
-
-					}
-
-					public function testGet()
-					{
-
-					}
-
-					public function testGetList()
-					{
-
-					}
-	*/
 
 	/**
 	 * A theme.php with no themename declaration used to leave the metadata array
@@ -788,8 +753,6 @@ class e_themeTest extends \Test\Unit
 
 		}
 
-
-
 	}
 
 	public function testGetLegacyBSFA()
@@ -816,55 +779,5 @@ class e_themeTest extends \Test\Unit
 		// $result = e_theme::getLegacyBSFA('basic-light');
 		// var_dump($result);
 	}
-
-
-
-	//	public function testLoadLayout()
-	//	{
-	// $res = e_theme::loadLayout('full', 'bootstrap4');
-
-	//	}
-	/*
-			public function testGetThemesMigrations()
-			{
-				$thm = e107::getSingleton('themeHandler');
-
-				$tests = array(null, 'id', 'xml');
-
-				foreach($tests as $mode)
-				{
-					$old = $thm->getThemes($mode);
-
-					$this->tm->__construct(['force'=>true]);
-					$new = $this->tm->getThemes($mode);
-
-					$this->assertSame($old,$new);
-				}
-
-
-			}
-	*/
-
-	/*
-			public function testThemeInfoMigration()
-			{
-				$thm = e107::getSingleton('themeHandler');
-
-				$name = 'bootstrap3';
-
-				$this->tm->__construct(['themedir'=>$name, 'force'=>true]);
-				$old = $thm->getThemeInfo($name);
-
-				$new = $this->tm->get();
-
-				$this->assertNotEmpty($new, "New parsing of ".$name." returned null");
-				$this->assertNotEmpty($old, "Old parsing of ".$name." returned null");
-
-			//	unset($new['id']); // introduced.
-
-				$this->assertSame($old, $new);
-
-			}
-	*/
 
 }

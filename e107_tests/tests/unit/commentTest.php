@@ -28,72 +28,6 @@
 			}
 
 		}
-/*
-		public function testModerateComment()
-		{
-
-		}
-
-		public function testForm_comment()
-		{
-
-		}
-
-		public function testDelete_comments()
-		{
-
-		}
-
-		public function testRecalc_user_comments()
-		{
-
-		}
-
-		public function testGetCommentData()
-		{
-
-		}
-
-		public function test__construct()
-		{
-
-		}
-
-		public function testGetCommentPermissions()
-		{
-
-		}
-
-		public function testNextprev()
-		{
-
-		}
-
-		public function testEnter_comment()
-		{
-
-		}
-
-		public function testReplyComment()
-		{
-
-		}
-
-		public function testGetCommentType()
-		{
-
-		}
-
-		public function testGet_e_comment()
-		{
-
-		}
-
-		public function testUpdateComment()
-		{
-
-		}
-*/
 		public function testRender()
 		{
 			$plugin = '_blank';
@@ -118,8 +52,6 @@
 			$this->assertCount(2, $result['profile'][4]);
 		}
 
-
-
 		public function testGetNested()
 		{
 			$this->cm->loadNested(55, 'profile', 'desc');
@@ -135,48 +67,6 @@
 			$this->assertEquals('sub-red 1', $result[1]['comment_comment']);
 
 		}
-/*
-		public function testGetComments()
-		{
-
-		}
-
-		public function testRender_comment()
-		{
-
-		}
-
-		public function testDeleteComment()
-		{
-
-		}
-
-		public function testCount_comments()
-		{
-
-		}
-
-		public function testParseLayout()
-		{
-
-		}
-
-		public function testApproveComment()
-		{
-
-		}
-
-		public function testGetTable()
-		{
-
-		}
-
-		public function testGet_author_list()
-		{
-
-		}
-
-*/
 
 
 	}

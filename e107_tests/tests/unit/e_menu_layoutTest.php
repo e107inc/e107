@@ -19,15 +19,6 @@
 			require_once(e_HANDLER."menumanager_class.php");
 		}
 
-/*
-		public function testMenuSelector()
-		{
-
-		}
-
-		*/
-
-
 		public function testGetLayouts()
 		{
 			//FIXME: https://github.com/e107inc/e107/issues/4030
@@ -171,12 +162,6 @@
 
 			}
 
-
-
-
 		}
-
-
-
 
 	}

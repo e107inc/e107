@@ -32,26 +32,6 @@ class siteinfo_shortcodesTest extends \Test\Unit
 
 	}
 
-/*	public function testSc_siteurl()
-	{
-
-	}
-
-	public function testSc_sitedisclaimer()
-	{
-
-	}
-
-	public function testSc_sitedescription()
-	{
-
-	}
-
-	public function testSc_sitetag()
-	{
-
-	}
-*/
 	public function testSc_sitebutton()
 	{
 
@@ -138,13 +118,5 @@ class siteinfo_shortcodesTest extends \Test\Unit
 		self::assertStringContainsString('class="logo img-responsive img-fluid x&quot; onerror=&quot;alert(1)"', $injected);
 		self::assertStringNotContainsString('onerror="', $injected);
 	}
-
-/*	public function testSc_theme_disclaimer()
-	{
-		$result = $this->sc->sc_theme_disclaimer();
-
-	}*/
-
-
 
 }

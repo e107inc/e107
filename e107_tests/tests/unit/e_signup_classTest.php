@@ -59,22 +59,6 @@
 			$this->syncRollingLog();
 		}
 
-
-/*		public function testRenderEmailPreview()
-		{
-
-		}
-
-		public function test__construct()
-		{
-
-		}
-
-		public function testRender_after_signup()
-		{
-
-		}*/
-
 		public function testProcessActivationLink()
 		{
 			$sess = '1234567890';
@@ -90,8 +74,6 @@
 			$num = e107::getDb()->insert('user', $insert);
 
 			$this->assertGreaterThan(0,$num);
-
-
 
 			$result = $this->sup->processActivationLink('activate.'.$num.'.'.$sess);
 			$this->assertEquals('success', $result);
@@ -335,7 +317,5 @@
 
 			return implode("\n", $output);
 		}
-
-
 
 	}

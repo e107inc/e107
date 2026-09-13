@@ -22,67 +22,6 @@ class redirectionTest extends \Test\Unit
 
 	}
 
-	/*		public function testRedirect()
-			{
-
-			}
-
-			public function testGetPreviousUrl()
-			{
-
-			}
-
-			public function testGo()
-			{
-
-			}
-
-			public function testCheckMaintenance()
-			{
-
-			}
-
-			public function testSetPreviousUrl()
-			{
-
-			}
-
-			public function testRedirectPrevious()
-			{
-
-			}
-
-			public function testGetSelfExceptions()
-			{
-
-			}
-
-			public function testGetCookie()
-			{
-
-			}
-
-			public function testCheckMembersOnly()
-			{
-
-			}
-
-			public function testSetCookie()
-			{
-
-			}
-
-			public function testClearCookie()
-			{
-
-			}
-
-			public function testGetSelf()
-			{
-
-			}*/
-
-
 	public function testRedirectHost()
 	{
 

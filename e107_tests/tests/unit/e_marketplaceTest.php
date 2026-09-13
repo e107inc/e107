@@ -80,12 +80,6 @@ DATA
 			}
 		}
 
-/*
-		public function testRenderLoginForm()
-		{
-
-		}
-*/
 		public function testDownload()
 		{
 			$path = e_PLUGIN."thing";
@@ -113,44 +107,4 @@ DATA
 			$this->assertTrue($exists,"plugin folder is missing files.");
 
 		}
-/*
-		public function testGenerateAuthKey()
-		{
-
-		}
-
-		public function testCall()
-		{
-
-		}
-
-		public function testGetVersionList()
-		{
-
-		}
-
-		public function testHasAuthKey()
-		{
-
-		}
-
-		public function testAdapter()
-		{
-
-		}
-
-		public function testMakeAuthKey()
-		{
-
-		}
-
-		public function testSetAuthKey()
-		{
-
-		}
-
-		public function testGetDownloadModal()
-		{
-
-		}*/
 	}

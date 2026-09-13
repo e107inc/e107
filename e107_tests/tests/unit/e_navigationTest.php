@@ -8,22 +8,6 @@
 		{
 			e107::loadAdminIcons();
 		}
-/*
-		public function testCompile()
-		{
-
-		}
-
-		public function testCacheString()
-		{
-
-		}
-
-		public function testRender()
-		{
-
-		}
-*/
 
 		public function testAdminLinksLegacy()
 		{
@@ -543,27 +527,6 @@
 
 
 		}
-/*
-		public function testPlugCatToCoreCat()
-		{
-
-		}
-
-		public function testGetDefaultAdminPanelArray()
-		{
-
-		}
-
-		public function testRenderAdminButton()
-		{
-
-		}
-
-		public function testPluginLinks()
-		{
-
-		}
-*/
 		public function testAdminCats()
 		{
 			$expected = array (
@@ -725,38 +688,5 @@
 			// A parent that owns sub-items is not an in-page panel switch.
 			$this->assertStringNotContainsString(e_navigation::ADMIN_PANE_LINK_CLASS, $result);
 		}
-/*
-		public function testCacheBase()
-		{
-
-		}
-
-		public function testIsActive()
-		{
-
-		}
-
-		public function testSetIconArray()
-		{
-
-		}
-
-		public function testAdmin()
-		{
-
-		}
-
-		public function testGetIconArray()
-		{
-
-		}
-
-		public function testInitData()
-		{
-
-		}*/
-
-
-
 
 	}

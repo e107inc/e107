@@ -123,8 +123,6 @@ class e_fileTest extends \Test\Unit
 			self::assertSame($expected,$actual);
 		}
 
-
-
 	}
 
 
@@ -568,69 +566,12 @@ class e_fileTest extends \Test\Unit
 				}
 
 			}
-/*
-			public function testMkDir()
-			{
-
-			}
-
-			public function testGetRemoteContent()
-			{
-
-			}
-
-			public function testDelete()
-			{
-
-			}
-
-			public function testGetRemoteFile()
-			{
-
-			}
-
-			public function test_chMod()
-			{
-
-			}
-
-			public function testIsValidURL()
-			{
-
-			}
-*/
 			public function testGet_dirs()
 			{
 				$actual = $this->fl->get_dirs(e_LANGUAGEDIR);
 				$expected = array (  0 => 'English' );
 				self::assertSame($expected, $actual);
 			}
-/*
-			public function testGetErrorMessage()
-			{
-
-			}
-
-			public function testCopy()
-			{
-
-			}
-
-			public function testInitCurl()
-			{
-
-			}
-
-			public function testScandir()
-			{
-
-			}
-
-			public function testGetFiletypeLimits()
-			{
-
-			}
-	*/
 	public function testFile_size_decode()
 	{
 		$arr = array(
@@ -686,42 +627,6 @@ class e_fileTest extends \Test\Unit
 
 	}
 
-	/*
-
-			public function testSetDefaults()
-			{
-
-			}
-
-			public function testSetMode()
-			{
-
-			}
-
-			public function testUnzipArchive()
-			{
-
-			}
-
-			public function testSetFileFilter()
-			{
-
-			}
-
-			public function testGetErrorCode()
-			{
-
-			}
-
-			public function testChmod()
-			{
-
-			}
-
-			public function testSetFileInfo()
-			{
-
-			}*/
 
 	public function testGetFileInfo()
 	{
@@ -769,12 +674,6 @@ class e_fileTest extends \Test\Unit
 		}
 
 	}
-	/*
-			public function testPrepareDirectory()
-			{
-
-			}
-*/
 			public function testGetFileExtension()
 			{
 				$test = array(
@@ -851,12 +750,6 @@ class e_fileTest extends \Test\Unit
 					self::assertSame($ext, $actual);
 				}	
 			}
-/*
-			public function testRmtree()
-			{
-
-			}
-*/
 			public function testGet_files()
 			{
 				$reject = array('style.*');
@@ -905,19 +798,6 @@ class e_fileTest extends \Test\Unit
 
 			    return $ret;
 			}
-
-
-/*
-			public function testGetUserDir()
-			{
-
-			}
-
-			public function testRemoveDir()
-			{
-
-			}
-			*/
 
 	public function testUnzipGithubArchive()
 	{
@@ -1200,24 +1080,4 @@ class e_fileTest extends \Test\Unit
 		self::assertFalse($this->fl->protectDirectory(''));
 	}
 
-	/*
-	public function testGetRootFolder()
-	{
-
-	}
-
-	public function testGetUploaded()
-	{
-
-	}
-
-	public function testGitPull()
-	{
-
-	}
-
-	public function testCleanFileName()
-	{
-
-	}*/
 }

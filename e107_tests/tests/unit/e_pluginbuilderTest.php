@@ -322,26 +322,6 @@ class e_pluginbuilderTest extends \Test\Unit
 		);	
 
 	}
-/*
-	public function testSpecial()
-	{
-
-	}
-
-	public function testGuess()
-	{
-
-	}
-
-	public function testForm()
-	{
-
-	}
-
-	public function testCreateXml()
-	{
-
-	}*/
 
 	/**
 	 * Lint a generated fragment and hand back the exit status.
@@ -578,56 +558,6 @@ class e_pluginbuilderTest extends \Test\Unit
 		}
 
 		return true;
-
-	}*/
-/*
-	public function testRun()
-	{
-
-	}
-
-	public function testPluginXml()
-	{
-
-	}
-
-	public function testXmlInput()
-	{
-
-	}
-
-	public function testStep4()
-	{
-
-	}
-
-	public function testStep3()
-	{
-
-	}
-
-	public function testStep1()
-	{
-
-	}
-
-	public function testEnterMysql()
-	{
-
-	}
-
-	public function testFieldType()
-	{
-
-	}
-
-	public function testFieldData()
-	{
-
-	}
-
-	public function testPrefs()
-	{
 
 	}*/
 

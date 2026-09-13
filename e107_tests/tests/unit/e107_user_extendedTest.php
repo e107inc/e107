@@ -225,28 +225,6 @@
 		/**
 		 * FIXME - has problems with shuffling. 
 		 */
-		/*public function testUserextendedCatShortcode()
-		{
-			$sc = e107::getScBatch('usersettings');
-			$sc->reset();
-
-			$perms = array(e_UC_PUBLIC, e_UC_MEMBER, e_UC_ADMIN,  e_UC_MAINADMIN);
-			$sc->setVars(array('userclass_list' => implode(',',$perms)));
-			$cat = (int) e107::getDb()->retrieve('user_extended_struct', 'user_extended_struct_id', "user_extended_struct_name = 'mycategory' LIMIT 1");
-
-
-			$result = $sc->sc_userextended_cat($cat);
-			$this->assertStringContainsString('<h3>Category Name</h3>', $result);
-			$this->assertStringContainsString("<label class='col-sm-3 control-label'>Radio <span class='required'>", $result);
-			$this->assertStringContainsString("<textarea id='ue-user-textarea'", $result);
-			$this->assertStringContainsString("<select id='ue-user-list'", $result);
-
-			$result = $sc->sc_userextended_cat(0);
-			$this->assertStringContainsString('<h3>Miscellaneous</h3>', $result);
-			$this->assertStringContainsString("<label class='col-sm-3 control-label'>Dropdown", $result);
-
-
-		}*/
 
 		public function testUserExtendedFieldShortcode()
 		{
@@ -518,8 +496,6 @@
 
 		//	$this->fixRegistry('after');
 
-
-
 		}
 
 		private function fixRegistry($mode)
@@ -542,35 +518,6 @@
 
 
 		}
-/*
-		public function testGetUserExtendedFieldData()
-		{
-			$sc = e107::getScBatch('usersettings');
-
-			$sc->setVars(array('userclass_list' => '253,251,0,254,250'));
-
-			$expected = array (
-			  'user_extended_struct_id' => '3',
-			  'user_extended_struct_name' => 'radio',
-			  'user_extended_struct_text' => 'Radio',
-			  'user_extended_struct_type' => '2',
-			  'user_extended_struct_parms' => '',
-			  'user_extended_struct_values' => 'M =&gt; UE_LAN_MALE,F =&gt; UE_LAN_FEMALE',
-			  'user_extended_struct_default' => 'F',
-			  'user_extended_struct_read' => '253',
-			  'user_extended_struct_write' => '254',
-			  'user_extended_struct_required' => '1',
-			  'user_extended_struct_signup' => '0',
-			  'user_extended_struct_applicable' => '250',
-			  'user_extended_struct_order' => '2',
-			  'user_extended_struct_parent' => '16',
-			);
-
-			$result = $sc->getUserExtendedFieldData('radio');
-			$this->assertEquals($result, $expected);
-
-		}
-*/
 
 		public function testGetStructure()
 		{
@@ -586,16 +533,7 @@
 
 			}
 
-
-
 		}
-/*
-		public function testGetFieldList()
-		{
-			$list = $this->ue->getFieldList();
-
-		}
-*/
 		public function testGetFieldType()
 		{
 
@@ -638,12 +576,6 @@
 
 		}
 
-/*
-		public function testUser_extended_getvalue()
-		{
-
-		}
-*/
 		public function testHasPermission()
 		{
 
@@ -820,22 +752,6 @@
 		}
 
 
-/*
-		public function testUser_extended_edit()
-		{
-
-		}
-
-		public function testParse_extended_xml()
-		{
-
-		}
-
-		public function testGetCategories()
-		{
-
-		}
-*/
 		public function testRenderValue()
 		{
 			$expectedRenderedValues = array (
@@ -893,22 +809,6 @@
 			}
 
 		}
-/*
-		public function testUser_extended_modify()
-		{
-
-		}
-
-		public function testUser_extended_remove()
-		{
-
-		}
-
-		public function testSet()
-		{
-
-		}
-*/
 		public function testUser_extended_get_categories()
 		{
 			$expected = array (
@@ -993,88 +893,7 @@
 
 			return $myresult;
 		}
-/*
-		public function testAddDefaultFields()
-		{
-
-		}
-*/
 	// FIXME shuffling may cause the id numbers to change.
-	/*	public function testUser_extended_get_fields()
-		{
-			$expected = array (
-			  16 =>
-			  array (
-			    0 =>
-			    array (
-			      'user_extended_struct_id' => '3',
-			      'user_extended_struct_name' => 'radio',
-			      'user_extended_struct_text' => 'Radio',
-			      'user_extended_struct_type' => '2',
-			      'user_extended_struct_parms' => '',
-			      'user_extended_struct_values' => 'M =&gt; UE_LAN_MALE,F =&gt; UE_LAN_FEMALE',
-			      'user_extended_struct_default' => 'F',
-			      'user_extended_struct_read' => '253',
-			      'user_extended_struct_write' => '254',
-			      'user_extended_struct_required' => '1',
-			      'user_extended_struct_signup' => '0',
-			      'user_extended_struct_applicable' => '250',
-			      'user_extended_struct_order' => '2',
-			      'user_extended_struct_parent' => '16',
-			    ),
-			    1 =>
-			    array (
-			      'user_extended_struct_id' => '6',
-			      'user_extended_struct_name' => 'textarea',
-			      'user_extended_struct_text' => 'Textarea',
-			      'user_extended_struct_type' => '5',
-			      'user_extended_struct_parms' => '',
-			      'user_extended_struct_values' => '',
-			      'user_extended_struct_default' => '',
-			      'user_extended_struct_read' => '253',
-			      'user_extended_struct_write' => '254',
-			      'user_extended_struct_required' => '0',
-			      'user_extended_struct_signup' => '0',
-			      'user_extended_struct_applicable' => '250',
-			      'user_extended_struct_order' => '5',
-			      'user_extended_struct_parent' => '16',
-			    ),
-			    2 =>
-			    array (
-			      'user_extended_struct_id' => '10',
-			      'user_extended_struct_name' => 'list',
-			      'user_extended_struct_text' => 'List',
-			      'user_extended_struct_type' => '9',
-			      'user_extended_struct_parms' => '',
-			      'user_extended_struct_values' => 'timezones',
-			      'user_extended_struct_default' => '',
-			      'user_extended_struct_read' => '253',
-			      'user_extended_struct_write' => '254',
-			      'user_extended_struct_required' => '1',
-			      'user_extended_struct_signup' => '0',
-			      'user_extended_struct_applicable' => '250',
-			      'user_extended_struct_order' => '9',
-			      'user_extended_struct_parent' => '16',
-			    ),
-			  ),
-			);
-
-
-			$result = $this->ue->user_extended_get_fields(16);
-			$this->assertEquals($expected, $result);
-
-		}*/
-/*
-		public function testUser_extended_type_text()
-		{
-
-		}
-
-		public function testUser_extended_hide()
-		{
-
-		}
-*/
 		public function testAddFieldTypes()
 		{
 			$data = array();
@@ -1106,12 +925,6 @@
 			$this->assertSame($expected, $target['_FIELD_TYPES']);
 
 		}
-/*
-		public function testUser_extended_setvalue()
-		{
-
-		}
-*/
 		public function testGetFields()
 		{
 			$data = $this->ue->getFields();
@@ -1126,116 +939,6 @@
 			$this->assertArrayHasKey('country', $data);
 		//	$this->assertCount(1, $data);
 		}
-/*
-
-		public function testUser_extended_field_exist()
-		{
-
-		}
-
-		public function testUser_extended_add()
-		{
-
-		}
-
-		public function testUser_extended_display_text()
-		{
-
-		}
-
-		public function testUserExtendedValidateAll()
-		{
-
-		}
-
-		public function testClear_cache()
-		{
-
-		}
-
-		public function testUser_extended_reserved()
-		{
-
-		}
-
-		public function testUser_extended_add_system()
-		{
-
-		}
-
-		public function testUser_extended_getStruct()
-		{
-
-		}
-
-		public function testUser_extended_validate_entry()
-		{
-
-		}
-*/
 // Fixme needs to be reworked to ignore the struct_id.
-/*
-		public function testUser_extended_get_fieldList()
-		{
-			$expected = array (
-			  'radio' =>
-			  array (
-			    'user_extended_struct_id' => '3',
-			    'user_extended_struct_name' => 'radio',
-			    'user_extended_struct_text' => 'Radio',
-			    'user_extended_struct_type' => '2',
-			    'user_extended_struct_parms' => '',
-			    'user_extended_struct_values' => 'M =&gt; UE_LAN_MALE,F =&gt; UE_LAN_FEMALE',
-			    'user_extended_struct_default' => 'F',
-			    'user_extended_struct_read' => '253',
-			    'user_extended_struct_write' => '254',
-			    'user_extended_struct_required' => '1',
-			    'user_extended_struct_signup' => '0',
-			    'user_extended_struct_applicable' => '250',
-			    'user_extended_struct_order' => '2',
-			    'user_extended_struct_parent' => 16,
-			  ),
-			  'textarea' =>
-			  array (
-			    'user_extended_struct_id' => '6',
-			    'user_extended_struct_name' => 'textarea',
-			    'user_extended_struct_text' => 'Textarea',
-			    'user_extended_struct_type' => '5',
-			    'user_extended_struct_parms' => '',
-			    'user_extended_struct_values' => '',
-			    'user_extended_struct_default' => '',
-			    'user_extended_struct_read' => '253',
-			    'user_extended_struct_write' => '254',
-			    'user_extended_struct_required' => '0',
-			    'user_extended_struct_signup' => '0',
-			    'user_extended_struct_applicable' => '250',
-			    'user_extended_struct_order' => '5',
-			    'user_extended_struct_parent' => 16,
-			  ),
-			  'list' =>
-			  array (
-			    'user_extended_struct_id' => '10',
-			    'user_extended_struct_name' => 'list',
-			    'user_extended_struct_text' => 'List',
-			    'user_extended_struct_type' => '9',
-			    'user_extended_struct_parms' => '',
-			    'user_extended_struct_values' => 'timezones',
-			    'user_extended_struct_default' => '',
-			    'user_extended_struct_read' => '253',
-			    'user_extended_struct_write' => '254',
-			    'user_extended_struct_required' => '1',
-			    'user_extended_struct_signup' => '0',
-			    'user_extended_struct_applicable' => '250',
-			    'user_extended_struct_order' => '9',
-			    'user_extended_struct_parent' => 16,
-			  ),
-			);
-
-			$result = $this->ue->user_extended_get_fieldList(16, 'user_extended_struct_name');
-			$this->assertSame($expected, $result);
-		}
-*/
-
-
 
 	}

@@ -22,57 +22,6 @@ class CronParserTest extends \Test\Unit
 		}
 
 	}
-/*
-	public function test_getLastMinute()
-	{
-
-	}
-
-	public function test_getHoursArray()
-	{
-
-	}
-
-	public function test_prevMonth()
-	{
-
-	}
-
-	public function test_getLastDay()
-	{
-
-	}
-
-	public function test_getLastMonth()
-	{
-
-	}
-
-	public function testGetDays()
-	{
-
-	}
-
-	public function test_getMinutesArray()
-	{
-
-	}
-
-	public function testGetLastRanUnix()
-	{
-
-	}
-
-	public function testDaysinmonth()
-	{
-
-	}
-
-	public function test_getMonthsArray()
-	{
-
-	}
-*/
 	public function testCalcLastRan()
 	{
 		$lastTimeZone = date_default_timezone_get();
@@ -95,53 +44,6 @@ class CronParserTest extends \Test\Unit
 
 		date_default_timezone_set($lastTimeZone);
 	}
-/*
-	public function testGetLastRan()
-	{
-
-	}
-
-	public function test_prevDay()
-	{
-
-	}
-
-	public function testDebug()
-	{
-
-	}
-
-	public function test_sanitize()
-	{
-
-	}
-
-	public function testGetDebug()
-	{
-
-	}
-
-	public function test_getLastHour()
-	{
-
-	}
-
-	public function test_getDaysArray()
-	{
-
-	}
-
-	public function test_prevHour()
-	{
-
-	}
-
-	public function testExpand_ranges()
-	{
-
-	}
-
-	*/
 
 
 }

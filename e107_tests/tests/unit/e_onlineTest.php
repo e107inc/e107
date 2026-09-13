@@ -32,14 +32,6 @@ class e_onlineTest extends \Test\Unit
 	/**
 	 *
 	 */
-	/*
-			public function testGoOnline()
-			{
-				$this->on->goOnline(true, true);
-
-				$this->on->goOnline(false, false);
-			}
-	*/
 
 	public function testIsBot()
 	{
@@ -437,16 +429,4 @@ class e_onlineTest extends \Test\Unit
 			$this->assertTrue($result, 'Failed asserting that "' . $agent . '" is a bot/crawler');
 		}
 	}
-	/*
-			public function testGuestList()
-			{
-
-			}
-
-			public function testUserList()
-			{
-				$this->on->goOnline();
-				$result = $this->on->userList();
-				var_export($result);
-			}*/
 }
