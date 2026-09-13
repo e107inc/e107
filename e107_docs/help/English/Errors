@@ -1,3 +1,17 @@
+H1> When something goes wrong
 
-Q>	I'm getting some errors on a certain page, what do I do about it?
-A>	Browse the Problems forum at e107.org and see if anyone else is getting the same problem. If you think it's a bug please post the error on the bugtracker at e107.org.
+P> Errors are part of running any web application. e107 logs many of them automatically – this page tells you where to look and how to ask for help.
+
+Q> I'm getting errors on a certain page – what do I do?
+A> Browse the [b]Problems[/b] forum at [url=https://e107.org]e107.org[/url] and check whether anyone else is hitting the same issue. If you believe it is a bug, open a report on the bug tracker so the core team can reproduce it.
+
+H1> Useful first steps
+
+STEP> Enable debug mode by appending `?debug=1` to the URL while logged in as admin.
+STEP> Check `e107_system/<sitehash>/logs/` for recent entries.
+STEP> Clear the cache from [b]Admin → Cache[/b] – many "weird" issues disappear after a flush.
+STEP> Reproduce the error in a private/incognito window to rule out browser extensions.
+
+TIP> When opening a bug report, include: e107 version, PHP version, MySQL/MariaDB version, active theme, the exact URL, and any relevant excerpt from the log file. The more context you provide, the faster the issue is fixed.
+
+WARN> Never post raw `e107_config.php` contents or database credentials in a public bug report.

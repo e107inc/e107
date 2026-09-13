@@ -1,12 +1,27 @@
+H1> Posting news
 
-Q>	What are news categories for?
-A>	You can group your news items under different categories, and they will be displayed with a different icon etc if defined. This makes it easier for your visitors to navigate your site and read only the items that interest them.
+P> News is the spine of most e107 sites. Items can be grouped under categories, scheduled, hidden behind a "read more" cut, and restricted by user class.
 
-Q>	What is the Extended box for?
-A>	You may have noticed the way news items are reported on some sites, they have a small intro with a link to the whole article, you can do this by entering the intro in the Body text box and the rest of the article in the Extended box.
+SHOT> news/admin-newspost.png | News editor with Body and Extended fields
 
-Q>	What are the activation boxes for? 
-A>	You can set up a news item to only appear between certain dates by using the activation boxes. If you leave them blank the news you post will appear immediately.
+H1> Categories
 
-Q>	I entered a news item and it says 'News saved in database' - does that mean it will show on my news page?
-A>	It means the text you entered has been saved. If the news item you entered is set to active, then yes it will appear on your news page.
+Q> What are news categories for?
+A> They group news items into themes (e.g. "Releases", "Community"). Each category can have its own icon, so visitors can identify and filter items at a glance.
+
+H1> Body vs Extended
+
+Q> What is the Extended box for?
+A> It holds the long-form portion of an article. The [b]Body[/b] field stores a short intro shown in lists; the [b]Extended[/b] field is revealed when the visitor clicks [i]Read more[/i]. Use this combo whenever the full article is longer than a few paragraphs.
+
+TIP> A short, attention-grabbing Body increases click-through to the full article. Treat it like an editorial lead.
+
+H1> Scheduling and visibility
+
+Q> What are the activation boxes for?
+A> They schedule when a news item is visible. Set a [b]start[/b] date to publish in the future, an [b]end[/b] date to expire automatically, or leave both blank to publish immediately and indefinitely.
+
+Q> I entered a news item and it says "News saved in database" – does that mean it will show on my news page?
+A> It means the text was saved successfully. Whether visitors see it depends on the [b]active[/b] flag and the activation dates: if the item is active and within its visibility window, it appears on the news page.
+
+NOTE> Drafts are useful: leave [b]active[/b] unticked while you iterate on the article, then flip it on when ready.
