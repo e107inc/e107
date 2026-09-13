@@ -116,7 +116,7 @@ class page_search extends e_search // include plugin-folder in the name.
 		$res['pre_title'] 	= $pre; 
 		$res['title'] 		= $tp->toHTML($row['page_title'], false, 'TITLE');
 		$res['summary'] 	= (!empty($row['page_metadscr'])) ? $row['page_metadscr'] : $row['page_text'];
-		$res['detail'] 		= LAN_SEARCH_3.$tp->toDate($row['page_datestamp'], "long");
+		$res['detail'] 		= LAN_SEARCH_3." ".$tp->toDate($row['page_datestamp'], "long");
 		$res['image']		= $row['menu_image'];
 		
 		

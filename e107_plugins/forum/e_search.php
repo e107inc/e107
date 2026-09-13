@@ -74,9 +74,9 @@ class forum_search extends e_search // include plugin-folder in the name.
 		$res = array();
 		$datestamp = $tp->toDate($row['thread_datestamp'], "long");
 
-		if ($row['thread_parent'])
+		if (!empty($row['thread_parent']))
 		{
-			$title = $row['parent_name'];
+			$title = varset($row['parent_name']);
 		}
 		else
 		{
@@ -98,7 +98,7 @@ class forum_search extends e_search // include plugin-folder in the name.
 	$res['title'] 		= $title ? $forumTitle . " | ". $title : LAN_SEARCH_9;
 	$res['pre_summary'] = "";
 	$res['summary'] 	= $row['post_entry'];
-	$res['detail'] 		= LAN_SEARCH_7.$userlink.LAN_SEARCH_8.$datestamp;
+	$res['detail'] 		= LAN_SEARCH_7." ".$userlink." ".LAN_SEARCH_8." ".$datestamp;
 
 		return $res;
 

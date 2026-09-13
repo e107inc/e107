@@ -32,7 +32,7 @@ $comments_table['page'] = "LEFT JOIN #page AS cp ON c.comment_type='page' AND cp
 	$res['title'] = $row['page_title'];
 	$res['summary'] = $row['comment_comment'];
 	preg_match("/([0-9]+)\.(.*)/", $row['comment_author'], $user);
-	$res['detail'] = LAN_SEARCH_7."<a href='user.php?id.".$user[1]."'>".$user[2]."</a>".LAN_SEARCH_8.$datestamp;
+	$res['detail'] = LAN_SEARCH_7." <a href='user.php?id.".$user[1]."'>".$user[2]."</a> ".LAN_SEARCH_8." ".$datestamp;
 	return $res;
 }
 
