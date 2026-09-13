@@ -77,8 +77,6 @@
 
 		}
 
-
-
 		function testCheckClass()
 		{
 			// XXX: Should not use some flag just to make tests pass!
@@ -130,8 +128,6 @@
 			unset($_E107['phpunit']);
 		}
 
-
-
 		function testCheckEmail()
 		{
 			$result = check_email("test@somewhere.com"); // good email.
@@ -144,8 +140,6 @@
 			self::assertEquals('test@somewhere.technology',$result);
 
 		}
-
-
 
 		function testSystemTimeZoneIsValid()
 		{
@@ -604,21 +598,6 @@
 		/**
 		 * Will vary from system to system.
 		 */
-		/*function testSystemTimeZones()
-		{
-			$expected = self::getExpectedZones();
-
-		//	self::echoMem();
-			$zones = systemTimeZones();
-
-		//	self::echoMem();
-
-			$zoneKeys = array_keys($zones);
-			$expectedKeys = array_keys($expected);
-
-
-			self::assertSame($expectedKeys, $zoneKeys);
-		}*/
 
 
 		public function testDiagnosticsSilencedWithTheAtOperatorAreNotCollected()

@@ -236,15 +236,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	}
 
-	/*	public function testMakeTableDef()
-		{
-
-			$result = $this->db->makeTableDef('userclass_classes');
-
-			var_export($result);
-		}*/
-
-
 	public function testDb_IsLang()
 	{
 		// XXX: This test leads to e_pref, which depends on lan_admin.php
@@ -273,8 +264,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->db->dropTable('lan_spanish_news');
 	}
 
-
-
 	public function testDb_Write_log()
 	{
 		$log_type = 127;
@@ -292,8 +281,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$this->assertEquals($expected, $data);
 	}
-
-
 
 	public function testDb_Query()
 	{
@@ -333,8 +320,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$result = $this->db->retrieve("SELECT user_id, user_name FROM #user WHERE user_id = 1");
 		$this->assertEquals($expected,$result);
-
-
 
 		$result = $this->db->retrieve('user', 'missing_field, user_name', 'user_id = 1');
 		$this->assertEquals(array(),$result);
@@ -621,17 +606,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$actual = $this->db->db_Update('tmp', 'tmp_ip = "127.0.0.1", tmp_time = tmp_time + 1, tmp_info = "test 3" WHERE tmp_ip="127.0.0.1"');
 		$this->assertEquals(1,$actual);
 	}
-	/*
-			public function test_getTypes()
-			{
-
-			}
-
-			public function test_getFieldValue()
-			{
-
-			}
-	*/
 	public function testDb_QueryCount()
 	{
 		$this->db->select('user', '*');
@@ -688,12 +662,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	}
 
-	/*
-			public function testFetch()
-			{
-
-			}
-	*/
 	public function testDb_Fetch()
 	{
 		$this->db->select('user', '*', 'user_id = 1');
@@ -832,14 +800,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		// fixme - getErrorReporting.
 	}
 
-	/*
-			public function testMl_check()
-			{
-
-			}
-
-
-	*/
 	public function testDb_getList()
 	{
 		$this->db->select('plugin', '*');
@@ -889,17 +849,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	}
 
 
-	/*
-			public function testSelectTree()
-			{
-
-			}
-
-			public function testDb_Query_all()
-			{
-
-			}
-	*/
 	public function testDb_FieldList()
 	{
 		$result = $this->db->db_FieldList('user');
@@ -1050,8 +999,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	}
 
-
-
 	public function testGetLanguage()
 	{
 		$result = $this->db->getLanguage();
@@ -1062,12 +1009,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals('French', $result);
 
 	}
-	/*
-			public function testDbError()
-			{
-
-			}
-	*/
 	/**
 	 * Both backends answer with the MySQL error number. The PDO driver used to
 	 * store PDOException::getCode(), which is the SQLSTATE, so a caller
@@ -1151,12 +1092,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals(0, $num);
 
 	}
-	/*
-			public function testGetLastQuery()
-			{
-
-			}
-	*/
 
 
 	public function testGetFieldDefs()

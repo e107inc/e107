@@ -39,15 +39,6 @@ $data = array (
 			return (string) $data;
 		}
 
-
-
-
-/*
-		public function testLoad()
-		{
-
-		}
-*/
 		public function testUnserialize()
 		{
 
@@ -133,13 +124,6 @@ $data = array (
 			$result = $this->arrObj->unserialize($input);
 			$this->assertSame($input, $result);
 		}
-/*
-
-		public function testStore()
-		{
-
-		}
-*/
 		public function testSerialize()
 		{
 
@@ -175,8 +159,6 @@ $data = array (
 			$expected6  = "{\n    \"hello\": \"h\u00e9ll\u00f2 w\u00f2rld\"\n}";
 
 			$this->assertEquals($expected6,$result6);
-
-
 
 		}
 

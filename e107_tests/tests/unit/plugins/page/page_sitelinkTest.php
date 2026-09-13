@@ -42,24 +42,6 @@ class page_sitelinkTest extends \Codeception\Test\Unit
 		e107::getConfig()->setPref('url_config/page', 'core')->save(false, true, false); // disable SEF Urls.
 	}
 
-	/*
-			public function testPageNav()
-			{
-
-			}
-
-			public function testPageList()
-			{
-
-			}
-
-			public function testConfig()
-			{
-
-			}
-	*/
-
-
 	public function testBookNav()
 	{
 

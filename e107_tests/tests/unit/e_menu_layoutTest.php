@@ -53,17 +53,6 @@
 			// closedir($dir);
 		}
 
-
-
-/*
-		public function testMenuSelector()
-		{
-
-		}
-
-		*/
-
-
 		public function testGetLayouts()
 		{
 			//FIXME: https://github.com/e107inc/e107/issues/4030
@@ -207,12 +196,6 @@
 
 			}
 
-
-
-
 		}
-
-
-
 
 	}

@@ -53,48 +53,6 @@ class notifyTest extends \Codeception\Test\Unit
 		$this->assertSame($expected, $result);
 
 	}
-/*
-	public function testSendEmail()
-	{
-		$this->nt->notify_prefs['event'] = array (
-		  'custom_event' => array (
-				    'class' => 'email',
-				    'email' => 'my@email.com',
-				    'include' => '',
-				    'legacy' => '0',
-				  ),
-		);
-	}
-
-	public function testSend()
-	{
-		$this->nt->notify_prefs['event'] = array (
-		 'custom_event' =>
-		  array (
-		    'class' => '254', // Admin class.
-		    'include' => '',
-		    'legacy' => '0',
-		  ),
-		);
-
-
-	}
-	*/
-/*
-	public function test__construct()
-	{
-
-	}
-
-	public function testRegisterEvents()
-	{
-
-	}
-
-	public function testGeneric()
-	{
-
-	}*/
 
 
 }

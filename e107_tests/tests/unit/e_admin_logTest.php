@@ -30,32 +30,6 @@
 
 			$this->log->__construct();
 		}
-/*
-		public function testAddSuccess()
-		{
-
-		}
-
-		public function testAddDebug()
-		{
-
-		}
-
-		public function testLogError()
-		{
-
-		}
-
-		public function testLogSuccess()
-		{
-
-		}
-
-		public function testUser_audit()
-		{
-
-		}
-*/
 		public function testAddArray()
 		{
 			$arr = array('one'=>'two', 'three'=>'four');
@@ -68,32 +42,6 @@
 			$this->assertSame("Array[!br!]([!br!]    [one] =&gt; two[!br!]    [three] =&gt; four[!br!])[!br!]",$result['dblog_remarks']);
 
 		}
-/*
-		public function testLogMessage()
-		{
-
-		}
-
-		public function testAddWarning()
-		{
-
-		}
-
-		public function testPurge_log_events()
-		{
-
-		}
-
-		public function testE_log_event()
-		{
-
-		}
-
-		public function testSave()
-		{
-
-		}
-*/
 		public function testLogArrayAll()
 		{
 			$arr = array('one'=>'test', 'two'=>'testing');
@@ -107,22 +55,6 @@
 			$this->assertSame("Array[!br!]([!br!]    [one] =&gt; test[!br!]    [two] =&gt; testing[!br!])[!br!]", $result['dblog_remarks']);
 
 		}
-/*
-		public function testFlushMessages()
-		{
-
-		}
-
-		public function testAddError()
-		{
-
-		}
-
-		public function testClear()
-		{
-
-		}
-*/
 		public function testAdd()
 		{
 			// add to admin_log
@@ -147,28 +79,5 @@
 			$this->log->rollingLog(false);
 
 		}
-/*
-		public function testToFile()
-		{
-
-		}
-
-		public function testSetCurrentPlugin()
-		{
-
-		}
-
-		public function testLogArrayDiffs()
-		{
-
-		}
-
-		public function testLog_event()
-		{
-
-		}
-*/
-
-
 
 	}

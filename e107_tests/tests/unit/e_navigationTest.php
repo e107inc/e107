@@ -8,22 +8,6 @@
 		{
 			e107::loadAdminIcons();
 		}
-/*
-		public function testCompile()
-		{
-
-		}
-
-		public function testCacheString()
-		{
-
-		}
-
-		public function testRender()
-		{
-
-		}
-*/
 
 		public function testAdminLinksLegacy()
 		{
@@ -534,27 +518,6 @@
 
 
 		}
-/*
-		public function testPlugCatToCoreCat()
-		{
-
-		}
-
-		public function testGetDefaultAdminPanelArray()
-		{
-
-		}
-
-		public function testRenderAdminButton()
-		{
-
-		}
-
-		public function testPluginLinks()
-		{
-
-		}
-*/
 		public function testAdminCats()
 		{
 			$expected = array (
@@ -614,38 +577,5 @@
 			$this->assertSame($expected, $result);
 
 		}
-/*
-		public function testCacheBase()
-		{
-
-		}
-
-		public function testIsActive()
-		{
-
-		}
-
-		public function testSetIconArray()
-		{
-
-		}
-
-		public function testAdmin()
-		{
-
-		}
-
-		public function testGetIconArray()
-		{
-
-		}
-
-		public function testInitData()
-		{
-
-		}*/
-
-
-
 
 	}

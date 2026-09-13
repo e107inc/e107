@@ -32,22 +32,6 @@
 		}
 
 
-/*
-		public function testSetClass()
-		{
-
-		}
-
-		public function testResizeWidth()
-		{
-
-		}
-
-		public function testGetContent()
-		{
-
-		}
-*/
 		public function testHtmltoBBcode()
 		{
 			$text = '<h1 style="text-align: center;">Heading 1</h1>
@@ -94,8 +78,6 @@
 					'expected'  =>'<p>[img title=test]{e_MEDIA_IMAGE}2021-10/test.jpg[/img]</p>'
 				],*/
 
-
-
 			];
 
 
@@ -107,22 +89,6 @@
 			}
 
 		}
-/*
-		public function testResizeHeight()
-		{
-
-		}
-
-		public function testRenderButtons()
-		{
-
-		}
-
-		public function testProcessTag()
-		{
-
-		}
-*/
 		public function testParseBBCodes()
 		{
 			$codes = array (
@@ -283,23 +249,5 @@
 
 
 		}
-/*
-		public function testClearClass()
-		{
-
-		}
-
-		public function testGetClass()
-		{
-
-		}
-
-		public function testGetMode()
-		{
-
-		}
-*/
-
-
 
 	}

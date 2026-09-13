@@ -12,28 +12,4 @@
 	class e_searchTest extends \Codeception\Test\Unit
 	{
 
-	/*	public function testGetParams()
-		{
-
-		}
-
-		public function testParsesearch_crop()
-		{
-
-		}
-
-		public function testParsesearch()
-		{
-
-		}
-
-		public function testSetParams()
-		{
-
-		}
-
-		public function testStopword()
-		{
-
-		}*/
 	}

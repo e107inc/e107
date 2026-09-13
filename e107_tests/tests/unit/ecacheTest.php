@@ -98,17 +98,6 @@ class ecacheTest extends \Codeception\Test\Unit
 		$this->assertEmpty($errorStatus, "An error occurred during cache: ".$errorStatus);
 
 	}
-/*
-	public function testClear_sys()
-	{
-
-	}
-
-	public function testSet_sys()
-	{
-
-	}
-*/
 	public function testClear()
 	{
 		$cacheName = 'testClearCache';
@@ -126,36 +115,6 @@ class ecacheTest extends \Codeception\Test\Unit
 
 
 	}
-/*
-	public function testDelete()
-	{
-
-	}
-
-	public function test__construct()
-	{
-
-	}
-
-	public function testClearAll()
-	{
-
-	}
-
-	public function testGetMD5()
-	{
-
-	}
-
-	public function testSetMD5()
-	{
-
-	}
-
-	public function testRetrieve_sys()
-	{
-
-	}*/
 
 	public function testSetAndRetrieve()
 	{
@@ -193,12 +152,6 @@ class ecacheTest extends \Codeception\Test\Unit
 
 
 	}
-/*
-	public function testCache_fname()
-	{
-
-	}
-*/
 
 	public function testSetLeavesOnlyTheEntryBehind()
 	{

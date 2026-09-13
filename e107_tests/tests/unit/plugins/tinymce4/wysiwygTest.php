@@ -23,21 +23,6 @@ class wysiwygTest extends \Codeception\Test\Unit
 
 	}
 
-	/*
-			public function testGetExternalPlugins()
-			{
-
-			}
-
-			public function testConvertBoolean()
-			{
-
-			}
-
-			public function test__construct()
-			{
-
-			}*/
 
 	public function testGetEditorCSS()
 	{
@@ -93,33 +78,5 @@ class wysiwygTest extends \Codeception\Test\Unit
 		$this->assertStringNotContainsString('pagebreak_separator: [newpage]', $config,
 			'The separator must be a quoted string, not a bare JS array literal.');
 	}
-
-	/*
-			public function testGetTemplates()
-			{
-
-			}
-
-			public function testFilter_plugins()
-			{
-
-			}
-
-			public function testRenderConfig()
-			{
-
-			}
-
-			public function testTinymce_lang()
-			{
-
-			}
-
-			public function testGetConfig()
-			{
-
-			}
-	*/
-
 
 }
