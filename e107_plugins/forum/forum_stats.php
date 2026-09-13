@@ -41,6 +41,23 @@ class forumStats
 
 
 	/**
+	 * The clause restricting threads to the forums this visitor may read, or 1=0 when there are none; the permission list asks the parent category as well.
+	 *
+	 * @param e107forum $forum
+	 * @param string $alias the forum_thread alias the query gives the column
+	 * @return string
+	 */
+	private function visibleThreadsSql($forum, $alias)
+	{
+		$visibleForums = $forum->getForumPermList('view');
+
+		return empty($visibleForums)
+			? '1=0'
+			: $alias.'.thread_forum_id IN ('.implode(',', array_map('intval', $visibleForums)).')';
+	}
+
+
+	/**
 	 * Turn the top posters into the top repliers: take off the posts that
 	 * opened a thread, work out each one's share of all replies, and sort on
 	 * what is left.
@@ -140,14 +157,7 @@ class forumStats
 			}
 		}
 
-		// The forum's own permission list, which asks the parent category as
-		// well. forum_class alone names a forum that is public in its own right
-		// inside a restricted category, which is how a thread title from one
-		// reached this panel.
-		$visibleForums = $forum->getForumPermList('view');
-		$visibleSql = empty($visibleForums)
-			? '1=0'
-			: 'ft.thread_forum_id IN ('.implode(',', array_map('intval', $visibleForums)).')';
+		$visibleSql = $this->visibleThreadsSql($forum, 'ft');
 
 		$query = "
 		SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_sef, f.forum_class, u.user_name, u.user_id FROM #forum_thread as ft
@@ -203,16 +213,21 @@ class forumStats
 		}
 			// end build top posters
 
-		$ids = implode(',', $topReplier);
+		$top_repliers_data_c = array();
 
-		// find topics by top 10 users
-		$query = "
-		SELECT COUNT(ft.thread_id) AS thread_count, u.user_id FROM #forum_thread as ft
-		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
-		WHERE u.user_id IN ({$ids})	GROUP BY ft.thread_user";
+		if(!empty($topReplier))
+		{
+			$ids = implode(',', $topReplier);
 
-		$sql->gen($query);
-		$top_repliers_data_c = $sql->db_getList('ALL', false, false, 'user_id');
+			// find topics by top 10 users
+			$query = "
+			SELECT COUNT(ft.thread_id) AS thread_count, u.user_id FROM #forum_thread as ft
+			LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+			WHERE u.user_id IN ({$ids})	GROUP BY ft.thread_user";
+
+			$sql->gen($query);
+			$top_repliers_data_c = $sql->db_getList('ALL', false, false, 'user_id');
+		}
 
 		$top_repliers = $this->buildTopRepliers($top_repliers_data, $top_repliers_data_c, $total_replies);
 
@@ -640,7 +655,7 @@ class forumStats
 		require_once (e_PLUGIN.'forum/forum_class.php');
 		$forum = new e107forum();
 
-		$forumList = implode(',', $forum->getForumPermList('view'));
+		$visibleSql = $this->visibleThreadsSql($forum, 't');
 
 		$qry = "
 		SELECT
@@ -649,7 +664,7 @@ class forumStats
 		LEFT JOIN `#forum` AS f ON f.forum_id = t.thread_forum_id
 		LEFT JOIN `#user` AS u ON u.user_id = t.thread_user
 		LEFT JOIN `#user` AS ul ON ul.user_id = t.thread_lastuser
-		WHERE t.thread_forum_id IN ({$forumList})
+		WHERE ".$visibleSql."
 		ORDER BY t.thread_views DESC
 		LIMIT
 			{$this->from}, {$this->view}
