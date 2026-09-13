@@ -121,6 +121,9 @@ class QueryBuilder
 	/** @var string|null alias for the FROM sub-select */
 	private $fromSubAlias = null;
 
+	/** @var string|null developer-authored FROM source taken verbatim */
+	private $fromRaw = null;
+
 	/**
 	 * @var array[] queued joins. Each entry is
 	 *      array('type', 'table', 'alias', 'condition'); 'table' may instead be
@@ -587,6 +590,34 @@ class QueryBuilder
 		$this->alias = $alias;
 		$this->fromSub = null;
 		$this->fromSubAlias = null;
+		$this->fromRaw = null;
+
+		return $this;
+	}
+
+	/**
+	 * Select from a single developer-authored FROM source taken verbatim, for a
+	 * source {@see QueryBuilder::from()} refuses: the explicit raw hatch for the
+	 * FROM clause, alongside {@see QueryBuilder::selectRaw()} for the column
+	 * list. '#table' markers are resolved at execution, joins and aliases are
+	 * spelled inside the expression, and the string must never carry user input.
+	 *
+	 * <code>
+	 * $qb->selectRaw('n.news_id, c.category_name')
+	 *     ->fromRaw('#news AS n LEFT JOIN #news_category AS c ON n.news_category = c.category_id');
+	 * </code>
+	 *
+	 * @param SqlFragment|string $expression Raw FROM source.
+	 * @return QueryBuilder $this
+	 */
+	public function fromRaw($expression)
+	{
+		$this->type = self::TYPE_SELECT;
+		$this->fromRaw = $this->_vouchedFragment($expression);
+		$this->table = null;
+		$this->alias = null;
+		$this->fromSub = null;
+		$this->fromSubAlias = null;
 
 		return $this;
 	}
@@ -614,6 +645,7 @@ class QueryBuilder
 		$this->fromSubAlias = $alias;
 		$this->table = null;
 		$this->alias = null;
+		$this->fromRaw = null;
 
 		return $this;
 	}
@@ -3734,7 +3766,11 @@ class QueryBuilder
 	 */
 	private function _compileSelect()
 	{
-		if($this->fromSub !== null)
+		if($this->fromRaw !== null)
+		{
+			$source = $this->fromRaw;
+		}
+		elseif($this->fromSub !== null)
 		{
 			$source = $this->fromSub.' AS '.$this->_quotedAlias($this->fromSubAlias);
 		}
