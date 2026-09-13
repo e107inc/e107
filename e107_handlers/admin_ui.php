@@ -5160,6 +5160,36 @@ class e_admin_controller_ui extends e_admin_controller
 		return is_array($row) ? $row : array();
 	}
 
+	/**
+	 * Archives the stored row on its way out, answering whether the delete may go ahead and reporting a refusal.
+	 *
+	 * @param int|string $id The ID of the record about to be deleted.
+	 * @return bool True where there is nothing to archive or the archive was written; an override of {@see e_admin_controller_ui::backupToHistory()} that answers anything but true refuses the delete.
+	 */
+	protected function archiveBeforeDelete($id)
+	{
+		if($this->table === 'admin_history')
+		{
+			return true;
+		}
+
+		$stored = $this->historySnapshot($this->table, $this->pid, $id);
+
+		if(!$stored)
+		{
+			return true;
+		}
+
+		if($this->backupToHistory($this->table, $this->pid, $id, 'delete', $stored, false))
+		{
+			return true;
+		}
+
+		e107::getMessage()->addError(e107::getParser()->lanVars(LAN_UI_DELETE_REFUSED_NO_ARCHIVE, $id, true));
+
+		return false;
+	}
+
 
 	/**
 	 * Manage submit item
@@ -6231,9 +6261,9 @@ class e_admin_ui extends e_admin_controller_ui
 			{
 				$data = $model->getData();
 
-				if($this->table !== 'admin_history' && ($stored = $this->historySnapshot($this->table, $this->pid, $id)))
+				if(!$this->archiveBeforeDelete($id))
 				{
-					$this->backupToHistory($this->table, $this->pid, $id, 'delete', $stored, false);
+					continue;
 				}
 
 				if($this->beforeDelete($data, $id))
@@ -6916,9 +6946,11 @@ class e_admin_ui extends e_admin_controller_ui
 		$data = array();
 		$model = $this->getTreeModel()->getNode($id); //FIXME - this has issues with being on a page other than the 1st. 
 
-		if($this->table !== 'admin_history' && ($stored = $this->historySnapshot($this->table, $this->pid, $id)))
+		if(!$this->archiveBeforeDelete($id))
 		{
-			$this->backupToHistory($this->table, $this->pid, $id, 'delete', $stored, false);
+			$this->getTreeModel()->setMessages();
+
+			return null;
 		}
 
 		if($model)
