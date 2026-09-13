@@ -39,7 +39,7 @@ class SearchFormMarkupCest
 	{
 		$this->seeTheSearchForm($I, self::SHIPPED_THEME);
 
-		$I->seeElement('#searchform ul.dropdown-menu.pull-right.dropdown-menu-right.dropdown-menu-end');
+		$I->seeElement('#searchform ul.dropdown-menu.dropdown-menu-right.dropdown-menu-end');
 	}
 
 	/** Bootstrap 5 draws the arrow from .dropdown-toggle::after, so a span of our own is a second one. */
