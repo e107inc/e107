@@ -77,7 +77,7 @@ class faqs_shortcodes extends e_shortcode
 	function sc_faq_question($parm='')
 	{
 		$tp = e107::getParser();
-		$parm = eHelper::scDualParams($parm);
+		$parm = eHelper::scDualParams($parm) + array(1 => '', 2 => array());
 		$param = $parm[1];
 		$params = $parm[2];
 
