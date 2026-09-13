@@ -95,7 +95,8 @@ class news_search extends e_search // include plugin-folder in the name.
 
 		$time = time();
 
-		$qry = "(news_start < ".$time.") AND (news_end=0 OR news_end > ".$time.") AND news_class IN (".USERCLASS_LIST.") AND";
+		$rule = \e107\Userclass\Membership::current()->predicate('news_class');
+		$qry = "(news_start < ".$time.") AND (news_end=0 OR news_end > ".$time.") AND ".$rule->getSql()." AND";
 
 		if (isset($parm['cat']) && $parm['cat'] != 'all') {
 			$qry .= " c.category_id='".intval($parm['cat'])."' AND";
@@ -105,7 +106,7 @@ class news_search extends e_search // include plugin-folder in the name.
 			$qry .= " n.news_datestamp ".($parm['on'] == 'new' ? '>=' : '<=')." '".(time() - $parm['time'])."' AND";
 		}
 
-		return $qry;
+		return \e107\Database\SqlFragment::raw($qry, $rule->getParameters());
 	}
 
 

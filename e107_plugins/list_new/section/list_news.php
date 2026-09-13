@@ -47,15 +47,16 @@ class list_news
 		$list_caption = $this->parent->settings['caption'];
 		$list_display = (vartrue($this->parent->settings['open']) ? '' : LAN_NONE);
 
+		$rule = \e107\Userclass\Membership::current()->predicate('n.news_class');
 		$qry = "
 		SELECT n.*, c.category_id AS news_category_id, c.category_name AS news_category_name, u.user_id AS news_author_id, u.user_name AS news_author_name
 		FROM #news AS n
 		LEFT JOIN #news_category AS c ON c.category_id = n.news_category
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
-		WHERE ".$qry." AND n.news_class REGEXP '".e_CLASS_REGEXP."'
+		WHERE ".$qry." AND ".$rule->getSql()."
 		ORDER BY n.news_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount']);
 
-		if(!$this->parent->e107->sql->gen($qry))
+		if(!$this->parent->e107->sql->execute($qry, $rule->getParameters()))
 		{
 			$list_data = LIST_NEWS_2;
 		}

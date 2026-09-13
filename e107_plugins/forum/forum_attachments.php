@@ -264,20 +264,13 @@ class forum_attachments
 			return array();
 		}
 
+		$membership = \e107\Userclass\Membership::fromList($classes);
+		$parentRule = $membership->predicate('fp.'.$column);
+
 		$qb = e107::getDb()->createQueryBuilder();
-
-		$placeholders = array();
-
-		foreach($classes as $class)
-		{
-			$placeholders[] = $qb->createNamedParameter($class);
-		}
-
-		$placeholders = implode(', ', $placeholders);
-
 		$qb->select('f.forum_id', 'f.forum_parent')->from('forum', 'f')
-			->leftJoin('forum', 'fp', $qb->raw('f.forum_parent = fp.forum_id AND fp.' . $column . ' IN (' . $placeholders . ')'))
-			->where($qb->raw('f.' . $column . ' IN (' . $placeholders . ')'))
+			->leftJoin('forum', 'fp', $qb->raw('f.forum_parent = fp.forum_id AND '.$parentRule->getSql(), $parentRule->getParameters()))
+			->where($membership->predicate('f.'.$column))
 			->where('f.forum_parent', '!=', 0)
 			->where($qb->expr()->isNotNull('fp.forum_id'));
 

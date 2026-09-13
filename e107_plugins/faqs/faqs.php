@@ -313,7 +313,7 @@ class faq
 		$qb->select('f.*', 'cat.*')
 			->from('faqs', 'f')
 			->leftJoin('faqs_info', 'cat', $qb->expr()->compareColumns('f.faq_parent', 'cat.faq_info_id'))
-			->whereIn('cat.faq_info_class', explode(',', USERCLASS_LIST));
+			->where(\e107\Userclass\Membership::current()->predicate('cat.faq_info_class'));
 
 		// A single, mutually-exclusive search predicate (later branches override earlier ones,
 		// preserving the legacy "$insert is overwritten, not appended" behaviour).
@@ -533,7 +533,7 @@ class faq
 			->leftJoin('faqs', 'd', $qb->expr()->compareColumns('dc.faq_info_id', 'd.faq_parent'))
 			->leftJoin('faqs_info', 'dc2', $qb->expr()->compareColumns('dc2.faq_info_parent', 'dc.faq_info_id'))
 			->leftJoin('faqs', 'd2', $qb->expr()->compareColumns('dc2.faq_info_id', 'd2.faq_parent'))
-			->whereIn('dc.faq_info_class', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('dc.faq_info_class'))
 			->groupBy('dc.faq_info_id')
 			->orderBy('dc.faq_info_order')->addOrderBy('dc.faq_info_parent')
 			->fetchAll();

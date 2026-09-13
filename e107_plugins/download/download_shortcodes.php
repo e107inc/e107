@@ -1093,7 +1093,7 @@ class download_shortcodes extends e_shortcode
 			->where('download_category', (int) $this->var['download_category_id'])
 			->where('download_id', $operator, (int) $dlrow_id)
 			->where('download_active', '>', 0)
-			->whereIn('download_visible', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('download_visible'))
 			->orderBy('download_datestamp', $direction)
 			->setMaxResults(1)
 			->fetchRow();
