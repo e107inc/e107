@@ -510,20 +510,22 @@ class listclass
 			return;
 		}
 
+		$records = (is_array($this->data) && isset($this->data['records'])) ? $this->data['records'] : '';
+
 		$text = $this->parseTemplate($area.'_START');
-		if(is_array($this->data['records']))
+		if(is_array($records))
 		{
-			foreach($this->data['records'] as $this->row)
+			foreach($records as $this->row)
 			{
 				$this->shortcodes->row = $this->row;
 				$text .= $this->parseTemplate($area);
 			}
 		}
-		elseif(!is_array($this->data['records']) && $this->data['records'] != "")
+		elseif($records != "")
 		{
 			if($this->list_pref[$this->mode."_showempty"])
 			{
-				$this->row['heading'] = $this->data['records'];
+				$this->row['heading'] = $records;
 				$this->shortcodes->row = $this->row;
 				$text .= $this->parseTemplate($area);
 			}
@@ -540,7 +542,7 @@ class listclass
 	 */
 	function load_elist()
 	{
-		$listArray = '';
+		$listArray = array('records' => '');
 
 		//require is needed here instead of require_once, since both the menu and the page could be visible at the same time
 		if(is_array($this->content_types) && in_array($this->settings['section'], $this->content_types))
@@ -763,7 +765,7 @@ class listclass
 	 */
 	function displayTimelapse()
 	{
-		global $rs; //FIXME $frm
+		global $rs, $qs; //FIXME $frm
 
 		if(isset($this->list_pref['new_page_timelapse']) && $this->list_pref['new_page_timelapse'])
 		{
