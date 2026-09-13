@@ -71,16 +71,7 @@ class forum_search extends e_search // include plugin-folder in the name.
 		$res = array();
 		$datestamp = $tp->toDate($row['thread_datestamp'], "long");
 
-		if ($row['thread_parent'])
-		{
-			$title = $row['parent_name'];
-		}
-		else
-		{
-			$title = $row['thread_name'];
-		}
-
-	$link_id = $row['thread_id'];
+		$title = $row['thread_name'];
 
 	$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
 	$link = e107::getUrl()->create('user/profile/view', $uparams);
@@ -90,8 +81,8 @@ class forum_search extends e_search // include plugin-folder in the name.
 
 	$forumTitle = "<a href='".e107::url('forum','forum',$row)."'>".$row['forum_name']."</a>";
 
-	$res['link'] 		= e107::url('forum','topic', $row, array('query'=>array('f'=>'post','id'=>$row['post_id']))); // e_PLUGIN."forum/forum_viewtopic.php?".$link_id.".post";
-	$res['pre_title'] 	= ''; // $title ? FOR_SCH_LAN_5.": " : "";
+	$res['link'] 		= e107::url('forum','topic', $row, array('query'=>array('f'=>'post','id'=>$row['post_id'])));
+	$res['pre_title'] 	= '';
 	$res['title'] 		= $title ? $forumTitle . " | ". $title : LAN_SEARCH_9;
 	$res['pre_summary'] = "";
 	$res['summary'] 	= $row['post_entry'];
