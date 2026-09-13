@@ -2117,6 +2117,74 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 
 	/**
+	 * Every character of the escape set, one at a time, against the server this
+	 * suite is running on.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/6313
+	 */
+	public function testAQuotedRegexpLiteralMatchesTheTextItWasMadeFrom()
+	{
+		$qb = $this->db->createQueryBuilder();
+
+		foreach(str_split('.\\+*?[^]$(){}=!<>|:-#/ ') as $character)
+		{
+			$subject = 'before'.$character.'after';
+
+			$this->assertSame(1, $this->matchedRegexp($subject, $qb->quoteRegexpLiteral($subject)),
+				'A quoted "'.$character.'" has to reach the engine as text.');
+		}
+	}
+
+	/**
+	 * Why the escaping works from a list instead of escaping everything: MySQL
+	 * 8.0.4 moved to ICU, which refuses a backslash before a word character.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/6313
+	 */
+	public function testAQuotedRegexpLiteralLeavesAWordCharacterAlone()
+	{
+		$qb = $this->db->createQueryBuilder();
+
+		$this->assertSame('wibble2', $qb->quoteRegexpLiteral('wibble2'));
+		$this->assertSame(1, $this->matchedRegexp('wibble2', $qb->quoteRegexpLiteral('wibble2')));
+	}
+
+	/**
+	 * The half of the defect that is invisible rather than empty: a raw '.' or
+	 * '|' raises no error and quietly matches text nobody asked for.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/6313
+	 */
+	public function testAQuotedRegexpLiteralStopsAMetacharacterMatchingAnything()
+	{
+		$qb = $this->db->createQueryBuilder();
+
+		$this->assertSame(1, $this->matchedRegexp('a.c', $qb->quoteRegexpLiteral('a.c')));
+		$this->assertSame(0, $this->matchedRegexp('abc', $qb->quoteRegexpLiteral('a.c')),
+			'A dot the reader typed matches a dot.');
+		$this->assertSame(0, $this->matchedRegexp('wobble', $qb->quoteRegexpLiteral('wibble|wobble')),
+			'An alternation the reader typed matches neither side on its own.');
+	}
+
+	/**
+	 * @param string $subject
+	 * @param string $pattern
+	 * @return int 1 when the server matched, 0 when it did not
+	 */
+	private function matchedRegexp($subject, $pattern)
+	{
+		$this->assertNotFalse(
+			$this->db->execute('SELECT :subject REGEXP :pattern AS matched',
+				array('subject' => $subject, 'pattern' => $pattern)),
+			'The server refused the pattern: '.$pattern
+		);
+
+		$row = $this->db->fetch();
+
+		return (int) $row['matched'];
+	}
+
+	/**
 	 * @desc Test primary methods against a secondary database instance (ensures mysqlPrefix is working correctly)
 	 */
 	public function testSecondaryDatabaseInstance()

@@ -348,6 +348,24 @@ class QueryBuilder
 	}
 
 	/**
+	 * Escape text so the server matches it literally inside a regular
+	 * expression; see {@see PlatformInterface::quoteRegexpLiteral()}. Bind the
+	 * assembled pattern as a value, e.g. with
+	 * {@see ExpressionBuilder::regexp()}.
+	 *
+	 * <code>
+	 * $qb->where($qb->expr()->regexp('news_title', '^'.$qb->quoteRegexpLiteral($keyword)));
+	 * </code>
+	 *
+	 * @param string $value
+	 * @return string escaped text, without delimiters or anchors
+	 */
+	public function quoteRegexpLiteral($value)
+	{
+		return $this->platform->quoteRegexpLiteral($value);
+	}
+
+	/**
 	 * Start a SELECT query and set the column list. Each entry must be a
 	 * plain column name (`col`, `tbl.col`, `tbl.*`, `*`), validated and
 	 * quoted fail-closed, or a vouched {@see SqlFragment} (its bound
