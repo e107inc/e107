@@ -4711,10 +4711,10 @@ var_dump($select_options);*/
 		
 	// navbar-header nav-header
 	// navbar-header nav-header
-		$text = '<div class="col-selection dropdown e-tip pull-right float-right" data-placement="left">
+		$text = '<div class="col-selection dropdown e-tip pull-right float-right float-end" data-placement="left">
     <a class="dropdown-toggle" title="'.LAN_EFORM_008.'" data-toggle="dropdown" data-bs-toggle="dropdown" href="#"><b class="caret"></b></a>
-    <ul class="list-group dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
-   
+    <ul class="list-group dropdown-menu dropdown-menu-right dropdown-menu-end col-selection e-noclick" role="menu" aria-labelledby="dLabel">
+
     <li class="list-group-item "><h5 class="list-group-item-heading">'.LAN_EFORM_009.'</h5></li>
     <li class="list-group-item col-selection-list">
      <ul class="nav scroll-menu" >';
