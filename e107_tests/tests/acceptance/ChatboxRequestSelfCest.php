@@ -54,6 +54,9 @@ class ChatboxRequestSelfCest
 	/** The query a link to the second page carries. */
 	const SECOND_PAGE_QUERY = 'cbfrom=30';
 
+	/** What chat.php renders where the page links go when there is only one page. */
+	const EMPTY_PAGINATOR = "<div class='nextprev'></div>";
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled(self::PLUGIN);
@@ -162,6 +165,22 @@ class ChatboxRequestSelfCest
 			'page two of the chatbox is page two, not page one under another address');
 	}
 
+	public function thePaginatorCountsOnlyThePostsAVisitorCanSee(AcceptanceTester $I)
+	{
+		$I->wantTo('be offered a second page of chatbox posts only when there is a second page');
+
+		$this->seedPosts($I, 1);
+
+		$I->amOnPage(self::CHAT_PAGE);
+
+		$source = $I->grabPageSource();
+
+		$I->assertStringContainsString($this->seededMessage(0), $source,
+			'precondition: the posts a visitor may see have to render');
+		$I->assertStringContainsString(self::EMPTY_PAGINATOR, $source,
+			'the posts this visitor may see fill one page, and a post held back from them is not a post to offer them a page of');
+	}
+
 	private function grabFormAction(AcceptanceTester $I, $pattern)
 	{
 		$source = $I->grabPageSource();
@@ -173,15 +192,16 @@ class ChatboxRequestSelfCest
 		return $match[1];
 	}
 
-	private function seedPosts(AcceptanceTester $I)
+	/** Inserted oldest first, so row order contradicts cb_datestamp DESC and an unordered query cannot pass as an ordered one. */
+	private function seedPosts(AcceptanceTester $I, $blockedFromTheOldest = 0)
 	{
-		for ($i = 0; $i < self::SEEDED_POSTS; $i++)
+		for ($i = self::SEEDED_POSTS - 1; $i >= 0; $i--)
 		{
 			$I->haveInDatabase('e107_chatbox', array(
 				'cb_nick'      => '1.e107tests',
 				'cb_message'   => $this->seededMessage($i),
 				'cb_datestamp' => time() - $i,
-				'cb_blocked'   => 0,
+				'cb_blocked'   => ($i >= self::SEEDED_POSTS - $blockedFromTheOldest) ? 1 : 0,
 				'cb_ip'        => '127.0.0.1',
 			));
 		}
