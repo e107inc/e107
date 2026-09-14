@@ -10,10 +10,10 @@
 /**
  * @group plugins
  *
- * Covers the optional 'caption' key of the $FAQS_TEMPLATE 'search' and 'add'
- * sections, resolved by {@see faqs_shortcodes::caption()} for issue #5983, and
- * the parameter shapes {@see faqs_shortcodes::sc_faq_question()} is handed by
- * the shipped templates, for issue #6376.
+ * Covers the optional per-section 'caption' key of $FAQS_TEMPLATE, resolved by
+ * {@see faqs_shortcodes::caption()} for issue #5983, and the parameter shapes
+ * {@see faqs_shortcodes::sc_faq_question()} is handed by the shipped templates,
+ * for issue #6376.
  */
 class faqs_shortcodesTest extends \Test\Unit
 {
@@ -90,8 +90,8 @@ class faqs_shortcodesTest extends \Test\Unit
 	}
 
 	/**
-	 * The add/edit form captions the FAQ it is editing, which resolves only
-	 * because {@see faq::add_faq()} hands that row to the batch first.
+	 * A caption resolves against the row the batch already holds, which is what
+	 * lets a section heading carry item shortcodes.
 	 */
 	public function testACaptionResolvesTheFaqTheBatchHolds()
 	{

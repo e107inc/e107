@@ -12,10 +12,12 @@
  * install of the plugin the feature is switched off for everybody and the only
  * thing that still worked was the unauthenticated write.
  *
- * faq_edit_submit is gone rather than gated, so there is nothing here to assert
- * about it: the row it updated was chosen by a variable that is never assigned,
- * and the edit form posts a faq_id the handler never read, which made the
- * obvious repair an invitation to overwrite every FAQ on the site.
+ * Only the question survives. faq_edit_submit was deleted rather than gated,
+ * because the row it updated was chosen by a variable that is never assigned
+ * and the edit form posted a faq_id the handler never read. faq_submit went the
+ * same way on issue #6376: the route that drew its form has not dispatched
+ * since 2014, so the endpoint is asserted here to write nothing at all, for a
+ * visitor every preference admits and with the token the page itself published.
  *
  * Every hostile POST here is cookieless, which is what a stranger's script
  * sends. e_core_session::attest() exempts a request that carries no ambient
@@ -55,18 +57,6 @@ class FaqsAnonymousWriteCest
 	}
 
 	/**
-	 * The reporter's finding: one POST from anywhere published an FAQ entry.
-	 */
-	public function anAnonymousPostDoesNotAddAnFaq(AcceptanceTester $I)
-	{
-		$I->wantTo('refuse an FAQ insert from a caller the add_faq class excludes');
-
-		$this->postAnonymously($I, $this->addFaq('add-refused'));
-
-		$I->dontSeeInDatabase('e107_faqs', array('faq_question' => $this->marker('add-refused')));
-	}
-
-	/**
 	 * The handler the report missed, in the same file and the same shape. It has
 	 * been inserting anonymous rows by name since 2015, while the one that was
 	 * reported spent most of that time broken on a column mismatch.
@@ -85,16 +75,14 @@ class FaqsAnonymousWriteCest
 	 * visitor of its own from a script posting at the endpoint directly, which
 	 * is what the token is for.
 	 */
-	public function aTokenlessPostIsRefusedEvenWhereTheClassAdmitsEveryone(AcceptanceTester $I)
+	public function aTokenlessQuestionIsRefusedEvenWhereTheClassAdmitsEveryone(AcceptanceTester $I)
 	{
-		$I->wantTo('refuse a tokenless write even where the classes admit a guest');
+		$I->wantTo('refuse a tokenless question even where the class admits a guest');
 
 		$this->havePermissions($I, self::EVERYONE);
 
-		$this->postAnonymously($I, $this->addFaq('add-tokenless'));
 		$this->postAnonymously($I, $this->askQuestion('ask-tokenless'));
 
-		$I->dontSeeInDatabase('e107_faqs', array('faq_question' => $this->marker('add-tokenless')));
 		$I->dontSeeInDatabase('e107_faqs', array('faq_question' => $this->marker('ask-tokenless')));
 	}
 
@@ -103,24 +91,42 @@ class FaqsAnonymousWriteCest
 	 * people the site meant to admit lose the feature, so this posts what the
 	 * page itself published: the token e_token_injector puts in the ask form.
 	 */
-	public function aVisitorTheClassAdmitsStillWrites(AcceptanceTester $I)
+	public function aVisitorTheClassAdmitsStillAsksAQuestion(AcceptanceTester $I)
 	{
-		$I->wantTo('let a permitted visitor add an FAQ and ask a question');
+		$I->wantTo('let a permitted visitor ask a question');
 
 		$this->havePermissions($I, self::EVERYONE);
 
 		$token = $this->grabPublishedToken($I);
 
-		$I->sendPostRequest(self::PAGE, array_merge($this->addFaq('add-permitted'), array('e-token' => $token)));
 		$I->sendPostRequest(self::PAGE, array_merge($this->askQuestion('ask-permitted'), array('e-token' => $token)));
 
 		$I->seeInDatabase('e107_faqs', array(
-			'faq_question' => $this->marker('add-permitted'),
-			'faq_parent'   => self::CATEGORY,
-		));
-		$I->seeInDatabase('e107_faqs', array(
 			'faq_question' => $this->marker('ask-permitted'),
 			'faq_answer'   => '',
+		));
+	}
+
+	/**
+	 * The submission the page has no handler for any more. Nothing is left to
+	 * gate, so the strongest request a visitor can make, the class open to
+	 * everyone and the token the page published, gets the ordinary listing back
+	 * and writes no row.
+	 */
+	public function theAddRouteIsGoneEvenForAVisitorTheClassAdmits(AcceptanceTester $I)
+	{
+		$I->wantTo('write no FAQ for a submission the removed handler no longer reads');
+
+		$this->havePermissions($I, self::EVERYONE);
+
+		$token = $this->grabPublishedToken($I);
+
+		$I->sendPostRequest(self::PAGE, array_merge($this->addFaq('add-removed'), array('e-token' => $token)));
+
+		$I->seeResponseCodeIs(200);
+		$I->dontSeeInDatabase('e107_faqs', array(
+			'faq_question' => $this->marker('add-removed'),
+			'faq_parent'   => self::CATEGORY,
 		));
 	}
 
@@ -157,7 +163,7 @@ class FaqsAnonymousWriteCest
 
 	/**
 	 * @param string $case
-	 * @return array a submission for the add-an-FAQ handler
+	 * @return array the submission the removed add-an-FAQ handler read
 	 */
 	private function addFaq($case)
 	{

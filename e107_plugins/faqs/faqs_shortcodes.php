@@ -209,15 +209,9 @@ class faqs_shortcodes extends e_shortcode
 		return '<a href="'.$url.'" title="'.$tag.'">'.$tag.'</a>';
 	}
 	
+	/** {FAQ_EDIT} renders nothing: the front-end edit route it was drafted for no longer exists. */
 	function sc_faq_edit()
 	{
-		$tp = e107::getParser();
-		$faqpref = e107::getPlugConfig('faqs')->getPref();
-		//if(($faqpref['add_faq'] && $this->var['faq_author'] == USERID) || ADMIN )
-	//	{
-			// UNDER CONSTRUCTION
-		 	//return "[ <a href='faqs.php?edit.".$this->var['faq_parent'].".".$this->var['faq_id']."'>Edit</a> ]";
-	//	}
 	}
 	
 	/* {FAQ_CATEGORY_ID} */ 

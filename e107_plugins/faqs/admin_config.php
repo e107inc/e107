@@ -242,7 +242,6 @@ class faq_main_ui extends e_admin_ui
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		protected $prefs = array( 
-			'add_faq'					=> array('title'=> LANA_FAQ_PREF_1, 'tab'=>1, 'type'=>'userclass' ),
 			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'tab'=>1, 'type'=>'userclass' ),
 			'submit_question_limit'		=> array('title'=> LANA_FAQ_PREF_4, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1),
 			'submit_question_char_limit'=> array('title'=> LANA_FAQ_PREF_5, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1, 'writeParms'=>array('max'=>255, 'default'=>255)),
