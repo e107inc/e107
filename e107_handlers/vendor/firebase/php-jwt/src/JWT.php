@@ -710,7 +710,7 @@ class JWT
      * @throws DomainException Provided key is too short
      * @return void
      */
-    private static function validateRsaKeyLength(OpenSSLAsymmetricKey $key)
+    private static function validateRsaKeyLength($key)
     {
         if (!$keyDetails = openssl_pkey_get_details($key)) {
             throw new DomainException('Unable to validate key');
@@ -729,7 +729,7 @@ class JWT
      * @return void
      */
     private static function validateEcKeyLength(
-        OpenSSLAsymmetricKey $key,
+        $key,
         $algorithm
     ) {
         if (!$keyDetails = openssl_pkey_get_details($key)) {
