@@ -1,0 +1,62 @@
+name: Plugin Metadata
+
+on:
+  pull_request:
+
+# A newer push to a pull request cancels the run it supersedes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+# For a plugin shipped with core, the plugin.xml version is very nearly the only
+# signal that anything about it changed. e107plugin::updateRequired() skips the
+# SQL-structure comparison for a bundled plugin, so what is left is the plugin's
+# own upgrade_required() and a version_compare() against the version on disk, and
+# that same comparison fills the plugin manager's upgrade list. A plugin whose
+# files change while its version stands still is therefore invisible to every
+# site, and to every registry that reads the file to answer "is there a newer
+# version?".
+#
+# So a pull request that touches a bundled plugin's files raises that plugin's
+# version, once per release cycle. The check passes as soon as the version is
+# above the one at the last tagged release, so a second change to the same plugin
+# in the same cycle needs no further bump. The date attribute has to be no older
+# than the newest change to the plugin, read from author dates so that a rebase
+# or a cherry-picked backport keeps the day the work was written.
+#
+# The job is deliberately not filtered by paths. A path filter would skip it on
+# a pull request that touches no plugin, and a skipped job never reports, so
+# making this a required check would then need a second job on the inverse
+# filter to report in its place. The price of leaving the filter off is the
+# full-history checkout below on every pull request.
+#
+# Reproduce locally with the same script the job runs:
+#
+#   e107_tests/_tools/plugin-metadata/bin/plugin-metadata-check --base=origin/master
+
+jobs:
+  plugin-metadata:
+    name: Changed core plugins declare a new version
+    runs-on: ubuntu-latest
+    container:
+      image: php:8.3-cli
+
+    steps:
+      - name: Install operating system dependencies
+        run: apt-get update && apt-get install -y git
+
+      # The whole history and every tag: the check diffs against the merge base
+      # of this pull request and reads each plugin's version at the newest
+      # release tag, which sits on whichever branch was released last.
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Opt out of CVE-2022-24765 mitigation
+        run: git config --global safe.directory '*'
+
+      - name: Check the metadata of every changed core plugin
+        run: >
+          ./e107_tests/_tools/plugin-metadata/bin/plugin-metadata-check
+          --base=${{ github.event.pull_request.base.sha }}
+          --head=${{ github.event.pull_request.head.sha }}
