@@ -182,7 +182,14 @@ class Mysqldump
 
         // This drops MYSQL dependency, only use the constant if it's defined.
         if ("mysql" === $this->dbType) {
-            $this->pdoSettingsDefault[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = false;
+
+            if (defined('Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY')) {
+                $attribute = constant('Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY');
+            } else {
+                $attribute = PDO::MYSQL_ATTR_USE_BUFFERED_QUERY;
+            }
+
+            $this->pdoSettingsDefault[$attribute] = false;
         }
 
         $this->pdoSettings = array_replace_recursive($this->pdoSettingsDefault, $pdoSettings);
@@ -299,7 +306,7 @@ class Mysqldump
 
         $buffer = '';
         while ( !feof($handle) ) {
-            $line = trim(fgets($handle));
+            $line = fgets($handle);
 
             if (substr($line, 0, 2) == '--' || !$line) {
                 continue; // skip comments
@@ -1145,7 +1152,6 @@ class Mysqldump
         $this->prepareListValues($tableName);
 
         $onlyOnce = true;
-        $lineSize = 0;
 
         // colStmt is used to form a query to obtain row values
         $colStmt = $this->getColumnStmt($tableName);
@@ -1175,35 +1181,33 @@ class Mysqldump
         $ignore = $this->dumpSettings['insert-ignore'] ? '  IGNORE' : '';
 
         $count = 0;
+        $line = '';
         foreach ($resultSet as $row) {
             $count++;
             $vals = $this->prepareColumnValues($tableName, $row);
             if ($onlyOnce || !$this->dumpSettings['extended-insert']) {
                 if ($this->dumpSettings['complete-insert']) {
-                    $lineSize += $this->compressManager->write(
-                        "INSERT$ignore INTO `$tableName` (".
+                    $line .= "INSERT$ignore INTO `$tableName` (".
                         implode(", ", $colNames).
-                        ") VALUES (".implode(",", $vals).")"
-                    );
+                        ") VALUES (".implode(",", $vals).")";
                 } else {
-                    $lineSize += $this->compressManager->write(
-                        "INSERT$ignore INTO `$tableName` VALUES (".implode(",", $vals).")"
-                    );
+                    $line .= "INSERT$ignore INTO `$tableName` VALUES (".implode(",", $vals).")";
                 }
                 $onlyOnce = false;
             } else {
-                $lineSize += $this->compressManager->write(",(".implode(",", $vals).")");
+                $line .= ",(".implode(",", $vals).")";
             }
-            if (($lineSize > $this->dumpSettings['net_buffer_length']) ||
+            if ((strlen($line) > $this->dumpSettings['net_buffer_length']) ||
                     !$this->dumpSettings['extended-insert']) {
                 $onlyOnce = true;
-                $lineSize = $this->compressManager->write(";".PHP_EOL);
+                $this->compressManager->write($line . ";".PHP_EOL);
+                $line = '';
             }
         }
         $resultSet->closeCursor();
 
-        if (!$onlyOnce) {
-            $this->compressManager->write(";".PHP_EOL);
+        if ('' !== $line) {
+            $this->compressManager->write($line. ";".PHP_EOL);
         }
 
         $this->endListValues($tableName, $count);
@@ -1260,7 +1264,7 @@ class Mysqldump
      * Table rows extractor, close locks and commits after dump
      *
      * @param string $tableName Name of table to export.
-     * @param int    $count     Number of rows inserted.
+     * @param integer    $count     Number of rows inserted.
      *
      * @return void
      */
@@ -2121,7 +2125,7 @@ class TypeAdapterMysql extends TypeAdapterFactory
         $args = func_get_args();
         return "SELECT TABLE_NAME AS tbl_name ".
             "FROM INFORMATION_SCHEMA.TABLES ".
-            "WHERE TABLE_TYPE='BASE TABLE' AND TABLE_SCHEMA='{$args[0]}' ".
+            "WHERE TABLE_TYPE IN ('BASE TABLE','SYSTEM VERSIONED') AND TABLE_SCHEMA='{$args[0]}' ".
             "ORDER BY TABLE_NAME";
     }
 
@@ -2368,8 +2372,8 @@ class TypeAdapterMysql extends TypeAdapterFactory
      * Check number of parameters passed to function, useful when inheriting.
      * Raise exception if unexpected.
      *
-     * @param int $num_args
-     * @param int $expected_num_args
+     * @param integer $num_args
+     * @param integer $expected_num_args
      * @param string $method_name
      */
     private function check_parameters($num_args, $expected_num_args, $method_name)
