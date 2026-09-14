@@ -93,7 +93,7 @@ final class Php80
                 return 'Backtrack limit exhausted';
             case \PREG_RECURSION_LIMIT_ERROR:
                 return 'Recursion limit exhausted';
-            case \PREG_JIT_STACKLIMIT_ERROR:
+            case 6:
                 return 'JIT stack limit exhausted';
             case \PREG_NO_ERROR:
                 return 'No error';
