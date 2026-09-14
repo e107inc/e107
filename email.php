@@ -179,7 +179,7 @@ if (isset($_POST['emailsubmit']))
 		$email_body = (trim($comments) != '') ? $tp->toEmail($comments).'<hr />' : '';
 		$email_body .= $tp->toEmail($message);
 
-		if (sendemail($email_send, LAN_EMAIL_3.SITENAME,$email_body))
+		if (sendemail($email_send, LAN_EMAIL_3.' '.SITENAME,$email_body))
 		{
 			$text = "<div class='alert alert-success alert-block' style='text-align:center'>".LAN_EMAIL_10." ".$email_send."</div>";
 		}
