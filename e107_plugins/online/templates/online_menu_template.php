@@ -12,7 +12,7 @@ $ONLINE_MENU_TEMPLATE = array();
 
 // Last seen Menu
 $ONLINE_MENU_TEMPLATE['lastseen']['start']	                        = "<ul class='list-group lastseen-menu'>";
-$ONLINE_MENU_TEMPLATE['lastseen']['item']	                        = "<li class='list-group-item d-flex justify-content-between align-items-center'>{LASTSEEN_USERLINK} <small class='muted pull-right'>{LASTSEEN_DATE}</small></li>";
+$ONLINE_MENU_TEMPLATE['lastseen']['item']	                        = "<li class='list-group-item d-flex justify-content-between align-items-center'>{LASTSEEN_USERLINK} <small class='muted pull-right float-right float-end'>{LASTSEEN_DATE}</small></li>";
 $ONLINE_MENU_TEMPLATE['lastseen']['end']	                        = "</ul>";
 
 
@@ -101,5 +101,5 @@ $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST']                     = "<a class=
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_MEMBERS']             = "{LAN=ONLINE_2}{---}";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_GUESTS']              = "{LAN=ONLINE_1}{---}";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_DATESTAMP']           = "{---}";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_REGISTERED']       = "<li class='list-group-item d-flex justify-content-between align-items-center online-menu-extended-label'>{LAN=ONLINE_11}<span class='badge bg-primary rounded-pill label label-default pull-right float-right'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_REGISTERED']       = "<li class='list-group-item d-flex justify-content-between align-items-center online-menu-extended-label'>{LAN=ONLINE_11}<span class='badge bg-primary rounded-pill label label-default pull-right float-right float-end'>{---}</span></li>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBER_PAGE']              = "{LAN=ONLINE_7} {---}";
