@@ -67,7 +67,7 @@
 		}
 
 		/**
-		 * One row of known text, indexed per column because MATCH() needs an index over exactly its own column list.
+		 * Two rows of known text, indexed per column because MATCH() needs an index over exactly its own column list.
 		 */
 		private function buildProbe()
 		{
@@ -80,13 +80,18 @@
 				. ') ENGINE=MyISAM');
 			$sql->gen('INSERT INTO `#' . $this->probeTable . '` (probe_id, probe_title, probe_summary) VALUES'
 				. " (1, 'Release wibble#wobble notes for wibble- builds',"
-				. " 'Upgrade notes for wibble.wobble and for wibbleXwobble. See #wobble on its own.')");
+				. " 'Upgrade notes for wibble.wobble and for wibbleXwobble. See #wobble on its own."
+				. " Filed as wobble(12) by O&#039;Brien.'),"
+				. " (2, 'Second entry, about wibbleXwobble', 'No dot and no bracket anywhere in this one.')");
 		}
 
 		/**
-		 * Searches the probe row the way a search handler does, returning the rendered result list.
+		 * Searches the probe rows the way a search handler does, returning the rendered result list.
+		 * $where and $order stand in for what a handler's own where() and order declare, and a PHP-sort
+		 * case asks for whole words off because the markers that branch still sends are the ones
+		 * MySQL 8.0.4 removed (#6330).
 		 */
-		private function searchProbe($searchQuery, $mysqlSort, $boundary)
+		private function searchProbe($searchQuery, $mysqlSort, $boundary, $where = '', $order = array())
 		{
 			global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
 
@@ -103,7 +108,7 @@
 			$search = new e_search($searchQuery);
 			$ps = $search->parsesearch($this->probeTable, 'probe_id, probe_title, probe_summary',
 				array('probe_title', 'probe_summary'), array(1.2, 0.6), array($this, 'searchProbeResult'),
-				'nothing found', '', array());
+				'nothing found', $where, $order);
 
 			return $ps['text'];
 		}
@@ -419,5 +424,142 @@
 			$method->setAccessible(true);
 
 			return $method->invoke(new e_search(''), $text);
+		}
+
+		/**
+		 * page_search declares its own constructor and does not chain to this one,
+		 * so the keyword arrays have to stand without it.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6359
+		 */
+		public function testKeywordArraysStandWithoutTheConstructor()
+		{
+			$property = new ReflectionProperty('e_search', 'keywords');
+			$property->setAccessible(true);
+			$reflection = new ReflectionClass('e_search');
+
+			self::assertSame(
+				array('split' => array(), 'wildcard' => array(), 'boolean' => array(),
+					'match' => array(), 'exact' => array()),
+				$property->getValue($reflection->newInstanceWithoutConstructor()),
+				'A search area whose own constructor does not chain still has every keyword array.'
+			);
+		}
+
+		/**
+		 * A bracket the reader typed is text. As a pattern it is a group, and a group
+		 * matches something else entirely.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchFindsAKeywordCarryingARegexpMetacharacter()
+		{
+			self::assertStringContainsString('Release wibble', $this->searchProbe('wobble(12)', 0, 0),
+				'A keyword is text to search for, not a pattern for the server to compile.');
+		}
+
+		/**
+		 * The reported shape: a pattern the engine refuses is refused whole, so every row of the
+		 * searched area goes with it and the visitor is told nothing was found.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchFindsAKeywordTheEngineWouldRefuse()
+		{
+			e107::getDb('search')->resetLastError();
+			$text = $this->searchProbe('wobble(', 0, 0);
+
+			self::assertStringContainsString('Release wibble', $text,
+				'An unbalanced bracket is text to look for, not a pattern to compile.');
+			self::assertSame('', e107::getDb('search')->getLastErrorText(),
+				'A keyword the engine cannot compile must not take the statement down with it.');
+		}
+
+		/**
+		 * The half that is invisible rather than empty: a metacharacter raises no error
+		 * and quietly widens the search.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchDoesNotLetAMetacharacterMatchAnything()
+		{
+			$text = $this->searchProbe('wibble.wobble', 0, 0);
+
+			self::assertStringContainsString('Release wibble', $text,
+				'The row holding the literal text still matches.');
+			self::assertStringNotContainsString('Second entry', $text,
+				'A dot the reader typed matches a dot, not any character.');
+			self::assertSame('nothing found', $this->searchProbe('zzzzabsent|builds', 0, 0),
+				'A bar the reader typed is text, not a choice between two keywords.');
+		}
+
+		/**
+		 * Green without the quoting too: what this one guards is the order, that the keyword is
+		 * quoted after toDB() has written it, because the columns hold what toDB() wrote.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchFindsAKeywordCarryingAnApostrophe()
+		{
+			self::assertStringContainsString('Release wibble', $this->searchProbe("O'Brien", 0, 0),
+				'An apostrophe in the search box still matches the text it was stored as.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6359
+		 */
+		public function testPhpSortSearchWithNothingLeftToAskAsksNothing()
+		{
+			e107::getDb('search')->resetLastError();
+
+			self::assertSame('nothing found', $this->searchProbe('the and', 0, 0),
+				'A query of nothing but stopwords finds nothing.');
+			self::assertSame('', e107::getDb('search')->getLastErrorText(),
+				'With no keywords left there is no statement to send, so there is no error to raise.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6359
+		 */
+		public function testPhpSortSearchExcludesAMinusKeyword()
+		{
+			self::assertStringContainsString('Release wibble', $this->searchProbe('builds -zzzzabsent', 0, 0),
+				'Excluding a word no row holds leaves the rest of the query alone.');
+			self::assertSame('nothing found', $this->searchProbe('builds -wibble', 0, 0),
+				'Excluding a word the row holds drops the row.');
+		}
+
+		/**
+		 * The operator shapes decide how the keyword groups are joined, which is where a
+		 * reworked clause would silently return different rows.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchJoinsKeywordGroupsAsItAlwaysHas()
+		{
+			self::assertStringContainsString('Release wibble', $this->searchProbe('builds notes', 0, 0),
+				'Two keywords the row holds match it.');
+			self::assertStringContainsString('Release wibble', $this->searchProbe('builds zzzzabsent', 0, 0),
+				'A second keyword widens the search rather than narrowing it.');
+			self::assertSame('nothing found', $this->searchProbe('+builds +zzzzabsent', 0, 0),
+				'Two required keywords both have to match.');
+			self::assertStringContainsString('Release wibble', $this->searchProbe('+builds zzzzabsent', 0, 0),
+				'A required keyword ends the clause, so an ordinary keyword after it is not asked for.');
+		}
+
+		/**
+		 * What a search handler declares around the keywords: its own WHERE fragment,
+		 * which ends in AND, and its own ordering.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchKeepsTheHandlersOwnWhereAndOrder()
+		{
+			self::assertStringContainsString('Release wibble',
+				$this->searchProbe('builds', 0, 0, 'probe_id = 1 AND ', array('probe_id' => 'DESC')),
+				'A handler fragment that keeps the row leaves it found.');
+			self::assertSame('nothing found',
+				$this->searchProbe('builds', 0, 0, 'probe_id = 2 AND ', array('probe_id' => 'DESC')),
+				'A handler fragment that excludes the row is still applied.');
 		}
 	}
