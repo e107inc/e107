@@ -51,6 +51,12 @@ class ChatboxRequestSelfCest
 	/** One more than chat.php's page size, so the paginator has a second page. */
 	const SEEDED_POSTS = 31;
 
+	/** The query a link to the second page carries. */
+	const SECOND_PAGE_QUERY = 'cbfrom=30';
+
+	/** What chat.php renders where the page links go when there is only one page. */
+	const EMPTY_PAGINATOR = "<div class='nextprev'></div>";
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled(self::PLUGIN);
@@ -136,10 +142,43 @@ class ChatboxRequestSelfCest
 
 		$source = $I->grabPageSource();
 
-		$I->assertStringContainsString(self::REWRITTEN . '/?30', $source,
+		$I->assertStringContainsString(self::REWRITTEN . '/?' . self::SECOND_PAGE_QUERY, $source,
 			'the page links have to keep the visitor on the address they asked for, with the trailing slash e_REQUEST_SELF adds so the query composes');
-		$I->assertStringNotContainsString('chat.php?30', $source,
+		$I->assertStringNotContainsString('chat.php?' . self::SECOND_PAGE_QUERY, $source,
 			'no page link may drop the visitor on the entry script');
+	}
+
+	public function thePaginatorAdvancesToTheNextPageOfPosts(AcceptanceTester $I)
+	{
+		$I->wantTo('reach the oldest chatbox posts by following a page link');
+
+		$this->seedPosts($I);
+
+		$I->haveHttpHeader('X-Rewrite-Url', self::REWRITTEN . '/?' . self::SECOND_PAGE_QUERY);
+		$I->amOnPage(self::CHAT_PAGE . '?' . self::REWRITE_TARGET_QUERY . '&' . self::SECOND_PAGE_QUERY);
+
+		$source = $I->grabPageSource();
+
+		$I->assertStringContainsString($this->seededMessage(self::SEEDED_POSTS - 1), $source,
+			'the offset a page link carries has to reach the query, on a rewritten address as much as a plain one');
+		$I->assertStringNotContainsString($this->seededMessage(0), $source,
+			'page two of the chatbox is page two, not page one under another address');
+	}
+
+	public function thePaginatorCountsOnlyThePostsAVisitorCanSee(AcceptanceTester $I)
+	{
+		$I->wantTo('be offered a second page of chatbox posts only when there is a second page');
+
+		$this->seedPosts($I, 1);
+
+		$I->amOnPage(self::CHAT_PAGE);
+
+		$source = $I->grabPageSource();
+
+		$I->assertStringContainsString($this->seededMessage(0), $source,
+			'precondition: the posts a visitor may see have to render');
+		$I->assertStringContainsString(self::EMPTY_PAGINATOR, $source,
+			'the posts this visitor may see fill one page, and a post held back from them is not a post to offer them a page of');
 	}
 
 	private function grabFormAction(AcceptanceTester $I, $pattern)
@@ -153,18 +192,24 @@ class ChatboxRequestSelfCest
 		return $match[1];
 	}
 
-	private function seedPosts(AcceptanceTester $I)
+	/** Inserted oldest first, so row order contradicts cb_datestamp DESC and an unordered query cannot pass as an ordered one. */
+	private function seedPosts(AcceptanceTester $I, $blockedFromTheOldest = 0)
 	{
-		for ($i = 0; $i < self::SEEDED_POSTS; $i++)
+		for ($i = self::SEEDED_POSTS - 1; $i >= 0; $i--)
 		{
 			$I->haveInDatabase('e107_chatbox', array(
 				'cb_nick'      => '1.e107tests',
-				'cb_message'   => 'Seeded by ChatboxRequestSelfCest, post ' . $i,
+				'cb_message'   => $this->seededMessage($i),
 				'cb_datestamp' => time() - $i,
-				'cb_blocked'   => 0,
+				'cb_blocked'   => ($i >= self::SEEDED_POSTS - $blockedFromTheOldest) ? 1 : 0,
 				'cb_ip'        => '127.0.0.1',
 			));
 		}
+	}
+
+	private function seededMessage($index)
+	{
+		return 'Seeded by ChatboxRequestSelfCest, post ' . $index;
 	}
 
 	private function probeSource()
