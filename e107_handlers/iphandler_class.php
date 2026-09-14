@@ -970,7 +970,7 @@ class eIPHandler
 
 		if ($this->clearBan !== FALSE)
 		{
-			if ($sql->createQueryBuilder()->delete('banlist')->where('banlist_id', (int) $this->clearBan['id'])->execute())
+			if ($this->clearBanRow($this->clearBan['id']))
 			{
 				$this->actionCount--;
 				$this->logBanItem(0, 'Ban cleared: '.$this->clearBan['ip']);
@@ -1084,11 +1084,12 @@ class eIPHandler
 			}
 			elseif(($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
 			{
-				// $query is a caller-supplied WHERE clause (cannot be bound locally).
-				$sql->execute('DELETE FROM `#banlist` WHERE ' . $query);
-				$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Ban Expired ", $row['banlist_ip']."\nCall: $call_id", false, LOG_TO_ROLLING);
+				if ($this->clearBanRow($row['banlist_id']))
+				{
+					$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Ban Expired ", $row['banlist_ip']."\nCall: $call_id", false, LOG_TO_ROLLING);
 
-				$this->regenerateFiles();
+					$this->regenerateFiles();
+				}
 			}
 			else
 			{
@@ -1153,6 +1154,18 @@ class eIPHandler
 		]);
 
 		return $result;
+	}
+
+
+	/**
+	 * Remove one banlist row, whatever lookup found it.
+	 *
+	 * @param int $id banlist_id
+	 * @return bool|int rows removed, FALSE on failure
+	 */
+	private function clearBanRow($id)
+	{
+		return e107::getDb()->createQueryBuilder()->delete('banlist')->where('banlist_id', (int) $id)->execute();
 	}
 
 
