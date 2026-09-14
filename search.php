@@ -85,11 +85,8 @@ class search_front extends e_shortcode
 
 		if(e_AJAX_REQUEST)
 		{
-			if(vartrue($_POST['t']))
-			{
-				echo $this->sc_search_advanced_block($_POST['t']);
-			}
-			
+			echo $this->advancedFor(varset($_POST['t']));
+
 			exit;
 		}
 
@@ -366,31 +363,47 @@ class search_front extends e_shortcode
 	function sc_search_advanced($parm='')
 	{
 		$hiddenBlock = (!empty($_GET['t'])) ? "" : "class='e-hideme'";
+
 		$text = "<div {$hiddenBlock} id='search-advanced' >";
-
-		if(!empty($_GET['t']) )
-		{
-			if(is_array($_GET['t']))
-			{
-				foreach($_GET['t'] as $type => $tmp)
-				{
-					$text .= $this->sc_search_advanced_block($type);
-				}
-
-			}
-			else
-			{
-				$text .= $this->sc_search_advanced_block($_GET['t']);
-			}
-
-		}
-
-
+		$text .= $this->advancedFor(varset($_GET['t']));
 		$text .= "</div>";
+
 		return $text;
 
 	}
-		
+
+	/**
+	 * What the advanced block holds: one type's filters, or the line saying it covers one type at a time {@see search_front::sc_search_advanced_block()}.
+	 *
+	 * @param array|string $requested what $_GET['t'] or $_POST['t'] holds
+	 * @return string
+	 */
+	private function advancedFor($requested)
+	{
+		$types = is_array($requested) ? array_keys($requested) : array($requested);
+
+		if(count($types) > 1)
+		{
+			return $this->advancedTextRow(LAN_SEARCH_ADVANCED_ONE_TYPE_ONLY);
+		}
+
+		return $this->sc_search_advanced_block(count($types) === 1 ? (string) $types[0] : '');
+	}
+
+	/**
+	 * A row of the advanced block that is text rather than a filter, in whichever shape the template pack gave it {@see search_front::advancedFor()}.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function advancedTextRow($text)
+	{
+		$template = vartrue($this->template['advanced-combo'], "<div>{SEARCH_ADV_TEXT}</div>");
+
+		return e107::getParser()->simpleParse($template, array('SEARCH_ADV_TEXT' => $text));
+	}
+
+
 	private function sc_search_advanced_block($parm='')
 	{
 		$tp = e107::getParser();
@@ -425,11 +438,10 @@ class search_front extends e_shortcode
 			
 			foreach ($advanced as $adv_key => $adv_value) 
 			{
-				if ($adv_value['type'] == 'single') 
+				if ($adv_value['type'] == 'single')
 				{
-					$vars['SEARCH_ADV_TEXT'] = $adv_value['text'];
-					$text .= $tp->simpleParse($this->template['advanced-combo'], $vars);
-				} 
+					$text .= $this->advancedTextRow($adv_value['text']);
+				}
 				else 
 				{
 					$vars['SEARCH_ADV_ID'] = '';
