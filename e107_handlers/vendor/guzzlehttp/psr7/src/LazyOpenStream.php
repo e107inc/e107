@@ -7,18 +7,21 @@ use Psr\Http\Message\StreamInterface;
 /**
  * Lazily reads or writes to a file that is opened only after an IO operation
  * take place on the stream.
- *
- * @final
  */
-class LazyOpenStream implements StreamInterface
+final class LazyOpenStream implements StreamInterface
 {
     use StreamDecoratorTrait;
 
-    /** @var string File to open */
+    /** @var string */
     private $filename;
 
     /** @var string */
     private $mode;
+
+    /**
+     * @var StreamInterface
+     */
+    private $stream;
 
     /**
      * @param string $filename File to lazily open
@@ -28,12 +31,15 @@ class LazyOpenStream implements StreamInterface
     {
         $this->filename = $filename;
         $this->mode = $mode;
+
+        // unsetting the property forces the first access to go through
+        // __get().
+        unset($this->stream);
     }
 
     /**
      * Creates the underlying stream lazily when required.
-     *
-     * @return StreamInterface
+     * @return \Psr\Http\Message\StreamInterface
      */
     protected function createStream()
     {

@@ -11,19 +11,20 @@ use Psr\Http\Message\StreamInterface;
  * This stream returns a "hwm" metadata value that tells upstream consumers
  * what the configured high water mark of the stream is, or the maximum
  * preferred size of the buffer.
- *
- * @final
  */
-class BufferStream implements StreamInterface
+final class BufferStream implements StreamInterface
 {
+    /** @var int */
     private $hwm;
+
+    /** @var string */
     private $buffer = '';
 
     /**
      * @param int $hwm High water mark, representing the preferred maximum
      *                 buffer size. If the size of the buffer exceeds the high
      *                 water mark, then calls to write will continue to succeed
-     *                 but will return false to inform writers to slow down
+     *                 but will return 0 to inform writers to slow down
      *                 until the buffer has been drained by reading from it.
      */
     public function __construct($hwm = 16384)
@@ -31,11 +32,17 @@ class BufferStream implements StreamInterface
         $this->hwm = $hwm;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getContents();
     }
 
+    /**
+     * @return string
+     */
     public function getContents()
     {
         $buffer = $this->buffer;
@@ -44,6 +51,9 @@ class BufferStream implements StreamInterface
         return $buffer;
     }
 
+    /**
+     * @return void
+     */
     public function close()
     {
         $this->buffer = '';
@@ -56,41 +66,83 @@ class BufferStream implements StreamInterface
         return null;
     }
 
+    /**
+     * @return int|null
+     */
     public function getSize()
     {
         return strlen($this->buffer);
     }
 
+    /**
+     * @return bool
+     */
     public function isReadable()
     {
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function isWritable()
     {
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function isSeekable()
     {
         return false;
     }
 
+    /**
+     * @return void
+     */
     public function rewind()
     {
         $this->seek(0);
     }
 
+    /**
+     * @return void
+     */
     public function seek($offset, $whence = SEEK_SET)
     {
+        if (!\is_int($offset)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $offset.',
+                \get_debug_type($offset)
+            );
+        }
+
+        if (!\is_int($whence)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $whence.',
+                \get_debug_type($whence)
+            );
+        }
+
         throw new \RuntimeException('Cannot seek a BufferStream');
     }
 
+    /**
+     * @return bool
+     */
     public function eof()
     {
         return strlen($this->buffer) === 0;
     }
 
+    /**
+     * @return int
+     */
     public function tell()
     {
         throw new \RuntimeException('Cannot determine the position of a BufferStream');
@@ -98,9 +150,19 @@ class BufferStream implements StreamInterface
 
     /**
      * Reads data from the buffer.
+     * @return string
      */
     public function read($length)
     {
+        if (!\is_int($length)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::read() is deprecated; guzzlehttp/psr7 3.0 requires int for $length.',
+                \get_debug_type($length)
+            );
+        }
+
         $currentLength = strlen($this->buffer);
 
         if ($length >= $currentLength) {
@@ -109,8 +171,8 @@ class BufferStream implements StreamInterface
             $this->buffer = '';
         } else {
             // Slice up the result to provide a subset of the buffer.
-            $result = substr($this->buffer, 0, $length);
-            $this->buffer = substr($this->buffer, $length);
+            $result = (string) substr($this->buffer, 0, $length);
+            $this->buffer = (string) substr($this->buffer, $length);
         }
 
         return $result;
@@ -118,22 +180,43 @@ class BufferStream implements StreamInterface
 
     /**
      * Writes data to the buffer.
+     * @return int
      */
     public function write($string)
     {
+        if (!\is_string($string)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::write() is deprecated; guzzlehttp/psr7 3.0 requires string for $string.',
+                \get_debug_type($string)
+            );
+        }
+
         $this->buffer .= $string;
 
-        // TODO: What should happen here?
         if (strlen($this->buffer) >= $this->hwm) {
-            return false;
+            return 0;
         }
 
         return strlen($string);
     }
 
+    /**
+     * @return mixed
+     */
     public function getMetadata($key = null)
     {
-        if ($key == 'hwm') {
+        if ($key !== null && !\is_string($key)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::getMetadata() is deprecated; guzzlehttp/psr7 3.0 requires string|null for $key.',
+                \get_debug_type($key)
+            );
+        }
+
+        if ($key === 'hwm') {
             return $this->hwm;
         }
 
