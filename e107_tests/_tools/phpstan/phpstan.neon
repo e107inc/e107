@@ -1,0 +1,7 @@
+# The gate: the analysis settings plus the errors the tree already had. Point an
+# editor or a bare `phpstan analyse` at this file. analysis.neon on its own is
+# the same analysis with nothing excused, which is how the baseline is recorded
+# and how a file being taken to zero is read.
+includes:
+	- analysis.neon
+	- baseline.neon
