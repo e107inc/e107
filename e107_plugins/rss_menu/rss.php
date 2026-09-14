@@ -628,7 +628,7 @@ class rssCreate
 							unset($news_thumbail);
 						}
 						echo "</description>
-							<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>
+							<author>".$tp->toRss($value['author'])."&lt;".$this->nospam($value['author_email'])."&gt;</author>
 							<link>".$link."</link>
 							</item>";
 					}
@@ -730,7 +730,7 @@ class rssCreate
 
 					if($value['author'])
 					{
-						echo "<dc:creator>".$value['author']."</dc:creator>\n"; // correct tag for author without email.
+						echo "<dc:creator>".$tp->toRss($value['author'])."</dc:creator>\n"; // correct tag for author without email.
 					}
 
 					// Enclosure support for podcasting etc.
@@ -820,7 +820,7 @@ class rssCreate
 						<title>".$tp->toRss($value['title'])."</title>
 						<link>".$link."</link>
 						<dc:date>".$this->get_iso_8601_date($time)."</dc:date>
-						<dc:creator>".$value['author']."</dc:creator>
+						<dc:creator>".$tp->toRss($value['author'])."</dc:creator>
 						<dc:subject>".$tp->toRss($value['category_name'])."</dc:subject>
 						<description>".$tp->toRss($value['description']). "</description>
 						</item>";
@@ -882,7 +882,8 @@ class rssCreate
 						<updated>".$this->get_iso_8601_date($value['pubdate'])."</updated>\n";
 
 						// Recommended
-                        $author = ($value['author']) ? $value['author'] : "unknown";
+                        $author = $tp->toRss($value['author']);
+                        $author = ($author !== '') ? $author : "unknown";
 
 						echo "
 						<author>\n";
