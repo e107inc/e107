@@ -68,7 +68,6 @@ class search_front extends e_shortcode
 		'SEARCH_TOP_TABLE'	=> 'start',
 		'SEARCH_BOT_TABLE'	=> 'end',
 		'SEARCH_CATS'		=> 'category',
-		'SEARCH_TYPE'		=> 'type',
 		'SEARCH_ADV'		=> 'advanced',
 		'SEARCH_ENHANCED'	=> 'enhanced',
 		'SEARCH_ADV_COMBO'	=> 'advanced-combo',
@@ -212,16 +211,6 @@ class search_front extends e_shortcode
 		 {
 		 	return "<input class='btn btn-default btn-secondary button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 		 }	
-	}
-	
-	function sc_search_type_sel($parm='')
-	{
-		return e107::getForm()->radio_switch('adv', vartrue($_GET['adv']), LAN_SEARCH_30, LAN_SEARCH_29, array('class'=>'e-expandit','reverse'=>1, 'data-target'=>'search-advanced'));
-
-
-
-	//	return "<input type='radio' name='adv' value='0' ".(vartrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
-	//	<input type='radio' name='adv' value='1' ".(vartrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 	}
 	
 	function sc_search_dropdown($parm = '')
@@ -1111,31 +1100,6 @@ if (!vartrue($_GET['adv']) || $_GET['t'] == 'all')
  // }
 }
 
-//$SEARCH_VARS->SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
-//<input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
-
-$js_adv = '';
-foreach ($search_info as $key => $value) 
-{
-  if (!isset($value['advanced']))
-  {
-	$js_adv .= " && abid != '".$key."'";
-  }
-}
-
-if (isset($_GET['t']) && is_string($_GET['t']) && isset($search_info[$_GET['t']]['advanced']))
-{
-  $SEARCH_VARS->SEARCH_TYPE_DISPLAY = "";
-} 
-else 
-{
-  $SEARCH_VARS->SEARCH_TYPE_DISPLAY = "style='display: none'";
-}
-
-if (check_class($search_prefs['google'])) {
-	$js_adv .= " && abid != '".$google_id."'";
-}
-
 
 if ($perform_search) 
 {
@@ -1184,13 +1148,6 @@ if ($search_prefs['user_select'])
 {
 	$text .= $tp->parseTemplate($template['category'], true, $srchObj);
 }
-
-// $text .= $tp->parseTemplate($SEARCH_TYPE,true, $srchObj);
-/*
-$hiddenBlock = (!empty($_GET['t'])) ? "" : "class='e-hideme'";
-$text .= "<div {$hiddenBlock} id='search-advanced' >";
-$text .= $tp->parseTemplate("{SEARCH_ADVANCED_BLOCK=".vartrue($_GET['t'])."}",true, $srchObj);
-$text .= "</div>";*/
 
 	//print_a($search_prefs);
 //$
