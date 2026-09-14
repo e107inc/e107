@@ -97,4 +97,5 @@ return [
     'LAN_SEARCH_98' => "News",
     'LAN_SEARCH_201' => "Please redefine your search query",
     'LAN_SEARCH_202' => "Toggle Advanced Mode",
+    'LAN_SEARCH_ADVANCED_ONE_TYPE_ONLY' => "Choose a single search type to see its advanced options.",
 ];
