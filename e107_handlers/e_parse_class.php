@@ -1298,7 +1298,7 @@ class e_parse
 		if (!$exact)
 		{
 			$spacepos = $this->ustrrpos($truncate, ' ');
-			if (isset($spacepos))
+			if ($spacepos > 0)
 			{
 				$bits = $this->usubstr($truncate, $spacepos);
 				preg_match_all('/<\/([a-z]+)>/i', $bits, $droppedTags, PREG_SET_ORDER);
