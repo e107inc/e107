@@ -3808,7 +3808,7 @@ if (isset($_POST['submit_avdelete_multi']))
 				->execute();
 		}
 
-		$mes->addSuccess(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28);
+		$mes->addSuccess(IMALAN_51.' <strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28);
 		e107::getLog()->add('IMALAN_03', implode('[!br!]', $avList));
 
 		unset($search_users);
@@ -3930,7 +3930,7 @@ if (isset($_POST['check_avatar_sizes']))
 						<input class='checkbox' type='checkbox' name='multiaction[]' id='avdelete-{$row['user_id']}' value='{$row['user_id']}' />
 					</td>
 					<td>
-						<label for='avdelete-{$row['user_id']}' title='".IMALAN_56."'>".IMALAN_51."</label><a href='".$ulink."'>".$row['user_name']. '</a>
+						<label for='avdelete-{$row['user_id']}' title='".IMALAN_56."'>".IMALAN_51."</label> <a href='".$ulink."'>".$row['user_name']. '</a>
 					</td>
 					<td>' .$sBadImage. '</td>
 					<td>' .$avname. '</td>

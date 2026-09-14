@@ -960,7 +960,7 @@ class e107MailManager
 		if (($this->currentBatchInfo['mail_togo_count'] == 0) && ($email['mail_notify_complete'] > 0)) // Need to notify completion
 		{
 			$email = array_merge($email, $this->currentBatchInfo);        // This should ensure the counters are up to date
-			$mailInfo = LAN_MAILOUT_247 . '<br />' . LAN_TITLE . ': ' . $email['mail_title'] . '<br />' . LAN_MAILOUT_248 . $this->statusToText($email['mail_content_status']) . '<br />';
+			$mailInfo = LAN_MAILOUT_247 . '<br />' . LAN_TITLE . ': ' . $email['mail_title'] . '<br />' . LAN_MAILOUT_248 . ' ' . $this->statusToText($email['mail_content_status']) . '<br />';
 			$mailInfo .= '<br />' . LAN_MAILOUT_249 . '<br />';
 			foreach ($this->mailCountFields as $f => $t)
 			{
@@ -968,7 +968,7 @@ class e107MailManager
 			}
 			$mailInfo .= LAN_MAILOUT_250;
 			$message = array(                // Use same structure for email and notify
-				'mail_subject' => LAN_MAILOUT_244 . $email['mail_subject'],
+				'mail_subject' => LAN_MAILOUT_244 . ' ' . $email['mail_subject'],
 				'mail_body'    => $mailInfo . '<br />'
 			);
 

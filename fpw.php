@@ -376,7 +376,7 @@ if (!empty($_POST['pwsubmit']))
 		}
 
 		// Try to send the email 
-		if(sendemail($clean_email, "".LAN_09."".SITENAME, $message))
+		if(sendemail($clean_email, LAN_09.' '.SITENAME, $message))
 		{
 			e107::getMessage()->addInfo(LAN_FPW6);
 			$do_log['password_result'] = LAN_FPW20;

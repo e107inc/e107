@@ -3369,11 +3369,11 @@ class e107plugin
 					if($ue->user_extended_add($insert))
 					{
 						$this->log("User Ext. field added. (".$field.")");
-						e107::getMessage()->addSuccess(EPL_ADLAN_249 .$name.' ... ');
+						e107::getMessage()->addSuccess(EPL_ADLAN_249 .' '.$name.' ... ');
 					}
 					else
 					{
-						e107::getMessage()->addError(EPL_ADLAN_249 .$name.' ... ');
+						e107::getMessage()->addError(EPL_ADLAN_249 .' '.$name.' ... ');
 						$this->log("ERROR: User Ext. field couldn't be added. ".print_r($insert,true));
 					}
 					break;
@@ -3381,12 +3381,12 @@ class e107plugin
 				case "uninstall":
 					if($ue->user_extended_remove($name, $name))
 					{
-						e107::getMessage()->addSuccess(EPL_ADLAN_250 .$name.' ... ');
+						e107::getMessage()->addSuccess(EPL_ADLAN_250 .' '.$name.' ... ');
 						$this->log("User Ext. field removed. (".$field.")");
 					}
 					else
 					{
-						e107::getMessage()->addError(EPL_ADLAN_250 .$name.' ... ');
+						e107::getMessage()->addError(EPL_ADLAN_250 .' '.$name.' ... ');
 						$this->log("ERROR: User Ext. field couldn't be removed. (".$field.")");
 					}
 					break;
@@ -3819,11 +3819,11 @@ class e107plugin
 							if(!isset($enabledPlugins[$dv['@attributes']['name']]))
 							{ // Plugin not installed
 								$canContinue = false;
-								$error[] = EPL_ADLAN_70 . $dv['@attributes']['name'];
+								$error[] = EPL_ADLAN_70 . ' ' . $dv['@attributes']['name'];
 							}
 							elseif(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $enabledPlugins[$dv['@attributes']['name']], '<=') === false))
 							{
-								$error[] = EPL_ADLAN_71 . $dv['@attributes']['name'] . EPL_ADLAN_72 . $dv['@attributes']['min_version'];
+								$error[] = EPL_ADLAN_71 . ' ' . $dv['@attributes']['name'] . ' ' . EPL_ADLAN_72 . ' ' . $dv['@attributes']['min_version'];
 								$canContinue = false;
 							}
 							break;
@@ -3831,18 +3831,18 @@ class e107plugin
 							if(!extension_loaded($dv['@attributes']['name']))
 							{
 								$canContinue = false;
-								$error[] = EPL_ADLAN_73 . $dv['@attributes']['name'];
+								$error[] = EPL_ADLAN_73 . ' ' . $dv['@attributes']['name'];
 							}
 							elseif(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion($dv['@attributes']['name']), '<=') === false))
 							{
-								$error[] = EPL_ADLAN_71 . $dv['@attributes']['name'] . EPL_ADLAN_72 . $dv['@attributes']['min_version'];
+								$error[] = EPL_ADLAN_71 . ' ' . $dv['@attributes']['name'] . ' ' . EPL_ADLAN_72 . ' ' . $dv['@attributes']['min_version'];
 								$canContinue = false;
 							}
 							break;
 						case 'php': // all should be lowercase
 							if(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion(), '<=') === false))
 							{
-								$error[] = EPL_ADLAN_74 . $dv['@attributes']['min_version'];
+								$error[] = EPL_ADLAN_74 . ' ' . $dv['@attributes']['min_version'];
 								$canContinue = false;
 							}
 							break;
@@ -3850,7 +3850,7 @@ class e107plugin
 							if(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $db->getServerInfo(), '<=') === false)
 							)
 							{
-								$error[] = EPL_ADLAN_75 . $dv['@attributes']['min_version'];
+								$error[] = EPL_ADLAN_75 . ' ' . $dv['@attributes']['min_version'];
 								$canContinue = false;
 							}
 							break;
@@ -4387,14 +4387,14 @@ class e107plugin
 						//$status = $this->manage_extended_field('add', $name, $type, $attrib['default'], $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						$status = $this->manage_extended_field('add', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add(EPL_ADLAN_249 .$name.' ... ', $status);
+						$mes->add(EPL_ADLAN_249 .' '.$name.' ... ', $status);
 					}
 
 					if ($function == 'upgrade' && $remove) //If upgrading, removing any inactive extended fields
 
 					{
 						$status = $this->manage_extended_field('remove', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add(EPL_ADLAN_250 .$name.' ... ', $status);
+						$mes->add(EPL_ADLAN_250 .' '.$name.' ... ', $status);
 					}
 					break;
 
@@ -4403,11 +4403,11 @@ class e107plugin
 					if (vartrue($this->unInstallOpts['delete_xfields'], FALSE))
 					{
 						$status = ($this->manage_extended_field('remove', $name, $attrib, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add(EPL_ADLAN_250 .$name.' ... ', $status);
+						$mes->add(EPL_ADLAN_250 .' '.$name.' ... ', $status);
 					}
 					else
 					{
-						$mes->add(EPL_ADLAN_251 .$name, E_MESSAGE_SUCCESS);
+						$mes->add(EPL_ADLAN_251 .' '.$name, E_MESSAGE_SUCCESS);
 					}
 					break;
 
@@ -5052,7 +5052,7 @@ class e107plugin
 			{
 				$result = e107::getFile()->rmtree(e_PLUGIN . $eplug_folder);
 				e107::getDb()->createQueryBuilder()->delete('plugin')->where('plugin_path', $eplug_folder)->execute();
-				$text .= ($result ? '<br />' . EPL_ADLAN_86 . e_PLUGIN . $eplug_folder : '<br />' . EPL_ADLAN_87 . '<br />' . EPL_ADLAN_31 . ' <b>' . e_PLUGIN . $eplug_folder . '</b> ' . EPL_ADLAN_32);
+				$text .= ($result ? '<br />' . EPL_ADLAN_86 . ' ' . e_PLUGIN . $eplug_folder : '<br />' . EPL_ADLAN_87 . '<br />' . EPL_ADLAN_31 . ' <b>' . e_PLUGIN . $eplug_folder . '</b> ' . EPL_ADLAN_32);
 			}
 		}
 		else
