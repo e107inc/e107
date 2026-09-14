@@ -150,16 +150,17 @@ class RssCommentsFeedCest
 	 * @param int $newsId
 	 * @param string $marker
 	 * @param string $type comment_type, as comment::getCommentType() stores it
+	 * @param string $author comment_author_name
 	 * @return void
 	 */
-	private function seedComment(AcceptanceTester $I, $newsId, $marker, $type = '0')
+	private function seedComment(AcceptanceTester $I, $newsId, $marker, $type = '0', $author = '1.admin')
 	{
 		$I->haveInDatabase('e107_comments', array(
 			'comment_pid'          => 0,
 			'comment_item_id'      => $newsId,
 			'comment_subject'      => 'SUBJ'.$marker,
 			'comment_author_id'    => 1,
-			'comment_author_name'  => '1.admin',
+			'comment_author_name'  => $author,
 			'comment_author_email' => '',
 			'comment_datestamp'    => time(),
 			'comment_comment'      => 'BODY'.$marker,
@@ -341,6 +342,24 @@ class RssCommentsFeedCest
 		$I->amOnPage('/'.self::RESET_FILE.'?act=comments');
 
 		$I->seeInSource('SUBJ'.$marker);
+	}
+
+	/**
+	 * The feed read comment_author, a column the 2.0 schema split in two, so no
+	 * item has carried a dc:creator element on any v2 database.
+	 */
+	public function theFeedNamesTheCommentAuthor(AcceptanceTester $I)
+	{
+		$I->wantTo('see who wrote a comment the feed serves');
+
+		$marker = 'AUTHOR'.$this->suffix;
+		$author = 'Ada'.$marker;
+
+		$this->seedComment($I, $this->seedNews($I, 'P6 author news '.$this->suffix, '0', 0), $marker, '0', $author);
+
+		$this->fetchFeed($I);
+
+		$I->seeInSource('<dc:creator>'.$author.'</dc:creator>');
 	}
 
 	/**
