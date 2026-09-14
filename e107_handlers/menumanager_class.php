@@ -2300,7 +2300,7 @@ class e_mm_layout
 
 		$text .= '
 
-		    <div class="dropdown pull-right e-mm-selector-container">
+		    <div class="dropdown pull-right float-right float-end e-mm-selector-container">
 
 		        <a class="btn btn-primary btn-sm e-mm-selector " title="' . LAN_ACTIVATE . '">' . LAN_ADD . " " . e107::getParser()->toGlyph('fa-chevron-right') . '</a>';
 
@@ -2633,9 +2633,9 @@ class e_mm_layout
 		$visibilityLink = e_SELF.'?'.http_build_query(array('lay' => $layout, 'vis' => $area.'-'.$c, 'iframe' => 1, 'class' => $row['class'], 'pages' => $row['pages']), '', '&');
 
 
-		$text .= "<a href='#'  class='menuOption menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
+		$text .= "<a href='#'  class='menuOption menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right float-right float-end' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
 
-		$text .= '<a class="menuOption e-menumanager-option menu-btn pull-right" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="icon-search"></i></a>';
+		$text .= '<a class="menuOption e-menumanager-option menu-btn pull-right float-right float-end" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="icon-search"></i></a>';
 
 
 

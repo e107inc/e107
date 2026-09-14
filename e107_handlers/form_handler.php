@@ -5970,7 +5970,7 @@ var_dump($select_options);*/
 					if($ttl == 1)
 					{
 						$dataAttr = "data-text-more='" . LAN_MORE . "' data-text-less='" . LAN_LESS . "'";
-						$ttl = $expand."<button class='btn btn-default btn-secondary btn-xs btn-mini pull-right' {$dataAttr}>" . LAN_MORE . '</button>';
+						$ttl = $expand."<button class='btn btn-default btn-secondary btn-xs btn-mini pull-right float-right float-end' {$dataAttr}>" . LAN_MORE . '</button>';
 					}
 					
 					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit e-expandit-inline">'.defset($ttl, $ttl). '</a>';
@@ -7788,7 +7788,7 @@ var_dump($select_options);*/
 						{OPTIONS}
 						</div>
 					</div>
-					<div class="panel-footer">{TITLE}<span class="pull-right">{CHECKBOX}</span></div>
+					<div class="panel-footer">{TITLE}<span class="pull-right float-right float-end">{CHECKBOX}</span></div>
 					</div>';
 				}
 				else
