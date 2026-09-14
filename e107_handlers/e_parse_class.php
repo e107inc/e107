@@ -40,7 +40,6 @@ class e_parse
 	// 'Hooked' parsers (array)
 	private $e_hook = array();
 
-	// Used in search_class.php (move??)
 	public $search = array('&amp;#039;', '&#039;', '&#39;', '&quot;', 'onerror', '&gt;', '&amp;quot;', ' & ');
 
 	public $replace = array("'", "'", "'", '"', 'one<i></i>rror', '>', '"', ' &amp; ');
