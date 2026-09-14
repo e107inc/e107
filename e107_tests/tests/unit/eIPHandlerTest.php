@@ -13,6 +13,8 @@
 
 		const RETRIGGER_HOURS = 6;
 		const RETRIGGERED_IP = '203.0.113.77';
+		const EXPIRED_IP = '203.0.113.78';
+		const LIVE_IP = '203.0.113.79';
 
 		/** @var eIPHandler */
 		protected $ip;
@@ -114,6 +116,29 @@
 				'the ban that stopped the visitor has to run for its full duration again');
 			$this->assertSame($laterExpiry, $this->expiryOf($other),
 				'the other ban on that address is a ban of its own and nothing retriggered it');
+		}
+
+		/**
+		 * Clearing a ban that has run out is a write on that row. Keyed on the
+		 * caller's whole WHERE clause instead, it took every other ban the
+		 * clause matched with it, which for the registration screen's
+		 * address-or-domain query means one lapsed address ban deleting the
+		 * live domain ban beside it.
+		 */
+		public function testClearingAnExpiredBanLeavesTheLiveOnesItWasLookedUpWith()
+		{
+			$laterExpiry = time() + 999999;
+			$expired = $this->haveRow(self::EXPIRED_IP, eIPHandler::BAN_TYPE_MANUAL, time() - 60);
+			$live = $this->haveRow(self::LIVE_IP, eIPHandler::BAN_TYPE_FLOOD, $laterExpiry);
+
+			$query = "`banlist_ip`='".self::EXPIRED_IP."' OR `banlist_ip`='".self::LIVE_IP."'";
+			$this->assertTrue($this->ip->checkBan($query, false, true),
+				'the ban that was read had expired, so this visitor is not banned by it');
+
+			$this->assertSame(0, (int) e107::getDb()->count('banlist', '(*)', 'WHERE `banlist_id` = '.$expired),
+				'the ban that ran out has to be cleared');
+			$this->assertSame($laterExpiry, $this->expiryOf($live),
+				'a ban that has not run out has to survive the clearing of one that has');
 		}
 
 

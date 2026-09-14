@@ -967,7 +967,7 @@ class eIPHandler
 			// Found banlist entry in table here
 			if(($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
 			{ // Ban has expired - delete from DB
-				$sql->delete('banlist', $query);
+				$sql->delete('banlist', '`banlist_id` = '.(int) $row['banlist_id']);
 				$this->regenerateFiles();
 
 				return true;
