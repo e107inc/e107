@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+#
+# phpstan-analyse: analyse the shipping tree and hold it against the baseline.
+#
+# Why directories, and why recording copies the tracked files: README.md, "Running it".
+#
+# Usage:
+#   e107_tests/_tools/phpstan/bin/phpstan-analyse               # the gate
+#   e107_tests/_tools/phpstan/bin/phpstan-analyse <path>...     # while fixing one file
+#   e107_tests/_tools/phpstan/bin/phpstan-analyse --ignore-baseline <path>...
+#   e107_tests/_tools/phpstan/bin/phpstan-analyse --write-baseline
+#
+# Env:
+#   PHPSTAN_MEMORY_LIMIT   per-process memory limit (default 1G)
+#
+set -euo pipefail
+
+TOOL_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)" # bin -> phpstan
+REPO_ROOT="$(git -C "$TOOL_DIR" rev-parse --show-toplevel)"
+GATE_CONFIG="$TOOL_DIR/phpstan.neon"
+ANALYSIS_CONFIG="$TOOL_DIR/analysis.neon"
+BASELINE="$TOOL_DIR/baseline.neon"
+PHPSTAN="$TOOL_DIR/vendor/bin/phpstan"
+MEMORY_LIMIT="${PHPSTAN_MEMORY_LIMIT:-1G}"
+TOOL_REL="${TOOL_DIR#"$REPO_ROOT/"}"
+
+if [ ! -x "$PHPSTAN" ]; then
+    echo "phpstan-analyse: PHPStan is not installed. Run" >&2
+    echo "  composer install --working-dir=$TOOL_REL" >&2
+    exit 1
+fi
+
+mode=gate
+case "${1:-}" in
+    --write-baseline)  mode=write;  shift ;;
+    --ignore-baseline) mode=ignore; shift ;;
+    -*)
+        echo "phpstan-analyse: unknown option $1" >&2
+        exit 1
+        ;;
+esac
+
+if [ "$mode" = write ] && [ "$#" -gt 0 ]; then
+    echo "phpstan-analyse: --write-baseline records the whole tree and takes no paths." >&2
+    exit 1
+fi
+
+targets=()
+for path in "$@"; do
+    case "$path" in
+        -*)
+            echo "phpstan-analyse: unknown option $path" >&2
+            exit 1
+            ;;
+        /*) targets+=("$path") ;;
+        *)  targets+=("$PWD/$path") ;;
+    esac
+done
+
+cd "$REPO_ROOT"
+
+if [ "${#targets[@]}" -eq 0 ]; then
+    segment=""
+    while IFS= read -r -d '' file; do
+        [ -e "$file" ] || continue
+        if [ "${file%%/*}" = "$file" ]; then
+            targets+=("$file")
+            continue
+        fi
+        [ "${file%%/*}" = "$segment" ] && continue
+        segment="${file%%/*}"
+        targets+=("$segment")
+    done < <(git ls-files -z -- '*.php')
+fi
+
+analyse() {
+    local config="$1"
+    shift
+    "$PHPSTAN" analyse \
+        --configuration="$config" \
+        --memory-limit="$MEMORY_LIMIT" \
+        --no-progress \
+        "$@" \
+        -- "${targets[@]}"
+}
+
+if [ "$mode" = write ]; then
+    scratch="$(mktemp -d)"
+    trap 'rm -rf "$scratch"' EXIT
+    git ls-files -z | tar --null --files-from=- --ignore-failed-read -cf - | tar -xf - -C "$scratch"
+
+    GIT_DIR="$(git rev-parse --absolute-git-dir)"
+    GIT_WORK_TREE="$scratch"
+    export GIT_DIR GIT_WORK_TREE
+    cd "$scratch"
+    "$PHPSTAN" analyse \
+        --configuration="$scratch/$TOOL_REL/analysis.neon" \
+        --memory-limit="$MEMORY_LIMIT" \
+        --no-progress \
+        --generate-baseline="$scratch/$TOOL_REL/baseline.neon" \
+        --allow-empty-baseline \
+        -- "${targets[@]}"
+
+    cp "$scratch/$TOOL_REL/baseline.neon" "$BASELINE"
+    printf '\nphpstan-analyse: %s rewritten. Commit it with the fixes it accounts for.\n' \
+        "${BASELINE#"$REPO_ROOT/"}"
+    exit 0
+fi
+
+if [ "$mode" = ignore ]; then
+    analyse "$ANALYSIS_CONFIG"
+    exit 0
+fi
+
+if analyse "$GATE_CONFIG"; then
+    exit 0
+fi
+
+echo "" >&2
+echo "phpstan-analyse: an error above is not in the baseline; or a baseline entry" >&2
+echo "(ignore.unmatched) no longer matches anything; or a path the baseline records" >&2
+echo "is gone, which PHPStan reports instead of analysing. Fix what is new; re-record" >&2
+echo "the baseline for what is fixed or deleted, with" >&2
+echo "  $TOOL_REL/bin/phpstan-analyse --write-baseline" >&2
+echo "and commit it alongside the fixes it accounts for." >&2
+exit 1

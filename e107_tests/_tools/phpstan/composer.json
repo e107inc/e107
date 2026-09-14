@@ -1,0 +1,17 @@
+{
+    "name": "e107inc/e107-phpstan-tools",
+    "description": "PHPStan tooling: static analysis of the e107 shipping tree against a recorded baseline.",
+    "license": "GPL-3.0-or-later",
+    "require": {
+        "php": ">=8.1",
+        "phpstan/phpstan": "^2.2"
+    },
+    "config": {
+        "platform": {
+            "php": "8.3"
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
