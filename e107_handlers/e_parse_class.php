@@ -4997,16 +4997,21 @@ class e_parse
 			return false;
 		}
 
-		if (strpos($text, '[') === false)
+		if (strpos($text, '[/') === false)
 		{
 			return false;
 		}
 
-		$bbsearch = array('[/img]', '[/h]', '[/b]', '[/link]', '[/right]', '[/center]', '[/flash]', '[/code]', '[/table]');
-
-		foreach ($bbsearch as $v)
+		if (!preg_match_all('#\[/([^\[\]]+)]#', $text, $matches))
 		{
-			if (strpos($text, $v) !== false)
+			return false;
+		}
+
+		$bbcode = e107::getBB();
+
+		foreach ($matches[1] as $bbword)
+		{
+			if ($bbcode->isRegistered($bbword))
 			{
 				return true;
 			}
