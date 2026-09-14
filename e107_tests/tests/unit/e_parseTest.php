@@ -1179,6 +1179,32 @@ EXPECTED;
 
 	}
 
+	/**
+	 * An inexact cut walks back to the last space, which some strings have none of and others have only at the front ({@see e_parse::html_truncate()}).
+	 */
+	public function testHtmlTruncateKeepsAStringWithNoSpaceToWalkBackTo()
+	{
+		self::assertSame(
+			str_repeat('a', 20) . '...',
+			$this->tp->html_truncate(str_repeat('a', 50), 20, '...', false)
+		);
+
+		self::assertSame(
+			'<b>' . str_repeat('a', 20) . '...</b>',
+			$this->tp->html_truncate('<b>' . str_repeat('a', 50) . '</b>', 20, '...', false)
+		);
+
+		self::assertSame(
+			' ' . str_repeat('a', 19) . '...',
+			$this->tp->html_truncate(' ' . str_repeat('a', 50), 20, '...', false)
+		);
+
+		self::assertSame(
+			'a...',
+			$this->tp->html_truncate('a ' . str_repeat('b', 50), 20, '...', false)
+		);
+	}
+
 	public function testReplaceConstants()
 	{
 		$tests = array(
