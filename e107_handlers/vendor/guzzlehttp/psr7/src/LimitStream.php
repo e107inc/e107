@@ -6,10 +6,8 @@ use Psr\Http\Message\StreamInterface;
 
 /**
  * Decorator used to return only a subset of a stream.
- *
- * @final
  */
-class LimitStream implements StreamInterface
+final class LimitStream implements StreamInterface
 {
     use StreamDecoratorTrait;
 
@@ -18,6 +16,9 @@ class LimitStream implements StreamInterface
 
     /** @var int Limit the number of bytes that can be read */
     private $limit;
+
+    /** @var StreamInterface */
+    private $stream;
 
     /**
      * @param StreamInterface $stream Stream to wrap
@@ -36,6 +37,9 @@ class LimitStream implements StreamInterface
         $this->setOffset($offset);
     }
 
+    /**
+     * @return bool
+     */
     public function eof()
     {
         // Always return true if the underlying stream is EOF
@@ -44,7 +48,7 @@ class LimitStream implements StreamInterface
         }
 
         // No limit and the underlying stream is not at EOF
-        if ($this->limit == -1) {
+        if ($this->limit === -1) {
             return false;
         }
 
@@ -53,25 +57,47 @@ class LimitStream implements StreamInterface
 
     /**
      * Returns the size of the limited subset of data
-     * {@inheritdoc}
+     * @return int|null
      */
     public function getSize()
     {
         if (null === ($length = $this->stream->getSize())) {
             return null;
-        } elseif ($this->limit == -1) {
-            return $length - $this->offset;
-        } else {
-            return min($this->limit, $length - $this->offset);
         }
+
+        $size = $length - $this->offset;
+
+        if ($this->limit !== -1) {
+            $size = min($this->limit, $size);
+        }
+
+        return max(0, $size);
     }
 
     /**
      * Allow for a bounded seek on the read limited stream
-     * {@inheritdoc}
+     * @return void
      */
     public function seek($offset, $whence = SEEK_SET)
     {
+        if (!\is_int($offset)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $offset.',
+                \get_debug_type($offset)
+            );
+        }
+
+        if (!\is_int($whence)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $whence.',
+                \get_debug_type($whence)
+            );
+        }
+
         if ($whence !== SEEK_SET || $offset < 0) {
             throw new \RuntimeException(sprintf(
                 'Cannot seek to offset %s with whence %s',
@@ -93,7 +119,7 @@ class LimitStream implements StreamInterface
 
     /**
      * Give a relative tell()
-     * {@inheritdoc}
+     * @return int
      */
     public function tell()
     {
@@ -106,6 +132,7 @@ class LimitStream implements StreamInterface
      * @param int $offset Offset to seek to and begin byte limiting from
      *
      * @throws \RuntimeException if the stream cannot be seeked.
+     * @return void
      */
     public function setOffset($offset)
     {
@@ -131,15 +158,28 @@ class LimitStream implements StreamInterface
      *
      * @param int $limit Number of bytes to allow to be read from the stream.
      *                   Use -1 for no limit.
+     * @return void
      */
     public function setLimit($limit)
     {
         $this->limit = $limit;
     }
 
+    /**
+     * @return string
+     */
     public function read($length)
     {
-        if ($this->limit == -1) {
+        if (!\is_int($length)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::read() is deprecated; guzzlehttp/psr7 3.0 requires int for $length.',
+                \get_debug_type($length)
+            );
+        }
+
+        if ($this->limit === -1) {
             return $this->stream->read($length);
         }
 

@@ -19,6 +19,6 @@ This behavior will be maintained until all existing code depending on the behavi
 |e107 Version|Dependency Location|Managed with Composer?|Dependencies Copied in Core Repository?|Behavior Change|
 |---|---|---|---|---|
 |`<2.3`|`./e107_handlers/`|No|Yes|Legacy behavior|
-|`^2.3`|`./e107_handlers/vendor/`|Yes|Yes|Dependencies begin moving to be managed by Composer.  Dependencies target the lowest version of PHP supported by e107 (`config.platform.php` option in `./composer.json`).|
+|`^2.3`|`./e107_handlers/vendor/`|Yes|Yes|Dependencies begin moving to be managed by Composer.  Dependencies target the lowest version of PHP supported by e107 (`config.platform.php` option in `./composer.json`).  Where no release of a dependency both runs on that floor and is free of security advisories, the modern release is taken and rewritten for the floor with the downgrade tooling on `master` before it is copied in.|
 |`^3`|`./e107_handlers/vendor/`|Yes|No|All dependency code is deleted from the core repository's `./e107_handlers/vendor/` folder.  The e107 installer runs `composer install` at the beginning of the install process.  The e107 self-updater runs `composer install` after deploying the desired e107 version.  Only e107 releases may have dependencies bundled in the release package for offline/Intranet/firewalled installations.
 

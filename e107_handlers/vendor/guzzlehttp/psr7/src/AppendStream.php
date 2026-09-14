@@ -8,16 +8,19 @@ use Psr\Http\Message\StreamInterface;
  * Reads from multiple streams, one after the other.
  *
  * This is a read-only stream decorator.
- *
- * @final
  */
-class AppendStream implements StreamInterface
+final class AppendStream implements StreamInterface
 {
     /** @var StreamInterface[] Streams being decorated */
     private $streams = [];
 
+    /** @var bool */
     private $seekable = true;
+
+    /** @var int */
     private $current = 0;
+
+    /** @var int */
     private $pos = 0;
 
     /**
@@ -31,12 +34,27 @@ class AppendStream implements StreamInterface
         }
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         try {
             $this->rewind();
+
             return $this->getContents();
+        } catch (\Throwable $e) {
+            if (\PHP_VERSION_ID >= 70400) {
+                throw $e;
+            }
+            trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
+
+            return '';
         } catch (\Exception $e) {
+            if (\PHP_VERSION_ID >= 70400) {
+                throw $e;
+            }
+            trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
             return '';
         }
     }
@@ -47,6 +65,7 @@ class AppendStream implements StreamInterface
      * @param StreamInterface $stream Stream to append. Must be readable.
      *
      * @throws \InvalidArgumentException if the stream is not readable
+     * @return void
      */
     public function addStream(StreamInterface $stream)
     {
@@ -62,6 +81,9 @@ class AppendStream implements StreamInterface
         $this->streams[] = $stream;
     }
 
+    /**
+     * @return string
+     */
     public function getContents()
     {
         return Utils::copyToString($this);
@@ -69,8 +91,7 @@ class AppendStream implements StreamInterface
 
     /**
      * Closes each attached stream.
-     *
-     * {@inheritdoc}
+     * @return void
      */
     public function close()
     {
@@ -88,8 +109,6 @@ class AppendStream implements StreamInterface
      * Detaches each attached stream.
      *
      * Returns null as it's not clear which underlying stream resource to return.
-     *
-     * {@inheritdoc}
      */
     public function detach()
     {
@@ -105,6 +124,9 @@ class AppendStream implements StreamInterface
         return null;
     }
 
+    /**
+     * @return int
+     */
     public function tell()
     {
         return $this->pos;
@@ -115,8 +137,7 @@ class AppendStream implements StreamInterface
      *
      * If any of the streams do not return a valid number, then the size of the
      * append stream cannot be determined and null is returned.
-     *
-     * {@inheritdoc}
+     * @return int|null
      */
     public function getSize()
     {
@@ -133,13 +154,19 @@ class AppendStream implements StreamInterface
         return $size;
     }
 
+    /**
+     * @return bool
+     */
     public function eof()
     {
-        return !$this->streams ||
-            ($this->current >= count($this->streams) - 1 &&
-             $this->streams[$this->current]->eof());
+        return !$this->streams
+            || ($this->current >= count($this->streams) - 1
+             && $this->streams[$this->current]->eof());
     }
 
+    /**
+     * @return void
+     */
     public function rewind()
     {
         $this->seek(0);
@@ -147,11 +174,28 @@ class AppendStream implements StreamInterface
 
     /**
      * Attempts to seek to the given position. Only supports SEEK_SET.
-     *
-     * {@inheritdoc}
+     * @return void
      */
     public function seek($offset, $whence = SEEK_SET)
     {
+        if (!\is_int($offset)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $offset.',
+                \get_debug_type($offset)
+            );
+        }
+
+        if (!\is_int($whence)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $whence.',
+                \get_debug_type($whence)
+            );
+        }
+
         if (!$this->seekable) {
             throw new \RuntimeException('This AppendStream is not seekable');
         } elseif ($whence !== SEEK_SET) {
@@ -166,7 +210,7 @@ class AppendStream implements StreamInterface
                 $stream->rewind();
             } catch (\Exception $e) {
                 throw new \RuntimeException('Unable to seek stream '
-                    . $i . ' of the AppendStream', 0, $e);
+                    .$i.' of the AppendStream', 0, $e);
             }
         }
 
@@ -181,31 +225,41 @@ class AppendStream implements StreamInterface
 
     /**
      * Reads from all of the appended streams until the length is met or EOF.
-     *
-     * {@inheritdoc}
+     * @return string
      */
     public function read($length)
     {
+        if (!\is_int($length)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::read() is deprecated; guzzlehttp/psr7 3.0 requires int for $length.',
+                \get_debug_type($length)
+            );
+        }
+
+        if ($this->streams === []) {
+            return '';
+        }
+
         $buffer = '';
         $total = count($this->streams) - 1;
         $remaining = $length;
         $progressToNext = false;
 
         while ($remaining > 0) {
-
             // Progress to the next stream if needed.
             if ($progressToNext || $this->streams[$this->current]->eof()) {
                 $progressToNext = false;
                 if ($this->current === $total) {
                     break;
                 }
-                $this->current++;
+                ++$this->current;
             }
 
             $result = $this->streams[$this->current]->read($remaining);
 
-            // Using a loose comparison here to match on '', false, and null
-            if ($result == null) {
+            if ($result === '') {
                 $progressToNext = true;
                 continue;
             }
@@ -219,28 +273,61 @@ class AppendStream implements StreamInterface
         return $buffer;
     }
 
+    /**
+     * @return bool
+     */
     public function isReadable()
     {
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function isWritable()
     {
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function isSeekable()
     {
         return $this->seekable;
     }
 
+    /**
+     * @return int
+     */
     public function write($string)
     {
+        if (!\is_string($string)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::write() is deprecated; guzzlehttp/psr7 3.0 requires string for $string.',
+                \get_debug_type($string)
+            );
+        }
+
         throw new \RuntimeException('Cannot write to an AppendStream');
     }
 
+    /**
+     * @return mixed
+     */
     public function getMetadata($key = null)
     {
+        if ($key !== null && !\is_string($key)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::getMetadata() is deprecated; guzzlehttp/psr7 3.0 requires string|null for $key.',
+                \get_debug_type($key)
+            );
+        }
+
         return $key ? null : [];
     }
 }
