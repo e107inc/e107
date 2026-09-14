@@ -1175,8 +1175,8 @@ class news_shortcodes extends e_shortcode
 		$info .= $news_item['news_class'] == 255 ? LAN_NEWS_10 : LAN_NEWS_11;
 		$info .= $news_item['news_sticky'] ? '<br />'.LAN_NEWS_31 : '';
 		$info .= '<br />'.($news_item['news_allow_comments'] ? LAN_NEWS_13 : LAN_NEWS_12);
-		$info .= LAN_NEWS_14.$news_item['news_start'].$news_item['news_end'].'<br />';
-		$info .= LAN_NEWS_15.strlen($news_item['news_body']).LAN_NEWS_16.strlen($news_item['news_extended']).LAN_NEWS_17."<br /><br />";
+		$info .= LAN_NEWS_14.' '.$news_item['news_start'].$news_item['news_end'].'<br />';
+		$info .= LAN_NEWS_15.' '.strlen($news_item['news_body']).LAN_NEWS_16.' '.strlen($news_item['news_extended']).LAN_NEWS_17."<br /><br />";
 		//return $ns->tablerender(LAN_NEWS_18, $info);
 		return $info;
 	}
