@@ -2953,7 +2953,7 @@ function template_data()
 		<div class="container-narrow">
 
 		  <div class="masthead">
-			<ul class="nav nav-pills pull-right" >
+			<ul class="nav nav-pills pull-right float-right float-end" >
 			  <li style="width:200px;text-align:center" ><a href="#" >'.LANINS_134.' &#58  {stage_pre} {stage_num} '.LANINS_135.' 8</a>
 			  <div class="progress progress-{bartype}">
 				<div class="progress-bar bar" style="width: {percent}%"></div>
@@ -2979,7 +2979,7 @@ function template_data()
 
 		  <div class="footer">
 			<p class="pull-left">&copy; e107 Inc. '.date("Y").'</p>
-			<p class="pull-right">'.LAN_VERSION.' &#58 '.e_VERSION.'</p>
+			<p class="pull-right float-right float-end">'.LAN_VERSION.' &#58 '.e_VERSION.'</p>
 		  </div>
 		 <div>{debug_info}</div>
 		</div> <!-- /container -->

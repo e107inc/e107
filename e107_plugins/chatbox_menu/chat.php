@@ -182,7 +182,7 @@ if (CB_MOD) {
 	$text =
 		"<form method='post' action='" . $tp->toUrlAttribute(e_REQUEST_URL) . "'>"
 		. $text .
-		"<input type='submit' class='btn btn-danger btn-secondary button float-right pull-right' name='moderate' value='" . CHATBOX_L13 . "' />
+		"<input type='submit' class='btn btn-danger btn-secondary button pull-right float-right float-end' name='moderate' value='" . CHATBOX_L13 . "' />
 		</form>";
 
 }
