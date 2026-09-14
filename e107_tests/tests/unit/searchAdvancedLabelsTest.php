@@ -16,9 +16,7 @@
 class searchAdvancedLabelsTest extends \Codeception\Test\Unit
 {
 	use \Test\BootedCli;
-
-	/** Marker proving the subprocess got past booting e107. */
-	const BOOTED = 'E107-BOOTED';
+	use \Helper\SearchPage;
 
 	/**
 	 * The search types the tests render. news covers the dropdown and date
@@ -36,37 +34,6 @@ class searchAdvancedLabelsTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * Render search.php for one search type, the way a visitor asks for it.
-	 *
-	 * @param string $type what $_GET['t'] holds
-	 * @return string the page as it was sent
-	 */
-	private function renderSearchPage($type)
-	{
-		$handler = "array('class' => e_UC_PUBLIC, 'chars' => '150', 'results' => '10', 'pre_title' => '1', 'pre_title_alt' => '', 'order' => '1')";
-
-		$php = "echo '".self::BOOTED."'; ";
-		$php .= "\$pref['search_restrict'] = e_UC_PUBLIC; ";
-		$php .= "\$searchConfig = e107::getConfig('search'); ";
-		$php .= "\$searchConfig->setPref('user_select', 1); ";
-		$php .= "\$searchConfig->setPref('selector', 2); ";
-		$php .= "\$searchConfig->setPref('plug_handlers/".$type."', ".$handler."); ";
-		$php .= "e107::getConfig()->setPref('e_search_list/".$type."', ".var_export($type, true)."); ";
-		$php .= "\$_GET['t'] = ".var_export($type, true)."; ";
-		$php .= "chdir(".var_export(APP_PATH, true)."); ";
-		$php .= "require(".var_export(APP_PATH.'/search.php', true)."); ";
-		$php .= "while(ob_get_level() > 0) { @ob_end_flush(); } ";
-
-		list($output, $status) = $this->runInBootedCli($php);
-		$html = implode("\n", $output);
-
-		$this->assertStringContainsString(self::BOOTED, $html,
-			"The subprocess did not get as far as booting e107, so nothing below can be trusted.\n".$html);
-
-		return $html;
-	}
-
-	/**
 	 * Every label of the advanced block, with what its `for` resolves to.
 	 *
 	 * @param string $html a rendered search page
@@ -74,13 +41,7 @@ class searchAdvancedLabelsTest extends \Codeception\Test\Unit
 	 */
 	private function advancedLabels($html)
 	{
-		$previous = libxml_use_internal_errors(true);
-		$dom = new DOMDocument();
-		$dom->loadHTML($html);
-		libxml_clear_errors();
-		libxml_use_internal_errors($previous);
-
-		$xpath = new DOMXPath($dom);
+		$xpath = $this->searchPageXPath($html);
 		$found = array();
 
 		foreach($xpath->query("//*[@id='search-advanced']//label[@for]") as $label)
@@ -154,14 +115,7 @@ class searchAdvancedLabelsTest extends \Codeception\Test\Unit
 	public function testAuthorLabelNamesTheFieldTheFormHandlerDrew()
 	{
 		$html = $this->renderSearchPage('_blank');
-
-		$previous = libxml_use_internal_errors(true);
-		$dom = new DOMDocument();
-		$dom->loadHTML($html);
-		libxml_clear_errors();
-		libxml_use_internal_errors($previous);
-
-		$xpath = new DOMXPath($dom);
+		$xpath = $this->searchPageXPath($html);
 		$fields = $xpath->query("//*[@id='search-advanced']//input[@name='author_name']");
 
 		$this->assertSame(1, $fields->length,
