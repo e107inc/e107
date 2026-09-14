@@ -103,6 +103,24 @@ class eIPHandlerTest extends \Test\Unit
 	}
 
 	/**
+	 * @return int[] the banlist_id values this test wrote that are still stored, ascending
+	 */
+	private function rowsThisTestWrote()
+	{
+		$sql = e107::getDb();
+		$sql->createQueryBuilder()->select('banlist_id')->from('banlist')->where('banlist_reason', self::REASON)->execute();
+
+		$ids = array();
+		while($row = $sql->fetch())
+		{
+			$ids[] = (int) $row['banlist_id'];
+		}
+		sort($ids);
+
+		return $ids;
+	}
+
+	/**
 	 * @param int $id
 	 * @return int banlist_banexpires
 	 */
@@ -784,6 +802,33 @@ class eIPHandlerTest extends \Test\Unit
 			'the ban that stopped the visitor has to run for its full duration again');
 		self::assertSame($laterExpiry, $this->expiryOf($other),
 			'the other ban on that address is a ban of its own and nothing retriggered it');
+	}
+
+	/**
+	 * Clearing a ban that has run out is a write on that row. Keyed on the
+	 * caller's whole WHERE clause instead, it took every other ban the clause
+	 * matched with it, which for the registration screen's address-or-domain
+	 * query means one lapsed address ban deleting the live domain ban beside it.
+	 *
+	 * @group runs-in-separate-process
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 * @return void
+	 */
+	public function testClearingAnExpiredBanLeavesTheLiveOnesItWasLookedUpWith()
+	{
+		$laterExpiry = time() + 999999;
+		$expired = $this->haveRow(self::OUTSIDER, eIPHandler::BAN_TYPE_MANUAL, time() - 60);
+		$live = $this->haveRow(self::STRANGER, eIPHandler::BAN_TYPE_FLOOD, $laterExpiry);
+
+		$query = "`banlist_ip`='".self::OUTSIDER."' OR `banlist_ip`='".self::STRANGER."'";
+		self::assertTrue($this->ip->checkBan($query, false, true),
+			'the ban that was read had expired, so this visitor is not banned by it');
+
+		self::assertSame(array($live), $this->rowsThisTestWrote(),
+			'the ban that ran out is cleared, and the one that has not is left where it was');
+		self::assertSame($laterExpiry, $this->expiryOf($live),
+			'a ban that has not run out has to survive the clearing of one that has');
 	}
 }
 
