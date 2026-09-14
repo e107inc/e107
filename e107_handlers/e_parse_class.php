@@ -483,7 +483,7 @@ class e_parse
 			return ($length === null) ? mb_substr($str, $start) : mb_substr($str, $start, $length);
 		}
 
-		return substr($str, $start, $length);
+		return ($length === null) ? substr($str, $start) : substr($str, $start, $length);
 
 	}
 
