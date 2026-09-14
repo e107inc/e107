@@ -73,14 +73,12 @@ class rss_menu_rss
 
 			foreach($this->visibleComments($name, $parent, $limit) as $row)
 			{
-				$author = varset($row['comment_author'], '');
-
 				$items[] = array(
 					'title'       => $row['comment_subject'],
 					'datestamp'   => $row['comment_datestamp'],
 					'link'        => $base.$name.'.'.$row['comment_item_id'],
 					'description' => $row['comment_comment'],
-					'author'      => (string) substr($author, (strpos($author, ".") + 1)),
+					'author'      => $row['comment_author_name'],
 				);
 			}
 		}
