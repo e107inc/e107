@@ -110,9 +110,9 @@ if (strpos(e_QUERY, "fs") !== false) {
 }
 // end search
 
-$chat_total = $sql->count('chatbox');
-
 $qry_where = (CB_MOD ? "1" : "cb_blocked=0");
+
+$chat_total = $sql->count('chatbox', '(*)', $qry_where);
 
 
 $from = max(0, (int) varset($_GET['cbfrom']));
