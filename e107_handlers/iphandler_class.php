@@ -1097,7 +1097,7 @@ class eIPHandler
 					$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
 					$sql->createQueryBuilder()->update('banlist')
 						->setTyped('banlist_banexpires', time() + ($dur * 60 * 60), 'int')
-						->where('banlist_ip', $row['banlist_ip'])
+						->where('banlist_id', (int) $row['banlist_id'])
 						->execute();
 					$this->regenerateFiles();
 
@@ -2127,24 +2127,20 @@ class banlistManager
 
 
 	/**
-	 *	Update expiry time for IP addresses that have accessed the site while banned.
+	 *	Update expiry time for bans that were hit while in force.
 	 *	Processes the entries in the 'ban retrigger' action file, and deletes the file. Each line carries the
-	 *	banlist_id of the row that matched, since a stored range need not equal any single address.
+	 *	banlist_id of the row that matched, since a stored range need not equal any single address. A line
+	 *	carrying anything else came from a release that queued the address instead, and is discarded.
 	 *
 	 *	Needs to be called from a cron job, at least once per hour, and ideally every few minutes. Otherwise banned users who access
 	 *	the site in the period since the last call to this routine may be able to get in because their ban has expired. (Unlikely to be
 	 *	an issue in practice)
 	 *
-	 *	@return int number of IP addresses updated
-	 *
-	 *	@todo - implement cron job and test
+	 *	@return int number of bans updated
 	 */
 	public function banRetriggerAction()
 	{
-		//if (!e107::getPref('ban_retrigger')) return 0;		// Should be checked earlier
-
-		$numEntry = 0;			// Make sure this variable declared before passing it - total number of log entries.
-		$ipAction = array();	// Array of IP addresses to action
+		$banIds = array();
 		$fileName = $this->ourConfigDir.eIPHandler::BAN_FILE_RETRIGGER_NAME.eIPHandler::BAN_FILE_EXTENSION;
 		$entries = file($fileName);
 		if (!is_array($entries))
@@ -2153,18 +2149,17 @@ class banlistManager
 		}
 		@unlink($fileName);				// Delete the action file now we've read it in.
 
-		// Scan the list completely before doing any processing - this will ensure we only process the most recent entry for each IP address
 		while (count($entries) > 0)
 		{
 			$line = array_shift($entries);
 			$info = $this->splitLogEntry($line);
-			if ($info['banReason'] < 0)
+			if ($info['banReason'] < 0 && ctype_digit($info['banIP']))
 			{
-				$ipAction[$info['banIP']] = array('date' => $info['banDate'], 'reason' => $info['banReason']);			// This will result in us gathering the most recent access from each IP address
+				$banIds[(int) $info['banIP']] = true;
 			}
 		}
 
-		if (count($ipAction) == 0) return 0;				// Nothing more to do
+		if (count($banIds) == 0) return 0;
 
 		// Now run through the database updating times
 		$numRet = 0;
@@ -2172,9 +2167,9 @@ class banlistManager
 		$ourDb = e107::getDb();		// Should be able to use $sql, $sql2 at this point
 		$writeDb = e107::getDb('sql2');
 
-		foreach ($ipAction as $ipKey => $ipInfo)
+		foreach (array_keys($banIds) as $banId)
 		{
-			if ($ourDb->createQueryBuilder()->select('*')->from('banlist')->where('banlist_id', (int) $ipKey)->execute() === 1)
+			if ($ourDb->createQueryBuilder()->select('*')->from('banlist')->where('banlist_id', $banId)->execute() === 1)
 			{
 				if ($row = $ourDb->fetch())
 				{
@@ -2186,7 +2181,7 @@ class banlistManager
 					$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
 					$writeDb->createQueryBuilder()->update('banlist')
 						->setTyped('banlist_banexpires', time() + ($dur * 60 * 60), 'int')
-						->where('banlist_ip', $row['banlist_ip'])
+						->where('banlist_id', (int) $row['banlist_id'])
 						->execute();
 					$numRet++;
 				}
