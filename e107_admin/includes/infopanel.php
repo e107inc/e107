@@ -566,7 +566,7 @@ class adminstyle_infopanel
 			$TEMPLATE = "{SETIMAGE: w=40&h=40}
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
-				<div class='btn-group pull-right'>
+				<div class='btn-group pull-right float-right float-end'>
 	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='fa fa-remove'></i> ".LAN_DELETE."</button>
 	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='fa fa-check'></i> ".LAN_APPROVE."</button>
 	            </div>
