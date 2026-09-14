@@ -115,18 +115,15 @@ if (strpos(e_QUERY, "fs") !== false) {
 }
 // end search
 
-$chat_total = $sql->createQueryBuilder()->from('chatbox')->count();
-
 /**
- * Build the base chat-post query: all columns from chatbox, newest first,
- * restricted to visible (unblocked) posts unless the moderator view is active.
+ * Build the base chat-post query: all columns from chatbox, restricted to
+ * visible (unblocked) posts unless the moderator view is active.
  *
  * @return QueryBuilder
  */
 $chatboxQuery = static function () use ($sql) {
 	$qb = $sql->createQueryBuilder()
-		->select('*')->from('chatbox')
-		->orderBy('cb_datestamp', 'DESC');
+		->select('*')->from('chatbox');
 
 	if (!CB_MOD) {
 		$qb->where('cb_blocked', 0);
@@ -134,6 +131,19 @@ $chatboxQuery = static function () use ($sql) {
 
 	return $qb;
 };
+
+/**
+ * The same query in the order the page lists posts in; the total below is
+ * counted without it, because an ORDER BY on an aggregate costs MyISAM its
+ * stored row count.
+ *
+ * @return QueryBuilder
+ */
+$chatboxNewestFirst = static function () use ($chatboxQuery) {
+	return $chatboxQuery()->orderBy('cb_datestamp', 'DESC');
+};
+
+$chat_total = $chatboxQuery()->count();
 
 
 $from = max(0, (int) varset($_GET['cbfrom']));
@@ -143,7 +153,7 @@ if ($fs) {
 	$page_count = 0;
 	$row_count = 0;
 
-	$rows = $chatboxQuery()->fetchEach();
+	$rows = $chatboxNewestFirst()->fetchEach();
 
 	foreach ($rows as $row) {
 
@@ -166,7 +176,7 @@ if ($fs) {
 
 
 /** Render chat posts **/
-$chatList = $chatboxQuery()
+$chatList = $chatboxNewestFirst()
 	->setFirstResult(intval($from))->setMaxResults(30)
 	->fetchAll();
 
