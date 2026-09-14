@@ -2230,11 +2230,6 @@ class e_userperms
 				'icon_16' => 'E_16_INSPECT',
 				'icon_32' => 'E_32_INSPECT',
 			],
-			'7'   => [
-				'title'   => 'LAN_HISTORY',           // History/Undo
-				'icon_16' => 'E_16_UNDO',
-				'icon_32' => 'E_32_UNDO',
-			],
 			'9'   => [
 				'title'   => 'ADLAN_40',              // Take Down site for Maintenance
 				'icon_16' => 'E_16_MAINTAIN',
