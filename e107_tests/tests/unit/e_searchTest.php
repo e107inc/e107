@@ -647,6 +647,7 @@
 					'page_sef' => 'a-page',
 					'page_title' => 'A page',
 					'page_text' => 'A page body',
+					'page_metadscr' => 'A meta description',
 					'page_chapter' => 0,
 					'menu_image' => '',
 					'page_datestamp' => $datestamp,
@@ -693,6 +694,40 @@
 		}
 
 		/**
+		 * The column names an addon's own query selects, as they reach its compile().
+		 *
+		 * @param string $plugin
+		 * @return array
+		 */
+		private function searchAddonColumns($plugin)
+		{
+			$config = $this->searchAddon($plugin)->config();
+			$columns = array();
+
+			foreach($config['return_fields'] as $field)
+			{
+				$parts = explode('.', $field);
+				$columns[] = end($parts);
+			}
+
+			return $columns;
+		}
+
+		/**
+		 * Compiles one result the way a live search does, from the columns the addon's own query selects.
+		 *
+		 * @param string $plugin
+		 * @param array $row
+		 * @return array
+		 */
+		private function compileQueriedRow($plugin, $row)
+		{
+			$queried = array_intersect_key($row, array_flip($this->searchAddonColumns($plugin)));
+
+			return $this->compileSearchAddon($plugin, $queried);
+		}
+
+		/**
 		 * The row a compile() gets is the addon's own return_fields and nothing else, so a fixture may not invent one.
 		 */
 		public function testEverySearchAddonFixtureUsesOnlyReturnedColumns()
@@ -701,16 +736,7 @@
 
 			foreach($this->searchAddonRows() as $plugin => $row)
 			{
-				$config = $this->searchAddon($plugin)->config();
-				$returned = array();
-
-				foreach($config['return_fields'] as $field)
-				{
-					$parts = explode('.', $field);
-					$returned[] = end($parts);
-				}
-
-				$invented = array_values(array_diff(array_keys($row), $returned));
+				$invented = array_values(array_diff(array_keys($row), $this->searchAddonColumns($plugin)));
 
 				self::assertSame(array(), $invented,
 					$plugin.' is handed a column its own query never selects, so whatever this row proves is fiction.');
@@ -835,5 +861,37 @@
 
 			self::assertStringEndsWith(' | '.$rows['forum']['thread_name'], $res['title'],
 				'A forum result must be titled with the thread its post belongs to, including on a row that carries a thread_parent.');
+		}
+
+		/**
+		 * The author's own meta description is what a custom page result is summarised from.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6421
+		 */
+		public function testCustomPageSummaryComesFromItsMetaDescription()
+		{
+			e107::coreLan('search');
+
+			$rows = $this->searchAddonRows();
+			$res = $this->compileQueriedRow('page', $rows['page']);
+
+			self::assertSame($rows['page']['page_metadscr'], $res['summary'],
+				'A custom page with a meta description must be summarised from it rather than from its body.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6421
+		 */
+		public function testCustomPageWithoutAMetaDescriptionSummarisesFromTheBody()
+		{
+			e107::coreLan('search');
+
+			$rows = $this->searchAddonRows();
+			$row = $rows['page'];
+			$row['page_metadscr'] = '';
+			$res = $this->compileQueriedRow('page', $row);
+
+			self::assertSame($rows['page']['page_text'], $res['summary'],
+				'A custom page that left its meta description empty must still be summarised from its body.');
 		}
 	}
