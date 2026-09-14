@@ -1987,7 +1987,7 @@ class e107plugin
 
 				foreach($iconTypes as $key)
 				{
-					if(!empty($attrib[$key]) && str_ends_with($attrib[$key], '.png'))
+					if(!empty($attrib[$key]) && substr_compare($attrib[$key], '.png', -strlen('.png')) === 0)
 					{
 						$path = e_PLUGIN.$folder."/".$attrib[$key];
 						$file = basename($path);
