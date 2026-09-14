@@ -45,7 +45,7 @@ class rss_menu_setup
 
 
 	}
-/*	
+/*
 	function uninstall_options()
 	{
 
@@ -56,10 +56,26 @@ class rss_menu_setup
 	{
 		// print_a($var);
 	}
+*/
 
+	/**
+	 * Points the comments feed's row at the plugin that now declares it.
+	 *
+	 * @param e107plugin $var
+	 * @return void
+	 */
 	function upgrade_post($var)
 	{
-		// $sql = e107::getDb();
+		$moved = e107::getDb()->createQueryBuilder()
+			->update('rss')
+			->set('rss_path', 'rss_menu')
+			->whereIn('rss_url', array('comments', '5'))
+			->whereIn('rss_path', array('comments', '0', ''))
+			->execute();
+
+		if($moved === false)
+		{
+			e107::getMessage()->addError(LAN_UPDATED_FAILED.': rss');
+		}
 	}
-*/	
 }

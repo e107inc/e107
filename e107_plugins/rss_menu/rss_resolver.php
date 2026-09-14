@@ -31,7 +31,7 @@ class rss_feed_resolver
 	 */
 	private $lookup;
 
-	/** @var array|null old numeric key => array('plugin' => folder|null, 'url' => text key) */
+	/** @var array|null old numeric key => array('plugin' => folder, 'url' => text key) */
 	private $legacy;
 
 	/**
@@ -83,6 +83,10 @@ class rss_feed_resolver
 	 * old numbers only has to support one spelling. Only applied where that
 	 * addon owns the row, so one plugin cannot rewrite another's feed key.
 	 *
+	 * A row older than the addon it now belongs to holds the feed's own key in
+	 * rss_path, or nothing at all, where a plugin folder goes today. Neither
+	 * names a different plugin, so the addon that declares the key owns them.
+	 *
 	 * @param string $feedKey
 	 * @param array  $row
 	 * @return string
@@ -104,7 +108,7 @@ class rss_feed_resolver
 		$owner = $keys[$feedKey];
 		$path = explode('|', (string) varset($row['rss_path'], ''));
 
-		if($owner['plugin'] === null || $owner['plugin'] === $path[0])
+		if($path[0] === '' || $path[0] === $owner['plugin'] || $path[0] === $owner['url'])
 		{
 			return $owner['url'];
 		}
@@ -118,11 +122,8 @@ class rss_feed_resolver
 	private function legacyKeys()
 	{
 		if($this->legacy === null)
-		{
-			// Built on demand, so a modern text key never pays for it. 'comments'
-			// is core's, served inline by rss.php rather than by an addon.
-			$this->legacy = array(5 => array('plugin' => null, 'url' => 'comments'))
-				+ rss_addons::legacyKeys();
+		{	// Built on demand, so a modern text key never pays for it.
+			$this->legacy = rss_addons::legacyKeys();
 		}
 
 		return $this->legacy;
