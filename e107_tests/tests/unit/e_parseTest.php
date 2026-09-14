@@ -718,6 +718,17 @@ EXPECTED;
 
 	}
 
+	public function testUsubstrWithoutLengthReturnsRestOfString()
+	{
+
+		$this->tp->setMultibyte(false);
+
+		$this->assertEquals('world', $this->tp->usubstr('hello world', 6));
+		$this->assertEquals('rld', $this->tp->usubstr('hello world', -3));
+		$this->assertEquals('hello world', $this->tp->usubstr('hello world', 0));
+
+	}
+
 	public function testToDB()
 	{
 
