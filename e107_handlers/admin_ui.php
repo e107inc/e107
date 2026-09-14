@@ -7511,10 +7511,9 @@ class e_admin_form_ui extends e_form
 
 		if($mode === 'read')
 		{
+			$inlinePassWillDrawIt = empty($controller->getFieldAttr($treePrefixField, 'noedit')) && !empty($parm['editable']);
 
-			$inline = $this->getController()->getFieldAttr($treePrefixField,'inline');
-
-			if($inline === true)
+			if($inlinePassWillDrawIt)
 			{
 				return $curVal;
 			}
@@ -7787,7 +7786,7 @@ class e_admin_form_ui extends e_form
 		if(!$controller->getDispatcher()->hasRouteAccess($editRoute))
 		{
 			$fields['options']['readParms']['editClass'] = e_UC_NOBODY; // display the edit button.
-			foreach($options[$id]['fields'] as $k=>$v) // disable inline editing.
+			foreach($fields as $k=>$v) // disable inline editing.
 			{
 				$fields[$k]['inline'] = false;
 			}
