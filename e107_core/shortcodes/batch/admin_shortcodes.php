@@ -2404,7 +2404,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 				$diz = MENLAN_58;
 
-		$caption .= "<span class='e-help-icon pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz). '">' .defset('ADMIN_INFO_ICON'). '</a></span>';
+		$caption .= "<span class='e-help-icon pull-right float-right float-end'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz). '">' .defset('ADMIN_INFO_ICON'). '</a></span>';
 
 		$var['_extras_']['icon'] = e107::getParser()->toIcon('e-menus-24');
 		
