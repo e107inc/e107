@@ -68,6 +68,18 @@ class e_rssTest extends \Test\Unit
 		$this::assertNotEmpty($item['datestamp']);
 	}
 
+	/**
+	 * The author came from comment_author, a column the 2.0 schema split into
+	 * comment_author_id and comment_author_name, so every item carried an empty
+	 * author and the feed never named anybody.
+	 */
+	public function testItemsNameTheCommentAuthor()
+	{
+		$item = $this->seededItem($this->addon->data(array('url' => 'comments', 'id' => '', 'limit' => 9)));
+
+		$this::assertSame('admin', $item['author']);
+	}
+
 	public function testTheLegacyKeyIsDeclaredHereRatherThanHeldByTheResolver()
 	{
 		$this::assertSame(array(5 => 'comments'), $this->addon->legacy());
