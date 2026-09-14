@@ -1289,7 +1289,7 @@ class plugin_online_ui extends e_admin_ui
 					</td>
 					<td><h4>{TITLE} <small> v{VERSION} {PRICE}</small></h4>
 					<div style="height:100px; overflow:hidden">{BODY}</div>
-					<div><small class="text-muted"><i class="fa fa-user"></i> {AUTHOR} <i>{DATE}</i></small> <span class="pull-right">&nbsp; {OPTIONS}</span></div>
+					<div><small class="text-muted"><i class="fa fa-user"></i> {AUTHOR} <i>{DATE}</i></small> <span class="pull-right float-right float-end">&nbsp; {OPTIONS}</span></div>
 					</td></tr>
 					</table>
 

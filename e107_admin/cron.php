@@ -814,7 +814,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 				$att['readParms'] = array('disabled'=>'disabled');
 			}
 
-			$text = "<div class='btn-group pull-right'>";
+			$text = "<div class='btn-group pull-right float-right float-end'>";
 			$text .= $this->renderValue('options',$value,$att,$id);
 			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', LAN_RUN);
 			$text .= "</div>";
