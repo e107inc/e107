@@ -610,11 +610,9 @@ class faq
 
 	function faq_footer($id='')
 	{
-        global $faqpref,$timing_start,$cust_footer, $CUSTOMPAGES, $CUSTOMHEADER, $CUSTOMHEADER;
-
         $tp = e107::getParser();
 
-        $text_menu .= "<div style='text-align:center;' ><br />
+        $text_menu = "<div style='text-align:center;' ><br />
         &nbsp;&nbsp;[&nbsp;<a href='faqs.php?main'>".LAN_FAQS_010."</a>&nbsp;]&nbsp;&nbsp;";
 
         $text_menu .="</div>";
