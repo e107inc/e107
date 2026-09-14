@@ -370,7 +370,7 @@ class user_mailout
 
 			if (is_numeric($selectVals['email_to']))
 			{
-				$_to = LAN_MAILOUT_23.e107::getUserClass()->getName(intval($selectVals['email_to']));
+				$_to = LAN_MAILOUT_23.' '.e107::getUserClass()->getName(intval($selectVals['email_to']));
 			}
 			else
 			{
