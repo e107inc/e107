@@ -58,14 +58,7 @@ $cobj 	= new comment;
 $tp 	= e107::getParser(); 
 $frm 	= e107::getForm();
 
-if (!vartrue($_GET['elan']) && empty($_GET))
-{
-	$qs 	= explode(".", e_QUERY);
-	$action = $qs[0];
-	// $id (faq_parent/category) and $idx (faq_id) are numeric IDs used in SQL below; cast to int.
-	$id 	= isset($qs[1]) ? (int) $qs[1] : '';
-	$idx 	= isset($qs[2]) ? (int) $qs[2] : '';
-}
+$action = $id = $idx = '';
 
 
 
@@ -160,7 +153,7 @@ if (isset($_POST['commentsubmit']))
 	{
 		if(vartrue($faqpref['classic_look']))
 		{
-			$ftmp = $faq->show_existing_parents($action, $sub_action, $id, $from, $amount);
+			$ftmp = $faq->show_existing_parents($action, '', $id, $from, $amount);
 			$caption = defset('LAN_PLUGIN_FAQS_FUNCTIONNAME',"FAQ Categories");
 		}
 		else
@@ -402,7 +395,7 @@ class faq
 
 
 
-		if($this->pref['list_type'] == 'ol')
+		if(isset($this->pref['list_type']) && $this->pref['list_type'] == 'ol')
 		{
 			$reversed = ($ascdesc == 'DESC') ? 'reversed ' : '';
 			$tsrch = array('<ul ','/ul>');
