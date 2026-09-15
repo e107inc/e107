@@ -3215,7 +3215,7 @@ class e_admin_controller_ui extends e_admin_controller
 	protected function isTypedBatchTrigger($type)
 	{
 		return in_array($type, array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach',
-			'addAll', 'clearAll', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall'), true);
+			'attach_all', 'deattach_all', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall'), true);
 	}
 
 	/**
@@ -3841,6 +3841,58 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 	/**
+	 * The option values behind one of the batch entries {@see e_admin_form_ui::renderBatchFilter()}
+	 * builds from a comma or checkboxes field's optArray, empty when that field offers no such entry.
+	 *
+	 * @param string $field field segment of the posted batch trigger
+	 * @param string $offer optArray key the menu built the entry from, also the
+	 *                      {@see e_admin_ui::handleCommaBatch()} mode it dispatches to
+	 * @return array
+	 */
+	private function batchOptionList($field, $offer)
+	{
+		$parms = $this->getFieldAttr($field, 'writeParms', array());
+		if(!is_array($parms))
+		{
+			parse_str($parms, $parms);
+		}
+
+		$type = $this->getFieldAttr($field, 'type');
+
+		if(!empty($parms['optArray']))
+		{
+			$optArray = is_array($parms['optArray']) ? $parms['optArray'] : array();
+
+			if($type === 'dropdown' && !empty($parms['multiple']))
+			{
+				$type = 'comma';
+				$parms = $optArray;
+			}
+			else
+			{
+				$fopts = $parms;
+				unset($fopts['optArray']);
+				$parms = $optArray;
+				$parms['__options'] = $fopts;
+			}
+		}
+
+		if(($type !== 'comma' && $type !== 'checkboxes') || !isset($parms[$offer]))
+		{
+			return array();
+		}
+
+		$opts = varset($parms['__options'], array());
+		if(!is_array($opts))
+		{
+			parse_str($opts, $opts);
+		}
+		unset($parms['__options'], $parms['addAll'], $parms['clearAll']);
+
+		return !empty($opts['simple']) ? array_values($parms) : array_keys($parms);
+	}
+
+	/**
 	 * Whether the caller may put a record in or out of a user class, which its userclass_editclass declares.
 	 *
 	 * @param int|string $class user class id
@@ -4010,42 +4062,36 @@ class e_admin_controller_ui extends e_admin_controller
 			// see commma, userclasses batch options
 			case 'attach':
 			case 'deattach':
-			case 'addAll':
-			case 'clearAll':
+			case 'attach_all':
+			case 'deattach_all':
 				if(empty($selected))
 				{
 					return $this;
 				}
 				$field = $trigger[1];
-				$value = $trigger[2];
+				$value = varset($trigger[2]);
+				$mode = $trigger[0];
 
 				if(!$this->isBatchField($field))
 				{
 					return $this;
 				}
 
-				if($trigger[0] === 'addAll')
+				if($mode === 'attach_all' || $mode === 'deattach_all')
 				{
-					$parms = $this->getFieldAttr($field, 'writeParms', array());
-					if(!is_array($parms))
-					{
-						parse_str($parms, $parms);
-					}
-					unset($parms['__options']);
-					$value = $parms;
+					$mode = $mode === 'attach_all' ? 'addAll' : 'clearAll';
+					$value = $this->batchOptionList($field, $mode);
+
 					if(empty($value))
 					{
-						return $this;
-					}
-					if(!is_array($value))
-					{
-						$value = array_map('trim', explode(',', $value));
+						e107::getMessage()->addDebug('Unhandled batch option list: ' .var_export($field, true));
+						break;
 					}
 				}
 				
 				if(method_exists($this, 'handleCommaBatch')) 
 				{
-					$this->handleCommaBatch($selected, $field, $value, $trigger[0]);
+					$this->handleCommaBatch($selected, $field, $value, $mode);
 				}
 			break;
 			
