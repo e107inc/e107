@@ -27,11 +27,20 @@
  */
 class forumStatsTest extends \Test\Unit
 {
+	use \Test\ForumRows;
+
 	/** @var forumStats */
 	private $stats;
 
+	public function _after()
+	{
+		$this->dropForumRows();
+	}
+
 	public function _before()
 	{
+		$this->haveForumUrlConfig();
+
 		if(!class_exists('forumStats', false))
 		{
 			// The page file defines the class and then renders the page, the
@@ -44,6 +53,17 @@ class forumStatsTest extends \Test\Unit
 		}
 
 		$this->stats = new forumStats();
+	}
+
+	/**
+	 * Registers the forum's e_url.php the way a plugin scan does, so the page's links have a configuration to assemble from.
+	 *
+	 * @return void
+	 */
+	private function haveForumUrlConfig()
+	{
+		e107::getConfig()->setPref('e_url_list/forum', 1);
+		e107::setRegistry('core/e107/addons/e_url', null);
 	}
 
 	/**
@@ -153,5 +173,42 @@ class forumStatsTest extends \Test\Unit
 		$this->assertEquals(0, $result[0]['user_forums']);
 		$this->assertEquals(0, $result[0]['percentage'],
 			'No replies at all is 0%, not a fatal error.');
+	}
+
+	/**
+	 * The most active threads name a thread and the forum it sits in, and both
+	 * are links. The two URLs behind them were commented out when the rest of
+	 * the row moved to the URL builder, leaving every row with two links that
+	 * had nothing to go to, and the headings above them name constants the
+	 * page never loaded.
+	 */
+	public function testTheMostActiveThreadsLinkToTheThreadAndToItsForum()
+	{
+		$this->haveForumTables();
+
+		$category = $this->haveForum('e107help stats probe category');
+		$forumId = $this->haveForum('e107help stats probe forum', $category);
+
+		$threadName = 'e107help stats probe thread '.time();
+		$this->haveForumThread($threadName, $forumId);
+
+		$guestName = 'e107help stats probe guest';
+		$this->haveForumThread('e107help stats probe guest thread '.time(), $forumId, 0, $guestName);
+
+		ob_start();
+		$this->stats->mostActiveTopics();
+		$rendered = ob_get_clean();
+
+		self::assertStringContainsString($threadName, $rendered,
+			'the seeded thread is missing from the most active threads');
+
+		self::assertStringContainsString($guestName, $rendered,
+			'a thread opened by a guest names nobody at all');
+
+		self::assertStringContainsString('>Thread</th>', $rendered,
+			'the table headings render the constant names instead of the terms');
+
+		self::assertStringNotContainsString("href=''", $rendered,
+			'a thread or forum name is rendered as a link that goes nowhere');
 	}
 }

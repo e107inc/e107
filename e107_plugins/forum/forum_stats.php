@@ -25,14 +25,17 @@ class forumStats
 
 	private $from = 0;
 	private $view = 20;
+	public $subaction = '';
 
 
 
 	function __construct()
 	{
-		//include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_stats.php');
-		//e107::lan('forum','front');
 		e107::lan('forum', "front", true);
+		e107::coreLan('top');
+
+		if(!defined('IMODE')) define('IMODE', 'lite'); // BC
+
 		e107::css('forum', 'forum.css');
 	}
 
@@ -320,12 +323,22 @@ class forumStats
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 
-		if(!defined('IMODE')) define('IMODE', 'lite'); // BC
+		foreach(array('main_admin', 'admin', 'moderator') as $role)
+		{
+			$constant = 'IMAGE_rank_'.$role.'_image';
 
+			if(defined($constant))
+			{
+				continue;
+			}
 
-		define('IMAGE_rank_main_admin_image', ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/main_admin.png' alt='' />"));
-		define('IMAGE_rank_admin_image', ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/admin.png' alt='' />"));
-		define('IMAGE_rank_moderator_image', ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/moderator.png' alt='' />"));
+			$themeImage = varset($pref['rank_'.$role.'_image'], '');
+			$src = (!empty($themeImage) && file_exists(THEME."forum/".$themeImage))
+				? THEME_ABS."forum/".$themeImage
+				: e_PLUGIN_ABS."forum/images/".IMODE."/".$role.".png";
+
+			define($constant, "<img src='".$src."' alt='' />");
+		}
 
 		if ($this->subaction == 'forum' || $this->subaction == 'all')
 		{
@@ -413,7 +426,7 @@ class forumStats
 
 		$qb = $sql->createQueryBuilder();
 		$rows = $qb
-			->select('t.*', 'u.user_name')->selectAs('ul.user_name', 'user_last')->addSelect('f.forum_name')
+			->select('t.*', 'u.user_name')->selectAs('ul.user_name', 'user_last')->addSelect('f.forum_id', 'f.forum_name', 'f.forum_sef')
 			->from('forum_thread', 't')
 			->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
 			->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 't.thread_user'))
@@ -445,11 +458,13 @@ class forumStats
 				}
 				else
 				{
-					$POSTER = $row['thread_user_anon'];
+					$POSTER = $tp->toHTML($row['thread_user_anon']);
 				}
 
-			//	$LINKTOTHREAD = e107::url('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
-			//	$LINKTOFORUM = e107::url('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
+				$row['thread_sef'] = $forum->getThreadSef($row);
+
+				$LINKTOTHREAD = e107::url('forum', 'topic', $row);
+				$LINKTOFORUM = e107::url('forum', 'forum', $row);
 
 				$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 
@@ -459,7 +474,7 @@ class forumStats
 				}
 				else
 				{
-					$LASTPOST = $row['thread_lastuser_anon'].'<br />'.$lastpost_datestamp;
+					$LASTPOST = $tp->toHTML($row['thread_lastuser_anon']).'<br />'.$lastpost_datestamp;
 				}
 
 				$text .= "<tr>
