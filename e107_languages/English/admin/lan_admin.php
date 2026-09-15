@@ -444,4 +444,6 @@ Below is the list of files that could potentially be malicious:",
     'LAN_EMULATION_TEMPORARY' => "Permission emulation is temporary. Your identity is unchanged, and emulation ends when you log out.",
     'LAN_EMULATION_STOP' => "Stop Emulating",
     'ADLAN_REFUSED_TOKEN_MISSING' => "That request was not carried out, because it carried no security token. Use the dashboard's own controls rather than a bookmark or a link on another site.",
+    'ADLAN_SITE_FOLDER_NOTICE' => "Files were saved under the wrong site folder, [x], while this site ran an affected e107 version. Merge them into this site's folder on the [y] page.",
+    'ADLAN_SITE_FOLDER_NOTICE_LINK' => "Multi-Site",
 ];
