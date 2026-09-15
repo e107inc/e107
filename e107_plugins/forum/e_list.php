@@ -18,6 +18,7 @@ if(!defined('e107_INIT'))
 //TODO: Investigate queries - needs some more sorting
 class list_forum
 {
+	public $parent;
 
 	function __construct($parent)
 	{
@@ -43,7 +44,7 @@ class list_forum
 			SELECT t.thread_name AS parent_name, t.thread_id as parent_id,
 			f.forum_id, f.forum_name, f.forum_class, f.forum_sef,
 			u.user_name, lp.user_name AS lp_name, 
-			t.thread_id, t.thread_views, t.thread_name, t.thread_datestamp, t.thread_user,
+			t.thread_id, t.thread_views, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_user_anon,
 			tp.post_thread, tp.post_user, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies
 			FROM #forum_thread AS t
 			LEFT JOIN #forum_post AS tp ON t.thread_id = tp.post_thread
@@ -58,7 +59,7 @@ class list_forum
 		else
 		{    // Most recently updated threads up to limit
 			$qry = "
-			SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_views, t.thread_lastpost, 
+			SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_user_anon, t.thread_views, t.thread_lastpost,
 			t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, f.forum_sef, u.user_name, lp.user_name AS lp_name
 			FROM #forum_thread AS t
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
@@ -80,37 +81,7 @@ class list_forum
 
 			foreach($forumArray as $row)
 			{
-
-		//		extract($row);
-
 				$record = array();
-
-				/* Fixes #3601 Removed unused vars, fixed userid extraction
-
-								//last user
-								$r_id = substr($thread_lastuser, 0, strpos($thread_lastuser, "."));
-								$r_name = substr($thread_lastuser, (strpos($thread_lastuser, ".")+1));
-								if (strstr($thread_lastuser, chr(1))) {
-									$tmp = explode(chr(1), $thread_lastuser);
-									$r_name = $tmp[0];
-								}
-								$thread_lastuser = $r_id;
-
-								//user
-								$u_id = substr($thread_user, 0, strpos($thread_user, "."));
-								$u_name = substr($thread_user, (strpos($thread_user, ".")+1));
-								$thread_user = $u_id;
-				*/
-
-				if(isset($thread_anon))
-				{
-					/*
-					$tmp = explode(chr(1), $thread_anon);
-					$thread_user = $tmp[0];
-					$thread_user_ip = $tmp[1];
-					*/
-					$thread_user = $thread_anon;
-				}
 
 				$r_datestamp = e107::getDate()->convert_date($row['thread_lastpost'], "short");
 
@@ -150,14 +121,19 @@ class list_forum
 				}
 
 				$rowheading = $this->parent->parse_heading($row['parent_name']);
-				//$lnk = ($parent_id ? $thread_id.".post" : $thread_id);
-				//"<a href='".e_HTTP."user.php ?id.$thread_user'>$user_name</a>"
-				$uparams = array('id' => $row['thread_user'], 'name' => $row['user_name']);
-				$link = e107::getUrl()->create('user/profile/view', $uparams);
-				$userlink = "<a href='" . $link . "'>" . $row['user_name'] . "</a>";
-				//$record['heading'] = "<a href='".$path."forum_viewtopic.php?$lnk'>".$rowheading."</a>";
 				$record['heading'] = '<a href="' . e107::url('forum', 'topic', array('thread_id' => $row['thread_id'], 'thread_sef' => eHelper::title2sef($row['parent_name']), 'forum_sef' => $row['forum_sef'])) . '">' . $rowheading . '</a>';
-				$record['author'] = ($this->parent->settings['author'] ? ($row['thread_anon'] ? $row['thread_user'] : $userlink) : "");
+
+				if(empty($row['thread_user_anon']))
+				{
+					$uparams = array('id' => $row['thread_user'], 'name' => $row['user_name']);
+					$author = "<a href='" . e107::getUrl()->create('user/profile/view', $uparams) . "'>" . $row['user_name'] . "</a>";
+				}
+				else
+				{
+					$author = e107::getParser()->toHTML($row['thread_user_anon']);
+				}
+
+				$record['author'] = ($this->parent->settings['author'] ? $author : "");
 				//$record['category'] = ($this->parent->settings['category'] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
 				$record['category'] = ($this->parent->settings['category'] ? '<a href="' . e107::url('forum', 'forum', array('forum_sef' => $row['forum_sef'])) . '">' . $row['forum_name'] . '</a>' : "");
 				$record['date'] = ($this->parent->settings['date'] ? $this->parent->getListDate($row['thread_datestamp']) : "");

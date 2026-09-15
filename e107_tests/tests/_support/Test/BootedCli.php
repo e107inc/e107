@@ -28,9 +28,22 @@ trait BootedCli
 		$boot .= "\$_E107 = ".var_export($e107, true)."; ";
 		$boot .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
 
+		return $this->runInCli($boot.$php, $ini, $timeout);
+	}
+
+	/**
+	 * Runs $php in a subprocess booting nothing, for a test that has to define something before class2.php reads it.
+	 *
+	 * @param string $php
+	 * @param string $ini extra php command-line arguments, e.g. '-d memory_limit=64M'
+	 * @param int $timeout seconds
+	 * @return array the output lines, stdout and stderr interleaved, then the exit status
+	 */
+	protected function runInCli($php, $ini = '', $timeout = 60)
+	{
 		$output = array();
 		$status = 0;
-		exec(sprintf('timeout %d php %s -r %s 2>&1', $timeout, $ini, escapeshellarg($boot.$php)), $output, $status);
+		exec(sprintf('timeout %d php %s -r %s 2>&1', $timeout, $ini, escapeshellarg($php)), $output, $status);
 
 		if($status === 124)
 		{

@@ -51,6 +51,7 @@ class forum_post_handler
 	private $forumObj;
 	private $action;
 	private $id;
+	private $post;
 	private $data;
 
 	function __construct()
@@ -64,9 +65,9 @@ class forum_post_handler
 		$forum = new e107forum();
 		$this->forumObj = $forum;
 
-		$this->action   = trim($_GET['f']); // action: rp|quote|nt|edit etc.
-		$this->id       = (int) $_GET['id']; // forum thread/topic id.
-		$this->post     = (int) $_GET['post']; // post ID if needed.
+		$this->action   = trim(varset($_GET['f'], '')); // action: rp|quote|nt|edit etc.
+		$this->id       = (int) varset($_GET['id'], 0); // forum thread/topic id.
+		$this->post     = (int) varset($_GET['post'], 0); // post ID if needed.
 
 
 		// issue #3619: In case the post id is not set
