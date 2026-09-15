@@ -143,3 +143,28 @@ define("DBLAN_121", "Moving [x] to [y].");
 
 define("DBLAN_REFUSED_TOKEN_MISSING", "That operation was not started, because the link carried no security token. Start it from the Database Utilities menu rather than from a bookmark or a link on another site.");
 
+define("DBLAN_MULTISITE", "Multi-Site");
+define("DBLAN_MULTISITE_HELP", "The site folders under e107_media/ and e107_system/: this site's own, and any left behind or shared with another site.");
+define("DBLAN_MULTISITE_CREATE", "Create a new site");
+define("DBLAN_SITE_FOLDERS", "Site folders");
+define("DBLAN_SITE_FOLDERS_HELP", "e107 keeps each site's uploads and runtime files in a folder named by a hash of its database name and table prefix, so several sites can share one copy of e107. The folders below sit beside this site's own.");
+define("DBLAN_SITE_FOLDER_COLUMN_FOLDER", "Folder");
+define("DBLAN_SITE_FOLDER_COLUMN_STATUS", "Status");
+define("DBLAN_SITE_FOLDER_COLUMN_FILES", "Files");
+define("DBLAN_SITE_FOLDER_COLUMN_NEWEST", "Newest file");
+define("DBLAN_SITE_FOLDER_COLUMN_SIZE", "Size");
+define("DBLAN_SITE_FOLDER_ACTIVE", "In use by this site");
+define("DBLAN_SITE_FOLDER_KNOWN_BAD", "Known bad");
+define("DBLAN_SITE_FOLDER_KNOWN_BAD_HELP", "e107 v2.3.4 to v2.3.12 saved files here when the configuration carried no site_path. No site uses this folder on purpose.");
+define("DBLAN_SITE_FOLDER_STRAY", "Not used by this site");
+define("DBLAN_SITE_FOLDER_STRAY_HELP", "Left behind by a database name or prefix change, a restore or an edited site_path, or in use by another site that shares this copy of e107.");
+define("DBLAN_SITE_FOLDER_MULTISITE_CAVEAT", "If several sites share this copy of e107, a folder listed here may belong to one of them. Leave it alone in that case.");
+define("DBLAN_SITE_FOLDER_CUSTOM_LAYOUT", "This site keeps its media outside the hashed folder layout, so there are no site folders to compare.");
+define("DBLAN_SITE_FOLDER_MERGE", "Merge into [x]");
+define("DBLAN_SITE_FOLDER_REMOVE", "Remove empty folder");
+define("DBLAN_SITE_FOLDER_MERGED", "[x] file(s) moved from [y] into [z].");
+define("DBLAN_SITE_FOLDER_COLLISIONS", "These files stayed in [x] because [y] already holds a file of the same name:");
+define("DBLAN_SITE_FOLDER_FAILED", "These files could not be moved:");
+define("DBLAN_SITE_FOLDER_CONTENT_REFERENCES", "Content still refers to the old folder by its full path in: [x]. Those entries need editing by hand.");
+define("DBLAN_SITE_FOLDER_REMOVED", "The folder [x] was removed.");
+define("DBLAN_SITE_FOLDER_REMOVE_FAILED", "The folder [x] still holds files and was not removed.");
