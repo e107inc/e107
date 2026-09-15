@@ -71,6 +71,14 @@ class MysqlPlatform implements PlatformInterface
 	/**
 	 * @return string
 	 */
+	public function quoteRegexpLiteral($value)
+	{
+		return addcslashes((string) $value, '.\\+*?[^]$(){}=!<>|:-#/');
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getDefaultCharset()
 	{
 		return 'utf8mb4';

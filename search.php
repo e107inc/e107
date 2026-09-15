@@ -808,7 +808,17 @@ class search_front extends e_shortcode
 						
 						$where = (method_exists($obj,'where')) ? $obj->where($_GET) : "";
 						
-						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],"<div class='alert alert-danger'>".LAN_198."</div>"), $where , $this->search_info[$key]['order']);
+						$noResults = varset($this->search_info[$key]['no_results'],"<div class='alert alert-danger'>".LAN_198."</div>");
+
+						try
+						{
+							$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', $noResults, $where , $this->search_info[$key]['order']);
+						}
+						catch(InvalidArgumentException $e)
+						{
+							e107::getDebug()->log('Search area '.$key.' declares a field, an ordering or a table the query cannot be built from: '.$e->getMessage());
+							$ps = array('text' => $noResults, 'results' => 0);
+						}
 
 						//if(e_DEBUG)
 					//	{
