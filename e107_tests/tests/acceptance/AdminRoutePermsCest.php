@@ -74,6 +74,9 @@ class AdminRoutePermsCest
 
 	const ROUTE_EDIT = '/e107_admin/users.php?mode=main&action=edit&id=';
 
+	/** The dedicated Set user class page. The row id goes on the end. */
+	const ROUTE_USERCLASS = '/e107_admin/users.php?mode=main&action=userclass&id=';
+
 	/** The user list, and the batch that hangs off it. */
 	const ROUTE_LIST = '/e107_admin/users.php?mode=main&action=list';
 
@@ -95,6 +98,15 @@ class AdminRoutePermsCest
 
 	/** PRIVATEMENU, whose userclass_editclass is 254, a class every administrator holds. */
 	const MANAGED_CLASS = 1;
+
+	/**
+	 * Members. The stock install seeds the row with userclass_editclass 250, and
+	 * a site missing the row falls back to the same, so a main administrator is
+	 * the only one who manages it until somebody edits that field. Every
+	 * logged-in account holds the class at runtime whether or not the column
+	 * says so, which is why losing it from the column costs no access.
+	 */
+	const MEMBER_CLASS = 253;
 
 	/** An account awaiting activation, which is what the mass reset acts on. */
 	const PENDING_USER = 'p7rppending';
@@ -1436,6 +1448,72 @@ class AdminRoutePermsCest
 	}
 
 	/**
+	 * The Set user class page writes what its boxes posted, so a class it drew
+	 * no box for is a class the save silently drops, and a box the caller never
+	 * moved used to cost them the rest of the submission.
+	 *
+	 * The victim holds 250, which the page's option list leaves out, and 253,
+	 * which it now offers and ticks. A delegated administrator adds 1. All
+	 * three ids have to be in the column afterwards: 1 because the submission
+	 * ran, 253 because a pre-ticked box is not a grant, and 250 because a form
+	 * governs the controls it drew and no others.
+	 */
+	public function theSetUserClassPageKeepsTheClassesItsBoxesDidNotMove(AcceptanceTester $I)
+	{
+		$I->wantTo('Save a user class change without discarding what the page never offered');
+
+		$victimId = $this->seedVictim($I, self::BARRED_CLASS.','.self::MEMBER_CLASS);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendUserclassPage($I, $victimId, array(self::MEMBER_CLASS, self::MANAGED_CLASS));
+
+		$stored = explode(',', (string) $I->grabFromDatabase('e107_user', 'user_class',
+			array('user_id' => $victimId)));
+
+		$I->assertContains((string) self::MANAGED_CLASS, $stored,
+			'The Set user class page refused a delegated administrator the class change it asked '
+			.'for. Class '.self::MEMBER_CLASS.' is ticked on arrival and carries userclass_editclass '
+			.self::BARRED_CLASS.', so a rule applied per posted id abandons the whole submission '
+			.'over a box nobody moved.');
+
+		$I->assertContains((string) self::MEMBER_CLASS, $stored,
+			'The save dropped class '.self::MEMBER_CLASS.', which the page had drawn ticked. A '
+			.'delegated administrator cannot re-tick it, so nothing on any admin screen puts it back.');
+
+		$I->assertContains((string) self::BARRED_CLASS, $stored,
+			'The save dropped class '.self::BARRED_CLASS.', which the page drew no box for at all. '
+			.'A form governs the controls it drew, and the option list it rendered from is the only '
+			.'thing that says which those were.');
+	}
+
+	/**
+	 * The mirror of the case above: measuring the change rather than each
+	 * posted id must still refuse a change the caller may not make.
+	 */
+	public function aDelegatedAdministratorStillCannotSetABarredUserClassOnTheSetUserClassPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a Set user class submission that grants a class this administrator may not manage');
+
+		$victimId = $this->seedVictim($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendUserclassPage($I, $victimId, array(self::MANAGED_CLASS));
+
+		$I->assertSame((string) self::MANAGED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'The Set user class page no longer writes a class this administrator may manage, so the '
+			.'refusal asserted below is a broken page rather than an authorisation boundary.');
+
+		$this->sendUserclassPage($I, $victimId, array(self::MANAGED_CLASS, self::BARRED_CLASS));
+
+		$I->assertSame((string) self::MANAGED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'A delegated administrator holding 4 put '.self::VICTIM_USER.' in class '
+			.self::BARRED_CLASS.' by posting userclass[] to the Set user class page. That class '
+			.'carries userclass_editclass '.self::BARRED_CLASS.', which this account does not hold.');
+	}
+
+	/**
 	 * The third road into the column, and the one that never goes near the
 	 * model layer: users_admin_ui::AddSubmitTrigger() hands $_POST to
 	 * validatorClass::validateFields(), where user_class is declared with
@@ -1480,13 +1558,19 @@ class AdminRoutePermsCest
 
 		$I->amOnPage(self::ROUTE_ADD);
 		$I->sendPostRequest(self::ROUTE_ADD,
-			$this->quickAddPayload($I, null, null, array(self::MANAGED_CLASS)));
+			$this->quickAddPayload($I, null, null, array(self::MEMBER_CLASS, self::MANAGED_CLASS)));
 
-		$I->assertContains((string) self::MANAGED_CLASS,
-			explode(',', (string) $I->grabFromDatabase('e107_user', 'user_class',
-				array('user_loginname' => self::CREATED_USER))),
+		$stored = explode(',', (string) $I->grabFromDatabase('e107_user', 'user_class',
+			array('user_loginname' => self::CREATED_USER)));
+
+		$I->assertContains((string) self::MANAGED_CLASS, $stored,
 			'The quick-add route no longer creates an account in a class this administrator may '
 			.'manage, so the refusal above is a broken route rather than an authorisation boundary.');
+
+		$I->assertContains((string) self::MEMBER_CLASS, $stored,
+			'The quick-add route dropped class '.self::MEMBER_CLASS.', which the form ticks for '
+			.'every new account. The route reads the posted list, so the box has to reach the '
+			.'column and a delegated administrator has to be allowed to leave it as it arrived.');
 	}
 
 	// -----------------------------------------------------------------
@@ -1619,6 +1703,24 @@ class AdminRoutePermsCest
 			'etrigger_delete'         => array($id => $id),
 			'etrigger_delete_confirm' => 'Confirm',
 			'delete_confirm_value'    => $id,
+		));
+	}
+
+	/**
+	 * Post the Set user class page the way its own form posts: the checkboxes
+	 * are userclass[], the row id is both on the query string and in the hidden
+	 * field, and the submission is the update button.
+	 *
+	 * @param int $id row to apply it to
+	 * @param array $classes class ids the boxes are ticked for
+	 * @return void
+	 */
+	private function sendUserclassPage(AcceptanceTester $I, $id, array $classes)
+	{
+		$this->postWithToken($I, self::ROUTE_USERCLASS.$id, array(
+			'etrigger_updateclass' => 'update',
+			'userid'               => $id,
+			'userclass'            => $classes,
 		));
 	}
 
