@@ -1125,16 +1125,27 @@ class e107_db_debug
 			var_dump($message);
 			$content = ob_get_clean();
 
-			$bt = debug_backtrace();
+			$this->aLog[] = $this->traceRow($content, debug_backtrace(), $TraceLev);
 
-			$this->aLog[] = array(
-				'Message'  => $content,
-				'Function' => (isset($bt[$TraceLev]['type']) && ($bt[$TraceLev]['type'] == '::' || $bt[$TraceLev]['type'] == '->') ? $bt[$TraceLev]['class'] . $bt[$TraceLev]['type'] . $bt[$TraceLev]['function'] . '()' : $bt[$TraceLev]['function']) . '()',
-				'File'     => varset($bt[$TraceLev]['file']),
-				'Line'     => varset($bt[$TraceLev]['line'])
+		}
+
+
+		/**
+		 * Debug log row naming the caller $level frames out, {@see e107_db_debug::log()}.
+		 */
+		private function traceRow($message, array $bt, $level)
+		{
+
+			$frame = isset($bt[$level]) ? $bt[$level] : array();
+			$origin = $frame ?: (array) end($bt);
+			$scope = (isset($frame['class'], $frame['type']) && ($frame['type'] === '::' || $frame['type'] === '->')) ? $frame['class'] . $frame['type'] : '';
+
+			return array(
+				'Message'  => $message,
+				'Function' => isset($frame['function']) ? $scope . $frame['function'] . '()' : '{main}',
+				'File'     => varset($origin['file']),
+				'Line'     => varset($origin['line'])
 			);
-
-			// $this->aLog[] =	array ('Message'   => $content, 'Function' => '', 	'File' => '', 'Line' => '' 	);
 
 		}
 
@@ -1166,13 +1177,7 @@ class e107_db_debug
 
 			if($TraceLev)
 			{
-				$bt = debug_backtrace();
-				$this->aLog[] = array(
-					'Message'  => $message,
-					'Function' => (isset($bt[$TraceLev]['type']) && ($bt[$TraceLev]['type'] == '::' || $bt[$TraceLev]['type'] == '->') ? $bt[$TraceLev]['class'] . $bt[$TraceLev]['type'] . $bt[$TraceLev]['function'] . '()' : $bt[$TraceLev]['function']) . '()',
-					'File'     => varset($bt[$TraceLev]['file']),
-					'Line'     => varset($bt[$TraceLev]['line'])
-				);
+				$this->aLog[] = $this->traceRow($message, debug_backtrace(), $TraceLev);
 			}
 			else
 			{

@@ -55,8 +55,27 @@
 
 
 			$result = $this->dbg->Show_Log();
-			$this->assertStringContainsString('e107_db_debugTest->testLog()',$result);
+			$this->assertStringContainsString('e107_db_debugTest->testLog()&nbsp;',$result);
+			$this->assertStringNotContainsString('()()', $result);
 
+		}
+
+		public function testLogWithoutTheRequestedTraceFrame()
+		{
+			$this->dbg->active(true);
+			$res = $this->dbg->log('hello world', 999);
+			$this->assertTrue($res, 'db_debug->log() method returned false.');
+
+			$result = $this->dbg->Show_Log();
+			$this->assertStringContainsString('{main}', $result);
+		}
+
+		public function testDumpWithoutTheRequestedTraceFrame()
+		{
+			$this->dbg->dump('hello world', 999);
+
+			$result = $this->dbg->Show_Log();
+			$this->assertStringContainsString('{main}', $result);
 		}
 
 		public function testShow_Performance()
