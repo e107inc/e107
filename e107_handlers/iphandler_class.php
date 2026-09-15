@@ -967,7 +967,7 @@ class eIPHandler
 			// Found banlist entry in table here
 			if(($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
 			{ // Ban has expired - delete from DB
-				$sql->delete('banlist', $query);
+				$sql->delete('banlist', '`banlist_id` = '.(int) $row['banlist_id']);
 				$this->regenerateFiles();
 
 				return true;
@@ -980,7 +980,7 @@ class eIPHandler
 				$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
 				$updateQry = array(
 					'banlist_banexpires'    => (time() + ($dur * 60 * 60)),
-					'WHERE'                 => "banlist_ip ='".$row['banlist_ip']."'"
+					'WHERE'                 => '`banlist_id` = '.(int) $row['banlist_id']
 				);
 
 				$sql->update('banlist', $updateQry);
@@ -2126,21 +2126,18 @@ class banlistManager
 
 	/**
 	 *	Update expiry time for IP addresses that have accessed the site while banned.
-	 *	Processes the entries in the 'ban retrigger' action file, and deletes the file
+	 *	Processes the entries in the 'ban retrigger' action file, and deletes the file.
+	 *	Where an address carries more than one ban, the one still in force is the one retriggered,
+	 *	then the highest ban type, which is the order the ban check itself enforces them in.
 	 *
 	 *	Needs to be called from a cron job, at least once per hour, and ideally every few minutes. Otherwise banned users who access
 	 *	the site in the period since the last call to this routine may be able to get in because their ban has expired. (Unlikely to be
 	 *	an issue in practice)
 	 *
 	 *	@return int number of IP addresses updated
-	 *
-	 *	@todo - implement cron job and test
 	 */
 	public function banRetriggerAction()
 	{
-		//if (!e107::getPref('ban_retrigger')) return 0;		// Should be checked earlier
-
-		$numEntry = 0;			// Make sure this variable declared before passing it - total number of log entries.
 		$ipAction = array();	// Array of IP addresses to action
 		$fileName = $this->ourConfigDir.eIPHandler::BAN_FILE_RETRIGGER_NAME.eIPHandler::BAN_FILE_EXTENSION;
 		$entries = file($fileName);
@@ -2150,34 +2147,41 @@ class banlistManager
 		}
 		@unlink($fileName);				// Delete the action file now we've read it in.
 		
-		// Scan the list completely before doing any processing - this will ensure we only process the most recent entry for each IP address
 		while (count($entries) > 0)
 		{
 			$line = array_shift($entries);
 			$info = $this->splitLogEntry($line);
 			if ($info['banReason'] < 0)
 			{
-				$ipAction[$info['banIP']] = array('date' => $info['banDate'], 'reason' => $info['banReason']);			// This will result in us gathering the most recent access from each IP address
+				$ipAction[$info['banIP']] = true;
 			}
 		}
 
-		if (count($ipAction) == 0) return 0;				// Nothing more to do
+		if (count($ipAction) == 0) return 0;
 
 		// Now run through the database updating times
 		$numRet = 0;
 		$pref['ban_durations'] = e107::getPref('ban_durations');
 		$ourDb = e107::getDb();		// Should be able to use $sql, $sql2 at this point
 		$writeDb = e107::getDb('sql2');
+		$inForceFirst = '(`banlist_banexpires` = 0 OR `banlist_banexpires` > '.(int) time().') DESC';
 
-		foreach ($ipAction as $ipKey => $ipInfo)
+		foreach (array_keys($ipAction) as $ipKey)
 		{
-			if ($ourDb->select('banlist', '*', "`banlist_ip`='".$ourDb->escape($ipKey)."'") === 1)
+			if ($ourDb->select('banlist', '*', "`banlist_ip`='".$ourDb->escape($ipKey)."' ORDER BY ".$inForceFirst.", `banlist_bantype` DESC"))
 			{
 				if ($row = $ourDb->fetch())
 				{
-					// @todo check next line
-					$writeDb->update('banlist',
-					'`banlist_banexpires` = '.intval($row['banlist_banexpires'] + $pref['ban_durations'][$row['banlist_banreason']]));
+					if (empty($pref['ban_durations'][$row['banlist_bantype']]))
+					{
+						continue;
+					}
+
+					$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
+					$writeDb->update('banlist', array(
+						'banlist_banexpires' => time() + ($dur * 60 * 60),
+						'WHERE'              => '`banlist_id` = '.(int) $row['banlist_id']
+					));
 					$numRet++;
 				}
 			}
