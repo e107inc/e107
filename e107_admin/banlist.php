@@ -284,7 +284,8 @@ class banlist_ui extends e_admin_ui
 
 			// Character options for import & export
 			$separator_char = array(1 => ',', 2 => '|');
-			$quote_char = array(1 => '(none)', 2 => "'", 3 => '"');
+			$quote_char = array(1 => '', 2 => "'", 3 => '"');
+			$quote_labels = array(1 => '(none)') + $quote_char;
 
 			$frm = e107::getForm();
 			$mes = e107::getMessage();
@@ -295,7 +296,7 @@ class banlist_ui extends e_admin_ui
 			{
 				require_once(e_HANDLER . 'upload_handler.php');
 
-				if(($files = process_uploaded_files(e_UPLOAD, false, array('overwrite' => true, 'max_file_count' => 1, 'file_mask' => 'csv'))) === false)
+				if(($files = process_uploaded_files(e_UPLOAD, false, array('overwrite' => true, 'max_file_count' => 1, 'file_mask' => 'csv', 'max_upload_size' => banlistManager::CSV_IMPORT_MAX_BYTES))) === false)
 				{ // Invalid file
 					$error = true;
 					$mes->addError(BANLAN_47);
@@ -312,12 +313,59 @@ class banlist_ui extends e_admin_ui
 
 				if(!$error) // Got a file of some sort
 				{
-					$message = process_csv(e_UPLOAD . $files[0]['name'],
-						intval(varset($_POST['ban_over_import'], 0)),
-						intval(varset($_POST['ban_over_expiry'], 0)),
-						$separator_char[intval(varset($_POST['ban_separator'], 1))],
-						$quote_char[intval(varset($_POST['ban_quote'], 3))]);
-					e107::getLog()->add('BANLIST_07', 'File: ' . e_UPLOAD . $files[0]['name'] . '<br />' . $message);
+					$importFile = e_UPLOAD . $files[0]['name'];
+
+					$result = $ipAdministrator->importBanlistCsv($importFile, array(
+						'replaceImported' => !empty($_POST['ban_over_import']),
+						'useFileExpiry'   => !empty($_POST['ban_over_expiry']),
+						'separator'       => varset($separator_char[(int) varset($_POST['ban_separator'], 1)], ','),
+						'quote'           => varset($quote_char[(int) varset($_POST['ban_quote'], 3)], '"'),
+						'adminId'         => ADMINID,
+					));
+
+					unlink($importFile);
+
+					if($result['fatal'] !== '')
+					{
+						$mes->addError($result['fatal']);
+					}
+					elseif($result['imported'] > 0)
+					{
+						$mes->addSuccess(str_replace('[y]', $result['imported'], BANLAN_51) . ' ' . $files[0]['name']);
+					}
+					else
+					{
+						$mes->addWarning(defset('BANLAN_IMPORT_NOTHING', "CSV import: No entries were imported."));
+					}
+
+					if($result['duplicates'] > 0)
+					{
+						$mes->addInfo(str_replace('[x]', $result['duplicates'], defset('BANLAN_IMPORT_DUPLICATES', "CSV import: [x] entries already on the ban list were skipped.")));
+					}
+
+					foreach($result['warnings'] as $warning)
+					{
+						$mes->addWarning($warning);
+					}
+
+					$shown = 0;
+					foreach($result['errors'] as $lineNum => $why)
+					{
+						if(++$shown > 10)
+						{
+							$mes->addWarning(str_replace('[x]', count($result['errors']) - 10, defset('BANLAN_IMPORT_MORE_SKIPPED', "CSV import: [x] more lines were not imported.")));
+							break;
+						}
+						$mes->addWarning(str_replace(array('[x]', '[y]'), array($lineNum, $why), defset('BANLAN_IMPORT_LINE_SKIPPED', "CSV import: Line [x] was not imported: [y]")));
+					}
+
+					$summary = e107::getParser()->lanVars(defset('BANLAN_IMPORT_LOG_SUMMARY', "File: [file]<br />[imported] imported, [duplicates] duplicates, [rejected] rejected"), array(
+						'file'       => $importFile,
+						'imported'   => $result['imported'],
+						'duplicates' => $result['duplicates'],
+						'rejected'   => count($result['errors']),
+					));
+					e107::getLog()->add('BANLIST_07', $summary . ($result['fatal'] !== '' ? '<br />' . $result['fatal'] : ''));
 				}
 
 			}
@@ -354,7 +402,7 @@ class banlist_ui extends e_admin_ui
 			$text .= "<tr>
 				<td>" . BANLAN_79 . "</td>
 				<td>" . $frm->select('ban_separator', $separator_char) . ' ' . BANLAN_37 . "</td>
-			<td>" . $frm->select('ban_quote', $quote_char) . ' ' . BANLAN_38 . "</td></tr>";
+			<td>" . $frm->select('ban_quote', $quote_labels) . ' ' . BANLAN_38 . "</td></tr>";
 
 			$text .= "
 	
@@ -397,14 +445,12 @@ class banlist_ui extends e_admin_ui
 								<tr>
 				<td>" . BANLAN_80 . "</td>
 				<td>" . $frm->select('ban_separator', $separator_char) . ' ' . BANLAN_37 . "</td>
-				<td>" . $frm->select('ban_quote', $quote_char) . ' ' . BANLAN_38 . "</td></tr>
+				<td>" . $frm->select('ban_quote', $quote_labels) . ' ' . BANLAN_38 . "</td></tr>
 					</tbody>
 						</table>
 						<div class='buttons-bar center'>
 						" . $frm->admin_button('ban_import', LAN_IMPORT , 'import') . "
 						</div>
-	
-	
 					</fieldset>
 				</form>
 			";
