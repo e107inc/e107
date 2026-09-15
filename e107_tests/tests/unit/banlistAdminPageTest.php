@@ -37,6 +37,26 @@ class banlistAdminPageTest extends \Test\Unit
 			. 'or e_admin_controller_ui::_handleListBatch() treats "delete-all" as a column name.');
 	}
 
+	public function testEveryGlobalFunctionCallOnTheBanlistPageResolves()
+	{
+		require_once(e_HANDLER . 'upload_handler.php');
+
+		$declared = $this->declaredFunctions($this->page);
+		$missing = array();
+
+		foreach($this->globalFunctionCalls($this->page) as $call)
+		{
+			if(!function_exists($call) && !in_array($call, $declared, true))
+			{
+				$missing[] = $call;
+			}
+		}
+
+		$this->assertSame(array(), $missing,
+			'banlist.php calls global functions that are defined nowhere, '
+			. 'so reaching them is a fatal: ' . implode(', ', $missing));
+	}
+
 	public function testBanlistPageCallsNoHelperOwnedByTheExportPage()
 	{
 		$leaked = array_values(array_intersect(

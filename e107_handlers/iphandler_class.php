@@ -86,7 +86,7 @@ class eIPHandler
 	const BAN_TYPE_USER = 		-6;				/// User is banned
 												// Spare value
 	const BAN_TYPE_UNKNOWN = 	-8;
-	const BAN_TYPE_TEMPORARY =	-9;				/// Used during CSV import - giving it this value highlights problems
+	const BAN_TYPE_TEMPORARY =	-9;				/// Left behind by a v2.3.0 or earlier CSV import that died mid-run; shown on the banlist screen, enforced by nothing
 
 	const BAN_TYPE_WHITELIST = 	100;			/// Entry for whitelist - actually not a ban at all! Keep at this value for BC
 
@@ -1414,6 +1414,12 @@ class eIPHandler
  */
 class banlistManager
 {
+	const CSV_IMPORT_MAX_BYTES = 2097152;
+	const CSV_IMPORT_DELETE_CHUNK = 500;
+	const BAN_ENTRY_MAX_BYTES = 100;
+	const DELETE_GUARD_IMPORTED = 'imported';
+	const DELETE_GUARD_LAPSED = 'lapsed';
+
 	private $ourConfigDir = '';
 	public $banTypes = array();
 
@@ -1533,6 +1539,356 @@ class banlistManager
 		return $written;
 	}
 
+
+	/**
+	 *	Import ban list entries from a CSV file in the format written by e107_admin/banlist_export.php.
+	 *
+	 *	@param string $filename Path to the CSV file to ingest.
+	 *	@param array $options replaceImported (bool), useFileExpiry (bool), separator (string), quote (string), adminId (int).
+	 *	@return array imported (int), duplicates (int), errors (line number => reason), fatal (string, empty on success), warnings (array, empty where every row went as asked).
+	 */
+	public function importBanlistCsv($filename, $options = array())
+	{
+		$result = array('imported' => 0, 'duplicates' => 0, 'errors' => array(), 'fatal' => '', 'warnings' => array());
+
+		$replaceImported = !empty($options['replaceImported']);
+		$useFileExpiry = !empty($options['useFileExpiry']);
+		$separator = (string) varset($options['separator'], ',');
+		$quote = (string) varset($options['quote'], '"');
+		$adminId = (int) varset($options['adminId'], 0);
+
+		if(strlen($separator) !== 1)
+		{
+			$separator = ',';
+		}
+
+		if($quote !== '' && strlen($quote) !== 1)
+		{
+			$quote = '"';
+		}
+
+		if(!is_file($filename) || !is_readable($filename))
+		{
+			$result['fatal'] = BANLAN_IMPORT_UNREADABLE;
+			return $result;
+		}
+
+		if(filesize($filename) > self::CSV_IMPORT_MAX_BYTES)
+		{
+			$result['fatal'] = str_replace('[x]', self::CSV_IMPORT_MAX_BYTES, BANLAN_IMPORT_TOO_LARGE);
+			return $result;
+		}
+
+		if(($fh = fopen($filename, 'rb')) === false)
+		{
+			$result['fatal'] = BANLAN_IMPORT_UNREADABLE;
+			return $result;
+		}
+
+		if(fread($fh, 3) !== "\xEF\xBB\xBF")
+		{
+			rewind($fh);
+		}
+
+		$sql = e107::getDb();
+		$ipHandler = e107::getIPHandler();
+
+		$durations = e107::getPref('ban_durations');
+		$defaultHours = is_array($durations) && isset($durations[eIPHandler::BAN_TYPE_IMPORTED]) ? (int) $durations[eIPHandler::BAN_TYPE_IMPORTED] : 0;
+		$defaultExpiry = ($defaultHours > 0) ? time() + ($defaultHours * 3600) : 0;
+
+		$replacedIds = array();
+
+		if($replaceImported)
+		{
+			$rows = $sql->createQueryBuilder()->select('banlist_id')->from('banlist')
+				->where('banlist_bantype', eIPHandler::BAN_TYPE_IMPORTED)
+				->fetchEach();
+			foreach($rows as $row)
+			{
+				$replacedIds[(int) $row['banlist_id']] = true;
+			}
+		}
+
+		$known = array();
+		$lapsedIds = array();
+		$now = time();
+		$rows = $sql->createQueryBuilder()->select('banlist_id', 'banlist_ip', 'banlist_banexpires')->from('banlist')
+			->where('banlist_bantype', '<', eIPHandler::BAN_TYPE_WHITELIST)
+			->where('banlist_bantype', '!=', eIPHandler::BAN_TYPE_TEMPORARY)
+			->fetchEach();
+		foreach($rows as $row)
+		{
+			if(isset($replacedIds[(int) $row['banlist_id']]))
+			{
+				continue;
+			}
+
+			$stored = Entry::fromText($row['banlist_ip'])->stored();
+			$stored = ($stored === null) ? $row['banlist_ip'] : $stored;
+			$expires = (int) $row['banlist_banexpires'];
+
+			if($expires === 0 || $expires > $now)
+			{
+				$known[$stored] = true;
+				continue;
+			}
+
+			$lapsedIds[$stored][] = (int) $row['banlist_id'];
+		}
+
+		$supersededIds = array();
+		$insertedIds = array();
+		$enclosure = ($quote === '') ? "\0" : $quote;
+		$line = 0;
+
+		@set_time_limit(0);
+
+		while(($fields = fgetcsv($fh, 0, $separator, $enclosure, '\\')) !== false)
+		{
+			$line++;
+
+			if($fields === array(null) || trim(implode('', $fields)) === '')
+			{
+				continue;
+			}
+
+			foreach($fields as $field)
+			{
+				if(strpos((string) $field, "\n") !== false || strpos((string) $field, "\r") !== false)
+				{
+					fclose($fh);
+					return $this->abortImport($result, $insertedIds, BANLAN_49.' '.$line);
+				}
+			}
+
+			if(count($fields) > 6)
+			{
+				$result['errors'][$line] = BANLAN_IMPORT_FIELDS_INVALID;
+				continue;
+			}
+
+			$entry = Entry::fromText(varset($fields[0], ''))->stored();
+
+			if($entry === null || strlen($entry) > self::BAN_ENTRY_MAX_BYTES)
+			{
+				$result['errors'][$line] = BANLAN_IMPORT_ENTRY_INVALID;
+				continue;
+			}
+
+			$datestamp = $this->parseImportDate(varset($fields[1], ''), time());
+			$expiry = $useFileExpiry ? $this->parseImportDate(varset($fields[2], ''), 0) : $defaultExpiry;
+			if($datestamp === false || $expiry === false)
+			{
+				$result['errors'][$line] = BANLAN_IMPORT_DATE_INVALID;
+				continue;
+			}
+
+			if(isset($known[$entry]))
+			{
+				$result['duplicates']++;
+				continue;
+			}
+			$known[$entry] = true;
+
+			if(isset($lapsedIds[$entry]))
+			{
+				$supersededIds = array_merge($supersededIds, $lapsedIds[$entry]);
+				unset($lapsedIds[$entry]);
+			}
+
+			$id = $sql->createQueryBuilder()->insert('banlist')->insertGetId(array(
+				'banlist_ip'         => $entry,
+				'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
+				'banlist_datestamp'  => $datestamp,
+				'banlist_banexpires' => $expiry,
+				'banlist_admin'      => $adminId,
+				'banlist_reason'     => $this->filterImportText(varset($fields[4], '')),
+				'banlist_notes'      => $this->filterImportText(varset($fields[5], '')),
+			));
+
+			if($id === false)
+			{
+				fclose($fh);
+				return $this->abortImport($result, $insertedIds, BANLAN_50.' '.$line);
+			}
+
+			$insertedIds[] = (int) $id;
+			$result['imported']++;
+		}
+
+		fclose($fh);
+
+		if($replaceImported && !empty($result['errors']))
+		{
+			return $this->abortImport($result, $insertedIds,
+				str_replace('[x]', count($result['errors']), BANLAN_IMPORT_REPLACE_INCOMPLETE));
+		}
+
+		$lapsedKept = $this->deleteBanRows($supersededIds, self::DELETE_GUARD_LAPSED);
+
+		if($lapsedKept > 0)
+		{
+			$result['warnings'][] = str_replace('[x]', $lapsedKept, BANLAN_IMPORT_LAPSED_KEPT);
+		}
+
+		if($replaceImported && !empty($replacedIds))
+		{
+			if($result['imported'] === 0)
+			{
+				$result['warnings'][] = BANLAN_IMPORT_REPLACE_NOTHING;
+			}
+			else
+			{
+				$replacedKept = $this->deleteBanRows(array_keys($replacedIds), self::DELETE_GUARD_IMPORTED);
+
+				if($replacedKept > 0)
+				{
+					$result['warnings'][] = str_replace('[x]', $replacedKept, BANLAN_IMPORT_REPLACE_KEPT);
+				}
+			}
+		}
+
+		if($result['imported'] > 0)
+		{
+			$ipHandler->regenerateFiles();
+		}
+
+		return $result;
+	}
+
+	/**
+	 *	Delete ban rows by id in chunks, each only while it is still the row the run decided to remove.
+	 *
+	 *	@param array $ids banlist_id values.
+	 *	@param string $guard DELETE_GUARD_IMPORTED or DELETE_GUARD_LAPSED to hold each row to what it was when the run decided about it; '' for rows the run wrote itself, which answer to nothing else.
+	 *	@return int how many of $ids are still in the table, counting the rows of a failed chunk and the rows a guard spared alike.
+	 */
+	private function deleteBanRows($ids, $guard = '')
+	{
+		$sql = e107::getDb();
+		$left = 0;
+
+		foreach(array_chunk(array_values($ids), self::CSV_IMPORT_DELETE_CHUNK) as $chunk)
+		{
+			$qb = $sql->createQueryBuilder()->delete('banlist')->whereIn('banlist_id', $chunk);
+
+			if($guard === self::DELETE_GUARD_IMPORTED)
+			{
+				$qb->where('banlist_bantype', eIPHandler::BAN_TYPE_IMPORTED);
+			}
+			elseif($guard === self::DELETE_GUARD_LAPSED)
+			{
+				$qb->where('banlist_banexpires', '>', 0)->where('banlist_banexpires', '<=', time());
+			}
+
+			$removed = $qb->execute();
+			$left += ($removed === false) ? count($chunk) : count($chunk) - $removed;
+		}
+
+		return $left;
+	}
+
+	/**
+	 *	Abandon a run that cannot finish: undo its inserts and say why, naming the rows left behind where the undo itself failed.
+	 *
+	 *	@param array $result Counts and per-line errors accumulated by the run.
+	 *	@param array $insertedIds banlist_id values inserted so far.
+	 *	@param string $reason LAN string naming the line that stopped the run.
+	 *	@return array
+	 */
+	private function abortImport($result, $insertedIds, $reason)
+	{
+		$result['imported'] = 0;
+		$result['duplicates'] = 0;
+		$left = $this->deleteBanRows($insertedIds);
+		$result['fatal'] = ($left === 0)
+			? $reason
+			: $reason.' '.str_replace('[x]', $left, BANLAN_IMPORT_ROLLBACK_FAILED);
+
+		return $result;
+	}
+
+	/**
+	 *	Parse the YYYYMMDD_HHMMSS stamp used by the CSV transfer format, {@see banlistManager::dateFormat()}.
+	 *
+	 *	e107_admin/banlist_export.php renders both stamps through {@see e_parse::toDate()}, which wraps its output in a span, so the field arrives with markup around it.
+	 *
+	 *	@param string $text Field content from the file.
+	 *	@param int $emptyDefault Timestamp to substitute for an empty field.
+	 *	@return int|false Unix timestamp, 0 for '0', or false when malformed.
+	 */
+	private function parseImportDate($text, $emptyDefault = 0)
+	{
+		$text = trim(strip_tags((string) $text));
+
+		if($text === '')
+		{
+			return $emptyDefault;
+		}
+
+		if($text === '0')
+		{
+			return 0;
+		}
+
+		if(!preg_match('/^(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})$/', $text, $parts))
+		{
+			return false;
+		}
+
+		if(!checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1]) || (int) $parts[4] > 23 || (int) $parts[5] > 59 || (int) $parts[6] > 59)
+		{
+			return false;
+		}
+
+		$stamp = mktime((int) $parts[4], (int) $parts[5], (int) $parts[6], (int) $parts[2], (int) $parts[3], (int) $parts[1]);
+
+		if($stamp === false || $stamp < 0 || $stamp > 4294967295)
+		{
+			return false;
+		}
+
+		return $stamp;
+	}
+
+	/**
+	 *	Reduce an imported reason or notes field to text that stores safely and survives the next export.
+	 *
+	 *	@param string $text Field content from the file.
+	 *	@return string
+	 */
+	private function filterImportText($text)
+	{
+		$text = trim((string) $text);
+
+		if($text === '')
+		{
+			return '';
+		}
+
+		if(preg_match('//u', $text) !== 1)
+		{
+			$text = (string) e107::getParser()->toUTF8($text);
+		}
+
+		$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+		$text = preg_replace('/[\x00-\x1F\x7F]+/', ' ', $text);
+		$text = e107::getParser()->filter($text, 'str');
+		$text = str_replace('\\', '&#092;', $text);
+
+		if(strlen($text) > 255)
+		{
+			$text = (string) substr($text, 0, 255);
+			while($text !== '' && preg_match('//u', $text) !== 1)
+			{
+				$text = (string) substr($text, 0, -1);
+			}
+			$text = (string) preg_replace('/&[^&;]{0,7}$/', '', $text);
+		}
+
+		return $text;
+	}
 
 	/**
 	 *	The ban type a row is enforced as: 0.7-era rows carry 0, or a positive code where the negative one is meant,
