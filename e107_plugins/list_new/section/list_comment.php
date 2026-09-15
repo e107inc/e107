@@ -24,13 +24,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-global $tp, $cobj;
-if(!is_object($cobj))
-{
-	require_once(e_HANDLER."comment_class.php");
-	$cobj = new comment;
-}
-
 class list_comment
 {
 	public $parent;
@@ -43,6 +36,12 @@ class list_comment
 	function getListData()
 	{
 		global $tp, $cobj;
+
+		if(!is_object($cobj))
+		{
+			require_once(e_HANDLER."comment_class.php");
+			$cobj = new comment;
+		}
 
 		$list_caption = $this->parent->settings['caption'];
 		$list_display = ($this->parent->settings['open'] ? "" : "none");

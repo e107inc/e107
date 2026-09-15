@@ -41,6 +41,7 @@ class listclass
 	public $admin;
 	public $settings;
 	public $row;
+	public $mode_content;
 
 	/**
 	 * constructor
@@ -115,7 +116,7 @@ class listclass
 		if (empty(	$listPrefs))
 		{
        		$listPrefs = $this->list_pref = $this->getDefaultPrefs();
-       		e107::getPlugConfig('list_new')->reset()->setPref($listPrefs)->save(true);
+       		e107::getPlugConfig('list_new')->reset()->setPref($listPrefs)->save(false, true, false);
     	}
     	return $listPrefs;
 		/*
@@ -172,6 +173,8 @@ class listclass
 	 */
 	function prepareSectionArray($mode)
 	{
+		$arr = array();
+
 		//section reference
 		for($i=0, $iMax = count($this->sections); $i< $iMax; $i++)
 		{
@@ -302,6 +305,12 @@ class listclass
 	 */
 	function getDefaultPrefs()
 	{
+		if(empty($this->sections))
+		{
+			$this->getSections();
+		}
+
+		e107::includeLan($this->plugin_dir."languages/".e_LANGUAGE."_admin_list_new.php");
 
 		$pref = e107::getPref();
 
@@ -494,28 +503,26 @@ class listclass
 			return;
 		}
 
-		//echo "parse: ".$area."_START<br />";
+		$records = (is_array($this->data) && isset($this->data['records'])) ? $this->data['records'] : '';
+
 		$text = $this->parseTemplate($area.'_START');
-		if(is_array($this->data['records']))
+		if(is_array($records))
 		{
-			foreach($this->data['records'] as $this->row)
+			foreach($records as $this->row)
 			{
 				$this->shortcodes->row = $this->row;
-				//echo "parse: ".$area."<br />";
 				$text .= $this->parseTemplate($area);
 			}
 		}
-		elseif(!is_array($this->data['records']) && $this->data['records'] != "")
+		elseif($records != "")
 		{
 			if($this->list_pref[$this->mode."_showempty"])
 			{
-//				$this->row['heading'] = $this->data['records'];
-				$this->shortcodes->row['heading'] = $this->data['records'];
-				//echo "parse: ".$area."<br />";
+				$this->row['heading'] = $records;
+				$this->shortcodes->row = $this->row;
 				$text .= $this->parseTemplate($area);
 			}
 		}
-		//echo "parse: ".$area."_END<br />";
 		$text .= $this->parseTemplate($area.'_END');
 		return $text;
 	}
@@ -528,7 +535,7 @@ class listclass
 	 */
 	function load_elist()
 	{
-		$listArray = '';
+		$listArray = array('records' => '');
 
 		//require is needed here instead of require_once, since both the menu and the page could be visible at the same time
 		if(is_array($this->content_types) && in_array($this->settings['section'], $this->content_types))
@@ -751,7 +758,7 @@ class listclass
 	 */
 	function displayTimelapse()
 	{
-		global $rs; //FIXME $frm
+		global $rs, $qs; //FIXME $frm
 
 		if(isset($this->list_pref['new_page_timelapse']) && $this->list_pref['new_page_timelapse'])
 		{
@@ -778,6 +785,8 @@ class listclass
 				$this->row['timelapse'] .= $rs->form_option($a, ($timelapse == $a ? '1' : '0'), $url.".".$a);
 			}
 			$this->row['timelapse'] .= $rs->form_select_close();
+
+			$this->shortcodes->row = $this->row;
 
 			return $this->parseTemplate('TIMELAPSE_TABLE');
 		}
