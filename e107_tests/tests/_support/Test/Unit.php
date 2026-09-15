@@ -118,6 +118,105 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * The tokens between the braces of one function or method of a source file, so a test can hold
+	 * an entry point that cannot be included to its structural obligations.
+	 *
+	 * @param string $path absolute path to a PHP source file
+	 * @param string $function the name declared after the function keyword, first declaration wins
+	 * @return array token_get_all() tokens, the body braces themselves excluded
+	 */
+	protected function functionBodyTokens($path, $function)
+	{
+		$this->assertFileExists($path);
+
+		$tokens = token_get_all(file_get_contents($path));
+		$start = null;
+
+		foreach($tokens as $i => $token)
+		{
+			if(!is_array($token) || $token[0] !== T_FUNCTION)
+			{
+				continue;
+			}
+
+			for($j = $i + 1, $n = count($tokens); $j < $n; $j++)
+			{
+				if(is_array($tokens[$j]) && $tokens[$j][0] === T_WHITESPACE)
+				{
+					continue;
+				}
+
+				if(is_array($tokens[$j]) && $tokens[$j][0] === T_STRING && $tokens[$j][1] === $function)
+				{
+					$start = $j;
+				}
+
+				break;
+			}
+
+			if($start !== null)
+			{
+				break;
+			}
+		}
+
+		$this->assertNotNull($start, $function.'() must be declared in '.$path.'.');
+
+		$body = array();
+		$depth = 0;
+
+		for($i = $start, $n = count($tokens); $i < $n; $i++)
+		{
+			$token = $tokens[$i];
+
+			if($token === '}')
+			{
+				$depth--;
+
+				if($depth === 0)
+				{
+					break;
+				}
+			}
+
+			if($depth > 0)
+			{
+				$body[] = $token;
+			}
+
+			if($token === '{' || (is_array($token)
+				&& ($token[0] === T_CURLY_OPEN || $token[0] === T_DOLLAR_OPEN_CURLY_BRACES)))
+			{
+				$depth++;
+			}
+		}
+
+		return $body;
+	}
+
+	/**
+	 * The names a function body mentions, in source order, one entry per occurrence.
+	 *
+	 * @param string $path absolute path to a PHP source file
+	 * @param string $function
+	 * @return array
+	 */
+	protected function namesIn($path, $function)
+	{
+		$names = array();
+
+		foreach($this->functionBodyTokens($path, $function) as $token)
+		{
+			if(is_array($token) && $token[0] === T_STRING)
+			{
+				$names[] = $token[1];
+			}
+		}
+
+		return $names;
+	}
+
+	/**
 	 * Runs $php in a subprocess that has booted class2.php, in CLI mode unless $e107 says otherwise.
 	 *
 	 * @param string $php

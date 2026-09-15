@@ -277,7 +277,12 @@ JS;
 
 class users_admin_ui extends e_admin_ui
 {
-		
+	/**
+	 * The classes the Set user class and Create User trees offer, read back by
+	 * {@see users_admin_ui::manageUserclass()} to tell a cleared box from a class it never rendered.
+	 */
+	const USERCLASS_TREE_OPTIONS = 'classes, member, no-excludes';
+
 	protected $pluginTitle = ADLAN_36;
 	protected $pluginName = 'core';
 	protected $eventName = 'user';
@@ -337,7 +342,7 @@ class users_admin_ui extends e_admin_ui
  		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'safestr',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'tab'=>0, 'type' => 'boolean', 'data'=>'int',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
 		'user_xup' 			=> array('title' => 'Xup',			'tab'=>0, 'noedit'=>true, 'type' => 'text', 'data'=>'str',	'width' => 'auto'),
-		'user_class' 		=> array('title' => LAN_USER_12,	'tab'=>0, 'type' => 'userclasses' , 'data'=>'safestr', 'inline'=>true, 'writeParms' => 'classlist=classes,new', 'readParms'=>'classlist=classes,new&defaultLabel=--', 'filter'=>true, 'batch'=>true),
+		'user_class' 		=> array('title' => LAN_USER_12,	'tab'=>0, 'type' => 'userclasses' , 'data'=>'safestr', 'inline'=>true, 'writeParms' => 'classlist=classes,new,member', 'readParms'=>'classlist=classes,new,member&defaultLabel=--', 'filter'=>true, 'batch'=>true),
 		'user_join' 		=> array('title' => LAN_USER_14,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
 		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
 		'user_currentvisit' => array('title' => LAN_USER_16,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
@@ -1814,21 +1819,22 @@ class users_admin_ui extends e_admin_ui
 			return false;
 		}
 
-		$curClass = array();
-		if($mode !== 'update')
-		{
-			$curClass = $sysuser->getValue('class') ? explode(',', $sysuser->getValue('class')) : array();
-        }
+		$stored = $sysuser->getValue('class');
 
-    	foreach ($uclass as $a)
+		if($mode === 'update')
+		{
+			$curClass = array_diff_key($this->classIdsIn($stored),
+				$e_userclass->uc_required_class_list(self::USERCLASS_TREE_OPTIONS, true));
+		}
+		else
+		{
+			$curClass = $stored ? explode(',', $stored) : array();
+		}
+
+    	foreach ((array) $uclass as $a)
 		{
 			$a = intval($a);
-			if(!$this->checkAllowed($a)) 
-			{
-				$mes->addError(USRLAN_231);
-				return false;
-			}
-			
+
 			if($a != 0) // if 0 - then do not add.
 			{
 				$curClass[] = $a;
@@ -1845,6 +1851,12 @@ class users_admin_ui extends e_admin_ui
 		}
 
         $curClass = array_unique($curClass);
+
+		if($this->refusesClassChange($curClass, $stored))
+		{
+			$mes->addError(USRLAN_231);
+			return false;
+		}
 
         $svar = is_array($curClass) ? implode(",", $curClass) : "";
 		$check = $sysuser->set('user_class', $svar)->save();
@@ -1937,7 +1949,7 @@ class users_admin_ui extends e_admin_ui
 					<tbody>
 					<tr>
 						<td>";
-		$text .= $e_userclass->vetted_tree('userclass', array($e_userclass,'checkbox_desc'), $sysuser->getValue('class'), 'classes, no-excludes');
+		$text .= $e_userclass->vetted_tree('userclass', array($e_userclass,'checkbox_desc'), $sysuser->getValue('class'), self::USERCLASS_TREE_OPTIONS);
 		$text .= '
 						</td>
 					</tr>
@@ -2264,14 +2276,18 @@ class users_admin_ui extends e_admin_ui
 		
 		$_POST['password2'] = $_POST['password1'] = $_POST['password'];
 
-		if($this->refusesClassChange(varset($_POST['class'], array()), ''))
+		$_POST['class'] = (array) varset($_POST['class'], array());
+
+		if(!$this->checkAllowed(e_UC_MEMBER))
+		{
+			$_POST['class'][] = e_UC_MEMBER;
+		}
+
+		if($this->refusesClassChange($_POST['class'], e_UC_MEMBER))
 		{
 			$this->refuseAdminAction('Refused a user class grant on the quick-add route');
 			$error = true;
 		}
-
-		// #1728 - Default value, because user will always be part of 'Members'
-		$_POST['class'][] =  e_UC_MEMBER;
 
 		// Now validate everything
 		$allData = validatorClass::validateFields($_POST, $userMethods->userVettingInfo, true);
@@ -2518,8 +2534,13 @@ class users_admin_ui extends e_admin_ui
 				</td>
 			</tr>";
 
-		if (!isset ($user_data['user_class'])) $user_data['user_class'] = varset($pref['initial_user_classes']);
-		$temp = $e_userclass->vetted_tree('class', array($e_userclass, 'checkbox_desc'), $user_data['user_class'], 'classes, no-excludes');
+		if (!isset ($user_data['user_class']))
+		{
+			$initial = $this->classIdsIn(varset($pref['initial_user_classes'])) + array(e_UC_MEMBER => e_UC_MEMBER);
+			$user_data['user_class'] = implode(',', $initial);
+		}
+
+		$temp = $e_userclass->vetted_tree('class', array($e_userclass, 'checkbox_desc'), $user_data['user_class'], self::USERCLASS_TREE_OPTIONS);
 
 		if ($temp)
 		{
