@@ -327,4 +327,49 @@ class searchCommentHandlersTest extends \Test\Unit
 			"The handler must still be titled when the plugin is not installed.\n" . $result['out']);
 		$this->assertSame(0, $result['exit'], $result['out']);
 	}
+
+	/**
+	 * Every handler assembles its own detail line, and {DETAILS} renders it verbatim.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/6298
+	 */
+	public function testHandlerDetailsSeparateLabelAuthorAndDate()
+	{
+		e107::coreLan('search');
+		$GLOBALS['con'] = e107::getDate();
+
+		$row = array(
+			'comment_datestamp' => 1674995700,
+			'comment_author' => '1.e107help',
+			'comment_comment' => 'A comment',
+			'comment_item_id' => 1,
+			'news_title' => 'A news item',
+			'page_id' => 1,
+			'page_title' => 'A page',
+			'user_name' => 'e107help',
+			'download_id' => 1,
+			'download_name' => 'A download',
+			'poll_id' => 1,
+			'poll_title' => 'A poll',
+		);
+
+		$handlers = array(
+			'com_search_0' => e_HANDLER . 'search/comments_news.php',
+			'com_search_page' => e_HANDLER . 'search/comments_page.php',
+			'com_search_profile' => e_HANDLER . 'search/comments_user.php',
+			'com_search_2' => e_HANDLER . 'search/comments_download.php',
+			'com_search_4' => e_PLUGIN . 'poll/search/search_comments.php',
+		);
+
+		foreach($handlers as $function => $path)
+		{
+			require_once($path);
+			$res = call_user_func($function, $row);
+
+			$this->assertStringStartsWith(LAN_SEARCH_7 . ' ', $res['detail'],
+				$path . ' must put a space between the label and the author.');
+			$this->assertStringContainsString(' ' . LAN_SEARCH_8 . ' ', $res['detail'],
+				$path . ' must space the date label away from the author and the date.');
+		}
+	}
 }

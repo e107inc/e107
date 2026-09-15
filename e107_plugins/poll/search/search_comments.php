@@ -27,7 +27,7 @@ function com_search_4($row) {
 	$res['pre_title'] = 'Posted in reply to poll: ';
 	$res['title'] = $row['poll_title'];
 	$res['summary'] = $row['comment_comment'];
-	$res['detail'] = LAN_SEARCH_7.$nick.LAN_SEARCH_8.$datestamp;
+	$res['detail'] = LAN_SEARCH_7." ".$nick." ".LAN_SEARCH_8." ".$datestamp;
 	return $res;
 }
 

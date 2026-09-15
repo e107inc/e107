@@ -72,12 +72,11 @@ class news_search extends e_search // include plugin-folder in the name.
 
 		$res = array();
 
-		$res['link'] 		= e107::getUrl()->create('news/view/item', $row);//$row['news_allow_comments'] ? "news.php?item.".$row['news_id'] : "comment.php?comment.news.".$row['news_id'];
+		$res['link'] 		= e107::getUrl()->create('news/view/item', $row);
 		$res['pre_title'] 	= $tp->toHTML($row['category_name'],false,'TITLE')." | ";
 		$res['title'] 		= $row['news_title'];
 		$res['summary'] 	= $row['news_body'].' '.$row['news_extended'];
-		$res['detail'] 		= LAN_SEARCH_3.$tp->toDate($row['news_datestamp'], "long");
-		$res['image']		= $row['news_thumbnail'];
+		$res['detail'] 		= LAN_SEARCH_3." ".$tp->toDate($row['news_datestamp'], "long");
 
 		return $res;
 
@@ -110,7 +109,4 @@ class news_search extends e_search // include plugin-folder in the name.
 
 
 }
-
-//Old v1.
-// $search_info[] = array('sfile' => e_PLUGIN.'chatbox_menu/search/search_parser.php', 'qtype' => CB_SCH_LAN_1, 'refpage' => 'chat.php', 'advanced' => e_PLUGIN.'chatbox_menu/search/search_advanced.php');
 

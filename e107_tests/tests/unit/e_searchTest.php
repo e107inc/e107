@@ -11,6 +11,9 @@
 
 	class e_searchTest extends \Test\Unit
 	{
+		/** Fixed so a compiled result can be compared against an expected string. */
+		const FIXTURE_DATESTAMP = 1674995700;
+
 		/** @var array */
 		private $installedBefore;
 
@@ -121,20 +124,27 @@
 		}
 
 		/**
+		 * The only result keys {@see e_search::parsesearch()} renders; a key outside this set reaches no page.
+		 *
+		 * @return array
+		 */
+		private static function renderedResultKeys()
+		{
+			return array('omit_result', 'pre_title', 'title', 'link', 'pre_summary', 'summary', 'detail', 'post_summary');
+		}
+
+		/**
 		 * Stands in for a plugin's search compile function; {@see e_search::parsesearch()} calls it per row.
 		 */
 		public function searchProbeResult($row)
 		{
-			return array(
-				'link'         => 'index.php',
-				'pre_title'    => '',
-				'title'        => $row['probe_title'],
-				'summary'      => $row['probe_summary'],
-				'detail'       => '',
-				'pre_summary'  => '',
-				'post_summary' => '',
-				'omit_result'  => false,
-			);
+			$res = array_fill_keys(self::renderedResultKeys(), '');
+
+			$res['link'] = 'index.php';
+			$res['title'] = $row['probe_title'];
+			$res['summary'] = $row['probe_summary'];
+
+			return $res;
 		}
 
 		/**
@@ -567,5 +577,321 @@
 			$method->setAccessible(true);
 
 			return $method->invoke(new e_search(''), $text);
+		}
+
+		/**
+		 * One fabricated row per shipped e_search addon, keyed by plugin directory.
+		 *
+		 * @return array
+		 */
+		private function searchAddonRows()
+		{
+			$datestamp = self::FIXTURE_DATESTAMP;
+
+			return array(
+				'_blank' => array(
+					'blank_id' => 1,
+					'blank_nick' => '1.Ahsanul',
+					'blank_message' => 'A message',
+					'blank_datestamp' => $datestamp,
+				),
+				'chatbox_menu' => array(
+					'cb_id' => 1,
+					'cb_nick' => '1.Ahsanul',
+					'cb_message' => 'A message',
+					'cb_datestamp' => $datestamp,
+				),
+				'download' => array(
+					'download_id' => 1,
+					'download_sef' => 'a-download',
+					'download_name' => 'A download',
+					'download_author' => 'Ahsanul',
+					'download_description' => 'A description',
+					'download_category_id' => 1,
+					'download_category_sef' => 'a-category',
+					'download_category_name' => 'A category',
+					'download_datestamp' => $datestamp,
+				),
+				'faqs' => array(
+					'faq_id' => 1,
+					'faq_info_id' => 1,
+					'faq_info_title' => 'A category',
+					'faq_info_sef' => 'a-category',
+					'faq_question' => 'A question',
+					'faq_answer' => 'An answer',
+					'faq_datestamp' => $datestamp,
+				),
+				'forum' => array(
+					'thread_id' => 1,
+					'thread_name' => 'A thread',
+					'thread_datestamp' => $datestamp,
+					'forum_id' => 1,
+					'forum_sef' => 'a-forum',
+					'forum_name' => 'A forum',
+					'user_id' => 1,
+					'user_name' => 'Ahsanul',
+					'post_id' => 1,
+					'post_entry' => 'A post',
+				),
+				'news' => array(
+					'news_id' => 1,
+					'news_sef' => 'a-news-item',
+					'news_title' => 'A news item',
+					'news_body' => 'A news body',
+					'news_extended' => '',
+					'category_name' => 'A category',
+					'news_datestamp' => $datestamp,
+				),
+				'page' => array(
+					'page_id' => 1,
+					'page_sef' => 'a-page',
+					'page_title' => 'A page',
+					'page_text' => 'A page body',
+					'page_metadscr' => 'A meta description',
+					'page_chapter' => 0,
+					'menu_image' => '',
+					'page_datestamp' => $datestamp,
+				),
+				'user' => array(
+					'user_id' => 1,
+					'user_name' => 'Ahsanul',
+					'user_signature' => 'A signature',
+					'user_join' => $datestamp,
+				),
+			);
+		}
+
+		/**
+		 * Instantiates an addon the way search.php does, by naming its class after its directory.
+		 *
+		 * @param string $plugin
+		 * @return e_search
+		 */
+		private function searchAddon($plugin)
+		{
+			e107::plugLan($plugin, 'global', true);
+			require_once(e_PLUGIN.$plugin.'/e_search.php');
+
+			$className = $plugin.'_search';
+			$addon = new $className();
+			$addon->setParams(array());
+
+			return $addon;
+		}
+
+		/**
+		 * Compiles one result through an addon.
+		 *
+		 * @param string $plugin
+		 * @param array $row
+		 * @return array
+		 */
+		private function compileSearchAddon($plugin, $row)
+		{
+			$addon = $this->searchAddon($plugin);
+
+			return $addon->compile($row);
+		}
+
+		/**
+		 * The column names an addon's own query selects, as they reach its compile().
+		 *
+		 * @param string $plugin
+		 * @return array
+		 */
+		private function searchAddonColumns($plugin)
+		{
+			$config = $this->searchAddon($plugin)->config();
+			$columns = array();
+
+			foreach($config['return_fields'] as $field)
+			{
+				$parts = explode('.', $field);
+				$columns[] = end($parts);
+			}
+
+			return $columns;
+		}
+
+		/**
+		 * Compiles one result the way a live search does, from the columns the addon's own query selects.
+		 *
+		 * @param string $plugin
+		 * @param array $row
+		 * @return array
+		 */
+		private function compileQueriedRow($plugin, $row)
+		{
+			$queried = array_intersect_key($row, array_flip($this->searchAddonColumns($plugin)));
+
+			return $this->compileSearchAddon($plugin, $queried);
+		}
+
+		/**
+		 * The row a compile() gets is the addon's own return_fields and nothing else, so a fixture may not invent one.
+		 */
+		public function testEverySearchAddonFixtureUsesOnlyReturnedColumns()
+		{
+			e107::coreLan('search');
+
+			foreach($this->searchAddonRows() as $plugin => $row)
+			{
+				$invented = array_values(array_diff(array_keys($row), $this->searchAddonColumns($plugin)));
+
+				self::assertSame(array(), $invented,
+					$plugin.' is handed a column its own query never selects, so whatever this row proves is fiction.');
+			}
+		}
+
+		/**
+		 * The addons below are enumerated by hand, so an addon nobody added a row for must fail rather than go unchecked.
+		 */
+		public function testEverySearchAddonHasAFixtureRow()
+		{
+			$shipped = array();
+
+			foreach(glob(e_PLUGIN.'*/e_search.php') as $path)
+			{
+				$shipped[] = basename(dirname($path));
+			}
+
+			$covered = array_keys($this->searchAddonRows());
+			sort($shipped);
+			sort($covered);
+
+			self::assertSame($shipped, $covered,
+				'Every shipped e_search addon needs a row in searchAddonRows(), including the _blank scaffold that plugin authors copy.');
+		}
+
+		/**
+		 * search_class.php joins pre_title straight onto the title, so the separator can only come from the addon.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6298
+		 */
+		public function testSearchAddonPreTitleEndsWithASeparator()
+		{
+			e107::coreLan('search');
+
+			$emptyForThisRow = array('forum', 'page');
+
+			foreach($this->searchAddonRows() as $plugin => $row)
+			{
+				$res = $this->compileSearchAddon($plugin, $row);
+				$preTitle = $res['pre_title'];
+
+				if(in_array($plugin, $emptyForThisRow))
+				{
+					self::assertSame('', $preTitle,
+						$plugin.' has no pre_title for a row like this one, and anything appearing here would need its own separator.');
+					continue;
+				}
+
+				self::assertStringEndsWith(' ', $preTitle,
+					$plugin.' ends its pre_title with "'.$preTitle.'", which runs straight into the result title.');
+			}
+		}
+
+		/**
+		 * A search addon builds $res['detail'] itself and {DETAILS} renders it verbatim.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6298
+		 */
+		public function testDatedDetailSeparatesLabelFromDate()
+		{
+			e107::coreLan('search');
+
+			$rows = $this->searchAddonRows();
+			$expected = LAN_SEARCH_3.' '.e107::getParser()->toDate(self::FIXTURE_DATESTAMP, 'long');
+
+			foreach(array('news', 'page') as $plugin)
+			{
+				$res = $this->compileSearchAddon($plugin, $rows[$plugin]);
+
+				self::assertSame($expected, $res['detail'],
+					'The '.$plugin.' result detail must put a space between the label and the date.');
+			}
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6298
+		 */
+		public function testForumDetailSeparatesLabelAuthorAndDate()
+		{
+			e107::coreLan('search');
+
+			$rows = $this->searchAddonRows();
+			$res = $this->compileSearchAddon('forum', $rows['forum']);
+
+			self::assertStringStartsWith(LAN_SEARCH_7.' ', $res['detail'],
+				'The forum result detail must put a space between the label and the author.');
+			self::assertStringContainsString(' '.LAN_SEARCH_8.' ', $res['detail'],
+				'The forum result detail must space the date label away from the author and the date.');
+		}
+
+		/**
+		 * A key the results page never reads renders nothing, so an addon that sets one is describing output it does not have.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6326
+		 */
+		public function testNoSearchAddonReturnsAKeyTheResultsPageIgnores()
+		{
+			e107::coreLan('search');
+
+			foreach($this->searchAddonRows() as $plugin => $row)
+			{
+				$res = $this->compileSearchAddon($plugin, $row);
+				$ignored = array_values(array_diff(array_keys($res), self::renderedResultKeys()));
+
+				self::assertSame(array(), $ignored,
+					$plugin.' returns a key the results page never reads, so whatever it holds reaches no page.');
+			}
+		}
+
+		/**
+		 * The forum search selects no thread_parent, so a row carrying one anyway must still be titled from the thread name beside it.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6326
+		 */
+		public function testForumResultIsTitledWithTheThreadTheRowBelongsTo()
+		{
+			e107::coreLan('search');
+
+			$rows = $this->searchAddonRows();
+			$res = $this->compileSearchAddon('forum', $rows['forum'] + array('thread_parent' => 1));
+
+			self::assertStringEndsWith(' | '.$rows['forum']['thread_name'], $res['title'],
+				'A forum result must be titled with the thread its post belongs to, including on a row that carries a thread_parent.');
+		}
+
+		/**
+		 * The author's own meta description is what a custom page result is summarised from.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6421
+		 */
+		public function testCustomPageSummaryComesFromItsMetaDescription()
+		{
+			e107::coreLan('search');
+
+			$rows = $this->searchAddonRows();
+			$res = $this->compileQueriedRow('page', $rows['page']);
+
+			self::assertSame($rows['page']['page_metadscr'], $res['summary'],
+				'A custom page with a meta description must be summarised from it rather than from its body.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6421
+		 */
+		public function testCustomPageWithoutAMetaDescriptionSummarisesFromTheBody()
+		{
+			e107::coreLan('search');
+
+			$rows = $this->searchAddonRows();
+			$row = $rows['page'];
+			$row['page_metadscr'] = '';
+			$res = $this->compileQueriedRow('page', $row);
+
+			self::assertSame($rows['page']['page_text'], $res['summary'],
+				'A custom page that left its meta description empty must still be summarised from its body.');
 		}
 	}
