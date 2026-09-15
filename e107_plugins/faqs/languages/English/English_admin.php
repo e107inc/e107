@@ -16,7 +16,6 @@ return [
     'LANA_FAQ_TAGS' => "Tags",
     'LANA_FAQ_TAGS_HELP' => "Comma separated tag list",
     'LANA_FAQ_METAK' => "Meta Keywords",
-    'LANA_FAQ_PREF_1' => "Allow submitting of FAQs by:",
     'LANA_FAQ_PREF_2' => "'Ask a Question' is limited to",
     'LANA_FAQ_PREF_3' => "Use Classic Layout",
     'LANA_FAQ_PREF_4' => "'Ask a Question' limit per user",

@@ -28,9 +28,7 @@ else
 
 
 
-require_once (e_HANDLER."form_handler.php"); // TODO - Remove outdated code 
 require_once (e_HANDLER."userclass_class.php");
-require_once (e_HANDLER."ren_help.php"); // TODO - Remove outdated code 
 require_once (e_HANDLER."comment_class.php");
 
 /*
@@ -50,13 +48,8 @@ if (!vartrue($FAQ_VIEW_TEMPLATE))
 e107::css('faqs','faqs.css');
 // require_once(HEADERF);
 
-// $pref['add_faq']=1;
-
-$rs 	= new form; // TODO - Remove outdated code 
 $cobj 	= new comment;
 
-$tp 	= e107::getParser(); 
-$frm 	= e107::getForm();
 
 $action = $id = $idx = '';
 
@@ -67,39 +60,8 @@ $from = (vartrue($from) ? $from : 0);
 $amount = 50;
 
 $faqpref        = e107::getPlugConfig('faqs')->getPref();
-$canAddFaq      = check_class(varset($faqpref['add_faq'], e_UC_NOBODY)) || e107::getUser()->isAdmin();
 $canAskQuestion = check_class(varset($faqpref['submit_question'], e_UC_NOBODY));
 $tokenOk        = !e_session::modeUsesToken() || !empty($_POST['e-token']);
-
-if (isset($_POST['faq_submit']) && $canAddFaq && $tokenOk)
-{
-	$message = "-";
-	if ($_POST['faq_question'] != "" || $_POST['data'] != "")
-	{
-		$faq_question 	= $tp->toDB($_POST['faq_question']);
-		$data 			= $tp->toDB($_POST['data']);
-		$count = $sql->createQueryBuilder()->from('faqs')->where('faq_parent', intval($_POST['faq_parent']))->count() + 1;
-
-		$sql->createQueryBuilder()->insert('faqs')->values(array(
-			'faq_parent'	=> intval($_POST['faq_parent']),
-			'faq_question'	=> $faq_question,
-			'faq_answer'	=> $data,
-			'faq_comment'	=> e107::getParser()->filter($_POST['faq_comment'], 'str'),
-			'faq_datestamp'	=> time(),
-			'faq_author'	=> USERID,
-			'faq_order'		=> $count,
-		))->execute();
-		
-		$message = LAN_FAQS_004; // FAQ_ADLAN_32;
-		
-		unset($faq_question, $data);
-	}
-	else
-	{
-		$message = LAN_REQUIRED_BLANK;
-	}
-	$id = $_POST['faq_parent'];
-}
 
 if (!empty($_POST['submit_a_question']) && $canAskQuestion && $tokenOk)
 {
@@ -210,13 +172,6 @@ if (isset($_POST['commentsubmit']))
 		e107::title( strip_tags($ftmp['title'].$ftmp['caption']));
 		require_once (HEADERF);
 		e107::getRender()->tablerender($ftmp['caption'], $ftmp['text']);
-	}
-
-
-	if($canAddFaq && ($action == "new" || $action == "edit"))
-	{
-		require_once (HEADERF);
-		$faq->add_faq($action, $id, $idx);
 	}
 
 require_once (FOOTERF);
@@ -655,16 +610,10 @@ class faq
 
 	function faq_footer($id='')
 	{
-        global $faqpref,$timing_start,$cust_footer, $CUSTOMPAGES, $CUSTOMHEADER, $CUSTOMHEADER;
-
         $tp = e107::getParser();
 
-        $text_menu .= "<div style='text-align:center;' ><br />
+        $text_menu = "<div style='text-align:center;' ><br />
         &nbsp;&nbsp;[&nbsp;<a href='faqs.php?main'>".LAN_FAQS_010."</a>&nbsp;]&nbsp;&nbsp;";
-
-        if(check_class($faqpref['add_faq'])){
-                $text_menu .="[&nbsp;<a href='faqs.php?new.$id'>".LAN_FAQS_ASK_A_QUESTION."</a>&nbsp;]";
-        }
 
         $text_menu .="</div>";
 
@@ -673,149 +622,6 @@ class faq
        	return $text_menu;
 
 		// require_once (FOOTERF);
-	}
-
-	function add_faq($action, $id, $idx)
-	{
-		global $rs; // TODO - remove old code
-
-		$tp 	= e107::getParser();
-		$sql 	= e107::getDb();
-		$ns 	= e107::getRender();
-
-		$userid = USERID;
-
-		$text .= "<table class='fborder' style=\"".USER_WIDTH."\" >
-        <tr>
-        <td colspan='2' class='forumheader3' style=\"width:80%; padding:0px\">";
-		$sql->createQueryBuilder()->select('*')->from('faqs')->where('faq_parent', (int) $id)->where('faq_author', (int) $userid)->orderBy('faq_id', 'ASC')->execute();
-		$text .= "<div style='width : auto; height : 110px; overflow : auto; '>
-        <table class='fborder' style=\"width:100%\">
-        <tr>
-        <td class='fcaption' style=\"width:70%\">".FAQ_ADLAN_49."</td>
-		<td class='fcaption' style='text-align:center'>".LAN_SETTINGS."</td></tr>
-        ";
-		while ($rw = $sql->fetch())
-		{
-			// list($pfaq_id, $pfaq_parent, $pfaq_question, $pfaq_answer, $pfaq_comment);
-			$rw['faq_question'] = substr($rw['faq_question'], 0, 50)." ... ";
-
-			$text .= "<tr>
-
-                  <td style='width:70%' class='forumheader3'>".($rw['faq_question'] ? $tp->toHTML($rw['faq_question']) : "[".NWSLAN_42."]")."</td>
-                  <td style='width:30%; text-align:center' class='forumheader3'>
-                  ".$rs->form_button("submit", "entry_edit_{$rw['faq_id']}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?edit.".$id.".".$rw['faq_id'].".'\"");
-			//     $text .= $rs -> form_button("submit", "entry_delete", FAQ_ADLAN_50, "onclick=\"document.location='".e_SELF."?delentry.$id.$pfaq_id'\"")."
-			$text .= "</td>
-                  </tr>";
-		}
-		$text .= "</table></div>";
-
-
-		// TODO - optimize
-		if ($action == "edit")
-		{
-			$sql->createQueryBuilder()->select('*')->from('faqs')->where('faq_id', (int) $idx)->execute();
-			$faqRow = $sql->fetch();
-			extract($faqRow); // get rid of this
-			$data = $faq_answer;
-		}
-
-		$text .= "</td>
-        </tr></table><form method=\"post\" action=\"".e_SELF."?cat.$id.$idx\" id=\"dataform\">
-        <table class='fborder' style=\"".USER_WIDTH."\" >
-        <tr>
-        <td class='fcaption' colspan='2' style='text-align:center'>";
-
-		$text .= (is_numeric($id)) ? LAN_EDIT : LAN_ADD; //LAN_ADD may not exist on the front end, but I dont think this code is used - Mikey.
-		$text .= " FAQ</td></tr>"; 
-
-		$text .= "
-        <tr>
-        <td class='forumheader3' style=\"width:20%\">".LAN_CATEGORY."</td>
-        <td class='forumheader3' style=\"width:80%\">";
-
-		$text .= "<select style='width:150px' class='tbox' id='faq_parent' name='faq_parent' >";
-		$prows = $sql->createQueryBuilder()->select('*')->from('faqs_info')
-			->where('faq_info_parent', '!=', '0')->fetchAll();
-		foreach ($prows as $prow)
-		{
-			//extract($row);
-			$selected = $prow['faq_info_id'] == $id ? " selected='selected'" : "";
-			$text .= "<option value=\"".$prow['faq_info_id']."\" $selected>".$prow['faq_info_title']."</option>";
-		}
-		$text .= " </select>
-            </td>
-            </tr>";
-
-		$text .= "
-        <tr>
-        <td class='forumheader3' style=\"width:20%\">".FAQ_ADLAN_51."</td>
-        <td class='forumheader3' style=\"width:80%\">
-
-        <input class=\"tbox\" type=\"text\" name=\"faq_question\" style=\"width:100%\" value=\"$faq_question\"  />
-        </td>
-        </tr>
-
-        <tr>
-        <td class='forumheader3' style=\"width:20%;vertical-align:top\">".FAQ_ADLAN_60."</td>
-        <td class='forumheader3' style=\"width:80%\">
-        <textarea id=\"data\" cols='15' class=\"tbox\" name=\"data\" style=\"width:100%\" rows=\"8\" onselect=\"storeCaret(this);\" onclick=\"storeCaret(this);\" onkeyup=\"storeCaret(this);\">$data</textarea>
-        <br />
-        <input class='helpbox' type=\"text\" id='helpb' name=\"helpb\" size=\"70\" style='width:100%' /><br />
-         ";
-		$text .= ren_help("addtext");
-
-		$text .= "<br /></td></tr>";
-
-		if (ADMIN)
-		{
-			$text .= "<tr>
-          <td class='forumheader3'  style=\"width:20%; vertical-align:top\">".FAQ_ADLAN_52."</td>";
-			require_once (e_HANDLER."userclass_class.php");
-			$text .= "<td class='forumheader3' >".r_userclass("faq_comment", $faq_comment, "", "public,guest,nobody,member,admin,classes")."</td>";
-			$text .= "
-          </tr>";
-		}
-		else
-		{
-			$text .= "<input type='hidden' name='faq_comment' value='0' />";
-		}
-		$text .= "
-
-        <tr>
-        <td class='forumheader' colspan=\"2\" style=\"text-align:center\">
-        ";
-
-		if ($action == "edit")
-		{
-			$text .= "<input class=\"button\" type=\"submit\" name=\"faq_edit_submit\" value=\"".FAQ_ADLAN_53."$faq_id\" />
-            <input type=\"hidden\" name=\"faq_id\" value=\"$idx\" /> ";
-		}
-		else
-		{
-			$text .= "<input class=\"button\" type=\"submit\" name=\"faq_submit\" value=\"".FAQ_ADLAN_54."\" />";
-		}
-
-		$text .= "<input type=\"hidden\" name=\"faq\" value=\"$faq\" />
-        </td>
-        </tr>
-        </table>
-
-        </form>";
-
-		if(varset($faq))
-		{
-			$row = $sql->createQueryBuilder()->select('*')->from('faqs_info')
-				->where('faq_info_id', $faq)->fetchRow();
-			extract($row); // get rid of this
-		}
-		$sc = e107::getScBatch('faqs', true);
-		$sc->setVars(varset($faqRow, array()));
-		$tmpl = e107::getTemplate('faqs');
-
-		$ns->tablerender($sc->caption($tmpl, 'add', LAN_PLUGIN_FAQS_FRONT_NAME.$faq_info_title), "<div style='text-align:center'>".$text."</div>".$this->faq_footer());
-
 	}
 
 }
