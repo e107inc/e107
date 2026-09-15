@@ -179,6 +179,9 @@ class admin_start
 		e107::getDebug()->logTime('Check Deprecated');
 		$this->checkDeprecated();
 
+		e107::getDebug()->logTime('Check Site Folders');
+		$this->checkSiteFolders();
+
 		e107::getDebug()->logTime('Check HTMLArea');
 		$this->checkHtmlarea();
 
@@ -681,6 +684,38 @@ TMPO;
 			e107::getMessage()->addWarning($text);
 		}
 
+	}
+
+	/**
+	 * Points at the Multi-Site page when files sit in the folder e107 v2.3.4 to v2.3.12 used for a site whose configuration carried no site_path.
+	 *
+	 * @return void
+	 */
+	private function checkSiteFolders()
+	{
+		if($this->upgradeRequiredFirst)
+		{
+			return;
+		}
+
+		$scan = \e107\Storage\SiteFolderScan::ofThisSite();
+
+		if($scan === null)
+		{
+			return;
+		}
+
+		$folder = $scan->knownBad();
+
+		if(!$folder->exists() || !$folder->holdsFiles())
+		{
+			return;
+		}
+
+		$link = "<a href='".e_ADMIN."db.php?mode=multisite'>".defset('ADLAN_SITE_FOLDER_NOTICE_LINK', "Multi-Site")."</a>";
+		$notice = defset('ADLAN_SITE_FOLDER_NOTICE', "Files were saved under the wrong site folder, [x], while this site ran an affected e107 version. Merge them into this site's folder on the [y] page.");
+
+		e107::getMessage()->addWarning(e107::getParser()->lanVars($notice, array('x' => "<code>".$folder->hash()."</code>", 'y' => $link)));
 	}
 
 	private function deleteDeprecated()
