@@ -9,6 +9,7 @@
 
 class e_onlineTest extends \Codeception\Test\Unit
 {
+	use \Test\BootedCli;
 
 	/** @var e_online */
 	private $on;
@@ -428,5 +429,57 @@ class e_onlineTest extends \Codeception\Test\Unit
 			$result = $this->on->isBot($agent);
 			$this->assertTrue($result, 'Failed asserting that "' . $agent . '" is a bot/crawler');
 		}
+	}
+
+	/**
+	 * Both write paths are gated on getParentId(), so a request that carries one leaves the table empty at the count.
+	 */
+	public function testGoOnlineCountsAnEmptyOnlineTableAsZeroMembers()
+	{
+
+		$php = <<<'PHP'
+error_reporting(E_ALL);
+e107::getDb()->truncate('online');
+$parentId = new ReflectionProperty('e_user', '_parent_id');
+$parentId->setAccessible(true);
+$parentId->setValue(e107::getUser(), 1);
+e107::getOnline()->goOnline(1, 1);
+echo "\n@@MEMBERS_ONLINE=", var_export(MEMBERS_ONLINE, true), "@@";
+echo "\n@@MEMBER_LIST=", var_export(MEMBER_LIST, true), "@@\n";
+PHP;
+
+		list($output, $status) = $this->runInBootedCli($php, '', array('cli' => true, 'no_online' => true));
+
+		$printed = implode("\n", $output);
+
+		self::assertSame(0, $status, "the online count never returned:\n".$printed);
+		self::assertStringNotContainsString('Undefined variable', $printed,
+			"the count reads variables the empty-result path never set:\n".$printed);
+		self::assertStringContainsString("@@MEMBERS_ONLINE=0@@", $printed,
+			"MEMBERS_ONLINE is the number of members online, and nobody online is zero of them:\n".$printed);
+		self::assertStringContainsString("@@MEMBER_LIST=''@@", $printed,
+			"MEMBER_LIST is the rendered list of names, and nobody online renders as nothing:\n".$printed);
+	}
+
+	/**
+	 * online.php counts $listuserson without guarding it, and the early return leaves it for the page to find.
+	 */
+	public function testGoOnlineLeavesAnEmptyUserListWhenTrackingIsDisabled()
+	{
+
+		$php = <<<'PHP'
+error_reporting(E_ALL);
+e107::getOnline()->goOnline(0, 1);
+$list = $GLOBALS['listuserson'];
+echo "\n@@LISTUSERSON=", is_array($list) ? 'array:'.count($list) : gettype($list), "@@\n";
+PHP;
+
+		list($output, $status) = $this->runInBootedCli($php, '', array('cli' => true, 'no_online' => true));
+
+		$printed = implode("\n", $output);
+
+		self::assertSame(0, $status, "the online count never returned:\n".$printed);
+		self::assertStringContainsString('@@LISTUSERSON=array:0@@', $printed,
+			"online.php counts and iterates this global, which is fatal on PHP 8 when the early return never set it:\n".$printed);
 	}
 }
