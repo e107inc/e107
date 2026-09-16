@@ -73,7 +73,7 @@ class faq_admin extends e_admin_dispatcher
 			'main/create'   => varset($pref['admin_faq_create'],   e_UC_ADMIN),
 			'main/edit'     => varset($pref['admin_faq_edit'],     e_UC_ADMIN),
 			'main/delete'   => varset($pref['admin_faq_delete'],   e_UC_ADMIN),
-			'cat/list'      => check_class($pref['admin_cat_create']) || check_class($pref['admin_cat_edit']) ? e_UC_ADMIN : e_UC_MAINADMIN,
+			'cat/list'      => check_class(varset($pref['admin_cat_create'])) || check_class(varset($pref['admin_cat_edit'])) ? e_UC_ADMIN : e_UC_MAINADMIN,
 			'cat/create'    => varset($pref['admin_cat_create'],   e_UC_ADMIN),
 			'cat/edit'      => varset($pref['admin_cat_edit'],     e_UC_ADMIN),
 			'cat/delete'    => varset($pref['admin_cat_delete'],   e_UC_ADMIN),
@@ -300,7 +300,7 @@ class faq_main_ui extends e_admin_ui
 		$this->fields['faq_parent']['writeParms'] = $this->categories;
 
 		//$this->fields['pending']['writeParms']['show'] = 1;
-		$this->fields['pending']['writeParms']['value'] = ($_GET['filter'] == 'pending') ? 1 : 0;
+		$this->fields['pending']['writeParms']['value'] = (varset($_GET['filter']) == 'pending') ? 1 : 0;
 
 		if(!empty($_GET['filter'])) // hide re-ordering when looking at 'unanswered' list and sort by datestamp.
 		{
