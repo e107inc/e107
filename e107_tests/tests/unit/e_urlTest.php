@@ -121,6 +121,42 @@ class e_urlTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * A controllers/ folder registers its plugin as a URL module on the folder
+	 * alone, so {@see e_url::run()} hands the request to the old router rather
+	 * than matching the plugin's own e_url.php rules, and a module with no index
+	 * controller to dispatch redirects the visitor to admin.php. The other half
+	 * of that registration, a url/url.php, is not walked here because reading
+	 * its path defines e_CURRENT_PLUGIN for the rest of the process.
+	 */
+	public function testEveryBundledControllersFolderCanDispatchAnIndexController()
+	{
+		$dispatcher = new eDispatcher();
+		$read = array();
+		$undispatchable = array();
+
+		foreach(e107::getPlug()->getCorePluginList() as $plugin)
+		{
+			if(!is_dir(eDispatcher::getDispatchLocationPath('plugin', $plugin)))
+			{
+				continue;
+			}
+
+			$read[] = $plugin;
+
+			if(!$dispatcher->isDispatchableModule($plugin, 'index', 'plugin'))
+			{
+				$undispatchable[] = $plugin;
+			}
+		}
+
+		self::assertContains('gallery', $read, 'No bundled controllers/ folder was read, '
+			. 'so a green result here would mean nothing.');
+		self::assertSame(array(), $undispatchable, 'These bundled plugins register as URL modules '
+			. 'on their controllers/ folder, which shadows their e_url.php rules, and then hold no '
+			. 'index controller to dispatch, so the front end redirects to admin.php.');
+	}
+
+	/**
 	 * @param string[] $keys
 	 * @return callable puts every removed preference back as it was found
 	 */
