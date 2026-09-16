@@ -27,6 +27,28 @@ class Unit extends \Codeception\Test\Unit
 {
 	use \Helper\PhpUnitCompat;
 
+	/** TEST-NET-2 (RFC 5737): the range the suite's subprocesses present themselves from. */
+	const VISITOR_ADDRESS_PREFIX = '198.51.100.';
+
+	/** The hosts {@see Unit::VISITOR_ADDRESS_PREFIX} holds, so the cycle cannot walk out of the range it names. */
+	const VISITOR_ADDRESS_HOSTS = 254;
+
+	/** The address the site answers on: e107_handlers/mail.php reads SERVER_ADDR unguarded inside a block it gates on REMOTE_ADDR, so a child carrying one key needs the other. */
+	const SERVER_ADDRESS = '127.0.0.1';
+
+	/** @var int addresses handed out so far, across every test in the run */
+	private static $visitorsSeated = 0;
+
+	/**
+	 * Hands out the next child's own address, so e107's per-address flood control reads the run as many visitors rather than one.
+	 *
+	 * @return string
+	 */
+	protected static function nextVisitorAddress()
+	{
+		return self::VISITOR_ADDRESS_PREFIX.((self::$visitorsSeated++ % self::VISITOR_ADDRESS_HOSTS) + 1);
+	}
+
 	/**
 	 * Copies a fixture tree, e.g. a theme out of tests/_data into e_THEME, journaled so the run takes it back out.
 	 *
@@ -217,7 +239,7 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * Runs $php in a subprocess that has booted class2.php, in CLI mode unless $e107 says otherwise.
+	 * Runs $php in a subprocess that has booted class2.php, in CLI mode unless $e107 says otherwise; the child serves {@see Unit::SERVER_ADDRESS} and visits as {@see Unit::nextVisitorAddress()}, keeping an address its caller put in the environment.
 	 *
 	 * @param string $php
 	 * @param string $ini extra php command-line arguments, e.g. '-d memory_limit=64M'
@@ -228,6 +250,8 @@ class Unit extends \Codeception\Test\Unit
 	protected function runInBootedCli($php, $ini = '', $e107 = array('cli' => true), $timeout = 60)
 	{
 		$boot = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
+		$boot .= "\$_SERVER['SERVER_ADDR'] = '".self::SERVER_ADDRESS."'; ";
+		$boot .= "if(empty(\$_SERVER['REMOTE_ADDR'])) { \$_SERVER['REMOTE_ADDR'] = '".self::nextVisitorAddress()."'; } ";
 		$boot .= "\$_E107 = ".var_export($e107, true)."; ";
 		$boot .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
 

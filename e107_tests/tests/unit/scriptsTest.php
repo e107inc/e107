@@ -37,18 +37,6 @@
 		/** Generous for a script that loads in well under a second. */
 		const TIMEOUT_SECONDS = 60;
 
-		/**
-		 * Every child gets its own address out of TEST-NET-2 (RFC 5737).
-		 *
-		 * e107 flood-controls by IP and bans at around a hundred hits within
-		 * its window. A CLI process has no REMOTE_ADDR, so without this every
-		 * child in the sweep is the same visitor, the sweep bans itself part
-		 * way through, and each later test that bootstraps e107 dies on "Your
-		 * IP is banned!" instead of on anything to do with itself. One script
-		 * is one visitor, which is also what the sweep is modelling.
-		 */
-		const REMOTE_ADDR_PREFIX = '198.51.100.';
-
 		public function testAdminScripts()
 		{
 			$exclude = array(
@@ -204,14 +192,13 @@
 		{
 			$reports = array();
 			$queue   = array_values($paths);
-			$address = 0;
 
 			// e107 writes its caches with a non-atomic file_put_contents, so
 			// opening the pool on a cold cache races several children through
 			// the same write. One script on its own warms it.
 			if(!empty($queue))
 			{
-				$this->runToCompletion(array_shift($queue), $flags, ++$address, $reports);
+				$this->runToCompletion(array_shift($queue), $flags, $reports);
 			}
 
 			$running = array();
@@ -221,7 +208,7 @@
 			{
 				while(!empty($queue) && count($running) < self::CONCURRENCY)
 				{
-					$running[$nextId++] = $this->start(array_shift($queue), $flags, ++$address);
+					$running[$nextId++] = $this->start(array_shift($queue), $flags);
 				}
 
 				$this->pump($running, $reports);
@@ -230,9 +217,9 @@
 			return $reports;
 		}
 
-		private function runToCompletion($path, array $flags, $address, array &$reports)
+		private function runToCompletion($path, array $flags, array &$reports)
 		{
-			$running = array($this->start($path, $flags, $address));
+			$running = array($this->start($path, $flags));
 
 			while(!empty($running))
 			{
@@ -291,7 +278,7 @@
 			}
 		}
 
-		private function start($path, array $flags, $address)
+		private function start($path, array $flags)
 		{
 			$descriptors = array(
 				0 => array('pipe', 'r'),
@@ -300,7 +287,7 @@
 			);
 
 			$pipes   = array();
-			$command = $this->probeCommand($path, $flags, $address);
+			$command = $this->probeCommand($path, $flags);
 			$proc    = proc_open(is_array($command) ? implode(' ', array_map('escapeshellarg', $command)) : $command, $descriptors, $pipes, dirname($path));
 
 			if(!is_resource($proc))
@@ -349,7 +336,7 @@
 		 * PHP_BINARY, so the sweep exercises the interpreter running the suite
 		 * rather than whichever php is first on PATH.
 		 */
-		private function probeCommand($path, array $flags, $address)
+		private function probeCommand($path, array $flags)
 		{
 			$timezone = ini_get('date.timezone');
 
@@ -374,7 +361,7 @@
 			$command .= ' ' . escapeshellarg(codecept_data_dir('scriptsTest/probe.php'));
 			$command .= ' ' . escapeshellarg(APP_PATH);
 			$command .= ' ' . escapeshellarg($path);
-			$command .= ' ' . escapeshellarg('--remote-addr=' . self::REMOTE_ADDR_PREFIX . (($address % 254) + 1));
+			$command .= ' ' . escapeshellarg('--remote-addr=' . self::nextVisitorAddress());
 
 			foreach($flags as $flag)
 			{
