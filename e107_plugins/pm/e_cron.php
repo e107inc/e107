@@ -32,6 +32,7 @@ class pm_cron // include plugin-folder in the name.
 {
 	private $logRequirement = 0;			// Flag to determine logging level
 	private $debugLevel = 0;				// Used for internal debugging
+	private $startTime;						// Midnight on the day this run started
 	private $logHandle = NULL;
 	private	$pmClass;						// Calendar library routines
 	private $e107;
@@ -131,20 +132,68 @@ class pm_cron // include plugin-folder in the name.
 
 		// Start of the 'real' code
 
-		if ($this->ourDB->select('generic', '*', "`gen_type` = 'pm_bulk' LIMIT 1"))
+		if ($this->ourDB->select('generic', '*', "`gen_type` = '".private_message::QUEUE_TYPE."' LIMIT 1"))
 		{
 			$pmRow = $this->ourDB->fetch();
-			$this->logLine("\r\n\r\n".str_replace('[y]',$pmRow['gen_intdata'],LAN_EC_PM_06).date('D j M Y G:i:s'));
 
-			$this->ourDB->delete('generic', "`gen_type` = 'pm_bulk' AND `gen_id` = ".$pmRow['gen_id']);
+			if ($this->claimQueuedSend($pmRow['gen_id']))
+			{
+				$this->logLine("\r\n\r\n".str_replace('[y]',$pmRow['gen_intdata'],LAN_EC_PM_06).date('D j M Y G:i:s'));
 
-			$pmData = e107::unserialize($pmRow['gen_chardata']);
-			unset($pmRow);
-			$this->pmClass = new private_message;
-			$this->pmClass->add($pmData, TRUE);
-			$this->logLine(' .. Run completed',TRUE, TRUE);
+				$genId = (int) $pmRow['gen_id'];
+				$pmData = e107::unserialize($pmRow['gen_chardata']);
+				unset($pmRow);
+				$this->pmClass = $this->messenger();
+				$this->pmClass->add($pmData, TRUE);
+
+				$this->releaseQueuedSend($genId);
+				$this->logLine(' .. Run completed',TRUE, TRUE);
+			}
 		}
 		return TRUE;
+	}
+
+
+	/**
+	 * Take a queued send off the queue for the length of this run, so a second
+	 * run cannot send it a second time and a delete cannot read the recipients
+	 * it still owes as nobody.
+	 *
+	 * @param int $genId - gen_id of the row to claim
+	 *
+	 * @return boolean FALSE when another run claimed it first
+	 */
+	protected function claimQueuedSend($genId)
+	{
+		$claimed = $this->ourDB->update('generic',
+			"`gen_type` = '".private_message::QUEUE_TYPE_RUNNING."'"
+			." WHERE `gen_id` = ".(int) $genId." AND `gen_type` = '".private_message::QUEUE_TYPE."'");
+
+		return !empty($claimed);
+	}
+
+
+	/**
+	 * Drop a claimed row, once the messages it stood for are in the table. A run
+	 * that dies before this leaves the row claimed rather than sent twice.
+	 *
+	 * @param int $genId - gen_id of the row this run claimed
+	 *
+	 * @return none
+	 */
+	protected function releaseQueuedSend($genId)
+	{
+		$this->ourDB->delete('generic',
+			"`gen_id` = ".(int) $genId." AND `gen_type` = '".private_message::QUEUE_TYPE_RUNNING."'");
+	}
+
+
+	/**
+	 * @return private_message the messenger this run adds through
+	 */
+	protected function messenger()
+	{
+		return new private_message;
 	}
 
 
