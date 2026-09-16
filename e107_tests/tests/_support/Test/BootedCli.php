@@ -14,7 +14,7 @@ namespace Test;
 trait BootedCli
 {
 	/**
-	 * Runs $php in a subprocess that has booted class2.php in CLI mode.
+	 * Runs $php in a subprocess that has booted class2.php in CLI mode; the child serves {@see Addresses::SERVER} and visits as {@see Addresses::nextVisitor()}, keeping an address its caller put in the environment.
 	 *
 	 * @param string $php
 	 * @param string $ini extra php command-line arguments, e.g. '-d memory_limit=64M'
@@ -25,6 +25,8 @@ trait BootedCli
 	protected function runInBootedCli($php, $ini = '', $e107 = array('cli' => true), $timeout = 60)
 	{
 		$boot = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
+		$boot .= "\$_SERVER['SERVER_ADDR'] = '".Addresses::SERVER."'; ";
+		$boot .= "if(empty(\$_SERVER['REMOTE_ADDR'])) { \$_SERVER['REMOTE_ADDR'] = '".Addresses::nextVisitor()."'; } ";
 		$boot .= "\$_E107 = ".var_export($e107, true)."; ";
 		$boot .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
 
