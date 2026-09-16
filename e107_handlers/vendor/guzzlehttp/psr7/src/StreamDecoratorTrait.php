@@ -7,7 +7,7 @@ use Psr\Http\Message\StreamInterface;
 /**
  * Stream decorator trait
  *
- * @property StreamInterface stream
+ * @property StreamInterface $stream
  */
 trait StreamDecoratorTrait
 {
@@ -23,35 +23,50 @@ trait StreamDecoratorTrait
      * Magic method used to create a new stream if streams are not added in
      * the constructor of a decorator (e.g., LazyOpenStream).
      *
-     * @param string $name Name of the property (allows "stream" only).
-     *
      * @return StreamInterface
+     * @param string $name
      */
     public function __get($name)
     {
-        if ($name == 'stream') {
+        if ($name === 'stream') {
             $this->stream = $this->createStream();
+
             return $this->stream;
         }
 
         throw new \UnexpectedValueException("$name not found on class");
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         try {
             if ($this->isSeekable()) {
                 $this->seek(0);
             }
+
             return $this->getContents();
+        } catch (\Throwable $e) {
+            if (\PHP_VERSION_ID >= 70400) {
+                throw $e;
+            }
+            trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
+
+            return '';
         } catch (\Exception $e) {
-            // Really, PHP? https://bugs.php.net/bug.php?id=53648
-            trigger_error('StreamDecorator::__toString exception: '
-                . (string) $e, E_USER_ERROR);
+            if (\PHP_VERSION_ID >= 70400) {
+                throw $e;
+            }
+            trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
             return '';
         }
     }
 
+    /**
+     * @return string
+     */
     public function getContents()
     {
         return Utils::copyToString($this);
@@ -60,26 +75,41 @@ trait StreamDecoratorTrait
     /**
      * Allow decorators to implement custom methods
      *
-     * @param string $method Missing method name
-     * @param array  $args   Method arguments
-     *
      * @return mixed
+     * @param string $method
      */
     public function __call($method, array $args)
     {
-        $result = call_user_func_array([$this->stream, $method], $args);
+        /** @var callable $callable */
+        $callable = [$this->stream, $method];
+        $result = call_user_func($callable, ...$args);
 
         // Always return the wrapped object if the result is a return $this
         return $result === $this->stream ? $this : $result;
     }
 
+    /**
+     * @return void
+     */
     public function close()
     {
         $this->stream->close();
     }
 
+    /**
+     * @return mixed
+     */
     public function getMetadata($key = null)
     {
+        if ($key !== null && !\is_string($key)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::getMetadata() is deprecated; guzzlehttp/psr7 3.0 requires string|null for $key.',
+                \get_debug_type($key)
+            );
+        }
+
         return $this->stream->getMetadata($key);
     }
 
@@ -88,62 +118,127 @@ trait StreamDecoratorTrait
         return $this->stream->detach();
     }
 
+    /**
+     * @return int|null
+     */
     public function getSize()
     {
         return $this->stream->getSize();
     }
 
+    /**
+     * @return bool
+     */
     public function eof()
     {
         return $this->stream->eof();
     }
 
+    /**
+     * @return int
+     */
     public function tell()
     {
         return $this->stream->tell();
     }
 
+    /**
+     * @return bool
+     */
     public function isReadable()
     {
         return $this->stream->isReadable();
     }
 
+    /**
+     * @return bool
+     */
     public function isWritable()
     {
         return $this->stream->isWritable();
     }
 
+    /**
+     * @return bool
+     */
     public function isSeekable()
     {
         return $this->stream->isSeekable();
     }
 
+    /**
+     * @return void
+     */
     public function rewind()
     {
         $this->seek(0);
     }
 
+    /**
+     * @return void
+     */
     public function seek($offset, $whence = SEEK_SET)
     {
+        if (!\is_int($offset)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $offset.',
+                \get_debug_type($offset)
+            );
+        }
+
+        if (!\is_int($whence)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $whence.',
+                \get_debug_type($whence)
+            );
+        }
+
         $this->stream->seek($offset, $whence);
     }
 
+    /**
+     * @return string
+     */
     public function read($length)
     {
+        if (!\is_int($length)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::read() is deprecated; guzzlehttp/psr7 3.0 requires int for $length.',
+                \get_debug_type($length)
+            );
+        }
+
         return $this->stream->read($length);
     }
 
+    /**
+     * @return int
+     */
     public function write($string)
     {
+        if (!\is_string($string)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::write() is deprecated; guzzlehttp/psr7 3.0 requires string for $string.',
+                \get_debug_type($string)
+            );
+        }
+
         return $this->stream->write($string);
     }
 
     /**
      * Implement in subclasses to dynamically create streams when requested.
      *
-     * @return StreamInterface
-     *
      * @throws \BadMethodCallException
+     * @return \Psr\Http\Message\StreamInterface
      */
     protected function createStream()
     {

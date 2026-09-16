@@ -12,8 +12,8 @@ class Response implements ResponseInterface
 {
     use MessageTrait;
 
-    /** @var array Map of standard HTTP status code/reason phrases */
-    private static $phrases = [
+    /** Map of standard HTTP status code/reason phrases */
+    const PHRASES = [
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
@@ -34,6 +34,7 @@ class Response implements ResponseInterface
         305 => 'Use Proxy',
         306 => 'Switch Proxy',
         307 => 'Temporary Redirect',
+        308 => 'Permanent Redirect',
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
@@ -71,18 +72,19 @@ class Response implements ResponseInterface
         506 => 'Variant Also Negotiates',
         507 => 'Insufficient Storage',
         508 => 'Loop Detected',
+        510 => 'Not Extended',
         511 => 'Network Authentication Required',
     ];
 
     /** @var string */
-    private $reasonPhrase = '';
+    private $reasonPhrase;
 
     /** @var int */
-    private $statusCode = 200;
+    private $statusCode;
 
     /**
      * @param int                                  $status  Status code
-     * @param array                                $headers Response headers
+     * @param (string|string[])[]                  $headers Response headers
      * @param string|resource|StreamInterface|null $body    Response body
      * @param string                               $version Protocol version
      * @param string|null                          $reason  Reason phrase (when empty a default will be used based on the status code)
@@ -94,9 +96,8 @@ class Response implements ResponseInterface
         $version = '1.1',
         $reason = null
     ) {
-        $this->assertStatusCodeIsInteger($status);
-        $status = (int) $status;
         $this->assertStatusCodeRange($status);
+        $this->assertProtocolVersion($version);
 
         $this->statusCode = $status;
 
@@ -105,40 +106,77 @@ class Response implements ResponseInterface
         }
 
         $this->setHeaders($headers);
-        if ($reason == '' && isset(self::$phrases[$this->statusCode])) {
-            $this->reasonPhrase = self::$phrases[$this->statusCode];
+        if ($reason == '' && array_key_exists($this->statusCode, self::PHRASES)) {
+            $reasonPhrase = self::PHRASES[$this->statusCode];
         } else {
-            $this->reasonPhrase = (string) $reason;
+            $reasonPhrase = (string) $reason;
         }
+
+        $this->assertNoLineSeparators($reasonPhrase, 'Reason phrase');
+        $this->reasonPhrase = $reasonPhrase;
 
         $this->protocol = $version;
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         return $this->statusCode;
     }
 
+    /**
+     * @return string
+     */
     public function getReasonPhrase()
     {
         return $this->reasonPhrase;
     }
 
+    /**
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function withStatus($code, $reasonPhrase = '')
     {
+        if (!\is_int($code) && \filter_var($code, \FILTER_VALIDATE_INT) !== false) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to ResponseInterface::withStatus() is deprecated; guzzlehttp/psr7 3.0 requires int for $code.',
+                \get_debug_type($code)
+            );
+        }
+
+        if (!\is_string($reasonPhrase)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to ResponseInterface::withStatus() is deprecated; guzzlehttp/psr7 3.0 requires string for $reasonPhrase.',
+                \get_debug_type($reasonPhrase)
+            );
+        }
+
         $this->assertStatusCodeIsInteger($code);
         $code = (int) $code;
         $this->assertStatusCodeRange($code);
 
         $new = clone $this;
         $new->statusCode = $code;
-        if ($reasonPhrase == '' && isset(self::$phrases[$new->statusCode])) {
-            $reasonPhrase = self::$phrases[$new->statusCode];
+        if ($reasonPhrase == '' && array_key_exists($new->statusCode, self::PHRASES)) {
+            $reasonPhrase = self::PHRASES[$new->statusCode];
         }
-        $new->reasonPhrase = (string) $reasonPhrase;
+        $reasonPhrase = (string) $reasonPhrase;
+        $this->assertNoLineSeparators($reasonPhrase, 'Reason phrase');
+        $new->reasonPhrase = $reasonPhrase;
+
         return $new;
     }
 
+    /**
+     * @param mixed $statusCode
+     * @return void
+     */
     private function assertStatusCodeIsInteger($statusCode)
     {
         if (filter_var($statusCode, FILTER_VALIDATE_INT) === false) {
@@ -146,6 +184,10 @@ class Response implements ResponseInterface
         }
     }
 
+    /**
+     * @return void
+     * @param int $statusCode
+     */
     private function assertStatusCodeRange($statusCode)
     {
         if ($statusCode < 100 || $statusCode >= 600) {

@@ -5,33 +5,33 @@ namespace GuzzleHttp\Psr7;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * Compose stream implementations based on a hash of functions.
+ * Compose stream implementations based on a hash of callables.
  *
  * Allows for easy testing and extension of a provided stream without needing
  * to create a concrete class for a simple extension point.
- *
- * @final
  */
-class FnStream implements StreamInterface
+#[\AllowDynamicProperties]
+final class FnStream implements StreamInterface
 {
-    /** @var array */
+    const SLOTS = [
+        '__toString', 'close', 'detach', 'rewind',
+        'getSize', 'tell', 'eof', 'isSeekable', 'seek', 'isWritable', 'write',
+        'isReadable', 'read', 'getContents', 'getMetadata',
+    ];
+
+    /** @var array<string, callable> */
     private $methods;
 
-    /** @var array Methods that must be implemented in the given array */
-    private static $slots = ['__toString', 'close', 'detach', 'rewind',
-        'getSize', 'tell', 'eof', 'isSeekable', 'seek', 'isWritable', 'write',
-        'isReadable', 'read', 'getContents', 'getMetadata'];
-
     /**
-     * @param array $methods Hash of method name to a callable.
+     * @param array<string, callable> $methods Hash of method name to a callable.
      */
     public function __construct(array $methods)
     {
         $this->methods = $methods;
 
-        // Create the functions on the class
+        // Create the callables on the class
         foreach ($methods as $name => $fn) {
-            $this->{'_fn_' . $name} = $fn;
+            $this->{'_fn_'.$name} = $fn;
         }
     }
 
@@ -39,11 +39,13 @@ class FnStream implements StreamInterface
      * Lazily determine which methods are not implemented.
      *
      * @throws \BadMethodCallException
+     * @return void
+     * @param string $name
      */
     public function __get($name)
     {
         throw new \BadMethodCallException(str_replace('_fn_', '', $name)
-            . '() is not implemented in the FnStream');
+            .'() is not implemented in the FnStream');
     }
 
     /**
@@ -60,6 +62,7 @@ class FnStream implements StreamInterface
      * An unserialize would allow the __destruct to run when the unserialized value goes out of scope.
      *
      * @throws \LogicException
+     * @return void
      */
     public function __wakeup()
     {
@@ -70,8 +73,8 @@ class FnStream implements StreamInterface
      * Adds custom functionality to an underlying stream by intercepting
      * specific method calls.
      *
-     * @param StreamInterface $stream  Stream to decorate
-     * @param array           $methods Hash of method name to a closure
+     * @param StreamInterface         $stream  Stream to decorate
+     * @param array<string, callable> $methods Hash of method name to a callable
      *
      * @return FnStream
      */
@@ -79,21 +82,45 @@ class FnStream implements StreamInterface
     {
         // If any of the required methods were not provided, then simply
         // proxy to the decorated stream.
-        foreach (array_diff(self::$slots, array_keys($methods)) as $diff) {
-            $methods[$diff] = [$stream, $diff];
+        foreach (array_diff(self::SLOTS, array_keys($methods)) as $diff) {
+            /** @var callable $callable */
+            $callable = [$stream, $diff];
+            $methods[$diff] = $callable;
         }
 
         return new self($methods);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return call_user_func($this->_fn___toString);
+        try {
+            /** @var string */
+            return call_user_func($this->_fn___toString);
+        } catch (\Throwable $e) {
+            if (\PHP_VERSION_ID >= 70400) {
+                throw $e;
+            }
+            trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
+
+            return '';
+        } catch (\Exception $e) {
+            if (\PHP_VERSION_ID >= 70400) {
+                throw $e;
+            }
+            trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
+            return '';
+        }
     }
 
+    /**
+     * @return void
+     */
     public function close()
     {
-        return call_user_func($this->_fn_close);
+        call_user_func($this->_fn_close);
     }
 
     public function detach()
@@ -101,63 +128,144 @@ class FnStream implements StreamInterface
         return call_user_func($this->_fn_detach);
     }
 
+    /**
+     * @return int|null
+     */
     public function getSize()
     {
         return call_user_func($this->_fn_getSize);
     }
 
+    /**
+     * @return int
+     */
     public function tell()
     {
         return call_user_func($this->_fn_tell);
     }
 
+    /**
+     * @return bool
+     */
     public function eof()
     {
         return call_user_func($this->_fn_eof);
     }
 
+    /**
+     * @return bool
+     */
     public function isSeekable()
     {
         return call_user_func($this->_fn_isSeekable);
     }
 
+    /**
+     * @return void
+     */
     public function rewind()
     {
         call_user_func($this->_fn_rewind);
     }
 
+    /**
+     * @return void
+     */
     public function seek($offset, $whence = SEEK_SET)
     {
+        if (!\is_int($offset)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $offset.',
+                \get_debug_type($offset)
+            );
+        }
+
+        if (!\is_int($whence)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::seek() is deprecated; guzzlehttp/psr7 3.0 requires int for $whence.',
+                \get_debug_type($whence)
+            );
+        }
+
         call_user_func($this->_fn_seek, $offset, $whence);
     }
 
+    /**
+     * @return bool
+     */
     public function isWritable()
     {
         return call_user_func($this->_fn_isWritable);
     }
 
+    /**
+     * @return int
+     */
     public function write($string)
     {
+        if (!\is_string($string)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::write() is deprecated; guzzlehttp/psr7 3.0 requires string for $string.',
+                \get_debug_type($string)
+            );
+        }
+
         return call_user_func($this->_fn_write, $string);
     }
 
+    /**
+     * @return bool
+     */
     public function isReadable()
     {
         return call_user_func($this->_fn_isReadable);
     }
 
+    /**
+     * @return string
+     */
     public function read($length)
     {
+        if (!\is_int($length)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::read() is deprecated; guzzlehttp/psr7 3.0 requires int for $length.',
+                \get_debug_type($length)
+            );
+        }
+
         return call_user_func($this->_fn_read, $length);
     }
 
+    /**
+     * @return string
+     */
     public function getContents()
     {
         return call_user_func($this->_fn_getContents);
     }
 
+    /**
+     * @return mixed
+     */
     public function getMetadata($key = null)
     {
+        if ($key !== null && !\is_string($key)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::getMetadata() is deprecated; guzzlehttp/psr7 3.0 requires string|null for $key.',
+                \get_debug_type($key)
+            );
+        }
+
         return call_user_func($this->_fn_getMetadata, $key);
     }
 }

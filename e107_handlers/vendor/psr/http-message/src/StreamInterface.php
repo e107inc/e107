@@ -83,6 +83,7 @@ interface StreamInterface
      *     offset bytes SEEK_CUR: Set position to current location plus offset
      *     SEEK_END: Set position to end-of-stream plus offset.
      * @throws \RuntimeException on failure.
+     * @return void
      */
     public function seek($offset, $whence = SEEK_SET);
 
@@ -95,6 +96,7 @@ interface StreamInterface
      * @see seek()
      * @link http://www.php.net/manual/en/function.fseek.php
      * @throws \RuntimeException on failure.
+     * @return void
      */
     public function rewind();
 
@@ -149,7 +151,7 @@ interface StreamInterface
      * stream_get_meta_data() function.
      *
      * @link http://php.net/manual/en/function.stream-get-meta-data.php
-     * @param string $key Specific metadata to retrieve.
+     * @param string|null $key Specific metadata to retrieve.
      * @return array|mixed|null Returns an associative array if no key is
      *     provided. Returns a specific key value if a key is provided and the
      *     value is found, or null if the key is not found.

@@ -1437,7 +1437,7 @@ class e_user_provider
 			if (T_VARIABLE == $adapterTokens[$index][0])
 			{
 				$supplementalFieldPathSplit = self::adapterTokenParseConfig($adapterTokens, $index, null);
-				if (!is_null($supplementalFieldPathSplit))
+				if (!empty($supplementalFieldPathSplit))
 				{
 					$value = $rawDocumentation;
 					$level = [];
@@ -1488,6 +1488,7 @@ class e_user_provider
 						break;
 					case 'filter':
 					case 'get':
+					case 'exists':
 						break;
 					default:
 						return $carry;

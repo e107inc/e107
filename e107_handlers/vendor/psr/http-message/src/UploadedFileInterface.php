@@ -61,6 +61,7 @@ interface UploadedFileInterface
      * @throws \InvalidArgumentException if the $targetPath specified is invalid.
      * @throws \RuntimeException on any error during the move operation, or on
      *     the second or subsequent call to the method.
+     * @return void
      */
     public function moveTo($targetPath);
     
