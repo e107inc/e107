@@ -11,6 +11,7 @@
 
 	class e_signup_classTest extends \Codeception\Test\Unit
 	{
+		use \Test\BootedCli;
 
 		/** The password the fixture account is created with. */
 		const RESEND_PASSWORD = 'resend-fixture-password';
@@ -306,27 +307,7 @@
 			$php .= "require_once('".addslashes(APP_PATH.'/e107_handlers/e_signup_class.php')."'); ";
 			$php .= '$signup = new e_signup(); $signup->run("resend");';
 
-			return $this->runInBootedCli($php);
-		}
-
-
-		/**
-		 * Runs $php in a subprocess that has booted class2.php in CLI mode.
-		 *
-		 * @param string $php
-		 * @return string stdout and stderr interleaved
-		 */
-		private function runInBootedCli($php)
-		{
-			$boot  = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-			$boot .= "\$_E107 = array('cli' => true); ";
-			$boot .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
-
-			$output = array();
-			$status = 0;
-			exec(sprintf('timeout 60 php -r %s 2>&1', escapeshellarg($boot.$php)), $output, $status);
-
-			$this->assertNotSame(124, $status, 'the subprocess wedged, so nothing was measured');
+			list($output) = $this->runInBootedCli($php);
 
 			return implode("\n", $output);
 		}
