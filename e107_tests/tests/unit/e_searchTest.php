@@ -2,7 +2,7 @@
 	/**
 	 * e107 website system
 	 *
-	 * Copyright (C) 2008-2018 e107 Inc (e107.org)
+	 * Copyright (C) 2008-2026 e107 Inc (e107.org)
 	 * Released under the terms and conditions of the
 	 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 	 *
@@ -762,5 +762,152 @@
 			$found = preg_match("~<h4><a class='title visit' href='[^']*'>(.*?)</a></h4>~s", $html, $matches);
 
 			return $found ? $matches[1] : '';
+		}
+
+		const FIXTURE_DATESTAMP = 1600000000;
+
+		/**
+		 * The only result keys {@see e_search::parsesearch()} renders; a key outside this set reaches no page.
+		 *
+		 * @return array
+		 */
+		private static function renderedResultKeys()
+		{
+			return array('omit_result', 'pre_title', 'title', 'link', 'pre_summary', 'summary', 'detail', 'post_summary');
+		}
+
+		/**
+		 * One fabricated row per addon covered here, keyed by plugin directory.
+		 *
+		 * @return array
+		 */
+		private function searchAddonRows()
+		{
+			$datestamp = self::FIXTURE_DATESTAMP;
+
+			return array(
+				'forum' => array(
+					'thread_id' => 1,
+					'thread_name' => 'A thread',
+					'thread_datestamp' => $datestamp,
+					'forum_id' => 1,
+					'forum_sef' => 'a-forum',
+					'forum_name' => 'A forum',
+					'user_id' => 1,
+					'user_name' => 'Ahsanul',
+					'post_id' => 1,
+					'post_entry' => 'A post',
+				),
+				'news' => array(
+					'news_id' => 1,
+					'news_sef' => 'a-news-item',
+					'news_title' => 'A news item',
+					'news_body' => 'A news body',
+					'news_extended' => '',
+					'category_name' => 'A category',
+					'news_datestamp' => $datestamp,
+				),
+				'page' => array(
+					'page_id' => 1,
+					'page_sef' => 'a-page',
+					'page_title' => 'A page',
+					'page_text' => 'A page body',
+					'page_chapter' => 0,
+					'menu_image' => '',
+					'page_datestamp' => $datestamp,
+				),
+			);
+		}
+
+		/**
+		 * Instantiates an addon the way search.php does, by naming its class after its directory.
+		 *
+		 * @param string $plugin
+		 * @return e_search
+		 */
+		private function searchAddon($plugin)
+		{
+			e107::plugLan($plugin, 'global', true);
+			require_once(e_PLUGIN.$plugin.'/e_search.php');
+
+			$className = $plugin.'_search';
+			$addon = new $className();
+			$addon->setParams(array());
+
+			return $addon;
+		}
+
+		/**
+		 * Compiles one result through an addon.
+		 *
+		 * @param string $plugin
+		 * @param array $row
+		 * @return array
+		 */
+		private function compileSearchAddon($plugin, $row)
+		{
+			$addon = $this->searchAddon($plugin);
+
+			return $addon->compile($row);
+		}
+
+		/**
+		 * The row a compile() gets is the addon's own return_fields and nothing else, so a fixture may not invent one.
+		 */
+		public function testEverySearchAddonFixtureUsesOnlyReturnedColumns()
+		{
+			e107::coreLan('search');
+
+			foreach($this->searchAddonRows() as $plugin => $row)
+			{
+				$config = $this->searchAddon($plugin)->config();
+				$returned = array();
+
+				foreach($config['return_fields'] as $field)
+				{
+					$parts = explode('.', $field);
+					$returned[] = end($parts);
+				}
+
+				$invented = array_values(array_diff(array_keys($row), $returned));
+
+				self::assertSame(array(), $invented,
+					$plugin.' is handed a column its own query never selects, so whatever this row proves is fiction.');
+			}
+		}
+
+		/**
+		 * A key the results page never reads renders nothing, so an addon that sets one is describing output it does not have.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6326
+		 */
+		public function testNoSearchAddonReturnsAKeyTheResultsPageIgnores()
+		{
+			e107::coreLan('search');
+
+			foreach($this->searchAddonRows() as $plugin => $row)
+			{
+				$res = $this->compileSearchAddon($plugin, $row);
+				$ignored = array_values(array_diff(array_keys($res), self::renderedResultKeys()));
+
+				self::assertSame(array(), $ignored,
+					$plugin.' returns a key the results page never reads, so whatever it holds reaches no page.');
+			}
+		}
+
+		/**
+		 * The forum search joins every post onto its thread, so the thread name in the row is already the topic title.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6326
+		 */
+		public function testForumResultIsTitledWithTheThreadTheRowBelongsTo()
+		{
+			e107::coreLan('search');
+
+			$rows = $this->searchAddonRows();
+			$res = $this->compileSearchAddon('forum', $rows['forum'] + array('thread_parent' => 1));
+
+			self::assertStringEndsWith(' | '.$rows['forum']['thread_name'], $res['title'],
+				'A forum result must be titled with the thread its post belongs to, whatever else the row carries.');
 		}
 	}
