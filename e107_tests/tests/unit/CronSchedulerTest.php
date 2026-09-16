@@ -187,10 +187,15 @@ class CronSchedulerTest extends \Codeception\Test\Unit
 	public function testNoticeIsDueThrottlesAndFailsClosed()
 	{
 		$scheduler = new CronSchedulerTestDouble();
+		$stamp = e_CACHE.'cronNotice_unittest.php';
 
 		$this->assertTrue($scheduler->due('unit-test', 3600));
+		$this->assertFileExists($stamp, 'the first notice writes the stamp this test ages');
+
+		touch($stamp, time() - 60);
+
 		$this->assertFalse($scheduler->due('unit-test', 3600), 'a repeat inside the interval is not due');
-		$this->assertTrue($scheduler->due('unit-test', 0), 'a zero interval is always due');
+		$this->assertTrue($scheduler->due('unit-test', 0), 'a stamp past the interval is due again, zero included');
 
 		$this->assertFalse($scheduler->due('../../unwritable/'.str_repeat('x', 400), 3600),
 			'a record that cannot be written means no notice');
