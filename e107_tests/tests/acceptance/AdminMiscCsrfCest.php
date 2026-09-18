@@ -12,8 +12,8 @@
  *    the mail host of whichever account the attacker names;
  *  - users.php?mode=main&action=logoutas ends the main administrator's Login As
  *    session;
- *  - admin.php?dismiss=upgrade writes a flag file that suppresses the upgrade
- *    notice for good;
+ *  - admin.php?dismiss=upgrade-alert records a suppression that hides the
+ *    upgrade notice for good;
  *  - language.php?mode=main&action=tools&sub=verify creates directories and
  *    writes stub PHP files across every plugin and theme, for a language name
  *    the query string picks;
@@ -127,15 +127,15 @@ class AdminMiscCsrfCest
 	}
 
 	/**
-	 * Writes e_CACHE/dismiss.upgrade.alert.txt, after which the upgrade notice
-	 * never appears again on that installation.
+	 * Records a suppression in the admin_notice_suppressions preference, after
+	 * which the upgrade notice never appears again on that installation.
 	 */
 	public function aTokenlessGetDoesNotDismissTheUpgradeNotice(AcceptanceTester $I)
 	{
-		$I->amOnPage(self::DASHBOARD.'?dismiss=upgrade');
+		$I->amOnPage(self::DASHBOARD.'?dismiss=upgrade-alert');
 
 		$I->seeInSource(self::REFUSED);
-		$this->seeProbeReports($I, 'flag=0');
+		$this->seeProbeReports($I, 'dismissed=0');
 	}
 
 	/**
@@ -281,9 +281,24 @@ class AdminMiscCsrfCest
 	public function theUpgradeNoticesOwnButtonStillDismissesIt(AcceptanceTester $I)
 	{
 		$I->amOnPage($this->publishedLink($I, self::DASHBOARD,
-			'#admin\.php\?dismiss=upgrade(&amp;e-token=[^\'"]*)?#'));
+			'#admin\.php\?dismiss=upgrade-alert(&amp;e-token=[^\'"]*)?#'));
 
-		$this->seeProbeReports($I, 'flag=1');
+		$this->seeProbeReports($I, 'dismissed=1');
+	}
+
+	/**
+	 * A site that said "don't show again" before the preference existed keeps
+	 * its decision: the flag file becomes a record the first time the dashboard
+	 * loads, and the file goes.
+	 */
+	public function aFlagFileFromBeforeTheSchemaBecomesARecord(AcceptanceTester $I)
+	{
+		$I->amOnProbe('act=plant');
+		$I->seeInSource('P9_OK plant');
+
+		$I->amOnPage(self::DASHBOARD);
+
+		$this->seeProbeReports($I, 'dismissed=1 legacy=0');
 	}
 
 	/**
@@ -481,6 +496,11 @@ function p9_member(\$sql)
 	));
 }
 
+function p9_suppression()
+{
+	return new e107\\Admin\\NoticeSuppression(e107::getConfig(), e107::getLog(), 0);
+}
+
 switch(\$p9act)
 {
 	case 'arm':
@@ -500,6 +520,7 @@ switch(\$p9act)
 			unlink(\$flag);
 		}
 
+		p9_suppression()->release(e107\\Admin\\Notices::UPGRADE_ALERT);
 		p9_clearScratch();
 		e107::getUser()->logoutAs();
 
@@ -507,8 +528,15 @@ switch(\$p9act)
 		break;
 
 	case 'state':
-		echo "flag=".(is_file(\$flag) ? 1 : 0)." lanfiles=".(count(p9_scratch()) ? 1 : 0)
+		echo "dismissed=".(p9_suppression()->isSuppressed(e107\\Admin\\Notices::UPGRADE_ALERT) ? 1 : 0)
+			." legacy=".(is_file(\$flag) ? 1 : 0)
+			." lanfiles=".(count(p9_scratch()) ? 1 : 0)
 			." member=".(p9_memberId(\$sql) ? 1 : 0)."\\n";
+		break;
+
+	case 'plant':
+		file_put_contents(\$flag, 'true');
+		echo "P9_OK plant\\n";
 		break;
 
 	case 'loginas':
@@ -529,6 +557,7 @@ switch(\$p9act)
 			unlink(\$flag);
 		}
 
+		p9_suppression()->release(e107\\Admin\\Notices::UPGRADE_ALERT);
 		p9_clearScratch();
 		e107::getUser()->logoutAs();
 		\$sql->delete('user', "user_loginname='$name'");

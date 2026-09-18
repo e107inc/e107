@@ -12,6 +12,10 @@ define('e_ADMIN_HOME', true); // used by some admin shortcodes and class2.
 
 require_once(__DIR__.'/../class2.php');
 
+use e107\Admin\DismissRequest;
+use e107\Admin\NoticeSuppression;
+use e107\Admin\Notices;
+
 if(varset($_GET['mode']) == 'customize')
 {
 	$adminPref = e107::getConfig()->get('adminpref', 0);
@@ -126,6 +130,9 @@ class admin_start
 
 	private $deprecated = array();
 	private $upgradeRequiredFirst = false;
+
+	/** @var NoticeSuppression */
+	private $suppression;
 	
 	function __construct()
 	{
@@ -146,6 +153,15 @@ class admin_start
 		// Files that can cause comflicts and problems.
         $fileInspector = e107::getFileInspector();
 		$this->deprecated = $fileInspector::getCachedDeprecatedFiles();
+
+		$this->suppression = new NoticeSuppression(e107::getConfig(), e107::getLog(), (int) e107::getUser()->getId());
+
+		$request = new DismissRequest($_GET, defined('e_TOKEN'));
+
+		if($request->act($this->dismissible()) === DismissRequest::REFUSED)
+		{
+			e107::getMessage()->addError(defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+		}
 
 		$this->checkCoreVersion();
 		$this->checkDependencies();
@@ -452,23 +468,34 @@ TMPO;
 	}*/
 
 	/**
+	 * The notices the dashboard may be asked to dismiss, each with what records
+	 * its suppression.
 	 *
+	 * @return array
 	 */
+	private function dismissible()
+	{
+		return array(Notices::UPGRADE_ALERT => array($this->suppression, 'suppress'));
+	}
+
+	/**
+	 * @param string $id
+	 *   A key of {@see admin_start::dismissible()}.
+	 * @return string
+	 */
+	private function dismissLink($id)
+	{
+		return DismissRequest::link($id, e_ADMIN_ABS.'admin.php', defset('e_TOKEN'), LAN_DONT_SHOW_AGAIN);
+	}
+
 	private function checkNewInstall()
 	{
+		$legacyFlag = e_CACHE.'dismiss.upgrade.alert.txt';
 
-		$upgradeAlertFlag = e_CACHE.'dismiss.upgrade.alert.txt';
-
-		if(!empty($_GET['dismiss']) && $_GET['dismiss'] == 'upgrade')
+		if(file_exists($legacyFlag))
 		{
-			if(!defined('e_TOKEN') || !empty($_GET['e-token']))
-			{
-				file_put_contents($upgradeAlertFlag,'true');
-			}
-			else
-			{
-				echo e107::getMessage()->addError(defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'))->render();
-			}
+			$this->suppression->suppress(Notices::UPGRADE_ALERT);
+			@unlink($legacyFlag);
 		}
 
 		$pref = e107::getPref('install_date');
@@ -483,18 +510,16 @@ TMPO;
 			$repl = array("<a href='https://github.com/e107inc/e107/discussions' target='_blank' rel='external'>","</a>");
 			echo e107::getMessage()->setTitle(ADLAN_190,E_MESSAGE_INFO)->addInfo("<p>".str_replace($srch,$repl,ADLAN_192)."</p>")->render();
 		}
-		elseif($pref < $v2ReleaseDate && !file_exists($upgradeAlertFlag)) // installed prior to v2 release.
+		elseif($pref < $v2ReleaseDate && !$this->suppression->isSuppressed(Notices::UPGRADE_ALERT))
 		{
 			$srch = array('[',']');
 			$repl = array("<a href='https://github.com/e107inc/e107/discussions' target='_blank' rel='external'>","</a>");
 			$message = str_replace($srch,$repl,ADLAN_191);
-			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade&amp;e-token=".defset('e_TOKEN')."'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
+			$message .= "<div class='text-right'>".$this->dismissLink(Notices::UPGRADE_ALERT)."</div>";
 			echo e107::getMessage()->setTitle(LAN_UPGRADING,E_MESSAGE_INFO)->addInfo($message)->render();
 		}
 
 		e107::getMessage()->setTitle(null,E_MESSAGE_INFO);
-
-
 	}
 
 
@@ -732,7 +757,7 @@ TMPO;
 		}
 		else
 		{
-			eHelper::clearSystemNotification('checkDependencies');
+			eHelper::clearSystemNotification('checkHtaccess');
 		}
 	}
 
