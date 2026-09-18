@@ -13,9 +13,11 @@ define('e_ADMIN_HOME', true); // used by some admin shortcodes and class2.
 require_once(__DIR__.'/../class2.php');
 
 use e107\Admin\DismissRequest;
+use e107\Admin\Incident;
 use e107\Admin\IncidentNotice;
 use e107\Admin\Notices;
 use e107\Admin\NoticeSuppression;
+use e107\Cache\Stamp;
 
 if(varset($_GET['mode']) == 'customize')
 {
@@ -137,6 +139,9 @@ class admin_start
 
 	/** @var IncidentNotice */
 	private $refusalNotice;
+
+	/** @var IncidentNotice */
+	private $adminReset;
 	
 	function __construct()
 	{
@@ -169,6 +174,7 @@ class admin_start
 		}
 
 		$this->refusalNotice = cronScheduler::refusalNotice();
+		$this->adminReset = $this->adminResetNotice();
 
 		$this->checkCoreVersion();
 		$this->checkDependencies();
@@ -210,6 +216,9 @@ class admin_start
 
 		e107::getDebug()->logTime('Check Cron Refusals');
 		$this->checkCronRefusals();
+
+		e107::getDebug()->logTime('Check Admin Reset Attempts');
+		$this->checkAdminResetAttempts();
 
 		e107::getDebug()->logTime('Check Core Update');
 		$this->checkCoreUpdate();
@@ -485,8 +494,52 @@ TMPO;
 	 */
 	private function dismissible()
 	{
-		return array(Notices::UPGRADE_ALERT => array($this->suppression, 'suppress'))
-			+ cronScheduler::refusalDismissible();
+		return array(
+			Notices::UPGRADE_ALERT   => array($this->suppression, 'suppress'),
+			Notices::FPW_ADMIN_RESET => array($this->adminResetNotice(), 'dismiss'),
+		) + cronScheduler::refusalDismissible();
+	}
+
+	/**
+	 * @return IncidentNotice
+	 *   Attempts to reset the main administrator's password, dismissible until a fresh run of them begins.
+	 */
+	private function adminResetNotice()
+	{
+		$incidents = new Incident(new Stamp(e_CACHE));
+		$attempts = $incidents->last(Notices::FPW_ADMIN_RESET);
+
+		return new IncidentNotice($this->suppression, Notices::FPW_ADMIN_RESET,
+			($attempts === null) ? '' : (string) $attempts['first'], $attempts, 0,
+			array('eHelper', 'clearSystemNotification'));
+	}
+
+	private function checkAdminResetAttempts()
+	{
+		$attempts = $this->adminReset->toReport();
+
+		if($attempts === null)
+		{
+			eHelper::clearSystemNotification(Notices::FPW_ADMIN_RESET);
+
+			return;
+		}
+
+		e107::coreLan('fpw');
+		$tp = e107::getParser();
+
+		$message = str_replace(
+			array('[x]', '[y]', '[z]'),
+			array($attempts['count'], $tp->toDate($attempts['first'], 'short'), $tp->toDate($attempts['last'], 'short')),
+			LAN_FPW_ADMIN_ATTEMPT_SUMMARY
+		);
+
+		if(!empty($attempts['ip']))
+		{
+			$message .= ' '.str_replace('[x]', $attempts['ip'], LAN_FPW_ADMIN_ATTEMPT_LAST_FROM);
+		}
+
+		eHelper::addSystemNotification(Notices::FPW_ADMIN_RESET, $message.' '.$this->dismissLink(Notices::FPW_ADMIN_RESET));
 	}
 
 	/**
