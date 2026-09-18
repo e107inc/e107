@@ -121,14 +121,22 @@ class FpwRequestCest
 	 * A body with the parts that differ between any two renders of the same
 	 * page taken out, leaving what the caller can actually learn.
 	 *
+	 * All three are render-time values that every caller gets one of: an asset
+	 * cache-buster, a session token, and the browser-cache marker
+	 * footer_default.php builds from the clock and the class list, which is the
+	 * same list for every request here because all of them are made by a guest
+	 * carrying no cookie. None of them can differ by which address was asked
+	 * about, and the marker differs by the second, so comparing them would only
+	 * make this test fail on a slow machine.
+	 *
 	 * @param string $body
 	 * @return string
 	 */
 	private function comparable($body)
 	{
 		return preg_replace(
-			array('#\?\d{6,}#', '#(name="e-token" (?:value|content)=")[^"]*#'),
-			array('', '$1'),
+			array('#\?\d{6,}#', '#(name="e-token" (?:value|content)=")[^"]*#', '#<!-- [0-9a-f]{32} -->#'),
+			array('', '$1', ''),
 			$body
 		);
 	}
