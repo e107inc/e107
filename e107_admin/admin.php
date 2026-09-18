@@ -13,8 +13,9 @@ define('e_ADMIN_HOME', true); // used by some admin shortcodes and class2.
 require_once(__DIR__.'/../class2.php');
 
 use e107\Admin\DismissRequest;
-use e107\Admin\NoticeSuppression;
+use e107\Admin\IncidentNotice;
 use e107\Admin\Notices;
+use e107\Admin\NoticeSuppression;
 
 if(varset($_GET['mode']) == 'customize')
 {
@@ -133,6 +134,9 @@ class admin_start
 
 	/** @var NoticeSuppression */
 	private $suppression;
+
+	/** @var IncidentNotice */
+	private $refusalNotice;
 	
 	function __construct()
 	{
@@ -154,6 +158,7 @@ class admin_start
         $fileInspector = e107::getFileInspector();
 		$this->deprecated = $fileInspector::getCachedDeprecatedFiles();
 
+		require_once(e_HANDLER.'cron_class.php');
 		$this->suppression = new NoticeSuppression(e107::getConfig(), e107::getLog(), (int) e107::getUser()->getId());
 
 		$request = new DismissRequest($_GET, defined('e_TOKEN'));
@@ -162,6 +167,8 @@ class admin_start
 		{
 			e107::getMessage()->addError(defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
 		}
+
+		$this->refusalNotice = cronScheduler::refusalNotice();
 
 		$this->checkCoreVersion();
 		$this->checkDependencies();
@@ -200,6 +207,9 @@ class admin_start
 
 		e107::getDebug()->logTime('Check Htaccess');
 		$this->checkHtaccess();
+
+		e107::getDebug()->logTime('Check Cron Refusals');
+		$this->checkCronRefusals();
 
 		e107::getDebug()->logTime('Check Core Update');
 		$this->checkCoreUpdate();
@@ -475,7 +485,8 @@ TMPO;
 	 */
 	private function dismissible()
 	{
-		return array(Notices::UPGRADE_ALERT => array($this->suppression, 'suppress'));
+		return array(Notices::UPGRADE_ALERT => array($this->suppression, 'suppress'))
+			+ cronScheduler::refusalDismissible();
 	}
 
 	/**
@@ -486,6 +497,24 @@ TMPO;
 	private function dismissLink($id)
 	{
 		return DismissRequest::link($id, e_ADMIN_ABS.'admin.php', defset('e_TOKEN'), LAN_DONT_SHOW_AGAIN);
+	}
+
+	private function checkCronRefusals()
+	{
+		$refusal = $this->refusalNotice->toReport();
+
+		if($refusal === null)
+		{
+			eHelper::clearSystemNotification(Notices::CRON_REFUSED);
+
+			return;
+		}
+
+		e107::coreLan('cron', true);
+		$setup = "<a href='".e_ADMIN_ABS."cron.php?mode=main&amp;action=setup'>".LAN_CRON_M_SETUP."</a>";
+		$message = cronScheduler::refusalSummary($refusal).' '.str_replace('[x]', $setup, LAN_CRON_REFUSED_COPY_AGAIN);
+
+		eHelper::addSystemNotification(Notices::CRON_REFUSED, $message.' '.$this->dismissLink(Notices::CRON_REFUSED));
 	}
 
 	private function checkNewInstall()

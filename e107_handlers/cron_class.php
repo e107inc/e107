@@ -18,7 +18,10 @@
 if (!defined('e107_INIT')) { exit; }
 
 use e107\Admin\Incident;
+use e107\Admin\NoticeSuppression;
 use e107\Cache\Stamp;
+use e107\Admin\IncidentNotice;
+use e107\Admin\Notices;
 
 define ('CRON_MAIL_DEBUG', false);
 define ('CRON_RETRIGGER_DEBUG', false);
@@ -1166,13 +1169,6 @@ class cronScheduler
 	private $pref;
 
 	/**
-	 * How the current run arrived, one of the VIA_* constants, or null before {@see cronScheduler::run()}.
-	 *
-	 * @var string|null
-	 */
-	private $via;
-
-	/**
 	 * Whether the last {@see cronScheduler::validateToken()} call saw a token at all.
 	 *
 	 * @var bool
@@ -1203,8 +1199,6 @@ class cronScheduler
 	 */
 	public function run($via = self::VIA_CLI)
 	{
-		$this->via = $via;
-
 		if(!$this->validateToken())
 		{
 			$this->recordRefusal($via);
@@ -1477,52 +1471,7 @@ class cronScheduler
 		$pwd = self::tokenFromRequest($_GET, $_SERVER);
 		$this->tokenPresented = ($pwd !== '');
 
-		if(empty($this->pref['e_cron_pwd']) || !hash_equals((string) $this->pref['e_cron_pwd'], $pwd))
-		{
-			if($this->tokenPresented && $this->noticeIsDue('token-mismatch'))
-			{
-				$msg = "Your Cron Schedule is not configured correctly. Your passwords do not match.";
-				$msg .= "<br /><br />";
-				$msg .= $this->arrivalDescription();
-				$msg .= "You should copy the cron command or URL from Admin > Schedule Tasks > Setup and enter it again in your server configuration.";
-
-				$mail = array(
-					'to_mail'   => $this->pref['siteadminemail'],
-					'to_name'   => $this->pref['siteadmin'],
-					'from_mail' => $this->pref['siteadminemail'],
-					'from_name' => $this->pref['siteadmin'],
-					'message'   => $msg,
-					'subject'   => 'e107 - Cron Schedule Misconfigured',
-				);
-
-				$this->sendMail($mail);
-			}
-
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * @return string
-	 *   A sentence for the misconfiguration mail, or '' when the run has not been entered through {@see cronScheduler::run()}.
-	 */
-	private function arrivalDescription()
-	{
-		if($this->via === self::VIA_HTTP)
-		{
-			$ip = $this->requestIp();
-
-			return "The request arrived over HTTP".($ip !== '' ? " from ".$ip : "").".<br /><br />";
-		}
-
-		if($this->via === self::VIA_CLI)
-		{
-			return "The request came from the command line.<br /><br />";
-		}
-
-		return '';
+		return !empty($this->pref['e_cron_pwd']) && hash_equals((string) $this->pref['e_cron_pwd'], $pwd);
 	}
 
 	/**
@@ -1649,6 +1598,58 @@ class cronScheduler
 	}
 
 	/**
+	 * The admin area's view of refused runs, composed from this site's services.
+	 *
+	 * @return IncidentNotice
+	 */
+	public static function refusalNotice()
+	{
+		$suppression = new NoticeSuppression(e107::getConfig(), e107::getLog(), (int) e107::getUser()->getId());
+		$run = self::lastRun();
+
+		return new IncidentNotice($suppression, Notices::CRON_REFUSED, sha1((string) e107::getPref('e_cron_pwd')),
+			self::lastRefusal(), ($run === null) ? 0 : $run['time'], array('eHelper', 'clearSystemNotification'));
+	}
+
+	/**
+	 * @param array $refusal
+	 *   {@see cronScheduler::lastRefusal()}'s shape.
+	 * @return string
+	 *   How many requests were refused since when, where the last came from, and whether they carried a token.
+	 */
+	public static function refusalSummary(array $refusal)
+	{
+		e107::coreLan('cron', true);
+		$tp = e107::getParser();
+
+		$text = str_replace(
+			array('[x]', '[y]', '[z]'),
+			array($refusal['count'], $tp->toDate($refusal['first'], 'short'), $tp->toDate($refusal['last'], 'short')),
+			LAN_CRON_REFUSED_SUMMARY
+		);
+
+		if($refusal['ip'] !== '')
+		{
+			$text .= ' '.str_replace('[x]', $refusal['ip'], LAN_CRON_REFUSED_LAST_FROM);
+		}
+
+		return $text.' '.(($refusal['token'] === 'wrong') ? LAN_CRON_REFUSED_TOKEN_INCORRECT : LAN_CRON_REFUSED_TOKEN_MISSING);
+	}
+
+	/**
+	 * What a ?dismiss= request on an admin page may dismiss here.
+	 *
+	 * @return array
+	 *   Notice id => callable, for {@see \e107\Admin\DismissRequest::act()}.
+	 */
+	public static function refusalDismissible()
+	{
+		$notice = self::refusalNotice();
+
+		return array($notice->id() => array($notice, 'dismiss'));
+	}
+
+	/**
 	 * @return Incident
 	 */
 	private static function incidents()
@@ -1665,13 +1666,13 @@ class cronScheduler
 	}
 
 	/**
-	 * Whether a notice about the scheduler's own configuration may be mailed again.
+	 * Whether a line about the scheduler's own configuration may be logged again.
 	 *
 	 * Anything the scheduler reports before it has accepted a token is reported
 	 * on behalf of a caller who has not authenticated, so each condition is
 	 * recorded and repeats of it stay unreported for an interval. A record that
-	 * cannot be written means the notice is not sent, because an unthrottled
-	 * mailer is worse than a missed warning.
+	 * cannot be written means nothing is reported, because an unthrottled
+	 * reporter is worse than a missed line.
 	 *
 	 * @param string $signature
 	 *   Identifies the condition being reported.
@@ -1679,7 +1680,7 @@ class cronScheduler
 	 *   Seconds for which a repeat of the same condition stays unreported.
 	 *
 	 * @return bool
-	 *   TRUE when the notice is due to be sent.
+	 *   TRUE when the condition is due to be reported.
 	 */
 	protected function noticeIsDue($signature, $interval = 86400)
 	{

@@ -11,6 +11,10 @@
  */
 
 require_once(__DIR__.'/../class2.php');
+
+use e107\Admin\DismissRequest;
+use e107\Admin\Notices;
+
 if (!getperms('U'))
 {
 	e107::redirect('admin');
@@ -94,6 +98,8 @@ class cron_admin_ui extends e_admin_ui
 			}
 	
 			
+			require_once(e_HANDLER.'cron_class.php');
+
 			if(!empty($_POST['generate_pwd']))
 			{
 				$this->setCronPwd();
@@ -102,6 +108,13 @@ class cron_admin_ui extends e_admin_ui
 			elseif(empty(e107::getPref('e_cron_pwd')))
 			{
 				$this->setCronPwd();
+			}
+
+			$request = new DismissRequest($_GET, defined('e_TOKEN'));
+
+			if($request->act(cronScheduler::refusalDismissible()) === DismissRequest::REFUSED)
+			{
+				e107::getMessage()->addError(defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
 			}
 			
 			$rows = $sql->createQueryBuilder()
@@ -382,6 +395,7 @@ class cron_admin_ui extends e_admin_ui
 			$newpwd = e_random::hex(40);
 
 			e107::getConfig()->set('e_cron_pwd', $newpwd)->save(false);
+
 			return true;
 	
 		}
@@ -393,7 +407,6 @@ class cron_admin_ui extends e_admin_ui
 			require_once(e_HANDLER.'cron_class.php');
 
 			$mes = e107::getMessage();
-			$tp  = e107::getParser();
 
 			$run = cronScheduler::lastRun();
 			$lastload = ($run === null) ? 0 : $run['time'];
@@ -432,24 +445,15 @@ class cron_admin_ui extends e_admin_ui
 				."<b>".LAN_CRON_11.":</b> <span class='badge'>".$this->activeCrons."</span><br />"
 				."<b>".LAN_CRON_12.":</b> ".$when);
 
-			$refusal = cronScheduler::lastRefusal();
+			$notice = cronScheduler::refusalNotice();
+			$refusal = $notice->toReport();
 			$onSetup = (varset($_GET['action']) === 'setup');
 
-			if($refusal !== null && $refusal['last'] >= $lastload)
+			if($refusal !== null)
 			{
-				$warning = str_replace(
-					array('[x]', '[y]', '[z]'),
-					array($refusal['count'], $tp->toDate($refusal['first'], 'short'), $tp->toDate($refusal['last'], 'short')),
-					LAN_CRON_REFUSED_SUMMARY
-				);
-
-				if($refusal['ip'] !== '')
-				{
-					$warning .= ' '.str_replace('[x]', $refusal['ip'], LAN_CRON_REFUSED_LAST_FROM);
-				}
-
-				$warning .= ' '.(($refusal['token'] === 'wrong') ? LAN_CRON_REFUSED_TOKEN_INCORRECT : LAN_CRON_REFUSED_TOKEN_MISSING);
+				$warning = cronScheduler::refusalSummary($refusal);
 				$warning .= ' '.str_replace('[x]', $this->setupLink($onSetup), LAN_CRON_REFUSED_COPY_AGAIN);
+				$warning .= ' '.DismissRequest::link(Notices::CRON_REFUSED, e_SELF.'?mode=main&amp;action=list', defset('e_TOKEN'), LAN_DONT_SHOW_AGAIN);
 
 				$mes->addWarning($warning);
 			}
