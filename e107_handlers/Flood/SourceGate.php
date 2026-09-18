@@ -55,7 +55,9 @@ class SourceGate
 	 * @param string $kind
 	 *   What is being rationed.
 	 * @param string $source
-	 *   Who is asking, normally the encoded address.
+	 *   Who is asking. A caller who can choose their own address is one source
+	 *   however many they use, so see {@see \e107\Ip\Address::toSubscriberBlock()}
+	 *   before passing one.
 	 * @return bool
 	 *   TRUE when this source tried too recently to be allowed another.
 	 */

@@ -132,8 +132,9 @@ function fpw_error($txt)
  * banned account, an unvalidated one, a request already outstanding, the main
  * administrator's, a send that failed, or a link on its way. Every one of those
  * answers "does this account exist here, and what state is it in" for whoever
- * asked, so they are all this page now, and what actually happened goes to the
- * user audit log where the site's own people can read it.
+ * asked, so they are all this page now. What actually happened is offered to
+ * the user audit log, which keeps it only where the site has turned that event
+ * type on, so an outcome the operator has to act on goes to error_log() too.
  *
  * @return void
  */
@@ -303,7 +304,7 @@ if (!empty($_POST['pwsubmit']))
 		}
 	}
 
-	$fpwSource = (string) e107::getIPHandler()->getIP(false);
+	$fpwSource = \e107\Ip\Address::toSubscriberBlock(\e107\Ip\Address::toHex(e107::getIPHandler()->getIP(false)));
 	$fpwGate = new \e107\Flood\SourceGate(e107::getDb(), deftrue('FLOODPROTECT'), defset('FLOODTIMEOUT', 10));
 
 	if($fpwGate->isClosedTo(FPW_FLOOD_KIND, $fpwSource))
@@ -363,7 +364,7 @@ if (!empty($_POST['pwsubmit']))
 		$existsQb = $sql->createQueryBuilder();
 		if ($existsQb->from('tmp')
 			->where('tmp_ip', 'pwreset')
-			->where($existsQb->expr()->like('tmp_info', $row['user_loginname'].FPW_SEPARATOR.'%'))
+			->where($existsQb->expr()->like('tmp_info', $row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR.'%'))
 			->count())
 		{
 			fpw_answered();
@@ -415,11 +416,16 @@ if (!empty($_POST['pwsubmit']))
 			exit;
 		}
 
-		// Try to send the email 
-		$do_log['password_result'] = sendemail($clean_email, "".LAN_09."".SITENAME, $message) ? LAN_FPW20 : LAN_FPW19;
+		$sent = sendemail($clean_email, "".LAN_09."".SITENAME, $message);
+		$do_log['password_result'] = $sent ? LAN_FPW20 : LAN_FPW19;
 
 		// Log to user audit log
 		e107::getLog()->user_audit(USER_AUDIT_PW_RES, $do_log, $row['user_id'], $row['user_name']);
+
+		if(!$sent)
+		{
+			error_log('fpw.php: A password reset link could not be sent to user #'.$row['user_id'].'. Check the mail settings in Admin → Preferences.');
+		}
 	}
 
 	fpw_answered();

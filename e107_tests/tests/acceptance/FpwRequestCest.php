@@ -33,6 +33,8 @@ class FpwRequestCest
 	const MEMBER_EMAIL = 'fpwrequestmember@e107-fpw-probe.invalid';
 	const BANNED = 'fpwrequestbanned';
 	const BANNED_EMAIL = 'fpwrequestbanned@e107-fpw-probe.invalid';
+	const UNVALIDATED = 'fpwrequestunvalidated';
+	const UNVALIDATED_EMAIL = 'fpwrequestunvalidated@e107-fpw-probe.invalid';
 	const UNKNOWN_EMAIL = 'fpwrequestnobody@e107-fpw-probe.invalid';
 
 	/** @var string */
@@ -56,20 +58,40 @@ class FpwRequestCest
 	 * One burst, one assertion set: the answers only mean anything compared
 	 * with each other, so they are gathered here rather than split across
 	 * tests that could not see one another's pages.
+	 *
+	 * The comparison is the point. Asserting that each page carries the one
+	 * sentence would still pass a page that also carried a second sentence
+	 * naming the outcome, which is the oracle this change exists to close.
 	 */
 	public function everyOutcomeGetsTheSameAnswer(AcceptanceTester $I)
 	{
 		$I->wantTo('learn nothing about who has an account here from asking to reset a password');
 
+		// The dry run the other tests count mail with prints each mail into the
+		// page. Off, the send is attempted, so a failed one is compared too.
+		$I->probe('act=mailquiet');
+
+		$answers = array();
+
+		// 'a member' leaves the reset outstanding that the entry after it needs.
 		foreach(array(
-			'an address nobody here uses' => self::UNKNOWN_EMAIL,
-			'a member'                    => self::MEMBER_EMAIL,
-			'a banned member'             => self::BANNED_EMAIL,
-			'the main administrator'      => $this->adminEmail,
-		) as $who => $address)
+			array('an address nobody here uses', self::UNKNOWN_EMAIL, true),
+			array('a member', self::MEMBER_EMAIL, true),
+			array('a member who asked a moment ago', self::MEMBER_EMAIL, false),
+			array('a banned member', self::BANNED_EMAIL, true),
+			array('an unvalidated member', self::UNVALIDATED_EMAIL, true),
+			array('the main administrator', $this->adminEmail, true),
+		) as $outcome)
 		{
+			list($who, $address, $unasked) = $outcome;
+
 			$I->probe('act=cleargate');
-			$I->probe('act=clearpending');
+
+			if($unasked)
+			{
+				$I->probe('act=clearpending');
+			}
+
 			$I->resetAllCookies();
 			$I->sendPostRequest('/fpw.php', array('pwsubmit' => 1, 'email' => $address));
 
@@ -82,7 +104,33 @@ class FpwRequestCest
 			{
 				$I->assertStringNotContainsString($tell, $body, $who.' must not be told "'.$tell.'"');
 			}
+
+			$answers[$who] = $this->comparable($body);
 		}
+
+		$first = key($answers);
+
+		foreach($answers as $who => $answer)
+		{
+			$I->assertSame($answers[$first], $answer,
+				$who.' must be answered with the same page as '.$first.', to the byte');
+		}
+	}
+
+	/**
+	 * A body with the parts that differ between any two renders of the same
+	 * page taken out, leaving what the caller can actually learn.
+	 *
+	 * @param string $body
+	 * @return string
+	 */
+	private function comparable($body)
+	{
+		return preg_replace(
+			array('#\?\d{6,}#', '#(name="e-token" (?:value|content)=")[^"]*#'),
+			array('', '$1'),
+			$body
+		);
 	}
 
 	public function theMainAdministratorsAddressMailsNobodyAndIsRecorded(AcceptanceTester $I)
@@ -142,6 +190,30 @@ class FpwRequestCest
 			'the second request inside the window must send nothing');
 	}
 
+	/**
+	 * The source gate is cleared between the two, so what is being measured is
+	 * the per-account ration and not the per-caller one.
+	 */
+	public function aSecondRequestForOneAccountSendsNothingUntilTheFirstExpires(AcceptanceTester $I)
+	{
+		$I->wantTo('not have my inbox filled by somebody who knows my address');
+
+		$I->probe('act=clearmaillog');
+		$I->probe('act=cleargate');
+		$I->probe('act=clearpending');
+
+		$I->resetAllCookies();
+		$I->sendPostRequest('/fpw.php', array('pwsubmit' => 1, 'email' => self::MEMBER_EMAIL));
+		$I->probe('act=cleargate');
+		$I->resetAllCookies();
+		$I->sendPostRequest('/fpw.php', array('pwsubmit' => 1, 'email' => self::MEMBER_EMAIL));
+
+		$I->assertStringContainsString(self::ANSWER, $I->grabResponseBody(),
+			'a request the account already has outstanding is answered like every other');
+		$I->assertSame(1, substr_count($I->grabProbe('act=maillog'), 'Mail-ID='),
+			'one reset link per account per window, however often it is asked for');
+	}
+
 	public function theAdministratorIsToldInTheAdminAreaAndCanDismissIt(AcceptanceTester $I)
 	{
 		$I->wantTo('hear about attempts on my own account where I work, and stop hearing about them');
@@ -179,6 +251,8 @@ class FpwRequestCest
 		$memberEmail = self::MEMBER_EMAIL;
 		$banned = self::BANNED;
 		$bannedEmail = self::BANNED_EMAIL;
+		$unvalidated = self::UNVALIDATED;
+		$unvalidatedEmail = self::UNVALIDATED_EMAIL;
 
 		return <<<PHP
 <?php
@@ -225,6 +299,7 @@ switch(\$act)
 		\$config->save(false, true, false);
 		fpwprobe_have(\$sql, '$member', '$memberEmail', 0);
 		fpwprobe_have(\$sql, '$banned', '$bannedEmail', 1);
+		fpwprobe_have(\$sql, '$unvalidated', '$unvalidatedEmail', 2);
 		echo "PROBE_OK\\n";
 		break;
 
@@ -233,7 +308,7 @@ switch(\$act)
 		\$config->remove('e107_tests_fpw_mail_backup');
 		\$config->save(false, true, false);
 		@unlink(\$logFile);
-		\$sql->delete('user', "user_loginname IN ('$member','$banned')");
+		\$sql->delete('user', "user_loginname IN ('$member','$banned','$unvalidated')");
 		\$sql->delete('tmp', "tmp_ip IN ('fpwsource','pwreset')");
 		fpwprobe_incidents()->clear(e107\\Admin\\Notices::FPW_ADMIN_RESET);
 		(new e107\\Admin\\NoticeSuppression(e107::getConfig(), e107::getLog(), 0))
@@ -243,6 +318,11 @@ switch(\$act)
 
 	case 'adminemail':
 		echo "PROBE_OK\\n".\$sql->retrieve('user', 'user_email', 'user_id=1')."\\n";
+		break;
+
+	case 'mailquiet':
+		\$config->set('mail_log_options', '0,0')->save(false, true, false);
+		echo "PROBE_OK\\n";
 		break;
 
 	case 'clearmaillog':
