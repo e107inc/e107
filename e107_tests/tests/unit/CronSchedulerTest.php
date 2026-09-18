@@ -229,12 +229,11 @@ class CronSchedulerTest extends \Test\Unit
 		$this->assertSame(cronScheduler::VIA_HTTP, $refusal['via']);
 		$this->assertSame('203.0.113.9', $refusal['ip']);
 		$this->assertNull(cronScheduler::lastRun());
-		$this->assertCount(1, $scheduler->mails, 'the owner is told once');
-		$this->assertStringContainsString('over HTTP from 203.0.113.9', $scheduler->mails[0]['message']);
-		$this->assertStringNotContainsString('not-it', $scheduler->mails[0]['message']);
+		$this->assertCount(0, $scheduler->mails, 'a caller who has not authenticated cannot make the site mail its owner');
 
 		$this->assertFalse($scheduler->run(cronScheduler::VIA_HTTP));
-		$this->assertCount(1, $scheduler->mails, 'a repeat inside the interval mails nobody');
+		$this->assertSame(2, cronScheduler::lastRefusal()['count'], 'the repeat is counted');
+		$this->assertCount(0, $scheduler->mails);
 	}
 
 	public function testRunReturnsFalseSilentlyOnAMissingToken()

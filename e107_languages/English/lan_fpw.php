@@ -21,7 +21,7 @@ return [
     'LAN_FPW1' => "Username",
     'LAN_FPW4' => "A request has already been sent to reset this password.  If you did not receive the email, please contact the site administrator for help.",
     'LAN_FPW5' => "A request to reset your password for",
-    'LAN_FPW6' => "An email has been sent to you with a link that will allow you to reset your password.",
+    'LAN_FPW6' => "If that address belongs to an account here, an email is on its way with a link that will allow you to reset your password.",
     'LAN_FPW7' => "This is not a valid link to reset your password.<br />Please contact the site administrator for more details.",
     'LAN_FPW8' => "Your password has been changed successfully.",
     'LAN_FPW9' => "The new password is:",
@@ -42,4 +42,7 @@ return [
     'LAN_FPW_101' => "Not to worry. Just enter your email address below and we'll send you an email with instructions to get it back.",
     'LAN_FPW_102' => "Reset Password",
     'LAN_FPW_MISCONFIGURED' => "Password reset is currently unavailable due to a site configuration issue. Please contact the site administrator.",
+    'LAN_FPW_ADMIN_ATTEMPT' => "Password reset attempted for the main administrator account",
+    'LAN_FPW_ADMIN_ATTEMPT_SUMMARY' => "[x] attempt(s) to reset the main administrator's password have been turned away since [y], the last at [z].",
+    'LAN_FPW_ADMIN_ATTEMPT_LAST_FROM' => "The last one came from [x].",
 ];

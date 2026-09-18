@@ -142,6 +142,32 @@ class AddressTest extends \Test\Unit
 	}
 
 	/**
+	 * Anything rationing per caller counts subscribers, and a subscriber is a
+	 * /64 of IPv6 or one address of IPv4. Counting IPv6 addresses instead
+	 * counts nothing, and folding IPv4 into its first 64 bits would count every
+	 * IPv4 caller on the internet as one, since they share the mapping prefix.
+	 */
+	public function testOneSubscriberIsASingleV4AddressOrAWholeV6Block()
+	{
+		$block = '20010db8abcd001200000000000000';
+
+		self::assertSame('20010db8abcd00120000000000000000',
+			Address::toSubscriberBlock($block.'00'), 'the /64 is what an IPv6 caller cannot vary');
+		self::assertSame(Address::toSubscriberBlock($block.'00'), Address::toSubscriberBlock($block.'ff'),
+			'two addresses in one /64 are one subscriber');
+		self::assertNotSame(Address::toSubscriberBlock('20010db8abcd0012'.str_repeat('0', 16)),
+			Address::toSubscriberBlock('20010db8abcd0013'.str_repeat('0', 16)),
+			'two /64s are two subscribers');
+
+		self::assertSame(self::V4, Address::toSubscriberBlock(self::V4), 'an IPv4 address is already one subscriber');
+		self::assertNotSame(Address::toSubscriberBlock(self::V4), Address::toSubscriberBlock(self::LOCALHOST),
+			'IPv4 callers must not fold together on their shared mapping prefix');
+
+		self::assertSame('', Address::toSubscriberBlock('nonsense'));
+		self::assertSame('', Address::toSubscriberBlock(null));
+	}
+
+	/**
 	 * Candidate order inside a segment is by width, and width is end minus
 	 * start, so the subtraction has to borrow correctly across nibbles.
 	 */

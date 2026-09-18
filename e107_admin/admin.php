@@ -12,6 +12,13 @@ define('e_ADMIN_HOME', true); // used by some admin shortcodes and class2.
 
 require_once(__DIR__.'/../class2.php');
 
+use e107\Admin\DismissRequest;
+use e107\Admin\Incident;
+use e107\Admin\IncidentNotice;
+use e107\Admin\Notices;
+use e107\Admin\NoticeSuppression;
+use e107\Cache\Stamp;
+
 if(varset($_GET['mode']) == 'customize')
 {
 	$adminPref = e107::getConfig()->get('adminpref', 0);
@@ -126,6 +133,15 @@ class admin_start
 
 	private $deprecated = array();
 	private $upgradeRequiredFirst = false;
+
+	/** @var NoticeSuppression */
+	private $suppression;
+
+	/** @var IncidentNotice */
+	private $refusalNotice;
+
+	/** @var IncidentNotice */
+	private $adminReset;
 	
 	function __construct()
 	{
@@ -146,6 +162,19 @@ class admin_start
 		// Files that can cause comflicts and problems.
         $fileInspector = e107::getFileInspector();
 		$this->deprecated = $fileInspector::getCachedDeprecatedFiles();
+
+		require_once(e_HANDLER.'cron_class.php');
+		$this->suppression = new NoticeSuppression(e107::getConfig(), e107::getLog(), (int) e107::getUser()->getId());
+
+		$this->refusalNotice = cronScheduler::refusalNotice();
+		$this->adminReset = $this->adminResetNotice();
+
+		$request = new DismissRequest($_GET, defined('e_TOKEN'));
+
+		if($request->act($this->dismissible()) === DismissRequest::REFUSED)
+		{
+			e107::getMessage()->addError(defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+		}
 
 		$this->checkCoreVersion();
 		$this->checkDependencies();
@@ -184,6 +213,12 @@ class admin_start
 
 		e107::getDebug()->logTime('Check Htaccess');
 		$this->checkHtaccess();
+
+		e107::getDebug()->logTime('Check Cron Refusals');
+		$this->checkCronRefusals();
+
+		e107::getDebug()->logTime('Check Admin Reset Attempts');
+		$this->checkAdminResetAttempts();
 
 		e107::getDebug()->logTime('Check Core Update');
 		$this->checkCoreUpdate();
@@ -452,23 +487,97 @@ TMPO;
 	}*/
 
 	/**
+	 * The notices the dashboard may be asked to dismiss, each with what records
+	 * its suppression.
 	 *
+	 * @return array
 	 */
+	private function dismissible()
+	{
+		return array(Notices::UPGRADE_ALERT => array($this->suppression, 'suppress'))
+			+ $this->adminReset->dismissible()
+			+ $this->refusalNotice->dismissible();
+	}
+
+	/**
+	 * @return IncidentNotice
+	 *   Attempts on the main administrator's password: news while a run of them
+	 *   is still current, dismissible until a fresh run begins.
+	 */
+	private function adminResetNotice()
+	{
+		$incidents = new Incident(new Stamp(e_CACHE));
+		$attempts = $incidents->last(Notices::FPW_ADMIN_RESET);
+
+		return new IncidentNotice($this->suppression, Notices::FPW_ADMIN_RESET,
+			($attempts === null) ? '' : (string) $attempts['first'], $attempts, time() - Incident::WINDOW,
+			array('eHelper', 'clearSystemNotification'));
+	}
+
+	private function checkAdminResetAttempts()
+	{
+		$attempts = $this->adminReset->toReport();
+
+		if($attempts === null)
+		{
+			eHelper::clearSystemNotification(Notices::FPW_ADMIN_RESET);
+
+			return;
+		}
+
+		e107::coreLan('fpw');
+		$tp = e107::getParser();
+
+		$message = str_replace(
+			array('[x]', '[y]', '[z]'),
+			array($attempts['count'], $tp->toDate($attempts['first'], 'short'), $tp->toDate($attempts['last'], 'short')),
+			LAN_FPW_ADMIN_ATTEMPT_SUMMARY
+		);
+
+		if(!empty($attempts['ip']))
+		{
+			$message .= ' '.str_replace('[x]', $attempts['ip'], LAN_FPW_ADMIN_ATTEMPT_LAST_FROM);
+		}
+
+		eHelper::addSystemNotification(Notices::FPW_ADMIN_RESET, $message.' '.$this->dismissLink(Notices::FPW_ADMIN_RESET));
+	}
+
+	/**
+	 * @param string $id
+	 *   A key of {@see admin_start::dismissible()}.
+	 * @return string
+	 */
+	private function dismissLink($id)
+	{
+		return DismissRequest::link($id, e_ADMIN_ABS.'admin.php', defset('e_TOKEN'), LAN_DONT_SHOW_AGAIN);
+	}
+
+	private function checkCronRefusals()
+	{
+		$refusal = $this->refusalNotice->toReport();
+
+		if($refusal === null)
+		{
+			eHelper::clearSystemNotification(Notices::CRON_REFUSED);
+
+			return;
+		}
+
+		e107::coreLan('cron', true);
+		$setup = "<a href='".e_ADMIN_ABS."cron.php?mode=main&amp;action=setup'>".LAN_CRON_M_SETUP."</a>";
+		$message = cronScheduler::refusalSummary($refusal).' '.str_replace('[x]', $setup, LAN_CRON_REFUSED_COPY_AGAIN);
+
+		eHelper::addSystemNotification(Notices::CRON_REFUSED, $message.' '.$this->dismissLink(Notices::CRON_REFUSED));
+	}
+
 	private function checkNewInstall()
 	{
+		$legacyFlag = e_CACHE.'dismiss.upgrade.alert.txt';
 
-		$upgradeAlertFlag = e_CACHE.'dismiss.upgrade.alert.txt';
-
-		if(!empty($_GET['dismiss']) && $_GET['dismiss'] == 'upgrade')
+		if(file_exists($legacyFlag))
 		{
-			if(!defined('e_TOKEN') || !empty($_GET['e-token']))
-			{
-				file_put_contents($upgradeAlertFlag,'true');
-			}
-			else
-			{
-				echo e107::getMessage()->addError(defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'))->render();
-			}
+			$this->suppression->suppress(Notices::UPGRADE_ALERT);
+			@unlink($legacyFlag);
 		}
 
 		$pref = e107::getPref('install_date');
@@ -483,18 +592,16 @@ TMPO;
 			$repl = array("<a href='https://github.com/e107inc/e107/discussions' target='_blank' rel='external'>","</a>");
 			echo e107::getMessage()->setTitle(ADLAN_190,E_MESSAGE_INFO)->addInfo("<p>".str_replace($srch,$repl,ADLAN_192)."</p>")->render();
 		}
-		elseif($pref < $v2ReleaseDate && !file_exists($upgradeAlertFlag)) // installed prior to v2 release.
+		elseif($pref < $v2ReleaseDate && !$this->suppression->isSuppressed(Notices::UPGRADE_ALERT))
 		{
 			$srch = array('[',']');
 			$repl = array("<a href='https://github.com/e107inc/e107/discussions' target='_blank' rel='external'>","</a>");
 			$message = str_replace($srch,$repl,ADLAN_191);
-			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade&amp;e-token=".defset('e_TOKEN')."'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
+			$message .= "<div class='text-right'>".$this->dismissLink(Notices::UPGRADE_ALERT)."</div>";
 			echo e107::getMessage()->setTitle(LAN_UPGRADING,E_MESSAGE_INFO)->addInfo($message)->render();
 		}
 
 		e107::getMessage()->setTitle(null,E_MESSAGE_INFO);
-
-
 	}
 
 
@@ -732,7 +839,7 @@ TMPO;
 		}
 		else
 		{
-			eHelper::clearSystemNotification('checkDependencies');
+			eHelper::clearSystemNotification('checkHtaccess');
 		}
 	}
 

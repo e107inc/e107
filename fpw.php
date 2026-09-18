@@ -125,6 +125,30 @@ function fpw_error($txt)
 	exit;
 }
 
+/**
+ * The single answer every reset request gets, whatever became of it.
+ *
+ * The form used to say which of seven things had happened: no such address, a
+ * banned account, an unvalidated one, a request already outstanding, the main
+ * administrator's, a send that failed, or a link on its way. Every one of those
+ * answers "does this account exist here, and what state is it in" for whoever
+ * asked, so they are all this page now. What actually happened is offered to
+ * the user audit log, which keeps it only where the site has turned that event
+ * type on, so an outcome the operator has to act on goes to error_log() too.
+ *
+ * @return void
+ */
+function fpw_answered()
+{
+	global $caption;
+
+	e107::getMessage()->addInfo(LAN_FPW6);
+
+	e107::getRender()->tablerender($caption, e107::getMessage()->render().fpw_form(), 'fpw');
+	require_once(FOOTERF);
+	exit;
+}
+
 $fpw_siteurl = e107::getPref('siteurl');
 if (empty($fpw_siteurl))
 {
@@ -134,6 +158,8 @@ if (empty($fpw_siteurl))
 
 //the separator character used
 define('FPW_SEPARATOR', '#');
+
+define('FPW_FLOOD_KIND', 'fpwsource');
 //$fpw_sep = '#';
 
 
@@ -277,7 +303,17 @@ if (!empty($_POST['pwsubmit']))
 			fpw_error(LAN_INVALID_CODE);
 		}
 	}
-	
+
+	$fpwSource = \e107\Ip\Address::toSubscriberBlock(\e107\Ip\Address::toHex(e107::getIPHandler()->getIP(false)));
+	$fpwGate = new \e107\Flood\SourceGate(e107::getDb(), deftrue('FLOODPROTECT'), defset('FLOODTIMEOUT', 10));
+
+	if($fpwGate->isClosedTo(FPW_FLOOD_KIND, $fpwSource))
+	{
+		fpw_answered();
+	}
+
+	$fpwGate->record(FPW_FLOOD_KIND, $fpwSource);
+
 	$email 			= $_POST['email'];
 	$clean_email 	= check_email($tp->toDB($_POST['email']));
 	$clean_username = $tp->toDB(varset($_POST['username'], ''));
@@ -295,38 +331,43 @@ if (!empty($_POST['pwsubmit']))
 	{
 		// Found user in DB
 
-		// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
-		// Sending email to admin alerting them of attempted admin password reset, and redirect user to homepage.
+		// Main admin expected to be competent enough to never forget password!
 		if(!getperms('0')) // disabled when testing as main-admin.
 		{
 			if (($row['user_admin'] == 1) && (($row['user_perms'] == '0')  OR ($row['user_perms'] == '0.')))
 			{
-				sendemail($pref['siteadminemail'], LAN_06, LAN_07.' ['.e107::getIPHandler()->getIP(FALSE).'] '.e107::getIPHandler()->getIP(TRUE).' '.LAN_08);
-				e107::getRedirect()->redirect(SITEURL);
+				$fpwIncidents = new \e107\Admin\Incident(new \e107\Cache\Stamp(e_CACHE));
+				$fpwIncidents->record(\e107\Admin\Notices::FPW_ADMIN_RESET, array('ip' => e107::getIPHandler()->getIP(true)));
+
+				e107::getLog()->user_audit(USER_AUDIT_PW_RES, array(
+					'password_action' => LAN_FPW_ADMIN_ATTEMPT,
+					'user_id'         => $row['user_id'],
+					'user_loginname'  => $row['user_loginname'],
+				), $row['user_id'], $row['user_name']);
+
+				fpw_answered();
 			}
 		}
 		// Banned user, or not validated
 		switch($row['user_ban'])
 		{	
 			case USER_BANNED:
-				e107::getRedirect()->redirect(SITEURL);
+				fpw_answered();
 				break;
 			case USER_VALIDATED:
 				break;
 			default:
-				fpw_error(LAN_02.':'.$row['user_ban']);		// Intentionally rather a vague message
-				exit;
+				fpw_answered();
 		}
 
 		// Check if password reset was already requested
 		$existsQb = $sql->createQueryBuilder();
 		if ($existsQb->from('tmp')
 			->where('tmp_ip', 'pwreset')
-			->where($existsQb->expr()->like('tmp_info', $row['user_loginname'].FPW_SEPARATOR.'%'))
+			->where($existsQb->expr()->like('tmp_info', $row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR.'%'))
 			->count())
 		{
-			fpw_error(LAN_FPW4);
-			exit;
+			fpw_answered();
 		}
 
 		// Set unique reset code. Must stay [A-Za-z0-9]: the redemption path runs
@@ -375,34 +416,19 @@ if (!empty($_POST['pwsubmit']))
 			exit;
 		}
 
-		// Try to send the email 
-		if(sendemail($clean_email, "".LAN_09."".SITENAME, $message))
-		{
-			e107::getMessage()->addInfo(LAN_FPW6);
-			$do_log['password_result'] = LAN_FPW20;
-		}
-		else
-		{
-			//$text = "<div style='text-align:center'>".LAN_02."</div>";
-			$do_log['password_result'] = LAN_FPW19;
-		  	fpw_error(LAN_02); 
-		}
+		$sent = sendemail($clean_email, "".LAN_09."".SITENAME, $message);
+		$do_log['password_result'] = $sent ? LAN_FPW20 : LAN_FPW19;
 
 		// Log to user audit log
 		e107::getLog()->user_audit(USER_AUDIT_PW_RES, $do_log, $row['user_id'], $row['user_name']);
 
-		$ns->tablerender(LAN_03, $text.e107::getMessage()->render());
-		require_once(FOOTERF);
-		exit;
+		if(!$sent)
+		{
+			error_log('fpw.php: A password reset link could not be sent to user #'.$row['user_id'].'. Check the mail settings in Admin → Preferences.');
+		}
 	}
-	else
-	{
-		//$text = LAN_213;
-		//$ns->tablerender(LAN_214, "<div style='text-align:center'>".$text."</div>");
-		//e107::getMessage()->addError(LAN_213); 
-		//$ns->tablerender(LAN_214, e107::getMessage()->render());
-		fpw_error(LAN_213);
-	}
+
+	fpw_answered();
 }
 
 

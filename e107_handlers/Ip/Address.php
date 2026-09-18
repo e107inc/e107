@@ -158,6 +158,29 @@ class Address
 	}
 
 	/**
+	 * The block that says which subscriber, rather than which machine.
+	 *
+	 * IPv6 is allocated a /64 at a time, so an ordinary home or virtual-server
+	 * connection picks freely from 18 billion billion addresses and anything
+	 * counting one address at a time counts nothing. IPv4 is allocated an
+	 * address at a time, so there the address already is the answer.
+	 *
+	 * @param string $hex
+	 * @return string 32 hex characters with anything past the block zeroed, or '' when this is not an address
+	 */
+	public static function toSubscriberBlock($hex)
+	{
+		if(!is_string($hex) || strlen($hex) !== self::LENGTH || !ctype_xdigit($hex))
+		{
+			return '';
+		}
+
+		$hex = strtolower($hex);
+
+		return self::isV4Mapped($hex) ? $hex : substr($hex, 0, 16).str_repeat('0', 16);
+	}
+
+	/**
 	 * @param string $a
 	 * @param string $b
 	 * @return int negative when $a is below $b, zero when equal, positive when above

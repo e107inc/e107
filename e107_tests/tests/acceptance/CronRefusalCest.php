@@ -1,34 +1,46 @@
 <?php
 
 /**
- * cron.php over HTTP and from the command line.
+ * cron.php over HTTP and from the command line, and what a refusal reaches.
  *
  * Both entry points share one token. Over HTTP an accepted token answers
  * 200 "OK" and runs the due tasks as a guest; a missing or wrong token answers
- * 403 with nothing the caller sent echoed back, is recorded for the admin
- * page, and mails the site owner at most once a day without an environment
- * dump (P6 item 2: cronScheduler::validateToken() used to mail print_a($_SERVER),
- * print_a($_ENV) and print_a($_GET), unthrottled, on every wrong-token
- * request). From the command line the tasks run as the first administrator
- * and a refused token exits 1.
+ * 403 with nothing the caller sent echoed back and is recorded for the admin
+ * area. From the command line the tasks run as the first administrator and a
+ * refused token exits 1.
  *
- * The mail assertions are driven through a probe that calls validateToken()
- * directly as well as through cron.php, so that neither entry point can turn
- * them into tests that measure nothing.
+ * Nothing a refused caller does mails anybody. The site owner used to be
+ * mailed once a day about a wrong token, which handed any stranger the
+ * decision of when the owner is mailed; the record is read on Schedule Tasks
+ * and on the dashboard instead, and the administrator can dismiss it until the
+ * token is next regenerated.
+ *
+ * The validation assertions are driven through a probe that calls
+ * validateToken() directly as well as through cron.php, so that neither entry
+ * point can turn them into tests that measure nothing.
  */
-class CronMisconfigMailCest
+class CronRefusalCest
 {
 	const PROBE_FILE = 'e107_tests_p6_cron_probe.php';
 	const ADDON_DIR = 'e107_plugins/e107_tests_cronprobe';
 
+	const SCHEDULE_TASKS = '/e107_admin/cron.php';
+	const SETUP_PAGE = '/e107_admin/cron.php?mode=main&action=setup';
+	const DASHBOARD = '/e107_admin/admin.php';
+
+	/** The sentence LAN_CRON_REFUSED_SUMMARY renders. */
+	const REFUSED = 'request(s) to cron.php have been refused';
+
 	/**
-	 * @var string the wrong token every request in a burst presents.
-	 *
-	 * It is the marker as well as the token: the pre-fix mail echoed the
-	 * submitted token back at "Sent from cron: ", so a marker travelling in some
-	 * other parameter would measure the $_GET dump and leave the echo untested.
-	 * It is the same on every request in a burst, so a deduplicating mailer
-	 * still sees one message.
+	 * What Schedule Tasks says when nothing has run, which a dismissal must not
+	 * reach: a stranger's knocking is dismissible, a site whose scheduled tasks
+	 * have stopped is not.
+	 */
+	const NOT_RUNNING = 'No scheduled task has reported in yet.';
+
+	/**
+	 * @var string the wrong token every request in a burst presents; the same on
+	 * every request, so a coalescing record counts one run.
 	 */
 	private $marker;
 
@@ -46,80 +58,7 @@ class CronMisconfigMailCest
 		$I->amOnProbe('act=teardown');
 	}
 
-	/**
-	 * One test, not four, because a rate limiter is stateful: a separate test
-	 * asserting "the owner is told at least once" would run with the budget
-	 * already spent by the test above it and fail for a reason that is not the
-	 * defect. Every assertion here is made against the same burst.
-	 */
-	public function theMisconfigurationMailIsThrottledAndCarriesNoEnvironmentDump(AcceptanceTester $I)
-	{
-		$I->wantTo('stop an anonymous caller mailing the site owner the server environment on demand');
-
-		$I->probe('act=clearmaillog');
-
-		$burst = 6;
-		for($i = 0; $i < $burst; $i++)
-		{
-			$out = $I->grabProbe('act=validate&token='.$this->marker);
-			$I->assertStringContainsString('VALIDATE=0', $out,
-				'the wrong token must not validate (request '.($i + 1).')');
-		}
-
-		$log = $I->grabProbe('act=maillog');
-
-		$I->assertSame(array(), $this->mailProblems($log, $burst),
-			"cron misconfiguration mail, after $burst anonymous requests with the wrong token:\n  - "
-			.implode("\n  - ", $this->mailProblems($log, $burst))."\n");
-	}
-
-	/**
-	 * @param string $log the mail log
-	 * @param int $burst how many refused requests preceded it
-	 * @return string[] every defect the log shows, so that fixing one cannot hide the others
-	 */
-	private function mailProblems($log, $burst)
-	{
-		$sent = substr_count($log, 'Mail-ID=');
-		$problems = array();
-
-		if($sent < 1)
-		{
-			$problems[] = 'no mail was sent at all: a misconfigured cron must still tell the site owner once';
-		}
-
-		if($sent > 1)
-		{
-			$problems[] = $burst.' identical failed requests produced '.$sent
-				.' mails: the mail must be rate limited and deduplicated';
-		}
-
-		if(strpos($log, $this->marker) !== false)
-		{
-			$problems[] = 'the mail body echoes the token the caller submitted back to the site owner';
-		}
-
-		if(strpos($log, $this->cronPassword()) !== false)
-		{
-			$problems[] = 'the mail body carries the site\'s own cron password';
-		}
-
-		foreach(array('_SERVER', '_ENV', 'DOCUMENT_ROOT', 'DB_PASSWORD') as $dump)
-		{
-			if(strpos($log, $dump) !== false)
-			{
-				$problems[] = 'the mail body carries '.$dump;
-			}
-		}
-
-		return $problems;
-	}
-
-	/**
-	 * Positive control for the throttle: a correctly configured cron must still
-	 * be accepted, and must not mail anybody.
-	 */
-	public function aCorrectTokenStillValidatesAndMailsNobody(AcceptanceTester $I)
+	public function aCorrectTokenValidatesAndMailsNobody(AcceptanceTester $I)
 	{
 		$I->wantTo('keep a correctly configured cron working silently');
 
@@ -128,8 +67,7 @@ class CronMisconfigMailCest
 		$out = $I->grabProbe('act=validate&token='.$this->cronPassword());
 		$I->assertStringContainsString('VALIDATE=1', $out, 'the configured token must validate');
 
-		$log = $I->grabProbe('act=maillog');
-		$I->assertSame(0, substr_count($log, 'Mail-ID='),
+		$I->assertSame(0, substr_count($I->grabProbe('act=maillog'), 'Mail-ID='),
 			'a cron run with the right token must mail nobody');
 	}
 
@@ -152,9 +90,13 @@ class CronMisconfigMailCest
 		$I->assertSame('http', $run['via']);
 	}
 
-	public function aWrongTokenOverHttpIs403AndStillMailsOnce(AcceptanceTester $I)
+	/**
+	 * One burst, not one request per assertion, because the record coalesces:
+	 * the count it reports is only meaningful against the burst that produced it.
+	 */
+	public function aWrongTokenOverHttpIs403AndMailsNobody(AcceptanceTester $I)
 	{
-		$I->wantTo('refuse a wrong token over HTTP without saying anything useful to the caller');
+		$I->wantTo('refuse a wrong token over HTTP without saying anything useful to the caller or mailing anyone');
 
 		$I->probe('act=clearmaillog');
 		$I->probe('act=clearrefusals');
@@ -174,12 +116,11 @@ class CronMisconfigMailCest
 		$I->assertStringContainsString('STAMP=0', $I->grabProbe('act=stamp'),
 			'a refused request must not reach the scheduler');
 
-		$log = $I->grabProbe('act=maillog');
-		$I->assertSame(array(), $this->mailProblems($log, $burst),
-			"after $burst wrong-token web requests:\n  - ".implode("\n  - ", $this->mailProblems($log, $burst))."\n");
+		$I->assertSame(0, substr_count($I->grabProbe('act=maillog'), 'Mail-ID='),
+			"$burst wrong-token web requests must mail nobody");
 
 		$refusal = $I->grabProbeJson('act=refusal');
-		$I->assertNotNull($refusal, 'the refusals must be recorded for the admin page');
+		$I->assertNotNull($refusal, 'the refusals must be recorded for the admin area');
 		$I->assertGreaterThanOrEqual($burst, $refusal['count']);
 		$I->assertSame('wrong', $refusal['token']);
 		$I->assertSame('http', $refusal['via']);
@@ -196,8 +137,8 @@ class CronMisconfigMailCest
 		$I->seeResponseCodeIs(403);
 		$I->assertStringNotContainsString($this->cronPassword(), $I->grabResponseBody());
 
-		$log = $I->grabProbe('act=maillog');
-		$I->assertSame(0, substr_count($log, 'Mail-ID='), 'a request without a token is noise, not a misconfiguration');
+		$I->assertSame(0, substr_count($I->grabProbe('act=maillog'), 'Mail-ID='),
+			'a request without a token is noise');
 
 		$refusal = $I->grabProbeJson('act=refusal');
 		$I->assertSame('missing', $refusal['token']);
@@ -220,15 +161,16 @@ class CronMisconfigMailCest
 		$I->assertSame('cli', $run['via']);
 	}
 
-	public function aWrongTokenFromTheCommandLineExitsNonZero(AcceptanceTester $I)
+	public function aWrongTokenFromTheCommandLineExitsNonZeroAndMailsNobody(AcceptanceTester $I)
 	{
-		$I->wantTo('tell a crontab that its token was refused through the exit status');
+		$I->wantTo('tell a crontab that its token was refused through the exit status alone');
 
 		$I->probe('act=clearmaillog');
 		$out = $I->grabProbe('act=cli&token='.$this->marker);
 
 		$I->assertStringContainsString('CLI_STATUS=1', $out);
 		$I->assertStringContainsString('CLI_RAN=0', $out);
+		$I->assertSame(0, substr_count($I->grabProbe('act=maillog'), 'Mail-ID='));
 	}
 
 	/**
@@ -292,6 +234,87 @@ class CronMisconfigMailCest
 	}
 
 	/**
+	 * Last in the file because it logs in: the cases above are a stranger's.
+	 */
+	public function aRefusalIsReportedInTheAdminAreaUntilDismissedOrTheTokenChanges(AcceptanceTester $I)
+	{
+		$I->wantTo('learn about refused requests in the admin area, and stop being told once I have said so');
+
+		$I->probe('act=clearrefusals');
+		$I->probe('act=undismiss');
+		$I->probe('act=unlinkstamp');
+
+		$I->amOnPage('/cron.php?token='.$this->marker);
+		$I->seeResponseCodeIs(403);
+
+		$I->loginAsAdmin();
+
+		$I->amOnPage(self::SCHEDULE_TASKS);
+		$I->see(self::REFUSED);
+		$I->see('They carried a token that does not match.');
+
+		$I->amOnPage(self::DASHBOARD);
+		$I->seeInSource('id="admin-notifications"');
+		$I->see(self::REFUSED);
+
+		$I->amOnPage($this->publishedLink($I, self::SCHEDULE_TASKS,
+			'#cron\.php\?mode=main&amp;action=list&amp;dismiss=cron-refused&amp;e-token=[^\'"]+#'));
+
+		$state = $I->grabProbeJson('act=state');
+		$I->assertNotNull($state['refusal'], 'the refusal record must survive being dismissed: '.json_encode($state));
+		$I->assertTrue($state['suppressed'], 'the dismissal must be recorded: '.json_encode($state));
+
+		$I->amOnPage(self::SCHEDULE_TASKS);
+		$page = $I->grabPageSource();
+		$after = $I->grabProbeJson('act=state');
+		$I->assertStringNotContainsString(self::REFUSED, $page,
+			'dismissed, so Schedule Tasks must not warn; state after loading it: '.json_encode($after));
+		$I->assertStringContainsString(self::NOT_RUNNING, $page,
+			'saying no to news about strangers must not also hide that nothing is running');
+
+		$I->amOnPage('/cron.php?token='.$this->marker);
+		$I->seeResponseCodeIs(403);
+
+		$I->amOnPage(self::SCHEDULE_TASKS);
+		$I->dontSee(self::REFUSED);
+		$I->amOnPage(self::DASHBOARD);
+		$I->dontSee(self::REFUSED);
+
+		$I->amOnPage(self::SETUP_PAGE);
+		$I->submitForm('#cron-token', array('generate_pwd' => 1));
+		$I->see('A new cron token has been generated.');
+
+		$I->amOnPage('/cron.php?token='.$this->marker);
+		$I->seeResponseCodeIs(403);
+
+		$I->amOnPage(self::SCHEDULE_TASKS);
+		$I->see(self::REFUSED);
+		$I->amOnPage(self::DASHBOARD);
+		$I->see(self::REFUSED);
+	}
+
+	/**
+	 * Follow the link the page publishes rather than a URL of the test's own.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $page
+	 * @param string $pattern
+	 * @return string path to request
+	 */
+	private function publishedLink(AcceptanceTester $I, $page, $pattern)
+	{
+		$I->amOnPage($page);
+
+		$matches = array();
+		if(!preg_match($pattern, $I->grabPageSource(), $matches))
+		{
+			throw new \RuntimeException($page.' published no link matching '.$pattern);
+		}
+
+		return '/e107_admin/'.str_replace('&amp;', '&', $matches[0]);
+	}
+
+	/**
 	 * A task on '* * * * *' is due for the first 45 seconds of each minute; the three requests that follow need to land inside it.
 	 */
 	private function waitForTheDueWindow()
@@ -317,7 +340,7 @@ class CronMisconfigMailCest
 	{
 		return <<<'PHP'
 <?php
-// Fixture for CronMisconfigMailCest. Removed again by the Cest.
+// Fixture for CronRefusalCest. Removed again by the Cest.
 if(!defined('e107_INIT')) { exit; }
 
 class e107_tests_cronprobe_cron
@@ -347,7 +370,7 @@ PHP;
 
 		return <<<PHP
 <?php
-// Fixture for CronMisconfigMailCest.
+// Fixture for CronRefusalCest.
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
@@ -389,18 +412,12 @@ switch(\$act)
 		@unlink(\$logFile);
 		@unlink(\$record);
 		cronScheduler::clearRefusals();
+		(new e107\\Admin\\NoticeSuppression(e107::getConfig(), e107::getLog(), 0))->release(e107\\Admin\\Notices::CRON_REFUSED);
 		echo "PROBE_OK\n";
 		break;
 
 	case 'clearmaillog':
 		@unlink(\$logFile);
-		// The throttle records the last notice of each kind in e_CACHE, so a
-		// burst that started with the record already written would send nothing
-		// and read as a fix regression rather than as leftover state.
-		foreach((array) glob(e_CACHE.'cronNotice_*.php') as \$notice)
-		{
-			@unlink(\$notice);
-		}
 		echo "PROBE_OK\n";
 		break;
 
@@ -438,12 +455,30 @@ switch(\$act)
 		echo "PROBE_OK\n";
 		break;
 
+	case 'undismiss':
+		(new e107\\Admin\\NoticeSuppression(e107::getConfig(), e107::getLog(), 0))->release(e107\\Admin\\Notices::CRON_REFUSED);
+		echo "PROBE_OK\n";
+		break;
+
+	case 'state':
+		\$suppression = new e107\\Admin\\NoticeSuppression(e107::getConfig(), e107::getLog(), 0);
+		\$fingerprint = sha1((string) e107::getPref('e_cron_pwd'));
+		echo "PROBE_OK\n".json_encode(array(
+			'reported'    => cronScheduler::refusalNotice()->toReport() !== null,
+			'suppressed'  => \$suppression->isSuppressed(e107\\Admin\\Notices::CRON_REFUSED, \$fingerprint),
+			'fingerprint' => substr(\$fingerprint, 0, 12),
+			'refusal'     => cronScheduler::lastRefusal(),
+			'lastrun'     => cronScheduler::lastRun(),
+			'records'     => e107::getConfig()->get(e107\\Admin\\NoticeSuppression::PREF),
+		))."\n";
+		break;
+
 	case 'addcron':
 		e107::getDb()->delete('cron', "cron_function='e107_tests_cronprobe::record'");
 		e107::getDb()->insert('cron', array(
 			'cron_name' => 'e107_tests probe',
 			'cron_category' => 'plugin',
-			'cron_description' => 'Fixture for CronMisconfigMailCest',
+			'cron_description' => 'Fixture for CronRefusalCest',
 			'cron_function' => 'e107_tests_cronprobe::record',
 			'cron_tab' => '* * * * *',
 			'cron_active' => 1,
