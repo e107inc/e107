@@ -166,15 +166,15 @@ class admin_start
 		require_once(e_HANDLER.'cron_class.php');
 		$this->suppression = new NoticeSuppression(e107::getConfig(), e107::getLog(), (int) e107::getUser()->getId());
 
+		$this->refusalNotice = cronScheduler::refusalNotice();
+		$this->adminReset = $this->adminResetNotice();
+
 		$request = new DismissRequest($_GET, defined('e_TOKEN'));
 
 		if($request->act($this->dismissible()) === DismissRequest::REFUSED)
 		{
 			e107::getMessage()->addError(defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
 		}
-
-		$this->refusalNotice = cronScheduler::refusalNotice();
-		$this->adminReset = $this->adminResetNotice();
 
 		$this->checkCoreVersion();
 		$this->checkDependencies();
@@ -494,15 +494,15 @@ TMPO;
 	 */
 	private function dismissible()
 	{
-		return array(
-			Notices::UPGRADE_ALERT   => array($this->suppression, 'suppress'),
-			Notices::FPW_ADMIN_RESET => array($this->adminResetNotice(), 'dismiss'),
-		) + cronScheduler::refusalDismissible();
+		return array(Notices::UPGRADE_ALERT => array($this->suppression, 'suppress'))
+			+ $this->adminReset->dismissible()
+			+ $this->refusalNotice->dismissible();
 	}
 
 	/**
 	 * @return IncidentNotice
-	 *   Attempts to reset the main administrator's password, dismissible until a fresh run of them begins.
+	 *   Attempts on the main administrator's password: news while a run of them
+	 *   is still current, dismissible until a fresh run begins.
 	 */
 	private function adminResetNotice()
 	{
@@ -510,7 +510,7 @@ TMPO;
 		$attempts = $incidents->last(Notices::FPW_ADMIN_RESET);
 
 		return new IncidentNotice($this->suppression, Notices::FPW_ADMIN_RESET,
-			($attempts === null) ? '' : (string) $attempts['first'], $attempts, 0,
+			($attempts === null) ? '' : (string) $attempts['first'], $attempts, time() - Incident::WINDOW,
 			array('eHelper', 'clearSystemNotification'));
 	}
 

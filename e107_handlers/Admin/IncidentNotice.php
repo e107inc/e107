@@ -89,6 +89,17 @@ class IncidentNotice
 	}
 
 	/**
+	 * @return array
+	 *   This notice as {@see DismissRequest::act()} takes them, so that a page
+	 *   offering the notice dismisses the object it is showing rather than a
+	 *   second one built to agree with it.
+	 */
+	public function dismissible()
+	{
+		return array($this->id => array($this, 'dismiss'));
+	}
+
+	/**
 	 * Hides the notice until the fingerprint changes.
 	 *
 	 * @return void

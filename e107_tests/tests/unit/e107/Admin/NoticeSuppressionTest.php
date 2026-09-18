@@ -142,4 +142,64 @@ class NoticeSuppressionTest extends \Test\Unit
 		$this->suppression->suppress('unit-test', 'abc');
 		self::assertTrue($this->suppression->isSuppressed('unit-test', 'abc'), 'writing over garbage works');
 	}
+
+	/**
+	 * Every dismissal goes into one preference, so a whole-map write would make
+	 * two administrators clicking "don't show again" at once a race in which
+	 * the loser's notice comes back. The preference journal merges a write that
+	 * names the record it changed, and only that.
+	 */
+	public function testARivalDismissalLandingFirstIsNotOverwritten()
+	{
+		$this->landInStorage(array('rival' => array('while' => '', 'until' => 0, 'by' => 9, 'at' => time())));
+
+		$this->suppression->suppress('unit-test', 'abc');
+
+		$stored = $this->fromStorage();
+
+		self::assertArrayHasKey('rival', $stored, "the other administrator's dismissal must survive this one");
+		self::assertArrayHasKey('unit-test', $stored, 'this dismissal must land');
+		self::assertSame('abc', $stored['unit-test']['while']);
+	}
+
+	/**
+	 * Puts records straight into the stored row, which is what another request
+	 * saving between this object's read and its write looks like from here.
+	 *
+	 * @param array $records
+	 * @return void
+	 */
+	private function landInStorage(array $records)
+	{
+		$stored = $this->storedPrefs();
+		$stored[NoticeSuppression::PREF] = $records;
+
+		\e107::getDb()->createQueryBuilder()->update('core')
+			->set('e107_value', \e107::serialize($stored, false))
+			->where('e107_name', 'SitePrefs')
+			->execute();
+	}
+
+	/**
+	 * @return array
+	 */
+	private function fromStorage()
+	{
+		$stored = $this->storedPrefs();
+
+		return isset($stored[NoticeSuppression::PREF]) ? (array) $stored[NoticeSuppression::PREF] : array();
+	}
+
+	/**
+	 * @return array
+	 */
+	private function storedPrefs()
+	{
+		$row = \e107::getDb()->createQueryBuilder()
+			->select('e107_value')->from('core')
+			->where('e107_name', 'SitePrefs')
+			->fetchRow();
+
+		return empty($row) ? array() : (array) \e107::unserialize($row['e107_value']);
+	}
 }

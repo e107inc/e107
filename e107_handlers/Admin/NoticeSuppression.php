@@ -57,15 +57,13 @@ class NoticeSuppression
 	 */
 	public function suppress($id, $while = '', $until = 0)
 	{
-		$records = $this->records();
-		$records[(string) $id] = array(
+		$this->store($id, array(
 			'while' => (string) $while,
 			'until' => (int) $until,
 			'by'    => $this->userId,
 			'at'    => time(),
-		);
+		));
 
-		$this->store($records);
 		$this->log->add('NOTICE_DISMISSED', (string) $id, \E_LOG_INFORMATIVE, 'NOTICE');
 	}
 
@@ -95,8 +93,7 @@ class NoticeSuppression
 			return;
 		}
 
-		unset($records[(string) $id]);
-		$this->store($records);
+		$this->config->removePref(self::PREF.'/'.$id)->save(false, true, false);
 	}
 
 	/**
@@ -135,11 +132,44 @@ class NoticeSuppression
 	}
 
 	/**
-	 * @param array $records
+	 * Writes one record rather than the whole map, so that two administrators
+	 * dismissing two notices at once keep both: {@see \e_pref::save()} merges by
+	 * replaying the mutation that was recorded, and a mutation naming the map
+	 * would carry away whichever entry the other one had just added.
+	 *
+	 * @param string $id
+	 * @param array $record
 	 * @return void
 	 */
-	private function store(array $records)
+	private function store($id, array $record)
 	{
-		$this->config->set(self::PREF, $records)->save(false, true, false);
+		$this->prune();
+		$this->config->setPref(self::PREF.'/'.$id, $record)->save(false, true, false);
+	}
+
+	/**
+	 * Drops the records {@see NoticeSuppression::records()} already ignores, one
+	 * at a time so that each removal merges like the write it travels with.
+	 *
+	 * @return void
+	 */
+	private function prune()
+	{
+		$stored = $this->config->get(self::PREF);
+
+		if(!is_array($stored))
+		{
+			return;
+		}
+
+		$live = $this->records();
+
+		foreach(array_keys($stored) as $id)
+		{
+			if(!isset($live[(string) $id]))
+			{
+				$this->config->removePref(self::PREF.'/'.$id);
+			}
+		}
 	}
 }

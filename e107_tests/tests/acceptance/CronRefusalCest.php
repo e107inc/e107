@@ -32,6 +32,13 @@ class CronRefusalCest
 	const REFUSED = 'request(s) to cron.php have been refused';
 
 	/**
+	 * What Schedule Tasks says when nothing has run, which a dismissal must not
+	 * reach: a stranger's knocking is dismissible, a site whose scheduled tasks
+	 * have stopped is not.
+	 */
+	const NOT_RUNNING = 'No scheduled task has reported in yet.';
+
+	/**
 	 * @var string the wrong token every request in a burst presents; the same on
 	 * every request, so a coalescing record counts one run.
 	 */
@@ -262,6 +269,8 @@ class CronRefusalCest
 		$after = $I->grabProbeJson('act=state');
 		$I->assertStringNotContainsString(self::REFUSED, $page,
 			'dismissed, so Schedule Tasks must not warn; state after loading it: '.json_encode($after));
+		$I->assertStringContainsString(self::NOT_RUNNING, $page,
+			'saying no to news about strangers must not also hide that nothing is running');
 
 		$I->amOnPage('/cron.php?token='.$this->marker);
 		$I->seeResponseCodeIs(403);

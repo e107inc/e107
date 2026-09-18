@@ -1644,9 +1644,7 @@ class cronScheduler
 	 */
 	public static function refusalDismissible()
 	{
-		$notice = self::refusalNotice();
-
-		return array($notice->id() => array($notice, 'dismiss'));
+		return self::refusalNotice()->dismissible();
 	}
 
 	/**
