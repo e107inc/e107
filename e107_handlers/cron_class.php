@@ -17,6 +17,9 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
+use e107\Admin\Incident;
+use e107\Cache\Stamp;
+
 define ('CRON_MAIL_DEBUG', false);
 define ('CRON_RETRIGGER_DEBUG', false);
 
@@ -1138,7 +1141,7 @@ class cronScheduler
 {
 	const VIA_CLI = 'cli';
 	const VIA_HTTP = 'http';
-	const STAMP_PREFIX = '<?php exit; ?>';
+	const STAMP_PREFIX = Stamp::PREFIX;
 	const REFUSAL_WINDOW = 86400;
 
 	/**
@@ -1543,20 +1546,10 @@ class cronScheduler
 	 */
 	protected function recordRefusal($via)
 	{
-		$now = time();
-		$previous = self::lastRefusal();
-		$continues = ($previous !== null && ($now - $previous['first']) < self::REFUSAL_WINDOW);
 		$ip = ($via === self::VIA_HTTP) ? $this->requestIp() : '';
 		$token = $this->tokenPresented ? 'wrong' : 'missing';
 
-		$this->stampWrite('cronRefused', array(
-			'first' => $continues ? $previous['first'] : $now,
-			'last'  => $now,
-			'count' => $continues ? $previous['count'] + 1 : 1,
-			'via'   => $via,
-			'ip'    => $ip,
-			'token' => $token,
-		));
+		self::incidents()->record('cronRefused', array('via' => $via, 'ip' => $ip, 'token' => $token), self::REFUSAL_WINDOW);
 
 		if($this->noticeIsDue('refused-'.$via, 3600))
 		{
@@ -1574,7 +1567,7 @@ class cronScheduler
 	 */
 	protected function recordRun($via)
 	{
-		$this->stampWrite('cronLastRun', array(
+		self::stamps()->write('cronLastRun', array(
 			'time' => time(),
 			'via'  => $via,
 			'ip'   => ($via === self::VIA_HTTP) ? $this->requestIp() : '',
@@ -1589,9 +1582,9 @@ class cronScheduler
 	 */
 	public static function lastRefusal()
 	{
-		$data = self::stampRead('cronRefused');
+		$data = self::incidents()->last('cronRefused');
 
-		if($data === null || !isset($data['first'], $data['last'], $data['count'], $data['via'], $data['token']))
+		if($data === null || !isset($data['via'], $data['token']))
 		{
 			return null;
 		}
@@ -1604,9 +1597,9 @@ class cronScheduler
 		$ip = isset($data['ip']) && is_string($data['ip']) && filter_var($data['ip'], FILTER_VALIDATE_IP) !== false ? $data['ip'] : '';
 
 		return array(
-			'first' => (int) $data['first'],
-			'last'  => (int) $data['last'],
-			'count' => max(1, (int) $data['count']),
+			'first' => $data['first'],
+			'last'  => $data['last'],
+			'count' => $data['count'],
 			'via'   => $data['via'],
 			'ip'    => $ip,
 			'token' => $data['token'],
@@ -1623,7 +1616,7 @@ class cronScheduler
 	 */
 	public static function lastRun()
 	{
-		$data = self::stampRead('cronLastRun');
+		$data = self::stamps()->read('cronLastRun');
 
 		if($data !== null && isset($data['time']) && in_array(varset($data['via']), array(self::VIA_CLI, self::VIA_HTTP), true))
 		{
@@ -1652,43 +1645,23 @@ class cronScheduler
 	 */
 	public static function clearRefusals()
 	{
-		@unlink(e_CACHE.'cronRefused.php');
+		self::incidents()->clear('cronRefused');
 	}
 
 	/**
-	 * @param string $name
-	 * @return array|null
+	 * @return Incident
 	 */
-	private static function stampRead($name)
+	private static function incidents()
 	{
-		$file = e_CACHE.$name.'.php';
-		clearstatcache(true, $file);
-
-		if(!is_readable($file))
-		{
-			return null;
-		}
-
-		$raw = (string) @file_get_contents($file);
-
-		if(strpos($raw, self::STAMP_PREFIX) !== 0)
-		{
-			return null;
-		}
-
-		$data = json_decode((string) substr($raw, strlen(self::STAMP_PREFIX)), true);
-
-		return is_array($data) ? $data : null;
+		return new Incident(self::stamps());
 	}
 
 	/**
-	 * @param string $name
-	 * @param array $data
-	 * @return bool
+	 * @return Stamp
 	 */
-	private function stampWrite($name, array $data)
+	private static function stamps()
 	{
-		return (bool) @file_put_contents(e_CACHE.$name.'.php', self::STAMP_PREFIX.json_encode($data), LOCK_EX);
+		return new Stamp(e_CACHE);
 	}
 
 	/**
