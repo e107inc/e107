@@ -10,8 +10,14 @@
 		/** user_join that makes the signup token an md5 of the form 0e[0-9]{30}. */
 		const MAGIC_JOIN = 18194810;
 
+		/** Session row the multi-login eviction is expected to delete. */
+		const OLDER_SESSION_ID = 'older-session-6302';
+
 		/** @var userlogin */
 		protected $lg;
+
+		/** @var string|null online_user_id seeded by a test, removed in _after whether or not the test passed */
+		private $onlineUserId;
 
 		protected function _before()
 		{
@@ -30,6 +36,20 @@
 			$this->lg->__construct();
 
 		}
+
+		protected function _after()
+		{
+			$db = e107::getDb();
+
+			$db->createQueryBuilder()->delete('session')->where('session_id', self::OLDER_SESSION_ID)->execute();
+
+			if($this->onlineUserId !== null)
+			{
+				$db->createQueryBuilder()->delete('online')->where('online_user_id', $this->onlineUserId)->execute();
+				$this->onlineUserId = null;
+			}
+		}
+
 		public function testLogin()
 		{
 			$tests = array(
@@ -61,8 +81,7 @@
 
 		public function testLoginNewUser()
 		{
-
-				e107::getConfig()->set('user_new_period', 3)->save(false,true); // set new user period to 3 days.
+			$this->withPrefs(array('user_new_period' => 3), function() {
 
 				$insert = array(
 					'user_name'			=> 'newuser',
@@ -85,7 +104,7 @@
 
 				$this->assertSame("3,248", $class); // new user class was removed!
 
-
+			});
 		}
 
 		/**
@@ -151,6 +170,79 @@
 			$lg = new userlogin();
 
 			$this->assertFalse($lg->login('xupmagic', '0e0', 'signup', '', true));
+		}
+
+		/**
+		 * #6302: the eviction was gated on the save method pref reading 'db', so
+		 * under every other setting the older session outlived the newer login.
+		 */
+		public function testDisallowMultiLoginDropsTheOlderSessionWhateverTheSaveMethod()
+		{
+			$user = $this->fixtureAdmin();
+			$db = e107::getDb();
+
+			$db->createQueryBuilder()->insert('session')->values(array(
+				'session_id'      => self::OLDER_SESSION_ID,
+				'session_expires' => time() + 3600,
+				'session_user'    => $user['user_id'],
+				'session_data'    => '',
+			))->execute();
+
+			$prefs = array('disallowMultiLogin' => 1, 'session_save_method' => 'files', 'track_online' => 0);
+
+			$this->withPrefs($prefs, function() use ($db) {
+				$this->assertTrue($this->lg->login(\Helper\AdminLogin::ADMIN_USER, \Helper\AdminLogin::ADMIN_PASS, 0, '', true));
+
+				$survivors = $db->createQueryBuilder()->from('session')
+					->where('session_id', self::OLDER_SESSION_ID)->count();
+
+				$this->assertSame(0, $survivors);
+			});
+		}
+
+		/**
+		 * #6302: an online row refused the login outright instead, and every
+		 * refusal fed the failed-login autoban counter.
+		 */
+		public function testDisallowMultiLoginAdmitsAnAlreadyOnlineUser()
+		{
+			$user = $this->fixtureAdmin();
+			$onlineUserId = $this->onlineUserId = $user['user_id'].'.'.$user['user_name'];
+			$db = e107::getDb();
+
+			$db->createQueryBuilder()->insert('online')->values(array(
+				'online_timestamp' => time(),
+				'online_user_id'   => $onlineUserId,
+				'online_ip'        => e107::getIpHandler()->ipEncode('203.0.113.9'),
+				'online_location'  => '',
+			))->execute();
+
+			$prefs = array('disallowMultiLogin' => 1, 'session_save_method' => 'files', 'track_online' => 1);
+
+			$this->withPrefs($prefs, function() use ($db, $onlineUserId) {
+				$this->assertTrue($this->lg->login(\Helper\AdminLogin::ADMIN_USER, \Helper\AdminLogin::ADMIN_PASS, 0, '', true));
+
+				$survivors = $db->createQueryBuilder()->from('online')
+					->where('online_user_id', $onlineUserId)->count();
+
+				$this->assertSame(0, $survivors);
+			});
+		}
+
+		/**
+		 * @return array user_id and user_name of the installed admin
+		 */
+		private function fixtureAdmin()
+		{
+			$user = e107::getDb()->createQueryBuilder()
+				->select('user_id', 'user_name')
+				->from('user')
+				->where('user_loginname', \Helper\AdminLogin::ADMIN_USER)
+				->fetchRow();
+
+			$this->assertNotEmpty($user);
+
+			return $user;
 		}
 
 		/**
