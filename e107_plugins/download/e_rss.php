@@ -72,7 +72,8 @@ class download_rss // plugin-folder + '_rss'
 	
 	/**
 	 * Compile RSS Data
-	 * @param $parms array	url, limit, id 
+	 * Every link is relative to e_PLUGIN, which is what {@see rssCreate::__construct()} prefixes with SITEURLBASE.e_PLUGIN_ABS.
+	 * @param $parms array	url, limit, id
 	 * @return array
 	 */
 	function data($parms='')
@@ -117,13 +118,12 @@ class download_rss // plugin-folder + '_rss'
 
 			$rss[$i]['author_email'] 	= $value['download_author_email'];
 			$rss[$i]['title'] 			= $value['download_name'];
-			$rss[$i]['link'] 			= $e107->base_path."download/download.php?view.".$value['download_id']; // TODO SEF URL
+			$rss[$i]['link'] 			= "download/download.php?view.".$value['download_id']; // TODO SEF URL
 			$rss[$i]['description'] 	= $value['download_description'];
 	        $rss[$i]['category_name'] 	= $value['download_category_name'];
-	        $rss[$i]['category_link'] 	= $e107->base_path."download/download.php?list.".$value['download_category_id']; // TODO SEF URL
-			$rss[$i]['enc_url'] 		= $e107->base_path."download/request.php?".$value['download_id']; // TODO SEF URL
+	        $rss[$i]['category_link'] 	= "download/download.php?list.".$value['download_category_id']; // TODO SEF URL
+			$rss[$i]['enc_url'] 		= "download/request.php?".$value['download_id']; // TODO SEF URL
 			$rss[$i]['enc_leng'] 		= $value['download_filesize'];
-			//$rss[$i]['enc_type'] 		= $this->getmime($value['download_url']);
 			$rss[$i]['enc_type'] 		= '';
 			$rss[$i]['datestamp'] 		= $value['download_datestamp'];
 
