@@ -2287,10 +2287,9 @@ class e_userperms
 				'icon_32'   => 'E_32_IMAGES',
 			],
 			'TMP' => [
-				'title'     => ['ADLAN_140', 'LAN_PREFS'],
-				'separator' => ' (',                // Theme preferences
-				'icon_16'   => 'E_16_THEMEMANAGER',
-				'icon_32'   => 'E_32_THEMEMANAGER',
+				'title'   => 'ADLAN_140',             // Theme Manager
+				'icon_16' => 'E_16_THEMEMANAGER',
+				'icon_32' => 'E_32_THEMEMANAGER',
 			],
 			'2'   => [
 				'title'   => 'ADLAN_6',               // Alter Menus
