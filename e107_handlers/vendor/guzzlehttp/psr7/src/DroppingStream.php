@@ -7,14 +7,16 @@ use Psr\Http\Message\StreamInterface;
 /**
  * Stream decorator that begins dropping data once the size of the underlying
  * stream becomes too full.
- *
- * @final
  */
-class DroppingStream implements StreamInterface
+final class DroppingStream implements StreamInterface
 {
     use StreamDecoratorTrait;
 
+    /** @var int */
     private $maxLength;
+
+    /** @var StreamInterface */
+    private $stream;
 
     /**
      * @param StreamInterface $stream    Underlying stream to decorate.
@@ -26,8 +28,20 @@ class DroppingStream implements StreamInterface
         $this->maxLength = $maxLength;
     }
 
+    /**
+     * @return int
+     */
     public function write($string)
     {
+        if (!\is_string($string)) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '2.11',
+                'Passing %s to StreamInterface::write() is deprecated; guzzlehttp/psr7 3.0 requires string for $string.',
+                \get_debug_type($string)
+            );
+        }
+
         $diff = $this->maxLength - $this->stream->getSize();
 
         // Begin returning 0 when the underlying stream is too large.
@@ -40,6 +54,6 @@ class DroppingStream implements StreamInterface
             return $this->stream->write($string);
         }
 
-        return $this->stream->write(substr($string, 0, $diff));
+        return $this->stream->write((string) substr($string, 0, $diff));
     }
 }
