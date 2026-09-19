@@ -6,13 +6,13 @@
 class RssFeedResolverTest extends \Test\Unit
 {
 	/**
-	 * Stands in for e107::getRssConfig('legacy') plus core's inline comments
-	 * feed, so the ordering rules can be exercised without installed plugins.
+	 * Stands in for rss_addons::legacyKeys(), so the ordering rules can be
+	 * exercised without installed plugins.
 	 *
 	 * @var array
 	 */
 	private $legacy = array(
-		5 => array('plugin' => null, 'url' => 'comments'),
+		5 => array('plugin' => 'rss_menu', 'url' => 'comments'),
 		1 => array('plugin' => 'news', 'url' => 'news'),
 		6 => array('plugin' => 'forum', 'url' => 'forumthreads'),
 	);
@@ -80,15 +80,41 @@ class RssFeedResolverTest extends \Test\Unit
 	}
 
 	/**
-	 * Core serves comments inline rather than through an addon, so its key has
-	 * no owning plugin folder to match against.
+	 * A row older than the addon it now belongs to holds the feed's own key in
+	 * rss_path, where a plugin folder goes today. That is not another plugin's
+	 * name, so the addon declaring the key still owns the row and the feed keeps
+	 * resolving without a data migration.
 	 */
-	public function testCoreOwnedKeyCanonicalisesRegardlessOfPath()
+	public function testLiteralNumericRowIsOwnedWhenItsPathNamesTheFeed()
+	{
+		$result = $this->resolver(array($this->row('5', 'comments')))->resolve('5', '');
+
+		$this->assertNotFalse($result);
+		$this->assertEquals('5', $result['row']['rss_url'], 'the literal row should be served');
+		$this->assertEquals('comments', $result['key']);
+	}
+
+	/**
+	 * rss_path is empty on rows that predate the column, so nobody is named and
+	 * the only claimant is the addon that declares the number.
+	 */
+	public function testLiteralNumericRowIsOwnedWhenItHasNoPathAtAll()
 	{
 		$result = $this->resolver(array($this->row('5', '')))->resolve('5', '');
 
 		$this->assertNotFalse($result);
 		$this->assertEquals('comments', $result['key']);
+	}
+
+	/**
+	 * The resolver declares no key of its own: everything it canonicalises comes
+	 * from what the addons say they answer to.
+	 */
+	public function testNoKeyResolvesWhenNoAddonDeclaresOne()
+	{
+		$resolver = $this->resolver(array($this->row('comments', 'comments')), array());
+
+		$this->assertFalse($resolver->resolve('5', ''));
 	}
 
 	/**
@@ -137,9 +163,10 @@ class RssFeedResolverTest extends \Test\Unit
 
 	/**
 	 * @param array $rows fixture rows the fake lookup serves from
+	 * @param array|null $legacy overrides the default legacy map
 	 * @return rss_feed_resolver
 	 */
-	private function resolver(array $rows)
+	private function resolver(array $rows, $legacy = null)
 	{
 		$lookup = function ($feedKey, $topicValue) use ($rows) {
 			foreach($rows as $row)
@@ -160,7 +187,7 @@ class RssFeedResolverTest extends \Test\Unit
 			return false;
 		};
 
-		return new rss_feed_resolver($lookup, $this->legacy);
+		return new rss_feed_resolver($lookup, $legacy === null ? $this->legacy : $legacy);
 	}
 
 	/**

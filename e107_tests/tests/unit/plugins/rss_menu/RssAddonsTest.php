@@ -31,6 +31,19 @@ class RssAddonsTest extends \Test\Unit
 	}
 
 	/**
+	 * The comments feed is declared by this plugin, so its key has to survive a
+	 * site whose e_rss_list pref predates the addon. Nothing rebuilds that pref
+	 * on a core upgrade.
+	 */
+	public function testLegacyKeysCarryTheCommentsFeed()
+	{
+		$result = rss_addons::legacyKeys();
+
+		$this::assertArrayHasKey(5, $result);
+		$this::assertSame(array('plugin' => 'rss_menu', 'url' => 'comments'), $result[5]);
+	}
+
+	/**
 	 * Only installed plugins contribute. forum declares 6/7/8/11 but is not
 	 * installed in the test fixture, so none of its keys may appear.
 	 */
@@ -49,6 +62,7 @@ class RssAddonsTest extends \Test\Unit
 		$this::assertNotEmpty($result);
 
 		$paths = array();
+		$urls = array();
 
 		foreach($result as $feed)
 		{
@@ -57,9 +71,14 @@ class RssAddonsTest extends \Test\Unit
 			$this::assertNotEmpty($feed['path']);
 			$this::assertArrayHasKey('url', $feed);
 			$paths[$feed['path']] = true;
+			$urls[] = $feed['url'];
 		}
 
 		$this::assertArrayHasKey('news', $paths);
+
+		// The admin importer reads this list, and the comments feed is on it.
+		$this::assertArrayHasKey('rss_menu', $paths);
+		$this::assertContains('comments', $urls);
 
 		// forum is not installed in the fixture, so it must not be scanned.
 		$this::assertArrayNotHasKey('forum', $paths);
