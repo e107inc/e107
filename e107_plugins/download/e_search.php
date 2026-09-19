@@ -30,7 +30,7 @@ class download_search extends e_search // include plugin-folder in the name.
 		$catRows = $sql->createQueryBuilder()
 			->select('download_category_id', 'download_category_name')->from('download_category')
 			->where('download_category_parent', '!=', 0)
-			->whereIn('download_category_class', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('download_category_class'))
 			->fetchAll();
 
 		foreach($catRows as $row)
@@ -121,7 +121,13 @@ class download_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 		
-		$qry = "download_active > '0' AND d.download_visible IN (".USERCLASS_LIST.") AND c.download_category_class IN (".USERCLASS_LIST.") AND";
+		$visitor = \e107\Userclass\Membership::current();
+		
+		$visible = $visitor->predicate('d.download_visible');
+		
+		$category = $visitor->predicate('c.download_category_class');
+		
+		$qry = "download_active > '0' AND ".$visible->getSql()." AND ".$category->getSql()." AND";
 
 		if (isset($parm['cat']) && is_numeric($parm['cat'])) 
 		{
@@ -138,7 +144,7 @@ class download_search extends e_search // include plugin-folder in the name.
 			$qry .= " (d.download_author = '".$tp -> toDB($parm['author'])."') AND";
 		}
 		
-		return $qry;
+		return \e107\Database\SqlFragment::raw($qry, $visible->getParameters() + $category->getParameters());
 	}
 	
 

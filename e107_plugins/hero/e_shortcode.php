@@ -48,7 +48,7 @@ class hero_shortcodes extends e_shortcode
 
 		$data = e107::getDb()->createQueryBuilder()
 			->select('*')->from('hero')
-			->whereIn('hero_class', array_map('intval', explode(',', USERCLASS_LIST)))
+			->where(\e107\Userclass\Membership::current()->predicate('hero_class'))
 			->orderBy('hero_order')
 			->fetchAll();
 

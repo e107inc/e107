@@ -101,7 +101,7 @@ class e_search
 	 * @param $weights
 	 * @param $handler
 	 * @param $no_results
-	 * @param $where
+	 * @param string|\e107\Database\SqlFragment $where developer SQL ending in AND, its values bound when it is a fragment
 	 * @param $order
 	 * @return array
 	 */
@@ -112,6 +112,13 @@ class e_search
 		
 		$sql = e107::getDb('search');
 		$tp = e107::getParser();
+
+		$params = array();
+		if($where instanceof \e107\Database\SqlFragment)
+		{
+			$params = $where->getParameters();
+			$where = $where->getSql();
+		}
 		
 		if($handler == 'self') //v2 use 'compile' function inside e_search.php;
 		{
@@ -271,8 +278,8 @@ class e_search
 
 		$ps = array('text' => '', 'results' => 0);
 
-		// Intentionally raw (sqli boundary): a single gen() consumes both branches; the MySQL-sort branch uses SQL_CALC_FOUND_ROWS read via $sql->total_results (builder cannot express), and both use a dynamic table (#$table), dynamic $return_fields and a raw developer $where fragment.
-		if ($ps['results'] = $sql->gen($sql_query))
+		// Intentionally raw (sqli boundary): a single execute() consumes both branches; the MySQL-sort branch uses SQL_CALC_FOUND_ROWS read via $sql->total_results (builder cannot express), and both use a dynamic table (#$table), dynamic $return_fields and a developer $where fragment whose values arrive bound.
+		if ($ps['results'] = $sql->execute($sql_query, $params))
 		{
 			$display_row = array();
 
