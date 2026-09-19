@@ -22,7 +22,7 @@ class signin_shortcodes extends e_shortcode
 	/**
 	 * @example {SIGNIN} shortcode - available site-wide.
 	 * @param null $parm
-	 * @return string
+	 * @return string|null
 	 */
 	function sc_signin($parm = null)  // Naming:  "sc_" + [plugin-directory] + '_uniquename'
 	{
@@ -30,12 +30,29 @@ class signin_shortcodes extends e_shortcode
 
 		$this->lsc = e107::getScBatch('signin', 'signin');
 
-		if(USERID) // Logged Out.
+		if(e107::getUser()->isUser())
 		{
 			return $this->signOut($parm);
 		}
 
+		if(!$this->signinIsAvailable())
+		{
+			return null;
+		}
+
 		return $this->signIn($parm);
+	}
+
+	/**
+	 * Whether a guest has anywhere to sign in, read as {@see redirection::getMembersOnlyRedirectUrl()} reads it.
+	 *
+	 * @return bool
+	 */
+	private function signinIsAvailable()
+	{
+		return e_LOGIN !== SITEURL.'login.php'
+			|| e107::getPref('user_reg')
+			|| e107::getUserProvider()->isSocialLoginEnabled();
 	}
 
 	/**
