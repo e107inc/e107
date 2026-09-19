@@ -8,6 +8,8 @@
  *
  */
 
+require_once(__DIR__ . '/private_message_attachment_fixture.php');
+
 /**
  * What deleting a message does to the files it carried. Attachments are stored
  * in the media tree, and the delete kept unlinking the directory beside the
@@ -18,97 +20,16 @@
  * by the sender's outbox copy, and by the recipients a bulk send has left in
  * the queue for the cron task, so a message going does not mean the file may.
  */
-class private_messageAttachmentDeletionTest extends \Test\Unit
+class private_messageAttachmentDeletionTest extends private_message_attachment_fixture
 {
 	/** @var private_message_attachment_double */
 	private $pm;
 
-	/** @var string */
-	private $root;
-
-	/** @var string */
-	private $legacy;
-
-	/** @var string stored name, as pm_attachments carries it */
-	private $name;
-
-	/** @var array */
-	private $pmIds = array();
-
-	/** @var array */
-	private $genIds = array();
-
-	/** @var array */
-	private $files = array();
-
-	/** @var array */
-	private $dirs = array();
-
-	/** @var bool */
-	private $createdTable = false;
-
 	protected function _before()
 	{
-		require_once(e_PLUGIN . 'pm/pm_class.php');
-		require_once(__DIR__ . '/private_message_attachment_double.php');
+		parent::_before();
 
-		e107::includeLan(e_PLUGIN . 'pm/languages/' . e_LANGUAGE . '.php');
-
-		$this->requirePrivateMsgTable();
-
-		$this->root = e_TEMP . 'pm_attachment_deletion_' . uniqid() . '/';
-		$this->legacy = e_TEMP . 'pm_attachment_legacy_' . uniqid() . '/';
-
-		$this->pm = new private_message_attachment_double();
-		$this->pm->root = $this->root;
-		$this->pm->legacy = $this->legacy;
-
-		$this->name = $this->storedName((int) USERID);
-	}
-
-	protected function _after()
-	{
-		$db = e107::getDb();
-
-		foreach($this->pmIds as $id)
-		{
-			$db->createQueryBuilder()->delete('private_msg')->where('pm_id', (int) $id)->execute();
-		}
-
-		foreach($this->genIds as $id)
-		{
-			$db->createQueryBuilder()->delete('generic')->where('gen_id', (int) $id)->execute();
-		}
-
-		if($this->createdTable)
-		{
-			$db->schema()->dropTable('private_msg');
-			$this->createdTable = false;
-		}
-
-		foreach($this->files as $file)
-		{
-			if(is_file($file))
-			{
-				unlink($file);
-			}
-		}
-
-		foreach(array_reverse($this->dirs) as $dir)
-		{
-			if(is_dir($dir))
-			{
-				rmdir($dir);
-			}
-		}
-
-		foreach(array($this->root, $this->legacy) as $dir)
-		{
-			if(is_dir($dir))
-			{
-				rmdir($dir);
-			}
-		}
+		$this->pm = $this->pointAtTestTrees(new private_message_attachment_double());
 	}
 
 	/**
@@ -173,6 +94,29 @@ class private_messageAttachmentDeletionTest extends \Test\Unit
 	}
 
 	/**
+	 * The order the two reads happen in. A bulk run that finishes between them
+	 * has inserted the rows it owed and dropped its queue row, so a delete that
+	 * read the messages first and the queue second would find neither and take
+	 * a file every one of those recipients now holds.
+	 */
+	public function testAnAttachmentIsKeptWhenABulkRunFinishesDuringTheDelete()
+	{
+		$file = $this->storeAttachment($this->mediaDir(), $this->name);
+		$outbox = $this->seedMessage($this->name);
+		$genId = $this->seedQueuedBulkSend($this->name);
+
+		$pm = $this->pointAtTestTrees(new private_message_queue_race_double());
+		$pm->onQueueRead = function () use ($genId)
+		{
+			$this->finishQueuedBulkSend($genId);
+		};
+
+		$pm->del($outbox, TRUE);
+
+		self::assertFileExists($file, 'The recipients the run has just reached hold the attachment');
+	}
+
+	/**
 	 * The stored name says who uploaded it. A name that does not answer, or
 	 * answers with somebody other than the sender, is a name nothing is
 	 * unlinked for.
@@ -186,130 +130,5 @@ class private_messageAttachmentDeletionTest extends \Test\Unit
 		$this->pm->del($pmid, TRUE);
 
 		self::assertFileExists($file);
-	}
-
-	/**
-	 * @param int $owner
-	 * @return string the name upload_handler builds: time_userid_random_original
-	 */
-	private function storedName($owner)
-	{
-		return time() . '_' . $owner . '_pmtest_report.pdf';
-	}
-
-	/**
-	 * @return string where the sending member's uploads go
-	 */
-	private function mediaDir()
-	{
-		return $this->root . (((int) USERID > 0) ? sprintf('user_%06d/', (int) USERID) : 'anon/');
-	}
-
-	/**
-	 * @param string $dir
-	 * @param string $name
-	 * @return string the file written
-	 */
-	private function storeAttachment($dir, $name)
-	{
-		mkdir($dir, 0755, true);
-
-		$path = $dir . $name;
-
-		file_put_contents($path, 'attachment');
-
-		$this->files[] = $path;
-		$this->dirs[] = $dir;
-
-		self::assertFileExists($path, 'The fixture attachment was not written');
-
-		return $path;
-	}
-
-	/**
-	 * The unit install carries no plugin tables, so the table the pm plugin declares is built from its own schema file and dropped again.
-	 */
-	private function requirePrivateMsgTable()
-	{
-		$db = e107::getDb();
-
-		if($db->isTable('private_msg'))
-		{
-			return;
-		}
-
-		$catalogue = new \e107\Database\Schema\Declared\SqlFileCatalogue();
-		$declared = $catalogue->parse(file_get_contents(e_PLUGIN . 'pm/pm_sql.php'), 'pm');
-
-		self::assertArrayHasKey('private_msg', $declared, 'pm_sql.php no longer declares private_msg');
-
-		$created = $db->schema()->createTableRaw('private_msg',
-			$db->createQueryBuilder()->raw($declared['private_msg']->getBody()));
-
-		self::assertNotEmpty($created, 'Could not create the private_msg table pm_sql.php declares');
-
-		$this->createdTable = true;
-	}
-
-	/**
-	 * @param string $attachments chr(0)-separated list, as add() writes it
-	 * @return int
-	 */
-	private function seedMessage($attachments)
-	{
-		$id = e107::getDb()->createQueryBuilder()->insert('private_msg')->insertGetId(array(
-			'pm_from'        => (int) USERID,
-			'pm_to'          => (string) ((int) USERID + 1),
-			'pm_sent'        => time(),
-			'pm_read'        => 0,
-			'pm_subject'     => 'Attachment deletion fixture',
-			'pm_text'        => 'Attachment deletion fixture',
-			'pm_sent_del'    => 0,
-			'pm_read_del'    => 0,
-			'pm_attachments' => $attachments,
-			'pm_option'      => '',
-			'pm_size'        => 11
-		));
-
-		self::assertNotEmpty($id, 'Could not seed a private message.');
-
-		$this->pmIds[] = $id;
-
-		return (int) $id;
-	}
-
-	/**
-	 * @param string $attachments chr(0)-separated list, as add() serialises it
-	 */
-	private function seedQueuedBulkSend($attachments)
-	{
-		$pmInfo = array(
-			'pm_from'        => (int) USERID,
-			'pm_attachments' => $attachments,
-			'to_array'       => array(array('user_id' => (int) USERID + 2, 'user_name' => 'Queued'))
-		);
-
-		$id = e107::getDb()->createQueryBuilder()->insert('generic')->insertGetId(array(
-			'gen_type'      => 'pm_bulk',
-			'gen_datestamp' => time(),
-			'gen_user_id'   => (int) USERID,
-			'gen_ip'        => '',
-			'gen_intdata'   => 1,
-			'gen_chardata'  => e107::serialize($pmInfo, TRUE)
-		));
-
-		self::assertNotEmpty($id, 'Could not queue a bulk send.');
-
-		$this->genIds[] = $id;
-	}
-
-	/**
-	 * @param int $pmid
-	 * @return array|bool
-	 */
-	private function fetchMessage($pmid)
-	{
-		return e107::getDb()->createQueryBuilder()->select('pm_id')->from('private_msg')
-			->where('pm_id', (int) $pmid)->fetchRow();
 	}
 }
