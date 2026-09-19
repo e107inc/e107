@@ -645,7 +645,7 @@ class e107
 
 		if(empty($e107_config_override['site_path']))
 		{
-			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['defaultdb'], $e107_config_mysql_info['prefix']);
+			$this->site_path = $this->makeSiteHash(self::getMySQLConfig('defaultdb'), self::getMySQLConfig('prefix'));
 		}
 
 		// Set default folder (and override paths) if missing from e107_config.php
@@ -7130,16 +7130,14 @@ class e107
 	 */
 	private function setMySQLConfig($sqlinfo)
 	{
-		if(!empty($sqlinfo['server']))
+		foreach($sqlinfo as $key=>$val)
 		{
-			foreach($sqlinfo as $key=>$val)
+			if(strpos($key, 'mySQL') !== 0)
 			{
-				$newKey = 'mySQL'.$key;
-				$sqlinfo[$newKey] = $val;
+				$sqlinfo['mySQL'.$key] = $val;
 				unset($sqlinfo[$key]);
 			}
 		}
-
 
 		$this->e107_config_mysql_info = $sqlinfo;
 	}
