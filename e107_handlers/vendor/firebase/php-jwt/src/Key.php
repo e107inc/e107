@@ -10,7 +10,7 @@ use TypeError;
 class Key
 {
     /**
-     * @var string|resource|OpenSSLAsymmetricKey|OpenSSLCertificate
+     * @var string|OpenSSLAsymmetricKey|OpenSSLCertificate
      */
     private $keyMaterial;
     /**
@@ -18,7 +18,7 @@ class Key
      */
     private $algorithm;
     /**
-     * @param string|resource|OpenSSLAsymmetricKey|OpenSSLCertificate $keyMaterial
+     * @param string|OpenSSLAsymmetricKey|OpenSSLCertificate $keyMaterial
      * @param string $algorithm
      */
     public function __construct(
@@ -30,10 +30,9 @@ class Key
         if (
             !\is_string($keyMaterial)
             && !$keyMaterial instanceof OpenSSLAsymmetricKey
-            && !$keyMaterial instanceof OpenSSLCertificate
-            && !\is_resource($keyMaterial)
+            && !(is_resource($keyMaterial) || $keyMaterial instanceof OpenSSLCertificate)
         ) {
-            throw new TypeError('Key material must be a string, resource, or OpenSSLAsymmetricKey');
+            throw new TypeError('Key material must be a string, OpenSSLCertificate, or OpenSSLAsymmetricKey');
         }
 
         if (empty($keyMaterial)) {
@@ -56,7 +55,7 @@ class Key
     }
 
     /**
-     * @return string|resource|OpenSSLAsymmetricKey|OpenSSLCertificate
+     * @return string|OpenSSLAsymmetricKey|OpenSSLCertificate
      */
     public function getKeyMaterial()
     {
