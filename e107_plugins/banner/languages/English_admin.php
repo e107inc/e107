@@ -71,5 +71,10 @@ define("BNRLAN_50", "Local");
 define("BNRLAN_51", "Remote");
 
 //define("BNRLAN_HELP_01", "Banner Help"); LAN_HELP
-
+define("BNRLAN_HELP_IMPRESSIONS", "0 = Unlimited");
+define("BNRLAN_HELP_KEYWORDS", "When news or pages are loaded, this will limit banner result to matching keywords. Use with caution.");
 define("BNRLAN_HELP_02", "Use this plugin to manage advertising on your website.[br][br]When creating a new banner you can create a username and password for your client to login and check the progress of the campaign. [br][br]You can enable the banner menu using the menu manager and perform further configuration from there.");
+define("BNRLAN_TITLE_REMOTE_IMAGE", "This will override any local image you have set.");
+define("BNRLAN_MENU_MANAGER_CONFIG", "The menu is now configured within the menu-manager.");
+define("BNRLAN_PLACEHOLDER_OR_NEW_CLIENT", "Or enter a new client");
+define("BNRLAN_PLACEHOLDER_ENTER_CAMPAIGN", "Enter a campaign name");
