@@ -117,6 +117,7 @@ class CachedKeySet implements ArrayAccess
      * @param string $keyId
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($keyId)
     {
         return $this->keyIdExists($keyId);
@@ -127,6 +128,7 @@ class CachedKeySet implements ArrayAccess
      * @param Key $value
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         throw new LogicException('Method not implemented');
@@ -136,6 +138,7 @@ class CachedKeySet implements ArrayAccess
      * @param string $offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         throw new LogicException('Method not implemented');
@@ -194,7 +197,8 @@ class CachedKeySet implements ArrayAccess
             $jwksResponse = $this->httpClient->sendRequest($request);
             if ($jwksResponse->getStatusCode() !== 200) {
                 throw new UnexpectedValueException(
-                    \sprintf('HTTP Error: %d %s for URI "%s"',
+                    \sprintf(
+                        'HTTP Error: %d %s for URI "%s"',
                         $jwksResponse->getStatusCode(),
                         $jwksResponse->getReasonPhrase(),
                         $this->jwksUri
