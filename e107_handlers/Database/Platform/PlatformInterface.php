@@ -54,6 +54,17 @@ interface PlatformInterface
 	public function getRegexpOperator();
 
 	/**
+	 * Escape a value so this dialect's regular-expression engine matches it as
+	 * text, for a pattern assembled around it; the result still binds as an
+	 * ordinary value, so it carries the escapes the engine reads, not the ones
+	 * an SQL string literal would eat.
+	 *
+	 * @param string $value Text to be matched literally.
+	 * @return string Escaped text, safe to concatenate into a pattern.
+	 */
+	public function quoteRegexpLiteral($value);
+
+	/**
 	 * Default connection character set for this dialect.
 	 *
 	 * @return string
