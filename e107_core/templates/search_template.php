@@ -37,16 +37,6 @@ $SEARCH_TEMPLATE['form']['enhanced'] = '
 					    </div>';
 
 
-/*
-$SEARCH_TEMPLATE['form']['type'] = '
-	<div class="form-group">
-	    <label for="inputPassword3" class="col-sm-3 control-label">{LAN=SEARCH_75}</label>
-	    <div class="col-sm-9">
-	    {SEARCH_TYPE_SEL}
-	    </div>
-	</div>';
-*/
-
 $SEARCH_TEMPLATE['form']['category'] = '
 										<div class="form-group ">
 										    <label for="t" class="col-sm-3 control-label">{LAN=SEARCH_19}</label>

@@ -33,14 +33,6 @@ $SEARCH_TEMPLATE['form']['category'] = "<tr>
 	</td>
 	</tr>";
 
-$SEARCH_TEMPLATE['form']['type'] = "<tr id='advanced_type' {SEARCH_TYPE_DISPLAY}>
-	<td style='width:30%' class='forumheader3'>".LAN_SEARCH_75.":</td>
-	<td style='width:70%' class='forumheader3'>
-	{SEARCH_TYPE_SEL}
-	<br />
-	</td>
-	</tr>";
-
 $SEARCH_TEMPLATE['form']['advanced'] = "<tr>
 	<td class='forumheader3'>
 	{SEARCH_ADV_A}
