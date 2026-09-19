@@ -721,6 +721,36 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame('SELECT COUNT(*) AS n FROM `e107_user`', $qb->getSQL());
 		}
 
+		/**
+		 * The FROM sources a search handler declares: a join spelled by hand,
+		 * with '#table' markers the connection resolves at execution.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testFromRawTakesAVouchedSource()
+		{
+			$qb = $this->makeQb();
+			$qb->selectRaw('n.news_id')
+				->fromRaw('#news AS n LEFT JOIN #news_category AS c ON n.news_category = c.category_id')
+				->where($qb->expr()->eq('n.news_class', 0));
+
+			$this->assertSame(
+				'SELECT n.news_id FROM #news AS n LEFT JOIN #news_category AS c ON n.news_category = c.category_id'
+				.' WHERE (`n`.`news_class` = :qb1)',
+				$qb->getSQL()
+			);
+
+			$qb = $this->makeQb();
+			$qb->selectRaw('1')->fromRaw($qb->raw('#user AS u WHERE u.user_id = :owner', array('owner' => 7)));
+			$this->assertSame(array('owner' => 7), $qb->getParameters(),
+				'A fragment handed to fromRaw() keeps its binds.');
+
+			$qb = $this->makeQb();
+			$qb->select('user_name')->fromRaw('#user AS u')->from('user');
+			$this->assertSame('SELECT `user_name` FROM `e107_user`', $qb->getSQL(),
+				'from() takes the source back off a builder fromRaw() had set.');
+		}
+
 		public function testAggregateTerminals()
 		{
 			$stub = null;
@@ -1972,6 +2002,9 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertInstanceOf(PlatformInterface::class, $platform);
 			$this->assertSame('`', $platform->getIdentifierQuoteCharacter());
 			$this->assertSame('REGEXP', $platform->getRegexpOperator());
+			$this->assertSame('wibble\\(wobble\\)', $platform->quoteRegexpLiteral('wibble(wobble)'));
+			$this->assertSame('caf\\-\\#1', $platform->quoteRegexpLiteral('caf-#1'));
+			$this->assertSame('wibble wobble', $platform->quoteRegexpLiteral('wibble wobble'));
 			$this->assertSame('utf8mb4', $platform->getDefaultCharset());
 			$this->assertSame('', $platform->getLimitClause(null));
 			$this->assertSame(' LIMIT 10', $platform->getLimitClause(10));

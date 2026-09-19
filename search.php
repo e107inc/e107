@@ -68,7 +68,6 @@ class search_front extends e_shortcode
 		'SEARCH_TOP_TABLE'	=> 'start',
 		'SEARCH_BOT_TABLE'	=> 'end',
 		'SEARCH_CATS'		=> 'category',
-		'SEARCH_TYPE'		=> 'type',
 		'SEARCH_ADV'		=> 'advanced',
 		'SEARCH_ENHANCED'	=> 'enhanced',
 		'SEARCH_ADV_COMBO'	=> 'advanced-combo',
@@ -85,11 +84,8 @@ class search_front extends e_shortcode
 
 		if(e_AJAX_REQUEST)
 		{
-			if(vartrue($_POST['t']))
-			{
-				echo $this->sc_search_advanced_block($_POST['t']);
-			}
-			
+			echo $this->advancedFor(varset($_POST['t']));
+
 			exit;
 		}
 
@@ -215,16 +211,6 @@ class search_front extends e_shortcode
 		 {
 		 	return "<input class='btn btn-default btn-secondary button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 		 }	
-	}
-	
-	function sc_search_type_sel($parm='')
-	{
-		return e107::getForm()->radio_switch('adv', vartrue($_GET['adv']), LAN_SEARCH_30, LAN_SEARCH_29, array('class'=>'e-expandit','reverse'=>1, 'data-target'=>'search-advanced'));
-
-
-
-	//	return "<input type='radio' name='adv' value='0' ".(vartrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
-	//	<input type='radio' name='adv' value='1' ".(vartrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 	}
 	
 	function sc_search_dropdown($parm = '')
@@ -366,31 +352,47 @@ class search_front extends e_shortcode
 	function sc_search_advanced($parm='')
 	{
 		$hiddenBlock = (!empty($_GET['t'])) ? "" : "class='e-hideme'";
+
 		$text = "<div {$hiddenBlock} id='search-advanced' >";
-
-		if(!empty($_GET['t']) )
-		{
-			if(is_array($_GET['t']))
-			{
-				foreach($_GET['t'] as $type => $tmp)
-				{
-					$text .= $this->sc_search_advanced_block($type);
-				}
-
-			}
-			else
-			{
-				$text .= $this->sc_search_advanced_block($_GET['t']);
-			}
-
-		}
-
-
+		$text .= $this->advancedFor(varset($_GET['t']));
 		$text .= "</div>";
+
 		return $text;
 
 	}
-		
+
+	/**
+	 * What the advanced block holds: one type's filters, or the line saying it covers one type at a time {@see search_front::sc_search_advanced_block()}.
+	 *
+	 * @param array|string $requested what $_GET['t'] or $_POST['t'] holds
+	 * @return string
+	 */
+	private function advancedFor($requested)
+	{
+		$types = is_array($requested) ? array_keys($requested) : array($requested);
+
+		if(count($types) > 1)
+		{
+			return $this->advancedTextRow(LAN_SEARCH_ADVANCED_ONE_TYPE_ONLY);
+		}
+
+		return $this->sc_search_advanced_block(count($types) === 1 ? (string) $types[0] : '');
+	}
+
+	/**
+	 * A row of the advanced block that is text rather than a filter, in whichever shape the template pack gave it {@see search_front::advancedFor()}.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function advancedTextRow($text)
+	{
+		$template = vartrue($this->template['advanced-combo'], "<div>{SEARCH_ADV_TEXT}</div>");
+
+		return e107::getParser()->simpleParse($template, array('SEARCH_ADV_TEXT' => $text));
+	}
+
+
 	private function sc_search_advanced_block($parm='')
 	{
 		$tp = e107::getParser();
@@ -425,11 +427,10 @@ class search_front extends e_shortcode
 			
 			foreach ($advanced as $adv_key => $adv_value) 
 			{
-				if ($adv_value['type'] == 'single') 
+				if ($adv_value['type'] == 'single')
 				{
-					$vars['SEARCH_ADV_TEXT'] = $adv_value['text'];
-					$text .= $tp->simpleParse($this->template['advanced-combo'], $vars);
-				} 
+					$text .= $this->advancedTextRow($adv_value['text']);
+				}
 				else 
 				{
 					$vars['SEARCH_ADV_ID'] = '';
@@ -755,7 +756,7 @@ class search_front extends e_shortcode
 	function renderResults()
 	{
 
-		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag, $advanced_caption;
+		global $query, $search_prefs, $pre_title, $pre_title_alt, $search_chars, $search_res, $result_flag, $advanced_caption;
 		
 		$ns = e107::getRender();
 
@@ -783,7 +784,8 @@ class search_front extends e_shortcode
 
 				//if (file_exists($this->search_info[$key]['sfile'])) 
 				{
-					$pre_title 		= ($this->search_info[$key]['pre_title'] == 2) ? $this->search_info[$key]['pre_title_alt'] : $this->search_info[$key]['pre_title'];
+					$pre_title 		= $this->search_info[$key]['pre_title'];
+					$pre_title_alt 	= $this->search_info[$key]['pre_title_alt'];
 					$search_chars 	= $this->search_info[$key]['chars'];
 					$search_res 	= $this->search_info[$key]['results'];
 			
@@ -807,7 +809,17 @@ class search_front extends e_shortcode
 						
 						$where = (method_exists($obj,'where')) ? $obj->where($_GET) : "";
 						
-						$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', varset($this->search_info[$key]['no_results'],"<div class='alert alert-danger'>".LAN_198."</div>"), $where , $this->search_info[$key]['order']);
+						$noResults = varset($this->search_info[$key]['no_results'],"<div class='alert alert-danger'>".LAN_198."</div>");
+
+						try
+						{
+							$ps = $obj->parsesearch($this->search_info[$key]['table'], $this->search_info[$key]['return_fields'], $this->search_info[$key]['search_fields'], $this->search_info[$key]['weights'], 'self', $noResults, $where , $this->search_info[$key]['order']);
+						}
+						catch(InvalidArgumentException $e)
+						{
+							e107::getDebug()->log('Search area '.$key.' declares a field, an ordering or a table the query cannot be built from: '.$e->getMessage());
+							$ps = array('text' => $noResults, 'results' => 0);
+						}
 
 						//if(e_DEBUG)
 					//	{
@@ -1088,31 +1100,6 @@ if (!vartrue($_GET['adv']) || $_GET['t'] == 'all')
  // }
 }
 
-//$SEARCH_VARS->SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".(varsettrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
-//<input type='radio' name='adv' value='1' ".(varsettrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
-
-$js_adv = '';
-foreach ($search_info as $key => $value) 
-{
-  if (!isset($value['advanced']))
-  {
-	$js_adv .= " && abid != '".$key."'";
-  }
-}
-
-if (isset($_GET['t']) && is_string($_GET['t']) && isset($search_info[$_GET['t']]['advanced']))
-{
-  $SEARCH_VARS->SEARCH_TYPE_DISPLAY = "";
-} 
-else 
-{
-  $SEARCH_VARS->SEARCH_TYPE_DISPLAY = "style='display: none'";
-}
-
-if (check_class($search_prefs['google'])) {
-	$js_adv .= " && abid != '".$google_id."'";
-}
-
 
 if ($perform_search) 
 {
@@ -1161,13 +1148,6 @@ if ($search_prefs['user_select'])
 {
 	$text .= $tp->parseTemplate($template['category'], true, $srchObj);
 }
-
-// $text .= $tp->parseTemplate($SEARCH_TYPE,true, $srchObj);
-/*
-$hiddenBlock = (!empty($_GET['t'])) ? "" : "class='e-hideme'";
-$text .= "<div {$hiddenBlock} id='search-advanced' >";
-$text .= $tp->parseTemplate("{SEARCH_ADVANCED_BLOCK=".vartrue($_GET['t'])."}",true, $srchObj);
-$text .= "</div>";*/
 
 	//print_a($search_prefs);
 //$

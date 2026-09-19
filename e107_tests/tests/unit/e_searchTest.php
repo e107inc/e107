@@ -29,6 +29,21 @@
 		/** @var bool */
 		private $probeBuilt = false;
 
+		/** @var bool whether a case has put the news item below into the database */
+		private $newsSeeded = false;
+
+		/** Matched by the seeded news item alone, and long enough to clear the minimum query length. */
+		const SEARCH_QUERY = 'zorblattonium';
+
+		const NEWS_TITLE = 'Zorblattonium supplies';
+
+		/** The seeded title as the renderer emits it, with the matched keyword marked up. */
+		const HIGHLIGHTED_TITLE = '<mark>Zorblattonium</mark> supplies';
+
+		const CATEGORY_NAME = 'Rare metals';
+
+		const CUSTOM_PREFIX = 'From the archive:';
+
 		protected function _before()
 		{
 			require_once(e_HANDLER . 'search_class.php');
@@ -68,6 +83,11 @@
 				e107::getDb()->execute('DROP TABLE IF EXISTS `' . $this->probeTable . '`');
 				$this->probeBuilt = false;
 			}
+
+			if($this->newsSeeded)
+			{
+				$this->runInBootedCli(self::removeNewsItem());
+			}
 		}
 
 		/**
@@ -75,11 +95,13 @@
 		 */
 		private function searchGlobals()
 		{
-			return array('query', 'search_prefs', 'pre_title', 'search_chars', 'search_res', 'result_flag');
+			return array('query', 'search_prefs', 'pre_title', 'pre_title_alt', 'search_chars', 'search_res',
+				'result_flag');
 		}
 
 		/**
-		 * One row of known text, indexed per column because MATCH() needs an index over exactly its own column list.
+		 * Two rows of known text, indexed per column because MATCH() needs an index over exactly its own column list.
+		 * The second row carries only what an unescaped metacharacter would reach.
 		 */
 		private function buildProbe()
 		{
@@ -91,17 +113,21 @@
 				. ' FULLTEXT KEY probe_title (probe_title), FULLTEXT KEY probe_summary (probe_summary)'
 				. ') ENGINE=MyISAM');
 			$sql->execute('INSERT INTO `' . $this->probeTable
-				. '` (probe_id, probe_title, probe_summary) VALUES (1, :title, :summary)',
+				. '` (probe_id, probe_title, probe_summary) VALUES (1, :title, :summary), (2, :title2, :summary2)',
 				array(
-					'title'   => 'Release wibble#wobble notes for wibble- builds',
-					'summary' => 'Upgrade notes for wibble.wobble and for wibbleXwobble. See #wobble on its own.',
+					'title'    => 'Release wibble#wobble notes for wibble- builds',
+					'summary'  => 'Upgrade notes for wibble.wobble and for wibbleXwobble. See #wobble on its own.'
+						. ' Filed as wobble(12) by O&#039;Brien.',
+					'title2'   => 'Second entry, about wibbleXwobble',
+					'summary2' => 'No dot and no bracket anywhere in this one.',
 				));
 		}
 
 		/**
-		 * Searches the probe row the way a search handler does, returning the rendered result list.
+		 * Searches the probe rows the way a search handler does, returning the rendered result list.
+		 * $where and $order stand in for what a handler's own where() and order declare.
 		 */
-		private function searchProbe($searchQuery, $mysqlSort, $boundary)
+		private function searchProbe($searchQuery, $mysqlSort, $boundary, $where = '', $order = array())
 		{
 			global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
 
@@ -118,7 +144,7 @@
 			$search = new e_search($searchQuery);
 			$ps = $search->parsesearch('search_highlight_probe', 'probe_id, probe_title, probe_summary',
 				array('probe_title', 'probe_summary'), array(1.2, 0.6), array($this, 'searchProbeResult'),
-				'nothing found', '', array());
+				'nothing found', $where, $order);
 
 			return $ps['text'];
 		}
@@ -131,6 +157,29 @@
 		private static function renderedResultKeys()
 		{
 			return array('omit_result', 'pre_title', 'title', 'link', 'pre_summary', 'summary', 'detail', 'post_summary');
+		}
+
+		/**
+		 * The statement the search connection last sent, with its bound values appended,
+		 * because a prepared statement carries the pattern outside the SQL text.
+		 */
+		private function lastSearchStatement()
+		{
+			$last = e107::getDb('search')->getLastQuery();
+
+			if(!is_array($last))
+			{
+				return (string) $last;
+			}
+
+			$bound = array();
+
+			foreach($last['BIND'] as $parameter)
+			{
+				$bound[] = is_array($parameter) ? $parameter['value'] : $parameter;
+			}
+
+			return $last['PREPARE'] . ' -- ' . implode(' ', $bound);
 		}
 
 		/**
@@ -229,7 +278,7 @@
 		{
 			e107::getDb('search')->resetLastError();
 			$this->searchProbe('builds', 0, 1);
-			$emitted = e107::getDb('search')->getLastQuery();
+			$emitted = $this->lastSearchStatement();
 
 			self::assertSame('', e107::getDb('search')->getLastErrorText(),
 				'A pattern the server refuses costs every row, not just the boundary.');
@@ -272,6 +321,248 @@
 				'A whole word is still found with the boundary preference on.');
 			self::assertSame('nothing found', $this->searchProbe('build', 0, 1),
 				'A fragment of a longer word is still refused with the boundary preference on.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6327
+		 */
+		public function testTheCustomPrefixIsRenderedBeforeTheTitle()
+		{
+			$result = $this->renderSearchPage(2, self::CUSTOM_PREFIX);
+
+			self::assertSame(self::CUSTOM_PREFIX . ' ' . self::HIGHLIGHTED_TITLE, self::headingOf($result['out']),
+				"A handler set to its own prefix text renders that text, then one space, then the title.\n" . $result['out']);
+			self::assertStringNotContainsString('pre_title_output', $result['out'],
+				"The prefix a handler renders must never be left undefined.\n" . $result['out']);
+			self::assertSame(0, $result['exit'], $result['out']);
+		}
+
+		public function testAnEmptyCustomPrefixLeavesTheTitleAlone()
+		{
+			$result = $this->renderSearchPage(2, '');
+
+			self::assertSame(self::HIGHLIGHTED_TITLE, self::headingOf($result['out']),
+				"An empty prefix text puts nothing before the title, not even a space.\n" . $result['out']);
+			self::assertSame(0, $result['exit'], $result['out']);
+		}
+
+		public function testTheHandlerSuppliesItsOwnPrefixAndSeparator()
+		{
+			$result = $this->renderSearchPage(1, self::CUSTOM_PREFIX);
+
+			self::assertSame(self::CATEGORY_NAME . ' | ' . self::HIGHLIGHTED_TITLE, self::headingOf($result['out']),
+				"The news handler's own prefix is the category name and the separator it carries with it.\n" . $result['out']);
+			self::assertSame(0, $result['exit'], $result['out']);
+		}
+
+		public function testADisabledPrefixRendersTheTitleOnly()
+		{
+			$result = $this->renderSearchPage(0, self::CUSTOM_PREFIX);
+
+			self::assertSame(self::HIGHLIGHTED_TITLE, self::headingOf($result['out']),
+				"A disabled prefix renders neither the handler's own text nor the site's.\n" . $result['out']);
+			self::assertSame(0, $result['exit'], $result['out']);
+		}
+
+		/**
+		 * Renders the search page for the news handler in a subprocess, over a news item seeded there.
+		 *
+		 * Word boundaries stay off so that the one regular expression path runs the same on MySQL 5.7 and 8.
+		 *
+		 * @param int $preTitle the pre_title pref: 0 none, 1 the handler's own, 2 the text in $preTitleAlt
+		 * @param string $preTitleAlt the pre_title_alt pref
+		 * @return array {out: string, exit: int}
+		 */
+		private function renderSearchPage($preTitle, $preTitleAlt)
+		{
+			$php = "chdir('" . addslashes(APP_PATH) . "'); ";
+			$php .= "register_shutdown_function(function() { while(ob_get_level() > 0) { @ob_end_flush(); } }); ";
+			$php .= self::seedNewsItem();
+			$php .= "e107::getConfig()->setPref('e_search_list', array('news' => 'news')); ";
+			$php .= "e107::getConfig('search')->setPref('plug_handlers/news', array('class' => '0', 'chars' => 150, 'results' => 10, "
+				. "'pre_title' => " . (int) $preTitle . ", 'pre_title_alt' => '" . addslashes($preTitleAlt) . "', 'order' => 1)); ";
+			$php .= "e107::getConfig('search')->setPref('mysql_sort', 0); ";
+			$php .= "e107::getConfig('search')->setPref('boundary', 0); ";
+			$php .= "\$_GET = array('q' => '" . self::SEARCH_QUERY . "', 't' => 'news', 'r' => 0); ";
+			$php .= "require_once('" . addslashes(APP_PATH . '/search.php') . "'); ";
+
+			$this->newsSeeded = true;
+			list($output, $status) = $this->runInBootedCli($php);
+
+			return array('out' => implode("\n", $output), 'exit' => $status);
+		}
+
+		/**
+		 * PHP that seeds one categorised news item, which only {@see e_searchTest::removeNewsItem()} takes out again.
+		 *
+		 * @return string
+		 */
+		private static function seedNewsItem()
+		{
+			$category = "'" . self::CATEGORY_NAME . "'";
+			$title = "'" . self::NEWS_TITLE . "'";
+
+			$php = "e107::getDb()->createQueryBuilder()->insert('news_category')"
+				. "->values(array('category_name' => " . $category . "))->execute(); ";
+			$php .= "\$category = e107::getDb()->createQueryBuilder()->select('category_id')->from('news_category')"
+				. "->where('category_name', " . $category . ")->fetchOne(); ";
+			$php .= "e107::getDb()->createQueryBuilder()->insert('news')->values(array("
+				. "'news_title' => " . $title . ", 'news_body' => '', 'news_extended' => '', 'news_summary' => '', "
+				. "'news_meta_description' => '', 'news_thumbnail' => '', 'news_category' => \$category, "
+				. "'news_datestamp' => time() - 60, 'news_start' => 0, 'news_end' => 0, 'news_class' => 0, "
+				. "'news_render_type' => 0))->execute(); ";
+
+			return $php;
+		}
+
+		/**
+		 * PHP that takes the seeded news item back out, run from here because a subprocess killed on its timeout cleans nothing up.
+		 *
+		 * @return string
+		 */
+		private static function removeNewsItem()
+		{
+			return "e107::getDb()->createQueryBuilder()->delete('news')"
+				. "->where('news_title', '" . self::NEWS_TITLE . "')->execute(); "
+				. "e107::getDb()->createQueryBuilder()->delete('news_category')"
+				. "->where('category_name', '" . self::CATEGORY_NAME . "')->execute(); ";
+		}
+
+		/**
+		 * The text of the first result's link, which is the prefix and the title.
+		 *
+		 * @param string $html the rendered page
+		 * @return string
+		 */
+		private static function headingOf($html)
+		{
+			$found = preg_match("~<h4><a class='title visit' href='[^']*'>(.*?)</a></h4>~s", $html, $matches);
+
+			return $found ? $matches[1] : '';
+		}
+
+		/**
+		 * page_search declares its own constructor and does not chain to this one,
+		 * so the keyword arrays have to stand without it.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6359
+		 */
+		public function testKeywordArraysStandWithoutTheConstructor()
+		{
+			$property = new ReflectionProperty('e_search', 'keywords');
+			$property->setAccessible(true);
+
+			self::assertSame(
+				array('split' => array(), 'wildcard' => array(), 'boolean' => array(),
+					'match' => array(), 'exact' => array()),
+				$property->getValue((new ReflectionClass('e_search'))->newInstanceWithoutConstructor()),
+				'A search area whose own constructor does not chain still has every keyword array.'
+			);
+		}
+
+		/**
+		 * An unbalanced bracket is a pattern the server refuses outright, and a
+		 * refused pattern costs every row of the area rather than one keyword.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchFindsAKeywordCarryingARegexpMetacharacter()
+		{
+			e107::getDb('search')->resetLastError();
+			$text = $this->searchProbe('wobble(12', 0, 1);
+
+			self::assertSame('', e107::getDb('search')->getLastErrorText(),
+				'A keyword is text to search for, not a pattern for the server to compile.');
+			self::assertStringContainsString('Release wibble#wobble', $text,
+				'The row holding the keyword has to come back.');
+		}
+
+		/**
+		 * The half that is invisible rather than empty: a metacharacter raises no
+		 * error and quietly widens the search.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchDoesNotLetAMetacharacterMatchAnything()
+		{
+			$text = $this->searchProbe('wibble.wobble', 0, 0);
+
+			self::assertStringContainsString('Release wibble#wobble', $text,
+				'The row holding the literal text still matches.');
+			self::assertStringNotContainsString('Second entry', $text,
+				'A dot the reader typed matches a dot, not any character.');
+		}
+
+		/**
+		 * Stored text carries the entities toDB() writes, so the keyword the
+		 * server is asked to match has to be the one that went through toDB() too.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchFindsAKeywordCarryingAnApostrophe()
+		{
+			self::assertStringContainsString('Release wibble#wobble', $this->searchProbe("O'Brien", 0, 1),
+				'An apostrophe in the search box still matches the text it was stored as.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6359
+		 */
+		public function testPhpSortSearchWithNothingLeftToAskAsksNothing()
+		{
+			e107::getDb('search')->resetLastError();
+
+			self::assertSame('nothing found', $this->searchProbe('the and', 0, 1),
+				'A query of nothing but stopwords finds nothing.');
+			self::assertSame('', e107::getDb('search')->getLastErrorText(),
+				'With no keywords left there is no statement to send, so there is no error to raise.');
+		}
+
+		/**
+		 * @see https://github.com/e107inc/e107/issues/6359
+		 */
+		public function testPhpSortSearchExcludesAMinusKeyword()
+		{
+			self::assertStringContainsString('Release wibble#wobble', $this->searchProbe('builds -zzzzabsent', 0, 1),
+				'Excluding a word no row holds leaves the rest of the query alone.');
+			self::assertSame('nothing found', $this->searchProbe('builds -wibble', 0, 1),
+				'Excluding a word the row holds drops the row.');
+			self::assertSame('nothing found', $this->searchProbe('builds -wibb*', 0, 1),
+				'A wildcard on an excluded keyword is read, not lost with the entry the branch removed.');
+		}
+
+		/**
+		 * The operator shapes decide how the keyword groups are joined, which is
+		 * where a rebuilt clause would silently return different rows.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchJoinsKeywordGroupsAsItAlwaysHas()
+		{
+			self::assertStringContainsString('Release wibble#wobble', $this->searchProbe('builds notes', 0, 1),
+				'Two keywords the row holds match it.');
+			self::assertStringContainsString('Release wibble#wobble', $this->searchProbe('builds zzzzabsent', 0, 1),
+				'A second keyword widens the search rather than narrowing it.');
+			self::assertSame('nothing found', $this->searchProbe('+builds +zzzzabsent', 0, 1),
+				'Two required keywords both have to match.');
+			self::assertStringContainsString('Release wibble#wobble', $this->searchProbe('+builds zzzzabsent', 0, 1),
+				'A required keyword ends the clause, so an ordinary keyword after it is not asked for.');
+		}
+
+		/**
+		 * What a search handler declares around the keywords: its own WHERE
+		 * fragment, which ends in AND, and its own ordering.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6313
+		 */
+		public function testPhpSortSearchKeepsTheHandlersOwnWhereAndOrder()
+		{
+			self::assertStringContainsString('Release wibble#wobble',
+				$this->searchProbe('builds', 0, 1, 'probe_id = 1 AND ', array('probe_id' => 'DESC')),
+				'A handler fragment that keeps the row leaves it found.');
+			self::assertSame('nothing found',
+				$this->searchProbe('builds', 0, 1, 'probe_id = 2 AND ', array('probe_id' => 'DESC')),
+				'A handler fragment that excludes the row is still applied.');
 		}
 
 		public function testGetCommentHandlerPath()
