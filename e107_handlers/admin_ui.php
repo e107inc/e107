@@ -5180,7 +5180,6 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			e107::getMessage()->addError("Failed to save history for table '{$table}', record ID {$id}");
 			e107::getMessage()->addError(e107::getDb()->getLastErrorText());
-			e107::getMessage()->addError(print_a($historyData, true));
 			return false;
 		}
 
