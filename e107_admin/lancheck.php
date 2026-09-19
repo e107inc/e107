@@ -1793,7 +1793,7 @@ class lancheck
 
 		$text .= "<form method='post' action='".e_SELF."?tools' id='select_lang'>
 		<div style='text-align:center'><br />";
-		$text .= (!$writable) ? "<br />".$dir2.$f2.LAN_NOTWRITABLE : "";
+		$text .= (!$writable) ? "<br />".$dir2.$f2." ".LAN_NOTWRITABLE : "";
 	//	$text .= "<br /><br /><input class='btn' type='submit' name='language_sel[{$lan}]' value=\"".LAN_BACK."\" />";
 		$text .= "</div></form>";
 
