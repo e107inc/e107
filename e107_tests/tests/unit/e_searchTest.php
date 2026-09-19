@@ -17,8 +17,8 @@
 		/** @var array */
 		private $installedBefore;
 
-		/** @var bool */
-		private $multibyteBefore;
+		/** @var array */
+		private $foundParserState;
 
 		/** @var array */
 		private $globalsBefore;
@@ -36,7 +36,7 @@
 			// Kept in memory only: nothing here is saved, and _after puts the
 			// original list back before any other test can read it.
 			$this->installedBefore = e107::getConfig()->get('plug_installed');
-			$this->multibyteBefore = e107::getParser()->ustrlen('é') === 1;
+			$this->foundParserState = $this->parserState();
 
 			$this->probeTable = MPREFIX . 'search_highlight_probe';
 			$this->globalsBefore = array();
@@ -50,7 +50,7 @@
 		protected function _after()
 		{
 			e107::getConfig()->set('plug_installed', $this->installedBefore);
-			e107::getParser()->setMultibyte($this->multibyteBefore);
+			$this->restoreParserState($this->foundParserState);
 
 			foreach($this->globalsBefore as $name => $value)
 			{

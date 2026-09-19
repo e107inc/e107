@@ -166,6 +166,63 @@
 		}
 
 		/**
+		 * A test that writes the process-wide parser gets every setting back as it was found, in the type it was found in.
+		 */
+		public function testTheParserStateHelperPutsBackWhatItFound()
+		{
+			$parser = e107::getParser();
+			$outer = $this->parserState();
+
+			self::assertSame(
+				array('staticUrl', 'modRewriteMedia', 'fontawesome', 'bootstrap', 'multibyte', 'thumbWidth',
+					'thumbHeight', 'thumbCrop'),
+				array_keys($outer),
+				"\\Test\\Unit captures a parser setting this test does not dirty below, or has stopped capturing\n"
+				. "one it does. Every setting the base class promises to put back is written here first, because\n"
+				. "an assertion over the captured array alone passes whatever that array happens to contain.");
+
+			try
+			{
+				$modRewriteMedia = new \e107\Reflection\ReflectionProperty('e_parse', 'modRewriteMedia');
+				$modRewriteMedia->setValue($parser, '');
+
+				$found = $this->parserState();
+
+				$parser->setmodRewriteMedia(true);
+				$parser->setFontAwesome(6);
+				$parser->setBootstrap(5);
+				$parser->setMultibyte(!$found['multibyte']);
+				$parser->thumbWidth(320);
+				$parser->thumbHeight(240);
+				$parser->thumbCrop(1);
+				$parser->setStaticUrl('https://static.example.com/');
+				$parser->staticUrl('{e_WEB}script.js');
+
+				self::assertNotSame(array(), $parser->getStaticUrlMap(),
+					"Nothing below measures the discarding of a URL map unless serving a path under a static\n"
+					. "URL builds one. e_parse::staticUrl() returns before it builds anything when e_ADMIN_AREA\n"
+					. "is true, so a unit process booted inside an admin directory would land here.");
+
+				$this->restoreParserState($found);
+
+				self::assertSame($found, $this->parserState(),
+					"A parser setting came back as something other than what \\Test\\Unit::parserState() found.\n"
+					. "e_parse::setmodRewriteMedia() casts to bool over a parser born holding '', and\n"
+					. "setFontAwesome() and setBootstrap() cast to int over properties born holding null, so\n"
+					. "the setters cannot put back every value they accept and\n"
+					. "\\Test\\Unit::restoreParserState() writes the properties instead.");
+
+				self::assertSame(array(), $parser->getStaticUrlMap(),
+					'The map of the domain already issued per path describes the static URL that has just been '
+					. 'replaced, so leaving it behind serves the next test a domain nothing configures any more.');
+			}
+			finally
+			{
+				$this->restoreParserState($outer);
+			}
+		}
+
+		/**
 		 * The parent class a file declares, if it is one a test must not
 		 * extend directly.
 		 *
