@@ -2590,11 +2590,11 @@ class themeHandler
 
 // 		print_a($preset); 
 		//TODO LAN
-		$text = "<div class='btn-group pull-right'>".$frm->admin_button("setMenuPreset[".$key."]", TPVLAN_73,'other');
+		$text = "<div class='btn-group pull-right float-right float-end'>".$frm->admin_button("setMenuPreset[".$key."]", TPVLAN_73,'other');
 		$text .= '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
 		<span class="caret"></span>
 		</button>
-		<ul class="dropdown-menu col-selection">
+		<ul class="dropdown-menu dropdown-menu-right dropdown-menu-end col-selection">
 		<!-- dropdown menu links -->
 		<li class="dropdown-header">'.TPVLAN_74.'</li>
 		';
