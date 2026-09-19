@@ -22,6 +22,7 @@ class eIPHandlerTest extends \Test\Unit
 	const STRANGER = '203.0.113.9';
 	const OUTSIDER = '203.0.113.99';
 	const REASON = 'eIPHandlerTest';
+	const RETRIGGER_HOURS = 6;
 
 	/** @var eIPHandler */
 	protected $ip;
@@ -32,9 +33,17 @@ class eIPHandlerTest extends \Test\Unit
 	/** @var mixed the enable_rdns pref as found */
 	private $savedRdns = null;
 
+	/** @var mixed the ban_retrigger pref as found */
+	private $savedRetrigger = null;
+
+	/** @var mixed the ban_durations pref as found */
+	private $savedDurations = null;
+
 	protected function _before()
 	{
 		$this->savedRdns = e107::getConfig()->get('enable_rdns');
+		$this->savedRetrigger = e107::getConfig()->get('ban_retrigger');
+		$this->savedDurations = e107::getConfig()->get('ban_durations');
 		unset($_SERVER['REMOTE_ADDR']);
 
 		try
@@ -56,6 +65,8 @@ class eIPHandlerTest extends \Test\Unit
 		unset($_SERVER['REMOTE_ADDR']);
 		putenv('REMOTE_ADDR');
 		e107::getConfig()->set('enable_rdns', $this->savedRdns);
+		e107::getConfig()->set('ban_retrigger', $this->savedRetrigger);
+		e107::getConfig()->set('ban_durations', $this->savedDurations);
 
 		e107::getDb()->createQueryBuilder()->delete('banlist')->where('banlist_reason', self::REASON)->execute();
 
@@ -89,6 +100,33 @@ class eIPHandlerTest extends \Test\Unit
 		self::assertNotEmpty($id, 'could not write the banlist row this test needs');
 
 		return (int) $id;
+	}
+
+	/**
+	 * @return int[] the banlist_id values this test wrote that are still stored, ascending
+	 */
+	private function rowsThisTestWrote()
+	{
+		$sql = e107::getDb();
+		$sql->createQueryBuilder()->select('banlist_id')->from('banlist')->where('banlist_reason', self::REASON)->execute();
+
+		$ids = array();
+		while($row = $sql->fetch())
+		{
+			$ids[] = (int) $row['banlist_id'];
+		}
+		sort($ids);
+
+		return $ids;
+	}
+
+	/**
+	 * @param int $id
+	 * @return int banlist_banexpires
+	 */
+	private function expiryOf($id)
+	{
+		return (int) e107::getDb()->retrieve('banlist', 'banlist_banexpires', '`banlist_id` = '.(int) $id);
 	}
 
 	/**
@@ -733,6 +771,64 @@ class eIPHandlerTest extends \Test\Unit
 
 		// Cleanup
 		e107::getDb()->delete('banlist', "`banlist_ip`='cameron@mydomain.co.uk'");
+	}
+
+	/**
+	 * A banned visitor coming back extends the ban that stopped them. banlist_ip
+	 * carries an ordinary index rather than a unique one, so keying the write on
+	 * the address reaches every row stored under it, each one by the hours
+	 * configured for the enforced row's type rather than its own.
+	 *
+	 * @group runs-in-separate-process
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 * @return void
+	 */
+	public function testRetriggerLeavesAnotherBanOnTheSameAddressAlone()
+	{
+		$config = e107::getConfig();
+		$config->set('ban_retrigger', 1);
+		$config->set('ban_durations', array(eIPHandler::BAN_TYPE_MANUAL => self::RETRIGGER_HOURS));
+
+		$laterExpiry = time() + 999999;
+		$enforced = $this->haveRow(self::STRANGER, eIPHandler::BAN_TYPE_MANUAL, time() + 60);
+		$other = $this->haveRow(self::STRANGER, eIPHandler::BAN_TYPE_FLOOD, $laterExpiry);
+
+		$before = time();
+		self::assertFalse($this->ip->checkBan("`banlist_ip`='".self::STRANGER."'", false, true),
+			'the address is banned, so the check has to report it banned');
+
+		self::assertGreaterThanOrEqual($before + (self::RETRIGGER_HOURS * 3600), $this->expiryOf($enforced),
+			'the ban that stopped the visitor has to run for its full duration again');
+		self::assertSame($laterExpiry, $this->expiryOf($other),
+			'the other ban on that address is a ban of its own and nothing retriggered it');
+	}
+
+	/**
+	 * Clearing a ban that has run out is a write on that row. Keyed on the
+	 * caller's whole WHERE clause instead, it took every other ban the clause
+	 * matched with it, which for the registration screen's address-or-domain
+	 * query means one lapsed address ban deleting the live domain ban beside it.
+	 *
+	 * @group runs-in-separate-process
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 * @return void
+	 */
+	public function testClearingAnExpiredBanLeavesTheLiveOnesItWasLookedUpWith()
+	{
+		$laterExpiry = time() + 999999;
+		$expired = $this->haveRow(self::OUTSIDER, eIPHandler::BAN_TYPE_MANUAL, time() - 60);
+		$live = $this->haveRow(self::STRANGER, eIPHandler::BAN_TYPE_FLOOD, $laterExpiry);
+
+		$query = "`banlist_ip`='".self::OUTSIDER."' OR `banlist_ip`='".self::STRANGER."'";
+		self::assertTrue($this->ip->checkBan($query, false, true),
+			'the ban that was read had expired, so this visitor is not banned by it');
+
+		self::assertSame(array($live), $this->rowsThisTestWrote(),
+			'the ban that ran out is cleared, and the one that has not is left where it was');
+		self::assertSame($laterExpiry, $this->expiryOf($live),
+			'a ban that has not run out has to survive the clearing of one that has');
 	}
 }
 
