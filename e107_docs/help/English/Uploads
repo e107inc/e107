@@ -1,6 +1,24 @@
+H1> Accepting uploads safely
 
-Q>	I'd like to let people upload files to my site but I'm worried about security...
-A>	There are a couple of things to do to improve security. First, use Binary storage, the uploaded files will then be stored in the MySQL database and won't be accessible to anyone apart from to download. Also, set the list of allowed file types, if anyone tries to upload a filetype other than the types you have defined it will be deleted immediately from your server.
+P> Letting visitors upload files is powerful, but it is also one of the largest attack surfaces of any CMS. e107 ships with sane defaults; the tips below tighten the screws further.
 
-Q>	I've had some files uploaded, what do I do now?
-A>	You have the option to copy the file to your Download Manager, to allow others to download it, and to copy the upload information to your newspost section, to make a news item announcement about it.
+WARN> Never accept arbitrary file types from anonymous users. The [b]allowed types[/b] list is your single most important defence.
+
+Q> I'd like to let people upload files to my site but I'm worried about security…
+A> Two settings make a huge difference:
+
+STEP> Use [b]Binary storage[/b] – uploaded files are written to the MySQL database, not to a public directory, so they cannot be hot-linked or executed.
+STEP> Define an [b]allowed file types[/b] list. Anything not on the list is rejected and deleted from the server immediately.
+
+TIP> Restrict uploads to specific user classes (see the Classes help page) so only verified members can upload at all. Combined with the two settings above, this dramatically narrows abuse.
+
+H1> What to do once a file is uploaded
+
+Q> I've had some files uploaded – what do I do now?
+A> From the upload review screen you can:
+
+STEP> Copy the file into the [b]Download Manager[/b] so others can grab it.
+STEP> Push the upload metadata to the [b]News[/b] form to announce the file in a news item.
+STEP> Reject the upload if it does not meet your guidelines – the file is then removed.
+
+NOTE> Always review uploads before publishing them. Even with file-type filtering, content-level moderation (copyright, NSFW, malware reports) cannot be automated reliably.
