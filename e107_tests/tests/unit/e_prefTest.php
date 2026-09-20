@@ -3,6 +3,7 @@
 
 	class e_prefTest extends \Codeception\Test\Unit
 	{
+		use \Test\BootedCli;
 
 		/** @var e_pref */
 		protected $pref;
@@ -96,6 +97,43 @@
 
 			$this->assertFalse($saved, 'a save that could not write should report failure');
 			$this->assertFalse($displayed, 'a caller asking for no messages should not get a red block');
+		}
+
+		/**
+		 * A constant cannot be undefined once the process has defined it, so the save runs in a booted child.
+		 * That child skips online tracking, because the boot's own preference save loads the admin phrases and would answer the question before this save does.
+		 */
+		public function testASaveOutsideTheAdminAreaDefinesNoAdminPhrases()
+		{
+			$row = 'test_pref_admin_lan';
+			$begin = '@@e107help-adlan8-begin@@';
+			$end = '@@e107help-adlan8-end@@';
+
+			$php = "\$before = defined('ADLAN_8'); "
+				."\$pref = new e_pref('".$row."'); "
+				."\$pref->set('probe', uniqid('', true)); "
+				."\$saved = \$pref->save(false, true, false); "
+				."echo '".$begin."', var_export(\$saved, true), '|', "
+				."\$before ? 'defined before the save' : (defined('ADLAN_8') ? 'defined by the save' : 'undefined'), '".$end."';";
+
+			list($output, $status) = $this->runInBootedCli($php, '', array('cli' => true, 'no_online' => true));
+
+			e107::getDb()->delete('core', "e107_name = '".$row."'");
+			e107::getCache()->clear_sys('Config_'.$row);
+
+			$printed = implode("\n", $output);
+			$matches = array();
+
+			$this->assertSame(0, $status, "the save never returned:\n".$printed);
+			$this->assertSame(1, preg_match('/'.preg_quote($begin, '/').'(.*)'.preg_quote($end, '/').'/s', $printed, $matches),
+				"the child printed nothing:\n".$printed);
+
+			$measured = explode('|', $matches[1]);
+
+			$this->assertSame('true', $measured[0],
+				"the child's save wrote nothing, so the rest of this measures nothing:\n".$printed);
+			$this->assertSame('undefined', $measured[1],
+				'a preference saved outside the admin area must not pull the admin language pack in');
 		}
 
 	}
