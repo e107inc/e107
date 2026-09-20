@@ -18,6 +18,9 @@ class AdminUiHistoryProbeFixture extends e_admin_controller_ui
 	/** @var array stands in for the request's posted data */
 	public $posted = array('etrigger_submit' => 'update');
 
+	/** @var bool what the archive write answers, as a failed INSERT answers false */
+	public $backupAnswer = true;
+
 	public function __construct($table, $pid, $spyModel)
 	{
 		$this->table = $table;
@@ -61,21 +64,46 @@ class AdminUiHistoryProbeFixture extends e_admin_controller_ui
 			'posted' => $posted,
 		);
 
-		return true;
+		return $this->backupAnswer;
 	}
 }
 
 /**
- * A model holding what an observer left in it, whose save() writes the posted values to the table.
+ * Probe archiving through the real {@see e_admin_controller_ui::backupToHistory()}, so the write itself is measured.
+ */
+class AdminUiHistoryArchiveProbeFixture extends e_admin_controller_ui
+{
+	public function __construct($table, $pid)
+	{
+		$this->table = $table;
+		$this->pid = $pid;
+	}
+
+	public function probeArchive($id, array $data, $action = 'update', $sessionMessage = false)
+	{
+		return $this->archiveBeforeChange($this->table, $this->pid, $id, $action, $data, $sessionMessage);
+	}
+
+	public function probeBackup($id, array $data, $action = 'update')
+	{
+		return $this->backupToHistory($this->table, $this->pid, $id, $action, $data, false);
+	}
+}
+
+/**
+ * A model holding what an observer left in it, whose merge puts the values the save will write into it.
  */
 class AdminUiHistorySpyModel
 {
+	/** @var bool when true the merge copies nothing, as it does on a validation failure */
+	public $refuseMerge = false;
+
 	private $pid;
 	private $id;
 	private $inModel;
 	private $written;
 	private $table;
-	private $saved = false;
+	private $merged = false;
 
 	public function __construct($table, $pid, $id, array $inModel, array $written)
 	{
@@ -88,7 +116,7 @@ class AdminUiHistorySpyModel
 
 	public function getData()
 	{
-		return $this->saved ? array_merge($this->inModel, $this->written) : $this->inModel;
+		return $this->merged ? array_merge($this->inModel, $this->written) : $this->inModel;
 	}
 
 	public function getId()
@@ -106,8 +134,28 @@ class AdminUiHistorySpyModel
 		return $this;
 	}
 
-	public function save($force = false, $forceSave = false)
+	public function mergePostedData($strict = true, $sanitize = true, $validate = true)
 	{
+		if(!$this->refuseMerge)
+		{
+			$this->merged = true;
+		}
+
+		return $this;
+	}
+
+	public function save($from_post = true, $force = false)
+	{
+		if($from_post)
+		{
+			$this->mergePostedData(false, true, true);
+		}
+
+		if(!$this->merged)
+		{
+			return false;
+		}
+
 		$update = e107::getDb()->createQueryBuilder()->update($this->table);
 
 		foreach($this->written as $field => $value)
@@ -116,7 +164,6 @@ class AdminUiHistorySpyModel
 		}
 
 		$update->where($this->pid, $this->id)->execute();
-		$this->saved = true;
 
 		return true;
 	}
