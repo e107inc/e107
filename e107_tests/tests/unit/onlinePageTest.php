@@ -12,6 +12,7 @@ class onlinePageTest extends \Test\Unit
 {
 	const MOST_MEMBERS = 7;
 	const MOST_GUESTS = 5;
+	const SEEDED_MEMBERS = 2;
 
 	/** @var array<string,mixed> the tracking preferences as this test found them, absent ones held as null */
 	private $prefState = array();
@@ -41,20 +42,52 @@ class onlinePageTest extends \Test\Unit
 
 		$config->save(false, true, false);
 		$this->prefState = array();
+
+		e107::getDb()->truncate('online');
 	}
 
 	/**
-	 * Renders online.php in a subprocess against a known site history.
+	 * Puts more members in the online table than the rendering child leaves guests, so each count is a number of its own.
+	 */
+	private function seedMembersOnline()
+	{
+		$sql = e107::getDb();
+		$ip = e107::getIPHandler();
+
+		$sql->truncate('online');
+
+		for($i = 1; $i <= self::SEEDED_MEMBERS; $i++)
+		{
+			$sql->insert('online', array(
+				'online_timestamp' => time(),
+				'online_flag'      => 0,
+				'online_user_id'   => $i.'.member'.$i,
+				'online_ip'        => $ip->ipEncode('203.0.113.'.$i),
+				'online_location'  => 'online.php',
+				'online_pagecount' => 1,
+				'online_active'    => 1,
+				'online_agent'     => 'onlinePageTest',
+				'online_language'  => 'en',
+			));
+		}
+	}
+
+	/**
+	 * Renders online.php in a subprocess against a known site history, running $before at global scope ahead of the page and $after behind it.
 	 *
+	 * @param string $before
+	 * @param string $after
 	 * @return array the rendered page under 'out', the child's exit status under 'exit'
 	 */
-	private function renderOnlinePage()
+	private function renderOnlinePage($before = '', $after = '')
 	{
 		$php = "chdir('".addslashes(APP_PATH)."'); ";
 		$php .= "register_shutdown_function(function() { while(ob_get_level() > 0) { @ob_end_flush(); } }); ";
 		$php .= "e107::getConfig('history')->setPref('most_members_online', ".self::MOST_MEMBERS.")";
 		$php .= "->setPref('most_guests_online', ".self::MOST_GUESTS.")->setPref('most_online_datestamp', time()); ";
+		$php .= $before;
 		$php .= "require_once('".addslashes(APP_PATH.'/online.php')."'); ";
+		$php .= $after;
 
 		list($output, $status) = $this->runInBootedCli($php);
 
@@ -91,5 +124,39 @@ class onlinePageTest extends \Test\Unit
 			"The most-members-online count must be separated from its label.\n".$out);
 		self::assertStringContainsString(ONLINE_EL1.' '.self::MOST_GUESTS, $out,
 			"The most-guests-online count must be separated from its label.\n".$out);
+	}
+
+	/**
+	 * A theme that prints either token gets the figure its name says. Nothing in the tree reads them, so the page itself proves nothing: the probe stands in for the theme.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/6522
+	 */
+	public function testTheMemberAndGuestTokensCarryTheirOwnFigures()
+	{
+		e107::coreLan('online');
+		$this->seedMembersOnline();
+
+		$probe = "@@MEMBERS_TOKEN={ONLINE_TABLE_MEMBERS_ONLINE}@@\n@@GUESTS_TOKEN={ONLINE_TABLE_GUESTS_ONLINE}@@";
+
+		$result = $this->renderOnlinePage(
+			'$ONLINE_TABLE_MISC = '.var_export($probe, true).'; ',
+			'echo "\n@@COUNTS=", MEMBERS_ONLINE, "/", GUESTS_ONLINE, "@@\n"; ');
+
+		$out = $result['out'];
+
+		self::assertSame(0, $result['exit'], $out);
+
+		$counts = array();
+		self::assertSame(1, preg_match('/@@COUNTS=(\d+)\/(\d+)@@/', $out, $counts),
+			"The page never reported the counts the tokens were built from.\n".$out);
+		self::assertSame((string) self::SEEDED_MEMBERS, $counts[1],
+			"The seeded member rows never reached the count, so the member figure is a constant zero.\n".$out);
+		self::assertNotSame($counts[1], $counts[2],
+			"The two counts have to differ, or a token carrying the other one's figure would still read correctly.\n".$out);
+
+		self::assertStringContainsString('@@MEMBERS_TOKEN='.ONLINE_EL2.' '.$counts[1].'@@', $out,
+			"ONLINE_TABLE_MEMBERS_ONLINE has to carry the member label and the member count.\n".$out);
+		self::assertStringContainsString('@@GUESTS_TOKEN='.ONLINE_EL1.' '.$counts[2].'@@', $out,
+			"ONLINE_TABLE_GUESTS_ONLINE has to carry the guest label and the guest count.\n".$out);
 	}
 }
