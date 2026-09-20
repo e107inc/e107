@@ -37,6 +37,13 @@ a.media-select-none                 { text-align:center; text-decoration: none }
 a.media-select-image-none span      { font-size:50px }
 a.media-select-icon-none span       { font-size:30px  }
 
+input.has-error,
+select.has-error,
+textarea.has-error,
+input.has-error:focus,
+select.has-error:focus,
+textarea.has-error:focus            { border-color:red; box-shadow:0 1px 1px 0 rgba(255,0,0,.75) inset }
+
 @media (min-height: 500px){
 	a.media-select-image-none span  { font-size:80px }
 }
