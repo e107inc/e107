@@ -123,8 +123,8 @@ class download_rss // plugin-folder + '_rss'
 	        $rss[$i]['category_name'] 	= $value['download_category_name'];
 	        $rss[$i]['category_link'] 	= "download/download.php?list.".$value['download_category_id']; // TODO SEF URL
 			$rss[$i]['enc_url'] 		= "download/request.php?".$value['download_id']; // TODO SEF URL
-			$rss[$i]['enc_leng'] 		= $value['download_filesize'];
-			$rss[$i]['enc_type'] 		= '';
+			$rss[$i]['enc_leng'] 		= (int) filter_var($value['download_filesize'], FILTER_VALIDATE_INT);
+			$rss[$i]['enc_type'] 		= (string) e107::getFile()->getMime($value['download_url']);
 			$rss[$i]['datestamp'] 		= $value['download_datestamp'];
 
 			$i++;
