@@ -11,17 +11,17 @@
  * return at all is what covers the undefined variable the three link
  * expressions used to read a property on.
  *
- * enc_url is asserted for its shape rather than for its effect: no feed emits an
- * enclosure for a download today, which is #6509 and not this.
+ * An item carries the three values rss_menu needs before it writes an
+ * enclosure: the request link, the size, and the type of the file behind it.
  *
  * @see https://github.com/e107inc/e107/discussions/6497
  */
 class download_e_rssTest extends \Test\Unit
 {
-	/** The whole feed, which is more than the two rows seeded here. */
-	const LIMIT = 9;
+	/** Past what the table can hold, so no fixture row is crowded out of the feed. */
+	const LIMIT = 999;
 
-	/** The sef both fixture rows carry, so _after can take them back out again. */
+	/** The sef every fixture row carries, so _after can take them back out again. */
 	const MARKER = 'e107help-feed-probe';
 
 	/** @var bool whether this test installed the download plugin for its tables */
@@ -35,6 +35,18 @@ class download_e_rssTest extends \Test\Unit
 
 	/** @var int */
 	private $anonymousId;
+
+	/** @var int */
+	private $extensionlessId;
+
+	/** @var int */
+	private $unknownTypeId;
+
+	/** @var int */
+	private $unmeasuredId;
+
+	/** @var int */
+	private $humanSizeId;
 
 	protected function _before()
 	{
@@ -60,6 +72,10 @@ class download_e_rssTest extends \Test\Unit
 
 		$this->downloadId = $this->haveDownload('Feed fixture download', 'Ahsanul');
 		$this->anonymousId = $this->haveDownload('Feed fixture download without an author', '');
+		$this->extensionlessId = $this->haveDownload('Feed fixture download with no extension', '', 'fixture');
+		$this->unknownTypeId = $this->haveDownload('Feed fixture download of an unknown type', '', 'fixture.e107help');
+		$this->unmeasuredId = $this->haveDownload('Feed fixture download of unstated size', '', 'fixture.txt', 'not measured');
+		$this->humanSizeId = $this->haveDownload('Feed fixture download sized by hand', '', 'fixture.txt', '1.5 MB');
 	}
 
 	protected function _after()
@@ -100,6 +116,31 @@ class download_e_rssTest extends \Test\Unit
 	}
 
 	/**
+	 * The type follows {@see e_file::getMime()} in full: a known extension by
+	 * name, an unrecognised one as the generic binary, and no extension at all as
+	 * nothing, which is what keeps the element off that item.
+	 */
+	public function testAnItemCarriesTheTypeOfTheFileBehindIt()
+	{
+		$this->assertSame('text/plain', $this->feedItem($this->downloadId)['enc_type']);
+		$this->assertSame('application/octet-stream', $this->feedItem($this->unknownTypeId)['enc_type']);
+		$this->assertSame('', $this->feedItem($this->extensionlessId)['enc_type']);
+	}
+
+	/**
+	 * enclosure/@length is a count of bytes, and the column behind it is a varchar
+	 * the admin form stores as typed when the size is given in bytes, so anything
+	 * that is not a whole number of them has to leave the element off rather than
+	 * publish a size that is wrong by orders of magnitude.
+	 */
+	public function testALengthThatIsNotANumberOfBytesLeavesTheEnclosureOff()
+	{
+		$this->assertSame(12, $this->feedItem($this->downloadId)['enc_leng']);
+		$this->assertSame(0, $this->feedItem($this->unmeasuredId)['enc_leng']);
+		$this->assertSame(0, $this->feedItem($this->humanSizeId)['enc_leng']);
+	}
+
+	/**
 	 * @param int $id download_id
 	 * @return array the item the feed built for that download
 	 */
@@ -121,20 +162,22 @@ class download_e_rssTest extends \Test\Unit
 	/**
 	 * @param string $name download_name, which carries a unique key
 	 * @param string $author download_author, empty where nobody is credited
+	 * @param string $url download_url, the file name the type is read from
+	 * @param string $size download_filesize, a varchar that is usually bytes
 	 * @return int download_id
 	 */
-	private function haveDownload($name, $author)
+	private function haveDownload($name, $author, $url = 'fixture.txt', $size = '12')
 	{
 		return e107::getDb()->createQueryBuilder()->insert('download')->insertGetId(array(
 			'download_name'           => $name,
-			'download_url'            => 'fixture.txt',
+			'download_url'            => $url,
 			'download_sef'            => self::MARKER,
 			'download_author'         => $author,
 			'download_author_email'   => 'fixture@example.com',
 			'download_author_website' => '',
 			'download_description'    => 'Body of '.$name,
 			'download_keywords'       => '',
-			'download_filesize'       => 12,
+			'download_filesize'       => $size,
 			'download_requested'      => 0,
 			'download_category'       => $this->categoryId,
 			'download_active'         => 1,

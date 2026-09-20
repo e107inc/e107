@@ -4015,7 +4015,7 @@ class e_file
 	 * Return the mime-type based on the file's extension.
 	 *
 	 * @param string $filename
-	 * @return string
+	 * @return string|false false where the name carries no extension at all
 	 */
 	public function getMime($filename)
 	{
