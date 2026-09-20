@@ -158,6 +158,14 @@ class admin_history_ui extends e_admin_ui
 				{
 					if($action === 'insert')
 					{
+						$replaced = $this->historySnapshot($originalTable, $pid, $recordId);
+
+						if(!$this->archiveBeforeChange($originalTable, $pid, $recordId, 'restore', $replaced, true))
+						{
+							e107::getRedirect()->go(e_SELF);
+							return;
+						}
+
 						$originalData[$pid] = (int) $recordId;
 						$result = $db->createQueryBuilder()
 							->replace($originalTable)->valuesTyped($originalData)
@@ -169,7 +177,12 @@ class admin_history_ui extends e_admin_ui
 						if($backup && $changes = array_diff_assoc($originalData, $backup))
 	                    {
 							$old_changed_data = array_intersect_key($backup, $changes);
-							$this->backupToHistory($originalTable, $pid, $recordId, 'restore', $old_changed_data, false);
+
+							if(!$this->archiveBeforeChange($originalTable, $pid, $recordId, 'restore', $old_changed_data, true))
+							{
+								e107::getRedirect()->go(e_SELF);
+								return;
+							}
 	                    }
 
 						$updateQ = $db->createQueryBuilder()->update($originalTable);

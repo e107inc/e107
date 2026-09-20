@@ -226,6 +226,7 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 
 		$probe->ListDeleteTrigger(array(1 => 'delete'));
 
+		$this->assertSame(array(), $probe->snapshotReads, 'the row about to be dropped is not read first');
 		$this->assertSame(array(), $probe->backups);
 		$this->assertSame(array(1), $probe->treeStub->deleted);
 	}
