@@ -272,6 +272,34 @@
 		}
 
 		/**
+		 * gen()'s deprecated table-marker rewrite reaches any #word that follows whitespace anywhere in the statement, string literals included.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6478
+		 */
+		public function testMysqlSortSearchFindsAKeywordHoldingAHash()
+		{
+			self::assertStringContainsString('<mark>See #wobble</mark>',
+				$this->searchProbe('"See #wobble"', 1, 1),
+				'A hash following a space has to reach the server as the visitor typed it, not as a table name.');
+		}
+
+		/**
+		 * The same keyword, read off the statement rather than off the page: inside the text it is what the rewrite reaches.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6478
+		 */
+		public function testMysqlSortSearchBindsTheKeywordItMatchesAgainst()
+		{
+			$this->searchProbe('"See #wobble"', 1, 1);
+			$emitted = e107::getDb('search')->getLastQuery();
+
+			self::assertTrue(is_array($emitted),
+				'The MySQL sort method has to send the keyword as a bound value.');
+			self::assertStringNotContainsString('#wobble', $emitted['PREPARE'],
+				'A keyword spliced into the statement is what the table-marker rewrite reaches.');
+		}
+
+		/**
 		 * @see https://github.com/e107inc/e107/issues/6330
 		 */
 		public function testWordBoundarySearchAsksForAPatternEveryServerAccepts()
@@ -562,6 +590,24 @@
 				'A handler fragment that keeps the row leaves it found.');
 			self::assertSame('nothing found',
 				$this->searchProbe('builds', 0, 1, 'probe_id = 2 AND ', array('probe_id' => 'DESC')),
+				'A handler fragment that excludes the row is still applied.');
+		}
+
+		/**
+		 * The same two declarations on the sort method a default install runs, where the statement is now built rather than concatenated.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6478
+		 */
+		public function testMysqlSortSearchKeepsTheHandlersOwnWhereAndOrder()
+		{
+			self::assertStringContainsString('Release wibble#wobble',
+				$this->searchProbe('builds', 1, 1, 'probe_id = 1 AND ', array('probe_id' => 'DESC')),
+				'A handler fragment that keeps the row leaves it found.');
+			self::assertMatchesRegularExpression('/ORDER BY.*relevance.*DESC.*probe_id.*DESC/is',
+				$this->lastSearchStatement(),
+				'and its ordering reaches the statement behind the relevance this sort method scores.');
+			self::assertSame('nothing found',
+				$this->searchProbe('builds', 1, 1, 'probe_id = 2 AND ', array('probe_id' => 'DESC')),
 				'A handler fragment that excludes the row is still applied.');
 		}
 

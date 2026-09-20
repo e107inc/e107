@@ -181,12 +181,6 @@
             "count": 1
         },
         {
-            "file": "e107_handlers/search_class.php",
-            "method": "gen",
-            "sql_excerpt": "{$sql_query}",
-            "count": 1
-        },
-        {
             "file": "e107_handlers/user_model.php",
             "method": "execute",
             "sql_excerpt": "SELECT {$safeFieldName} FROM `{$safeTable}` WHERE {$safeFieldId} = :v",
