@@ -1276,24 +1276,16 @@ class e_db_pdo implements e_db
 
 
 	/**
-	* @return string|null relating to error (empty string if no error)
-	* @param string $from
-	* @desc Calling method from within this class
-	* @access private
-	*/
+	 * @inheritDoc
+	 */
 	function dbError($from)
 	{
-
-		$this->mySQLerror = true;
-
 		if($this->mySQLlastErrNum === 0)
 		{
 			return null;
 		}
 
 		return $from." :: ".$this->mySQLlastErrText;
-
-
 	}
 
 
