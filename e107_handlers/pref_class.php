@@ -572,6 +572,7 @@ class e_pref extends e_front_model
 		}
 
 		$display = $session_messages !== false;
+		$noChangesMessage = defset('LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE', 'Settings not saved as no changes were made.');
 
 		e107::getMessage()->setUnique($this->prefid); // attempt to fix
 		
@@ -589,7 +590,7 @@ class e_pref extends e_front_model
 		{
 			if($display)
 			{
-				e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages)->moveStack($this->prefid);
+				e107::getMessage()->addInfo($noChangesMessage, $this->prefid, $session_messages)->moveStack($this->prefid);
 			}
 
 			return 0;
@@ -641,7 +642,7 @@ class e_pref extends e_front_model
 
 				if($display)
 				{
-					e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages);
+					e107::getMessage()->addInfo($noChangesMessage, $this->prefid, $session_messages);
 				}
 
 				e107::getMessage()->moveStack($this->prefid);
@@ -700,10 +701,7 @@ class e_pref extends e_front_model
 				$logId = 'PREFS_01';
 			}
 
-			// FIXME: Admin LAN dependency out of nowhere
-			e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_admin.php');
-
-			$log->addSuccess(LAN_SETSAVED, $display);
+			$log->addSuccess(defset('LAN_SETSAVED', 'Your settings have been saved'), $display);
 			$uid = defset('USERID');
 
 			if(empty($uid)) // Log extra details of any pref changes made by a non-user.
@@ -736,7 +734,7 @@ class e_pref extends e_front_model
 		}
 		else
 		{
-			e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages);
+			e107::getMessage()->addInfo($noChangesMessage, $this->prefid, $session_messages);
 			if(!$disallow_logs) $log->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 			e107::getMessage()->moveStack($this->prefid);
 			return 0;
