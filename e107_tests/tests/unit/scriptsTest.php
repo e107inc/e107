@@ -98,7 +98,6 @@
 				// Still red after #6376, which #6424 has yet to catch up with:
 				// faqs_shortcodes.php line 354 reads submit_question raw.
 				'faqs/faqs.php',
-				'newsletter/nl_archive.php',
 			);
 
 			$paths = array();
