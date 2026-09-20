@@ -23,6 +23,7 @@ use E107\Rector\DowngradePhp70\Rector\Instanceof_\DowngradeInstanceofThrowableRe
 use E107\Rector\DowngradePhp70\Rector\Isset_\DowngradeIssetOnClassConstFetchRector;
 use E107\Rector\DowngradePhp70\Rector\MethodCall\DowngradeClosureCallRector;
 use E107\Rector\DowngradePhp70\Rector\MethodCall\DowngradeMethodCallOnCloneRector;
+use E107\Rector\DowngradePhp70\Rector\Namespace_\DowngradeConflictingUseImportRector;
 use E107\Rector\DowngradePhp70\Rector\New_\DowngradeAnonymousClassRector;
 use E107\Rector\DowngradePhp70\Rector\Spaceship\DowngradeSpaceshipRector;
 use E107\Rector\DowngradePhp70\Rector\StaticCall\DowngradeStaticCallOnExpressionRector;
@@ -110,6 +111,7 @@ return static function (RectorConfig $rectorConfig): void {
         DowngradeStreamIsattyRector::class,
         DowngradeProcOpenArrayCommandArgRector::class,
         DowngradeHashAlgorithmXxHashRector::class,
+        DowngradeConflictingUseImportRector::class,
     ]);
 
     // Everything above this line rewrites syntax. PHP 5.6 parses a class type
