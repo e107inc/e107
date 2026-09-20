@@ -165,6 +165,18 @@
 		}
 
 		/**
+		 * The deprecated table-marker rewrite reaches any #word that follows whitespace anywhere in the statement, string literals included.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6478
+		 */
+		public function testMysqlSortSearchFindsAKeywordHoldingAHash()
+		{
+			self::assertStringContainsString('<mark>See #wobble</mark>',
+				$this->searchProbe('"See #wobble"', 1, 1),
+				'A hash following a space has to reach the server as the visitor typed it, not as a table name.');
+		}
+
+		/**
 		 * The shipped default: MySQL sorting, and the word boundary the admin panel writes.
 		 *
 		 * @see https://github.com/e107inc/e107/issues/6311
