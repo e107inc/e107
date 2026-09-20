@@ -56,6 +56,8 @@ return [
     'BANLAN_IMPORT_LAPSED_KEPT' => "CSV import: [x] expired entries for addresses the file re-banned are still on the ban list, so each of those addresses now has two entries. Delete the expired ones by hand.",
     'BANLAN_IMPORT_REPLACE_KEPT' => "CSV import: [x] of the previous imported bans are still on the ban list, beside the entries the file added.",
     'BANLAN_IMPORT_REPLACE_NOTHING' => "CSV import: The existing imported bans were kept, because the file added no entries the ban list did not already hold.",
+    'BANLAN_IMPORT_REPLACE_BUSY' => "CSV import: Nothing was imported. Another import that replaces the existing imported bans is already running, and two of those at once delete each other's entries. Import again once it has finished.",
+    'BANLAN_IMPORT_REPLACE_LOCK_FAILED' => "CSV import: Nothing was imported. The database did not say whether another import is running, so this one stopped rather than risk deleting entries it could not account for. Try again, and look in the database error log if it keeps happening.",
     'BANLAN_IMPORT_ROLLBACK_FAILED' => "The [x] entries already written could not be removed and are still on the ban list.",
     'BANLAN_IMPORT_LOG_SUMMARY' => "File: [file]<br />[imported] imported, [duplicates] duplicates, [rejected] rejected",
     'BANLAN_52' => "Whitelist",
