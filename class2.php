@@ -1755,6 +1755,10 @@ if(!isset($_E107['no_online']))
 {
 	e107::getOnline()->goOnline($pref['track_online'], $pref['antiflood1']);
 }
+else
+{
+	e107::getOnline()->defineUnsampledState();
+}
 
 $dbg->logTime('(After Go online)');
 $dbg->logTime('Frontpage detection');
