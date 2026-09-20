@@ -610,8 +610,7 @@ class e107MailManager
 
 	/**
 	 * Validate a developer-supplied SELECT field list fail-closed so it can be
-	 * embedded in a SQL_CALC_FOUND_ROWS query (which must stay unbound for
-	 * FOUND_ROWS()). Accepts '*' or a comma-separated list of column
+	 * embedded in a query. Accepts '*' or a comma-separated list of column
 	 * identifiers; falls back to '*' if any token is not a valid identifier.
 	 *
 	 * @param e_db   $db     Connection instance providing quoteIdentifier().
@@ -1902,14 +1901,9 @@ class e107MailManager
 		}
 		if ($count)
 		{
-			// LIMIT offset/row-count cannot be bound here: SQL_CALC_FOUND_ROWS
-			// needs an unbound statement so FOUND_ROWS()/total_results works.
-			// Casting to int closes the only injectable surface in the clause.
 			$query .= " LIMIT " . (int) $start . ", " . (int) $count;
 		}
 		//echo "{$start}, {$count} Mail query: {$query}<br />";
-		// Intentionally raw: SQL_CALC_FOUND_ROWS must run UNBOUND so total_results populates;
-		// the builder cannot express it. Identifiers validated, LIMIT int-cast above.
 		$result = $this->db->execute($query);
 		if ($result !== false)
 		{
@@ -1994,14 +1988,9 @@ class e107MailManager
 		}
 		if ($count)
 		{
-			// LIMIT offset/row-count cannot be bound here: SQL_CALC_FOUND_ROWS
-			// needs an unbound statement so FOUND_ROWS()/total_results works.
-			// Casting to int closes the only injectable surface in the clause.
 			$query .= " LIMIT " . (int) $start . ", " . (int) $count;
 		}
 //		echo "{$start}, {$count} Target query: {$query}<br />";
-		// Intentionally raw: SQL_CALC_FOUND_ROWS must run UNBOUND so total_results populates;
-		// the builder cannot express it. Identifiers validated, LIMIT int-cast above.
 		$result = $this->db2->execute($query);
 		if ($result !== false)
 		{
