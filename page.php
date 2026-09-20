@@ -41,7 +41,12 @@ elseif(vartrue($_GET['bk'])) //  List Chapters within a specific Book
 	e107::getDebug()->log("Page Mode: Display list of chapters within a book");
 	$id = $e107CorePage->setRequest('listChapters');
     $e107CorePage->listChapters($id);
-    e107::canonical('page/book/index', $e107CorePage->getChapterData($id));
+
+    if(http_response_code() !== 404)
+    {
+        e107::canonical('page/book/index', $e107CorePage->getChapterData($id));
+    }
+
 	e107::route('page/book/index'); 
 	
 	require_once(HEADERF);
@@ -54,8 +59,12 @@ elseif(vartrue($_GET['ch'])) // List Pages within a specific Chapter
 	e107::getDebug()->log("Page Mode: Display list of pages within a chapter");
 	$id = $e107CorePage->setRequest('listPages');
     $e107CorePage->listPages($id);
-    $chData = $e107CorePage->getChapterData($id);
-    e107::canonical('page/chapter/index',$chData);
+
+    if(http_response_code() !== 404)
+    {
+        e107::canonical('page/chapter/index', $e107CorePage->getChapterData($id));
+    }
+
 	e107::route('page/chapter/index'); 
 	
 	unset($row);
@@ -74,7 +83,11 @@ else
     $canRoute = empty($e107CorePage->page['page_chapter']) ? 'page/view/other' : 'page/view';
     $pageRoute = empty($e107CorePage->page['page_chapter']) ? 'page/view/other' : 'page/view/index';
 	
-	e107::canonical( $canRoute,  $e107CorePage->page);
+	if(http_response_code() !== 404)
+	{
+		e107::canonical( $canRoute,  $e107CorePage->page);
+	}
+
 	e107::route($pageRoute);
 	
 	require_once(HEADERF);
@@ -363,12 +376,15 @@ class pageClass
 			->fetchRow();
 		if(!$brow)
 		{
-			$layout = 'default';
+			if($this->isRequested('listChapters'))
+			{
+				return $this->notFound();
+			}
+
+			$brow = $this->emptyChapter();
 		}
-		else
-		{
-			$layout = $brow['chapter_template'];
-		}
+
+		$layout = $brow['chapter_template'];
 
 
 		
@@ -482,6 +498,50 @@ class pageClass
 
 
 	/**
+	 * Whether the URL asked for this view, rather than another view rendering it inside itself.
+	 * @param string $action listChapters or listPages
+	 * @return bool
+	 */
+	private function isRequested($action)
+	{
+		$request = e107::getRegistry('core/page/request');
+
+		return isset($request['action']) && $request['action'] === $action;
+	}
+
+	/**
+	 * The listing for a book or chapter that does not resolve for this visitor, answered as not found.
+	 * @return array the page output, as the listing methods return it
+	 */
+	private function notFound()
+	{
+		http_response_code(404);
+		e107::title(LAN_PAGE_12);
+
+		$this->pageOutput = array('caption' => LAN_PAGE_12, 'text' => LAN_PAGE_3);
+
+		return $this->pageOutput;
+	}
+
+	/**
+	 * The fields the chapter templates read, for a nested listing whose chapter row is not there.
+	 * @return array
+	 */
+	private function emptyChapter()
+	{
+		return array(
+			'chapter_id'               => 0,
+			'chapter_name'             => '',
+			'chapter_parent'           => 0,
+			'chapter_icon'             => '',
+			'chapter_image'            => '',
+			'chapter_meta_description' => '',
+			'chapter_meta_keywords'    => '',
+			'chapter_template'         => 'default',
+		);
+	}
+
+	/**
 	 * Set the document title and meta tags from a chapter row, but only when the request asked for that view.
 	 * @param string $action the view this row belongs to: listChapters or listPages
 	 * @param array $row page_chapters row
@@ -489,9 +549,7 @@ class pageClass
 	 */
 	private function setChapterMeta($action, $row)
 	{
-		$request = e107::getRegistry('core/page/request');
-
-		if(empty($row) || !isset($request['action']) || $request['action'] !== $action)
+		if(empty($row) || !$this->isRequested($action))
 		{
 			return;
 		}
@@ -517,15 +575,27 @@ class pageClass
 		$tp 			= e107::getParser();
 		$this->batch 	= e107::getScBatch('page',null,'cpage');
 		$frm 			= e107::getForm();
+		$userClasses	= explode(',', USERCLASS_LIST);
 
 		// retrieve the template to use for this chapter.
 		$row = $sql->createQueryBuilder()
 			->select('chapter_id', 'chapter_icon', 'chapter_name', 'chapter_parent', 'chapter_image', 'chapter_meta_description', 'chapter_meta_keywords', 'chapter_template')
 			->from('page_chapters')
 			->where('chapter_id', (int) $chapt)
+			->whereIn('chapter_visibility', $userClasses)
 			->setMaxResults(1)
 			->fetchRow();
-		
+
+		if(!$row)
+		{
+			if($this->isRequested('listPages'))
+			{
+				return $this->notFound();
+			}
+
+			$row = $this->emptyChapter();
+		}
+
 		if($this->displayAllMode === true)
 		{
 			$layout = e107::getPref('listBooksTemplate');	
@@ -573,7 +643,6 @@ class pageClass
 	//	$tmpl = e107::getCoreTemplate('chapter','docs', true, true); // always merge	
 			$template = $tmpl['listPages'];
 		
-			$userClasses = explode(',', USERCLASS_LIST);
 			$qb = $sql->createQueryBuilder()->select('*')->from('page');
 
 			if($layout == 'panel') // When in 'panel' mode, allow Menus to be rendered while checking menu_class.
@@ -591,8 +660,7 @@ class pageClass
 
 			if(!$pageArray)
 			{
-				return array('text' => "<em>".(LAN_PAGE_2)."</em>");
-			//	$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
+				$text = "<em>".LAN_PAGE_2."</em>";
 			}
 			else
 			{
@@ -664,33 +732,16 @@ class pageClass
 
 		if(!$pageRow)
 		{
-		 	header("HTTP/1.0 404 Not Found");
-		 //	exit; 
-			/*
+			$notFound = $this->notFound();
 
-			$ret['title'] = LAN_PAGE_12;			// ***** CHANGED
-			$ret['sub_title'] = '';
-			$ret['text'] = LAN_PAGE_3;
-			$ret['comments'] = '';
-			$ret['rating'] = '';
-			$ret['np'] = '';
-			$ret['err'] = TRUE;
-			$ret['cachecontrol'] = false;
-			*/
-
-			// ---------- New (to replace values above) ----
-
-			$this->page['page_title'] = LAN_PAGE_12;			// ***** CHANGED
+			$this->page['page_title'] = $notFound['caption'];
 			$this->page['sub_title'] = '';
-			$this->page['page_text'] = LAN_PAGE_3;
+			$this->page['page_text'] = $notFound['text'];
 			$this->page['comments'] = '';
 			$this->page['rating'] = '';
 			$this->page['np'] = '';
 			$this->page['err'] = TRUE;
 			$this->page['cachecontrol'] = false;
-
-
-			// -------------------------------------
 
 			$this->authorized = 'nf';
 			$this->template = e107::getCoreTemplate('page', 'default');
@@ -702,9 +753,6 @@ class pageClass
 
 			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page)->wrapper('page/'.$this->templateID);
 			$this->batch->breadcrumb();
-
-
-			e107::title($this->page['page_title']);
 
 			return;
 		}
