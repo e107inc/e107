@@ -544,6 +544,37 @@ trait ConnectionTrait
 	}
 
 	/**
+	 * The statement text of either form db_Query() accepts, or null when the pair carries none.
+	 *
+	 * @param string|array $query statement text, or the PREPARE/BIND pair {@see ConnectionInterface::execute()} builds
+	 * @return string|null
+	 */
+	private function _statementText($query)
+	{
+		if(is_array($query))
+		{
+			return isset($query['PREPARE']) ? $query['PREPARE'] : null;
+		}
+
+		return $query;
+	}
+
+	/**
+	 * Whether FOUND_ROWS() has a count to read after this statement, given either statement form db_Query() accepts.
+	 *
+	 * @param string|array $query statement text, or the PREPARE/BIND pair {@see ConnectionInterface::execute()} builds
+	 * @return bool
+	 */
+	private function _countsFoundRows($query)
+	{
+		$sql = (string) $this->_statementText($query);
+
+		return strpos($sql, 'EXPLAIN') !== 0
+			&& strpos($sql, 'SQL_CALC_FOUND_ROWS') !== false
+			&& strpos($sql, 'SELECT') !== false;
+	}
+
+	/**
 	 * Pick the bind type for an execute() parameter given as a plain value.
 	 *
 	 * @param mixed $value
@@ -860,7 +891,7 @@ trait ConnectionTrait
 	 */
 	protected function forgetTableListFor($query)
 	{
-		$sql = is_array($query) ? (isset($query['PREPARE']) ? $query['PREPARE'] : '') : $query;
+		$sql = $this->_statementText($query);
 
 		if(preg_match('/^\s*(?:(?:CREATE|DROP|RENAME)\s+(?:TEMPORARY\s+)?TABLE|ALTER\s+TABLE\b.*\bRENAME)\b/is', (string) $sql))
 		{
