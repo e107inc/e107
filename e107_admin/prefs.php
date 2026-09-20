@@ -427,7 +427,7 @@ $text = "
 						<td><label for='siteurl'>".PRFLAN_3."</label>
 						".($pref['siteurl'] == SITEURL ? "" : $frm->help(PRFLAN_159.": <strong>".SITEURL."</strong>"))."</td>
 						<td>
-							".$frm->text('siteurl', $pref['siteurl'], 150, ['size'=>'xxlarge', 'required'=>1, 'pattern' => '^http.*', 'placeholder'=>'eg. '.SITEURL])."
+							".$frm->text('siteurl', $pref['siteurl'], 150, ['size'=>'xxlarge', 'required'=>1, 'pattern' => '(https?://.+|/(?!/).*)', 'placeholder'=>'eg. '.SITEURL])."
 						</td>
 					</tr>
 					<tr>
