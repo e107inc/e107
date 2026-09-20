@@ -307,8 +307,8 @@ class e_bbcode
 					array_shift($code_stack);
 					break;
 				case 'bbcode' :
-					$stacktext = '['.$code_stack[0]['code'].']'.$stacktext;   // To discard unmatched codes, delete this line
-					array_shift($code_stack);  		// Just discard any unmatched bbcodes
+					$stacktext = $code_stack[0]['block'].$stacktext;
+					array_shift($code_stack);
 					break;
 			}
 		}
