@@ -315,7 +315,7 @@ class e_search
 					$endweight = FALSE;
 					foreach ($crop_fields as $field_key => $field) 
 					{
-						$this -> text = $row[$field];
+						$this -> text = (string) $row[$field];
 						foreach ($this -> keywords['match'] as $k_key => $this -> query) 
 						{
 							if (stripos($this->text, $this->query) !== false)
