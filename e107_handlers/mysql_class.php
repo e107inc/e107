@@ -2349,25 +2349,22 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	* @return string relating to error (empty string if no error)
-	* @param string $from
-	* @desc Calling method from within this class
-	* @access private
-	*/
+	 * Capture the driver's last error state after an operation; null when there was no error, otherwise $from and the driver's text.
+	 */
 	function dbError($from)
 	{
 		$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
 		$this->mySQLlastErrText = '';
 		if ($this->mySQLlastErrNum == 0)
 		{
-			return '';
+			return null;
 		}
 		$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);		// Get the error text.
 		if ($this->mySQLerror == TRUE)
 		{
 			message_handler('ADMIN_MESSAGE', '<b>mySQL Error!</b> Function: '.$from.'. ['.$this->mySQLlastErrNum.' - '.$this->mySQLlastErrText.']', __LINE__, __FILE__);
 		}
-		return $this->mySQLlastErrText;
+		return $from.' :: '.$this->mySQLlastErrText;
 	}
 
 

@@ -1107,6 +1107,49 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	}
 
+	/**
+	 * Both backends answer the same shape, so a caller that passes the message on reads the same thing whichever driver the site runs.
+	 */
+	public function testDbErrorReturnsTheDocumentedShape()
+	{
+		$this->db->select('user', 'user_id', '`user_id` = 1');
+
+		$this->assertNull($this->db->dbError('probeAfterASuccess'),
+			'no error has to come back as null');
+
+		$this->db->select('doesnt_exists');
+		$reported = $this->db->dbError('probeAfterAFailure');
+
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'precondition: querying a table that is not there has to record driver text');
+		$this->assertStringContainsString('probeAfterAFailure', $reported,
+			'the error text has to carry the caller it was given');
+		$this->assertStringContainsString($this->db->getLastErrorText(), $reported,
+			'the error text has to carry the driver message too, in whatever language the server speaks it');
+	}
+
+	/**
+	 * Reading the last error must not turn error display on for the rest of the request: the mode belongs to db_SetErrorReporting().
+	 */
+	public function testDbErrorLeavesTheErrorReportingModeAlone()
+	{
+		$mode = new \e107\Reflection\ReflectionProperty($this->db, 'mySQLerror');
+
+		$this->db->select('user', 'user_id', '`user_id` = 1');
+		$this->db->db_SetErrorReporting(true);
+		$this->db->dbError('probeWithTheModeOn');
+
+		$this->assertTrue($mode->getValue($this->db),
+			'dbError() must not clear the error reporting mode');
+
+		$this->db->db_SetErrorReporting(false);
+		$this->db->select('doesnt_exists');
+		$this->db->dbError('probeWithTheModeOff');
+
+		$this->assertFalse($mode->getValue($this->db),
+			'dbError() must not set the error reporting mode');
+	}
+
 
 	public function testGetFieldDefs()
 	{
