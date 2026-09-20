@@ -193,6 +193,9 @@ class admin_start
 		e107::getDebug()->logTime('Check Timezone');
 		$this->checkTimezone();
 
+		e107::getDebug()->logTime('Check Site URL');
+		$this->checkSiteUrl();
+
 		e107::getDebug()->logTime('Check Writable');
 		$this->checkWritable();
 
@@ -300,6 +303,19 @@ class admin_start
 			$this->refresh = true;
 		}
 
+	}
+
+
+	private function checkSiteUrl()
+	{
+		$host = parse_url((string) e107::pref('core', 'siteurl'), PHP_URL_HOST);
+
+		if((string) $host !== '')
+		{
+			return;
+		}
+
+		e107::getMessage()->addWarning(defset('ADLAN_SITEURL_NO_HOST', 'Your Site URL does not include a web address.'));
 	}
 
 

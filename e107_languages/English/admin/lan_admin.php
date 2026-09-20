@@ -444,4 +444,5 @@ Below is the list of files that could potentially be malicious:",
     'LAN_EMULATION_TEMPORARY' => "Permission emulation is temporary. Your identity is unchanged, and emulation ends when you log out.",
     'LAN_EMULATION_STOP' => "Stop Emulating",
     'ADLAN_REFUSED_TOKEN_MISSING' => "That request was not carried out, because it carried no security token. Use the dashboard's own controls rather than a bookmark or a link on another site.",
+    'ADLAN_SITEURL_NO_HOST' => "Your Site URL does not include a web address. Please set it to the full address visitors use, including http:// or https://, in Admin -> Preferences -> Site Information. Until it is set, links built where there is no incoming request to copy the address from, such as those in email sent by a scheduled task, are written as relative paths and will not work away from the site.",
 ];
