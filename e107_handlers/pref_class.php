@@ -625,7 +625,7 @@ class e_pref extends e_front_model
 
 				if(empty($uid)) // Log extra details of any pref changes made by a non-user.
 				{
-					$log->addWarning(print_r(debug_backtrace(null,2), true), false);
+					$log->addWarning(print_r(debug_backtrace(0, 2), true), false);
 				}
 
 				$log->save($logId);
