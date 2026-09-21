@@ -271,11 +271,11 @@ class download
 		{
 			$template = e107::getTemplate('download','download','categories');
 
-			$DOWNLOAD_CAT_CAPTION		= $template['caption'];
+			$DOWNLOAD_CAT_CAPTION		= varset($template['caption']);
 			$DOWNLOAD_CAT_TABLE_START 	= varset($template['start']);
-			$DOWNLOAD_CAT_PARENT_TABLE	= $template['parent'];
-			$DOWNLOAD_CAT_CHILD_TABLE	= $template['child'];
-			$DOWNLOAD_CAT_SUBSUB_TABLE	= $template['subchild'];
+			$DOWNLOAD_CAT_PARENT_TABLE	= varset($template['parent']);
+			$DOWNLOAD_CAT_CHILD_TABLE	= varset($template['child']);
+			$DOWNLOAD_CAT_SUBSUB_TABLE	= varset($template['subchild']);
 			$DOWNLOAD_CAT_TABLE_END		= varset($template['end']);
 
 //			$DL_VIEW_NEXTPREV			= varset($template['nextprev']);
@@ -311,8 +311,8 @@ class download
 		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/categories');
+		$sc->qry 	= $this->qry;
 		$sc->breadcrumb();
-		$sc->qry 	= $this->qry;	
 
 
 
@@ -521,7 +521,6 @@ class download
 		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/view');
-		$sc->breadcrumb();
 		$sc->qry 	= $this->qry;
 
 		$highlight_search = FALSE;
@@ -1089,7 +1088,6 @@ class download
 		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/mirror');
-		$sc->breadcrumb();
 		$sc->qry 	= $this->qry;
 		
 	//	$load_template = 'download_template';
@@ -1114,8 +1112,8 @@ class download
 		{
 		//	$dlrow['mirrorlist'] = $mirrorList;
 			$sc->setVars($dlrow);
+			$sc->breadcrumb();
 
-			
 			$array = explode(chr(1), $dlrow['download_mirror']);
 			
 			if (2 == varset($pref['mirror_order']))
