@@ -46,7 +46,7 @@ $HERO_TEMPLATE['default']['start'] 	    = '<div class="carousel-item item {HERO_
 $HERO_TEMPLATE['default']['end'] 	            = '</ul>
 	                                            	</div>
 	                                            <div class="col-md-6 hero-media-container">
-		                                            <div class="pull-right animated fadeInRight animation-delay-10">
+		                                            <div class="pull-right float-right float-end animated fadeInRight animation-delay-10">
 		                                            {HERO_MEDIA: class=img-responsive img-fluid d-block w-100}
 		                                            </div>
 	                                            </div>
