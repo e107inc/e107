@@ -238,9 +238,6 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 	public function testDb_IsLang()
 	{
-		// XXX: This test leads to e_pref, which depends on lan_admin.php
-		e107::coreLan('', true);
-
 		$result = $this->db->db_IsLang('news', false);
 		$this->assertEquals('news', $result);
 
