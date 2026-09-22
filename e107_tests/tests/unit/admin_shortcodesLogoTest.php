@@ -23,8 +23,6 @@ class admin_shortcodesLogoTest extends \Test\Unit
 
 	protected function _before()
 	{
-		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
-
 		require_once(e_CORE.'shortcodes/batch/admin_shortcodes.php');
 
 		$this->sc = $this->make('admin_shortcodes');
