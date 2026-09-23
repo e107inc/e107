@@ -15,7 +15,6 @@ class e_userpermsTest extends \Test\Unit
 		{
 			e107::loadAdminIcons();
 			e107::includeLan(e_LANGUAGEDIR . 'English/English.php');
-			e107::includeLan(e_LANGUAGEDIR . 'English/admin/lan_admin.php');
 			include_once(e_HANDLER . 'user_handler.php');
 			$this->eup = $this->make('e_userperms');
 

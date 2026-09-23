@@ -94,6 +94,13 @@ class ProbeGuard
 	 */
 	private static function bootsE107($contents)
 	{
+		$bootstrap = 'class2.php';
+
+		if (strpos($contents, $bootstrap) === false)
+		{
+			return false;
+		}
+
 		$including = false;
 
 		foreach (token_get_all($contents) as $token)
@@ -109,7 +116,7 @@ class ProbeGuard
 				$including = true;
 			}
 			elseif ($including && in_array($token[0], array(T_CONSTANT_ENCAPSED_STRING, T_ENCAPSED_AND_WHITESPACE), true)
-				&& substr(rtrim($token[1], "'\" \t\r\n"), -10) === 'class2.php')
+				&& substr(rtrim($token[1], "'\" \t\r\n"), -strlen($bootstrap)) === $bootstrap)
 			{
 				return true;
 			}
