@@ -12,9 +12,6 @@
  * segment is one the batch dropdown itself offers, which is what
  * e_admin_form_ui::renderBatchFilter() means by a field carrying 'batch'.
  * e_admin_controller_ui::_handleListBatch() stops otherwise, on every trigger that names a
-<<<<<<< HEAD
- * field and not only on the default one.
-=======
  * field, unless the screen declares a handler for that field itself.
  * e_front_tree_model::batchUpdate() refuses a name outside the identifier grammar rather than
  * letting the query builder throw.
@@ -22,7 +19,6 @@
  * The two sides of that dropdown must also agree on the batch options a field's optArray asks
  * for: the menu spells them attach_all__<field> and deattach_all__<field>, and what it offers
  * one at a time is what those two entries write.
->>>>>>> a52d6d0245 (fix(admin_ui): dispatch the batch (Add all) and (Clear all) options)
  */
 class adminUiBatchTriggerTest extends \Codeception\Test\Unit
 {

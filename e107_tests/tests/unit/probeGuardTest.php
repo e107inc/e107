@@ -72,4 +72,18 @@ class probeGuardTest extends \Codeception\Test\Unit
 			'not PHP at all' => array('P2NOTANIMAGE'),
 		);
 	}
+
+	/**
+	 * The tokeniser's warning is a compile warning, which no error handler is shown, so the witness is error_get_last().
+	 */
+	public function testABinaryFixtureIsWrittenAsItIsWithoutAWarning()
+	{
+		$image = file_get_contents(e_PLUGIN.'gallery/images/butterfly.jpg');
+		@trigger_error(__METHOD__, E_USER_NOTICE);
+
+		self::assertSame($image, \Helper\ProbeGuard::contain('e107_files/downloadimages/butterfly.jpg', $image));
+
+		$last = error_get_last();
+		self::assertSame(__METHOD__, $last['message']);
+	}
 }
