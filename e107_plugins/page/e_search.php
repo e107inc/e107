@@ -65,7 +65,7 @@ class page_search extends e_search // include plugin-folder in the name.
 		$search = array(
 			'name'			=> LAN_PLUGIN_PAGE_NAME ,
 			'table'			=> 'page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id ',
-			'return_fields'	=> array('p.page_id', 'p.page_title', 'p.page_sef', 'p.page_text', 'p.page_metadscr', 'p.page_chapter', 'p.page_datestamp', 'p.menu_image'),
+			'return_fields'	=> array('p.page_id', 'p.page_title', 'p.page_sef', 'p.page_text', 'p.page_metadscr', 'p.page_metakeys', 'p.page_fields', 'p.page_chapter', 'p.page_datestamp', 'p.menu_image'),
 			'search_fields'	=> array('p.page_title' => '1.2', 'p.page_text' => '0.6', 'p.page_metakeys'=> '1.0', 'p.page_fields' => '0.5'), // fields and their weights.
 	
 			'order'			=> array('page_datestamp' => 'DESC'),
