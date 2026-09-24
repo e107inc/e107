@@ -521,7 +521,8 @@ CREATE TABLE session (
   session_user int(10) unsigned default NULL,
   session_data longtext NOT NULL,
   PRIMARY KEY  (session_id),
-  INDEX (session_expires)
+  INDEX (session_expires),
+  INDEX (session_user)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
