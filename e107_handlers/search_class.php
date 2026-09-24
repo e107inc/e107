@@ -107,6 +107,17 @@ class e_search
 		return str_replace('\\', '\\\\', addcslashes((string) $value, '.\\+*?[^]$(){}=!<>|:-#/'));
 	}
 
+	/**
+	 * Escape a keyword so the deprecated table-marker rewrite in {@see e_db::gen()} cannot reach a # that follows whitespace inside the literal this is spliced into.
+	 *
+	 * @param string $value keyword, already through {@see e_parse::toDB()}
+	 * @return string
+	 */
+	private function quoteFullTextLiteral($value)
+	{
+		return addcslashes((string) $value, '#');
+	}
+
 
 	/**
 	 * @param $table
@@ -254,12 +265,12 @@ class e_search
 			}
 
 			$this -> query = str_replace('&quot;', '"', $this -> query);
-			//$field_query = implode(',', $search_fields);
-			
-			foreach ($search_fields as $field_key => $field) 
+			$quoted_query = $this->quoteFullTextLiteral($this -> query);
+
+			foreach ($search_fields as $field_key => $field)
 			{
-				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST ('".str_replace(" ","+",$this -> query)."' IN BOOLEAN MODE)))";
-				$field_query[] = "MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)";
+				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST ('".str_replace(" ","+",$quoted_query)."' IN BOOLEAN MODE)))";
+				$field_query[] = "MATCH(".$field.") AGAINST ('".$quoted_query."' IN BOOLEAN MODE)";
 			}
 			
 			$match_query = implode(' + ', $search_query);
