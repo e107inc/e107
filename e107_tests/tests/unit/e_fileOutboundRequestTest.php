@@ -365,6 +365,9 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		$php .= "\theader('Location: ' . \$next, true, \$code);\n";
 		$php .= "\techo '" . self::HOP_SENTINEL . "_' . \$hop;\n";
 		$php .= "\texit;\n}\n";
+		$php .= "if(isset(\$_GET['final']))\n{\n";
+		$php .= "\thttp_response_code((int) \$_GET['final']);\n}\n";
+		$php .= "if(isset(\$_GET['nobody']))\n{\n\texit;\n}\n";
 		$php .= "echo '" . self::FINAL_SENTINEL . "';\n";
 		$php .= "if(!\$echo)\n{\n\texit;\n}\n";
 		// getallheaders() is an Apache thing until PHP 7.3, so the built-in
@@ -796,6 +799,44 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 			'One hop past the cap must be refused.');
 		self::assertCount(self::MAX_REDIRECTS + 1, $overCap->uniqueSeen(),
 			'The walk must stop at the cap rather than keep asking.');
+	}
+
+	/**
+	 * A 404 or a 500 is not a transport error, so nothing below this ever set
+	 * a reason and the caller logged an empty one (#6127).
+	 */
+	public function testAnErrorStatusOnTheFinalHopIsReported()
+	{
+		$this->requireFixtureServer();
+
+		$ok = new E107P3RecordingFile();
+		self::assertSame(self::FINAL_SENTINEL, $ok->getRemoteContent($this->hopUrl(0, 0)),
+			'Positive control: the same address answers 200 with a body.');
+		self::assertSame('', $ok->getErrorMessage(),
+			'An answer a caller can use must report nothing.');
+
+		$fl = new E107P3RecordingFile();
+		$fl->getRemoteContent($this->hopUrl(0, 0, 'http', '&final=404'));
+
+		self::assertStringContainsString('404', $fl->getErrorMessage(),
+			'A non-2xx answer has to name its status.');
+	}
+
+	/**
+	 * The other half of #6127: a 200 that carries nothing leaves the caller
+	 * parsing an empty string with no idea why.
+	 */
+	public function testAnEmptyBodyIsReported()
+	{
+		$this->requireFixtureServer();
+
+		$fl = new E107P3RecordingFile();
+
+		self::assertSame('', $fl->getRemoteContent($this->hopUrl(0, 0, 'http', '&nobody=1')),
+			'Positive control: the fixture has to answer 200 with nothing.');
+
+		self::assertStringContainsString('Empty answer', $fl->getErrorMessage(),
+			'A 200 with no body has to say so.');
 	}
 
 	/**
