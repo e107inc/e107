@@ -1523,13 +1523,22 @@ class themeHandler
 
 		if(isset($_POST['submit_style']))
 		{
-			$this->id = $this->curTheme;
+			$siteTheme = e107::getConfig()->get('sitetheme');
 
-			$this->setLayouts(); // Update the layouts in case they have been manually changed.
-			$this->SetCustomPages(varset($_POST['custompages']));
-			$this->setStyle();
+			if(varset($_POST['curTheme']) !== $siteTheme)
+			{
+				$mes->addError(defset('TPVLAN_REFUSED_NOT_SITE_THEME', 'Not the site theme'));
+			}
+			else
+			{
+				$this->id = $siteTheme;
 
-			e107::getConfig()->save();
+				$this->setLayouts(); // Update the layouts in case they have been manually changed.
+				$this->SetCustomPages(varset($_POST['custompages']));
+				$this->setStyle();
+
+				e107::getConfig()->save();
+			}
 
 		}
 
