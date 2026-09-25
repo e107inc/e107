@@ -66,6 +66,23 @@ class AdminUiHistoryProbeFixture extends e_admin_controller_ui
 }
 
 /**
+ * Probe running the real {@see e_admin_controller_ui::backupToHistory()}, for what it reports when the insert fails.
+ */
+class AdminUiHistoryInsertProbeFixture extends e_admin_controller_ui
+{
+	public function __construct($table, $pid)
+	{
+		$this->table = $table;
+		$this->pid = $pid;
+	}
+
+	public function probeBackup($id, array $data)
+	{
+		return $this->backupToHistory($this->table, $this->pid, $id, 'delete', $data, false);
+	}
+}
+
+/**
  * A model holding what an observer left in it, whose save() writes the posted values to the table.
  */
 class AdminUiHistorySpyModel
@@ -143,6 +160,9 @@ class AdminUiHistoryDeleteProbeFixture extends e_admin_ui
 	/** @var AdminUiHistoryTreeStub */
 	public $treeStub;
 
+	/** @var array ids whose archive write fails, as {@see e_admin_controller_ui::backupToHistory()} answers false where the insert did */
+	public $archiveFailsFor = array();
+
 	public function __construct($table, $pid, $node = null)
 	{
 		$this->table = $table;
@@ -172,7 +192,7 @@ class AdminUiHistoryDeleteProbeFixture extends e_admin_ui
 			'posted' => $posted,
 		);
 
-		return true;
+		return !in_array($id, $this->archiveFailsFor);
 	}
 }
 

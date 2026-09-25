@@ -224,12 +224,6 @@ class e_userpermsTest extends \Test\Unit
 			    1 => '<i class=\'S16 e-fileinspector-16\'></i>',
 			    2 => '<i class=\'S32 e-fileinspector-32\'></i> ',
 			  ),
-			  7 =>
-			  array (
-			    0 => 'History',
-			    1 => '<img class=\'icon S16\' src=\'./e107_images/admin_images/undo_16.png\' alt=\'\' />',
-			    2 => '<img class=\'icon S32\' src=\'./e107_images/admin_images/undo_32.png\' alt=\'\' />',
-			  ),
 			  9 =>
 			  array (
 			    0 => 'Maintenance',
