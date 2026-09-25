@@ -100,6 +100,14 @@ class adminUiBatchTriggerTest extends \Test\Unit
 					'addAll' => 1, 'clearAll' => 1))),
 			'gen_empty'     => array('title' => 'Nothing', 'type' => 'comma', 'data' => 'str', 'batch' => true,
 				'writeParms' => array('optArray' => array('addAll' => 1, 'clearAll' => 1))),
+			'gen_strparm'   => array('title' => 'Unusable', 'type' => 'comma', 'data' => 'str', 'batch' => true,
+				'writeParms' => array('optArray' => 'a=A&b=B', 'size' => 'xxlarge', 'addAll' => 1)),
+			'gen_strdrop'   => array('title' => 'Unusable list', 'type' => 'dropdown', 'data' => 'str', 'batch' => true,
+				'writeParms' => array('optArray' => 'a=A&b=B', 'multiple' => 1)),
+			'gen_scalarwp'  => array('title' => 'Unusable parms', 'type' => 'comma', 'data' => 'str', 'batch' => true,
+				'writeParms' => 1),
+			'gen_nooptions' => array('title' => 'Nothing to offer', 'type' => 'comma', 'data' => 'str', 'batch' => true,
+				'writeParms' => array('optArray' => array(), 'size' => 'xxlarge')),
 			'gen_method'    => array('title' => 'Custom', 'type' => 'method', 'data' => 'str', 'batch' => true,
 				'writeParms' => array('classlist' => 'member', 'addAll' => 1, 'clearAll' => 1)),
 			'gen_user_id'   => array('title' => 'Flag', 'type' => 'boolean', 'data' => 'int', 'batch' => true),
@@ -302,6 +310,38 @@ class adminUiBatchTriggerTest extends \Test\Unit
 			$this->assertSame($offered, array_map('strval', $dispatched[0]['value']),
 				$trigger . ' must write the options the same dropdown offers one at a time.');
 		}
+	}
+
+	/**
+	 * @dataProvider unusableOptionDeclarations
+	 * @param string $field
+	 */
+	public function testAFieldWithNoUsableOptionListLeavesTheMenuAndIsNamedInDebug($field)
+	{
+		e107::getMessage()->reset(E_MESSAGE_DEBUG, 'default', false);
+
+		$form = new e_admin_form_ui($this->makeProbe(array()));
+		$markup = $form->renderBatchFilter('batch');
+		$named = implode("\n", (array) e107::getMessage()->get(E_MESSAGE_DEBUG, 'default', true, true));
+
+		$this->assertStringContainsString('attach_all__gen_options', $markup,
+			'A field that offers no option list must not take the rest of the batch menu down with it.');
+		$this->assertStringNotContainsString($field . '__', $markup,
+			'Its own writeParms are its configuration, not the values to write into the column.');
+		$this->assertSame(array(), $this->dispatchOf('attach_all__' . $field),
+			'And the (Add all) entry the menu never drew dispatches nothing either.');
+		$this->assertStringContainsString($field, $named,
+			'The field is named in debug, so whoever wrote the declaration can see why it went.');
+	}
+
+	public function unusableOptionDeclarations()
+	{
+		return array(
+			'comma field, optArray declared as a string'    => array('gen_strparm'),
+			'dropdown taking several of a string optArray'  => array('gen_strdrop'),
+			'writeParms that are not an array or a string'  => array('gen_scalarwp'),
+			'optArray declared and empty'                   => array('gen_nooptions'),
+		);
 	}
 
 	/**

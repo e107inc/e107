@@ -3069,10 +3069,51 @@ class e_admin_controller
 
 
 /**
+ * The optArray unwrap the batch dispatcher and the batch and filter menus {@see e_admin_form_ui::renderBatchFilter()} share.
+ */
+trait e_admin_optarray
+{
+	/**
+	 * A field's writeParms with its optArray promoted to the option list and the rest left under __options, or false where the declaration offers no option list at all.
+	 *
+	 * @param mixed $parms parsed writeParms of one field; anything but an array offers no option list
+	 * @param string $field field name, named in a debug line where the declaration is unusable
+	 * @param bool $multiple true for a dropdown taking multiple values, which the menu reads as a comma field over the optArray alone
+	 * @return array|false
+	 */
+	private function unwrapOptArray($parms, $field, $multiple = false)
+	{
+		if(is_array($parms) && !isset($parms['optArray']))
+		{
+			return $parms;
+		}
+
+		if(is_array($parms) && is_array($parms['optArray']) && !empty($parms['optArray']))
+		{
+			$options = $parms['optArray'];
+			unset($parms['optArray']);
+
+			if(!$multiple)
+			{
+				$options['__options'] = $parms;
+			}
+
+			return $options;
+		}
+
+		e107::getMessage()->addDebug("Field '" . $field . "' offers no batch or filter options: its writeParms declare no optArray that is an array.");
+
+		return false;
+	}
+}
+
+
+/**
  *
  */
 class e_admin_controller_ui extends e_admin_controller
 {
+	use e_admin_optarray;
 
 	protected $table;
 	/**
@@ -4164,23 +4205,18 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		$type = $this->getFieldAttr($field, 'type');
+		$multiple = ($type === 'dropdown' && !empty($parms['multiple']) && !empty($parms['optArray']));
 
-		if(!empty($parms['optArray']))
+		$parms = $this->unwrapOptArray($parms, $field, $multiple);
+
+		if($parms === false)
 		{
-			$optArray = is_array($parms['optArray']) ? $parms['optArray'] : array();
+			return array();
+		}
 
-			if($type === 'dropdown' && !empty($parms['multiple']))
-			{
-				$type = 'comma';
-				$parms = $optArray;
-			}
-			else
-			{
-				$fopts = $parms;
-				unset($fopts['optArray']);
-				$parms = $optArray;
-				$parms['__options'] = $fopts;
-			}
+		if($multiple)
+		{
+			$type = 'comma';
 		}
 
 		if(($type !== 'comma' && $type !== 'checkboxes') || !isset($parms[$offer]))
@@ -7967,6 +8003,8 @@ class e_admin_ui extends e_admin_controller_ui
  */
 class e_admin_form_ui extends e_form
 {
+	use e_admin_optarray;
+
 	/**
 	 * @var e_admin_ui
 	 */
@@ -8977,10 +9015,10 @@ class e_admin_form_ui extends e_form
 			}
 
 			//Basic batch support for dropdown with multiple values. (comma separated)
-			if(!empty($val['writeParms']['multiple']) && $val['type'] === 'dropdown' && !empty($val['writeParms']['optArray']))
+			$multiple = (!empty($val['writeParms']['multiple']) && $val['type'] === 'dropdown' && !empty($val['writeParms']['optArray']));
+			if($multiple)
 			{
 				$val['type'] = 'comma';
-				$parms = $val['writeParms']['optArray'];
 			}
 
 
@@ -9066,12 +9104,11 @@ class e_admin_form_ui extends e_form
 					case 'checkboxes':
 					case 'comma':
 
-						if (!empty($parms['optArray']))
+						$parms = $this->unwrapOptArray($parms, $key, $multiple);
+
+						if($parms === false)
 						{
-							$fopts = $parms;
-							$parms = $fopts['optArray'];
-							unset($fopts['optArray']);
-							$parms['__options'] = $fopts;
+							continue 2;
 						}
 
 						// TODO lan
@@ -9167,12 +9204,11 @@ class e_admin_form_ui extends e_form
 
 
 
-						if(!empty($parms['optArray']))
+						$parms = $this->unwrapOptArray($parms, $key);
+
+						if($parms === false)
 						{
-							$fopts = $parms;
-							$parms = $fopts['optArray'];
-							unset($fopts['optArray']);
-							$parms['__options'] = $fopts;
+							continue 2;
 						}
 
 						if (!isset($parms['__options'])) $parms['__options'] = null;
