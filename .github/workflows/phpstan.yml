@@ -1,0 +1,58 @@
+name: Static Analysis
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# A newer push to a branch or pull request cancels the run it supersedes.
+# master is the exception: every merge commit there gets its full run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+# Reads every shipping PHP file with PHPStan at level 8 and holds the result
+# against e107_tests/_tools/phpstan/baseline.neon, which records what the tree
+# already had when the gate landed. The job goes red two ways, and both of them
+# mean "the baseline is out of date":
+#
+#   * an error that is not recorded -- a new finding, so fix it;
+#   * ignore.unmatched, a recorded entry that matches nothing -- a finding
+#     somebody fixed without dropping its entry, so re-record the baseline.
+#
+# The second half is what keeps the baseline a worklist rather than a permanent
+# exemption. Reproduce either locally with the same script the job runs:
+#
+#   e107_tests/_tools/phpstan/bin/phpstan-analyse
+#
+# release/v2.3.x is deliberately not gated: that tree is PHP 5.6 source against
+# a different runtime window and needs a baseline of its own.
+
+jobs:
+  phpstan:
+    name: Shipping tree matches its recorded baseline
+    runs-on: ubuntu-latest
+    container:
+      # Matches the platform pin in e107_tests/_tools/phpstan/composer.json, so
+      # the runner resolves the same dependency versions a contributor does.
+      image: php:8.3-cli
+
+    steps:
+      - name: Install operating system dependencies
+        run: apt-get update && apt-get install -y git unzip
+
+      - uses: actions/checkout@v6
+
+      - name: Opt out of CVE-2022-24765 mitigation
+        run: git config --global safe.directory '*'
+
+      - name: Install Composer
+        run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+      - name: Install PHPStan
+        run: composer install --prefer-dist --no-progress
+        working-directory: ./e107_tests/_tools/phpstan/
+
+      - name: Analyse the shipping tree
+        run: ./e107_tests/_tools/phpstan/bin/phpstan-analyse

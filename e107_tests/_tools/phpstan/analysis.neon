@@ -1,0 +1,29 @@
+parameters:
+	level: 8
+
+	# The runtime window master supports: the platform pin in the root
+	# composer.json is the floor, the highest version CI runs is the ceiling.
+	phpVersion:
+		min: 80000
+		max: 80599
+
+	# e_db and e_db_common are class_alias() registrations made at runtime, which
+	# no analyser follows. Loading the file that registers them is what makes the
+	# two database handlers analysable at all.
+	bootstrapFiles:
+		- ../../../e107_handlers/e_db_interface.php
+
+	excludePaths:
+		# Not e107's product code, and nothing in it defines a symbol the product
+		# code refers to.
+		analyseAndScan:
+			- ../../../.github
+			- ../../../e107_tests
+		# Read for the symbols they define, never analysed: a dependency's own
+		# findings are not e107's worklist.
+		analyse:
+			- ../../../e107_handlers/vendor
+			- ../../../e107_plugins/*/tests/*
+			- ../../../e107_plugins/*/vendor/*
+
+	tmpDir: tmp
