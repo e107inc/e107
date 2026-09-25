@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace E107\Rector\DowngradePhp72\PhpDoc;
 
 use PhpParser\Node\Expr;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
@@ -27,13 +27,13 @@ final readonly class NativeParamToPhpDocDecorator
     ) {
     }
 
-    public function decorate(ClassMethod $classMethod, Param $param): void
+    public function decorate(FunctionLike $functionLike, Param $param): void
     {
         if ($param->type === null) {
             return;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($functionLike);
 
         $paramName = $this->nodeNameResolver->getName($param);
 
@@ -41,7 +41,7 @@ final readonly class NativeParamToPhpDocDecorator
         $correctedNullableParamType = $this->correctNullableType($param, $mappedCurrentParamType);
 
         $this->phpDocTypeChanger->changeParamType(
-            $classMethod,
+            $functionLike,
             $phpDocInfo,
             $correctedNullableParamType,
             $param,

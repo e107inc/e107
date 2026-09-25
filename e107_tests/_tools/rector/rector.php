@@ -23,6 +23,7 @@ use E107\Rector\DowngradePhp70\Rector\Instanceof_\DowngradeInstanceofThrowableRe
 use E107\Rector\DowngradePhp70\Rector\Isset_\DowngradeIssetOnClassConstFetchRector;
 use E107\Rector\DowngradePhp70\Rector\MethodCall\DowngradeClosureCallRector;
 use E107\Rector\DowngradePhp70\Rector\MethodCall\DowngradeMethodCallOnCloneRector;
+use E107\Rector\DowngradePhp70\Rector\Namespace_\DowngradeConflictingUseImportRector;
 use E107\Rector\DowngradePhp70\Rector\New_\DowngradeAnonymousClassRector;
 use E107\Rector\DowngradePhp70\Rector\Spaceship\DowngradeSpaceshipRector;
 use E107\Rector\DowngradePhp70\Rector\StaticCall\DowngradeStaticCallOnExpressionRector;
@@ -46,6 +47,11 @@ use E107\Rector\DowngradePhp71\Rector\TryCatch\DowngradePipeToMultiCatchExceptio
 use E107\Rector\DowngradePhp72\Rector\FuncCall\DowngradeStreamIsattyRector;
 use E107\Rector\DowngradePhp74\Rector\FuncCall\DowngradeProcOpenArrayCommandArgRector;
 use E107\Rector\DowngradePhp81\Rector\FuncCall\DowngradeHashAlgorithmXxHashRector;
+
+// API-floor rules: what the floor *has*, where the sets above only rewrite syntax
+use E107\Rector\FloorApi\Rector\ClassMethod\DowngradeTentativeReturnTypeRector;
+use E107\Rector\FloorApi\Rector\ConstFetch\DowngradePostFloorConstantRector;
+use E107\Rector\FloorApi\Rector\FunctionLike\DowngradePostFloorParamTypeRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $root = __DIR__ . '/../../..';
@@ -105,6 +111,70 @@ return static function (RectorConfig $rectorConfig): void {
         DowngradeStreamIsattyRector::class,
         DowngradeProcOpenArrayCommandArgRector::class,
         DowngradeHashAlgorithmXxHashRector::class,
+        DowngradeConflictingUseImportRector::class,
+    ]);
+
+    // Everything above this line rewrites syntax. PHP 5.6 parses a class type
+    // hint, a constant read and a method signature whatever they name, so a
+    // vendored package can clear the whole downgrade and still fatal on the
+    // floor the moment it runs. The three rules below are the API floor, and
+    // each one replaces a patch to vendored source that a re-vendor rolled
+    // back: firebase/php-jwt 7.x, symfony/polyfill-php80 and guzzlehttp/psr7.
+
+    // PHP 8.0 and 8.1 turned these resources into classes. A parameter typed
+    // against one accepts nothing the floor can produce, because below 8.0 the
+    // matching extension function still returns a resource, so the call is a
+    // TypeError on 7.x and a catchable fatal on 5.6.
+    $rectorConfig->ruleWithConfiguration(DowngradePostFloorParamTypeRector::class, [
+        'AddressInfo',
+        'CurlHandle',
+        'CurlMultiHandle',
+        'CurlShareHandle',
+        'DeflateContext',
+        'EnchantBroker',
+        'EnchantDictionary',
+        'FTP\Connection',
+        'GdImage',
+        'IMAP\Connection',
+        'InflateContext',
+        'LDAP\Connection',
+        'LDAP\Result',
+        'LDAP\ResultEntry',
+        'OpenSSLAsymmetricKey',
+        'OpenSSLCertificate',
+        'OpenSSLCertificateSigningRequest',
+        'PgSql\Connection',
+        'PgSql\Lob',
+        'PgSql\Result',
+        'PSpell\Config',
+        'PSpell\Dictionary',
+        'Shmop',
+        'Socket',
+        'SysvMessageQueue',
+        'SysvSemaphore',
+        'SysvSharedMemory',
+        'XMLParser',
+    ]);
+
+    // A fully qualified undefined constant is a fatal below PHP 7.0, not the
+    // notice the unqualified spelling gets, and a switch arm holding one is
+    // evaluated on every call.
+    $rectorConfig->ruleWithConfiguration(DowngradePostFloorConstantRector::class, [
+        'PREG_JIT_STACKLIMIT_ERROR' => 6,
+    ]);
+
+    // Stripping a return type to reach the floor leaves the method violating
+    // the tentative return type its interface declares, which PHP 8.1 and
+    // above report at class-link time on every request that loads the class.
+    $rectorConfig->ruleWithConfiguration(DowngradeTentativeReturnTypeRector::class, [
+        'ArrayAccess' => ['offsetExists', 'offsetGet', 'offsetSet', 'offsetUnset'],
+        'Countable' => ['count'],
+        'Iterator' => ['current', 'key', 'next', 'rewind', 'valid'],
+        'IteratorAggregate' => ['getIterator'],
+        'JsonSerializable' => ['jsonSerialize'],
+        'SessionHandlerInterface' => ['close', 'destroy', 'gc', 'open', 'read', 'write'],
+        'SessionIdInterface' => ['create_sid'],
+        'SessionUpdateTimestampHandlerInterface' => ['updateTimestamp', 'validateId'],
     ]);
 
     $rectorConfig->phpVersion(PhpVersion::PHP_56);
@@ -122,12 +192,15 @@ return static function (RectorConfig $rectorConfig): void {
         \Rector\DowngradePhp72\Rector\FuncCall\DowngradeStreamIsattyRector::class,
         \Rector\DowngradePhp74\Rector\FuncCall\DowngradeProcOpenArrayCommandArgRector::class,
 
-        // PHP 5.6 already parses array, class and callable parameter hints, so
-        // nothing about the floor requires stripping them. This rule (pulled in
-        // by DowngradeSetList::PHP_72) removes roughly 116 of them across the
-        // tree to guard against a pre-7.2 contravariance hazard this codebase
-        // does not have, and the legacy unit cells catch any real widening the
-        // moment the class loads. Keep the hints.
+        // PHP 5.6 parses an array, callable or class parameter hint whatever it
+        // names, so the syntax never requires stripping one. This rule (pulled
+        // in by DowngradeSetList::PHP_72) removes roughly 116 of them across
+        // the tree to guard against a pre-7.2 contravariance hazard this
+        // codebase does not have, and the legacy unit cells catch any real
+        // widening the moment the class loads. Keep the hints. A hint naming a
+        // class the floor does not have is a separate hazard, and parsing is
+        // exactly what misses it: DowngradePostFloorParamTypeRector above takes
+        // those, by name, without touching the other 116.
         \Rector\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeWideningRector::class,
 
         // e107 v2 commits its vendored dependencies and serves the tree as-is,
