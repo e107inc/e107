@@ -1392,7 +1392,7 @@ class e_parse
 		if (!$exact)
 		{
 			$spacepos = $this->ustrrpos($truncate, ' ');
-			if (isset($spacepos))
+			if ($spacepos > 0)
 			{
 				$bits = $this->usubstr($truncate, $spacepos);
 				preg_match_all('/<\/([a-z]+)>/i', $bits, $droppedTags, PREG_SET_ORDER);
@@ -1452,14 +1452,9 @@ class e_parse
 
 		$ret = $this->usubstr($text, 0, $len);
 
-		// search for possible broken html entities
-		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
-		// it should work for any characters encoding
-
-		$leftAmp = $this->ustrrpos($this->usubstr($ret, -8), '&');
-		if ($leftAmp)
+		if (preg_match('/(?<=.)&[0-9a-z#]{0,7}\z/is', $ret, $unterminatedEntity, PREG_OFFSET_CAPTURE))
 		{
-			$ret = $this->usubstr($ret, 0, $this->ustrlen($ret) - 8 + $leftAmp);
+			$ret = (string) substr($ret, 0, $unterminatedEntity[0][1]);
 		}
 
 		return $ret . $more;
