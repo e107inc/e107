@@ -89,6 +89,9 @@ class AdminRoutePermsCest
 	/** Welcome messages: a userclass batch on another table, behind another permission. */
 	const ROUTE_WMESSAGE = '/e107_admin/wmessage.php?mode=main&action=list';
 
+	/** Admin History: the delete archive, listed and exported whole. history.php:7 wants a main administrator. */
+	const ROUTE_HISTORY = '/e107_admin/history.php?mode=main&action=list';
+
 	/**
 	 * Main Admin, whose userclass_editclass is itself, so only a main administrator manages it.
 	 *
@@ -147,6 +150,7 @@ class AdminRoutePermsCest
 		'p7rp4admin'     => '4',    // manage all user access and settings, but not admin perms
 		'p7rpPermsadmin' => '4.3',  // manage all users, and modify admin perms
 		'p7rpMadmin'     => 'M',    // welcome messages, and nothing on the user list at all
+		'p7rp7admin'     => '7',    // History/Undo, retired from getPermList() and still in user_perms on upgraded sites
 	);
 
 	/** A second administrator, for the routes that act on somebody else's account. */
@@ -544,6 +548,64 @@ class AdminRoutePermsCest
 		$I->sendPostRequest(self::ROUTE_ADD, $payload);
 
 		$I->dontSeeInDatabase('e107_user', array('user_loginname' => self::CREATED_USER));
+	}
+
+	/**
+	 * Admin History archives every stored column of a deleted record, the password hash
+	 * among them, and the area lists that archive and exports it as CSV. #6244 narrowed it
+	 * to main administrators, so '7' has to stop opening it on a site that granted it
+	 * before the upgrade, where it stays in user_perms with nothing to remove it.
+	 *
+	 * The response code is what is read, because history.php:7 redirects and a 200 would
+	 * mean the request reached the page and was turned away, if at all, by something inside
+	 * it. The export is the same request's batch trigger rather than a second entry point,
+	 * so the gate that answers this answers that too.
+	 */
+	public function aDelegatedAdministratorCannotReachTheHistoryArchive(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the Admin History archive to an administrator holding the retired History permission');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp7admin');
+
+		$I->stopFollowingRedirects();
+		$I->amOnPage(self::ROUTE_HISTORY);
+
+		$I->assertSame(301, $I->grabResponseCode(),
+			'An administrator holding '.self::DELEGATED_ADMINS['p7rp7admin'].' reached '.self::ROUTE_HISTORY
+			.', whose list renders the delete archive of every table and whose export batch streams it as CSV.');
+	}
+
+	/**
+	 * The positive control. Without it the refusal above is satisfied by a History area that
+	 * has stopped working for everybody.
+	 *
+	 * The status code alone will not carry that, because e_admin_dispatcher::checkAccess()
+	 * refuses a route by rewriting the action to e403 and never by setting a status, so a
+	 * refused page answers 200 as readily as a served one. What is read instead is the
+	 * stylesheet history.php registers on the line after its gate, which says the request got
+	 * past that gate, and the absence of the dispatcher's own refusal message, which says
+	 * nothing inside the page turned it away either.
+	 */
+	public function aMainAdministratorStillReachesTheHistoryArchive(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the Admin History archive reachable by a main administrator');
+
+		$I->loginAsAdmin();
+
+		$I->stopFollowingRedirects();
+		$I->amOnPage(self::ROUTE_HISTORY);
+
+		$I->assertSame(200, $I->grabResponseCode(),
+			'A main administrator was redirected away from '.self::ROUTE_HISTORY.'.');
+
+		$served = $I->grabPageSource();
+
+		$I->assertNotSame(false, strpos($served, 'td.history-data'),
+			'A main administrator did not get past the gate on '.self::ROUTE_HISTORY
+			.', so the refusal asserted above is not evidence of anything.');
+
+		$I->assertSame(false, strpos($served, 'You do not have permission to view this page.'),
+			'The dispatcher refused a main administrator the History route.');
 	}
 
 	/**
