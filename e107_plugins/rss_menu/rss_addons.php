@@ -60,31 +60,21 @@ class rss_addons
 		static $v1feeds = array(); // include_once only runs the file the first time
 
 		$ret = array();
-		$elist = e107::getPref('e_rss_list');
-
-		if(empty($elist))
-		{
-			return $ret;
-		}
 
 		self::loadLan();
 
-		foreach(array_keys($elist) as $plugin)
+		foreach(self::folders() as $plugin)
 		{
-			$filepath = e_PLUGIN.$plugin.'/e_rss.php';
+			$v1feed = self::includeAddon($plugin);
 
-			if(!is_readable($filepath))
+			if($v1feed === false)
 			{
 				continue;
 			}
 
-			$eplug_rss_feed = array();
-
-			include_once($filepath);
-
-			if(!empty($eplug_rss_feed))
+			if(!empty($v1feed))
 			{
-				$v1feeds[$plugin] = $eplug_rss_feed;
+				$v1feeds[$plugin] = $v1feed;
 			}
 
 			$feeds = e107::callMethod($plugin.'_rss', 'config');
@@ -126,8 +116,15 @@ class rss_addons
 	{
 		$ret = array();
 
-		foreach(e107::getAddonConfig('e_rss', '', 'legacy') as $plugin => $keys)
+		foreach(self::folders() as $plugin)
 		{
+			if(self::includeAddon($plugin) === false)
+			{
+				continue;
+			}
+
+			$keys = e107::callMethod($plugin.'_rss', 'legacy');
+
 			if(!is_array($keys))
 			{
 				continue;
@@ -146,6 +143,56 @@ class rss_addons
 		}
 
 		return $ret;
+	}
+
+	/**
+	 * The plugin folders whose e_rss.php is read: the installed plugins the
+	 * e_rss_list pref names, and this one.
+	 *
+	 * Only {@see e_plugin::buildAddonPrefLists()} writes that pref, and nothing
+	 * runs it on a core upgrade, so a feed that ships with core has to resolve
+	 * before an admin has run the plugin update that would. rss.php refuses to
+	 * serve anything unless this plugin is installed, so its own folder is known
+	 * present.
+	 *
+	 * @return array plugin folders
+	 */
+	private static function folders()
+	{
+		$ret = array_keys((array) e107::getPref('e_rss_list'));
+
+		if(!in_array('rss_menu', $ret, true))
+		{
+			$ret[] = 'rss_menu';
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * Includes a plugin's addon, returning what a v1 addon assigned while it ran.
+	 *
+	 * A v1 addon declares its feeds by assigning to $eplug_rss_feed at include
+	 * time rather than returning them, so the include has to happen where that
+	 * variable can be read.
+	 *
+	 * @param string $plugin folder
+	 * @return array|false false when the folder ships no addon
+	 */
+	private static function includeAddon($plugin)
+	{
+		$filepath = e_PLUGIN.$plugin.'/e_rss.php';
+
+		if(!is_readable($filepath))
+		{
+			return false;
+		}
+
+		$eplug_rss_feed = array();
+
+		include_once($filepath);
+
+		return $eplug_rss_feed;
 	}
 
 	/**
