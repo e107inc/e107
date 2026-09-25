@@ -111,12 +111,6 @@
         {
             "file": "e107_handlers/iphandler_class.php",
             "method": "execute",
-            "sql_excerpt": "DELETE FROM `#banlist` WHERE {$query}",
-            "count": 1
-        },
-        {
-            "file": "e107_handlers/iphandler_class.php",
-            "method": "execute",
             "sql_excerpt": "SELECT * FROM `#banlist` WHERE {$query} ORDER BY `banlist_bantype` DESC",
             "count": 1
         },

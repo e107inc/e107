@@ -179,12 +179,12 @@ class banlistManagerTest extends \Test\Unit
 	 * Queue one row for retriggering, in the format eIPHandler writes and
 	 * splitLogEntry() reads: timestamp, banlist_id, negative reason code, notes.
 	 *
-	 * @param int $id
+	 * @param int|string $queued the second field, an id here and an address in files written before #6205
 	 * @return void
 	 */
-	private function haveRetriggerEntry($id)
+	private function haveRetriggerEntry($queued)
 	{
-		file_put_contents($this->retriggerFile, time().' '.$id.' '.self::BAN_TYPE." Retrigger: ".self::IP_TRIGGERED."\n");
+		file_put_contents($this->retriggerFile, time().' '.$queued.' '.self::BAN_TYPE." Retrigger: ".self::IP_TRIGGERED."\n");
 	}
 
 	/**
@@ -269,6 +269,47 @@ class banlistManagerTest extends \Test\Unit
 		self::assertSame(1, $this->mgr->banRetriggerAction(), 'the queued visit has to reach one row');
 		self::assertGreaterThanOrEqual($before + (self::HOURS * 3600), $this->expiryOf($id),
 			'the wildcard ban has to run for its full duration from the visit');
+	}
+
+	/**
+	 * The row is selected by the id the queue carries and then has to be written
+	 * by that same id. banlist_ip is an ordinary index, so keying the write on
+	 * the address moves every row stored under it, each one under the duration
+	 * configured for the matched row's type rather than its own.
+	 */
+	public function testRetriggerMovesOnlyTheRowThatMatched()
+	{
+		e107::getConfig()->set('ban_retrigger', 1);
+		e107::getConfig()->set('ban_durations', array(self::BAN_TYPE => self::HOURS));
+
+		$untouchedExpiry = time() + 999999;
+		$triggered = $this->haveBan(self::IP_TRIGGERED, time() + 60);
+		$sameAddress = $this->haveBan(self::IP_TRIGGERED, $untouchedExpiry, self::USER_TYPE_AS_STORED_BY_USERS_PHP);
+		$this->haveRetriggerEntry($triggered);
+
+		self::assertSame(1, $this->mgr->banRetriggerAction(), 'one row was queued, so one should have been actioned');
+
+		self::assertSame($untouchedExpiry, $this->expiryOf($sameAddress),
+			'a second row on the same address is a ban of its own and nobody retriggered it');
+	}
+
+	/**
+	 * The second field held the matched address until #6205 and holds the row id
+	 * since. An address read as an id is a small integer that names some other
+	 * row, so a file left by the older release is left alone rather than applied
+	 * to whatever row that integer happens to be.
+	 */
+	public function testAQueueWrittenBeforeTheRowIdWentIntoItIsIgnored()
+	{
+		e107::getConfig()->set('ban_retrigger', 1);
+		e107::getConfig()->set('ban_durations', array(self::BAN_TYPE => self::HOURS));
+
+		$expiresSoon = time() + 60;
+		$id = $this->haveBan(self::IP_UNTOUCHED, $expiresSoon);
+		$this->haveRetriggerEntry($id.'.0.113.9');
+
+		self::assertSame(0, $this->mgr->banRetriggerAction(), 'a queued address is not an id and names no row');
+		self::assertSame($expiresSoon, $this->expiryOf($id), 'the row that integer lands on was never triggered');
 	}
 
 	/**
