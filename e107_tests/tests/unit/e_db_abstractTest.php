@@ -1112,6 +1112,21 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	}
 
+	/**
+	 * A bound SQL_CALC_FOUND_ROWS SELECT has to report its total too, or binding a statement silently zeroes every paged count built on it.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/6478
+	 */
+	public function testFoundRowsOnAPreparedStatement()
+	{
+		$this->db->debugMode(false);
+		$this->db->execute('SELECT SQL_CALC_FOUND_ROWS * FROM `#user` WHERE user_id = :id', array('id' => 1));
+		$row = $this->db->fetch();
+
+		$this->assertArrayHasKey('user_name', $row);
+		$this->assertEquals(1, $this->db->foundRows());
+	}
+
 	public function testDb_Rows()
 	{
 		$this->db->retrieve('plugin', '*');

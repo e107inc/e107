@@ -200,12 +200,7 @@ class e_search
 
 			$qb->selectRaw($return_fields)->fromRaw('#'.$table);
 
-			$where_clause = preg_replace('/\s+AND$/i', '', trim((string) $where));
-
-			if ($where_clause !== '')
-			{
-				$qb->where($qb->raw($where_clause));
-			}
+			$this->applyHandlerWhere($qb, $where);
 
 			if ($match_condition !== null)
 			{
@@ -222,19 +217,7 @@ class e_search
 				$qb->limit($search_prefs['php_limit']);
 			}
 
-			$sql_query = '';
-
-			if (E107_DBG_SQLQUERIES && $match_condition !== null)
-			{
-				$bound = array();
-
-				foreach ($qb->getParameters() as $name => $value)
-				{
-					$bound[':'.$name] = "'".(is_array($value) ? $value['value'] : $value)."'";
-				}
-
-				$sql_query = strtr($qb->getSQL(), $bound);
-			}
+			$sql_query = (E107_DBG_SQLQUERIES && $match_condition !== null) ? $this->renderBoundStatement($qb) : '';
 
 			$keycount = !empty($this->keywords['split']) ? count($this->keywords['split']) : 0;
 
@@ -253,30 +236,34 @@ class e_search
 			}
 
 			$this -> query = str_replace('&quot;', '"', $this -> query);
-			//$field_query = implode(',', $search_fields);
-			
-			foreach ($search_fields as $field_key => $field) 
+
+			$qb = $sql->createQueryBuilder();
+			$relevance_keyword = $qb->createNamedParameter(str_replace(" ", "+", $this -> query));
+			$match_keyword = $qb->createNamedParameter($this -> query);
+
+			foreach ($search_fields as $field_key => $field)
 			{
-				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST ('".str_replace(" ","+",$this -> query)."' IN BOOLEAN MODE)))";
-				$field_query[] = "MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)";
+				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST (".$relevance_keyword." IN BOOLEAN MODE)))";
+				$field_query[] = "MATCH(".$field.") AGAINST (".$match_keyword." IN BOOLEAN MODE)";
 			}
-			
+
 			$match_query = implode(' + ', $search_query);
 			$field_query = implode(' || ', $field_query);
 
-			$sql_order = '';
+			$qb->selectRaw("SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance")->fromRaw('#'.$table);
 
-			foreach ($order as $sort_key => $sort_value) 
+			$this->applyHandlerWhere($qb, $where);
+
+			$qb->where($qb->raw('('.$field_query.')'))->havingRaw('relevance > 0')->addOrderBy('relevance', 'DESC');
+
+			foreach ($order as $sort_key => $sort_value)
 			{
-				$sql_order .= ', '.$sort_key.' '.$sort_value;
+				$qb->addOrderBy($sort_key, $sort_value);
 			}
 
-			$limit = " LIMIT ".intval($result_flag).",".$search_res;
-			
-			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." (".$field_query.") HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
+			$qb->limit($search_res)->offset(intval($result_flag));
 
-
-
+			$sql_query = E107_DBG_SQLQUERIES ? $this->renderBoundStatement($qb) : '';
 		}
 
 		if(E107_DBG_SQLQUERIES)
@@ -287,14 +274,13 @@ class e_search
 
 		$ps = array('text' => '', 'results' => 0);
 
-		if (!$search_prefs['mysql_sort'])
+		if (!$search_prefs['mysql_sort'] && $match_condition === null)
 		{
-			$ps['results'] = ($match_condition === null) ? false : $qb->execute();
+			$ps['results'] = false;
 		}
 		else
 		{
-			// Intentionally raw (sqli boundary): the MySQL-sort branch uses SQL_CALC_FOUND_ROWS read via $sql->total_results (builder cannot express), a dynamic table (#$table), dynamic $return_fields and a raw developer $where fragment.
-			$ps['results'] = $sql->gen($sql_query);
+			$ps['results'] = $qb->execute();
 		}
 
 		if ($ps['results'])
@@ -463,6 +449,41 @@ class e_search
 		return $ps;
 	}
 
+
+	/**
+	 * Add a handler's own where() fragment, which ends in the AND that joined it to the keyword clause it is now a predicate beside.
+	 *
+	 * @param \e107\Database\QueryBuilder $qb
+	 * @param string $where
+	 * @return void
+	 */
+	private function applyHandlerWhere($qb, $where)
+	{
+		$where_clause = preg_replace('/\s+AND$/i', '', trim((string) $where));
+
+		if ($where_clause !== '')
+		{
+			$qb->where($qb->raw($where_clause));
+		}
+	}
+
+	/**
+	 * Splice a builder's bound values back into its statement, for the debug panel alone; nothing here reaches the server.
+	 *
+	 * @param \e107\Database\QueryBuilder $qb
+	 * @return string
+	 */
+	private function renderBoundStatement($qb)
+	{
+		$bound = array();
+
+		foreach ($qb->getParameters() as $name => $value)
+		{
+			$bound[':'.$name] = "'".(is_array($value) ? $value['value'] : $value)."'";
+		}
+
+		return strtr($qb->getSQL(), $bound);
+	}
 
 	/**
 	 * Reduce a matched database field to the plain text an excerpt is built from.
