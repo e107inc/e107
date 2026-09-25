@@ -2,8 +2,9 @@
 
 
 	/**
-	 * Loads every admin and front-end entry script and fails on anything PHP
-	 * complains about.
+	 * Loads the scripts a request can reach and fails on anything PHP complains
+	 * about: the admin area and its includes, the front end, and the top-level
+	 * entry scripts of every core plugin.
 	 *
 	 * One script per process. That is what makes the sweep trustworthy: a
 	 * script cannot define a constant, unset a superglobal or exit() its way
@@ -37,14 +38,12 @@
 		/** Generous for a script that loads in well under a second. */
 		const TIMEOUT_SECONDS = 60;
 
+		/** The probe's exit status for a target the bootstrap had already loaded. */
+		const NOT_JUDGED = 4;
+
 		public function testAdminScripts()
 		{
 			$exclude = array(
-				// Defines e_ADMIN_AREA, USER_AREA and ADMIN_AREA before it
-				// loads class2.php, and the sweep has already loaded
-				// class2.php by the time it gets here, so the block is skipped
-				// and a plugin's e_header.php then reads USER_AREA undefined.
-				'menus.php',
 				// Included by admin.php, never requested on their own, and
 				// covered by every case that passes --admin-header.
 				'header.php',
@@ -82,6 +81,50 @@
 			);
 
 			$this->sweep(e_BASE, $exclude);
+		}
+
+		/**
+		 * Every top-level entry script of every bundled plugin, one per process.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6336
+		 */
+		public function testPluginScripts()
+		{
+			$exclude = array(
+				// Each of these loads, and reports a defect of its own that
+				// belongs to its plugin rather than to the sweep. See #6424.
+				'blogcalendar_menu/config.php',
+				'faqs/admin_config.php',
+				// Still red after #6376, which #6424 has yet to catch up with:
+				// faqs_shortcodes.php line 354 reads submit_question raw.
+				'faqs/faqs.php',
+			);
+
+			$paths = array();
+
+			foreach(e107::getPlug()->getCorePluginList() as $plug)
+			{
+				$folder = e_PLUGIN . $plug;
+
+				if(!is_dir($folder)) { continue; }
+
+				$paths = array_merge($paths, $this->entryScriptsIn($folder, $this->skippedIn($plug, $exclude)));
+			}
+
+			$this->assertNotEmpty($paths, 'No bundled plugin entry scripts to sweep');
+
+			$this->judge('bundled plugins', $paths);
+		}
+
+		public function testAnIncludeBesideAnEntryScriptIsNotSwept()
+		{
+			$folder = codecept_data_dir('scriptsTest/entry/');
+
+			$this->assertSame(
+				array(realpath($folder . 'boots_e107.php')),
+				$this->entryScriptsIn($folder, array()),
+				'a file that only guards on e107_INIT is included by something that has already booted, so a request never reaches it'
+			);
 		}
 
 		public function testACleanScriptReportsClean()
@@ -153,12 +196,58 @@
 
 			$this->assertNotEmpty($paths, 'No scripts to sweep in ' . $folder);
 
-			$started = microtime(true);
-			$reports = $this->runScripts($paths, $flags);
+			$this->judge($folder, $paths, $flags);
+		}
 
-			fwrite(STDOUT, sprintf("\n%s: %d scripts in %.2fs\n", $folder, count($reports), microtime(true) - $started));
+		/**
+		 * @param string $what what the sweep covered, for the timing line
+		 */
+		private function judge($what, array $paths, array $flags = array())
+		{
+			$started   = microtime(true);
+			$reports   = $this->runScripts($paths, $flags);
+			$notJudged = array();
+
+			foreach($reports as $report)
+			{
+				if($this->wasNotJudged($report)) { $notJudged[] = basename(dirname($report['path'])) . '/' . $report['name']; }
+			}
+
+			fwrite(STDOUT, sprintf(
+				"\n%s: %d scripts in %.2fs%s\n",
+				$what,
+				count($reports),
+				microtime(true) - $started,
+				empty($notJudged) ? '' : ', not judged: ' . implode(', ', $notJudged)
+			));
+
+			$this->assertSame(
+				array(),
+				$notJudged,
+				'the bootstrap had loaded these before the sweep reached them, so their verdict is nobody\'s: exclude them or stop the bootstrap loading them'
+			);
 
 			$this->assertScriptsAreClean($reports);
+		}
+
+		/**
+		 * @param string $plug    plugin folder name
+		 * @param array  $exclude entries written as plugin/file.php
+		 * @return array file names to skip in that plugin's folder
+		 */
+		private function skippedIn($plug, array $exclude)
+		{
+			$names = array();
+
+			foreach($exclude as $entry)
+			{
+				if(strpos($entry, $plug . '/') === 0)
+				{
+					$names[] = (string) substr($entry, strlen($plug) + 1);
+				}
+			}
+
+			return $names;
 		}
 
 		/**
@@ -183,6 +272,50 @@
 			}
 
 			return $paths;
+		}
+
+		/**
+		 * @return array absolute paths of the scripts in $folder a request can reach
+		 */
+		private function entryScriptsIn($folder, array $exclude)
+		{
+			$paths = array();
+
+			foreach($this->scriptsIn($folder, $exclude) as $path)
+			{
+				if($this->bootsE107($path)) { $paths[] = $path; }
+			}
+
+			return $paths;
+		}
+
+		/**
+		 * Whether $path requires class2.php, which is what separates a script a
+		 * browser can request from one its caller has already booted.
+		 *
+		 * @return bool
+		 */
+		private function bootsE107($path)
+		{
+			$tokens  = token_get_all(file_get_contents($path));
+			$total   = count($tokens);
+			$keyword = array(T_REQUIRE, T_REQUIRE_ONCE, T_INCLUDE, T_INCLUDE_ONCE);
+
+			for($i = 0; $i < $total; $i++)
+			{
+				if(!is_array($tokens[$i]) || !in_array($tokens[$i][0], $keyword, true)) { continue; }
+
+				for($j = $i + 1; $j < $total && $tokens[$j] !== ';'; $j++)
+				{
+					if(is_array($tokens[$j]) && $tokens[$j][0] === T_CONSTANT_ENCAPSED_STRING
+						&& strpos($tokens[$j][1], 'class2.php') !== false)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		/**
@@ -376,13 +509,22 @@
 			return $report['exitCode'] === 0 && trim($report['stderr']) === '' && !$report['timedOut'];
 		}
 
+		/**
+		 * A script the bootstrap had loaded before the sweep reached it, which the probe
+		 * reports apart because the bootstrap raises its diagnostics where nothing sees them.
+		 */
+		private function wasNotJudged(array $report)
+		{
+			return $report['exitCode'] === self::NOT_JUDGED;
+		}
+
 		private function assertScriptsAreClean(array $reports)
 		{
 			$failures = array();
 
 			foreach($reports as $report)
 			{
-				if($this->isClean($report)) { continue; }
+				if($this->isClean($report) || $this->wasNotJudged($report)) { continue; }
 
 				$failures[] = $this->describe($report);
 			}
