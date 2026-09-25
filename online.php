@@ -157,7 +157,7 @@
 				$online_location_page = FAQ;
 				break;
 			default :
-				$online_location_page = OTHER . $online_location_page;
+				$online_location_page = OTHER . ' ' . $online_location_page;
 		}
 
 		/*
@@ -349,8 +349,8 @@
 	}
 
 
-	$scArray['ONLINE_TABLE_MEMBERS_ONLINE'] = defset('ONLINE_EL1') . GUESTS_ONLINE;
-	$scArray['ONLINE_TABLE_GUESTS_ONLINE'] = ONLINE_EL2 . MEMBERS_ONLINE;
+	$scArray['ONLINE_TABLE_MEMBERS_ONLINE'] = ONLINE_EL2 . ' ' . MEMBERS_ONLINE;
+	$scArray['ONLINE_TABLE_GUESTS_ONLINE'] = defset('ONLINE_EL1') . ' ' . GUESTS_ONLINE;
 
 	if(!isset($gen) || !is_object($gen))
 	{
@@ -361,9 +361,9 @@
 
 	$datestamp = $gen->convert_date($siteHistory['most_online_datestamp'], "short");
 
-	$scArray['ONLINE_TABLE_MOST_EVER_ONLINE'] = ONLINE_EL8 . ($siteHistory['most_members_online'] + $siteHistory['most_guests_online']);
-	$scArray['ONLINE_TABLE_MOST_MEMBERS_ONLINE'] = ONLINE_EL2 . $siteHistory['most_members_online'];
-	$scArray['ONLINE_TABLE_MOST_GUESTS_ONLINE'] = ONLINE_EL1 . $siteHistory['most_guests_online'];
+	$scArray['ONLINE_TABLE_MOST_EVER_ONLINE'] = ONLINE_EL8 . ' ' . ($siteHistory['most_members_online'] + $siteHistory['most_guests_online']);
+	$scArray['ONLINE_TABLE_MOST_MEMBERS_ONLINE'] = ONLINE_EL2 . ' ' . $siteHistory['most_members_online'];
+	$scArray['ONLINE_TABLE_MOST_GUESTS_ONLINE'] = ONLINE_EL1 . ' ' . $siteHistory['most_guests_online'];
 	$scArray['ONLINE_TABLE_DATESTAMP'] = $datestamp;
 
 	$sql = e107::getDb();
