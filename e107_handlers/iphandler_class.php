@@ -1295,6 +1295,7 @@ class banlistManager
 	const DELETE_GUARD_LAPSED = 'lapsed';
 
 	private $ourConfigDir = '';
+	private $replaceLockHeld = false;
 	public $banTypes = array();
 
 	public function __construct()
@@ -1521,162 +1522,240 @@ class banlistManager
 
 		if($replaceImported)
 		{
-			if($sql->select('banlist', 'banlist_id', '`banlist_bantype` = '.eIPHandler::BAN_TYPE_IMPORTED))
+			$lock = $this->takeReplaceLock();
+
+			if($lock !== true)
+			{
+				fclose($fh);
+				$result['fatal'] = ($lock === null)
+					? defset('BANLAN_IMPORT_REPLACE_LOCK_FAILED', "CSV import: Nothing was imported. The database did not say whether another import is running, so this one stopped rather than risk deleting entries it could not account for. Try again, and look in the database error log if it keeps happening.")
+					: defset('BANLAN_IMPORT_REPLACE_BUSY', "CSV import: Nothing was imported. Another import that replaces the existing imported bans is already running, and two of those at once delete each other's entries. Import again once it has finished.");
+
+				return $result;
+			}
+		}
+
+		try
+		{
+			if($replaceImported)
+			{
+				if($sql->select('banlist', 'banlist_id', '`banlist_bantype` = '.eIPHandler::BAN_TYPE_IMPORTED))
+				{
+					while($row = $sql->fetch())
+					{
+						$replacedIds[(int) $row['banlist_id']] = true;
+					}
+				}
+			}
+
+			$known = array();
+			$lapsedIds = array();
+			$now = time();
+			if($sql->select('banlist', 'banlist_id, banlist_ip, banlist_banexpires', '`banlist_bantype` != '.eIPHandler::BAN_TYPE_TEMPORARY.' AND `banlist_bantype` < '.eIPHandler::BAN_TYPE_WHITELIST))
 			{
 				while($row = $sql->fetch())
 				{
-					$replacedIds[(int) $row['banlist_id']] = true;
+					if(isset($replacedIds[(int) $row['banlist_id']]))
+					{
+						continue;
+					}
+
+					$stored = $this->storedBanEntry($row['banlist_ip']);
+					$stored = ($stored === false) ? $row['banlist_ip'] : $stored;
+					$expires = (int) $row['banlist_banexpires'];
+
+					if($expires === 0 || $expires > $now)
+					{
+						$known[$stored] = true;
+						continue;
+					}
+
+					$lapsedIds[$stored][] = (int) $row['banlist_id'];
 				}
 			}
-		}
 
-		$known = array();
-		$lapsedIds = array();
-		$now = time();
-		if($sql->select('banlist', 'banlist_id, banlist_ip, banlist_banexpires', '`banlist_bantype` != '.eIPHandler::BAN_TYPE_TEMPORARY.' AND `banlist_bantype` < '.eIPHandler::BAN_TYPE_WHITELIST))
-		{
-			while($row = $sql->fetch())
+			$supersededIds = array();
+			$insertedIds = array();
+			$enclosure = ($quote === '') ? "\0" : $quote;
+			$line = 0;
+
+			@set_time_limit(0);
+
+			while(($fields = fgetcsv($fh, 0, $separator, $enclosure, '\\')) !== false)
 			{
-				if(isset($replacedIds[(int) $row['banlist_id']]))
+				$line++;
+
+				if($fields === array(null) || trim(implode('', $fields)) === '')
 				{
 					continue;
 				}
 
-				$stored = $this->storedBanEntry($row['banlist_ip']);
-				$stored = ($stored === false) ? $row['banlist_ip'] : $stored;
-				$expires = (int) $row['banlist_banexpires'];
-
-				if($expires === 0 || $expires > $now)
+				foreach($fields as $field)
 				{
-					$known[$stored] = true;
+					if(strpos((string) $field, "\n") !== false || strpos((string) $field, "\r") !== false)
+					{
+						fclose($fh);
+						return $this->abortImport($result, $insertedIds, BANLAN_49.$line);
+					}
+				}
+
+				if(count($fields) > 6)
+				{
+					$result['errors'][$line] = defset('BANLAN_IMPORT_FIELDS_INVALID', "too many fields (check the separator and quote settings)");
 					continue;
 				}
 
-				$lapsedIds[$stored][] = (int) $row['banlist_id'];
-			}
-		}
+				$entry = $this->storedBanEntry(varset($fields[0], ''));
 
-		$supersededIds = array();
-		$insertedIds = array();
-		$enclosure = ($quote === '') ? "\0" : $quote;
-		$line = 0;
+				if($entry === false)
+				{
+					$result['errors'][$line] = $entryInvalid;
+					continue;
+				}
 
-		@set_time_limit(0);
+				$datestamp = $this->parseImportDate(varset($fields[1], ''), time());
+				$expiry = $useFileExpiry ? $this->parseImportDate(varset($fields[2], ''), 0) : $defaultExpiry;
+				if($datestamp === false || $expiry === false)
+				{
+					$result['errors'][$line] = defset('BANLAN_IMPORT_DATE_INVALID', "a date is not in YYYYMMDD_HHMMSS format or 0");
+					continue;
+				}
 
-		while(($fields = fgetcsv($fh, 0, $separator, $enclosure, '\\')) !== false)
-		{
-			$line++;
+				if(isset($known[$entry]))
+				{
+					$result['duplicates']++;
+					continue;
+				}
+				$known[$entry] = true;
 
-			if($fields === array(null) || trim(implode('', $fields)) === '')
-			{
-				continue;
-			}
+				if(isset($lapsedIds[$entry]))
+				{
+					$supersededIds = array_merge($supersededIds, $lapsedIds[$entry]);
+					unset($lapsedIds[$entry]);
+				}
 
-			foreach($fields as $field)
-			{
-				if(strpos((string) $field, "\n") !== false || strpos((string) $field, "\r") !== false)
+				$inserted = $sql->insert('banlist', array(
+					'banlist_ip'         => $entry,
+					'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
+					'banlist_datestamp'  => $datestamp,
+					'banlist_banexpires' => $expiry,
+					'banlist_admin'      => $adminId,
+					'banlist_reason'     => $this->filterImportText(varset($fields[4], '')),
+					'banlist_notes'      => $this->filterImportText(varset($fields[5], '')),
+				));
+
+				if($inserted === false)
 				{
 					fclose($fh);
-					return $this->abortImport($result, $insertedIds, BANLAN_49.$line);
+					return $this->abortImport($result, $insertedIds, BANLAN_50.$line);
 				}
-			}
 
-			if(count($fields) > 6)
-			{
-				$result['errors'][$line] = defset('BANLAN_IMPORT_FIELDS_INVALID', "too many fields (check the separator and quote settings)");
-				continue;
-			}
-
-			$entry = $this->storedBanEntry(varset($fields[0], ''));
-
-			if($entry === false)
-			{
-				$result['errors'][$line] = $entryInvalid;
-				continue;
-			}
-
-			$datestamp = $this->parseImportDate(varset($fields[1], ''), time());
-			$expiry = $useFileExpiry ? $this->parseImportDate(varset($fields[2], ''), 0) : $defaultExpiry;
-			if($datestamp === false || $expiry === false)
-			{
-				$result['errors'][$line] = defset('BANLAN_IMPORT_DATE_INVALID', "a date is not in YYYYMMDD_HHMMSS format or 0");
-				continue;
-			}
-
-			if(isset($known[$entry]))
-			{
-				$result['duplicates']++;
-				continue;
-			}
-			$known[$entry] = true;
-
-			if(isset($lapsedIds[$entry]))
-			{
-				$supersededIds = array_merge($supersededIds, $lapsedIds[$entry]);
-				unset($lapsedIds[$entry]);
-			}
-
-			$inserted = $sql->insert('banlist', array(
-				'banlist_ip'         => $entry,
-				'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
-				'banlist_datestamp'  => $datestamp,
-				'banlist_banexpires' => $expiry,
-				'banlist_admin'      => $adminId,
-				'banlist_reason'     => $this->filterImportText(varset($fields[4], '')),
-				'banlist_notes'      => $this->filterImportText(varset($fields[5], '')),
-			));
-
-			if($inserted === false)
-			{
-				fclose($fh);
-				return $this->abortImport($result, $insertedIds, BANLAN_50.$line);
-			}
-
-			if(is_numeric($inserted))
-			{
-				$insertedIds[] = (int) $inserted;
-			}
-			$result['imported']++;
-		}
-
-		fclose($fh);
-
-		if($replaceImported && !empty($result['errors']))
-		{
-			return $this->abortImport($result, $insertedIds,
-				str_replace('[x]', count($result['errors']), defset('BANLAN_IMPORT_REPLACE_INCOMPLETE', "CSV import: Nothing was imported. Replacing the existing imported bans needs the whole file to import, and [x] line(s) could not. Correct those lines and import again, or untick 'Replace existing imported bans' to add the rest alongside what is already there.")));
-		}
-
-		$lapsedKept = $this->deleteBanRows($supersededIds, self::DELETE_GUARD_LAPSED);
-
-		if($lapsedKept > 0)
-		{
-			$result['warnings'][] = str_replace('[x]', $lapsedKept, defset('BANLAN_IMPORT_LAPSED_KEPT', "CSV import: [x] expired entries for addresses the file re-banned are still on the ban list, so each of those addresses now has two entries. Delete the expired ones by hand."));
-		}
-
-		if($replaceImported && !empty($replacedIds))
-		{
-			if($result['imported'] === 0)
-			{
-				$result['warnings'][] = defset('BANLAN_IMPORT_REPLACE_NOTHING', "CSV import: The existing imported bans were kept, because the file added no entries the ban list did not already hold.");
-			}
-			else
-			{
-				$replacedKept = $this->deleteBanRows(array_keys($replacedIds), self::DELETE_GUARD_IMPORTED);
-
-				if($replacedKept > 0)
+				if(is_numeric($inserted))
 				{
-					$result['warnings'][] = str_replace('[x]', $replacedKept, defset('BANLAN_IMPORT_REPLACE_KEPT', "CSV import: [x] of the previous imported bans are still on the ban list, beside the entries the file added."));
+					$insertedIds[] = (int) $inserted;
+				}
+				$result['imported']++;
+			}
+
+			fclose($fh);
+
+			if($replaceImported && !empty($result['errors']))
+			{
+				return $this->abortImport($result, $insertedIds,
+					str_replace('[x]', count($result['errors']), defset('BANLAN_IMPORT_REPLACE_INCOMPLETE', "CSV import: Nothing was imported. Replacing the existing imported bans needs the whole file to import, and [x] line(s) could not. Correct those lines and import again, or untick 'Replace existing imported bans' to add the rest alongside what is already there.")));
+			}
+
+			$lapsedKept = $this->deleteBanRows($supersededIds, self::DELETE_GUARD_LAPSED);
+
+			if($lapsedKept > 0)
+			{
+				$result['warnings'][] = str_replace('[x]', $lapsedKept, defset('BANLAN_IMPORT_LAPSED_KEPT', "CSV import: [x] expired entries for addresses the file re-banned are still on the ban list, so each of those addresses now has two entries. Delete the expired ones by hand."));
+			}
+
+			if($replaceImported && !empty($replacedIds))
+			{
+				if($result['imported'] === 0)
+				{
+					$result['warnings'][] = defset('BANLAN_IMPORT_REPLACE_NOTHING', "CSV import: The existing imported bans were kept, because the file added no entries the ban list did not already hold.");
+				}
+				else
+				{
+					$replacedKept = $this->deleteBanRows(array_keys($replacedIds), self::DELETE_GUARD_IMPORTED);
+
+					if($replacedKept > 0)
+					{
+						$result['warnings'][] = str_replace('[x]', $replacedKept, defset('BANLAN_IMPORT_REPLACE_KEPT', "CSV import: [x] of the previous imported bans are still on the ban list, beside the entries the file added."));
+					}
 				}
 			}
-		}
 
-		if($result['imported'] > 0)
+			if($result['imported'] > 0)
+			{
+				$ipHandler->regenerateFiles();
+			}
+
+			return $result;
+		}
+		finally
 		{
-			$ipHandler->regenerateFiles();
+			$this->releaseReplaceLock();
+		}
+	}
+
+	/**
+	 *	Take the lock that holds a replace-import's snapshot and delete together, without waiting for a run that already has it.
+	 *
+	 *	@return bool|null true where this run has the lock, false where another run holds it, null where the server did not say.
+	 */
+	private function takeReplaceLock()
+	{
+		$row = $this->lockQuery('SELECT GET_LOCK(:name, 0) AS locked');
+		$locked = (is_array($row) && isset($row['locked'])) ? (string) $row['locked'] : null;
+		$this->replaceLockHeld = ($locked === '1');
+
+		return ($locked === null) ? null : $this->replaceLockHeld;
+	}
+
+	/**
+	 *	Release the replace-import lock where this run took it.
+	 */
+	private function releaseReplaceLock()
+	{
+		if(!$this->replaceLockHeld)
+		{
+			return;
 		}
 
-		return $result;
+		$this->replaceLockHeld = false;
+		$this->lockQuery('SELECT RELEASE_LOCK(:name)');
+	}
+
+	/**
+	 *	Run one statement about the replace-import lock, which names it as :name.
+	 *
+	 *	@param string $statement
+	 *	@return array|false the row the server answered with.
+	 */
+	private function lockQuery($statement)
+	{
+		$sql = e107::getDb();
+		$sql->db_Query(array(
+			'PREPARE' => $statement,
+			'BIND'    => array('name' => array('value' => $this->replaceLockName(), 'type' => PDO::PARAM_STR)),
+		), null, 'db_Select');
+
+		return $sql->fetch();
+	}
+
+	/**
+	 *	The name of the replace-import lock, which is this install's database and table prefix hashed.
+	 *
+	 *	@return string 60 bytes, inside the server's 64-byte limit.
+	 */
+	private function replaceLockName()
+	{
+		return 'e107_banlist_replace_import_'
+			. md5(e107::getMySQLConfig('defaultdb').'/'.e107::getMySQLConfig('prefix'));
 	}
 
 	/**
