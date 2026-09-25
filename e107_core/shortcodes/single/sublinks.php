@@ -25,7 +25,16 @@ function sublinks_shortcode($parm)
 	}
 	else
 	{
-		$style = array('prelink' => '', 'postlink'=>'');
+		$style = array(
+			'linkdisplay'      => sitelinks::LINK_DISPLAY_FLAT,
+			'prelink'          => '',
+			'postlink'         => '',
+			'linkstart'        => '',
+			'linkend'          => '',
+			'linkclass'        => '',
+			'linkstart_hilite' => '',
+			'linkclass_hilite' => '',
+		);
 	}
 
 	$text = "\n\n<!-- Sublinks Start -->\n\n";
@@ -36,7 +45,7 @@ function sublinks_shortcode($parm)
 		$parent = (int) $row['link_id'];
 
 		$linkRows = $sql->createQueryBuilder()->select('*')->from('links')
-			->whereIn('link_class', explode(',', USERCLASS_LIST))
+			->where(\e107\Userclass\Membership::current()->predicate('link_class'))
 			->where('link_parent', $parent)
 			->orderBy('link_order', 'ASC')
 			->fetchAll();

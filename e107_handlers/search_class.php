@@ -101,7 +101,7 @@ class e_search
 	 * @param $weights
 	 * @param $handler
 	 * @param $no_results
-	 * @param $where
+	 * @param string|\e107\Database\SqlFragment $where developer SQL ending in AND, its values bound when it is a fragment
 	 * @param $order
 	 * @return array
 	 */
@@ -112,6 +112,13 @@ class e_search
 		
 		$sql = e107::getDb('search');
 		$tp = e107::getParser();
+
+		$params = array();
+		if($where instanceof \e107\Database\SqlFragment)
+		{
+			$params = $where->getParameters();
+			$where = $where->getSql();
+		}
 		
 		if($handler == 'self') //v2 use 'compile' function inside e_search.php;
 		{
@@ -204,7 +211,7 @@ class e_search
 
 			if ($where_clause !== '')
 			{
-				$qb->where($qb->raw($where_clause));
+				$qb->where($qb->raw($where_clause, $params));
 			}
 
 			if ($match_condition !== null)
@@ -226,14 +233,7 @@ class e_search
 
 			if (E107_DBG_SQLQUERIES && $match_condition !== null)
 			{
-				$bound = array();
-
-				foreach ($qb->getParameters() as $name => $value)
-				{
-					$bound[':'.$name] = "'".(is_array($value) ? $value['value'] : $value)."'";
-				}
-
-				$sql_query = strtr($qb->getSQL(), $bound);
+				$sql_query = $this->withBoundValues($qb->getSQL(), $qb->getParameters());
 			}
 
 			$keycount = !empty($this->keywords['split']) ? count($this->keywords['split']) : 0;
@@ -281,7 +281,8 @@ class e_search
 
 		if(E107_DBG_SQLQUERIES)
 		{
-			echo e107::getMessage()->addDebug(str_replace('#',MPREFIX,$sql_query))->render();
+			$debug_query = $this->withBoundValues($sql_query, $params);
+			echo e107::getMessage()->addDebug(str_replace('#',MPREFIX,$debug_query))->render();
 		}
 
 
@@ -293,8 +294,8 @@ class e_search
 		}
 		else
 		{
-			// Intentionally raw (sqli boundary): the MySQL-sort branch uses SQL_CALC_FOUND_ROWS read via $sql->total_results (builder cannot express), a dynamic table (#$table), dynamic $return_fields and a raw developer $where fragment.
-			$ps['results'] = $sql->gen($sql_query);
+			// Intentionally raw (sqli boundary): the MySQL-sort branch uses SQL_CALC_FOUND_ROWS read via $sql->total_results (builder cannot express), a dynamic table (#$table), dynamic $return_fields and a developer $where fragment whose values arrive bound.
+			$ps['results'] = $sql->execute($sql_query, $params);
 		}
 
 		if ($ps['results'])
@@ -463,6 +464,25 @@ class e_search
 		return $ps;
 	}
 
+
+	/**
+	 * A statement with its bound values written in, for the debug panel only: never for execution.
+	 *
+	 * @param string $sql
+	 * @param array $params name => value | array('value' => mixed, 'type' => int)
+	 * @return string
+	 */
+	private function withBoundValues($sql, array $params)
+	{
+		$bound = array();
+
+		foreach ($params as $name => $value)
+		{
+			$bound[':'.$name] = "'".(is_array($value) ? $value['value'] : $value)."'";
+		}
+
+		return strtr($sql, $bound);
+	}
 
 	/**
 	 * Reduce a matched database field to the plain text an excerpt is built from.

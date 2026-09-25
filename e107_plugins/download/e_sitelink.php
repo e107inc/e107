@@ -51,7 +51,7 @@ class download_sitelink // include plugin-folder in the name.
 		
 		// $sql->select("download_category","*","download_category_id != '' ");
 
-		$where = "download_category_class IN (".USERCLASS_LIST.")";
+		$where = \e107\Userclass\Membership::current()->predicate('download_category_class');
 
 		$sql->selectTree('download_category','download_category_parent', 'download_category_id', 'download_category_order', $where );
 		
