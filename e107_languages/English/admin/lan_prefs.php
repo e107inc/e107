@@ -126,7 +126,7 @@ define("PRFLAN_126", "Text to display on signup page");
 define("PRFLAN_127", "Make URLs clickable");
 define("PRFLAN_128", "Turning this on will convert posted URLs or Email addresses to hyperlinks");
 define("PRFLAN_129", "Disallow multiple logins");
-define("PRFLAN_130", "Activating this will prevent more than one person logging in with the same username/password (login detail sharing)");
+define("PRFLAN_130", "Keeps an account to one session at a time, which discourages login detail sharing. Signing in again anywhere else signs the earlier session out. Sessions are stored in the database while this is on, whatever Session Save Method below is set to, so turning it on or off once signs out everyone who is signed in at the time.");
 // define("PRFLAN_131", "Activate use of [php] bbcode");
 // define("PRFLAN_132", "Activating this will allow authorized users to post [php] code in certain areas");
 define("PRFLAN_133", "GD extension required, not found");
@@ -303,6 +303,7 @@ define("PRFLAN_280", "URL to the website terms and conditions");
 define("PRFLAN_281", "The 2 links above are used on various page on this site (e.g. signup and contact form/menu).\nPlease create 2 pages (if not already done) that contain your 'Privacy Policy' and the websites 'Terms and conditions'.\nThere are several websites that can generate those text for you.\nCopy the urls of this websites into the fields above (e.g. /page/privacy-policy or /page/terms-and-conditions).\nJust make sure, the pages and urls exist and are working!");
 
 define("PRFLAN_282", "Session Save Method");
+define("PRFLAN_SESSION_SAVE_METHOD_OVERRIDDEN", "Disallow multiple logins takes this over. While that is on, sessions are stored in the database whatever is selected here, and this setting comes back into effect when it is turned off.");
 
 define("PRFLAN_283", "Display navigation-bar labels");
 define("PRFLAN_284", "Collapse navigation side-bar by default");
