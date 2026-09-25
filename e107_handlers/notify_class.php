@@ -339,9 +339,9 @@ class notify
 	 */
 	function notify_userveri($data)
 	{
-		$msgtext = NT_LAN_UV_2.$data['user_id']."\n";
-		$msgtext .= NT_LAN_UV_3.$data['user_loginname']."\n";
-		$msgtext .= NT_LAN_UV_4.e107::getIPHandler()->getIP(FALSE);
+		$msgtext = NT_LAN_UV_2.' '.$data['user_id']."\n";
+		$msgtext .= NT_LAN_UV_3.' '.$data['user_loginname']."\n";
+		$msgtext .= NT_LAN_UV_4.' '.e107::getIPHandler()->getIP(FALSE);
 
 		$this->send('userveri', NT_LAN_UV_1, $msgtext);
 	}

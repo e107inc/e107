@@ -569,4 +569,39 @@
 				implode(', ', $missingFulltextIndexes)
 			);
 		}
+
+		/**
+		 * Every dependency failure names what failed, and the language strings used to carry the space in front of it.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6331
+		 */
+		public function testDependencyFailuresAreSpacedFromTheirValues()
+		{
+			e107::coreLan('plugin', true);
+
+			$mes = e107::getMessage();
+			$mes->reset();
+
+			$tags = array(
+				'plugin'    => array(array('@attributes' => array('name' => 'notaplugin'))),
+				'extension' => array(
+					array('@attributes' => array('name' => 'notanextension')),
+					array('@attributes' => array('name' => 'json', 'min_version' => '99.0.0')),
+				),
+				'php'       => array(array('@attributes' => array('name' => 'php', 'min_version' => '99.0.0'))),
+				'mysql'     => array(array('@attributes' => array('name' => 'mysql', 'min_version' => '99.0.0'))),
+			);
+
+			$this->assertFalse($this->ep->XmlDependencies($tags), 'Five unmeetable dependencies must stop the install');
+
+			$rendered = $mes->render();
+
+			$this->assertStringContainsString(EPL_ADLAN_70 . ' notaplugin', $rendered, $rendered);
+			$this->assertStringContainsString(EPL_ADLAN_73 . ' notanextension', $rendered, $rendered);
+			$this->assertStringContainsString(EPL_ADLAN_74 . ' 99.0.0', $rendered, $rendered);
+			$this->assertStringContainsString(EPL_ADLAN_75 . ' 99.0.0', $rendered, $rendered);
+			$this->assertStringContainsString(EPL_ADLAN_71 . ' json ' . EPL_ADLAN_72 . ' 99.0.0', $rendered, $rendered);
+
+			$mes->reset();
+		}
 	}
