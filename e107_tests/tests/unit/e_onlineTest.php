@@ -431,33 +431,69 @@ class e_onlineTest extends \Test\Unit
 	}
 
 	/**
-	 * Both write paths are gated on getParentId(), so a request that carries one leaves the table empty at the count.
+	 * The count builds MEMBERS_ONLINE and MEMBER_LIST out of two variables no guest visit ever writes to, so a table holding only guests is what proves they were initialised.
 	 */
-	public function testGoOnlineCountsAnEmptyOnlineTableAsZeroMembers()
+	public function testGoOnlineCountsATableOfGuestsAsZeroMembers()
 	{
+		e107::getDb()->truncate('online');
 
 		$php = <<<'PHP'
 error_reporting(E_ALL);
-e107::getDb()->truncate('online');
-$parentId = new ReflectionProperty('e_user', '_parent_id');
-$parentId->setAccessible(true);
-$parentId->setValue(e107::getUser(), 1);
-e107::getOnline()->goOnline(1, 1);
+echo "\n@@SAMPLED=", (int) !defined('e_TRACKING_DISABLED'), "@@";
 echo "\n@@MEMBERS_ONLINE=", var_export(MEMBERS_ONLINE, true), "@@";
 echo "\n@@MEMBER_LIST=", var_export(MEMBER_LIST, true), "@@\n";
 PHP;
+
+		list($output, $status) = $this->runInBootedCli($php);
+
+		$printed = implode("\n", $output);
+
+		self::assertSame(0, $status, "the online count never returned:\n".$printed);
+		self::assertStringContainsString('@@SAMPLED=1@@', $printed,
+			"the child booted with tracking or flood control off, so nothing counted and this case would pass whatever the count did:\n".$printed);
+		self::assertStringNotContainsString('Undefined variable', $printed,
+			"the count reads variables no guest visit ever writes to:\n".$printed);
+		self::assertStringContainsString("@@MEMBERS_ONLINE=0@@", $printed,
+			"MEMBERS_ONLINE is the number of members online, and a table of guests is zero of them:\n".$printed);
+		self::assertStringContainsString("@@MEMBER_LIST=''@@", $printed,
+			"MEMBER_LIST is the rendered list of names, and no members online renders as nothing:\n".$printed);
+	}
+
+	/**
+	 * Who's Online has to render on a request that never sampled the table: it reads GUESTS_ONLINE and MEMBERS_ONLINE bare and counts the name list, and every AJAX request is put into minimal mode, which is what sets no_online.
+	 */
+	public function testTheOnlinePageRendersWhereGoOnlineWasSkipped()
+	{
+		e107::coreLan('online');
+
+		$php = "chdir('".addslashes(APP_PATH)."'); ";
+		$php .= "register_shutdown_function(function() { while(ob_get_level() > 0) { @ob_end_flush(); } }); ";
+		$php .= "require_once('".addslashes(APP_PATH.'/online.php')."'); ";
+		$php .= 'foreach(array("TOTAL_ONLINE", "MEMBERS_ONLINE", "GUESTS_ONLINE", "ON_PAGE", "MEMBER_LIST") as $name) ';
+		$php .= '{ echo "\n@@", $name, "=", (int) defined($name), "@@"; } ';
+		$php .= 'echo "\n@@LISTUSERSON=", isset($GLOBALS["listuserson"]) && is_array($GLOBALS["listuserson"]) ? "array" : gettype(isset($GLOBALS["listuserson"]) ? $GLOBALS["listuserson"] : null), "@@"; ';
+		$php .= 'echo "\n@@e_TRACKING_DISABLED=", (int) defined("e_TRACKING_DISABLED"), "@@\n"; ';
 
 		list($output, $status) = $this->runInBootedCli($php, '', array('cli' => true, 'no_online' => true));
 
 		$printed = implode("\n", $output);
 
-		self::assertSame(0, $status, "the online count never returned:\n".$printed);
-		self::assertStringNotContainsString('Undefined variable', $printed,
-			"the count reads variables the empty-result path never set:\n".$printed);
-		self::assertStringContainsString("@@MEMBERS_ONLINE=0@@", $printed,
-			"MEMBERS_ONLINE is the number of members online, and nobody online is zero of them:\n".$printed);
-		self::assertStringContainsString("@@MEMBER_LIST=''@@", $printed,
-			"MEMBER_LIST is the rendered list of names, and nobody online renders as nothing:\n".$printed);
+		self::assertSame(0, $status, "the page never returned:\n".$printed);
+		self::assertStringNotContainsString(ONLINE_EL16, $printed,
+			"the site has no track_online preference, so the page returned before any of the code under test:\n".$printed);
+		self::assertStringNotContainsString('Fatal error', $printed,
+			"the page reads the counts and the name list bare, and a request that skipped the sample left them undefined:\n".$printed);
+
+		foreach(array('TOTAL_ONLINE', 'MEMBERS_ONLINE', 'GUESTS_ONLINE', 'ON_PAGE', 'MEMBER_LIST') as $name)
+		{
+			self::assertStringContainsString('@@'.$name.'=1@@', $printed,
+				$name." is read bare by online.php and the online plugin's shortcodes, so it has to carry a value even where nothing counted:\n".$printed);
+		}
+
+		self::assertStringContainsString('@@LISTUSERSON=array@@', $printed,
+			"online.php counts and iterates this global, which is fatal on PHP 8 when nothing set it:\n".$printed);
+		self::assertStringContainsString('@@e_TRACKING_DISABLED=0@@', $printed,
+			"tracking is on and merely not sampled for this request, so the flag the forum and the online menu branch on must stay down:\n".$printed);
 	}
 
 	/**
