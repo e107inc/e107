@@ -3759,7 +3759,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Set controller model
-	 * @param e_admin_model $model
+	 * @param e_admin_model $model Its save() must honour $from_post: {@see e_admin_controller_ui::_manageSubmit()} merges the posted data itself.
 	 * @return e_admin_controller_ui
 	 */
 	public function setModel($model)
@@ -5161,6 +5161,16 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if($json === false)
 		{
+			$json = json_encode($this->utf8Substituted($data), JSON_PRETTY_PRINT);
+
+			if($json !== false)
+			{
+				e107::getMessage()->addWarning(e107::getParser()->lanVars(LAN_UI_HISTORY_UTF8_SUBSTITUTED, $id, true));
+			}
+		}
+
+		if($json === false)
+		{
 			e107::getMessage()->addError("Failed to encode history for table '{$table}', record ID {$id}: ".json_last_error_msg());
 			return false;
 		}
@@ -5190,6 +5200,43 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
+	 * The same row with every string valid UTF-8, each byte that is not standing as U+FFFD. Values only: the keys are column names.
+	 *
+	 * @param array $data The row {@see e_admin_controller_ui::backupToHistory()} could not encode.
+	 * @return array
+	 */
+	private function utf8Substituted($data)
+	{
+		array_walk_recursive($data, function(&$value)
+		{
+			if(!is_string($value) || preg_match('//u', $value) === 1)
+			{
+				return;
+			}
+
+			$substituted = preg_replace_callback('/[\x00-\x7F]+'
+				. '|[\xC2-\xDF][\x80-\xBF]'
+				. '|\xE0[\xA0-\xBF][\x80-\xBF]'
+				. '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}'
+				. '|\xED[\x80-\x9F][\x80-\xBF]'
+				. '|\xF0[\x90-\xBF][\x80-\xBF]{2}'
+				. '|[\xF1-\xF3][\x80-\xBF]{3}'
+				. '|\xF4[\x80-\x8F][\x80-\xBF]{2}'
+				. '|(.)/s', function($match)
+			{
+				return isset($match[1]) ? "\xEF\xBF\xBD" : $match[0];
+			}, $value);
+
+			if($substituted !== null)
+			{
+				$value = $substituted;
+			}
+		});
+
+		return $data;
+	}
+
+	/**
 	 * The row as the table holds it, for {@see e_admin_controller_ui::backupToHistory()} to record.
 	 *
 	 * @param string     $table The name of the table where the record resides.
@@ -5205,6 +5252,39 @@ class e_admin_controller_ui extends e_admin_controller
 			->fetchRow();
 
 		return is_array($row) ? $row : array();
+	}
+
+	/**
+	 * Archives the values a change is about to overwrite, answering whether that change may go ahead.
+	 *
+	 * @param string     $table  The name of the table where the record resides.
+	 * @param string     $pid    The primary ID field of the record.
+	 * @param int|string $id     The ID of the record about to change.
+	 * @param string     $action The action being recorded (e.g. 'update' or 'restore').
+	 * @param array      $data   The stored values the change would overwrite; an empty set is nothing to record.
+	 * @param bool       $sessionMessage True where the caller redirects, so everything the write had to say is still there to read.
+	 * @return bool True where there is nothing to archive or the archive was written; false refuses the change, with the reason on the message stack.
+	 */
+	protected function archiveBeforeChange($table, $pid, $id, $action, $data, $sessionMessage = false)
+	{
+		if($table === 'admin_history' || !$data)
+		{
+			return true;
+		}
+
+		$archived = $this->backupToHistory($table, $pid, $id, $action, $data, false);
+
+		if(!$archived)
+		{
+			e107::getMessage()->addError(e107::getParser()->lanVars(LAN_UI_CHANGE_REFUSED_NO_ARCHIVE, $id, true));
+		}
+
+		if($sessionMessage)
+		{
+			e107::getMessage()->moveToSession();
+		}
+
+		return $archived;
 	}
 
 
@@ -5299,20 +5379,17 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 		// Scenario I - use request owned POST data - toForm already executed
-		$model->setPostedData($_posted) // insert() or update() dbInsert();
-			->save(true, $forceSave);
+		$model->setPostedData($_posted)->mergePostedData(false, true, true);
 
-	    if ($id)
-	    {
-	        $new_data = $model->getData();
+		$overwritten = array_intersect_key($stored, array_diff_assoc($model->getData(), $stored));
 
-	        if($changes = array_diff_assoc($new_data, $stored))
-	        {
-	            $old_changed_data = array_intersect_key($stored, $changes);
-				$this->backupToHistory($this->table, $this->getPrimaryName(), $id, 'update', $old_changed_data, false);
-	        }
+		if(!$this->archiveBeforeChange($this->table, $this->getPrimaryName(), $id, 'update', $overwritten))
+		{
+			$model->setPostedData($_posted);
+			return false;
+		}
 
-	    }
+		$model->save(false, $forceSave); // insert() or update() dbInsert();
 
 
 
