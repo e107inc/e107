@@ -603,3 +603,5 @@ define("LAN_SYSTEM_NOTIFICATIONS_X", "[x] System Notification(s)");
 define("LAN_PHP_OUTDATED", "Your website is currently running an [outdated version of PHP], which may pose a security risk. If your plugins will allow it, we recommend upgrading to [x] to ensure that your website is secure and up-to-date.");
 define("LAN_DATABASE_UPDATE", "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.");
 define("ADLAN_REFUSED_TOKEN_MISSING", "That request was not carried out, because it carried no security token. Use the dashboard's own controls rather than a bookmark or a link on another site.");
+define("ADLAN_SITE_FOLDER_NOTICE", "Files were saved under the wrong site folder, [x], while this site ran an affected e107 version. Merge them into this site's folder on the [y] page.");
+define("ADLAN_SITE_FOLDER_NOTICE_LINK", "Multi-Site");
