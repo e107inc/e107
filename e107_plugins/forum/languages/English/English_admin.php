@@ -241,4 +241,6 @@ return [
     'FORLAN_222' => "Quick reply editor",
     'FORLAN_223' => "Use only plain text (no bbcode or html allowed!)",
     'FORLAN_REFUSED_TOKEN_MISSING' => "The forum upgrade did nothing, because the request carried no security token. Start it from the forum's administration menu rather than from a bookmark or a link on another site.",
+    'FORLAN_HELP_IMAGE_DISPLAY' => "Image that will be displayed using {FORUMIMAGE}",
+    'FORLAN_HELP_ICON_DISPLAY' => "Icon that will be displayed using {FORUMICON}",
 ];
