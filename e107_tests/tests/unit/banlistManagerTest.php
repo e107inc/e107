@@ -9,7 +9,8 @@
 
 /**
  * writeBanListFiles() turns the banlist table into the files eIPHandler
- * prefix-matches every visitor against.
+ * prefix-matches every visitor against, and banRetriggerAction() is the cron
+ * half of ban retriggering.
  */
 class banlistManagerTest extends \Codeception\Test\Unit
 {
@@ -19,6 +20,15 @@ class banlistManagerTest extends \Codeception\Test\Unit
 	/** @var array banlist_id values written by this test */
 	private $insertedIds = array();
 
+	/** @var string */
+	private $retriggerFile = '';
+
+	/** @var mixed the ban_durations pref as found, restored in _after() */
+	private $savedDurations = null;
+
+	const HOURS = 6;
+	const IP_TRIGGERED = '10.66.66.11';
+	const IP_UNTOUCHED = '10.66.66.22';
 	const BAN_TYPE = -2;
 	const IP_WILDCARD = '10.77.66.*';
 	const IP_IN_WILDCARD = '10.77.66.65';
@@ -38,10 +48,21 @@ class banlistManagerTest extends \Codeception\Test\Unit
 		require_once(e_HANDLER.'iphandler_class.php');
 
 		$this->mgr = new banlistManager();
+
+		$this->retriggerFile = e107::getIPHandler()->getConfigDir().eIPHandler::BAN_FILE_RETRIGGER_NAME.eIPHandler::BAN_FILE_EXTENSION;
+
+		$this->savedDurations = e107::getConfig()->get('ban_durations');
 	}
 
 	protected function _after()
 	{
+		if($this->retriggerFile !== '' && file_exists($this->retriggerFile))
+		{
+			unlink($this->retriggerFile);
+		}
+
+		e107::getConfig()->set('ban_durations', $this->savedDurations);
+
 		if(!empty($this->insertedIds))
 		{
 			e107::getDb()->delete('banlist', '`banlist_id` IN ('.implode(',', $this->insertedIds).')');
@@ -56,16 +77,17 @@ class banlistManagerTest extends \Codeception\Test\Unit
 	/**
 	 * @param string $ip
 	 * @param int $type
+	 * @param int $expires
 	 * @return int banlist_id
 	 */
-	private function haveBan($ip, $type = self::BAN_TYPE)
+	private function haveBan($ip, $type = self::BAN_TYPE, $expires = 0)
 	{
 		$id = e107::getDb()->insert('banlist', array(
 			'banlist_id'         => 0,
 			'banlist_ip'         => $ip,
 			'banlist_bantype'    => $type,
 			'banlist_datestamp'  => time() - 3600,
-			'banlist_banexpires' => 0,
+			'banlist_banexpires' => $expires,
 			'banlist_admin'      => 0,
 			'banlist_reason'     => 'e107help banlist file probe',
 			'banlist_notes'      => '',
@@ -75,6 +97,130 @@ class banlistManagerTest extends \Codeception\Test\Unit
 		$this->insertedIds[] = (int) $id;
 
 		return (int) $id;
+	}
+
+	/**
+	 * @param int $id
+	 * @return int banlist_banexpires
+	 */
+	private function expiryOf($id)
+	{
+		return (int) e107::getDb()->retrieve('banlist', 'banlist_banexpires', '`banlist_id` = '.(int) $id);
+	}
+
+	/**
+	 * Queue one ban for retriggering, in the format eIPHandler writes and
+	 * splitLogEntry() reads: timestamp, the matched address, negative reason
+	 * code, notes.
+	 *
+	 * @param string $address
+	 * @return void
+	 */
+	private function haveRetriggerEntry($address)
+	{
+		file_put_contents($this->retriggerFile, time().' '.$address.' '.self::BAN_TYPE." Retrigger: ".self::IP_TRIGGERED."\n");
+	}
+
+	/**
+	 * The update carries no WHERE, so every row in the table takes the value
+	 * computed for the one address that came back: a permanent ban makes the
+	 * whole ban list permanent, and a timed one hands lapsed rows a future
+	 * expiry, which puts them back into force.
+	 */
+	public function testRetriggerLeavesEveryOtherBanAlone()
+	{
+		e107::getConfig()->set('ban_durations', array(self::BAN_TYPE => self::HOURS));
+
+		$untouchedExpiry = time() + 999999;
+		$this->haveBan(self::IP_TRIGGERED, self::BAN_TYPE, time() + 60);
+		$other = $this->haveBan(self::IP_UNTOUCHED, self::BAN_TYPE, $untouchedExpiry);
+		$this->haveRetriggerEntry(self::IP_TRIGGERED);
+
+		self::assertSame(1, $this->mgr->banRetriggerAction(), 'one address was queued, so one should have been actioned');
+
+		self::assertSame($untouchedExpiry, $this->expiryOf($other),
+			'a ban nobody retriggered must keep its own expiry');
+	}
+
+	/**
+	 * An address can carry more than one ban: banlist_ip has an ordinary index
+	 * rather than a unique one, and the admin screen writes what it is given.
+	 * The queue names the address, so the ban in force is the one to retrigger,
+	 * and demanding a single row meant a duplicated address retriggered nothing
+	 * at all and lapsed on schedule while the visitor was still knocking.
+	 */
+	public function testRetriggerReachesTheEnforcedBanWhenAnAddressHasMoreThanOneRow()
+	{
+		e107::getConfig()->set('ban_durations', array(eIPHandler::BAN_TYPE_MANUAL => self::HOURS));
+
+		$untouchedExpiry = time() + 999999;
+		$enforced = $this->haveBan(self::IP_TRIGGERED, eIPHandler::BAN_TYPE_MANUAL, time() + 60);
+		$other = $this->haveBan(self::IP_TRIGGERED, self::BAN_TYPE, $untouchedExpiry);
+		$this->haveRetriggerEntry(self::IP_TRIGGERED);
+
+		$before = time();
+
+		self::assertSame(1, $this->mgr->banRetriggerAction(),
+			'a second row on the address must not stop the ban in force being retriggered');
+
+		self::assertGreaterThanOrEqual($before + (self::HOURS * 3600), $this->expiryOf($enforced),
+			'the ban the site enforces for that address has to run for its full duration again');
+		self::assertSame($untouchedExpiry, $this->expiryOf($other),
+			'the other row is a ban of its own, under a type with no duration configured');
+	}
+
+	/**
+	 * The ban that stopped the visitor was in force when it stopped them: the
+	 * ban file's own check passes over an entry whose time limit has run out.
+	 * So where an address carries a lapsed ban and a live one, the live one is
+	 * the ban to push out, whatever the two say about precedence, and the
+	 * lapsed one is not put back into force on its way past.
+	 */
+	public function testRetriggerPassesOverALapsedBanForTheLiveOneOnTheSameAddress()
+	{
+		e107::getConfig()->set('ban_durations', array(
+			eIPHandler::BAN_TYPE_MANUAL => self::HOURS,
+			self::BAN_TYPE              => self::HOURS,
+		));
+
+		$ranOutAnHourAgo = time() - 3600;
+		$lapsed = $this->haveBan(self::IP_TRIGGERED, eIPHandler::BAN_TYPE_MANUAL, $ranOutAnHourAgo);
+		$live = $this->haveBan(self::IP_TRIGGERED, self::BAN_TYPE, time() + 60);
+		$this->haveRetriggerEntry(self::IP_TRIGGERED);
+
+		$before = time();
+
+		self::assertSame(1, $this->mgr->banRetriggerAction(), 'the live ban on that address has to be retriggered');
+
+		self::assertSame($ranOutAnHourAgo, $this->expiryOf($lapsed),
+			'a ban that has already run out must not be put back into force');
+		self::assertGreaterThanOrEqual($before + (self::HOURS * 3600), $this->expiryOf($live),
+			'the ban still in force is the one the visitor was stopped by');
+	}
+
+	/**
+	 * The ban type is what ban_durations is keyed on, in hours, everywhere else
+	 * in this handler. Read under a column that does not exist it leaves nothing
+	 * to add, so the address that came back while banned had its ban left
+	 * exactly where it was.
+	 */
+	public function testRetriggerPushesTheBanOutByItsConfiguredDuration()
+	{
+		e107::getConfig()->set('ban_durations', array(self::BAN_TYPE => self::HOURS));
+
+		$id = $this->haveBan(self::IP_TRIGGERED, self::BAN_TYPE, time() + 60);
+		$this->haveRetriggerEntry(self::IP_TRIGGERED);
+
+		$before = time();
+		$count = $this->mgr->banRetriggerAction();
+		$after = time();
+
+		self::assertSame(1, $count, 'one address was queued, so one should have been actioned');
+
+		$expiry = $this->expiryOf($id);
+		self::assertGreaterThanOrEqual($before + (self::HOURS * 3600), $expiry,
+			'the ban has to run for its full configured duration from now');
+		self::assertLessThanOrEqual($after + (self::HOURS * 3600), $expiry);
 	}
 
 	/**
