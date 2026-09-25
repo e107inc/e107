@@ -443,7 +443,7 @@ class download_shortcodes extends e_shortcode
 
 	function sc_download_list_author()
 	{
-		return $this->var['download_author'];
+		return !empty($this->var['download_author']) ? $this->var['download_author'] : "";
 	}
 
 	function sc_download_list_requested()
@@ -1023,13 +1023,13 @@ class download_shortcodes extends e_shortcode
 	function sc_download_view_authoremail_lan()
 	{
 
-		return ($this->var['download_author_email']) ? LAN_dl_30 : "";
+		return !empty($this->var['download_author_email']) ? LAN_dl_30 : "";
 	}
 
 	function sc_download_view_authorwebsite_lan()
 	{
 
-		return ($this->var['download_author_website']) ? LAN_dl_31 : "";
+		return !empty($this->var['download_author_website']) ? LAN_dl_31 : "";
 	}
 
 	function sc_download_view_date_lan()
