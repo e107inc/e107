@@ -501,20 +501,94 @@
 		 */
 		public function testPostObserverWithoutCustomPagesInThePost()
 		{
+			$run = $this->postStyleSubmission(e107::getPref('sitetheme'), array());
+
+			$this->assertSame(array(), $run['warnings'], implode("\n", $run['warnings']));
+			$this->assertSame($run['before']['sitetheme_custompages'], $run['stored']['sitetheme_custompages']);
+		}
+
+		/**
+		 * The four preferences {@see themeHandler::postObserver()} writes under submit_style describe the site theme, so a post naming another theme has to be refused.
+		 * @see https://github.com/e107inc/e107/issues/6177
+		 */
+		public function testPostObserverRefusesAStyleSubmissionNamingAnotherTheme()
+		{
+			$siteTheme = e107::getPref('sitetheme');
+			$run = $this->postStyleSubmission($siteTheme === 'bootstrap3' ? 'voux' : 'bootstrap3');
+
+			$this->assertSame($run['before'], $run['stored'], 'a post naming another theme must leave every site-scoped theme preference as it was');
+			$this->assertSame(array(TPVLAN_REFUSED_NOT_SITE_THEME), $run['errors'], 'the administrator has to be told why the options were not saved');
+		}
+
+		/**
+		 * The positive control for {@see themeHandlerTest::testPostObserverRefusesAStyleSubmissionNamingAnotherTheme()}: a refusal that refused everything would pass it too.
+		 */
+		public function testPostObserverSavesAStyleSubmissionNamingTheSiteTheme()
+		{
+			$run = $this->postStyleSubmission(e107::getPref('sitetheme'));
+
+			$this->assertSame('themeHandlerTest.css', $run['stored']['themecss'], 'the site theme\'s own submission still writes the stylesheet');
+			$this->assertSame('themeHandlerTest_layout', $run['stored']['sitetheme_deflayout'], 'and the default layout with it');
+			$this->assertArrayHasKey('themeHandlerTest_layout', $run['stored']['sitetheme_custompages'], 'and the custom pages the form posted');
+			$this->assertSame(array(), $run['errors'], 'nothing was refused, so nothing should be reported');
+		}
+
+		/**
+		 * Two theme directories can differ only in characters the file filter folds onto a hyphen, so the comparison has to be on the names themselves.
+		 */
+		public function testPostObserverRefusesAThemeWhoseNameOnlyFiltersOntoTheSiteThemes()
+		{
+			$config    = e107::getConfig();
+			$siteTheme = $config->get('sitetheme');
+
+			try
+			{
+				$config->set('sitetheme', 'themeHandlerTest-theme')->save(false, true, false);
+				$run = $this->postStyleSubmission('themeHandlerTest theme');
+			}
+			finally
+			{
+				$config->set('sitetheme', $siteTheme)->save(false, true, false);
+			}
+
+			$this->assertSame($run['before'], $run['stored'], 'two directories that filter onto one name are still two themes');
+			$this->assertSame(array(TPVLAN_REFUSED_NOT_SITE_THEME), $run['errors'], 'and the administrator is told so');
+		}
+
+		/**
+		 * Drives {@see themeHandler::postObserver()} through submit_style for one posted theme, restoring every preference it wrote.
+		 *
+		 * @param string $curTheme
+		 * @param array|null $values the style fields to post beside curTheme; null posts the full set
+		 * @return array before, stored, errors and warnings
+		 */
+		private function postStyleSubmission($curTheme, $values = null)
+		{
 			e107::coreLan('theme', true);
+
+			if(!is_array($values))
+			{
+				$values = array(
+					'themecss'       => 'themeHandlerTest.css',
+					'layout_default' => 'themeHandlerTest_layout',
+					'custompages'    => array('themeHandlerTest_layout' => "/themeHandlerTest\n"),
+				);
+			}
 
 			$config        = e107::getConfig();
 			$themeConfig   = e107::getThemeConfig(e107::getPref('sitetheme'));
 			$siteThemePref = $config->get('sitetheme_pref');
 			$original      = $config->getPref();
-			$customPages   = $config->get('sitetheme_custompages');
 			$posted        = $_POST;
+			$mes           = e107::getMessage();
 			$warnings      = array();
 
 			$this->th->themeConfigObj = $this->themeConfigStub();
 
-			$_POST = array('curTheme' => e107::getPref('sitetheme'), 'submit_style' => 1);
+			$before = $this->siteThemePreferences();
+			$_POST  = array('curTheme' => $curTheme, 'submit_style' => 1) + $values;
 
+			$mes->reset(false, false, true);
 			set_error_handler(function ($no, $str) use (&$warnings) {
 				$warnings[] = $str;
 
@@ -524,18 +598,40 @@
 			try
 			{
 				$this->th->postObserver();
-				$stored = $config->get('sitetheme_custompages');
+				$errors = $mes->get(E_MESSAGE_ERROR, 'default', true, false);
+
+				return array(
+					'before'   => $before,
+					'stored'   => $this->siteThemePreferences(),
+					'errors'   => empty($errors) ? array() : (array) $errors,
+					'warnings' => $warnings,
+				);
 			}
 			finally
 			{
 				restore_error_handler();
 				$_POST = $posted;
+				$config->removePostedData();
 				$config->setPref($original)->save(false, true, false);
 				self::undoThemeConfigSave(array($themeConfig), $siteThemePref);
+				$mes->reset(false, false, true);
+			}
+		}
+
+		/**
+		 * @return array the site-scoped preferences the submit_style branch writes, keyed by preference name
+		 */
+		private function siteThemePreferences()
+		{
+			$config = e107::getConfig();
+			$stored = array();
+
+			foreach(array('themecss', 'sitetheme_deflayout', 'sitetheme_layouts', 'sitetheme_custompages') as $field)
+			{
+				$stored[$field] = $config->get($field);
 			}
 
-			$this->assertSame(array(), $warnings, implode("\n", $warnings));
-			$this->assertSame($customPages, $stored);
+			return $stored;
 		}
 
 		public function testFindDefault()
