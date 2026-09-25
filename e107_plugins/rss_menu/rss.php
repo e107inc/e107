@@ -213,6 +213,23 @@ else
 
 class rssCreate
 {
+	/** Every key {@see rssCreate::buildRss()} interpolates or tests, so a feed may carry only the ones it has; custom and media are not among them because it iterates those, and reaches custom through isset(). */
+	const ITEM = array(
+		'author'          => '',
+		'author_email'    => '',
+		'title'           => '',
+		'link'            => '',
+		'description'     => '',
+		'content_encoded' => '',
+		'comment'         => '',
+		'category_name'   => '',
+		'category_link'   => '',
+		'enc_url'         => '',
+		'enc_leng'        => '',
+		'enc_type'        => '',
+		'pubdate'         => 0,
+	);
+
 	protected $e107;
 
 	var $contentType;
@@ -301,11 +318,11 @@ class rssCreate
 				{
 					foreach($rs as $k=>$row)
 					{
-						$this -> rssItems[$k]['author'] = $row['author'];
-						$this -> rssItems[$k]['author_email'] = $row['author_email'];
-						$this -> rssItems[$k]['title'] = $row['title'];
+						$this -> rssItems[$k]['author'] = varset($row['author']);
+						$this -> rssItems[$k]['author_email'] = varset($row['author_email']);
+						$this -> rssItems[$k]['title'] = varset($row['title']);
 
-						if($row['link'])
+						if(!empty($row['link']))
 						{
 							if(stripos($row['link'], 'http') !== FALSE)
 							{
@@ -317,14 +334,16 @@ class rssCreate
 							}
 						}
 
-						$this -> rssItems[$k]['description'] = $row['description'];
+						$this -> rssItems[$k]['description'] = varset($row['description']);
+						$this -> rssItems[$k]['content_encoded'] = varset($row['content_encoded']);
+						$this -> rssItems[$k]['comment'] = varset($row['comment']);
 
-						if($row['enc_url'])
+						if(!empty($row['enc_url']))
 						{
-							$this -> rssItems[$k]['enc_url'] = SITEURLBASE.e_PLUGIN_ABS.$row['enc_url'].$row['item_id'];
+							$this -> rssItems[$k]['enc_url'] = SITEURLBASE.e_PLUGIN_ABS.$row['enc_url'].varset($row['item_id']);
 						}
 
-						if($row['enc_leng'])
+						if(!empty($row['enc_leng']))
 						{
 							$this -> rssItems[$k]['enc_leng'] = $row['enc_leng'];
 						}
@@ -333,14 +352,14 @@ class rssCreate
 						{
 							$this -> rssItems[$k]['enc_type'] = $this->getmime($eplug_rss['enc_type']);
 						}
-						elseif($row['enc_type'])
+						elseif(!empty($row['enc_type']))
 						{
 							$this -> rssItems[$k]['enc_type'] = $row['enc_type'];
 						}
 
-						$this -> rssItems[$k]['category_name'] = $row['category_name'];
+						$this -> rssItems[$k]['category_name'] = varset($row['category_name']);
 
-						if($row['category_link'])
+						if(!empty($row['category_link']))
 						{
 							if(stripos($row['category_link'], 'http') !== FALSE)
 							{
@@ -361,18 +380,23 @@ class rssCreate
 							$this -> rssItems[$k]['pubdate'] = time();
 						}
 
-						if($row['custom'])
+						if(!empty($row['custom']))
 						{
 							$this -> rssItems[$k]['custom'] = $row['custom'];
 						}
 
-						if($row['media'])
+						if(!empty($row['media']))
 						{
 							$this -> rssItems[$k]['media'] = $row['media'];
 						}
 					}
 				}
 			}
+		}
+
+		foreach($this -> rssItems as $k => $item)
+		{
+			$this -> rssItems[$k] = array_merge(self::ITEM, $item);
 		}
 	}
 
@@ -633,12 +657,6 @@ class rssCreate
 							<item>
 							<title>".$tp->toRss($value['title'])."</title>
 							<description>".substr($tp->toRss($value['description']),0,150);
-						if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
-						{
-							$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
-							echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
-							unset($news_thumbail);
-						}
 						echo "</description>
 							<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>
 							<link>".$link."</link>
