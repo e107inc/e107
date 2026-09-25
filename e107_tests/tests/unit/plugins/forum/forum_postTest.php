@@ -22,10 +22,6 @@ class forum_postTest extends \Test\Unit
 	const READ = '@@e107help-read-the-query-string@@';
 
 	/**
-	 * e_QUERY is defined before the boot rather than after it, because the form
-	 * turns an empty one away before it reads anything, and a CLI process has
-	 * no query string of its own.
-	 *
 	 * The marker is written from a shutdown function, because the page
 	 * redirects and exits on plenty of query strings, and it reports MODERATOR:
 	 * that constant is defined on the line after the three reads under test, so
@@ -36,16 +32,10 @@ class forum_postTest extends \Test\Unit
 	 */
 	private function openThePostForm(array $get)
 	{
-		$php = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-		$php .= "define('e_QUERY', '".http_build_query($get)."'); ";
-		$php .= "\$_E107 = array('cli' => true); ";
-		$php .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
-		$php .= "error_reporting(E_ALL); \$_GET = ".var_export($get, true)."; ";
-		$php .= "e107::getConfig()->setPref('plug_installed/forum', '2.0'); ";
-		$php .= "register_shutdown_function(function() { if(defined('MODERATOR')) { echo '".self::READ."'; } }); ";
+		$php = "register_shutdown_function(function() { if(defined('MODERATOR')) { echo '".self::READ."'; } }); ";
 		$php .= "require_once('".addslashes(APP_PATH.'/e107_plugins/forum/forum_post.php')."'); ";
 
-		list($output, ) = $this->runInCli($php);
+		list($output, ) = $this->bootPluginInCli('forum', '2.0', $get, $php);
 
 		$printed = implode("\n", $output);
 

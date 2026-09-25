@@ -249,13 +249,50 @@ class Unit extends \Codeception\Test\Unit
 	 */
 	protected function runInBootedCli($php, $ini = '', $e107 = array('cli' => true), $timeout = 60)
 	{
+		return $this->runInCli($this->cliBoot($e107).$php, $ini, array(), $timeout);
+	}
+
+	/**
+	 * Runs $php in a booted CLI child holding one query string and one installed plugin, which is what a plugin's own front-end files need before they will run.
+	 *
+	 * e_QUERY is defined ahead of the boot, and this is why the child cannot be
+	 * had from {@see Unit::runInBootedCli()}: e107::set_request() defines it from
+	 * the query string of the process, which a CLI process does not have, and the
+	 * first definition is the one the page then reads. The installed preference is
+	 * set in the child alone, so a plugin whose tables the test does not need
+	 * stays absent from the site.
+	 *
+	 * @param string $plugin plugin folder name, e.g. 'download'
+	 * @param string $version the version plug_installed carries for it
+	 * @param array $get the query string the child is opened with, as e_QUERY and as $_GET
+	 * @param string $php statements to run once the plugin is installed
+	 * @return array the output lines, stdout and stderr interleaved, then the exit status
+	 */
+	protected function bootPluginInCli($plugin, $version, array $get, $php)
+	{
+		$boot = "define('e_QUERY', '".http_build_query($get)."'); ";
+		$boot .= $this->cliBoot(array('cli' => true));
+		$boot .= "error_reporting(E_ALL); \$_GET = ".var_export($get, true)."; ";
+		$boot .= "e107::getConfig()->setPref('plug_installed/".$plugin."', '".$version."'); ";
+
+		return $this->runInCli($boot.$php);
+	}
+
+	/**
+	 * The statements that boot e107 in a child of this run, so every child boots the one way whatever it was started for.
+	 *
+	 * @param array $e107 what $_E107 holds when class2.php boots
+	 * @return string
+	 */
+	private function cliBoot($e107)
+	{
 		$boot = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
 		$boot .= "\$_SERVER['SERVER_ADDR'] = '".self::SERVER_ADDRESS."'; ";
 		$boot .= "if(empty(\$_SERVER['REMOTE_ADDR'])) { \$_SERVER['REMOTE_ADDR'] = '".self::nextVisitorAddress()."'; } ";
 		$boot .= "\$_E107 = ".var_export($e107, true)."; ";
 		$boot .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
 
-		return $this->runInCli($boot.$php, $ini, array(), $timeout);
+		return $boot;
 	}
 
 	/**
