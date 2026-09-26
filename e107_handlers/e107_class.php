@@ -1330,7 +1330,9 @@ class e107
 	 */
 	public static function getPlugConfig($plug_name, $multi_row = '', $load = true)
 	{
-		if(!isset(self::$_plug_config_arr[$plug_name.$multi_row]))
+		$key = self::configKey($plug_name, $multi_row);
+
+		if(!isset(self::$_plug_config_arr[$key]))
 		{
 			e107_require_once(e_HANDLER.'pref_class.php');
 			$override_id = $plug_name.($multi_row ? "_{$multi_row}" : '');
@@ -1344,15 +1346,27 @@ class e107
 				//PHPVER: string parameter for is_subclass_of require PHP 5.0.3+
 				if(class_exists($class_name, false) && is_subclass_of('e_plugin_pref', $class_name)) //or e_pref ?
 				{
-					self::$_plug_config_arr[$plug_name.$multi_row] = new $class_name($load);
-					return self::$_plug_config_arr[$plug_name.$multi_row];
+					self::$_plug_config_arr[$key] = new $class_name($load);
+					return self::$_plug_config_arr[$key];
 				}
 			}
 
-			self::$_plug_config_arr[$plug_name.$multi_row] = new e_plugin_pref($plug_name, $multi_row, $load);
+			self::$_plug_config_arr[$key] = new e_plugin_pref($plug_name, $multi_row, $load);
 		}
 
-		return self::$_plug_config_arr[$plug_name.$multi_row];
+		return self::$_plug_config_arr[$key];
+	}
+
+	/**
+	 * The key {@see e107::getPlugConfig()} and {@see e107::getThemeConfig()} keep a preference object under, the bare folder name for the base row.
+	 *
+	 * @param string $folder plugin folder or theme name
+	 * @param string $multi_row
+	 * @return string
+	 */
+	private static function configKey($folder, $multi_row)
+	{
+		return $multi_row ? $folder.'/'.$multi_row : $folder;
 	}
 
 
@@ -1430,14 +1444,16 @@ class e107
 			$theme_name = self::getPref('sitetheme');
 		}
 
-		if(!isset(self::$_theme_config_arr[$theme_name.$multi_row]))
+		$key = self::configKey($theme_name, $multi_row);
+
+		if(!isset(self::$_theme_config_arr[$key]))
 		{
 			e107_require_once(e_HANDLER.'pref_class.php');
 
-			self::$_theme_config_arr[$theme_name.$multi_row] = new e_theme_pref($theme_name, $multi_row, $load);
+			self::$_theme_config_arr[$key] = new e_theme_pref($theme_name, $multi_row, $load);
 		}
 
-		return self::$_theme_config_arr[$theme_name.$multi_row];
+		return self::$_theme_config_arr[$key];
 	}
 
 
