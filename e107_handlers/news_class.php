@@ -403,7 +403,7 @@ class news {
 			'table' => 'news',
 			'pid'   => 'news_id',
 			'vars'  => 'news_item',
-			'perms' => 'H|H4',
+			'perms' => 'H|H1',
 			'shortcodes'    => array(
 					'news_title'        => array('field'=>'news_title', 'type'=>'text', 'container'=>'span'),
 					'news_description'  => array('field'=>'news_meta_description','type'=>'text', 'container'=>'span'),
