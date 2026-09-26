@@ -244,6 +244,24 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * {@see Acceptance::grabResponseBody()} without the values every render of a page draws afresh: asset cache-busters, e-token values and footer_default.php's browser-cache marker.
+	 *
+	 * The marker also hashes the visitor's class list, so it is only safe to drop
+	 * between pages fetched by the same kind of visitor, such as a guest with no
+	 * cookie each time.
+	 *
+	 * @return string
+	 */
+	public function grabComparableResponseBody()
+	{
+		return preg_replace(
+			array('#\?\d{6,}#', '#(name="e-token" (?:value|content)=")[^"]*#', '#<!-- [0-9a-f]{32} -->#'),
+			array('', '$1', ''),
+			$this->grabResponseBody()
+		);
+	}
+
+	/**
 	 * A response header, or '' when the response did not carry one.
 	 *
 	 * Codeception 5's PhpBrowser has no header accessor of any kind, so a test
