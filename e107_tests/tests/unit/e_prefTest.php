@@ -26,6 +26,116 @@
 
 		}
 
+		/**
+		 * Rows a test registered through {@see e_prefTest::expectRow()}.
+		 *
+		 * @var string[]
+		 */
+		protected $rows = array();
+
+		protected function _after()
+		{
+			foreach($this->rows as $prefid)
+			{
+				e107::getDb()->delete('core', "e107_name = '".$prefid."'");
+				e107::getCache()->clear_sys('Config_'.$prefid);
+			}
+
+			$this->rows = array();
+		}
+
+		/**
+		 * Register a row, and the cache file that stands for it, for removal in {@see e_prefTest::_after()}.
+		 *
+		 * @param string $prefid
+		 * @return string the row name, for the assertions that read it back
+		 */
+		private function expectRow($prefid)
+		{
+			$this->rows[$prefid] = $prefid;
+
+			return $prefid;
+		}
+
+		/**
+		 * Read a row back from the database rather than from the cache file.
+		 *
+		 * @param string $prefid
+		 * @return array
+		 */
+		private function readStored($prefid)
+		{
+			$sql = e107::getDb();
+
+			if(!$sql->select('core', 'e107_value', 'e107_name = :name', array('name' => $prefid)))
+			{
+				return array();
+			}
+
+			$row = $sql->fetch();
+
+			return e107::unserialize($row['e107_value']);
+		}
+
+		/**
+		 * A plugin or theme preference object, built the way a plugin builds one.
+		 *
+		 * @param string $class e_plugin_pref or e_theme_pref
+		 * @param string $id folder or theme name
+		 * @param string $multi_row
+		 * @return e_pref
+		 */
+		private function openOwnedPref($class, $id, $multi_row = '')
+		{
+			$pref = $this->make($class);
+			$pref->__construct($id, $multi_row, false);
+			$pref->load();
+
+			return $pref;
+		}
+
+		public function ownedPrefProvider()
+		{
+			return array(
+				'plugin' => array('e_plugin_pref', 'plugin_'),
+				'theme'  => array('e_theme_pref', 'theme_'),
+			);
+		}
+
+		/**
+		 * @dataProvider ownedPrefProvider
+		 * @param string $class
+		 * @param string $prefix
+		 */
+		public function testMultiRowPrefReadsItsOwnRow($class, $prefix)
+		{
+			$id = 'e107help_pref_multi_row';
+			$this->expectRow($prefix.$id);
+			$this->expectRow($prefix.$id.'_second');
+
+			$this->openOwnedPref($class, $id)->set('kept', 'base')->save(false, true, false);
+
+			$this->assertSame(array(), $this->openOwnedPref($class, $id, 'second')->getPref(), 'a row nobody has saved holds nothing, whatever the base row\'s cache file says');
+		}
+
+		/**
+		 * @dataProvider ownedPrefProvider
+		 * @param string $class
+		 * @param string $prefix
+		 */
+		public function testMultiRowPrefSaveLeavesTheBaseRowAlone($class, $prefix)
+		{
+			$id = 'e107help_pref_multi_row';
+			$row = $this->expectRow($prefix.$id.'_second');
+			$this->expectRow($prefix.$id);
+
+			$this->openOwnedPref($class, $id)->set('kept', 'base')->save(false, true, false);
+			$this->openOwnedPref($class, $id, 'second')->set('other', 'value')->save(false, true, false);
+
+			$this->assertSame(array('other' => 'value'), $this->readStored($row), 'a save stores what was set on the row and nothing of the base row');
+			$this->assertSame(array('kept' => 'base'), $this->openOwnedPref($class, $id)->getPref(), 'the base row reads its own preferences back after a save to another row');
+		}
+
 
 		public function testGetPref()
 		{
@@ -105,7 +215,7 @@
 		 */
 		public function testASaveOutsideTheAdminAreaDefinesNoAdminPhrases()
 		{
-			$row = 'test_pref_admin_lan';
+			$row = $this->expectRow('test_pref_admin_lan');
 			$begin = '@@e107help-adlan8-begin@@';
 			$end = '@@e107help-adlan8-end@@';
 
@@ -117,9 +227,6 @@
 				."\$before ? 'defined before the save' : (defined('ADLAN_8') ? 'defined by the save' : 'undefined'), '".$end."';";
 
 			list($output, $status) = $this->runInBootedCli($php, '', array('cli' => true, 'no_online' => true));
-
-			e107::getDb()->delete('core', "e107_name = '".$row."'");
-			e107::getCache()->clear_sys('Config_'.$row);
 
 			$printed = implode("\n", $output);
 			$matches = array();
