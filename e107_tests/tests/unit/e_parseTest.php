@@ -1733,7 +1733,66 @@ EXPECTED;
 		$string = "This is a long string that will be truncated.";
 		$result = $this->tp->truncate($string, 20);
 		self::assertSame('This is a long st...', $result);
+		self::assertSame($result, $this->tp->truncate($string, 20, '...', true), 'an explicit exact cut is the default one');
 
+	}
+
+	public function testTruncateCutsAtAWordBoundaryWhenNotExact()
+	{
+		$cases = array(
+			'plain text'                         => array('This is a long string that will be truncated.', 'This is a long...'),
+			'html'                               => array('<p>This is a long string that will be truncated.</p>', '<p>This is a long...</p>'),
+			'bbcode'                             => array('[b]This is a long[/b] string that will be truncated.', 'This is a long...'),
+			'a word with no space to go back to' => array('Supercalifragilisticexpialidocious', 'Supercalifragilis...'),
+			'a text short enough to keep whole'  => array('Short and sweet...', 'Short and sweet...'),
+		);
+
+		foreach ($cases as $pins => $case)
+		{
+			list($text, $expected) = $case;
+
+			self::assertSame($expected, $this->tp->truncate($text, 20, '...', false), $pins);
+		}
+	}
+
+	public function testTruncateRefusesAFifthArgument()
+	{
+		$this->expectException('InvalidArgumentException');
+		$this->expectExceptionMessage('5 given');
+
+		$this->tp->truncate('This is a long string that will be truncated.', 20, '...', false, 'stray');
+	}
+
+	public function testTruncateStillRunsUnderAnOverrideWithTheThreeParameterSignature()
+	{
+		list($output, $status) = $this->truncateUnderOverride('public function truncate($text, $length = 100, $ending = "...") { return "[" . parent::truncate($text, $length, $ending) . "]"; }');
+
+		self::assertSame(array('[This is a long st...]'), $output);
+		self::assertSame(0, $status);
+	}
+
+	public function testTruncateKeepsATextTruncateOverrideAnswerThatDoesNotEndInTheEnding()
+	{
+		list($output, $status) = $this->truncateUnderOverride('public function text_truncate($text, $len = 200, $more = " ... ") { return "[" . parent::text_truncate($text, $len, $more) . "]"; }');
+
+		self::assertSame(array('[This is a long st...]'), $output);
+		self::assertSame(0, $status);
+	}
+
+	/**
+	 * @param string $override the body of a class extending e_parse, declared in a child process that reports every notice, warning and fatal
+	 * @return array the child's output lines from a word-safe truncate() of a 46-character sentence to 20, then its exit status
+	 */
+	private function truncateUnderOverride($override)
+	{
+		$probe = 'define("e107_INIT", true);'
+			. ' require ' . var_export(e_HANDLER . 'core_functions.php', true) . ';'
+			. ' require ' . var_export(e_HANDLER . 'e_parse_class.php', true) . ';'
+			. ' class overriding_parse extends e_parse { ' . $override . ' }'
+			. ' $tp = new overriding_parse();'
+			. ' echo $tp->truncate("This is a long string that will be truncated.", 20, "...", false);';
+
+		return $this->runInCli($probe, '-d error_reporting=-1 -d display_errors=1');
 	}
 
 	public function testSimpleParse()

@@ -1291,16 +1291,26 @@ class e_parse
 	 * Universal text/bbcode/html truncate method.
 	 * new in v2.3.1
 	 *
+	 * An optional fourth argument, bool $exact (default true), cuts at the last space instead of mid-word when false.
+	 *
 	 * @param        $text
 	 * @param int    $length
 	 * @param string $ending
 	 * @return string
+	 * @throws InvalidArgumentException when called with more than four arguments.
 	 */
 	public function truncate($text, $length = 100, $ending = '...')
 	{
+		if (func_num_args() > 4)
+		{
+			throw new InvalidArgumentException('e_parse::truncate() takes at most four arguments ($text, $length, $ending, $exact), ' . func_num_args() . ' given.');
+		}
+
+		$exact = func_num_args() > 3 ? (bool) func_get_arg(3) : true;
+
 		if ($this->isHtml($text))
 		{
-			return $this->html_truncate($text, $length, $ending);
+			return $this->html_truncate($text, $length, $ending, $exact);
 		}
 
 		if ($this->isBBcode($text))
@@ -1308,8 +1318,36 @@ class e_parse
 			$text = $this->toText($text);
 		}
 
-		return $this->text_truncate($text, $length, $ending);
+		$truncated = $this->text_truncate($text, $length, $ending);
+		if ($exact || $truncated === $text)
+		{
+			return $truncated;
+		}
 
+		$cut = (string) substr($truncated, 0, strlen($truncated) - strlen($ending));
+		if ($cut . $ending !== $truncated)
+		{
+			return $truncated;
+		}
+
+		list($kept) = $this->splitAtLastSpace($cut);
+
+		return $kept . $ending;
+	}
+
+	/**
+	 * @param string $text
+	 * @return array $text before and from its last space above position 0, or $text and '' when there is none.
+	 */
+	private function splitAtLastSpace($text)
+	{
+		$spacepos = $this->ustrrpos($text, ' ');
+		if ($spacepos > 0)
+		{
+			return array($this->usubstr($text, 0, $spacepos), $this->usubstr($text, $spacepos));
+		}
+
+		return array($text, '');
 	}
 
 	/**
@@ -1391,22 +1429,17 @@ class e_parse
 		}
 		if (!$exact)
 		{
-			$spacepos = $this->ustrrpos($truncate, ' ');
-			if ($spacepos > 0)
+			list($truncate, $bits) = $this->splitAtLastSpace($truncate);
+			preg_match_all('/<\/([a-z]+)>/i', $bits, $droppedTags, PREG_SET_ORDER);
+			if (!empty($droppedTags))
 			{
-				$bits = $this->usubstr($truncate, $spacepos);
-				preg_match_all('/<\/([a-z]+)>/i', $bits, $droppedTags, PREG_SET_ORDER);
-				if (!empty($droppedTags))
+				foreach ($droppedTags as $closingTag)
 				{
-					foreach ($droppedTags as $closingTag)
+					if (!in_array($closingTag[1], $openTags))
 					{
-						if (!in_array($closingTag[1], $openTags))
-						{
-							array_unshift($openTags, $closingTag[1]);
-						}
+						array_unshift($openTags, $closingTag[1]);
 					}
 				}
-				$truncate = $this->usubstr($truncate, 0, $spacepos);
 			}
 		}
 		$truncate .= $ending;
