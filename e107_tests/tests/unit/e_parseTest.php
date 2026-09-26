@@ -12,6 +12,7 @@
 class e_parseTest extends \Codeception\Test\Unit
 {
 	use \Test\CorePrefs;
+	use \Test\BootedCli;
 
 	/** @var e_parse */
 	private $tp;
@@ -1400,7 +1401,7 @@ EXPECTED;
 
 		$string = "This is has something &amp; something";
 		$result = $this->tp->text_truncate($string, 29);
-		$this->assertSame('This is has something &  ... ', $result);
+		$this->assertSame('This is has something &amp;  ... ', $result);
 
 		$string = "Can't fail me now [b]Bold[/b]";
 		$result = $this->tp->text_truncate($string, 25);
@@ -1410,6 +1411,86 @@ EXPECTED;
 		$result = $this->tp->text_truncate($string, 25);
 		$this->assertSame("Can't fail me now Bold", $result);
 
+	}
+
+	public function testText_truncateKeepsHtmlEntitiesEncoded()
+	{
+		$string = '&lt;img src=x onerror=alert(1)&gt;' . str_repeat(' pad', 20);
+
+		foreach (array(10, 25, 33, 34, 50, 200, 500) as $len)
+		{
+			$result = $this->tp->text_truncate($string, $len, '');
+			$this->assertStringNotContainsString('<img', $result, 'len=' . $len);
+			$this->assertStringNotContainsString('>', $result, 'len=' . $len);
+		}
+
+		$result = $this->tp->text_truncate('&amp;&amp;&amp;&amp;&amp;&amp;', 3, '');
+		$this->assertSame('&amp;&amp;&amp;', $result);
+	}
+
+	public function testTruncateKeepsHtmlEntitiesEncoded()
+	{
+		$string = '&lt;img src=x onerror=alert(1)&gt;' . str_repeat(' pad', 20);
+
+		foreach (array(10, 25, 33, 34, 50, 200, 500) as $len)
+		{
+			$result = $this->tp->truncate($string, $len, '');
+			$this->assertStringNotContainsString('<img', $result, 'len=' . $len);
+			$this->assertStringNotContainsString('>', $result, 'len=' . $len);
+		}
+	}
+
+	public function testText_truncateCutsCharactersNotBytes()
+	{
+		$this->assertSame(str_repeat('é', 10), $this->tp->text_truncate(str_repeat('é', 40), 10, ''));
+		$this->assertSame('Café cr...', $this->tp->text_truncate('Café crème and more text here', 10, '...'));
+		$this->assertSame(str_repeat('😀', 5), $this->tp->text_truncate(str_repeat('😀', 20), 5, ''));
+		$this->assertSame('日本語のテキス ... ', $this->tp->text_truncate(str_repeat('日本語のテキスト', 5), 12, ' ... '));
+
+		$result = $this->tp->html_truncate('<p>' . str_repeat('é', 40) . '</p>', 10, '');
+		$this->assertSame('<p>' . str_repeat('é', 10) . '</p>', $result);
+
+		$fits = '<p>' . str_repeat('é', 8) . '</p>';
+		$this->assertSame($fits, $this->tp->html_truncate($fits, 10, '...'));
+	}
+
+	public function testText_truncateKeepsValidCharactersWholeBesideAnInvalidByte()
+	{
+		$result = $this->tp->text_truncate(str_repeat('é', 20) . "\xFF", 5, '');
+		$this->assertSame(str_repeat('é', 5), $result);
+
+		$result = $this->tp->text_truncate(str_repeat('日', 20) . "\xFF", 5, '');
+		$this->assertSame(str_repeat('日', 5), $result);
+
+		$result = $this->tp->html_truncate('<p>' . str_repeat('é', 20) . "\xFF" . '</p>', 5, '');
+		$this->assertSame('<p>' . str_repeat('é', 5) . '</p>', $result);
+
+		$result = $this->tp->html_truncate('<p>' . str_repeat('日', 20) . "\xFF" . '</p>', 5, '');
+		$this->assertSame('<p>' . str_repeat('日', 5) . '</p>', $result);
+	}
+
+	public function testTruncatorsCountAWholeEntityAsOneCharacterAndNothingMore()
+	{
+		$entities = str_repeat('&#1234567;', 20);
+
+		$this->assertSame(str_repeat('&#1234567;', 10), $this->tp->text_truncate($entities, 10, ''));
+		$this->assertSame('<p>' . str_repeat('&#1234567;', 10) . '</p>', $this->tp->html_truncate('<p>' . $entities . '</p>', 10, ''));
+		$this->assertSame("&\xC5\xBF", $this->tp->text_truncate(str_repeat("&\xC5\xBF\xC5\xBF;", 4) . 'tail', 2, ''));
+	}
+
+	public function testTruncatingAVeryLongTextStaysWithinASmallMemoryLimit()
+	{
+		$probe = 'define("e107_INIT", true);'
+			. ' require ' . var_export(e_HANDLER . 'core_functions.php', true) . ';'
+			. ' require ' . var_export(e_HANDLER . 'e_parse_class.php', true) . ';'
+			. ' $tp = new e_parse();'
+			. ' $text = str_repeat("a", 4 * 1024 * 1024);'
+			. ' echo $tp->text_truncate($text, 200, "..."), "\n", $tp->html_truncate("<p>" . $text . "</p>", 200, "...");';
+
+		list($output, $status) = $this->runInCli($probe, '-d memory_limit=48M');
+
+		$this->assertSame(0, $status, implode("\n", $output));
+		$this->assertSame(array(str_repeat('a', 197) . '...', '<p>' . str_repeat('a', 200) . '...</p>'), $output);
 	}
 
 	/**
