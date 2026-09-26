@@ -234,16 +234,7 @@ class e_signup
 		$resendGate->record($gateKind, $row['user_id']);
 
 		// Now send the email - got some valid info
-		$editPassword = e107::getPref('signup_option_password', 2);
-
-		if(empty($editPassword)) // user input of password was disabled, so generate a new one.
-		{
-			$row['user_password'] = $userMethods->resetPassword($row['user_id']);
-		}
-		else
-		{
-			$row['user_password'] = 'xxxxxxx';		// Don't know the real one
-		}
+		$row['user_password'] = 'xxxxxxx';		// Don't know the real one
 
 		$row['activation_url'] = SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'];
 

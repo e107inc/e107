@@ -96,6 +96,23 @@ class SignupResendCest
 		$I->assertSame(1, $this->mailsSent($I), 'the account that asked must still be sent its activation email');
 	}
 
+	public function aResendLeavesTheAccountsPasswordAlone(AcceptanceTester $I)
+	{
+		$I->wantTo('keep my password when somebody else asks for my activation email');
+
+		$I->haveSitePref('signup_option_password', 0);
+		$I->probe('act=clearmaillog');
+		$I->probe('act=cleargate');
+
+		$before = $this->waitingPassword($I);
+
+		$this->askForResend($I, self::WAITING);
+
+		$I->assertSame(1, $this->mailsSent($I), 'the resend must have gone as far as the activation email');
+		$I->assertSame($before, $this->waitingPassword($I),
+			'asking for an account\'s activation email must not change its password');
+	}
+
 	public function aNameAsLongAsTheSiteAllowsIsFoundInAnyAlphabet(AcceptanceTester $I)
 	{
 		$I->wantTo('still be sent my activation email when my user name is as long as the site allows, in any alphabet');
@@ -278,6 +295,15 @@ class SignupResendCest
 	}
 
 	/**
+	 * @param AcceptanceTester $I
+	 * @return string the password hash the unactivated member's row carries
+	 */
+	private function waitingPassword(AcceptanceTester $I)
+	{
+		return (string) $I->grabFromDatabase('e107_user', 'user_password', array('user_loginname' => self::WAITING));
+	}
+
+	/**
 	 * @return string
 	 */
 	private function probeSource()
@@ -297,7 +323,7 @@ header('Content-Type: text/plain');
 \$config = e107::getConfig('core');
 \$logFile = e_LOG.'mailoutlog.log';
 \$act = isset(\$_GET['act']) ? \$_GET['act'] : '';
-\$prefs = array('user_reg' => 1, 'user_reg_veri' => 1, 'auth_method' => 'e107', 'mail_log_options' => '1,1', 'mailer' => 'sendmail', 'sendmail' => '/bin/false');
+\$prefs = array('user_reg' => 1, 'user_reg_veri' => 1, 'auth_method' => 'e107', 'mail_log_options' => '1,1', 'mailer' => 'sendmail', 'sendmail' => '/bin/false', 'signup_option_password' => 2);
 
 switch(\$act)
 {
