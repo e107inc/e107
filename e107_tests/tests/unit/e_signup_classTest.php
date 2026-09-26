@@ -129,7 +129,7 @@
 			$this->assertSame($fromLogin, $fromResend,
 				'a wrong resend password did not leave the evidence a wrong login leaves');
 
-			$this->assertSame($email, $this->addressOf($name),
+			$this->assertSame($email, $this->valueOf($name, 'user_email'),
 				'the wrong password still moved the account to another address');
 		}
 
@@ -174,8 +174,27 @@
 			$this->assertSame($before, $this->failureEvidenceFor($name),
 				'a correct password was recorded as a failed login');
 
-			$this->assertSame($moved, $this->addressOf($name),
+			$this->assertSame($moved, $this->valueOf($name, 'user_email'),
 				'the correct password did not move the account to the new address');
+		}
+
+
+		/** Runs as the main administrator, so it covers the preview arm; SignupResendCest covers the guest's. */
+		public function testTheResendPreviewLeavesTheAccountsPasswordAlone()
+		{
+			$name = 'resendkeepspassword';
+			$id = $this->haveUnactivatedUser($name, $name.'@example.com');
+			$this->havePrefs(array('user_reg_veri' => 1, 'signup_option_password' => 0));
+
+			$before = $this->valueOf($name, 'user_password');
+
+			$out = $this->runResend($name, '', '');
+
+			$this->assertNotFalse(strpos($out, 'signup.php?activate.'.$id),
+				'the resend never rendered the activation email for this account: '.$out);
+
+			$this->assertSame($before, $this->valueOf($name, 'user_password'),
+				'the resend preview replaced the password of an account it was only asked to preview');
 		}
 
 
@@ -237,11 +256,12 @@
 
 		/**
 		 * @param string $name
-		 * @return string the address the account currently carries
+		 * @param string $column
+		 * @return string what that column currently carries for the account
 		 */
-		private function addressOf($name)
+		private function valueOf($name, $column)
 		{
-			return e107::getDb()->retrieve('user', 'user_email', "user_loginname = '".$name."'");
+			return e107::getDb()->retrieve('user', $column, "user_loginname = '".$name."'");
 		}
 
 
