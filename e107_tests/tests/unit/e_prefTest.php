@@ -511,8 +511,50 @@
 
 			$this->openOwnedPref('e_plugin_pref', $folder, 'second')->delete(null);
 
-			$this->assertSame(array(), $this->readStored($row), 'the row goes, whatever #6338 leaves in the base row\'s cache file');
+			$this->assertSame(array(), $this->readStored($row));
 			$this->assertSame(array('kept' => 'base'), $this->readStored($neighbour), 'a row the object does not own must survive');
+		}
+
+		public function ownedPrefProvider()
+		{
+			return array(
+				'plugin' => array('e_plugin_pref', 'plugin_'),
+				'theme'  => array('e_theme_pref', 'theme_'),
+			);
+		}
+
+		/**
+		 * @dataProvider ownedPrefProvider
+		 * @param string $class
+		 * @param string $prefix
+		 */
+		public function testMultiRowPrefReadsItsOwnRow($class, $prefix)
+		{
+			$id = 'e107help_pref_multi_row';
+			$this->expectRow($prefix.$id);
+			$this->expectRow($prefix.$id.'_second');
+
+			$this->openOwnedPref($class, $id)->set('kept', 'base')->save(false, true, false);
+
+			$this->assertSame(array(), $this->openOwnedPref($class, $id, 'second')->getPref(), 'a row nobody has saved holds nothing, whatever the base row\'s cache file says');
+		}
+
+		/**
+		 * @dataProvider ownedPrefProvider
+		 * @param string $class
+		 * @param string $prefix
+		 */
+		public function testMultiRowPrefSaveLeavesTheBaseRowAlone($class, $prefix)
+		{
+			$id = 'e107help_pref_multi_row';
+			$row = $this->expectRow($prefix.$id.'_second');
+			$this->expectRow($prefix.$id);
+
+			$this->openOwnedPref($class, $id)->set('kept', 'base')->save(false, true, false);
+			$this->openOwnedPref($class, $id, 'second')->set('other', 'value')->save(false, true, false);
+
+			$this->assertSame(array('other' => 'value'), $this->readStored($row), 'the first save of a row stores what was set on it and nothing of the base row');
+			$this->assertSame(array('kept' => 'base'), $this->openOwnedPref($class, $id)->getPref(), 'the base row reads its own preferences back after a save to another row');
 		}
 
 		/**
