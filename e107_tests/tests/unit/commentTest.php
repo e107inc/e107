@@ -7,8 +7,16 @@
 		/** @var comment */
 		protected $cm;
 
+		/** @var array */
+		private $savedPrefs = array();
+
 		protected function _before()
 		{
+			foreach(array('nested_comments') as $key)
+			{
+				$this->savedPrefs[$key] = e107::getConfig()->get($key);
+			}
+
 			e107::getDb()->truncate('comments');
 			$path = codecept_data_dir().'comments/commentsSetup.xml';
 			$result = e107::getXml()->e107Import($path);
@@ -28,6 +36,15 @@
 			}
 
 		}
+
+		protected function _after()
+		{
+			foreach($this->savedPrefs as $key => $value)
+			{
+				e107::getConfig()->set($key, $value);
+			}
+		}
+
 		public function testRender()
 		{
 			$plugin = '_blank';
@@ -66,6 +83,15 @@
 			$this->assertEquals('sub-red 2', $result[0]['comment_comment']);
 			$this->assertEquals('sub-red 1', $result[1]['comment_comment']);
 
+		}
+
+		public function testGetCommentsIndentsEveryReplyOneLevelBelowItsParent()
+		{
+			e107::getConfig()->set('nested_comments', 1);
+
+			$result = $this->cm->getComments('profile', 55, 0, array('action' => 'comment'));
+
+			$this->assertSame(2, substr_count($result['comments'], 'offset-md-2'));
 		}
 
 
