@@ -13,12 +13,13 @@ namespace e107\Flood;
 use e107\Database\ConnectionInterface;
 
 /**
- * How recently one source did something the site rations.
+ * How recently something the site rations happened for one source.
  *
  * A form that sends mail on demand can be held open by a script, and the
  * site-wide {@see \floodprotect} would let one caller close it for everybody
- * else. This applies the same flood setting to each source on its own, so a
- * caller can be slowed without the form going away for anyone but them.
+ * else. This rations each source on its own instead: a caller, who can be
+ * slowed without the form going away for anyone but them, or the account a
+ * mail goes to, which is then sent no more than one per window.
  *
  * Attempts are kept as rows in the temporary table, which the bootstrap
  * already prunes, so nothing accumulates and a source that stops trying is
@@ -40,9 +41,9 @@ class SourceGate
 	/**
 	 * @param ConnectionInterface $db
 	 * @param bool $enabled
-	 *   Whether the site rations submissions at all, normally FLOODPROTECT.
+	 *   Whether this ration applies at all, such as FLOODPROTECT for a caller.
 	 * @param int $timeout
-	 *   Seconds one source waits between attempts, normally FLOODTIMEOUT.
+	 *   Seconds one source waits between attempts, such as FLOODTIMEOUT for a caller.
 	 */
 	public function __construct(ConnectionInterface $db, $enabled, $timeout)
 	{
@@ -55,9 +56,9 @@ class SourceGate
 	 * @param string $kind
 	 *   What is being rationed.
 	 * @param string $source
-	 *   Who is asking. A caller who can choose their own address is one source
-	 *   however many they use, so see {@see \e107\Ip\Address::toSubscriberBlock()}
-	 *   before passing one.
+	 *   Who is asking, or whom it is done to, such as the account a mail goes to.
+	 *   A caller who can choose their own address is one source however many they
+	 *   use, so see {@see \e107\Ip\Address::toSubscriberBlock()} before passing one.
 	 * @return bool
 	 *   TRUE when this source tried too recently to be allowed another.
 	 */
