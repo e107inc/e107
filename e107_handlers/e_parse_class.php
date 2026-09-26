@@ -464,9 +464,6 @@ class e_parse
 	 * Returns the portion of string specified by the start and length parameters.
 	 * Unicode (UTF-8) analogue of standard @link http://php.net/substr substr PHP function.
 	 *
-	 * NOTE: May be subtle differences in return values dependent on which routine is used.
-	 *  Native substr() routine can return FALSE. mb_substr() and utf8_substr() just return an empty string.
-	 *
 	 * @param string  $str    The UTF-8 encoded string.
 	 * @param integer $start  Start of portion to be returned. Position is counted in amount of UTF-8 characters from the beginning of str.
 	 *                        First character's position is 0. Second character position is 1, and so on.
@@ -479,10 +476,15 @@ class e_parse
 
 		if ($this->multibyte)
 		{
-			return ($length === null) ? mb_substr($str, $start) : mb_substr($str, $start, $length);
+			return mb_substr($str, $start, $length);
 		}
 
-		return substr($str, $start, $length);
+		if ($length === null)
+		{
+			$length = strlen($str);
+		}
+
+		return (string) substr($str, $start, $length);
 
 	}
 
@@ -1297,7 +1299,7 @@ class e_parse
 		if (!$exact)
 		{
 			$spacepos = $this->ustrrpos($truncate, ' ');
-			if (isset($spacepos))
+			if ($spacepos > 0)
 			{
 				$bits = $this->usubstr($truncate, $spacepos);
 				preg_match_all('/<\/([a-z]+)>/i', $bits, $droppedTags, PREG_SET_ORDER);
@@ -1357,14 +1359,9 @@ class e_parse
 
 		$ret = $this->usubstr($text, 0, $len);
 
-		// search for possible broken html entities
-		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
-		// it should work for any characters encoding
-
-		$leftAmp = $this->ustrrpos($this->usubstr($ret, -8), '&');
-		if ($leftAmp)
+		if (preg_match('/(?<=.)&[0-9a-z#]{0,7}\z/is', $ret, $unterminatedEntity, PREG_OFFSET_CAPTURE))
 		{
-			$ret = $this->usubstr($ret, 0, $this->ustrlen($ret) - 8 + $leftAmp);
+			$ret = (string) substr($ret, 0, $unterminatedEntity[0][1]);
 		}
 
 		return $ret . $more;
