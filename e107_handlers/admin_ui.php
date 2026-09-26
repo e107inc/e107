@@ -7219,6 +7219,36 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 	/**
+	 * Whether this administrator holds the edit route, which is the route an ajax write acts through.
+	 *
+	 * @return bool
+	 */
+	private function hasAjaxWriteAccess()
+	{
+		$dispatcher = $this->getDispatcher();
+
+		return ($dispatcher instanceof e_admin_dispatcher)
+			&& $dispatcher->hasRouteAccess($this->getRequest()->getMode().'/edit');
+	}
+
+	/**
+	 * Refuse an ajax write with 403 Forbidden, recording in the ajax log what was missing.
+	 *
+	 * @param string $reason
+	 * @return void
+	 */
+	private function refuseAjaxWrite($reason)
+	{
+		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+
+		header($protocol.' 403 Forbidden', true, 403);
+		header('Status: 403 Forbidden', true, 403);
+		echo defset('ADLAN_86', 'Forbidden');
+
+		$this->logajax($reason);
+	}
+
+	/**
 	 * Inline edit action
 	 * @return void
 	 */
@@ -7250,15 +7280,14 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->fields[$_name]['inline'] = true;
 		}
 
-		if(!empty($this->fields[$_name]['noedit']) || !empty($this->fields[$_name]['nolist']) || empty($this->fields[$_name]['inline']) || empty($_token) || !password_verify(session_id(),$_token))
-		{
-			header($protocol.': 403 Forbidden', true, 403);
-			header('Status: 403 Forbidden', true, 403);
-			echo ADLAN_86; //Forbidden
+		$mayWrite = $this->hasAjaxWriteAccess();
 
+		if(!$mayWrite || !empty($this->fields[$_name]['noedit']) || !empty($this->fields[$_name]['nolist']) || empty($this->fields[$_name]['inline']) || empty($_token) || !password_verify(session_id(),$_token))
+		{
 			$result = var_export($this->fields[$_name], true);
 
 			$problem = array();
+			$problem['route'] = $mayWrite ? 'no' : 'yes';
 			$problem['noedit'] = !empty($this->fields[$_name]['noedit']) ? 'yes' : 'no';
 			$problem['nolist'] = !empty($this->fields[$_name]['nolist']) ? 'yes' : 'no';
 			$problem['inline'] = empty($this->fields[$_name]['inline']) ? 'yes' : 'no';
@@ -7266,7 +7295,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$problem['password'] = !password_verify(session_id(),$_token) ? 'yes' : 'no';
 
 			$result .= "\nForbidden Caused by: ".print_r($problem,true);
-			$this->logajax("Forbidden\nAction:".$this->getAction()."\nField (".$_name."):\n".$result);
+			$this->refuseAjaxWrite("Forbidden\nAction:".$this->getAction()."\nField (".$_name."):\n".$result);
 			return;
 		}
 
@@ -7352,6 +7381,12 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function SortAjaxPage()
 	{
+		if(!$this->hasAjaxWriteAccess())
+		{
+			$this->refuseAjaxWrite("Forbidden\nAction:".$this->getAction()."\nRoute: the mode's edit route is not this administrator's");
+			return;
+		}
+
 		if(!isset($_POST['all']) || empty($_POST['all']))
 		{
 			return;
