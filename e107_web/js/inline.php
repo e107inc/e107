@@ -25,9 +25,10 @@ class e107InlineEdit
 
 		$token = e107::getParser()->filter($_POST['token']);
 
-		$perm = (string) $_SESSION['editable'][$token]['perm'];
+		$editable = isset($_SESSION['editable'][$token]) ? $_SESSION['editable'][$token] : array();
+		$perms = isset($editable['perms']) ? trim((string) $editable['perms']) : '';
 
-		if(!ADMIN || !e_AJAX_REQUEST || !isset($_SESSION['editable'][$token]) || !getperms($perm))
+		if(!ADMIN || !e_AJAX_REQUEST || empty($editable) || $perms === '' || !getperms($perms))
 		{
 			$ret['msg'] = "Access Denied";
 			$ret['status'] = 'error';
@@ -47,10 +48,10 @@ class e107InlineEdit
 
 		$ret    = array();
 		$id     = intval($_POST['id']);
-		$table  = $_SESSION['editable'][$token]['table'];
-		$field  = $_SESSION['editable'][$token]['shortcodes'][$shortcode]['field'];
-		$pid    = $_SESSION['editable'][$token]['pid'];
-		$type   = $_SESSION['editable'][$token]['shortcodes'][$shortcode]['type'];
+		$table  = $editable['table'];
+		$field  = $editable['shortcodes'][$shortcode]['field'];
+		$pid    = $editable['pid'];
+		$type   = $editable['shortcodes'][$shortcode]['type'];
 
 
 		if(empty($field) || empty($pid) || empty($table))
