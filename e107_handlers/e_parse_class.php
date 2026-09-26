@@ -39,6 +39,27 @@ class e_parse
 
 	private static $hideMarkers = 0; // sets of [hide] markers handed out by setAsideHideBlocks(), so that no two renders share one
 
+	/**
+	 * Matches one HTML entity, the unit both truncators count as a single character.
+	 *
+	 * @var string
+	 */
+	private $htmlEntityRegexp = '&[0-9a-zA-Z]{2,8};|&#[0-9]{1,7};|&#[xX][0-9a-fA-F]{1,6};';
+
+	/**
+	 * The most bytes one such unit can take: a ten-byte entity, as no character is longer.
+	 *
+	 * @var int
+	 */
+	private $longestVisibleUnit = 10;
+
+	/**
+	 * Matches one well-formed UTF-8 character of two bytes or more.
+	 *
+	 * @var string
+	 */
+	private $utf8MultibyteRegexp = '[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2}';
+
 	// 'Hooked' parsers (array)
 	private $e_hook = array();
 
@@ -1378,7 +1399,7 @@ class e_parse
 	public function html_truncate($text, $length = 100, $ending = '...', $exact = true)
 	{
 
-		if ($this->ustrlen(preg_replace('/<.*?>/', '', $text)) <= $length)
+		if (count($this->visibleUnits(preg_replace('/<.*?>/', '', $text), (int) (float) $length + 1)) <= $length)
 		{
 			return $text;
 		}
@@ -1405,29 +1426,12 @@ class e_parse
 				}
 			}
 			$truncate .= $tag[1];
-			$contentLength = $this->ustrlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]));
+			$units = $this->visibleUnits($tag[3], (int) (float) $length - $totalLength + 1);
+			$contentLength = count($units);
 
 			if ($contentLength + $totalLength > $length)
 			{
-				$left = $length - $totalLength;
-				$entitiesLength = 0;
-				if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', $tag[3], $entities, PREG_OFFSET_CAPTURE))
-				{
-					foreach ($entities[0] as $entity)
-					{
-						if ($entity[1] + 1 - $entitiesLength <= $left)
-						{
-							$left--;
-							$entitiesLength += $this->ustrlen($entity[0]);
-						}
-						else
-						{
-							break;
-						}
-					}
-				}
-
-				$truncate .= $this->usubstr($tag[3], 0, $left + $entitiesLength);
+				$truncate .= implode('', array_slice($units, 0, max(0, $length - $totalLength)));
 				break;
 			}
 
@@ -1467,7 +1471,8 @@ class e_parse
 	 * @param string  $text string to process
 	 * @param int     $len  length of characters to be truncated
 	 * @param string  $more string which will be added if truncation
-	 * @return string Always returns text.
+	 * @return string Always returns text. The cut itself never decodes, though bbcode
+	 *                      and HTML input still goes through {@see e_parse::toText()} first.
 	 * @deprecated v2.3.1 Use {@see e_parse::truncate()}, passing the length and ending since its defaults differ; it keeps
 	 *             HTML that this method flattens to text. Avoid in new code and migrate existing call sites when refactoring;
 	 *             this method remains supported and tested, with no removal planned.
@@ -1488,22 +1493,48 @@ class e_parse
 			$text = $this->toText($text);
 		}
 
+		$units = $this->visibleUnits($text, (int) (float) $len + 1);
 
-		$text = html_entity_decode($text, ENT_QUOTES, 'utf-8');
-
-		if (function_exists('mb_strimwidth'))
+		if (count($units) <= $len)
 		{
-			return mb_strimwidth($text, 0, $len, $more);
+			return $text;
 		}
 
-		$ret = $this->usubstr($text, 0, $len);
+		$keep = $len - count($this->visibleUnits($more, (int) (float) $len + 1));
 
-		if (preg_match('/(?<=.)&[0-9a-z#]{0,7}\z/is', $ret, $unterminatedEntity, PREG_OFFSET_CAPTURE))
+		return implode('', array_slice($units, 0, max(0, $keep))) . $more;
+
+	}
+
+
+	/**
+	 * Split up to $limit units a reader sees off the start of text, each one HTML entity or one character.
+	 *
+	 * @param string $text
+	 * @param int    $limit
+	 * @return array
+	 */
+	private function visibleUnits($text, $limit)
+	{
+
+		$limit = max(0, (int) $limit);
+		$text = (string) $text;
+
+		if ($limit < strlen($text))
 		{
-			$ret = (string) substr($ret, 0, $unterminatedEntity[0][1]);
+			$text = (string) substr($text, 0, $limit * $this->longestVisibleUnit);
 		}
 
-		return $ret . $more;
+		$pattern = '/' . $this->htmlEntityRegexp . '|';
+		$units = array();
+
+		if (preg_match_all($pattern . './su', $text, $units) === false)
+		{
+			$units = array();
+			preg_match_all($pattern . $this->utf8MultibyteRegexp . '|./s', $text, $units);
+		}
+
+		return isset($units[0]) ? array_slice($units[0], 0, $limit) : array();
 
 	}
 
@@ -5542,15 +5573,7 @@ class e_parse
 			return (mb_check_encoding($string, 'UTF-8'));
 		}
 
-		return (bool) preg_match('%(?:
-        [\xC2-\xDF][\x80-\xBF]        # non-overlong 2-byte
-        |\xE0[\xA0-\xBF][\x80-\xBF]               # excluding overlongs
-        |[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}      # straight 3-byte
-        |\xED[\x80-\x9F][\x80-\xBF]               # excluding surrogates
-        |\xF0[\x90-\xBF][\x80-\xBF]{2}    # planes 1-3
-        |[\xF1-\xF3][\x80-\xBF]{3}                  # planes 4-15
-        |\xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
-        )+%xs', $string);
+		return (bool) preg_match('%(?:' . $this->utf8MultibyteRegexp . ')+%s', $string);
 
 	}
 
