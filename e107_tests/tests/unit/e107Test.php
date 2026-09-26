@@ -9,6 +9,7 @@
  */
 
 use e107\Reflection\ReflectionMethod;
+use e107\Reflection\ReflectionProperty;
 
 class e107Test extends \Test\Unit
 {
@@ -428,6 +429,61 @@ class e107Test extends \Test\Unit
 		$this::assertSame($expected, $result['contact/index']);
 
 
+	}
+
+	/**
+	 * Run a test against one of the registries {@see e107} keeps preference objects in, then put the registry back as it was.
+	 *
+	 * @param string $registry _plug_config_arr or _theme_config_arr
+	 * @param callable $test
+	 * @return void
+	 */
+	private function withConfigRegistry($registry, $test)
+	{
+		$property = new ReflectionProperty('e107', $registry);
+		$saved = $property->getValue();
+
+		try
+		{
+			$test();
+		}
+		finally
+		{
+			$property->setValue(null, $saved);
+		}
+	}
+
+	public function configAccessorProvider()
+	{
+		return array(
+			'plugin' => array('getPlugConfig', '_plug_config_arr'),
+			'theme'  => array('getThemeConfig', '_theme_config_arr'),
+		);
+	}
+
+	/**
+	 * @dataProvider configAccessorProvider
+	 * @param string $accessor
+	 * @param string $registry
+	 */
+	public function testConfigAccessorKeepsMultiRowObjectsApart($accessor, $registry)
+	{
+		$this->withConfigRegistry($registry, function () use ($accessor)
+		{
+			$first = e107::$accessor('e107help_a', 'bc', false);
+			$second = e107::$accessor('e107help_ab', 'c', false);
+
+			$this::assertNotSame($first, $second, 'two rows need two objects');
+			$this::assertSame('e107help_ab', $second->getPluginId());
+		});
+	}
+
+	public function testGetConfigFindsAPluginsBaseRowUnderItsBareName()
+	{
+		$this->withConfigRegistry('_plug_config_arr', function ()
+		{
+			$this::assertSame(e107::getPlugConfig('e107help_a', '', false), e107::getConfig('e107help_a'));
+		});
 	}
 
 	public function testLoadAdminIcons()
