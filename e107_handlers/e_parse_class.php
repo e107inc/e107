@@ -1356,7 +1356,9 @@ class e_parse
 	 * @param string  $ending It will be used as Ending and appended to the trimmed string.
 	 * @param boolean $exact  If false, $text will not be cut mid-word
 	 * @return string Trimmed string.
-	 * @deprecated Soon to be made private. Use $tp->truncate() instead.
+	 * @deprecated v2.3.1 Use {@see e_parse::truncate()}, which takes the same four arguments but sends text without tags to
+	 *             {@see e_parse::text_truncate()}, so its answer for such text can differ. Avoid in new code and migrate existing
+	 *             call sites when refactoring; this method remains supported and tested, with no removal planned.
 	 *                        CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
 	 *                        Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
 	 *
@@ -1457,7 +1459,9 @@ class e_parse
 	 * @param int     $len  length of characters to be truncated
 	 * @param string  $more string which will be added if truncation
 	 * @return string Always returns text.
-	 * @deprecated for public use. Will be made private. Use $tp->truncate() instead.
+	 * @deprecated v2.3.1 Use {@see e_parse::truncate()}, passing the length and ending since its defaults differ; it keeps
+	 *             HTML that this method flattens to text. Avoid in new code and migrate existing call sites when refactoring;
+	 *             this method remains supported and tested, with no removal planned.
 	 *                      Truncate a string of text to a maximum length $len append the string $more if it was truncated
 	 *                      Uses current CHARSET  for utf-8, returns $len characters rather than $len bytes
 	 *
