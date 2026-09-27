@@ -59,4 +59,26 @@
 			$this->assertEquals($expected, $actual);
 		}
 
+		public function testBuildAttrRaisesNoDeprecation()
+		{
+			$deprecations = array();
+			set_error_handler(function ($severity, $message) use (&$deprecations)
+			{
+				$deprecations[] = $message;
+				return true;
+			}, E_DEPRECATED);
+
+			try
+			{
+				$attr = eHelper::buildAttr(array('class' => 'bbcode', 'style' => 'width:50%', 0 => 'x'));
+			}
+			finally
+			{
+				restore_error_handler();
+			}
+
+			$this->assertSame(array(), $deprecations);
+			$this->assertSame('class=bbcode&style=width%3A50%25&0=x', $attr);
+		}
+
 	}

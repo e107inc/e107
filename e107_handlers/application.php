@@ -2086,7 +2086,7 @@ class eRouter
 			$request->setRequestInfo($url)->setPathInfo(null)->setRoute(null);
 
 			$_GET = $request->getRequestParams();
-			$_SERVER['QUERY_STRING'] = http_build_query($request->getRequestParams(), null, '&');
+			$_SERVER['QUERY_STRING'] = http_build_query($request->getRequestParams(), '', '&');
 			
 			// Infinite loop impossible, as dispatcher will break because of the registered legacy path
 			$this->route($request);
@@ -4952,7 +4952,7 @@ class eHelper
 	 */
 	public static function buildAttr($safeArray)
 	{
-		return http_build_query($safeArray, null, '&');
+		return http_build_query($safeArray, '', '&');
 	}
 
 	/**

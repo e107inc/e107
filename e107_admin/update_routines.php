@@ -2336,7 +2336,7 @@ function theme_foot()
 	if(!empty($_POST['update_core']['706_to_800']) || !empty($_POST['update_core']['20x_to_latest']))
 	{
 		$data = array('name'=>SITENAME, 'theme'=>$pref['sitetheme'], 'language'=>e_LANGUAGE, 'url'=>SITEURL, 'type'=>'upgrade', 'version'=> defset('e_VERSION'), 'php'=>defset('PHP_VERSION'));
-		$base = base64_encode(http_build_query($data, null, '&'));
+		$base = base64_encode(http_build_query($data, '', '&'));
 		$url = "https://e107.org/e-install/".$base;
 		return "<img src='".$url."' style='width:1px; height:1px;border:0' />";
 	}
