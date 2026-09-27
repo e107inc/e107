@@ -176,7 +176,7 @@ class news_shortcodes extends e_shortcode
 				->setFirstResult(0)->setMaxResults(1)
 				->fetchOne();
 			$latest_comment = $comments['comment_datestamp'];
-			if ($latest_comment > USERLV )
+			if (defined('USERLV') && $latest_comment > USERLV)
 			{
 				$NEWIMAGE = varset($param['image_new_small']);
 			}
