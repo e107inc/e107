@@ -985,7 +985,7 @@ class e_plugin_pref extends e_pref
 		{
 			$plugin_id = $plugin_id.'_'.$multi_row;
 		}
-		parent::__construct('plugin_'.$plugin_id, "plugin_".$this->plugin_id);
+		parent::__construct('plugin_'.$plugin_id);
 		if($load && e107::findPref('plug_installed/'.$this->plugin_id))
 		{
 			$this->load();
@@ -1054,7 +1054,7 @@ class e_theme_pref extends e_pref
 		{
 			$theme_id = $theme_id.'_'.$multi_row;
 		}
-		parent::__construct('theme_'.$theme_id, "theme_".$this->theme_id);
+		parent::__construct('theme_'.$theme_id);
 	//	if($load && e107::findPref('plug_installed/'.$this->theme_id))
 		{
 			$this->load();
