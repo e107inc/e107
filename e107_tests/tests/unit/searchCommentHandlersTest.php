@@ -15,6 +15,7 @@
  */
 class searchCommentHandlersTest extends \Test\Unit
 {
+	use \Helper\SearchPage;
 
 	/**
 	 * The news handler ships with e107 and stands in for a handler that is
@@ -174,6 +175,29 @@ class searchCommentHandlersTest extends \Test\Unit
 			"An installed plugin's comment handler must still be listed.\n" . $result['out']);
 		$this->assertStringContainsString('>Poll<', $result['out'],
 			"The handler must be titled from the plugin's own global LAN.\n" . $result['out']);
+	}
+
+	/**
+	 * User search comes from the user plugin's own row, so the core table has no Users row beside comments.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/6422
+	 */
+	public function testAdminSearchPageListsCommentsAsTheOnlyCoreHandler()
+	{
+		$result = $this->renderAdminSearchPage(
+			"e107::getConfig('search')->setPref('core_handlers/users', array('class' => '0', 'order' => '3')); "
+		);
+
+		$this->assertBooted($result);
+		$this->assertStringNotContainsString('core_handlers[users]', $result['out'],
+			"Core registers no users search handler, so there is nothing for that row to configure.\n" . $result['out']);
+
+		$xpath = $this->searchPageXPath($result['out']);
+		$rows = $xpath->query("//select[substring(@name, string-length(@name) - 6) = '[order]']")->length;
+
+		$this->assertGreaterThan(0, $rows, "The handler table should render.\n" . $result['out']);
+		$this->assertSame($rows, $xpath->query("//select[@name='core_handlers[comments][order]']/option")->length,
+			"Each Order dropdown should offer one position per row, whatever stale core_handlers entry the pref still holds.\n" . $result['out']);
 	}
 
 	/**
