@@ -107,9 +107,9 @@ class download_request
 		}
 
 
-		if(strpos(e_QUERY, "mirror") !== false)
+		if(!$resolved && strpos(e_QUERY, "mirror") !== false)
 		{    // Download from mirror
-			list($action, $download_id, $mirror_id) = explode(".", e_QUERY);
+			list($action, $download_id, $mirror_id) = array_pad(explode(".", e_QUERY), 3, '');
 			$download_id = intval($download_id);
 			$mirror_id = intval($mirror_id);
 			$qb = $sql->createQueryBuilder();
