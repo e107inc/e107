@@ -4727,11 +4727,11 @@ class e107
 
 			if(!empty($url))
 			{
-				$siteurl = self::getPref('siteurl');
+				$primarySiteUrl = self::getPref('siteurl');
 
-				if(!empty($siteurl) && $siteurl !== '/') // ensure that duplicate parked domains always use the primary site URL. @see issue #4994
+				if(self::normaliseUrlHost($primarySiteUrl) !== '')
 				{
-					$url = str_replace(SITEURL, $siteurl, $url);
+					$url = str_replace(SITEURL, $primarySiteUrl, $url);
 				}
 
 				self::getJs()->addLink(array('rel'=>"canonical", "href" => $url));
@@ -6227,7 +6227,7 @@ class e107
 	{
 		$allowed_hosts = array();
 
-		$configured_host = self::normaliseHost(parse_url(self::getPref('siteurl'), PHP_URL_HOST));
+		$configured_host = self::normaliseUrlHost(self::getPref('siteurl'));
 		if($configured_host !== '')
 		{
 			$allowed_hosts[] = $configured_host;
@@ -6323,6 +6323,18 @@ class e107
 	}
 
 	/**
+	 * The host $url names, through {@see e107::normaliseHost()}; '' when it names none.
+	 *
+	 * @param string $url
+	 *
+	 * @return string
+	 */
+	private static function normaliseUrlHost($url)
+	{
+		return self::normaliseHost(parse_url((string) $url, PHP_URL_HOST));
+	}
+
+	/**
 	 * Resolve the request's HTTP host (`host` or `host:port`) from a `$_SERVER`
 	 * array, preferring the client-supplied `Host` header so the visited port
 	 * survives into every URL built from it (form actions, SITEURL, redirects).
@@ -6389,12 +6401,7 @@ class e107
 			{
 				$line = 'http://' . $line;
 			}
-			$host = parse_url($line, PHP_URL_HOST);
-			if(!is_string($host) || $host === '')
-			{
-				continue;
-			}
-			$host = self::normaliseHost($host);
+			$host = self::normaliseUrlHost($line);
 			if($host === '')
 			{
 				continue;
