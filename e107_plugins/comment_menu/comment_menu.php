@@ -112,7 +112,7 @@ elseif(!empty($title[e_LANGUAGE]))
 }
 
 
-if(empty($title))
+if(empty($title) || is_array($title))
 {
 	$title = LAN_COMMENTS;
 }
