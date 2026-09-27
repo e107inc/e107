@@ -1179,6 +1179,32 @@ EXPECTED;
 
 	}
 
+	/**
+	 * An inexact cut walks back to the last space, which some strings have none of and others have only at the front ({@see e_parse::html_truncate()}).
+	 */
+	public function testHtmlTruncateKeepsAStringWithNoSpaceToWalkBackTo()
+	{
+		self::assertSame(
+			str_repeat('a', 20) . '...',
+			$this->tp->html_truncate(str_repeat('a', 50), 20, '...', false)
+		);
+
+		self::assertSame(
+			'<b>' . str_repeat('a', 20) . '...</b>',
+			$this->tp->html_truncate('<b>' . str_repeat('a', 50) . '</b>', 20, '...', false)
+		);
+
+		self::assertSame(
+			' ' . str_repeat('a', 19) . '...',
+			$this->tp->html_truncate(' ' . str_repeat('a', 50), 20, '...', false)
+		);
+
+		self::assertSame(
+			'a...',
+			$this->tp->html_truncate('a ' . str_repeat('b', 50), 20, '...', false)
+		);
+	}
+
 	public function testReplaceConstants()
 	{
 		$tests = array(
@@ -1554,6 +1580,67 @@ EXPECTED;
 		$result = $this->tp->text_truncate($string, 25);
 		self::assertSame("Can't fail me now Bold", $result);
 
+	}
+
+	/**
+	 * The entity trim is reached only where mb_strimwidth() is missing, so the answers come from a child process started without it ({@see e_parse::text_truncate()}).
+	 */
+	public function testTextTruncateTrimsACutEntityAndNothingElse()
+	{
+		$cases = array(
+			'a cut shorter than the window keeps its text'      => array('abc&def ghijkl', 5, 'abc...'),
+			'an entity cut at the far edge of the window goes'  => array('abcd&amp;abcdefghij', 12, 'abcd...'),
+			'an ampersand that starts no entity stays'          => array('Tom &amp; Jerry go far', 10, 'Tom & Jerr...'),
+			'a terminated entity at the cut stays'              => array('x&amp;amp; and more text here', 6, 'x&amp;...'),
+			'a numeric entity goes'                             => array('x&amp;#8364; and more text here', 6, 'x...'),
+			'a capitalised entity name goes'                    => array('x&amp;Aacute; and more text here', 6, 'x...'),
+			'an entity in a multi-line text goes'               => array("line one\nline two &amp;copy and more", 23, "line one\nline two ..."),
+			'an entity directly behind a newline goes'          => array("line one\n&amp;copy and more words", 14, "line one\n..."),
+			'a newline before the end does not end the cut'     => array("AT&T\nmore words here", 5, "AT&T\n..."),
+			'a name longer than the window stays'               => array('x&amp;thetasym; and more', 10, 'x&thetasym...'),
+			'an entity with nothing in front of it to keep stays' => array('&amp;amp; x', 3, '&am...'),
+			'a cut that ends on the ampersand goes'             => array('abc&amp;amp; more', 4, 'abc...'),
+		);
+
+		foreach ($cases as $pins => $case)
+		{
+			list($text, $len, $expected) = $case;
+
+			self::assertSame('NOMB|' . $expected, $this->truncateWithoutMbStrimwidth($text, $len), $pins);
+		}
+
+		self::assertSame(
+			'NOMB|ééééé...',
+			$this->truncateWithoutMbStrimwidth('ééééé&amp;copy and more words', 10, true),
+			'the cut is made at the ampersand\'s byte, which is where the pattern found it'
+		);
+	}
+
+	/**
+	 * @param string $text      the text to truncate
+	 * @param int    $len       the length to truncate it to
+	 * @param bool   $multibyte whether the child counts characters rather than bytes
+	 * @return string MB| or NOMB| for which branch the child took, then its truncation verbatim
+	 */
+	private function truncateWithoutMbStrimwidth($text, $len, $multibyte = false)
+	{
+		$probe = 'define("e107_INIT", true);'
+			. ' require ' . var_export(e_HANDLER . 'core_functions.php', true) . ';'
+			. ' require ' . var_export(e_HANDLER . 'e_parse_class.php', true) . ';'
+			. ' $tp = new e_parse();'
+			. ($multibyte ? ' $tp->setMultibyte(true);' : '')
+			. ' echo base64_encode((function_exists("mb_strimwidth") ? "MB|" : "NOMB|")'
+			. ' . $tp->text_truncate(base64_decode(' . var_export(base64_encode($text), true) . '), ' . (int) $len . ', "..."));';
+
+		list($output, $status) = $this->runInCli($probe, '-d disable_functions=mb_strimwidth');
+
+		$printed = implode('', $output);
+		self::assertSame(0, $status, "the subprocess exited $status: $printed");
+
+		$answer = base64_decode($printed, true);
+		self::assertNotFalse($answer, "the subprocess printed something other than an answer: $printed");
+
+		return $answer;
 	}
 
 	/**
