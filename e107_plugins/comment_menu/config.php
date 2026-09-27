@@ -51,7 +51,7 @@ if (isset($_POST['update_menu']))
 		}
 	}
 
-	if (!$_POST['comment_title'])
+	if (empty($_POST['comment_title']))
 	{
 		$temp['comment_title'] = 0;
 	}

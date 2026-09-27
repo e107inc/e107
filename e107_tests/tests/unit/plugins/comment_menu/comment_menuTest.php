@@ -70,6 +70,14 @@ class comment_menuTest extends \Codeception\Test\Unit
 		$this->assertSame(array($result['language'] => 'Posted'), $result['caption']);
 	}
 
+	public function testSavingWithTheNewsTitleBoxUntickedRaisesNoError()
+	{
+		$result = $this->saveCaption(array('NotTheAdminLanguage' => 'Kept'), 'Posted');
+
+		$this->assertSame(array(), $result['errors']);
+		$this->assertSame(0, $result['title']);
+	}
+
 	public function testAVisitorWhoseLanguageHasNoCaptionGetsTheDefaultHeading()
 	{
 		$this->assertSame(LAN_COMMENTS, $this->headingFor(array('NotTheVisitorLanguage' => 'Other')));
@@ -111,17 +119,19 @@ class comment_menuTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * Submits the configuration screen in the admin language over a refused save, so nothing reaches storage.
+	 * Submits the configuration screen in the admin language with the news-title box unticked, over a refused save so nothing reaches storage.
 	 *
 	 * @param mixed $stored the caption preference before the save
 	 * @param string $posted the caption typed into the field
-	 * @return array the admin language and the caption preference the save left
+	 * @return array the admin language, the caption and news-title preferences the save left, and every error the screen raised
 	 */
 	private function saveCaption($stored, $posted)
 	{
 		$php = "fwrite(STDERR, '".self::BOOTED."'); ";
 		$php .= "\$screen = realpath('".addslashes(APP_PATH.'/e107_plugins/comment_menu/config.php')."'); ";
-		$php .= "register_shutdown_function(function() { \$menu = e107::getConfig('menu'); fwrite(STDERR, '".self::RESULT."'.json_encode(array('language' => e_LANGUAGE, 'caption' => \$menu->get('comment_caption'))).PHP_EOL); }); ";
+		$php .= "\$errors = array(); ";
+		$php .= "set_error_handler(function(\$type, \$message, \$file, \$line) use (\$screen, &\$errors) { if(\$file === \$screen) { \$errors[] = \$message.' on line '.\$line; } return true; }); ";
+		$php .= "register_shutdown_function(function() use (&\$errors) { \$menu = e107::getConfig('menu'); fwrite(STDERR, '".self::RESULT."'.json_encode(array('language' => e_LANGUAGE, 'caption' => \$menu->get('comment_caption'), 'title' => \$menu->get('comment_title'), 'errors' => \$errors)).PHP_EOL); }); ";
 		$php .= "e107::getConfig('menu')->set('comment_caption', ".var_export($stored, true)."); ";
 		$php .= "e107::getConfig('menu')->addValidationError('forced by comment_menuTest'); ";
 		$php .= "\$_POST = array('comment_caption' => array(e_LANGUAGE => ".var_export($posted, true)."), 'comment_display' => '10', 'comment_characters' => '50', 'comment_postfix' => '...', 'update_menu' => 1); ";
