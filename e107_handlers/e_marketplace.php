@@ -802,7 +802,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 
 
 		// build the request query
-		$qry = str_replace(array('s%5B', '%5D'), array('[', ']'), http_build_query($data, null, '&'));
+		$qry = str_replace(array('s%5B', '%5D'), array('[', ']'), http_build_query($data, '', '&'));
 		$url = $this->serviceUrl.'?'.$qry;
 		$result = array();
 		

@@ -109,7 +109,7 @@ class e_unsubscribe
 		
 		$unsubscribe = array('date'=>$row['datestamp'],'email'=>$row['email'],'id'=>$row['id'],'plugin'=>'user');
 				
-		$urlQuery = http_build_query($unsubscribe,null,'&');
+		$urlQuery = http_build_query($unsubscribe,'','&');
 		
 		$_GET['id'] = base64_encode($urlQuery);	
 		
