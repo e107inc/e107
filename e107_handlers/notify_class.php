@@ -216,7 +216,7 @@ class notify
 					{
 
 						$unsubscribe = array('date'=>$row['user_join'],'email'=>$row['user_email'],'id'=>$row['user_id'], 'plugin'=>'user', 'userclass'=>$notifyTarget);
-						$urlQuery = http_build_query($unsubscribe,null,'&');
+						$urlQuery = http_build_query($unsubscribe,'','&');
 						$exclude  = array(e_UC_MEMBER,e_UC_ADMIN, e_UC_MAINADMIN); // no unsubscribing from these classes.
 						$unsubUrl   = SITEURL."unsubscribe.php?id=".base64_encode($urlQuery);
 						$unsubMessage =  "This message was sent to ".$row['user_email'].". If you don't want to receive these emails in the future, please <a href='".$unsubUrl."'>unsubscribe</a>.";
