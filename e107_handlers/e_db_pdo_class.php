@@ -307,9 +307,7 @@ class e_db_pdo implements e_db
 		// directly; an array whose PREPARE is empty or absent fails the branch
 		// below and lands in the string path, where preg_match() is handed an
 		// array and raises a TypeError of its own.
-		$statement = is_array($query)
-			? (isset($query['PREPARE']) ? $query['PREPARE'] : null)
-			: $query;
+		$statement = $this->_statementText($query);
 
 		if(!is_string($statement) || trim($statement) === '')
 		{
@@ -402,7 +400,7 @@ class e_db_pdo implements e_db
 
 
 
-		if (!is_array($query) && (strpos($query,'EXPLAIN') !==0) && (strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
+		if ($this->_countsFoundRows($query))
 		{
 
 			$rc = $this->mySQLaccess->query('SELECT FOUND_ROWS();')->fetch(PDO::FETCH_COLUMN);

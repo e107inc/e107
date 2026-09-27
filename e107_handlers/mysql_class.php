@@ -354,9 +354,7 @@ class e_db_mysql implements e_db
 		// already returns false for an empty string, but an array whose PREPARE
 		// is empty or absent fails the branch below and reaches mysqli_query() as
 		// an array, which is a TypeError the @ does not suppress.
-		$statement = is_array($query)
-			? (isset($query['PREPARE']) ? $query['PREPARE'] : null)
-			: $query;
+		$statement = $this->_statementText($query);
 
 		if(!is_string($statement) || trim($statement) === '')
 		{
@@ -396,7 +394,7 @@ class e_db_mysql implements e_db
 
 
 
-		if (!is_array($query) && (strpos($query,'EXPLAIN') !==0) && (strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
+		if ($this->_countsFoundRows($query))
 		{
 
 			$fr = mysqli_query($this->mySQLaccess, 'SELECT FOUND_ROWS()');

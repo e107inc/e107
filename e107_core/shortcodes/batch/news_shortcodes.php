@@ -1333,11 +1333,10 @@ class news_shortcodes extends e_shortcode
 		$db = e107::getDb();
 
 		// The comparison operator and sort direction are chosen from a fixed
-		// ternary (no user input) and inlined as static keywords. Every value is
-		// bound; the builder cannot express SQL_CALC_FOUND_ROWS, so this is a
-		// bound execute() (T3) rather than a query-builder chain.
+		// ternary (no user input) and inlined as static keywords; every value is
+		// bound.
 		$ok = $db->execute("
-				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
+				SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 				nc.category_meta_keywords, nc.category_meta_description, nc.category_template
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id

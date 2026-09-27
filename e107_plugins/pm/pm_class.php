@@ -1111,8 +1111,6 @@ class private_message
 		$limit = intval($limit);
 		if ($limit < 2) { $limit = 10; }
 		$from = intval($from);
-		// T3: SQL_CALC_FOUND_ROWS / foundRows() has no builder equivalent. Values bound;
-		// LIMIT offset/count are int-cast inline (LIMIT cannot take placeholders reliably).
 		$qry = "
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM `#private_msg` AS pm
 		LEFT JOIN `#user` AS u ON u.user_id = pm.pm_from
@@ -1150,8 +1148,6 @@ class private_message
 		$limit = intval($limit);
 		if ($limit < 2) { $limit = 10; }
 		$from = intval($from);
-		// T3: SQL_CALC_FOUND_ROWS / total_results has no builder equivalent. Values bound;
-		// LIMIT offset/count are int-cast inline (LIMIT cannot take placeholders reliably).
 		$qry = "
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
 		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
