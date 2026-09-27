@@ -349,8 +349,8 @@
 	}
 
 
-	$scArray['ONLINE_TABLE_MEMBERS_ONLINE'] = defset('ONLINE_EL1') . ' ' . GUESTS_ONLINE;
-	$scArray['ONLINE_TABLE_GUESTS_ONLINE'] = ONLINE_EL2 . ' ' . MEMBERS_ONLINE;
+	$scArray['ONLINE_TABLE_MEMBERS_ONLINE'] = ONLINE_EL2 . ' ' . MEMBERS_ONLINE;
+	$scArray['ONLINE_TABLE_GUESTS_ONLINE'] = defset('ONLINE_EL1') . ' ' . GUESTS_ONLINE;
 
 	if(!isset($gen) || !is_object($gen))
 	{
