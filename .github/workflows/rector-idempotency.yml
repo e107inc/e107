@@ -50,6 +50,14 @@ jobs:
         run: composer install --no-progress
         working-directory: ./e107_tests/_tools/rector/
 
+      # The custom rules own the patches that a re-vendor used to roll back, so
+      # a rule that stops firing has to fail here rather than in the next
+      # dependency bump. These run in a second and gate the whole-tree pass
+      # below, which takes minutes.
+      - name: Test the custom downgrade rules
+        run: vendor/bin/phpunit
+        working-directory: ./e107_tests/_tools/rector/
+
       - name: Run the downgrade to convergence
         run: ./bin/rector-downgrade
         working-directory: ./e107_tests/_tools/rector/

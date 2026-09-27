@@ -1,3 +1,4 @@
 /vendor/
 /.rector-cache/
+/.phpunit.cache/
 composer.phar
