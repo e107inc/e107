@@ -1768,19 +1768,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 	public function sc_admin_notifications()
 	{
-	//	$content = @file_get_contents(e_SYSTEM."adminNotifications.json");
 		if(!$array = eHelper::getSystemNotification())
 		{
 			return '';
 		}
-
-
-		/*return '<ul class="admin-notifications nav navbar-nav navbar-right">
-        <li class="dropdown">
-             <a class="dropdown-toggle " title="" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="true">
-             <i class="fas fa-bell fa-fw"></i></a>
-            </li>
-            </ul>';*/
 
 		$count = count($array);
 		$lanNotify = defset('LAN_SYSTEM_NOTIFICATIONS_X', '[x] System Notifications');
@@ -1789,7 +1780,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$text = '<ul id="admin-notifications" class=" nav navbar-nav navbar-right">
         <li class="dropdown">
-            <a class="dropdown-toggle " title="'.$lan.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="true">
+            <a class="dropdown-toggle " title="'.$lan.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                 <i class="fas fa-fade fa-bell fa-fw text-warning"></i>';
 
 		$text .= ($count > 1) ? '<sup class="text-warning">'.$count.'</sup>' : '';
@@ -1850,17 +1841,14 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$data = e107::unserialize($cached);
 
-		if(!empty($data['version']) && !empty($data['url']))
-		{
-			$message = e107::getParser()->lanVars(LAN_NEWVERSION,$data['version']);
-			eHelper::addSystemNotification('sc_admin_update', "<a class='text-info' href='".$data['url']."' target='_blank'>$message</a>");
-		}
-
-		if($data === false || isset($data['status']))
+		if($data === false || isset($data['status']) || empty($data['version']) || empty($data['url']))
 		{
 			eHelper::clearSystemNotification('sc_admin_update');
 			return null;
 		}
+
+		$message = e107::getParser()->lanVars(LAN_NEWVERSION,$data['version']);
+		eHelper::addSystemNotification('sc_admin_update', "<a class='text-info' href='".$data['url']."' target='_blank'>$message</a>");
 
 
 
@@ -1875,8 +1863,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 		return '<ul class="core-update-available nav navbar-nav navbar-left">
-        <li class="dropdown open">
-            <a class="dropdown-toggle " title="Core Update Available" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="true">
+        <li class="dropdown">
+            <a class="dropdown-toggle " title="Core Update Available" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                 <i class="fa fa-cloud-download  text-success"></i>
             </a>
             <ul class="dropdown-menu" role="menu">
