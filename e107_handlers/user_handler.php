@@ -2034,7 +2034,7 @@ class e_userperms
 		"A1"=> array(defset('LAN_MEDIAMANAGER')." (".defset('LAN_UPLOAD')."/".defset('LAN_IMPORT').")",defset('E_16_IMAGES'), defset('E_32_IMAGES')),		// Media-Manager (Media Upload/Add/Import)
 		"A2"=> array(defset('LAN_MEDIAMANAGER')." (".defset('LAN_CATEGORIES').")",defset('E_16_IMAGES'), defset('E_32_IMAGES')),				// Media-Manager (Media-Categories)
 
-		"TMP"=> array(defset('ADLAN_140')." (".defset('LAN_PREFS').")",defset('E_16_THEMEMANAGER'), defset('E_32_THEMEMANAGER')),
+		"TMP"=> array(defset('ADLAN_140'),defset('E_16_THEMEMANAGER'), defset('E_32_THEMEMANAGER')),
 
 		"2"	=> array(defset('ADLAN_6'),defset('E_16_MENUS'), defset('E_32_MENUS')),		// Alter Menus
 
