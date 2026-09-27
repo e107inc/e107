@@ -2524,24 +2524,16 @@ class e_db_pdo implements e_db
 
 
 	/**
-	* @return string relating to error (empty string if no error)
-	* @param string $from
-	* @desc Calling method from within this class
-	* @access private
-	*/
+	 * Capture the driver's last error state after an operation; null when there was no error, otherwise $from and the driver's text.
+	 */
 	function dbError($from)
 	{
-
-		$this->mySQLerror = true;
-
 		if($this->mySQLlastErrNum === 0)
 		{
 			return null;
 		}
 
 		return $from." :: ".$this->mySQLlastErrText;
-
-
 	}
 
 
