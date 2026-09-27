@@ -89,6 +89,7 @@ define("UPLLAN_66", "Download path error");
 define("UPLLAN_68", "SQL Error:");
 define("UPLLAN_69", "Imported");
 define("UPLLAN_70", "Send to [x]");
+define("UPLLAN_ACTIVATION_REFUSED_OWNER_MISSING", "Plugin [x] is not installed or does not accept uploads - activation not possible.");
 
 
 
