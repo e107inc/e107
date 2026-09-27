@@ -11,7 +11,8 @@ CREATE TABLE private_msg (
   pm_attachments text NOT NULL,
   pm_option varchar(250) NOT NULL default '',				/* Options associated with PM - '+rr' for read receipt */
   pm_size int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (pm_id)
+  PRIMARY KEY  (pm_id),
+  KEY pm_from (pm_from)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 CREATE TABLE private_msg_block (
