@@ -122,7 +122,7 @@ class TemplateShapeConventionsTest extends \Codeception\Test\Unit
 
 		self::$counts = array();
 
-		foreach($this->sources() as $path)
+		foreach(\Test\Tree::shippedPhpFiles(self::$trees) as $path)
 		{
 			$relevant = false;
 			$count = array('BOOTSTRAP' => 0, 'THEME_LEGACY' => 0);
@@ -158,44 +158,4 @@ class TemplateShapeConventionsTest extends \Codeception\Test\Unit
 		return self::$counts;
 	}
 
-	/**
-	 * Every PHP file the rule can reach: the pages at the installation root and the trees above it, minus anything vendored.
-	 *
-	 * @return string[] absolute paths
-	 */
-	private function sources()
-	{
-		$paths = glob(e_ROOT.'*.php');
-
-		foreach(self::$trees as $tree)
-		{
-			if(!is_dir(e_ROOT.$tree))
-			{
-				continue;
-			}
-
-			$files = new RecursiveIteratorIterator(
-				new RecursiveDirectoryIterator(e_ROOT.$tree, RecursiveDirectoryIterator::SKIP_DOTS));
-
-			foreach($files as $file)
-			{
-				if(substr($file->getFilename(), -4) === '.php')
-				{
-					$paths[] = $file->getPathname();
-				}
-			}
-		}
-
-		$found = array();
-
-		foreach($paths as $path)
-		{
-			if(strpos(str_replace('\\', '/', $path), '/vendor/') === false)
-			{
-				$found[] = $path;
-			}
-		}
-
-		return $found;
-	}
 }

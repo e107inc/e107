@@ -123,7 +123,7 @@ PHP;
 				{
 					$namesRoot = true;
 				}
-				elseif($writer === null && self::isWriterCall($tokens, $i))
+				elseif($writer === null && \Test\Tree::isFunctionCall($tokens, $i, self::$writers))
 				{
 					$writer = ltrim($token[1], '\\');
 				}
@@ -155,46 +155,4 @@ PHP;
 		return $found;
 	}
 
-	/**
-	 * Whether $tokens[$i] calls a writer as a plain function, rather than naming a method, a static, a declaration or a string.
-	 *
-	 * @return bool
-	 */
-	private static function isWriterCall(array $tokens, $i)
-	{
-		$token = $tokens[$i];
-		$callable = $token[0] === T_STRING
-			|| (defined('T_NAME_FULLY_QUALIFIED') && $token[0] === T_NAME_FULLY_QUALIFIED);
-
-		if(!$callable || !in_array(ltrim($token[1], '\\'), self::$writers, true))
-		{
-			return false;
-		}
-
-		return self::significant($tokens, $i, 1) === '('
-			&& !in_array(self::significant($tokens, $i, -1), array('->', '?->', '::', 'function'), true);
-	}
-
-	/**
-	 * @return string the nearest token in $direction that is not whitespace or a comment, '' at either end
-	 */
-	private static function significant(array $tokens, $i, $direction)
-	{
-		for($j = $i + $direction; isset($tokens[$j]); $j += $direction)
-		{
-			$token = $tokens[$j];
-
-			if(!is_array($token))
-			{
-				return $token;
-			}
-
-			if(!in_array($token[0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true))
-			{
-				return $token[1];
-			}
-		}
-
-		return '';
-	}
 }
