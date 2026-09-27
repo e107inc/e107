@@ -116,6 +116,40 @@ class e_user_providerTest extends \Test\Unit
 		$this->assertTrue(array_key_exists('photo_size', $result));*/
 	}
 
+	public function testIsSocialLoginEnabledBuildsNoHybridauth()
+	{
+		$this::assertTrue(e107::isInstalled('social'), 'the fixture must have the social plugin installed');
+		e107::setRegistry('core/e107/user/provider', null);
+
+		$provider = new e_user_provider();
+		$provider->isSocialLoginEnabled();
+
+		$this::assertNull(e107::getRegistry('core/e107/user/provider'), 'the Hybridauth provider directory was scanned');
+		$hybridauth = new \e107\Reflection\ReflectionProperty('e_user_provider', 'hybridauth');
+		$this::assertNull($hybridauth->getValue($provider));
+	}
+
+	public function testGetConfigBuildsTheDefaultConfigOnFirstUse()
+	{
+		$provider = new e_user_provider();
+
+		$config = $provider->getConfig();
+
+		$this::assertSame(array('callback', 'providers', 'debug_mode', 'debug_file'), array_keys($config));
+		$this::assertSame($provider->generateCallbackUrl(), $config['callback']);
+	}
+
+	public function testSetBackUrlKeepsTheProviderList()
+	{
+		$provider = new e_user_provider();
+
+		$provider->setBackUrl('/news.php');
+
+		$config = $provider->getConfig();
+		$this::assertSame($provider->generateCallbackUrl('/news.php'), $config['callback']);
+		$this::assertArrayHasKey('providers', $config);
+	}
+
 	public function testNewSuppressExceptions()
 	{
 		$this->assertInstanceOf(
@@ -132,6 +166,12 @@ class e_user_providerTest extends \Test\Unit
 			["providers" => ["Facebook" => ["enabled" => true]]],
 			false
 		);
+	}
+
+	public function testNewNoSuppressUnknownProviderException()
+	{
+		$this->expectException(\Hybridauth\Exception\InvalidArgumentException::class);
+		new e_user_provider("NotARealProvider", array(), false);
 	}
 
 	public function testNewNoSuppressDisabledException()
