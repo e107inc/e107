@@ -900,7 +900,11 @@ class e_fileOutboundRequestTest extends \Test\Unit
 		$unpinned->addresses = array();
 
 		self::assertFalse($unpinned->getRemoteContent($this->pinnedUrl(self::UNPINNED_HOST)));
-		self::assertStringContainsString('Curl error: ' . CURLE_COULDNT_RESOLVE_HOST, $unpinned->getErrorMessage());
+
+		$error = $unpinned->getErrorMessage();
+		$unresolved = '/^Curl error: (' . CURLE_COULDNT_RESOLVE_HOST . ', |' . CURLE_OPERATION_TIMEDOUT . ', Resolving timed out)/';
+		self::assertSame(1, preg_match($unresolved, $error),
+			"The unpinned name must fail to resolve, either at once or by running out the timeout while resolving: $error");
 	}
 
 	/**
