@@ -12,6 +12,7 @@ use e107\Reflection\ReflectionProperty;
 
 class e107Test extends \Codeception\Test\Unit
 {
+	use \Test\CorePrefs;
 
 	/** @var e107 */
 	private $e107;
@@ -879,6 +880,37 @@ class e107Test extends \Codeception\Test\Unit
 		$result = $e107::canonical();
 		$this->assertSame("https://localhost/e107/news", $result);
 
+	}
+
+	/**
+	 * @dataProvider canonicalSiteUrlProvider
+	 */
+	public function testCanonicalSwapsInTheSiteUrlOnlyWhenItNamesAHost($siteurl, $expected)
+	{
+		$restore = $this->withCorePrefs(array('siteurl' => $siteurl));
+
+		try
+		{
+			e107::canonical('_RESET_');
+			e107::canonical('news');
+
+			self::assertSame($expected, e107::canonical());
+		}
+		finally
+		{
+			e107::canonical('_RESET_');
+			$restore();
+		}
+	}
+
+	public function canonicalSiteUrlProvider()
+	{
+		return array(
+			'the path the installer writes' => array('/e107/', 'https://localhost/e107/news'),
+			'a bare slash'                  => array('/', 'https://localhost/e107/news'),
+			'nothing at all'                => array('', 'https://localhost/e107/news'),
+			'a primary host to point at'    => array('https://primary.example/e107/', 'https://primary.example/e107/news'),
+		);
 	}
 
 
