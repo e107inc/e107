@@ -2552,6 +2552,18 @@ EXPECTED;
 		self::assertSame('<b>hi</b>' . $filtered, $this->tp->preFilter('<b>hi</b>' . $payload));
 	}
 
+	public function testPreFilterRunsBbcodeSaveHandlersOnTextWhoseOnlyBbcodeIsNotOneOfTheNine()
+	{
+		$payload = '[youtube]https://www.youtube.com/watch?v=dQw4w9WgXcQ[/youtube]';
+
+		self::assertSame('[youtube]dQw4w9WgXcQ[/youtube]', $this->tp->preFilter($payload));
+	}
+
+	public function testToTextConvertsBbcodeThatIsNotOneOfTheNine()
+	{
+		self::assertSame('See click here please', $this->tp->toText('See [url=https://example.com/p]click here[/url] please'));
+	}
+
 	public function testIsBBcode()
 	{
 		$tests = array(
@@ -2563,7 +2575,22 @@ EXPECTED;
 			5 => array("[html]something[/html]", false),
 			6 => array("http://something.com/index.php?what=ever", false),
 			7 => array("<b>hi</b>[img height=1]{e_THEME}logo.png[/img]", true),
-			8 => array("1<2>3 [b]Bbcode[/b]", true)
+			8 => array("1<2>3 [b]Bbcode[/b]", true),
+			9 => array("See [url=https://example.com/p]click here[/url] please", true),
+			10 => array("Watch this [youtube]dQw4w9WgXcQ[/youtube] now", true),
+			11 => array("He said [quote]something quoted[/quote] earlier", true),
+			12 => array("[list][*]one[*]two[/list]", true),
+			13 => array("[size2]bigger[/size2]", true),
+			14 => array("[QUOTE]Shouting[/QUOTE]", true),
+			15 => array("[notabbcode]something[/notabbcode]", false),
+			16 => array("[php]echo 1;[/php]", false),
+			17 => array("[b]never closed", false),
+			18 => array("[youtube=600]dQw4w9WgXcQ[/youtube=600]", true), // the parser matches a parameter on a closing tag too
+			19 => array("[//b]", false),
+			20 => array("[/ b]", false),
+			21 => array("[b]the log lives at [/var/log/syslog[/b] on that box", true),
+			22 => array("[code]run cd [/home/user[/code] to get there", true),
+			23 => array("[b]hello there[/zzz[/b]", true)
 		);
 
 
