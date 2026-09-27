@@ -280,9 +280,7 @@
 		 */
 		public function testATimeToLivePreferenceOfZeroFallsBackToTheDefault()
 		{
-			$config = e107::getConfig();
-			$restore = $config->get(secure_image::PREF_CAPTCHA_TTL);
-			$config->set(secure_image::PREF_CAPTCHA_TTL, 0);
+			$restore = $this->withCorePrefs(array(secure_image::PREF_CAPTCHA_TTL => 0));
 
 			try
 			{
@@ -297,7 +295,7 @@
 
 			finally
 			{
-				$config->set(secure_image::PREF_CAPTCHA_TTL, $restore);
+				$restore();
 			}
 		}
 
