@@ -4933,7 +4933,7 @@ class e_parse
 			$linkEnd = '</a>';
 		}
 
-		$title = (ADMIN) ? $image : $userData['user_name'];
+		$title = (ADMIN) ? $image : (isset($userData['user_name']) ? $userData['user_name'] : '');
 		$shape = (!empty($options['shape'])) ? 'img-' . $options['shape'] : 'img-rounded rounded';
 
 		if ($shape === 'img-circle')
