@@ -160,6 +160,9 @@ class AdminUiHistoryDeleteProbeFixture extends e_admin_ui
 	/** @var AdminUiHistoryTreeStub */
 	public $treeStub;
 
+	/** @var array ids whose archive write fails, as {@see e_admin_controller_ui::backupToHistory()} answers false where the insert did */
+	public $archiveFailsFor = array();
+
 	public function __construct($table, $pid, $node = null)
 	{
 		$this->table = $table;
@@ -189,7 +192,7 @@ class AdminUiHistoryDeleteProbeFixture extends e_admin_ui
 			'posted' => $posted,
 		);
 
-		return true;
+		return !in_array($id, $this->archiveFailsFor);
 	}
 }
 
