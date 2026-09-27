@@ -91,7 +91,7 @@ class upload_ui extends e_admin_ui
             'upload_filesize'       =>   array ( 'title' => LAN_SIZE, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_active'         =>   array ( 'title' => UPLLAN_69, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('singleOption' => true), 'class' => 'center', 'thclass' => 'center',  'batch' => true, 'filter'=>true),
             'upload_category'       =>   array ( 'title' => LAN_CATEGORY, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left', 'validate' => true ),
-            'upload_owner'          =>   array ( 'title' => LAN_OWNER, 'type' => 'text', 'readonly'=>true, 'data' => 'str', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'upload_owner'          =>   array ( 'title' => LAN_OWNER, 'type' => 'method', 'readonly'=>true, 'data' => 'str', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 
             'options'               =>   array ( 'title' => LAN_OPTIONS, 'type' => '', 'data' => '', 'width' => '140px', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
@@ -508,6 +508,24 @@ class upload_form_ui extends e_admin_form_ui
             break;
         }
     }
+
+	/**
+	 * The plugin folder name an upload was submitted against, as text.
+	 *
+	 * @param string $value
+	 * @param string $type
+	 * @param array $options
+	 * @return string
+	 */
+	public function upload_owner($value, $type, $options = array())
+	{
+		if($type === 'write')
+		{
+			return $this->text('upload_owner', $value, 255);
+		}
+
+		return empty($value) ? '-' : $this->tp->toAttribute($value, true);
+	}
 }
 
 		

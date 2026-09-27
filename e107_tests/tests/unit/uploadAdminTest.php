@@ -29,6 +29,12 @@ class uploadAdminTest extends \Test\Unit
 	/** A second registered owner, for a category chosen across owners. */
 	const OTHER_OWNER = 'uploadAdminTestOther';
 
+	/** An owner carrying markup, which a submission can put there. */
+	const MARKUP_OWNER = '<script>uploadOwnerXss()</script>';
+
+	/** The same owner entity-encoded, as a stored row can already hold it. */
+	const ENCODED_OWNER = '&lt;script&gt;uploadOwnerXss()&lt;/script&gt;';
+
 	const FILE = 'uploadAdminTest.zip';
 
 	/** @var int */
@@ -92,8 +98,7 @@ class uploadAdminTest extends \Test\Unit
 	 */
 	public function testBatchAcceptTakesAnUploadWithNoOwnerAsDownloads()
 	{
-		e107::getDb()->createQueryBuilder()->update('upload')->set('upload_owner', '')
-			->where('upload_id', $this->uploadId)->execute();
+		$this->storeOwner('');
 
 		$page = $this->acceptFromTheList("e107::getConfig()->set('e_upload_list', array()); ");
 
@@ -110,8 +115,7 @@ class uploadAdminTest extends \Test\Unit
 			'config' => array('table' => 'upload', 'url' => self::TAKEN.'-{ID}'),
 			'insert' => array('upload_name' => self::TAKEN, 'upload_file' => self::FILE, 'upload_description' => ''),
 		));
-		e107::getDb()->createQueryBuilder()->update('upload')->set('upload_owner', self::HANDLED_OWNER)
-			->where('upload_id', $this->uploadId)->execute();
+		$this->storeOwner(self::HANDLED_OWNER);
 
 		$page = $this->acceptFromTheList("e107::getConfig()->set('e_upload_list', array('".self::HANDLED_OWNER."' => '".self::HANDLED_OWNER."')); ");
 
@@ -182,6 +186,53 @@ class uploadAdminTest extends \Test\Unit
 
 		self::assertSame('uploadAdminTest', $this->storedRow()['upload_name'], "the save was meant to fail:\n".$page);
 		$this->assertPreselected($page, self::OTHER_OWNER.'__7');
+	}
+
+	public function testTheListPrintsAnOwnerCarryingMarkupAsText()
+	{
+		$this->storeOwner(self::MARKUP_OWNER);
+
+		$page = $this->runPage('mode=main&action=list', '');
+
+		$this->assertTheOwnerIsText($page);
+		self::assertStringContainsString('&lt;script&gt;uploadOwnerXss', $page, "the owner still has to be readable in the list:\n".$page);
+	}
+
+	public function testTheEditFormPrintsAnOwnerCarryingMarkupAsText()
+	{
+		$this->storeOwner(self::MARKUP_OWNER);
+
+		$this->assertTheOwnerIsText($this->runPage('mode=main&action=edit&id='.$this->uploadId, ''));
+	}
+
+	/**
+	 * {@see e_form::renderElement()} decodes a read-only value's entities before printing it, so an encoded row is markup again by then.
+	 */
+	public function testTheEditFormPrintsAnEncodedOwnerAsText()
+	{
+		$this->storeOwner(self::ENCODED_OWNER);
+
+		$this->assertTheOwnerIsText($this->runPage('mode=main&action=edit&id='.$this->uploadId, ''));
+	}
+
+	/**
+	 * @param string $owner
+	 */
+	private function storeOwner($owner)
+	{
+		$changed = e107::getDb()->createQueryBuilder()->update('upload')->set('upload_owner', $owner)
+			->where('upload_id', $this->uploadId)->execute();
+
+		self::assertNotEmpty($changed, 'the owner was not stored');
+	}
+
+	/**
+	 * @param string $page
+	 */
+	private function assertTheOwnerIsText($page)
+	{
+		self::assertStringContainsString('uploadAdminTest', $page, "the page never reached the seeded upload:\n".$page);
+		self::assertStringNotContainsString('<script>uploadOwnerXss', $page, "an upload's owner must not reach the page as markup:\n".$page);
 	}
 
 	/**
