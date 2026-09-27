@@ -22,9 +22,10 @@ trait SearchPage
 	 * Renders search.php with a search handler registered for every type asked for {@see \Test\Unit::runInBootedCli()}.
 	 *
 	 * @param array|string $requested what $_GET['t'] holds: the keys a checkbox site posts, or the one string a dropdown site posts
+	 * @param string $seed PHP run before the handlers are registered, e.g. to clear or override a pref in memory
 	 * @return string the page as it was sent
 	 */
-	private function renderSearchPage($requested)
+	private function renderSearchPage($requested, $seed = '')
 	{
 		$handler = "array('class' => e_UC_PUBLIC, 'chars' => '150', 'results' => '10', 'pre_title' => '1', 'pre_title_alt' => '', 'order' => '1')";
 		$types = is_array($requested) ? array_keys($requested) : array($requested);
@@ -34,6 +35,7 @@ trait SearchPage
 		$php .= "\$searchConfig = e107::getConfig('search'); ";
 		$php .= "\$searchConfig->setPref('user_select', 1); ";
 		$php .= "\$searchConfig->setPref('selector', ".(is_array($requested) ? 1 : 2)."); ";
+		$php .= $seed;
 
 		foreach($types as $type)
 		{

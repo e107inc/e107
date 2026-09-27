@@ -798,6 +798,30 @@ function update_core_database($type = '')
 		}
 
 
+		$searchPref = e107::getConfig('search');
+		$pluginToRefreshOnRemoval = array('news' => '', 'downloads' => '', 'pages' => 'page', 'users' => '');
+
+		foreach($pluginToRefreshOnRemoval as $handler => $plugin)
+		{
+			if(!$searchPref->getPref('core_handlers/'.$handler))
+			{
+				continue;
+			}
+
+			if($just_check)
+			{
+				return update_needed('Core search handlers need to be updated.');
+			}
+
+			$searchPref->removePref('core_handlers/'.$handler)->save(false,true,false);
+
+			if($plugin)
+			{
+				e107::getSingleton('e107plugin')->refresh($plugin);
+			}
+		}
+
+
 		// User is marked as not installed.
 		if($sql->select('plugin', 'plugin_id', "plugin_path = 'user' AND plugin_installflag != 1 LIMIT 1"))
 		{
@@ -1771,29 +1795,6 @@ function update_706_to_800($type='')
 		$med->importIcons(e_IMAGE."icons/");
 		$med->importIcons(e_THEME.$pref['sitetheme']."/images/");
 		$log->addDebug("Icon category added");
-	}
-	
-	// Search Clean up ----------------------------------
-	
-	$searchPref = e107::getConfig('search');
-
-	if($searchPref->getPref('core_handlers/news'))
-	{
-		if ($just_check) return update_needed('Core search handlers need to be updated.');
-		$searchPref->removePref('core_handlers/news')->save(false,true,false);
-	}
-
-	if($searchPref->getPref('core_handlers/downloads'))
-	{
-		if ($just_check) return update_needed('Core search handlers need to be updated.');
-		$searchPref->removePref('core_handlers/downloads')->save(false,true,false);
-	}
-
-	if($searchPref->getPref('core_handlers/pages'))
-	{
-		if ($just_check) return update_needed('Core search handlers need to be updated.');
-		$searchPref->removePref('core_handlers/pages')->save(false,true,false);
-		e107::getSingleton('e107plugin')->refresh('page');
 	}
 	
 	// Clean up news keywords. - remove spaces between commas.
