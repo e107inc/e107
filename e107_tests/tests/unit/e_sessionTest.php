@@ -11,6 +11,8 @@
 
 	class e_sessionTest extends \Codeception\Test\Unit
 	{
+		use \Test\Prefs;
+
 		/** @var e_session  */
 		private $sess;
 
@@ -475,4 +477,38 @@
 			$this->assertSame($expected, $result);
 
 		}
+
+		/**
+		 * #6302: Disallow multiple logins signs the earlier session out, and the
+		 * session table is the only index of an account's sessions there is, so
+		 * the preference decides where sessions are stored while it is on.
+		 *
+		 * @return void
+		 */
+		public function testSaveMethodIsTheDatabaseWhileMultipleLoginsAreDisallowed()
+		{
+			$resolve = new \e107\Reflection\ReflectionMethod('e_session', 'resolveSaveMethod');
+			$sess = $this->sess;
+
+			$this->withPrefs(array('disallowMultiLogin' => 1, 'session_save_method' => 'files'), function() use ($resolve, $sess) {
+				$this->assertSame('db', $resolve->invoke($sess, 'files'));
+			});
+		}
+
+		/**
+		 * Untick it and the admin's own choice is back, including handlers the
+		 * preference page has no entry for.
+		 *
+		 * @return void
+		 */
+		public function testSaveMethodFollowsThePreferenceWhenMultipleLoginsAreAllowed()
+		{
+			$resolve = new \e107\Reflection\ReflectionMethod('e_session', 'resolveSaveMethod');
+			$sess = $this->sess;
+
+			$this->withPrefs(array('disallowMultiLogin' => 0, 'session_save_method' => 'redis'), function() use ($resolve, $sess) {
+				$this->assertSame('redis', $resolve->invoke($sess, 'files'));
+			});
+		}
+
 	}

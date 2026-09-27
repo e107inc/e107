@@ -3,6 +3,7 @@
 
 	class userloginTest extends \Codeception\Test\Unit
 	{
+		use \Test\Prefs;
 
 		/** Fixture password; e107 reads any 32-character hash as PASSWORD_E107_MD5. */
 		const FIXTURE_PASS = 'never-used-by-these-tests';
@@ -10,8 +11,20 @@
 		/** user_join that makes the signup token an md5 of the form 0e[0-9]{30}. */
 		const MAGIC_JOIN = 18194810;
 
+		/** Login name of the admin the unit suite's database ships with. */
+		const FIXTURE_ADMIN_USER = 'e107';
+
+		/** Its password. */
+		const FIXTURE_ADMIN_PASS = 'e107';
+
+		/** Session row the multi-login eviction is expected to delete. */
+		const OLDER_SESSION_ID = 'older-session-6302';
+
 		/** @var userlogin */
 		protected $lg;
+
+		/** @var string|null online_user_id seeded by a test, removed in _after whether or not the test passed */
+		private $onlineUserId;
 
 		protected function _before()
 		{
@@ -30,6 +43,20 @@
 			$this->lg->__construct();
 
 		}
+
+		protected function _after()
+		{
+			$sql = e107::getDb();
+
+			$sql->delete('session', "session_id = '".$sql->escape(self::OLDER_SESSION_ID)."'");
+
+			if($this->onlineUserId !== null)
+			{
+				$sql->delete('online', "online_user_id = '".$sql->escape($this->onlineUserId)."'");
+				$this->onlineUserId = null;
+			}
+		}
+
 		public function testLogin()
 		{
 			$tests = array(
@@ -42,8 +69,8 @@
 					'_expected_'    => false
 				),
 				1 => array(
-					'username'      => 'e107',
-					'userpass'      => 'e107',
+					'username'      => self::FIXTURE_ADMIN_USER,
+					'userpass'      => self::FIXTURE_ADMIN_PASS,
 					'autologin'     => 0,
 					'noredirect'    => true,
 					'response'      => '',
@@ -61,8 +88,7 @@
 
 		public function testLoginNewUser()
 		{
-
-				e107::getConfig()->set('user_new_period', 3)->save(false,true); // set new user period to 3 days.
+			$this->withPrefs(array('user_new_period' => 3), function() {
 
 				$insert = array(
 					'user_name'			=> 'newuser',
@@ -85,7 +111,7 @@
 
 				$this->assertSame("3,248", $class); // new user class was removed!
 
-
+			});
 		}
 
 		/**
@@ -178,6 +204,76 @@
 			return (int) $id;
 		}
 
+
+		/**
+		 * #6302: the eviction was gated on the save method pref reading 'db', so
+		 * under every other setting the older session outlived the newer login.
+		 */
+		public function testDisallowMultiLoginDropsTheOlderSessionWhateverTheSaveMethod()
+		{
+			$user = $this->fixtureAdmin();
+			$sql = e107::getDb();
+
+			$sql->insert('session', array(
+				'session_id'      => self::OLDER_SESSION_ID,
+				'session_expires' => time() + 3600,
+				'session_user'    => $user['user_id'],
+				'session_data'    => '',
+			));
+
+			$prefs = array('disallowMultiLogin' => 1, 'session_save_method' => 'files', 'track_online' => 0);
+
+			$this->withPrefs($prefs, function() use ($sql) {
+				$this->assertTrue($this->lg->login(self::FIXTURE_ADMIN_USER, self::FIXTURE_ADMIN_PASS, 0, '', true));
+
+				$survivors = $sql->count('session', '(*)', "WHERE session_id = '".$sql->escape(self::OLDER_SESSION_ID)."'");
+
+				$this->assertSame(0, (int) $survivors);
+			});
+		}
+
+		/**
+		 * #6302: an online row refused the login outright instead, and every
+		 * refusal fed the failed-login autoban counter.
+		 */
+		public function testDisallowMultiLoginAdmitsAnAlreadyOnlineUser()
+		{
+			$user = $this->fixtureAdmin();
+			$onlineUserId = $this->onlineUserId = $user['user_id'].'.'.$user['user_name'];
+			$sql = e107::getDb();
+
+			$sql->insert('online', array(
+				'online_timestamp' => time(),
+				'online_user_id'   => $onlineUserId,
+				'online_ip'        => e107::getIpHandler()->ipEncode('203.0.113.9'),
+				'online_location'  => '',
+			));
+
+			$prefs = array('disallowMultiLogin' => 1, 'session_save_method' => 'files', 'track_online' => 1);
+
+			$this->withPrefs($prefs, function() use ($sql, $onlineUserId) {
+				$this->assertTrue($this->lg->login(self::FIXTURE_ADMIN_USER, self::FIXTURE_ADMIN_PASS, 0, '', true));
+
+				$survivors = $sql->count('online', '(*)', "WHERE online_user_id = '".$sql->escape($onlineUserId)."'");
+
+				$this->assertSame(0, (int) $survivors);
+			});
+		}
+
+		/**
+		 * @return array user_id and user_name of the installed admin
+		 */
+		private function fixtureAdmin()
+		{
+			$sql = e107::getDb();
+
+			$sql->select('user', 'user_id, user_name', "user_loginname = '".$sql->escape(self::FIXTURE_ADMIN_USER)."'");
+			$user = $sql->fetch();
+
+			$this->assertNotEmpty($user);
+
+			return $user;
+		}
 
 		public function testErrorMessages()
 		{
