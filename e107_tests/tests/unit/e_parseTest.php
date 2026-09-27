@@ -3413,13 +3413,7 @@ Your browser does not support the audio tag.
 
 	public function testEmailBbcodesWithMakeClickableOn()
 	{
-		$cfg = e107::getConfig();
-		$savedPref = $cfg->get('make_clickable');
-		$hadGlobalPref = array_key_exists('pref', $GLOBALS);
-		$savedGlobalPref = $hadGlobalPref ? $GLOBALS['pref'] : null;
-
-		$cfg->set('make_clickable', 1);
-		$GLOBALS['pref']['make_clickable'] = 1;
+		$restore = $this->withCorePrefs(array('make_clickable' => 1));
 
 		try
 		{
@@ -3442,16 +3436,7 @@ Your browser does not support the audio tag.
 		}
 		finally
 		{
-			$cfg->set('make_clickable', $savedPref);
-
-			if ($hadGlobalPref)
-			{
-				$GLOBALS['pref'] = $savedGlobalPref;
-			}
-			else
-			{
-				unset($GLOBALS['pref']);
-			}
+			$restore();
 		}
 	}
 

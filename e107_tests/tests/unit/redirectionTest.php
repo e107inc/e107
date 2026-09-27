@@ -311,10 +311,7 @@ class redirectionTest extends \Test\Unit
 	{
 		// A destination on a host configured in the `trusted_hosts` pref (e107inc/e107#5639)
 		// is accepted, while an unrelated third-party host is still rejected.
-		$cfg = e107::getConfig();
-		$originalTrusted = $cfg->get('trusted_hosts');
-
-		$cfg->set('trusted_hosts', array('staging.example.test'));
+		$restore = $this->withCorePrefs(array('trusted_hosts' => array('staging.example.test')));
 
 		try
 		{
@@ -327,7 +324,7 @@ class redirectionTest extends \Test\Unit
 		}
 		finally
 		{
-			$cfg->set('trusted_hosts', $originalTrusted);
+			$restore();
 		}
 	}
 
@@ -524,13 +521,11 @@ class redirectionTest extends \Test\Unit
 		self::assertFalse(e107::getUserProvider()->isSocialLoginEnabled(), 'test env must have social login off');
 
 		$cfg = e107::getConfig();
-		$beforeReg = $cfg->getPref('user_reg');
-		$beforeRedir = $cfg->getPref('membersonly_redirect');
+		$restore = $this->withCorePrefs(array('user_reg' => 0, 'membersonly_redirect' => ''));
 
 		try
 		{
 			// Disabled + default (non-splash) redirect: break the loop -> splash.
-			$cfg->setPref('user_reg', 0)->setPref('membersonly_redirect', '');
 			self::assertSame(e_HTTP.'membersonly.php', $this->rd->getMembersOnlyRedirectUrl(),
 				'user_reg=0 (Disabled) must fall back to the members-only splash');
 
@@ -551,7 +546,7 @@ class redirectionTest extends \Test\Unit
 		}
 		finally
 		{
-			$cfg->setPref('user_reg', $beforeReg)->setPref('membersonly_redirect', $beforeRedir);
+			$restore();
 		}
 	}
 

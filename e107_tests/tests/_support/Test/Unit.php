@@ -239,6 +239,63 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Sets core preferences for one test, a null value removing one; call what it returns in a finally block.
+	 *
+	 * @param array $prefs preference name => value
+	 * @return callable puts every preference named, and the legacy $pref global, back as they were found
+	 */
+	protected function withCorePrefs(array $prefs)
+	{
+		$config = \e107::getConfig();
+		$hadGlobalPref = array_key_exists('pref', $GLOBALS);
+		$savedGlobalPref = $hadGlobalPref ? $GLOBALS['pref'] : null;
+		$saved = array();
+
+		foreach($prefs as $key => $value)
+		{
+			$saved[$key] = $config->get($key);
+			self::putCorePref($config, $key, $value);
+		}
+
+		return static function () use ($config, $saved, $hadGlobalPref, $savedGlobalPref)
+		{
+			foreach($saved as $key => $value)
+			{
+				self::putCorePref($config, $key, $value);
+			}
+
+			if($hadGlobalPref)
+			{
+				$GLOBALS['pref'] = $savedGlobalPref;
+			}
+			else
+			{
+				unset($GLOBALS['pref']);
+			}
+		};
+	}
+
+	/**
+	 * Sets one core preference, or removes it when $value is null.
+	 *
+	 * @param \e_pref $config
+	 * @param string $key
+	 * @param mixed $value
+	 * @return void
+	 */
+	protected static function putCorePref($config, $key, $value)
+	{
+		if($value === null)
+		{
+			$config->remove($key);
+		}
+		else
+		{
+			$config->set($key, $value);
+		}
+	}
+
+	/**
 	 * Runs $php in a subprocess that has booted class2.php, in CLI mode unless $e107 says otherwise; the child serves {@see Unit::SERVER_ADDRESS} and visits as {@see Unit::nextVisitorAddress()}, keeping an address its caller put in the environment.
 	 *
 	 * @param string $php
