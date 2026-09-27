@@ -1291,16 +1291,26 @@ class e_parse
 	 * Universal text/bbcode/html truncate method.
 	 * new in v2.3.1
 	 *
+	 * An optional fourth argument, bool $exact (default true), cuts at the last space instead of mid-word when false.
+	 *
 	 * @param        $text
 	 * @param int    $length
 	 * @param string $ending
 	 * @return string
+	 * @throws InvalidArgumentException when called with more than four arguments.
 	 */
 	public function truncate($text, $length = 100, $ending = '...')
 	{
+		if (func_num_args() > 4)
+		{
+			throw new InvalidArgumentException('e_parse::truncate() takes at most four arguments ($text, $length, $ending, $exact), ' . func_num_args() . ' given.');
+		}
+
+		$exact = func_num_args() > 3 ? (bool) func_get_arg(3) : true;
+
 		if ($this->isHtml($text))
 		{
-			return $this->html_truncate($text, $length, $ending);
+			return $this->html_truncate($text, $length, $ending, $exact);
 		}
 
 		if ($this->isBBcode($text))
@@ -1308,8 +1318,36 @@ class e_parse
 			$text = $this->toText($text);
 		}
 
-		return $this->text_truncate($text, $length, $ending);
+		$truncated = $this->text_truncate($text, $length, $ending);
+		if ($exact || $truncated === $text)
+		{
+			return $truncated;
+		}
 
+		$cut = (string) substr($truncated, 0, strlen($truncated) - strlen($ending));
+		if ($cut . $ending !== $truncated)
+		{
+			return $truncated;
+		}
+
+		list($kept) = $this->splitAtLastSpace($cut);
+
+		return $kept . $ending;
+	}
+
+	/**
+	 * @param string $text
+	 * @return array $text before and from its last space above position 0, or $text and '' when there is none.
+	 */
+	private function splitAtLastSpace($text)
+	{
+		$spacepos = $this->ustrrpos($text, ' ');
+		if ($spacepos > 0)
+		{
+			return array($this->usubstr($text, 0, $spacepos), $this->usubstr($text, $spacepos));
+		}
+
+		return array($text, '');
 	}
 
 	/**
@@ -1318,7 +1356,9 @@ class e_parse
 	 * @param string  $ending It will be used as Ending and appended to the trimmed string.
 	 * @param boolean $exact  If false, $text will not be cut mid-word
 	 * @return string Trimmed string.
-	 * @deprecated Soon to be made private. Use $tp->truncate() instead.
+	 * @deprecated v2.3.1 Use {@see e_parse::truncate()}, which takes the same four arguments but sends text without tags to
+	 *             {@see e_parse::text_truncate()}, so its answer for such text can differ. Avoid in new code and migrate existing
+	 *             call sites when refactoring; this method remains supported and tested, with no removal planned.
 	 *                        CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
 	 *                        Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
 	 *
@@ -1391,22 +1431,17 @@ class e_parse
 		}
 		if (!$exact)
 		{
-			$spacepos = $this->ustrrpos($truncate, ' ');
-			if (isset($spacepos))
+			list($truncate, $bits) = $this->splitAtLastSpace($truncate);
+			preg_match_all('/<\/([a-z]+)>/i', $bits, $droppedTags, PREG_SET_ORDER);
+			if (!empty($droppedTags))
 			{
-				$bits = $this->usubstr($truncate, $spacepos);
-				preg_match_all('/<\/([a-z]+)>/i', $bits, $droppedTags, PREG_SET_ORDER);
-				if (!empty($droppedTags))
+				foreach ($droppedTags as $closingTag)
 				{
-					foreach ($droppedTags as $closingTag)
+					if (!in_array($closingTag[1], $openTags))
 					{
-						if (!in_array($closingTag[1], $openTags))
-						{
-							array_unshift($openTags, $closingTag[1]);
-						}
+						array_unshift($openTags, $closingTag[1]);
 					}
 				}
-				$truncate = $this->usubstr($truncate, 0, $spacepos);
 			}
 		}
 		$truncate .= $ending;
@@ -1424,7 +1459,9 @@ class e_parse
 	 * @param int     $len  length of characters to be truncated
 	 * @param string  $more string which will be added if truncation
 	 * @return string Always returns text.
-	 * @deprecated for public use. Will be made private. Use $tp->truncate() instead.
+	 * @deprecated v2.3.1 Use {@see e_parse::truncate()}, passing the length and ending since its defaults differ; it keeps
+	 *             HTML that this method flattens to text. Avoid in new code and migrate existing call sites when refactoring;
+	 *             this method remains supported and tested, with no removal planned.
 	 *                      Truncate a string of text to a maximum length $len append the string $more if it was truncated
 	 *                      Uses current CHARSET  for utf-8, returns $len characters rather than $len bytes
 	 *
@@ -1452,14 +1489,9 @@ class e_parse
 
 		$ret = $this->usubstr($text, 0, $len);
 
-		// search for possible broken html entities
-		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
-		// it should work for any characters encoding
-
-		$leftAmp = $this->ustrrpos($this->usubstr($ret, -8), '&');
-		if ($leftAmp)
+		if (preg_match('/(?<=.)&[0-9a-z#]{0,7}\z/is', $ret, $unterminatedEntity, PREG_OFFSET_CAPTURE))
 		{
-			$ret = $this->usubstr($ret, 0, $this->ustrlen($ret) - 8 + $leftAmp);
+			$ret = (string) substr($ret, 0, $unterminatedEntity[0][1]);
 		}
 
 		return $ret . $more;

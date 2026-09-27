@@ -1179,6 +1179,32 @@ EXPECTED;
 
 	}
 
+	/**
+	 * An inexact cut walks back to the last space, which some strings have none of and others have only at the front ({@see e_parse::html_truncate()}).
+	 */
+	public function testHtmlTruncateKeepsAStringWithNoSpaceToWalkBackTo()
+	{
+		self::assertSame(
+			str_repeat('a', 20) . '...',
+			$this->tp->html_truncate(str_repeat('a', 50), 20, '...', false)
+		);
+
+		self::assertSame(
+			'<b>' . str_repeat('a', 20) . '...</b>',
+			$this->tp->html_truncate('<b>' . str_repeat('a', 50) . '</b>', 20, '...', false)
+		);
+
+		self::assertSame(
+			' ' . str_repeat('a', 19) . '...',
+			$this->tp->html_truncate(' ' . str_repeat('a', 50), 20, '...', false)
+		);
+
+		self::assertSame(
+			'a...',
+			$this->tp->html_truncate('a ' . str_repeat('b', 50), 20, '...', false)
+		);
+	}
+
 	public function testReplaceConstants()
 	{
 		$tests = array(
@@ -1557,6 +1583,67 @@ EXPECTED;
 	}
 
 	/**
+	 * The entity trim is reached only where mb_strimwidth() is missing, so the answers come from a child process started without it ({@see e_parse::text_truncate()}).
+	 */
+	public function testTextTruncateTrimsACutEntityAndNothingElse()
+	{
+		$cases = array(
+			'a cut shorter than the window keeps its text'      => array('abc&def ghijkl', 5, 'abc...'),
+			'an entity cut at the far edge of the window goes'  => array('abcd&amp;abcdefghij', 12, 'abcd...'),
+			'an ampersand that starts no entity stays'          => array('Tom &amp; Jerry go far', 10, 'Tom & Jerr...'),
+			'a terminated entity at the cut stays'              => array('x&amp;amp; and more text here', 6, 'x&amp;...'),
+			'a numeric entity goes'                             => array('x&amp;#8364; and more text here', 6, 'x...'),
+			'a capitalised entity name goes'                    => array('x&amp;Aacute; and more text here', 6, 'x...'),
+			'an entity in a multi-line text goes'               => array("line one\nline two &amp;copy and more", 23, "line one\nline two ..."),
+			'an entity directly behind a newline goes'          => array("line one\n&amp;copy and more words", 14, "line one\n..."),
+			'a newline before the end does not end the cut'     => array("AT&T\nmore words here", 5, "AT&T\n..."),
+			'a name longer than the window stays'               => array('x&amp;thetasym; and more', 10, 'x&thetasym...'),
+			'an entity with nothing in front of it to keep stays' => array('&amp;amp; x', 3, '&am...'),
+			'a cut that ends on the ampersand goes'             => array('abc&amp;amp; more', 4, 'abc...'),
+		);
+
+		foreach ($cases as $pins => $case)
+		{
+			list($text, $len, $expected) = $case;
+
+			self::assertSame('NOMB|' . $expected, $this->truncateWithoutMbStrimwidth($text, $len), $pins);
+		}
+
+		self::assertSame(
+			'NOMB|ééééé...',
+			$this->truncateWithoutMbStrimwidth('ééééé&amp;copy and more words', 10, true),
+			'the cut is made at the ampersand\'s byte, which is where the pattern found it'
+		);
+	}
+
+	/**
+	 * @param string $text      the text to truncate
+	 * @param int    $len       the length to truncate it to
+	 * @param bool   $multibyte whether the child counts characters rather than bytes
+	 * @return string MB| or NOMB| for which branch the child took, then its truncation verbatim
+	 */
+	private function truncateWithoutMbStrimwidth($text, $len, $multibyte = false)
+	{
+		$probe = 'define("e107_INIT", true);'
+			. ' require ' . var_export(e_HANDLER . 'core_functions.php', true) . ';'
+			. ' require ' . var_export(e_HANDLER . 'e_parse_class.php', true) . ';'
+			. ' $tp = new e_parse();'
+			. ($multibyte ? ' $tp->setMultibyte(true);' : '')
+			. ' echo base64_encode((function_exists("mb_strimwidth") ? "MB|" : "NOMB|")'
+			. ' . $tp->text_truncate(base64_decode(' . var_export(base64_encode($text), true) . '), ' . (int) $len . ', "..."));';
+
+		list($output, $status) = $this->runInCli($probe, '-d disable_functions=mb_strimwidth');
+
+		$printed = implode('', $output);
+		self::assertSame(0, $status, "the subprocess exited $status: $printed");
+
+		$answer = base64_decode($printed, true);
+		self::assertNotFalse($answer, "the subprocess printed something other than an answer: $printed");
+
+		return $answer;
+	}
+
+	/**
 	 * search_highlight is created by e107_admin/search.php and by nothing else, so
 	 * a site whose administrator has never saved the search settings page reaches
 	 * the highlighting test without it. Absent has to mean off, not a warning on
@@ -1646,7 +1733,66 @@ EXPECTED;
 		$string = "This is a long string that will be truncated.";
 		$result = $this->tp->truncate($string, 20);
 		self::assertSame('This is a long st...', $result);
+		self::assertSame($result, $this->tp->truncate($string, 20, '...', true), 'an explicit exact cut is the default one');
 
+	}
+
+	public function testTruncateCutsAtAWordBoundaryWhenNotExact()
+	{
+		$cases = array(
+			'plain text'                         => array('This is a long string that will be truncated.', 'This is a long...'),
+			'html'                               => array('<p>This is a long string that will be truncated.</p>', '<p>This is a long...</p>'),
+			'bbcode'                             => array('[b]This is a long[/b] string that will be truncated.', 'This is a long...'),
+			'a word with no space to go back to' => array('Supercalifragilisticexpialidocious', 'Supercalifragilis...'),
+			'a text short enough to keep whole'  => array('Short and sweet...', 'Short and sweet...'),
+		);
+
+		foreach ($cases as $pins => $case)
+		{
+			list($text, $expected) = $case;
+
+			self::assertSame($expected, $this->tp->truncate($text, 20, '...', false), $pins);
+		}
+	}
+
+	public function testTruncateRefusesAFifthArgument()
+	{
+		$this->expectException('InvalidArgumentException');
+		$this->expectExceptionMessage('5 given');
+
+		$this->tp->truncate('This is a long string that will be truncated.', 20, '...', false, 'stray');
+	}
+
+	public function testTruncateStillRunsUnderAnOverrideWithTheThreeParameterSignature()
+	{
+		list($output, $status) = $this->truncateUnderOverride('public function truncate($text, $length = 100, $ending = "...") { return "[" . parent::truncate($text, $length, $ending) . "]"; }');
+
+		self::assertSame(array('[This is a long st...]'), $output);
+		self::assertSame(0, $status);
+	}
+
+	public function testTruncateKeepsATextTruncateOverrideAnswerThatDoesNotEndInTheEnding()
+	{
+		list($output, $status) = $this->truncateUnderOverride('public function text_truncate($text, $len = 200, $more = " ... ") { return "[" . parent::text_truncate($text, $len, $more) . "]"; }');
+
+		self::assertSame(array('[This is a long st...]'), $output);
+		self::assertSame(0, $status);
+	}
+
+	/**
+	 * @param string $override the body of a class extending e_parse, declared in a child process that reports every notice, warning and fatal
+	 * @return array the child's output lines from a word-safe truncate() of a 46-character sentence to 20, then its exit status
+	 */
+	private function truncateUnderOverride($override)
+	{
+		$probe = 'define("e107_INIT", true);'
+			. ' require ' . var_export(e_HANDLER . 'core_functions.php', true) . ';'
+			. ' require ' . var_export(e_HANDLER . 'e_parse_class.php', true) . ';'
+			. ' class overriding_parse extends e_parse { ' . $override . ' }'
+			. ' $tp = new overriding_parse();'
+			. ' echo $tp->truncate("This is a long string that will be truncated.", 20, "...", false);';
+
+		return $this->runInCli($probe, '-d error_reporting=-1 -d display_errors=1');
 	}
 
 	public function testSimpleParse()
