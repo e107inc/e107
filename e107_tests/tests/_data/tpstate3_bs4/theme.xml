@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="TP State 3 Bootstrap 4" version="1.0" date="2026-09-10" compatibility="2.0">
+	<author name="e107 Inc" email="nospam@e107.org" url="https://e107.org" />
+	<summary>Fixture theme declaring Bootstrap 4 as a library</summary>
+	<description>Fixture theme declaring Bootstrap 4 as a library</description>
+	<category>generic</category>
+	<libraries>
+		<library name="bootstrap" version="4" scope="front" />
+	</libraries>
+	<layouts>
+		<layout name='default' title='Default' default='true' />
+	</layouts>
+</e107Theme>
