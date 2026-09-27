@@ -25,6 +25,12 @@ class uploadAdminTest extends \Codeception\Test\Unit
 	/** The name the handled owner gives the record it makes of an upload. */
 	const TAKEN = 'uploadAdminTestTaken';
 
+	/** An owner whose e_upload handler the category cases write into the app. */
+	const GROUPED_OWNER = 'uploadAdminTestOwner';
+
+	/** A second registered owner, for a category chosen across owners. */
+	const OTHER_OWNER = 'uploadAdminTestOther';
+
 	const FILE = 'uploadAdminTest.zip';
 
 	/** @var int */
@@ -143,6 +149,69 @@ class uploadAdminTest extends \Codeception\Test\Unit
 		self::assertSame('uploadAdminTestRenamed', $row['upload_name'], "the inline edit never saved:\n".$page);
 		self::assertSame(1, (int) $row['upload_category'], 'renaming an upload must not change its category');
 		self::assertSame(self::ORPHAN_OWNER, $row['upload_owner'], 'renaming an upload must not change its owner');
+	}
+
+	/**
+	 * An owner's categories come in groups, as download's do under their parents, and the list has to find one in any group, not only the last.
+	 */
+	public function testTheListNamesACategoryFromAnyGroupOfItsOwner()
+	{
+		$page = $this->runPage('mode=main&action=list', $this->haveGroupedOwner(1));
+
+		self::assertStringContainsString('uploadAdminTestFirstCategory', $page,
+			"the upload's category is in the first of its owner's groups:\n".$page);
+	}
+
+	public function testTheEditFormPreselectsTheUploadsCategory()
+	{
+		$page = $this->runPage('mode=main&action=edit&id='.$this->uploadId, $this->haveGroupedOwner(2));
+
+		$this->assertPreselected($page, self::GROUPED_OWNER.'__2');
+	}
+
+	/**
+	 * The title is left empty so the save fails and the form comes back with what was posted.
+	 */
+	public function testAFailedSaveKeepsAnotherOwnersCategoryPreselected()
+	{
+		$page = $this->runPage('mode=main&action=edit&id='.$this->uploadId, $this->haveGroupedOwner(2)
+			."\$_POST = array('etrigger_submit' => 'update', '__after_submit_action' => 'edit', 'upload_name' => '', "
+			."'upload_file' => '".self::FILE."', 'upload_category' => '".self::OTHER_OWNER."__7', 'upload_active' => 0); ");
+
+		self::assertSame('uploadAdminTest', $this->storedRow()['upload_name'], "the save was meant to fail:\n".$page);
+		$this->assertPreselected($page, self::OTHER_OWNER.'__7');
+	}
+
+	/**
+	 * Gives the seeded upload an owner with two groups of categories, puts it in category $category, and adds a second owner.
+	 *
+	 * @param int $category
+	 * @return string PHP that registers both owners' e_upload handlers in the child
+	 */
+	private function haveGroupedOwner($category)
+	{
+		$this->writeOwner(self::GROUPED_OWNER, array('category' => array(
+			'First group'  => array(self::GROUPED_OWNER.'__1' => 'uploadAdminTestFirstCategory'),
+			'Second group' => array(self::GROUPED_OWNER.'__2' => 'uploadAdminTestSecondCategory'),
+		)));
+		$this->writeOwner(self::OTHER_OWNER, array('category' => array(self::OTHER_OWNER.'__7' => 'uploadAdminTestOtherCategory')));
+
+		e107::getDb()->update('upload', array(
+			'data'  => array('upload_owner' => self::GROUPED_OWNER, 'upload_category' => (int) $category),
+			'WHERE' => 'upload_id = '.(int) $this->uploadId,
+		));
+
+		return "e107::getConfig()->set('e_upload_list', array('".self::GROUPED_OWNER."' => '".self::GROUPED_OWNER."', '".self::OTHER_OWNER."' => '".self::OTHER_OWNER."')); ";
+	}
+
+	/**
+	 * @param string $page
+	 * @param string $key the option's owner__id value
+	 */
+	private function assertPreselected($page, $key)
+	{
+		self::assertSame(1, preg_match("#<option value=['\"]".$key."['\"][^>]*selected#", $page),
+			"saving the form as it comes back has to keep the upload in that category:\n".$page);
 	}
 
 	/**

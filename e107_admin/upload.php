@@ -371,25 +371,38 @@ class upload_form_ui extends e_admin_form_ui
 {
 	private function findKey($owner, $array,$value)
 	{
-		$searchKey = $owner."__".$value;
-
-		$ret = null;
+		$searchKey = $this->categoryKey($owner, $value);
 
 		foreach($array as $k=>$v)
 		{
 			if(is_array($v))
 			{
 				$ret = $this->findKey($owner,$v,$value);
+				if($ret !== null)
+				{
+					return $ret;
+				}
 			}
 			elseif($k == $searchKey)
 			{
-				$ret = $v;
+				return $v;
 			}
 
 		}
 
-		return $ret;
-	//	return print_a($array,true);
+		return null;
+	}
+
+	/**
+	 * The category selector's value for category $id of $owner.
+	 *
+	 * @param string $owner
+	 * @param int $id
+	 * @return string
+	 */
+	private function categoryKey($owner, $id)
+	{
+		return $owner.'__'.$id;
 	}
 
 
@@ -406,10 +419,8 @@ class upload_form_ui extends e_admin_form_ui
             break;
 
 	        case 'write':
-	            $owner =  $this->getController()->getModel()->get('upload_owner');
-				//return $value."-- ".$owner; // $this->radio_switch('upload_active', $value, LAN_ACCEPT, LAN_PENDING, $options);
-				// make category editable instead of just displaying data
-				return e107::getForm()->select('upload_category', $opts, $value);
+	            $owner = $this->getController()->uploadOwner($this->getController()->getModel()->getIfPosted('upload_owner'));
+				return e107::getForm()->select('upload_category', $opts, $this->categoryKey($owner, $value));
             break;
 
             case 'batch':
