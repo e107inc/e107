@@ -254,6 +254,24 @@ class SocialLoginConfigManagerTest extends \Codeception\Test\Unit
 		$this->assertEquals("OAuth2", $output);
 	}
 
+	public function testNormalizeProviderNameKeepsASuffixItsTypeContradicts()
+	{
+		$this->assertEquals("LinkedInOpenID-OAuth2", $this->manager->normalizeProviderName("LinkedInOpenID"));
+		$this->assertEquals("LinkedIn-OAuth2", $this->manager->normalizeProviderName("LinkedIn"));
+	}
+
+	public function testEverySupportedProviderRoundTripsThroughAKeyOfItsOwn()
+	{
+		$providers = $this->manager->getSupportedProviders();
+		$this->assertNotEmpty($providers);
+
+		foreach ($providers as $provider)
+		{
+			$key = $this->manager->normalizeProviderName($provider);
+			$this->assertSame($provider, $this->manager->denormalizeProviderName($key), "$provider was stored as $key");
+		}
+	}
+
 	public function testDenormalizeProviderName()
 	{
 		$output = $this->manager->denormalizeProviderName("OpenID");
