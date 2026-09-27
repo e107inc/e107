@@ -15,8 +15,12 @@ class e_jsmanagerTest extends \Test\Unit
 	/** @var e_jsmanager */
 	protected $js;
 
+	/** @var array */
+	private $foundParserState;
+
 	protected function _before()
 	{
+		$this->foundParserState = $this->parserState();
 
 		try
 		{
@@ -27,6 +31,11 @@ class e_jsmanagerTest extends \Test\Unit
 			$this->assertTrue(false, "Couldn't load e_jsmanager object");
 		}
 
+	}
+
+	protected function _after()
+	{
+		$this->restoreParserState($this->foundParserState);
 	}
 
 	public function testIsInAdmin()
@@ -200,8 +209,7 @@ class e_jsmanagerTest extends \Test\Unit
 			'https://static3.mydomain.com/',
 		];
 
-		$tp->setStaticUrl(null);
-		e107::getParser()->setStaticUrl($static);
+		$tp->setStaticUrl($static);
 
 		$staticTests = [
 			0 => array(
@@ -244,9 +252,6 @@ class e_jsmanagerTest extends \Test\Unit
 			$result = (strpos($actual, $var['expected']) !== false);
 			self::assertTrue($result, $var['expected'] . " was not found in the rendered links. Render links result:" . $actual . "\n\n");
 		}
-
-		$tp->setStaticUrl(null);
-		e107::getParser()->setStaticUrl(null);
 
 	}
 

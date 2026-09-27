@@ -161,7 +161,7 @@ class e_admin_dispatcherTest extends \Test\Unit
 		];
 
 		$tp = e107::getParser();
-		$restore = $tp->getBootstrap();
+		$found = $this->parserState();
 
 		try
 		{
@@ -177,7 +177,7 @@ class e_admin_dispatcherTest extends \Test\Unit
 		}
 		finally
 		{
-			$tp->setBootstrap($restore);
+			$this->restoreParserState($found);
 		}
 	}
 

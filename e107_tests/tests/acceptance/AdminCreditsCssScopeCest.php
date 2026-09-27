@@ -11,6 +11,7 @@ class AdminCreditsCssScopeCest
 	const WRAPPER_CLASS = '.credits-content';
 	const STYLESHEET_VARIABLE = '$css';
 	const REGISTRAR = 'css';
+	const INLINE_REGISTRATION = 'inline';
 
 	public function _before(AcceptanceTester $I)
 	{
@@ -142,10 +143,7 @@ class AdminCreditsCssScopeCest
 
 		foreach ($tokens as $position => $token)
 		{
-			$before = $position > 0 ? $tokens[$position - 1][1] : '';
-			$after = isset($tokens[$position + 1]) ? $tokens[$position + 1][1] : '';
-
-			if ($token[0] === T_STRING && $token[1] === self::REGISTRAR && $before === '::' && $after === '(')
+			if ($this->mayRegisterInlineCss($tokens, $position))
 			{
 				$registrations++;
 			}
@@ -155,8 +153,10 @@ class AdminCreditsCssScopeCest
 				continue;
 			}
 
+			$before = $this->tokenText($tokens, $position - 1);
+			$after = $this->tokenText($tokens, $position + 1);
 			$literal = isset($tokens[$position + 2]) ? $tokens[$position + 2] : array(null, '');
-			$end = isset($tokens[$position + 3]) ? $tokens[$position + 3][1] : '';
+			$end = $this->tokenText($tokens, $position + 3);
 
 			if ($after === '=' && $literal[0] === T_CONSTANT_ENCAPSED_STRING && $end === ';')
 			{
@@ -177,8 +177,9 @@ class AdminCreditsCssScopeCest
 			.'anywhere else carries rules to the admin page that this test never scans.');
 
 		$I->assertSame(1, $registrations,
-			'Expected '.self::PAGE.' to register the one stylesheet it declares. A second registration reaches '
-			.'the admin page unscanned.');
+			'Expected '.self::PAGE.' to make one ::'.self::REGISTRAR.'() call that registers inline CSS, which is '
+			.'the one stylesheet it declares. A second inline registration reaches the admin page unscanned, and '
+			.'a call this test cannot read the type of is counted as one rather than waved through.');
 
 		$I->assertSame(0, preg_match('/\\\\|\$[A-Za-z_\x80-\xff{]/', $declarations[0]),
 			'Expected the declared stylesheet to need no decoding: a backslash escape or an interpolation puts '
@@ -188,6 +189,45 @@ class AdminCreditsCssScopeCest
 			'Expected the declared stylesheet to name the credits wrapper.');
 
 		return (string) substr($declarations[0], 1, -1);
+	}
+
+	/**
+	 * Whether the token at $position opens a static {@see e107::css()} call that this test cannot read as registering something other than inline CSS.
+	 *
+	 * @param array $tokens
+	 * @param int $position
+	 * @return bool
+	 */
+	private function mayRegisterInlineCss($tokens, $position)
+	{
+		if ($tokens[$position][0] !== T_STRING || $tokens[$position][1] !== self::REGISTRAR
+			|| $this->tokenText($tokens, $position - 1) !== '::'
+			|| $this->tokenText($tokens, $position + 1) !== '(')
+		{
+			return false;
+		}
+
+		$type = isset($tokens[$position + 2]) ? $tokens[$position + 2] : array(null, '');
+
+		if ($type[0] !== T_CONSTANT_ENCAPSED_STRING || $this->tokenText($tokens, $position + 3) !== ','
+			|| strpos($type[1], '\\') !== false)
+		{
+			return true;
+		}
+
+		return (string) substr($type[1], 1, -1) === self::INLINE_REGISTRATION;
+	}
+
+	/**
+	 * The source text of the token at $position, or the empty string where the walk has run off either end.
+	 *
+	 * @param array $tokens
+	 * @param int $position
+	 * @return string
+	 */
+	private function tokenText($tokens, $position)
+	{
+		return isset($tokens[$position]) ? $tokens[$position][1] : '';
 	}
 
 	/**

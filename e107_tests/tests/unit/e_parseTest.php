@@ -2064,7 +2064,6 @@ EXPECTED;
 		self::assertStringContainsString('https://static2.mydomain.com', $map['e107-themes/bootstrap3/images/myimage2.jpg'] );
 
 		$this->tp->setStaticUrl(null);
-		e107::getParser()->setStaticUrl(null);
 	}
 
 	public function testSetStaticUrlDiscardsThePreviousConfigurationsState()
@@ -2912,9 +2911,8 @@ EXPECTED;
 	 */
 	public function testToAvatarHdWithoutAnExplicitHeight()
 	{
-		$parser = e107::getParser();
-		$originalHeight = $parser->thumbHeight();
-		$parser->thumbHeight(0);
+		$found = $this->parserState();
+		e107::getParser()->thumbHeight(0);
 
 		try
 		{
@@ -2938,7 +2936,7 @@ EXPECTED;
 		}
 		finally
 		{
-			$parser->thumbHeight($originalHeight);
+			$this->restoreParserState($found);
 		}
 	}
 

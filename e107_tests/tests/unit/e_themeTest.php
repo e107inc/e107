@@ -392,8 +392,7 @@ class e_themeTest extends \Test\Unit
 
 		);
 
-		$tp = e107::getParser();
-		$bootstrap = $tp->getBootstrap();
+		$found = $this->parserState();
 
 		try
 		{
@@ -405,7 +404,7 @@ class e_themeTest extends \Test\Unit
 		}
 		finally
 		{
-			$tp->setBootstrap($bootstrap);
+			$this->restoreParserState($found);
 		}
 
 		//	var_export($loaded);
