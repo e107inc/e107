@@ -223,7 +223,7 @@ class sitelinks
 
 			if($style['linkdisplay'] == self::LINK_DISPLAY_MENU)
 			{
-				$text = $ns->tablerender(LAN_SITELINKS_183, $text, 'sitelinks', true);
+				$text = $ns->tablerender(defset('LAN_SITELINKS_183', 'Main Menu'), $text, 'sitelinks', true);
 			}
 		}
 		else // link_DISPLAY_3
@@ -237,7 +237,7 @@ class sitelinks
 				$text .= $style['postlink'];
 			}
 
-			$text = $ns->tablerender(LAN_SITELINKS_183, $text, 'sitelinks_main', true);
+			$text = $ns->tablerender(defset('LAN_SITELINKS_183', 'Main Menu'), $text, 'sitelinks_main', true);
 
 			foreach(array_keys($this->eLinkList) as $k)
 			{
@@ -879,7 +879,7 @@ class e_navigation
 		
 		$pref = e107::getPref();
 		
-		$this->admin_cat['title'][1] = LAN_SETTINGS;
+		$this->admin_cat['title'][1] = defset('LAN_SETTINGS', 'Settings');
 		$this->admin_cat['id'][1] = 'setMenu';
 		$this->admin_cat['img'][1] = 'fa-cogs.glyph';
 		$this->admin_cat['lrg_img'][1] = $tp->toGlyph('e-settings-32');
@@ -897,26 +897,26 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 
 		
-		$this->admin_cat['title'][2] = ADLAN_CL_2;
+		$this->admin_cat['title'][2] = defset('ADLAN_CL_2', 'Users');
 		$this->admin_cat['id'][2] = 'userMenu';
 		$this->admin_cat['img'][2] = 'fa-users.glyph'; // $tp->toGlyph('e-cat_users-16');
 		$this->admin_cat['lrg_img'][2] = $tp->toGlyph('e-cat_users-32'); 
 		$this->admin_cat['sort'][2] = true;
 		
-		$this->admin_cat['title'][3] = ADLAN_CL_3;
+		$this->admin_cat['title'][3] = defset('ADLAN_CL_3', 'Content');
 		$this->admin_cat['id'][3] = 'contMenu';
 		$this->admin_cat['img'][3] = 'fa-file-text-o.glyph'; // $tp->toGlyph('e-cat_content-16');
 		$this->admin_cat['lrg_img'][3] = $tp->toGlyph('e-cat_content-32'); 
 		$this->admin_cat['sort'][3] = true;
 		
-		$this->admin_cat['title'][4] = ADLAN_CL_6;
+		$this->admin_cat['title'][4] = defset('ADLAN_CL_6', 'Tools');
 		$this->admin_cat['id'][4] = 'toolMenu';
 		$this->admin_cat['img'][4] = 'fa-wrench.glyph'; // $tp->toGlyph('e-cat_tools-16');
 		$this->admin_cat['lrg_img'][4] = $tp->toGlyph('e-cat_tools-32'); 
 		$this->admin_cat['sort'][4] = true;
 		
 		// Manage
-		$this->admin_cat['title'][5] = LAN_MANAGE;
+		$this->admin_cat['title'][5] = defset('LAN_MANAGE', 'Manage');
 		$this->admin_cat['id'][5] = 'managMenu';
 		$this->admin_cat['img'][5] = 'fa-desktop.glyph' ; // $tp->toGlyph('e-manage-16');
 		$this->admin_cat['lrg_img'][5] = $tp->toGlyph('e-manage-32'); 
@@ -924,7 +924,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 		if(!empty($pref['admin_separate_plugins']))
 		{
-			$this->admin_cat['title'][6] = ADLAN_CL_7;
+			$this->admin_cat['title'][6] = defset('ADLAN_CL_7', 'Plugins');
 			$this->admin_cat['id'][6] = 'plugMenu'; 
 			$this->admin_cat['img'][6] = 'fa-puzzle-piece.glyph'; // $tp->toGlyph('e-cat_plugins-16');
 			$this->admin_cat['lrg_img'][6] = $tp->toGlyph('e-cat_plugins-32'); 
@@ -933,7 +933,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		else
 		{
 			// Misc.
-			$this->admin_cat['title'][6] = ADLAN_CL_8;
+			$this->admin_cat['title'][6] = defset('ADLAN_CL_8', 'Misc');
 			$this->admin_cat['id'][6] = 'miscMenu';
 			$this->admin_cat['img'][6] = 'fa-puzzle-piece.glyph';  // E_16_CAT_MISC;
 			$this->admin_cat['lrg_img'][6] = ''; // E_32_CAT_MISC;
@@ -941,7 +941,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		}
 		
 		//About menu    - No 20 -  leave space for user-categories.
-		$this->admin_cat['title'][20] = LAN_ABOUT;
+		$this->admin_cat['title'][20] = defset('LAN_ABOUT', 'About');
 		$this->admin_cat['id'][20] = 'aboutMenu';
 		$this->admin_cat['img'][20] = 'fa-info-circle.glyph'; // E_16_CAT_ABOUT;//E_16_NAV_DOCS
 		$this->admin_cat['lrg_img'][20] = ''; // $tp->toGlyph('e-cat_about-32'); ; // E_32_CAT_ABOUT;
@@ -1059,9 +1059,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				 *
 				 */
 				$array_sub_functions = array();
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, defset('E_16_MANAGE'), defset('E_32_MANAGE'));
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, defset('E_16_CREATE'), defset('E_32_CREATE'));
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, LAN_PREFS, 'H', 3, defset('E_16_SETTINGS'), defset('E_32_SETTINGS'));
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', defset('LAN_MANAGE', 'Manage'), defset('ADLAN_3', 'News items List'), 'H', 3, defset('E_16_MANAGE'), defset('E_32_MANAGE'));
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', defset('LAN_CREATE', 'Create'), defset('ADLAN_2', 'Create news item'), 'H', 3, defset('E_16_CREATE'), defset('E_32_CREATE'));
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', defset('LAN_PREFS', 'Preferences'), defset('LAN_PREFS', 'Preferences'), 'H', 3, defset('E_16_SETTINGS'), defset('E_32_SETTINGS'));
 				
 				return $array_sub_functions;
 		}
