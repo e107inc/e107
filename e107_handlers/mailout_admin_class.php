@@ -1138,7 +1138,7 @@ class mailoutAdminClass extends e107MailManager
 				</div>";
 
 		$text .= "</form>";
-		$ns->tablerender(ADLAN_136 . SEP . LAN_MAILOUT_255 . $mailId, $text);
+		$ns->tablerender(ADLAN_136 . SEP . LAN_MAILOUT_255 . ' ' . $mailId, $text);
 	}
 
 	/**
@@ -1334,7 +1334,7 @@ class mailoutAdminClass extends e107MailManager
 		$totalRecipients = !empty($mailData['mail_togo_count']) ? $mailData['mail_togo_count'] : $counters['add'];
 
 		$text .= '<tr><td>' . LAN_MAILOUT_173 . '</td><td>' . $totalRecipients . "<input type='hidden' name='mailIDConf' value='{$mailMainID}' /></td></tr>";
-		$text .= '<tr><td>' . LAN_MAILOUT_71 . '</td><td> ' . $counters['add'] . ' ' . LAN_MAILOUT_69 . $counters['dups'] . LAN_MAILOUT_70 . '</td></tr>';
+		$text .= '<tr><td>' . LAN_MAILOUT_71 . '</td><td> ' . $counters['add'] . ' ' . LAN_MAILOUT_69 . ' ' . $counters['dups'] . ' ' . LAN_MAILOUT_70 . '</td></tr>';
 		$text .= "</tbody></table>\n</fieldset>";
 
 		$this->updateCounter($mailMainID, 'total', $counters['add']);
@@ -1399,7 +1399,7 @@ class mailoutAdminClass extends e107MailManager
 		//		$text .=
 		// "<tr><td>".LAN_MAILOUT_239."</td><td>".$this->makeCalendar('mail_latest_time',
 		// time()+86400, CORE_DATE_ORDER)."</td></tr>";
-		$text .= "<tr><td>" . LAN_MAILOUT_240 . "</td><td><input type='checkbox' value='1' name='mail_notify_complete' />" . LAN_MAILOUT_241 . "</td></tr>";
+		$text .= "<tr><td>" . LAN_MAILOUT_240 . "</td><td><input type='checkbox' value='1' name='mail_notify_complete' /> " . LAN_MAILOUT_241 . "</td></tr>";
 		$text .= "</tbody></table>\n</fieldset>";
 
 		return $text;

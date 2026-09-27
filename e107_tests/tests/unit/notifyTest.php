@@ -54,5 +54,29 @@ class notifyTest extends \Test\Unit
 
 	}
 
+	/**
+	 * Each line of the user verification notice puts a value after its label, and the labels used to carry the space themselves.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/6331
+	 */
+	public function testUserVerificationLinesAreSpacedFromTheirValues()
+	{
+		e107::coreLan('notify');
+
+		$sent = array();
+		$nt = $this->make('notify', array('send' => function($id, $subject, $message) use (&$sent) {
+			$sent[] = $message;
+		}));
+
+		$nt->notify_userveri(array('user_id' => 42, 'user_loginname' => 'exampleAccount'));
+
+		$this->assertCount(1, $sent, 'The verification notice must have been sent once');
+
+		$this->assertStringContainsString(NT_LAN_UV_2.' 42', $sent[0], $sent[0]);
+		$this->assertStringContainsString(NT_LAN_UV_3.' exampleAccount', $sent[0], $sent[0]);
+		$this->assertStringContainsString(NT_LAN_UV_4.' '.e107::getIPHandler()->getIP(FALSE), $sent[0], $sent[0]);
+		$this->assertStringNotContainsString(NT_LAN_UV_2.'42', $sent[0], $sent[0]);
+	}
+
 
 }

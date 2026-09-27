@@ -995,7 +995,7 @@ class search_front extends e_shortcode
 					if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check))
 					{
 						$perform_search = false;
-						$this->message = LAN_SEARCH_17.$this->search_prefs['time_secs'].LAN_SEARCH_18;
+						$this->message = LAN_SEARCH_17.' '.$this->search_prefs['time_secs'].' '.LAN_SEARCH_18;
 					}
 					else
 					{

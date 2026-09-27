@@ -362,7 +362,7 @@ if ($action == "reply")
 				break;
 		}
 	}
-	define('e_PAGETITLE', COMLAN_102.$subject.($title ? ' / '.$title : '')." / ".LAN_COMMENTS);
+	define('e_PAGETITLE', COMLAN_102.' '.$subject.($title ? ' / '.$title : '')." / ".LAN_COMMENTS);
 	require_once(HEADERF);
 }
 elseif ($action == 'comment')

@@ -689,7 +689,7 @@ class emotec
 
 				if ($sql->createQueryBuilder()->delete('core')->where('e107_name', 'emote_' . $p)->execute())
 				{
-					$mes->addInfo(EMOLAN_34 . ":" . $p . EMOLAN_35);
+					$mes->addInfo(EMOLAN_34 . ":" . $p . ' ' . EMOLAN_35);
 				}
 			}
 		}

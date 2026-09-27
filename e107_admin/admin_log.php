@@ -406,7 +406,7 @@ class admin_log_ui extends e_admin_ui
 					->where('dblog_datestamp', '<', (int) $old_date)->execute())
 				{
 					// Add in a log event
-					$message = $db_name.str_replace(array('[x]', '[y]'), array($old_string, $del_count), RL_LAN_057);
+					$message = $db_name.' '.str_replace(array('[x]', '[y]'), array($old_string, $del_count), RL_LAN_057);
 					$mes->addSuccess($message);
 					$log->add($db_msg, "db_Delete - earlier than {$old_string} (past {$back_count} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
 				}
@@ -435,7 +435,7 @@ class admin_log_ui extends e_admin_ui
 							<table class='table adminform'>
 								<tr>
 									<td class='center'>
-										<strong>".(($action == "confdel") ? RL_LAN_047 : RL_LAN_065).$old_string."</strong>
+										<strong>".(($action == "confdel") ? RL_LAN_047 : RL_LAN_065)." ".$old_string."</strong>
 									</td>
 								</tr>
 							</table>

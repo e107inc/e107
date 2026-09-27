@@ -1028,7 +1028,7 @@ class page_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					e107::getMessage()->addDebug(CUSLAN_78."".$id.".");
+					e107::getMessage()->addDebug(CUSLAN_78." ".$id.".");
 				}
 			}
 

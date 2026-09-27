@@ -910,11 +910,11 @@ class lanDeveloper
 			$new = $this->disableUnused($data);
 			if(file_put_contents($disUnusedLanFile,$new))
 			{
-				$mes->addSuccess(LANG_LAN_135.$disUnusedLanFile);//Overwriting
+				$mes->addSuccess(LANG_LAN_135.' '.$disUnusedLanFile);//Overwriting
 			}
 			else
 			{
-				$mes->addError(LANG_LAN_136.$disUnusedLanFile);//Couldn't overwrite
+				$mes->addError(LANG_LAN_136.' '.$disUnusedLanFile);//Couldn't overwrite
 			}
 
 			$ns->tablerender(LANG_LAN_137.SEP.$disUnusedLanFile,$mes->render()."<pre>".htmlentities($new)."</pre>");//Processed

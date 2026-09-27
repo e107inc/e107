@@ -416,7 +416,7 @@ if (!empty($_POST['pwsubmit']))
 			exit;
 		}
 
-		$sent = sendemail($clean_email, "".LAN_09."".SITENAME, $message);
+		$sent = sendemail($clean_email, LAN_09.' '.SITENAME, $message);
 		$do_log['password_result'] = $sent ? LAN_FPW20 : LAN_FPW19;
 
 		// Log to user audit log
