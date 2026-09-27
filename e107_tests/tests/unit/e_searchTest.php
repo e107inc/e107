@@ -93,7 +93,8 @@
 		}
 
 		/**
-		 * Two rows of known text, indexed per column because MATCH() needs an index over exactly its own column list.
+		 * Three rows of known text, indexed per column because MATCH() needs an index over exactly its own column list.
+		 * The second carries only what an unescaped metacharacter would reach; the third holds NULL in a weighted column, as p.page_fields does on an upgraded site.
 		 */
 		private function buildProbe()
 		{
@@ -101,29 +102,31 @@
 			$sql->gen('DROP TABLE IF EXISTS `#' . $this->probeTable . '`');
 			$this->probeBuilt = true;
 			$sql->gen('CREATE TABLE `#' . $this->probeTable . '` ('
-				. 'probe_id INT NOT NULL, probe_title VARCHAR(255) NOT NULL, probe_summary TEXT NOT NULL,'
+				. 'probe_id INT NOT NULL, probe_title VARCHAR(255) NOT NULL, probe_summary TEXT NULL,'
 				. ' FULLTEXT KEY probe_title (probe_title), FULLTEXT KEY probe_summary (probe_summary)'
 				. ') ENGINE=MyISAM');
 			$sql->gen('INSERT INTO `#' . $this->probeTable . '` (probe_id, probe_title, probe_summary) VALUES'
 				. " (1, 'Release wibble#wobble notes for wibble- builds',"
 				. " 'Upgrade notes for wibble.wobble and for wibbleXwobble. See #wobble on its own."
 				. " Filed as wobble(12) by O&#039;Brien.'),"
-				. " (2, 'Second entry, about wibbleXwobble', 'No dot and no bracket anywhere in this one.')");
+				. " (2, 'Second entry, about wibbleXwobble', 'No dot and no bracket anywhere in this one.'),"
+				. " (3, 'Third entry, about wibbleZwobble', NULL)");
 		}
 
 		/**
 		 * Searches the probe rows the way a search handler does, returning the rendered result list.
-		 * $where and $order stand in for what a handler's own where() and order declare.
+		 * $where and $order stand in for what a handler's own where() and order declare, and $relevance renders each row's score.
 		 */
-		private function searchProbe($searchQuery, $mysqlSort, $boundary, $where = '', $order = array())
+		private function searchProbe($searchQuery, $mysqlSort, $boundary, $where = '', $order = array(), $relevance = 0)
 		{
 			global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
 
+			e107::coreLan('search');
 			$this->buildProbe();
 
 			$query = $searchQuery;
 			$search_prefs = array('mysql_sort' => $mysqlSort, 'boundary' => $boundary,
-				'php_limit' => 10, 'relevance' => 0);
+				'php_limit' => 10, 'relevance' => $relevance);
 			$pre_title = 0;
 			$search_chars = 200;
 			$search_res = 10;
@@ -146,7 +149,7 @@
 				'link'         => 'index.php',
 				'pre_title'    => '',
 				'title'        => $row['probe_title'],
-				'summary'      => $row['probe_summary'],
+				'summary'      => (string) $row['probe_summary'],
 				'detail'       => '',
 				'pre_summary'  => '',
 				'post_summary' => '',
@@ -786,13 +789,43 @@
 			$datestamp = self::FIXTURE_DATESTAMP;
 
 			return array(
+				'download' => array(
+					'download_id' => 1,
+					'download_sef' => 'a-download',
+					'download_name' => 'A download',
+					'download_url' => 'a-download.zip',
+					'download_author' => 'Ahsanul',
+					'download_author_website' => '',
+					'download_description' => 'A description',
+					'download_class' => 0,
+					'download_category' => 1,
+					'download_category_id' => 1,
+					'download_category_sef' => 'a-category',
+					'download_category_name' => 'A category',
+					'download_category_class' => 0,
+					'download_datestamp' => $datestamp,
+				),
+				'faqs' => array(
+					'faq_id' => 1,
+					'faq_info_id' => 1,
+					'faq_info_title' => 'A category',
+					'faq_info_sef' => 'a-category',
+					'faq_info_class' => 0,
+					'faq_question' => 'A question',
+					'faq_answer' => 'An answer',
+					'faq_tags' => 'a tag',
+					'faq_datestamp' => $datestamp,
+				),
 				'forum' => array(
 					'thread_id' => 1,
 					'thread_name' => 'A thread',
 					'thread_datestamp' => $datestamp,
+					'thread_user' => 1,
+					'thread_forum_id' => 1,
 					'forum_id' => 1,
 					'forum_sef' => 'a-forum',
 					'forum_name' => 'A forum',
+					'forum_class' => 0,
 					'user_id' => 1,
 					'user_name' => 'Ahsanul',
 					'post_id' => 1,
@@ -804,6 +837,11 @@
 					'news_title' => 'A news item',
 					'news_body' => 'A news body',
 					'news_extended' => '',
+					'news_summary' => 'A news summary',
+					'news_meta_keywords' => 'a keyword',
+					'news_meta_description' => 'A meta description',
+					'news_allow_comments' => 0,
+					'news_category' => 1,
 					'category_name' => 'A category',
 					'news_datestamp' => $datestamp,
 				),
@@ -813,6 +851,8 @@
 					'page_title' => 'A page',
 					'page_text' => 'A page body',
 					'page_metadscr' => 'A meta description',
+					'page_metakeys' => 'a keyword',
+					'page_fields' => '',
 					'page_chapter' => 0,
 					'menu_image' => '',
 					'page_datestamp' => $datestamp,
@@ -861,9 +901,21 @@
 		private function searchAddonColumns($plugin)
 		{
 			$config = $this->searchAddon($plugin)->config();
+
+			return $this->searchAddonColumnNames($config['return_fields']);
+		}
+
+		/**
+		 * Strips the table prefixes off e_search field names the way {@see e_search::parsesearch()} does before it scores a row.
+		 *
+		 * @param array $fields
+		 * @return array
+		 */
+		private function searchAddonColumnNames(array $fields)
+		{
 			$columns = array();
 
-			foreach($config['return_fields'] as $field)
+			foreach($fields as $field)
 			{
 				$parts = explode('.', $field);
 				$columns[] = end($parts);
@@ -887,19 +939,105 @@
 		}
 
 		/**
-		 * The row a compile() gets is the addon's own return_fields and nothing else, so a fixture may not invent one.
+		 * The row a compile() gets is the addon's own return_fields, all of them and nothing else, so a fixture that drifts either way proves the wrong thing.
 		 */
-		public function testEverySearchAddonFixtureUsesOnlyReturnedColumns()
+		public function testEverySearchAddonFixtureCarriesExactlyItsReturnedColumns()
 		{
 			e107::coreLan('search');
 
 			foreach($this->searchAddonRows() as $plugin => $row)
 			{
-				$invented = array_values(array_diff(array_keys($row), $this->searchAddonColumns($plugin)));
+				$selected = $this->searchAddonColumns($plugin);
 
-				self::assertSame(array(), $invented,
+				self::assertSame(array(), array_values(array_diff(array_keys($row), $selected)),
 					$plugin.' is handed a column its own query never selects, so whatever this row proves is fiction.');
+
+				self::assertSame(array(), array_values(array_diff($selected, array_keys($row))),
+					$plugin.' selects a column this row leaves out, so nothing here can catch how compile() reads it.');
 			}
+		}
+
+		/**
+		 * The PHP sort method scores a weight against the fetched row, so a column an addon weights without selecting contributes nothing.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6439
+		 */
+		public function testEverySearchAddonSelectsEveryColumnItWeights()
+		{
+			e107::coreLan('search');
+
+			foreach(glob(e_PLUGIN.'*/e_search.php') as $path)
+			{
+				$plugin = basename(dirname($path));
+				$config = $this->searchAddon($plugin)->config();
+				$weighted = $this->searchAddonColumnNames(array_keys($config['search_fields']));
+				$unscored = array_values(array_diff($weighted, $this->searchAddonColumnNames($config['return_fields'])));
+
+				self::assertSame(array(), $unscored,
+					$plugin.' weights a column its own query never selects, so the PHP sort method scores that weight at zero.');
+			}
+		}
+
+		/**
+		 * What makes an unselected weight worth nothing: under the PHP sort method the score is read off the fetched row, column by column.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6439
+		 */
+		public function testPhpSortRanksAMatchByTheWeightOfTheColumnItMatched()
+		{
+			$text = $this->searchProbe('wibbleXwobble', 0, 1, '', array(), 1);
+			$titleRow = strpos($text, 'Second entry, about');
+			$titleScore = strpos($text, ': 1.2');
+			$summaryRow = strpos($text, 'Release wibble#wobble notes');
+			$summaryScore = strpos($text, ': 0.6');
+
+			self::assertNotFalse($titleRow, 'the row whose title holds the keyword has to come back');
+			self::assertNotFalse($summaryRow, 'and so does the row whose summary holds it');
+			self::assertNotFalse($titleScore, 'probe_title is weighted 1.2, so a match in it scores 1.2');
+			self::assertNotFalse($summaryScore, 'and probe_summary is weighted 0.6');
+			self::assertLessThan($titleScore, $titleRow,
+				'1.2 has to be the figure rendered against the title match, not merely present somewhere');
+			self::assertLessThan($summaryRow, $titleScore,
+				'which is what puts the title match, its figure, and only then the summary match in that order; asserting the order alone passes with the weights on the wrong columns.');
+			self::assertLessThan($summaryScore, $summaryRow,
+				'and 0.6 is the figure rendered against the summary match.');
+		}
+
+		/**
+		 * A weighted column that is NULL on an upgraded site, p.page_fields being the one this change starts selecting.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/6439
+		 */
+		public function testPhpSortScoresARowWhoseWeightedColumnIsNull()
+		{
+			$raised = array();
+			set_error_handler(function ($severity, $message, $file) use (&$raised)
+			{
+				if(strpos($file, 'search_class.php') === false)
+				{
+					return false;
+				}
+
+				$raised[] = $message;
+
+				return true;
+			});
+
+			try
+			{
+				$text = $this->searchProbe('wibbleZwobble', 0, 1, '', array(), 1);
+			}
+			finally
+			{
+				restore_error_handler();
+			}
+
+			self::assertStringContainsString('Third entry, about', $text,
+				'a row whose probe_summary is NULL still matches on its title');
+			self::assertStringContainsString(': 1.2', $text,
+				'and still scores the weight of the column it did match in');
+			self::assertSame(array(), $raised,
+				'and the scorer reads the NULL column without raising anything, which stripos() does from PHP 8.1.');
 		}
 
 		/**
