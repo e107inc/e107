@@ -12,7 +12,7 @@
 
 		protected function _before()
 		{
-			foreach(array('nested_comments') as $key)
+			foreach(array('comments_icon', 'nested_comments') as $key)
 			{
 				$this->savedPrefs[$key] = e107::getConfig()->get($key);
 			}
@@ -92,6 +92,18 @@
 			$result = $this->cm->getComments('profile', 55, 0, array('action' => 'comment'));
 
 			$this->assertSame(2, substr_count($result['comments'], 'offset-md-2'));
+		}
+
+		public function testGetCommentsShowsNoNewIconWithoutLastVisit()
+		{
+			global $NEWIMAGE;
+
+			e107::getConfig()->set('comments_icon', 1)->set('nested_comments', 1);
+
+			$result = $this->cm->getComments('profile', 55, 0, array('action' => 'comment', 'subject' => 'New Title'));
+
+			$this->assertStringContainsString('sub-red 1 child-1', $result['comments']);
+			$this->assertSame(IMAGE_nonew_comments, $NEWIMAGE);
 		}
 
 

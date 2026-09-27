@@ -505,7 +505,7 @@ class comment
 			}
 			if ($pref['comments_icon'])
 			{
-				if ($comrow['comment_datestamp'] > USERLV)
+				if (defined('USERLV') && $comrow['comment_datestamp'] > USERLV)
 				{
 					$NEWIMAGE = IMAGE_new_comments;
 				}
