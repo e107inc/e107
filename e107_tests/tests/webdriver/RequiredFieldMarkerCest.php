@@ -43,5 +43,8 @@ class RequiredFieldMarkerCest
 			$I->selectOption('input[name="coppa"]', '1');
 			$I->click('input[name="newver"]');
 		}
+
+		$I->waitForElement('#signupform', 10);
+		$I->waitForJS('return document.readyState === "complete";', 10);
 	}
 }
