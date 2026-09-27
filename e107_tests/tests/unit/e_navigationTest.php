@@ -86,7 +86,7 @@
 			        0 => '/e107_admin/history.php',
 			        1 => 'History',
 			        2 => 'History',
-			        3 => '7',
+			        3 => '0',
 			        4 => 4,
 			        5 => '<img class=\'icon S16\' src=\'./e107_images/admin_images/undo_16.png\' alt=\'\' />',
 			        6 => '<img class=\'icon S32\' src=\'./e107_images/admin_images/undo_32.png\' alt=\'\' />'
@@ -166,7 +166,7 @@
 			    0 => '/e107_admin/newspost.php',
 			    1 => 'News',
 			    2 => 'Manage news items',
-			    3 => 'H|N|7|H0|H1|H2|H3|H4|H5',
+			    3 => 'H|N|H0|H1|H2|H3|H4|H5',
 			    4 => 3,
 			    5 => '<i class=\'icon S16 e-news-16\'></i>',
 			    6 => '<i class=\'S32 e-news-32\'></i> ',

@@ -14,12 +14,20 @@
  */
 class adminUiHistorySnapshotTest extends \Test\Unit
 {
+	const SECRET = 'ArchivedPasswordHashThatMustNotBePrinted';
+
 	/** @var string prefixed scratch table */
 	private $table;
+
+	/** @var string prefixed archive table, shadowed by a temporary one where the insert has to fail */
+	private $archive;
 
 	protected function _before()
 	{
 		$this->table = MPREFIX . 'admin_ui_history_probe';
+		$this->archive = MPREFIX . 'admin_history';
+
+		$this->forgetArchiveFieldDefinition();
 
 		require_once(e_HANDLER . 'admin_ui.php');
 		require_once(__DIR__ . '/fixtures/AdminUiHistoryProbeFixture.php');
@@ -34,7 +42,20 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 
 	protected function _after()
 	{
-		e107::getDb()->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->table . '`');
+		$sql = e107::getDb();
+		$sql->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->table . '`');
+		$sql->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->archive . '`');
+
+		$this->forgetArchiveFieldDefinition();
+	}
+
+	/**
+	 * A typed write asks the connection what admin_history looks like and caches the answer to
+	 * disk, so the one-column shadow below would describe the real table until somebody deleted it.
+	 */
+	private function forgetArchiveFieldDefinition()
+	{
+		@unlink(e_CACHE_DB . 'admin_history.php');
 	}
 
 	private function probe(array $inModel, array $written)
@@ -198,5 +219,27 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 
 		$this->assertSame(array(), $probe->backups);
 		$this->assertSame(array(1), $probe->treeStub->deleted);
+	}
+
+	/**
+	 * The archive insert fails on a site whose in-place upgrade has not created admin_history yet,
+	 * and what it was archiving is the whole stored row. The report names the record, never its
+	 * contents, which on a user delete carry the password hash.
+	 */
+	public function testAFailedArchiveInsertReportsTheRecordAndNotItsContents()
+	{
+		e107::getDb()->gen('CREATE TEMPORARY TABLE `' . $this->archive . '` (history_id INT NOT NULL)');
+		e107::getMessage()->reset();
+
+		$probe = new AdminUiHistoryInsertProbeFixture('admin_ui_history_probe', 'probe_id');
+
+		$this->assertFalse($probe->probeBackup(1, array('user_password' => self::SECRET)));
+
+		$reported = implode("\n", (array) e107::getMessage()->get(E_MESSAGE_ERROR, 'default', true));
+
+		$this->assertStringContainsString('admin_ui_history_probe', $reported,
+			'the administrator is told which record could not be archived');
+		$this->assertStringNotContainsString(self::SECRET, $reported,
+			'the row being archived must not be printed to whoever triggered the delete');
 	}
 }

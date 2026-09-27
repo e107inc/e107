@@ -4,7 +4,7 @@
 
 require_once(__DIR__.'/../class2.php');
 
-if (!getperms('7'))
+if (!e107::getUser()->isMainAdmin())
 {
 	e107::redirect('admin');
 	exit;
@@ -31,12 +31,12 @@ class history_adminArea extends e_admin_dispatcher
 	
 	protected $adminMenu = array(
 
-		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
 	//	'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 
 		// 'main/div0'      => array('divider'=> true),
 		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P'),
-		
+
 	);
 
 	protected $adminMenuAliases = array(
