@@ -27,6 +27,26 @@ class UsersRanksDeleteCest
 		$I->dontSeeInDatabase('e107_generic', array('gen_id' => $id));
 	}
 
+	public function aBatchDeleteOfCustomRanksReportsHowManyWereDeleted(AcceptanceTester $I)
+	{
+		$I->wantTo('Report the count after deleting custom user ranks with the batch delete');
+
+		$first = $this->haveRank($I, 0, 'Custom rank 6527 A');
+		$second = $this->haveRank($I, 0, 'Custom rank 6527 B');
+
+		$I->loginAsAdmin();
+		$I->amOnPage(self::ROUTE);
+		$I->checkOption(array('css' => "input[name='e-multiselect[{$first}]']"));
+		$I->checkOption(array('css' => "input[name='e-multiselect[{$second}]']"));
+		$I->selectOption('etrigger_batch', 'delete');
+		$I->click(array('css' => "button[name='e__execute_batch']"));
+		$I->click(array('css' => "button[name='etrigger_delete_confirm']"));
+
+		$I->see('2 record(s) successfully deleted!');
+		$I->dontSeeInDatabase('e107_generic', array('gen_id' => $first));
+		$I->dontSeeInDatabase('e107_generic', array('gen_id' => $second));
+	}
+
 	public function aSpecialRankKeepsItsEditLinkButHasNoDeleteButton(AcceptanceTester $I)
 	{
 		$I->wantTo('Offer an edit link on every rank row and a delete button only on the custom ones');

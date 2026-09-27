@@ -3530,6 +3530,8 @@ class users_admin_form_ui extends e_admin_form_ui
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
 			e107::getCache()->clear_sys('nomd5_user_ranks');
+
+			return true;
 		}
 
 		public function afterUpdate($new_data, $old_data, $id)
