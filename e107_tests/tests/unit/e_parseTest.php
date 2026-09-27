@@ -718,6 +718,33 @@ EXPECTED;
 
 	}
 
+	public function testUsubstrWithoutLengthReturnsRestOfString()
+	{
+
+		foreach (array(false, true) as $multibyte)
+		{
+			$this->tp->setMultibyte($multibyte);
+
+			self::assertSame('world', $this->tp->usubstr('hello world', 6));
+			self::assertSame('rld', $this->tp->usubstr('hello world', -3));
+			self::assertSame('hello world', $this->tp->usubstr('hello world', 0));
+		}
+
+	}
+
+	public function testUsubstrPastTheEndReturnsEmptyString()
+	{
+
+		foreach (array(false, true) as $multibyte)
+		{
+			$this->tp->setMultibyte($multibyte);
+
+			self::assertSame('', $this->tp->usubstr('hello', 10));
+			self::assertSame('', $this->tp->usubstr('hello', 10, 2));
+		}
+
+	}
+
 	public function testToDB()
 	{
 
