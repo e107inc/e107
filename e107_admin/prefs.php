@@ -533,7 +533,7 @@ $text .= "
 // Email and Contact Information --------------
 
 $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
-			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_13."</h4>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_254."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -1688,7 +1688,7 @@ $text .= "
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-comments'>
-			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_87."</h4>
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_210."</h4>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -1792,7 +1792,7 @@ $text .= "
 	
 	$text .= "
 	<fieldset class='e-hideme' id='core-prefs-uploads'>
-			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_238."</h4>";
+			<h4 class='caption'>".PRFLAN_53.SEP.PRFLAN_255."</h4>";
 	
 	
 	$upload_max_filesize = ini_get('upload_max_filesize');
