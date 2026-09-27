@@ -22,14 +22,15 @@ require_once(HEADERF);
 
 $sql = e107::getDb();
 
+$action				= '';
 $action_parent_id	= 0;
 $action_nl_id		= 0;
 if(e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
 	$action				= $tmp[0];
-	$parID              = intval($tmp[1], 0);
-	$nlID               = intval($tmp[2], 0);
+	$parID              = intval(varset($tmp[1], 0), 0);
+	$nlID               = intval(varset($tmp[2], 0), 0);
 	$action_parent_id	= varset($parID);
 	$action_nl_id		= varset($nlID);
 	unset($tmp);

@@ -20,6 +20,9 @@
  * a pass is never reaching the script at all, which the shutdown handler
  * reports because a silent no-op otherwise looks identical to a clean run.
  *
+ * Exit 4 is neither: the bootstrap had already loaded the target, and it
+ * loads with diagnostics off, so nothing it raised could reach the verdict.
+ *
  * Usage: php probe.php <appPath> <targetScript> [--remote-addr=IP]
  *                      [--admin-area] [--admin-header]
  *
@@ -29,11 +32,13 @@
  * the rest of the suite with it. One script is one visitor.
  *
  * --admin-area defines ADMIN_AREA, which e107::inAdminDir() reads, before the
- * bootstrap. Without it e107 decides the admin area from the running script's
- * own path, that path is this file, and the admin language file never loads,
- * so every admin script dies on an undefined LAN_ constant. --admin-header
- * additionally loads e107_admin/admin.php, which the includes/ and layouts/
- * fragments are written to be included by.
+ * bootstrap, so the target is treated as an admin page whatever its path says.
+ * --admin-header additionally loads e107_admin/admin.php, which the includes/
+ * and layouts/ fragments are written to be included by.
+ *
+ * A plugin script needs neither flag: the target is presented at the path it
+ * occupies under the site, so e107 works out the plugin and the admin area
+ * from that path exactly as it does for a browser.
  *
  * Keep this file in PHP 5.6 syntax: e107_tests/tests is inside the floor
  * lint's sweep, and release/v2.3.x runs its suite on php:5.6.
@@ -72,6 +77,17 @@ if($e107ProbeTarget === false || !is_file($e107ProbeTarget))
 	exit(2);
 }
 
+$e107ProbeAppPath = rtrim(str_replace('\\', '/', (string) realpath($argv[1])), '/');
+$e107ProbeWebPath = str_replace('\\', '/', $e107ProbeTarget);
+
+if(strpos($e107ProbeWebPath, $e107ProbeAppPath . '/') !== 0)
+{
+	fwrite(STDERR, "probe: " . $argv[2] . " is not under " . $argv[1] . "\n");
+	exit(2);
+}
+
+$e107ProbeWebPath = (string) substr($e107ProbeWebPath, strlen($e107ProbeAppPath));
+
 $e107ProbeReached = false;
 
 register_shutdown_function('e107ProbeReportUnreached');
@@ -100,10 +116,15 @@ function e107ProbeReportUnreached()
 // warning without it. The sweep is for what a browser hits.
 $_E107 = array();
 
-// The bootstrap reads both of these off the running script, which is this
-// file, so they have to say the script under test instead.
+// The bootstrap reads the request off the running script, which is this file,
+// so these have to say the script under test instead. PHP_SELF is where the
+// target sits under the site, which is what tells e107 it is in a plugin and
+// which plugin that is. SCRIPT_NAME is the same script at the web root,
+// because e107 takes the site's root to be dirname(SCRIPT_NAME) and skips on
+// the CLI the relative-path correction that a browser request gets.
 $_SERVER['SCRIPT_FILENAME'] = $e107ProbeTarget;
-$_SERVER['SCRIPT_NAME']     = $e107ProbeTarget;
+$_SERVER['SCRIPT_NAME']     = '/' . basename($e107ProbeTarget);
+$_SERVER['PHP_SELF']        = $e107ProbeWebPath;
 
 if($e107ProbeRemoteAddr !== '')
 {
@@ -140,9 +161,33 @@ if(!defined('SEP'))
 
 e107::loadAdminIcons();
 
-foreach(array('banner', 'page', 'gsitemap') as $e107ProbePlugin)
+$e107ProbePlugins = array('banner', 'page', 'gsitemap');
+
+// A plugin script is written for a site that has its plugin installed, and it
+// gets what core gives anything of that plugin's before it runs: the global
+// phrases class2.php loads at boot for every installed plugin, nested layout
+// first, and the runtime phrases menu_class.php loads for a menu.
+if(deftrue('e_CURRENT_PLUGIN'))
+{
+	$e107ProbePlugins[] = e_CURRENT_PLUGIN;
+	e107::loadLanFiles(e_CURRENT_PLUGIN);
+
+	if(e107::plugLan(e_CURRENT_PLUGIN, 'global', true) === false)
+	{
+		e107::plugLan(e_CURRENT_PLUGIN, 'global');
+	}
+}
+
+foreach($e107ProbePlugins as $e107ProbePlugin)
 {
 	e107::getConfig()->setPref('plug_installed/' . $e107ProbePlugin, '1.0');
+}
+
+// Whatever includes a plugin's header fragment has settled the area first:
+// the theme header defines USER_AREA true, the admin header false.
+if(!defined('USER_AREA'))
+{
+	define('USER_AREA', !deftrue('e_ADMIN_AREA'));
 }
 
 $pref = e107::getPref();
@@ -155,18 +200,22 @@ if($e107ProbeAdminHeader)
 	require_once e_ADMIN . 'admin.php';
 }
 
+// The bootstrap runs with diagnostics off, so anything it raised while loading
+// the target went nowhere and a pass would be a claim about a run nobody
+// watched. Not judged is its own answer, and the caller counts it apart from
+// the passes.
 if(in_array($e107ProbeTarget, $e107ProbeBootstrapped, true))
 {
 	fwrite(STDERR, "probe: " . $e107ProbeTarget . " was already loaded by the bootstrap, so nothing was tested\n");
-	exit(3);
+	exit(4);
 }
 
 $e107ProbeReached = true;
 
 // admin.php pulls in whichever admin style the prefs select, so some of the
 // fragments under includes/ are already loaded by the time the sweep reaches
-// them. They ran, under the header they are written for, which is the whole
-// of what loading them separately would prove.
+// them. They ran with the diagnostics on, under the header they are written
+// for, which is the whole of what loading them separately would prove.
 if(in_array($e107ProbeTarget, get_included_files(), true))
 {
 	echo "probe: loaded by e107_admin/admin.php, which is how a browser reaches it\n";
