@@ -4675,7 +4675,7 @@ class e_parse
 			$linkEnd = '</a>';
 		}
 
-		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
+		$title = (ADMIN) ? $image : $tp->toAttribute(isset($userData['user_name']) ? $userData['user_name'] : '');
 		$shape = (!empty($options['shape'])) ? 'img-' . $options['shape'] : 'img-rounded rounded';
 
 		if ($shape === 'img-circle')

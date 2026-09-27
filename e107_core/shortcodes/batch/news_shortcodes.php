@@ -157,9 +157,9 @@ class news_shortcodes extends e_shortcode
 		if ($pref['comments_icon'] && $news_item['news_comment_total'])
 		{
 			$sql->select('comments', 'comment_datestamp', "comment_item_id='".intval($news_item['news_id'])."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
-			list($comments['comment_datestamp']) = $sql->fetch();
-			$latest_comment = $comments['comment_datestamp'];
-			if ($latest_comment > USERLV )
+			$comments = $sql->fetch();
+			$latest_comment = isset($comments['comment_datestamp']) ? $comments['comment_datestamp'] : 0;
+			if (defined('USERLV') && $latest_comment > USERLV)
 			{
 				$NEWIMAGE = varset($param['image_new_small']);
 			}

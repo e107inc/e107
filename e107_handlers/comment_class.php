@@ -497,7 +497,7 @@ class comment
 			}
 			if ($pref['comments_icon'])
 			{
-				if ($comrow['comment_datestamp'] > USERLV)
+				if (defined('USERLV') && $comrow['comment_datestamp'] > USERLV)
 				{
 					$NEWIMAGE = IMAGE_new_comments;
 				}
@@ -550,10 +550,7 @@ class comment
 			{
 				foreach ($nested as $row1)
 				{
-					//	$width = min($width + 1, 80);
-					$width = $width+1;
-					$text .= $this->render_comment($row1, $table, $action, $id, $width, $subject, $addrating);
-					unset($width);
+					$text .= $this->render_comment($row1, $table, $action, $id, $width + 1, $subject, $addrating);
 				}
 
 				$this->totalComments += count($nested);
