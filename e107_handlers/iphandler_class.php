@@ -1434,6 +1434,7 @@ class banlistManager
 	const DELETE_GUARD_LAPSED = 'lapsed';
 
 	private $ourConfigDir = '';
+	private $replaceLockHeld = false;
 	public $banTypes = array();
 
 	public function __construct()
@@ -1614,160 +1615,221 @@ class banlistManager
 
 		if($replaceImported)
 		{
-			$rows = $sql->createQueryBuilder()->select('banlist_id')->from('banlist')
-				->where('banlist_bantype', eIPHandler::BAN_TYPE_IMPORTED)
+			$lock = $this->takeReplaceLock();
+
+			if($lock !== true)
+			{
+				fclose($fh);
+				$result['fatal'] = ($lock === null) ? BANLAN_IMPORT_REPLACE_LOCK_FAILED : BANLAN_IMPORT_REPLACE_BUSY;
+
+				return $result;
+			}
+		}
+
+		try
+		{
+			if($replaceImported)
+			{
+				$rows = $sql->createQueryBuilder()->select('banlist_id')->from('banlist')
+					->where('banlist_bantype', eIPHandler::BAN_TYPE_IMPORTED)
+					->fetchEach();
+				foreach($rows as $row)
+				{
+					$replacedIds[(int) $row['banlist_id']] = true;
+				}
+			}
+
+			$known = array();
+			$lapsedIds = array();
+			$now = time();
+			$rows = $sql->createQueryBuilder()->select('banlist_id', 'banlist_ip', 'banlist_banexpires')->from('banlist')
+				->where('banlist_bantype', '<', eIPHandler::BAN_TYPE_WHITELIST)
+				->where('banlist_bantype', '!=', eIPHandler::BAN_TYPE_TEMPORARY)
 				->fetchEach();
 			foreach($rows as $row)
 			{
-				$replacedIds[(int) $row['banlist_id']] = true;
-			}
-		}
+				if(isset($replacedIds[(int) $row['banlist_id']]))
+				{
+					continue;
+				}
 
-		$known = array();
-		$lapsedIds = array();
-		$now = time();
-		$rows = $sql->createQueryBuilder()->select('banlist_id', 'banlist_ip', 'banlist_banexpires')->from('banlist')
-			->where('banlist_bantype', '<', eIPHandler::BAN_TYPE_WHITELIST)
-			->where('banlist_bantype', '!=', eIPHandler::BAN_TYPE_TEMPORARY)
-			->fetchEach();
-		foreach($rows as $row)
-		{
-			if(isset($replacedIds[(int) $row['banlist_id']]))
-			{
-				continue;
-			}
+				$stored = Entry::fromText($row['banlist_ip'])->stored();
+				$stored = ($stored === null) ? $row['banlist_ip'] : $stored;
+				$expires = (int) $row['banlist_banexpires'];
 
-			$stored = Entry::fromText($row['banlist_ip'])->stored();
-			$stored = ($stored === null) ? $row['banlist_ip'] : $stored;
-			$expires = (int) $row['banlist_banexpires'];
+				if($expires === 0 || $expires > $now)
+				{
+					$known[$stored] = true;
+					continue;
+				}
 
-			if($expires === 0 || $expires > $now)
-			{
-				$known[$stored] = true;
-				continue;
+				$lapsedIds[$stored][] = (int) $row['banlist_id'];
 			}
 
-			$lapsedIds[$stored][] = (int) $row['banlist_id'];
-		}
+			$supersededIds = array();
+			$insertedIds = array();
+			$enclosure = ($quote === '') ? "\0" : $quote;
+			$line = 0;
 
-		$supersededIds = array();
-		$insertedIds = array();
-		$enclosure = ($quote === '') ? "\0" : $quote;
-		$line = 0;
+			@set_time_limit(0);
 
-		@set_time_limit(0);
-
-		while(($fields = fgetcsv($fh, 0, $separator, $enclosure, '\\')) !== false)
-		{
-			$line++;
-
-			if($fields === array(null) || trim(implode('', $fields)) === '')
+			while(($fields = fgetcsv($fh, 0, $separator, $enclosure, '\\')) !== false)
 			{
-				continue;
-			}
+				$line++;
 
-			foreach($fields as $field)
-			{
-				if(strpos((string) $field, "\n") !== false || strpos((string) $field, "\r") !== false)
+				if($fields === array(null) || trim(implode('', $fields)) === '')
+				{
+					continue;
+				}
+
+				foreach($fields as $field)
+				{
+					if(strpos((string) $field, "\n") !== false || strpos((string) $field, "\r") !== false)
+					{
+						fclose($fh);
+						return $this->abortImport($result, $insertedIds, BANLAN_49.' '.$line);
+					}
+				}
+
+				if(count($fields) > 6)
+				{
+					$result['errors'][$line] = BANLAN_IMPORT_FIELDS_INVALID;
+					continue;
+				}
+
+				$entry = Entry::fromText(varset($fields[0], ''))->stored();
+
+				if($entry === null || strlen($entry) > self::BAN_ENTRY_MAX_BYTES)
+				{
+					$result['errors'][$line] = BANLAN_IMPORT_ENTRY_INVALID;
+					continue;
+				}
+
+				$datestamp = $this->parseImportDate(varset($fields[1], ''), time());
+				$expiry = $useFileExpiry ? $this->parseImportDate(varset($fields[2], ''), 0) : $defaultExpiry;
+				if($datestamp === false || $expiry === false)
+				{
+					$result['errors'][$line] = BANLAN_IMPORT_DATE_INVALID;
+					continue;
+				}
+
+				if(isset($known[$entry]))
+				{
+					$result['duplicates']++;
+					continue;
+				}
+				$known[$entry] = true;
+
+				if(isset($lapsedIds[$entry]))
+				{
+					$supersededIds = array_merge($supersededIds, $lapsedIds[$entry]);
+					unset($lapsedIds[$entry]);
+				}
+
+				$id = $sql->createQueryBuilder()->insert('banlist')->insertGetId(array(
+					'banlist_ip'         => $entry,
+					'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
+					'banlist_datestamp'  => $datestamp,
+					'banlist_banexpires' => $expiry,
+					'banlist_admin'      => $adminId,
+					'banlist_reason'     => $this->filterImportText(varset($fields[4], '')),
+					'banlist_notes'      => $this->filterImportText(varset($fields[5], '')),
+				));
+
+				if($id === false)
 				{
 					fclose($fh);
-					return $this->abortImport($result, $insertedIds, BANLAN_49.' '.$line);
+					return $this->abortImport($result, $insertedIds, BANLAN_50.' '.$line);
 				}
+
+				$insertedIds[] = (int) $id;
+				$result['imported']++;
 			}
 
-			if(count($fields) > 6)
+			fclose($fh);
+
+			if($replaceImported && !empty($result['errors']))
 			{
-				$result['errors'][$line] = BANLAN_IMPORT_FIELDS_INVALID;
-				continue;
+				return $this->abortImport($result, $insertedIds,
+					str_replace('[x]', count($result['errors']), BANLAN_IMPORT_REPLACE_INCOMPLETE));
 			}
 
-			$entry = Entry::fromText(varset($fields[0], ''))->stored();
+			$lapsedKept = $this->deleteBanRows($supersededIds, self::DELETE_GUARD_LAPSED);
 
-			if($entry === null || strlen($entry) > self::BAN_ENTRY_MAX_BYTES)
+			if($lapsedKept > 0)
 			{
-				$result['errors'][$line] = BANLAN_IMPORT_ENTRY_INVALID;
-				continue;
+				$result['warnings'][] = str_replace('[x]', $lapsedKept, BANLAN_IMPORT_LAPSED_KEPT);
 			}
 
-			$datestamp = $this->parseImportDate(varset($fields[1], ''), time());
-			$expiry = $useFileExpiry ? $this->parseImportDate(varset($fields[2], ''), 0) : $defaultExpiry;
-			if($datestamp === false || $expiry === false)
+			if($replaceImported && !empty($replacedIds))
 			{
-				$result['errors'][$line] = BANLAN_IMPORT_DATE_INVALID;
-				continue;
-			}
-
-			if(isset($known[$entry]))
-			{
-				$result['duplicates']++;
-				continue;
-			}
-			$known[$entry] = true;
-
-			if(isset($lapsedIds[$entry]))
-			{
-				$supersededIds = array_merge($supersededIds, $lapsedIds[$entry]);
-				unset($lapsedIds[$entry]);
-			}
-
-			$id = $sql->createQueryBuilder()->insert('banlist')->insertGetId(array(
-				'banlist_ip'         => $entry,
-				'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
-				'banlist_datestamp'  => $datestamp,
-				'banlist_banexpires' => $expiry,
-				'banlist_admin'      => $adminId,
-				'banlist_reason'     => $this->filterImportText(varset($fields[4], '')),
-				'banlist_notes'      => $this->filterImportText(varset($fields[5], '')),
-			));
-
-			if($id === false)
-			{
-				fclose($fh);
-				return $this->abortImport($result, $insertedIds, BANLAN_50.' '.$line);
-			}
-
-			$insertedIds[] = (int) $id;
-			$result['imported']++;
-		}
-
-		fclose($fh);
-
-		if($replaceImported && !empty($result['errors']))
-		{
-			return $this->abortImport($result, $insertedIds,
-				str_replace('[x]', count($result['errors']), BANLAN_IMPORT_REPLACE_INCOMPLETE));
-		}
-
-		$lapsedKept = $this->deleteBanRows($supersededIds, self::DELETE_GUARD_LAPSED);
-
-		if($lapsedKept > 0)
-		{
-			$result['warnings'][] = str_replace('[x]', $lapsedKept, BANLAN_IMPORT_LAPSED_KEPT);
-		}
-
-		if($replaceImported && !empty($replacedIds))
-		{
-			if($result['imported'] === 0)
-			{
-				$result['warnings'][] = BANLAN_IMPORT_REPLACE_NOTHING;
-			}
-			else
-			{
-				$replacedKept = $this->deleteBanRows(array_keys($replacedIds), self::DELETE_GUARD_IMPORTED);
-
-				if($replacedKept > 0)
+				if($result['imported'] === 0)
 				{
-					$result['warnings'][] = str_replace('[x]', $replacedKept, BANLAN_IMPORT_REPLACE_KEPT);
+					$result['warnings'][] = BANLAN_IMPORT_REPLACE_NOTHING;
+				}
+				else
+				{
+					$replacedKept = $this->deleteBanRows(array_keys($replacedIds), self::DELETE_GUARD_IMPORTED);
+
+					if($replacedKept > 0)
+					{
+						$result['warnings'][] = str_replace('[x]', $replacedKept, BANLAN_IMPORT_REPLACE_KEPT);
+					}
 				}
 			}
-		}
 
-		if($result['imported'] > 0)
+			if($result['imported'] > 0)
+			{
+				$ipHandler->regenerateFiles();
+			}
+
+			return $result;
+		}
+		finally
 		{
-			$ipHandler->regenerateFiles();
+			$this->releaseReplaceLock();
+		}
+	}
+
+	/**
+	 *	Take the lock that holds a replace-import's snapshot and delete together, without waiting for a run that already has it.
+	 *
+	 *	@return bool|null true where this run has the lock, false where another run holds it, null where the server did not say.
+	 */
+	private function takeReplaceLock()
+	{
+		$sql = e107::getDb();
+		$sql->execute('SELECT GET_LOCK(:name, 0) AS locked', array('name' => $this->replaceLockName()));
+		$row = $sql->fetch();
+		$locked = (is_array($row) && isset($row['locked'])) ? (string) $row['locked'] : null;
+		$this->replaceLockHeld = ($locked === '1');
+
+		return ($locked === null) ? null : $this->replaceLockHeld;
+	}
+
+	/**
+	 *	Release the replace-import lock where this run took it.
+	 */
+	private function releaseReplaceLock()
+	{
+		if(!$this->replaceLockHeld)
+		{
+			return;
 		}
 
-		return $result;
+		$this->replaceLockHeld = false;
+		e107::getDb()->execute('SELECT RELEASE_LOCK(:name)', array('name' => $this->replaceLockName()));
+	}
+
+	/**
+	 *	The name of the replace-import lock, which is this install's database and table prefix hashed.
+	 *
+	 *	@return string 60 bytes, inside the server's 64-byte limit.
+	 */
+	private function replaceLockName()
+	{
+		return 'e107_banlist_replace_import_'
+			. md5(e107::getMySQLConfig('defaultdb').'/'.e107::getMySQLConfig('prefix'));
 	}
 
 	/**
