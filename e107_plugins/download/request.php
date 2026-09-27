@@ -99,9 +99,9 @@ class download_request
 		}
 
 
-		if(strpos(e_QUERY, "mirror") !== false)
+		if(!$resolved && strpos(e_QUERY, "mirror") !== false)
 		{    // Download from mirror
-			list($action, $download_id, $mirror_id) = explode(".", e_QUERY);
+			list($action, $download_id, $mirror_id) = array_pad(explode(".", e_QUERY), 3, '');
 			$download_id = intval($download_id);
 			$mirror_id = intval($mirror_id);
 			$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_category WHERE d.download_id = {$download_id}";
