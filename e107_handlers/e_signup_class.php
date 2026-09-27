@@ -19,6 +19,13 @@ if (!defined('e107_INIT')) { exit; }
  */
 class e_signup
 {
+	const RESEND_FLOOD_KIND = 'signupresend';
+
+	const MOVE_FLOOD_KIND = 'signupresendmove';
+
+	const RESEND_WINDOW = 600;
+
+	const IDENTIFIER_MAXLENGTH = 100;
 
 	private $testMode = false;
 	private $pref;
@@ -142,60 +149,72 @@ class e_signup
 		// 'resend_newemail' - corrected email address
 		// 'resend_password' - password (required if changing email address)
 
-		$clean_email = $tp->toDB($_POST['resend_email']); // may also be username
+		$identifier = $this->postedString('resend_email');
+		$password = $this->postedString('resend_password');
+
+		$clean_email = $tp->toDB($identifier); // may also be username
 		/*if(!check_email($clean_email))
 		{
 			$clean_email = "xxx";
 		}*/
 
-		$new_email = $tp->toDB(varset($_POST['resend_newemail']));
+		$new_email = $tp->toDB($this->postedString('resend_newemail'));
 		if(!check_email($new_email ))
 		{
 			$new_email = FALSE;
 		}
 
+		$movesAddress = (trim($password) !== '') && ($new_email !== false);
+
 		// Account already activated
-		if($_POST['resend_email'] && !$new_email && $clean_email && $sql->gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (`user_loginname`= '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) "))
+		if($identifier && !$new_email && $clean_email && $sql->gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (`user_loginname`= '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) "))
 		{
-			$ns->tablerender(LAN_SIGNUP_40,LAN_SIGNUP_41."<br />");
+			$this->renderResendAnswer();
 			return false;
 		}
 
 
 		// Start by looking up the user
-		if(!$sql->select("user", "*", "(`user_loginname` = '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) AND `user_ban`=".USER_REGISTERED_NOT_VALIDATED." AND `user_sess` !='' LIMIT 1"))
+		$row = false;
+		if($sql->select("user", "*", "(`user_loginname` = '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) AND `user_ban`=".USER_REGISTERED_NOT_VALIDATED." AND `user_sess` !='' LIMIT 1"))
 		{
-			message_handler("ALERT",LAN_SIGNUP_64.': '.$clean_email); // email (or other info) not valid.
+			$row = $sql->fetch();
+		}
+
+		if(!$row || ($movesAddress && $userMethods->CheckPassword($password, $row['user_loginname'], $row['user_password']) === PASSWORD_INVALID))
+		{
+			if($movesAddress)
+			{
+				$this->noteFailedResend($identifier);
+			}
+
+			$this->renderResendAnswer();
 			return false;
 		}
 
-		$row = $sql -> fetch();
-		// We should have a user record here
+		$resendGate = new \e107\Flood\SourceGate(e107::getDb(), !$this->testMode, self::RESEND_WINDOW);
+		$gateKind = $movesAddress ? self::MOVE_FLOOD_KIND : self::RESEND_FLOOD_KIND;
 
-		if(trim($_POST['resend_password']) !="" && $new_email) // Need to change the email address - check password to make sure
+		if($resendGate->isClosedTo($gateKind, $row['user_id']))
 		{
-			if ($userMethods->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) !== PASSWORD_INVALID)
-			{
-				if ($sql->select('user', 'user_id, user_email', "user_email='".$new_email."'"))
-				{	// Email address already used by someone
-					message_handler("ALERT",LAN_SIGNUP_106); 	// Duplicate email
-					return false;
-				}
-				if($sql->update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
-				{
-					$row['user_email'] = $new_email;
-				}
-			}
-			else
-			{
-				require_once(e_HANDLER.'login.php');
-				$usr = new userlogin();
-				$usr->noteFailedPassword($_POST['resend_email']);
+			$this->renderResendAnswer();
+			return false;
+		}
 
-				message_handler("ALERT",LAN_INCORRECT_PASSWORD); // Incorrect Password.
+		if($movesAddress)
+		{
+			if ($sql->select('user', 'user_id, user_email', "user_email='".$new_email."'"))
+			{	// Email address already used by someone
+				message_handler("ALERT",LAN_SIGNUP_106); 	// Duplicate email
 				return false;
 			}
+			if($sql->update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
+			{
+				$row['user_email'] = $new_email;
+			}
 		}
+
+		$resendGate->record($gateKind, $row['user_id']);
 
 		// Now send the email - got some valid info
 		$editPassword = e107::getPref('signup_option_password', 2);
@@ -232,16 +251,15 @@ class e_signup
 
 		if(!$result)
 		{
-			e107::getMessage()->setTitle(LAN_ERROR,E_MESSAGE_ERROR)->addError(LAN_SIGNUP_42);
-			$ns->tablerender(null, e107::getMessage()->render());
+			error_log('signup.php: The activation email could not be re-sent to user #'.$row['user_id'].'. Check the mail settings in Admin → Preferences.');
 			$do_log['signup_result'] = LAN_SIGNUP_62;
 		}
 		else
 		{
-			e107::getMessage()->setTitle(LAN_SIGNUP_61,E_MESSAGE_SUCCESS)->addSuccess(LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45);
-			$ns->tablerender(null,e107::getMessage()->render());
 			$do_log['signup_result'] = LAN_SIGNUP_61;
 		}
+
+		$this->renderResendAnswer();
 
 		// Now log this (log will ignore if its disabled)
 		$do_log['signup_action'] = LAN_SIGNUP_63;
@@ -250,6 +268,39 @@ class e_signup
 
 
 		return $result;
+	}
+
+
+	/**
+	 * @param string $field
+	 * @return string what was posted in $field, or '' when it was not a string
+	 */
+	private function postedString($field)
+	{
+		return (isset($_POST[$field]) && is_string($_POST[$field])) ? $_POST[$field] : '';
+	}
+
+
+	/**
+	 * @param string $identifier what the visitor typed as their user name or email
+	 * @return void
+	 */
+	private function noteFailedResend($identifier)
+	{
+		require_once(e_HANDLER.'login.php');
+		$usr = new userlogin();
+		$usr->noteFailedPassword(e107::getParser()->usubstr($identifier, 0, self::IDENTIFIER_MAXLENGTH));
+	}
+
+
+	/**
+	 * The one answer every resend request gets, whatever became of it.
+	 * @return void
+	 */
+	private function renderResendAnswer()
+	{
+		e107::getMessage()->reset()->addInfo(defset('LAN_SIGNUP_RESEND_ANSWERED', 'If that matches an account here that is still waiting to be activated, its activation email is on its way. Please allow a few minutes for it to arrive before asking again.'));
+		e107::getRender()->tablerender(LAN_SIGNUP_47, e107::getMessage()->render());
 	}
 
 
