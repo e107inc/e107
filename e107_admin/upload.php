@@ -198,19 +198,17 @@ class upload_ui extends e_admin_ui
      */
     public function beforeUpdate($new_data, $old_data, $id)
     {
-
-        if($new_data['upload_active'] && !e107::isInstalled('download'))
-        {
-            $this->getModel()->addValidationError(UPLLAN_62);
-			$new_data['upload_active'] = 0;
-            return $new_data;
+		if(isset($new_data['upload_category']))
+		{
+			list($catOwner, $catID) = array_pad(explode('__', $new_data['upload_category'], 2), 2, '');
+			$new_data['upload_category'] = (int) $catID;
+			$new_data['upload_owner'] = $catOwner;
 		}
 
-		// Make sure the upload_category contains only integers
-		// Make sure the owner correspondents to the category id
-		list($catOwner, $catID) = explode("__", $new_data['upload_category'], 2);
-		$new_data['upload_category'] = intval($catID);
-		$new_data['upload_owner'] = $catOwner;
+		if(!empty($new_data['upload_active']) && !$this->uploadHandler(array_merge($old_data, $new_data)))
+		{
+			$new_data['upload_active'] = 0;
+		}
 
 		return $new_data;
     }
@@ -237,9 +235,7 @@ class upload_ui extends e_admin_ui
             }
             else
             {
-                $owner = varset($new_data['upload_owner'],'download');
-                $obj = e107::getAddon($owner,'e_upload');
-                $config = $obj->config();
+                $config = $this->uploadHandler($new_data)->config();
                 $url = str_replace('{ID}',$did, $config['url']);
 
                 $link = '<br><a href="'.$url.'">'.UPLLAN_64.'</a>'; //FIXME Needs generic LAN for all areas, not just downloads.
@@ -273,10 +269,11 @@ class upload_ui extends e_admin_ui
             return 0;
         }
 
-		// Make sure the owner is not empty
-        $owner = vartrue($upload['upload_owner'], 'download');
-
-        $uploadObj = e107::getAddon($owner,'e_upload');
+        $uploadObj = $this->uploadHandler($upload);
+        if(!$uploadObj)
+        {
+            return false;
+        }
 
         $config =  $uploadObj->config(); // import configuration from e_upload
 
@@ -339,6 +336,36 @@ class upload_ui extends e_admin_ui
 
     }
 
+    /**
+     * The plugin that owns an upload stored with $owner; uploads from before owners were recorded have none and are download's.
+     *
+     * @param string $owner
+     * @return string
+     */
+    public function uploadOwner($owner)
+    {
+        return vartrue($owner, 'download');
+    }
+
+    /**
+     * The e_upload handler of the plugin that owns $upload.
+     *
+     * @param array $upload
+     * @return object|null null, after telling the administrator, when that plugin has none
+     */
+    private function uploadHandler($upload)
+    {
+        $owner = $this->uploadOwner(varset($upload['upload_owner']));
+        $handler = e107::getAddon($owner, 'e_upload');
+
+        if(!$handler)
+        {
+            e107::getMessage()->addError(e107::getParser()->lanVars(UPLLAN_ACTIVATION_REFUSED_OWNER_MISSING, htmlspecialchars($owner, ENT_QUOTES, 'UTF-8')));
+        }
+
+        return $handler;
+    }
+
 }
 				
 
@@ -347,25 +374,38 @@ class upload_form_ui extends e_admin_form_ui
 {
 	private function findKey($owner, $array,$value)
 	{
-		$searchKey = $owner."__".$value;
-
-		$ret = null;
+		$searchKey = $this->categoryKey($owner, $value);
 
 		foreach($array as $k=>$v)
 		{
 			if(is_array($v))
 			{
 				$ret = $this->findKey($owner,$v,$value);
+				if($ret !== null)
+				{
+					return $ret;
+				}
 			}
 			elseif($k == $searchKey)
 			{
-				$ret = $v;
+				return $v;
 			}
 
 		}
 
-		return $ret;
-	//	return print_a($array,true);
+		return null;
+	}
+
+	/**
+	 * The category selector's value for category $id of $owner.
+	 *
+	 * @param string $owner
+	 * @param int $id
+	 * @return string
+	 */
+	private function categoryKey($owner, $id)
+	{
+		return $owner.'__'.$id;
 	}
 
 
@@ -377,15 +417,13 @@ class upload_form_ui extends e_admin_form_ui
         switch($type)
         {
             case 'read':
-                  $owner =  $this->getController()->getListModel()->get('upload_owner');
-             return $this->findKey($owner, $opts[$owner], $value);
+                  $owner = $this->getController()->uploadOwner($this->getController()->getListModel()->get('upload_owner'));
+             return $this->findKey($owner, varset($opts[$owner], array()), $value);
             break;
 
 	        case 'write':
-	            $owner =  $this->getController()->getModel()->get('upload_owner');
-				//return $value."-- ".$owner; // $this->radio_switch('upload_active', $value, LAN_ACCEPT, LAN_PENDING, $options);
-				// make category editable instead of just displaying data
-				return e107::getForm()->select('upload_category', $opts, $value);
+	            $owner = $this->getController()->uploadOwner($this->getController()->getModel()->getIfPosted('upload_owner'));
+				return e107::getForm()->select('upload_category', $opts, $this->categoryKey($owner, $value));
             break;
 
             case 'batch':
