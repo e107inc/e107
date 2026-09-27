@@ -286,7 +286,7 @@ class e_userpermsTest extends \Test\Unit
 			  ),
 			  'TMP' =>
 			  array (
-			    0 => 'Theme Manager (Preferences)',
+			    0 => 'Theme Manager',
 			    1 => '<i class=\'S16 e-themes-16\'></i>',
 			    2 => '<i class=\'S32 e-themes-32\'></i> ',
 			  ),
