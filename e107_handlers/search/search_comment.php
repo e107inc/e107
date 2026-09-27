@@ -16,6 +16,11 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+if (!defined('e_CLASS_REGEXP') || !defined('e_NOBODY_REGEXP'))
+{
+	throw new RuntimeException('The comments search cannot be built without the visitor\'s userclass list.');
+}
+
 // TODO Rework all of this to v2 standards while maintaining BC.
 
 // advanced 
@@ -34,6 +39,10 @@ if (isset($_GET['author']) && $_GET['author'] != '') {
 
 //basic
 $return_fields = 'c.comment_item_id, c.comment_author_id, comment_author_name, c.comment_datestamp, c.comment_comment, c.comment_type';
+
+$in = array();
+$join = array();
+$readable = array();
 
 foreach($search_prefs['comments_handlers'] as $h_key => $value)
 {
@@ -56,9 +65,28 @@ foreach($search_prefs['comments_handlers'] as $h_key => $value)
 		if(is_readable($path)) // TODO Rework this to use e_search.php
 		{
 			require_once($path);
+
+			if(empty($comments_class[$h_key]) && empty($comments_where[$h_key]))
+			{
+				continue;
+			}
+
+			$parent = array();
+
+			foreach(varset($comments_class[$h_key], array()) as $column)
+			{
+				$parent[] = $column." REGEXP '".e_CLASS_REGEXP."' AND ".$column." NOT REGEXP '".e_NOBODY_REGEXP."'";
+			}
+
+			if(!empty($comments_where[$h_key]))
+			{
+				$parent[] = '('.$comments_where[$h_key].')';
+			}
+
 			$in[] = "'" . $value['id'] . "'";
 			$join[] = $comments_table[$h_key];
 			$return_fields .= ', ' . $comments_return[$h_key];
+			$readable[] = "(c.comment_type='".$value['id']."' AND ".implode(' AND ', $parent).")";
 		}
 
 	}
@@ -67,13 +95,23 @@ foreach($search_prefs['comments_handlers'] as $h_key => $value)
 $search_fields = array('c.comment_comment', 'c.comment_author_name');
 $weights = array('1.2', '0.6');
 $no_results = "<div class='alert alert-danger'>".LAN_198."</div>"; //LAN_198;
-$where = "comment_type IN (".implode(',', $in).") AND".$advanced_where;
-$order = array('comment_datestamp' => 'DESC');
-$table = "comments AS c ".implode(' ', $join);
 
-$ps = $sch -> parsesearch($table, $return_fields, $search_fields, $weights, 'search_comment', $no_results, $where, $order);
-$text .= $ps['text'];
-$results = $ps['results'];
+if(empty($in)) // nothing left to search: every handler is unavailable or out of reach of this user
+{
+	$text .= $no_results;
+	$results = 0;
+}
+else
+{
+	$where = "c.comment_blocked = 0 AND comment_type IN (".implode(',', $in).")"
+		." AND (".implode(' OR ', $readable).") AND".$advanced_where;
+	$order = array('comment_datestamp' => 'DESC');
+	$table = "comments AS c ".implode(' ', $join);
+
+	$ps = $sch -> parsesearch($table, $return_fields, $search_fields, $weights, 'search_comment', $no_results, $where, $order);
+	$text .= $ps['text'];
+	$results = $ps['results'];
+}
 
 	/**
 	 * @param $row
