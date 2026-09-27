@@ -18,6 +18,8 @@
  */
 class RandomSecretFormatsTest extends \Codeception\Test\Unit
 {
+	use \Test\CorePrefs;
+
 	/**
 	 * Alphabets documented by {@see UserHandler::generateRandomString()}.
 	 * O, o and l are absent on purpose, to avoid confusion with 0 and 1.
@@ -218,9 +220,7 @@ class RandomSecretFormatsTest extends \Codeception\Test\Unit
 	 */
 	public function testChapChallengeIsFortyHexCharacters()
 	{
-		$pref = e107::getConfig('core');
-		$restore = $pref->get('password_CHAP');
-		$pref->set('password_CHAP', 1);
+		$restore = $this->withCorePrefs(array('password_CHAP' => 1));
 
 		try
 		{
@@ -232,13 +232,10 @@ class RandomSecretFormatsTest extends \Codeception\Test\Unit
 			$this->assertSame(1, preg_match('/^[a-f0-9]{40}$/', $challenge),
 				'the CHAP challenge must stay 40 hex characters, got: '.$challenge);
 		}
-		catch(Exception $e)
+		finally
 		{
-			$pref->set('password_CHAP', $restore);
-			throw $e;
+			$restore();
 		}
-
-		$pref->set('password_CHAP', $restore);
 	}
 
 	/**
@@ -246,15 +243,18 @@ class RandomSecretFormatsTest extends \Codeception\Test\Unit
 	 */
 	public function testChapChallengeIsNotGeneratedWhenChapIsDisabled()
 	{
-		$pref = e107::getConfig('core');
-		$restore = $pref->get('password_CHAP');
-		$pref->set('password_CHAP', 0);
+		$restore = $this->withCorePrefs(array('password_CHAP' => 0));
 
-		$sess = $this->make('e_core_session');
-		$sess->challenge();
-		$challenge = $sess->get('challenge');
-
-		$pref->set('password_CHAP', $restore);
+		try
+		{
+			$sess = $this->make('e_core_session');
+			$sess->challenge();
+			$challenge = $sess->get('challenge');
+		}
+		finally
+		{
+			$restore();
+		}
 
 		$this->assertEmpty($challenge);
 	}
