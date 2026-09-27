@@ -1,21 +1,52 @@
+H1> Site preferences overview
 
-Q>	How do I change themes?
-A>	There is a section in your Preferences page that allows you to change your site theme. Please preview the theme first as some older themes are no longer compatible and could render your site unusable if applied.
+P> The Preferences area is the heart of e107: themes, security, sessions and rendering modes are all configured from here. This page answers the most frequent questions admins have when they first open it.
 
-Q>	What's COPPA?
-A>	The Children's Online Privacy Protection Act of 1998. It's a universally used rule that protects minors aged 13 and under. It ensures that no information on minors will be used by the 'Operator' (i.e., you) for purposes other than maintaining the website. For more information please see https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions.
+NOTE> Most preferences take effect immediately on save. If you do not see a change reflected on the front-end, clear the cache from [b]Admin → Cache[/b].
 
-Q>	What's flood protection?
-A>	It prevents your site being flooded by HTTP calls, which can render your site unreachable.
+H1> Themes
 
-Q>	Should I use Cookies or Sessions for tracking my users?
-A>	It's your choice, if your site is working ok with cookies (the default) then leave it like that. If you prefer to use PHP sessions, then use that (a custom session handler is used by e107 to store and handle sessions).
+Q> How do I change themes?
+A> Open [b]Admin → Themes[/b], hover the theme card and click [b]Preview[/b] before activating. Some legacy themes built for e107 1.x are no longer compatible and could render your site unusable, so always preview first.
 
-Q>	Why should I run my site in standards mode?
-A>	If your developing a theme and having trouble getting it to render correctly in Firefox/Mozilla and IE, try ticking this box. IE will then be run in standards mode and use the correct box model.
+SHOT> preferences/theme-manager.png | Theme Manager – hover any card to reveal Preview / Activate
 
-Q>  What is meant with PLAINTEXT?
-A>  A string of text that is displayed with one value for each text attribute.
+TIP> Activate the theme on a staging copy of the site before promoting it to production. The Theme Manager remembers your previous theme so you can roll back with one click.
 
-Q>  What is meant with CHAP?
-A>  Challenge-Handshake Authentication Protocol (CHAP) authenticates a user or network host to an authenticating entity. That entity may be, for example, an Internet service provider.
+H1> Security and abuse protection
+
+Q> What's COPPA?
+A> The [b]Children's Online Privacy Protection Act of 1998[/b]. It is a universally adopted rule that protects minors aged 13 and under. It ensures that no information on minors is used by the operator (you) for purposes other than maintaining the website. See the [url=https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions]FTC COPPA FAQ[/url] for the full text.
+
+Q> What's flood protection?
+A> It prevents your site from being flooded by abusive HTTP requests, which can otherwise render the site unreachable. e107 throttles repeated calls from the same IP within a short time window.
+
+SHOT> preferences/flood-protection.png | Flood-protection settings inside Site Preferences
+
+WARN> Disabling flood protection on a public site is strongly discouraged. If you must raise the threshold, do it incrementally and monitor `e107_system/<sitehash>/logs/`.
+
+H1> Sessions and tracking
+
+Q> Should I use Cookies or Sessions for tracking my users?
+A> It is your choice. If your site is working correctly with cookies (the default), leave it as is. If you prefer PHP sessions, switch to that mode – e107 ships with a custom session handler that stores and handles sessions safely.
+
+H2> When to prefer sessions
+
+STEP> You operate behind a strict cookie-consent regime and want to minimise persistent cookies.
+STEP> You run multiple sub-domains that need to share login state cleanly.
+STEP> You suspect cookie tampering and want server-side state instead.
+
+H1> Rendering and standards mode
+
+Q> Why should I run my site in standards mode?
+A> If you are developing a theme and having trouble getting it to render correctly across browsers, enable standards mode. Modern browsers will then apply the correct box model and CSS specification, matching what your stylesheet expects.
+
+H1> Authentication glossary
+
+Q> What is meant by PLAINTEXT?
+A> A string of text that is transmitted (or stored) with one value for each text attribute, with no encryption applied. Use it only over HTTPS or trusted networks.
+
+Q> What is meant by CHAP?
+A> [b]Challenge-Handshake Authentication Protocol[/b]. CHAP authenticates a user or network host to an authenticating entity (for example, an Internet service provider) by exchanging a hashed challenge instead of the password itself, mitigating replay attacks.
+
+NOTE> For new integrations always prefer modern token-based authentication (JWT, OAuth2) over PLAINTEXT or CHAP.

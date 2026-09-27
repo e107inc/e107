@@ -1,6 +1,17 @@
+H1> Maintenance mode
 
-Q>	What's this section for?
-A>	This screen allows you to make your site inaccessible to visitors, use it when you are upgrading your site or need to take it down for any reason. Only the main site administrator can access the site when in maintenance mode, you'll know this as a message is displayed on every page.
+P> Maintenance mode hides the site from the public while you upgrade, run a migration, or investigate an incident. Only the main administrator can browse the site while the flag is set; everyone else sees a maintenance notice.
 
-Q>	Help! I set the Maintenance Flag and accidentally logged out, how do I get back in to my admin section to put the site back up?
-A>	Go to http://yoursite.com/e107_admin/admin.php and log in from there.
+SHOT> maintainance/admin-maintenance.png | Maintenance flag toggle inside the admin area
+
+Q> What's this section for?
+A> It lets you make the site inaccessible to visitors. Use it when upgrading the site or when you need to take it down for any reason. The main administrator continues to see every page (with a banner reminding them maintenance is on).
+
+H1> Locked yourself out?
+
+Q> Help! I set the Maintenance Flag and accidentally logged out – how do I get back into the admin section to put the site back up?
+A> Go directly to `http://yoursite.com/e107_admin/admin.php` and log in from there. The admin login URL is exempt from maintenance mode for exactly this reason.
+
+WARN> Always confirm you are still logged in [b]before[/b] enabling maintenance mode, especially over a flaky network. Bookmark the admin URL above just in case.
+
+TIP> While in maintenance mode, the public sees a generic message. Customise it from [b]Preferences → Maintenance message[/b] so visitors know when you expect to be back.

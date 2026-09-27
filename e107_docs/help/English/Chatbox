@@ -1,9 +1,16 @@
+H1> Configuring the chatbox
 
-Q>	What is the Replace Links section for?
-A>	You can convert any links entered in your chatbox to other text, or an image. This keeps your chatbox from overflowing with long website addresses. To use an image, tick Replace Links, and in the box below enter &lt;img src='path_to_your_image' alt='' />, now any links entered will be converted to the image you entered.
+P> The Chatbox is a small real-time message board. With a couple of options it can be made safe for any audience.
 
-Q>	What's Wordwrap for?
-A>	If someone entered a very long word in your chatbox it could disrupt the layout of your site. If you were to enter 40 in the Wordwrap box, any works longer than 40 characters would be wrapped so the column wouldn't be extended. You may have to change this value corresponding to the theme you are using, and the width of the column your chatbox is in.
+Q> What is the Replace Links section for?
+A> You can convert any link entered in the chatbox to other text or to an image. This keeps the chatbox from overflowing with long URLs. To use an image, tick [b]Replace Links[/b] and in the box below enter `<img src="path_to_your_image" alt="" />` – every link will then render as that image.
 
-Q>	My site is for all ages yet someone keeps swearing in the chatbox - how can I stop this?
-A>	Go to the Preferences screen in your admin section, and find the Protection of minors options. You can add a list of words here that will be replaced by a word or sentence of your choice, for example CENSORED! Now anytime that work is encountered on your site it will be replaced with the text you entered.
+Q> What's Wordwrap for?
+A> If a user types a single very long word it can stretch the column the chatbox lives in. Setting Wordwrap to e.g. `40` forces words longer than 40 characters to wrap. Tune the value to match the column width of your active theme.
+
+H1> Moderation
+
+Q> My site is for all ages but someone keeps swearing in the chatbox – how can I stop it?
+A> Open [b]Admin → Preferences[/b] and find the [b]Protection of minors[/b] options. Add the words you want to censor; they will be replaced site-wide with the text of your choice (for example `CENSORED!`).
+
+WARN> The censor list is global – it affects news, comments, forums and the chatbox alike. Test with a single benign word first to confirm behaviour.

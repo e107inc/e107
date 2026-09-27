@@ -1,9 +1,30 @@
+H1> Recovery scenarios
 
-Q>	I made some changes to my site and now I'm getting MySQL errors and my site doesn't appear.
-A>	It could be that your core has become corrupt. The core is the core settings and variables of e107. To reset your core, go to http://yoursite.com/e107_files/resetcore/resetcore.php. Always back up your core (from the Database screen) before you apply changes, you can then restore the core backup if something goes wrong (again from resetcore.php).
+P> Things break sometimes. This page covers the three most common emergencies: corrupt core, forgotten admin password, and a site that became unreachable after installing a theme or plugin.
 
-Q>	I forgot my main admin password and now I can't access my admin area.
-A>	For very good security reasons it's impossible to reset your password unless you're logged in. If you haven't written your password down in a safe place please do so now, then this scenario will never happen. If it does, you will have to reset your password manually using phpMyAdmin or another similar MySQL manager. Go to the users table, the main admin should be user number 1. Click on the edit button and change the password to 4cb9c8a8048fd02294477fcb1a41191a, this will change your password to changeme. Now log in and [b]update your password immediately[/b].
+WARN> Always back up the database (and ideally the filesystem) [b]before[/b] applying any of the steps below. Recovery is much easier when you have a known-good snapshot.
 
-Q>	I installed a theme/plugin etc. and now my site is unreachable, what can I do?
-A>	Use resetcore.php (see above).
+H1> The site shows MySQL errors after a change
+
+Q> I made some changes to my site and now I'm getting MySQL errors and my site doesn't appear.
+A> Your core may have become corrupt. Reset it by visiting `http://yoursite.com/e107_files/resetcore/resetcore.php`. Always export a backup from [b]Admin → Database[/b] before applying changes; if something goes wrong you can then restore that backup from the same `resetcore.php` page.
+
+H1> Lost main admin password
+
+Q> I forgot my main admin password and now I can't access my admin area.
+A> For security reasons there is no in-app password reset for an admin who is not logged in. Reset it manually with phpMyAdmin (or any MySQL client):
+
+STEP> Open the `users` table.
+STEP> Locate user #1 (the main admin) and edit it.
+STEP> Change `user_password` to `4cb9c8a8048fd02294477fcb1a41191a` (this hash means [b]changeme[/b]).
+STEP> Log in with the password [b]changeme[/b].
+STEP> Open [b]User Settings[/b] and change the password to a strong, unique value [b]immediately[/b].
+
+WARN> Do not leave the temporary `changeme` password in place. Anyone who reads this help file knows it.
+
+H1> Site unreachable after installing a theme or plugin
+
+Q> I installed a theme/plugin and now my site is unreachable – what can I do?
+A> Use `resetcore.php` (see above) to restore the previous core configuration, or rename the offending plugin/theme folder via FTP/SSH so e107 stops loading it.
+
+TIP> When testing a new theme, always click [b]Preview[/b] first instead of [b]Activate[/b] – the preview is sandboxed and cannot lock you out.

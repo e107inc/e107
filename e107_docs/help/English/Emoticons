@@ -1,6 +1,13 @@
+H1> Emoticons
 
-Q>	What are emoticons?
-A>	Emoticons are the smiley images you see on other websites. If you enable emoticons on your site, any time someone enters a smiley, for example &#58;), it will be replaced by the image equivalent :)
+P> Emoticons (smileys) replace short text codes with images so users can express tone without typing HTML.
 
-Q>	Can I enter new emoticon codes?
-A>	Yes, from the emoticon screen you can enter new, edit existing or delete emoticons.
+Q> What are emoticons?
+A> They are the smiley images you see on most community sites. When emoticons are enabled, typing `:)` (or any other registered code) is automatically replaced by the matching image.
+
+Q> Can I enter new emoticon codes?
+A> Yes. From the Emoticons admin you can add new codes, edit existing ones, or delete the ones you don't need.
+
+TIP> Emoticon packs are theme-independent; you can switch packs from [b]Admin → Emoticons[/b] without changing the theme. Drop new packs into `e107_images/emotes/<packname>/`.
+
+NOTE> If emoticons stop appearing, check that they are enabled both globally (Preferences) and inside the parser context where the text is rendered (e.g. comments).
