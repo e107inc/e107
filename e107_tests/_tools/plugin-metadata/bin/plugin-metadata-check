@@ -1,0 +1,270 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * e107 bundled-plugin metadata gate.
+ *
+ * Fails when a change touches a bundled plugin's files without raising that
+ * plugin's plugin.xml version above the one at the last tagged release, or
+ * while its date is older than the newest change to the plugin. A plugin whose
+ * version already rose earlier in the same release cycle needs no further bump.
+ *
+ * Usage:
+ *   plugin-metadata-check [--base=REF] [--head=REF]
+ *
+ *   --base=REF  The branch the change is proposed against, which decides what
+ *               counts as changed (default origin/master; name
+ *               origin/release/v2.3.x for a branch destined there, or the
+ *               verdict will not be the one CI reaches).
+ *   --head=REF  The tip of the change (default HEAD).
+ *
+ * The release compared against is the highest full v* tag in the repository, on
+ * whichever branch it sits, because a plugin's version is one number across
+ * both release lines: a site can move between them, and a version that goes
+ * backwards is an upgrade e107 never offers again. Pre-release tags are passed
+ * over, since v2.3.0-rc1 version-sorts above v2.3.0 and a release candidate is
+ * not what a site runs. The one case this does not cover is a development-line
+ * tag that sorts above the maintenance line's, which would ask a
+ * release/v2.3.x change to write a version from the newer line; that needs a
+ * decision about how the two lines share one version, and there is no such tag
+ * today.
+ *
+ * Both refs are read as committed history, never as the working tree, because
+ * the date rule is about when a commit was written. Needs every tag and both
+ * branches present, so a shallow clone has to be unshallowed and a clone whose
+ * tags lag has to `git fetch --tags` first. A plugin whose plugin.xml the
+ * change deletes drops out, which is what a removed or renamed plugin should
+ * do.
+ *
+ * Exit code: 0 when every changed plugin declares current metadata, or none
+ * changed; 1 when one does not; 2 on a usage or repository error.
+ */
+
+namespace E107\PluginMetadata;
+
+require_once __DIR__ . '/../src/ChangedPlugin.php';
+require_once __DIR__ . '/../src/PolicyFailure.php';
+require_once __DIR__ . '/../src/PluginVersionPolicy.php';
+
+$root = dirname(__DIR__, 4);
+$options = parseArgs(array_slice($argv, 1));
+
+$mergeBase = oneLine($root, ['merge-base', $options['base'], $options['head']],
+    'no merge base between ' . $options['base'] . ' and ' . $options['head']);
+$tag = highestReleaseTag($root);
+
+$folders = changedPluginFolders($root, $mergeBase, $options['head']);
+if ($folders === []) {
+    echo "No bundled plugin changed.\n";
+    exit(0);
+}
+
+$plugins = [];
+foreach ($folders as $folder) {
+    $head = fileAtRef($root, $options['head'], "e107_plugins/$folder/plugin.xml");
+    if ($head === null) {
+        continue;
+    }
+    $headAttributes = rootAttributes($head);
+    $baseline = fileAtRef($root, $tag, "e107_plugins/$folder/plugin.xml");
+
+    $plugins[] = new ChangedPlugin(
+        $folder,
+        $baseline === null ? null : (string) rootAttributes($baseline)['version'],
+        $headAttributes['version'],
+        $headAttributes['date'],
+        newestAuthorDate($root, $options['head'], "e107_plugins/$folder")
+    );
+}
+
+if ($plugins === []) {
+    echo "Nothing to check: no changed plugin carries a plugin.xml.\n";
+    exit(0);
+}
+
+$failures = (new PluginVersionPolicy($tag))->failures($plugins);
+if ($failures === []) {
+    echo 'Bundled plugin metadata is current against ' . $tag . ': '
+        . implode(', ', array_map(function (ChangedPlugin $plugin) {
+            return $plugin->folder;
+        }, $plugins)) . "\n";
+    exit(0);
+}
+
+fwrite(STDERR, "Bundled plugin metadata is out of date.\n\n");
+foreach ($failures as $failure) {
+    fwrite(STDERR, '  e107_plugins/' . $failure->folder . '/plugin.xml: ' . $failure->message . "\n");
+}
+fwrite(STDERR, "\nA change to a bundled plugin's files declares a new version for that plugin,\n"
+    . "once per release cycle, because that version is the only signal core and the\n"
+    . "plugin registries have that a bundled plugin changed at all. Check it locally\n"
+    . "against the branch you are targeting:\n\n"
+    . "  e107_tests/_tools/plugin-metadata/bin/plugin-metadata-check --base=origin/master\n");
+exit(1);
+
+/**
+ * @param list<string> $arguments
+ * @return array{base:string,head:string}
+ */
+function parseArgs(array $arguments): array
+{
+    $options = ['base' => 'origin/master', 'head' => 'HEAD'];
+    foreach ($arguments as $argument) {
+        if (preg_match('/^--(base|head)=(.+)$/', $argument, $matched) !== 1) {
+            fwrite(STDERR, "Usage: plugin-metadata-check [--base=REF] [--head=REF]\n");
+            exit(2);
+        }
+        $options[$matched[1]] = $matched[2];
+    }
+
+    return $options;
+}
+
+/**
+ * @param list<string> $arguments
+ * @return array{status:int,lines:list<string>}
+ */
+function git(string $root, array $arguments): array
+{
+    $command = 'git -C ' . escapeshellarg($root);
+    foreach ($arguments as $argument) {
+        $command .= ' ' . escapeshellarg($argument);
+    }
+
+    $lines = [];
+    $status = 0;
+    exec($command . ' 2>/dev/null', $lines, $status);
+
+    return ['status' => $status, 'lines' => $lines];
+}
+
+/**
+ * The lines of a git command that has to succeed; exits 2 with $failure rather
+ * than let a repository this tool cannot read pass for a repository with
+ * nothing to report.
+ *
+ * @return list<string>
+ */
+function mustGit(string $root, array $arguments, string $failure): array
+{
+    $result = git($root, $arguments);
+    if ($result['status'] !== 0) {
+        fwrite(STDERR, "$failure\n");
+        exit(2);
+    }
+
+    return $result['lines'];
+}
+
+/** The single line the git command is expected to print; exits 2 with $failure when it prints none. */
+function oneLine(string $root, array $arguments, string $failure): string
+{
+    $lines = mustGit($root, $arguments, $failure);
+    if ($lines === []) {
+        fwrite(STDERR, "$failure\n");
+        exit(2);
+    }
+
+    return trim($lines[0]);
+}
+
+/**
+ * The newest release tag, skipping pre-releases, which version-sort above the
+ * release they precede.
+ */
+function highestReleaseTag(string $root): string
+{
+    $tags = mustGit($root, ['tag', '--list', 'v[0-9]*', '--sort=-v:refname'], 'cannot list the tags');
+    foreach ($tags as $tag) {
+        if (preg_match('/^v\d+(\.\d+)*$/', $tag) === 1) {
+            return $tag;
+        }
+    }
+
+    fwrite(STDERR, "the repository carries no v* release tag; fetch the tags and try again\n");
+    exit(2);
+}
+
+/**
+ * The newest author date among the commits touching that path, which is not the
+ * same as the author date of the newest commit: git orders by commit date, and a
+ * rebase leaves a commit whose author date is months older at the front of it.
+ * Merges are passed over, so pressing Update branch does not overwrite the date
+ * with the day of the merge.
+ */
+function newestAuthorDate(string $root, string $head, string $path): string
+{
+    $dates = mustGit($root, ['log', '--no-merges', '--format=%ad', '--date=short', $head, '--', $path],
+        "cannot read the history of $path");
+    if ($dates === []) {
+        fwrite(STDERR, "no commit in $head touches $path\n");
+        exit(2);
+    }
+
+    return max($dates);
+}
+
+/**
+ * Folder names under e107_plugins/ that the change touched, in a stable order.
+ *
+ * @return list<string>
+ */
+function changedPluginFolders(string $root, string $mergeBase, string $head): array
+{
+    $folders = [];
+    $changed = mustGit($root, ['diff', '--name-only', $mergeBase, $head],
+        "cannot diff $mergeBase against $head");
+    foreach ($changed as $path) {
+        if (preg_match('#^e107_plugins/([^/]+)/#', $path, $matched) === 1) {
+            $folders[$matched[1]] = true;
+        }
+    }
+    ksort($folders);
+
+    return array_keys($folders);
+}
+
+/** The file's contents at that ref, or null when the ref does not carry it. */
+function fileAtRef(string $root, string $ref, string $path): ?string
+{
+    $result = git($root, ['show', "$ref:$path"]);
+    if ($result['status'] === 0) {
+        return implode("\n", $result['lines']);
+    }
+
+    $listed = mustGit($root, ['ls-tree', '--name-only', $ref, '--', $path], "cannot read $ref");
+    if ($listed !== []) {
+        fwrite(STDERR, "$ref carries $path but its contents could not be read;"
+            . " a partial clone has to be fetched in full for this check\n");
+        exit(2);
+    }
+
+    return null;
+}
+
+/**
+ * The version and date attributes of the document's root element, each null
+ * when the document is unparseable or does not carry it.
+ *
+ * @return array{version:?string,date:?string}
+ */
+function rootAttributes(string $xml): array
+{
+    $previous = libxml_use_internal_errors(true);
+    $document = simplexml_load_string($xml);
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+
+    if ($document === false) {
+        return ['version' => null, 'date' => null];
+    }
+
+    $attributes = $document->attributes();
+
+    return [
+        'version' => isset($attributes['version']) ? (string) $attributes['version'] : null,
+        'date' => isset($attributes['date']) ? (string) $attributes['date'] : null,
+    ];
+}
