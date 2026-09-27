@@ -52,6 +52,7 @@ use E107\Rector\DowngradePhp81\Rector\FuncCall\DowngradeHashAlgorithmXxHashRecto
 use E107\Rector\FloorApi\Rector\ClassMethod\DowngradeTentativeReturnTypeRector;
 use E107\Rector\FloorApi\Rector\ConstFetch\DowngradePostFloorConstantRector;
 use E107\Rector\FloorApi\Rector\FunctionLike\DowngradePostFloorParamTypeRector;
+use E107\Rector\FloorApi\Rector\FunctionLike\HoistLiteralByReferenceArgumentRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $root = __DIR__ . '/../../..';
@@ -117,9 +118,10 @@ return static function (RectorConfig $rectorConfig): void {
     // Everything above this line rewrites syntax. PHP 5.6 parses a class type
     // hint, a constant read and a method signature whatever they name, so a
     // vendored package can clear the whole downgrade and still fatal on the
-    // floor the moment it runs. The three rules below are the API floor, and
-    // each one replaces a patch to vendored source that a re-vendor rolled
-    // back: firebase/php-jwt 7.x, symfony/polyfill-php80 and guzzlehttp/psr7.
+    // floor the moment it runs. The rules below are the API floor, and each
+    // one replaces a patch to vendored source that a re-vendor would roll
+    // back: firebase/php-jwt 7.x, symfony/polyfill-php80, guzzlehttp/psr7 and
+    // hybridauth.
 
     // PHP 8.0 and 8.1 turned these resources into classes. A parameter typed
     // against one accepts nothing the floor can produce, because below 8.0 the
@@ -176,6 +178,13 @@ return static function (RectorConfig $rectorConfig): void {
         'SessionIdInterface' => ['create_sid'],
         'SessionUpdateTimestampHandlerInterface' => ['updateTimestamp', 'validateId'],
     ]);
+
+    // PHP 7.1 to 7.4 refuse a literal bound to a by-reference parameter
+    // while compiling the call, whenever the callee is already loaded, so a
+    // file that loads on its own dies once something else has loaded the
+    // class it calls into. hybridauth's Apple adapter hands php-jwt 7.x a
+    // literal where decode() now takes &$headers.
+    $rectorConfig->rule(HoistLiteralByReferenceArgumentRector::class);
 
     $rectorConfig->phpVersion(PhpVersion::PHP_56);
 
