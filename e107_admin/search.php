@@ -36,11 +36,7 @@ $search_prefs = e107::getConfig('search')->getPref();
 
 
 
-//$search_handlers['news'] = ADLAN_0; // Moved to Plugin
 $search_handlers['comments'] = LAN_COMMENTS;
-$search_handlers['users'] = SEALAN_7;
-//$search_handlers['downloads'] = ADLAN_24; // Moved to Plugin
-// $search_handlers['pages'] = SEALAN_39; // Moved to Plugin
 
 
 foreach(varset($pref['e_search_list'], array()) as $file)
@@ -215,7 +211,7 @@ if(empty($search_prefs['comments_handlers']))
 	$search_prefs['comments_handlers'] = [];
 }
 
-$handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
+$handlers_total = count($search_handlers) + count($search_prefs['plug_handlers']);
 
 if ($query[0] == 'settings')
 {
