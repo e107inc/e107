@@ -418,7 +418,7 @@
 
 //		$PM_SHOW = $this->updateTemplate($PM_SHOW);
 
-			$txt = e107::getParser()->parseTemplate($PM_SHOW, true, $sc);
+//			$txt = e107::getParser()->parseTemplate($PM_SHOW, true, $sc);
 
 			if($comeFrom == 'outbox')
 			{
@@ -429,7 +429,13 @@
 				$bread = array('text' => LAN_PLUGIN_PM_INBOX, 'url' => e107::url('pm', 'index') . '?mode=inbox');
 			}
 
-			$ns->tablerender(LAN_PM, $this->breadcrumb($bread, '#' . $pmid) . $txt);
+//			$ns->tablerender(LAN_PM, $this->breadcrumb($bread, '#' . $pmid) . $txt);
+			$sc->bc_type = $bread;
+			$sc->bc_other = '#' . $pmid;
+
+			$txt = e107::getParser()->parseTemplate($PM_SHOW, true, $sc);
+
+			$ns->tablerender(LAN_PM, $txt);
 
 			if(!$comeFrom)
 			{
@@ -751,6 +757,10 @@
 		}
 
 
+/*--
+
+
+
 		function breadcrumb($type = '', $other='')
 		{
 			if(!deftrue('BOOTSTRAP'))
@@ -780,7 +790,7 @@
 			return e107::getForm()->breadcrumb($array);
 
 		}
-
+*/
 	}
 
 
@@ -949,7 +959,10 @@
 	switch($action)
 	{
 		case 'send' :
-			$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PLUGIN_PM_NEW) . $mes->render() . $pm->show_send($pm_proc_id));
+//--			$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PLUGIN_PM_NEW) . $mes->render() . $pm->show_send($pm_proc_id));
+ 			$sc->bc_type = LAN_PLUGIN_PM_NEW;
+   			$sc->bc_other = NULL;
+			$ns->tablerender(LAN_PM, $mes->render() . $pm->show_send($pm_proc_id));
 			break;
 
 		case 'reply' :
@@ -959,16 +972,28 @@
 			{
 				if($pm_info['pm_to'] != USERID)
 				{
-					$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_55) . $mes->render() . LAN_PM_56);
+//--					$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_55) . $mes->render() . LAN_PM_56);
+    			$sc->bc_type = LAN_PM_55;
+  	   		$sc->bc_other = NULL;
+// To be reworked to use templates?
+					$ns->tablerender(LAN_PM, $sc->sc_pm_breadcrumb() . $mes->render() . LAN_PM_56);
 				}
 				else
 				{
-					$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_55) . $mes->render() . $pm->show_send($pm_info));
+//--					$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_55) . $mes->render() . $pm->show_send($pm_info));
+    			$sc->bc_type = LAN_PM_55;
+  	   		$sc->bc_other = NULL;
+// To be reworked to use templates?
+					$ns->tablerender(LAN_PM, $sc->sc_pm_breadcrumb() . $mes->render() . $pm->show_send($pm_info));
 				}
 			}
 			else
 			{
-				$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_55) . $mes->render() . LAN_PM_57);
+//--				$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_55) . $mes->render() . LAN_PM_57);
+  			$sc->bc_type = LAN_PM_55;
+	   		$sc->bc_other = NULL;
+// To be reworked to use templates?
+				$ns->tablerender(LAN_PM, $sc->sc_pm_breadcrumb() . $mes->render() . LAN_PM_57);
 			}
 			break;
 
@@ -980,7 +1005,10 @@
 				$caption .= ' - ' . LAN_PLUGIN_PM_INBOX;
 			}
 
-			$ns->tablerender($caption, $pm->breadcrumb(LAN_PLUGIN_PM_INBOX) . $mes->render() . $pm->show_inbox($pm_proc_id), 'PM');
+//--			$ns->tablerender($caption, $pm->breadcrumb(LAN_PLUGIN_PM_INBOX) . $mes->render() . $pm->show_inbox($pm_proc_id), 'PM');
+			$sc->bc_type = LAN_PLUGIN_PM_INBOX;
+			$sc->bc_other = NULL;
+			$ns->tablerender($caption, $mes->render() . $pm->show_inbox($pm_proc_id), 'PM');
 			break;
 
 		case 'outbox' :
@@ -991,7 +1019,10 @@
 				$caption .= ' - ' . LAN_PLUGIN_PM_OUTBOX;
 			}
 
-			$ns->tablerender($caption, $pm->breadcrumb(LAN_PLUGIN_PM_OUTBOX) . $mes->render() . $pm->show_outbox($pm_proc_id), 'PM');
+//--			$ns->tablerender($caption, $pm->breadcrumb(LAN_PLUGIN_PM_OUTBOX) . $mes->render() . $pm->show_outbox($pm_proc_id), 'PM');
+			$sc->bc_type = LAN_PLUGIN_PM_OUTBOX;
+			$sc->bc_other = NULL;
+			$ns->tablerender($caption, $mes->render() . $pm->show_outbox($pm_proc_id), 'PM');
 			break;
 
 		case 'show' :
@@ -1007,7 +1038,10 @@
 				$caption .= ' - ' . LAN_PM_66;
 			}
 
-			$ns->tablerender($caption, $pm->breadcrumb('blocked') . $mes->render() . $pm->showBlocked($pm_proc_id), 'PM');
+//--			$ns->tablerender($caption, $pm->breadcrumb('blocked') . $mes->render() . $pm->showBlocked($pm_proc_id), 'PM');
+			$sc->bc_type = 'blocked';
+			$sc->bc_other = NULL;
+			$ns->tablerender($caption, $mes->render() . $pm->showBlocked($pm_proc_id), 'PM');
 			break;
 	}
 
