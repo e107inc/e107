@@ -5374,11 +5374,6 @@ class e107
 		{
 			$_e107vars = array('forceuserupdate', 'online', 'menus', 'prunetmp');
 			$GLOBALS['_E107']['minimal'] = true;
-			// lame but quick - allow online when ajax request only, additonal checks are made in e_online class
-			if(e_AJAX_REQUEST && !isset($GLOBALS['_E107']['online']) && !isset($GLOBALS['_E107']['minimal']))
-			{
-				unset($_e107vars[1]);
-			}
 
 			foreach($_e107vars as $v)
 			{

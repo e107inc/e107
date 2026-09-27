@@ -89,11 +89,7 @@ class e_online
 		if($online_tracking == false || $flood_control == false)
 		{
 			define('e_TRACKING_DISABLED', true);		// Used in forum, online menu
-			define('TOTAL_ONLINE', '');
-			define('MEMBERS_ONLINE', '');
-			define('GUESTS_ONLINE', '');
-			define('ON_PAGE', '');
-			define('MEMBER_LIST', '');
+			$this->defineUnsampledState();
 
 			return null;
 		}
@@ -399,11 +395,13 @@ class e_online
 
 					}
 				}
+				$guests_online = $total_online - $members_online;
+
 				if(!defined('TOTAL_ONLINE'))
 				{
 					define('TOTAL_ONLINE', $total_online);
 					define('MEMBERS_ONLINE', $members_online);
-					define('GUESTS_ONLINE', $total_online - $members_online);
+					define('GUESTS_ONLINE', $guests_online);
 					$dbg->logTime('Go online (db count) Line:'.__LINE__);
 					define('ON_PAGE', $sql->createQueryBuilder()->from('online')->where('online_location', $page)->count());
 					define('MEMBER_LIST', $member_list);
@@ -414,22 +412,34 @@ class e_online
 
 				if ($total_online > ($olCountPrefs->get('most_members_online') + $olCountPrefs->get('most_guests_online')))
 				{
-					$olCountPrefs->set('most_members_online', MEMBERS_ONLINE);
-					$olCountPrefs->set('most_guests_online', GUESTS_ONLINE);
+					$olCountPrefs->set('most_members_online', $members_online);
+					$olCountPrefs->set('most_guests_online', $guests_online);
 					$olCountPrefs->set('most_online_datestamp', time());
 					$olCountPrefs->save(false, true, false);
 				}
 			}
-		/*}
-		else
+
+		$this->defineUnsampledState();
+	}
+
+
+	/**
+	 * Give a request that did not sample the online table what a sampled one leaves behind: the name list online.php iterates, and the five counts as empty strings; the first caller wins.
+	 */
+	public function defineUnsampledState()
+	{
+		if(!isset($GLOBALS['listuserson']))
 		{
-			define('e_TRACKING_DISABLED', true);		// Used in forum, online menu
-			define('TOTAL_ONLINE', '');
-			define('MEMBERS_ONLINE', '');
-			define('GUESTS_ONLINE', '');
-			define('ON_PAGE', '');
-			define('MEMBER_LIST', '');
-		}*/
+			$GLOBALS['listuserson'] = array();
+		}
+
+		foreach(array('TOTAL_ONLINE', 'MEMBERS_ONLINE', 'GUESTS_ONLINE', 'ON_PAGE', 'MEMBER_LIST') as $name)
+		{
+			if(!defined($name))
+			{
+				define($name, '');
+			}
+		}
 	}
 
 
