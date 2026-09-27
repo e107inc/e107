@@ -283,7 +283,7 @@ class e_session
             $systemSaveMethod = ini_get('session.save_handler');
             $saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
             $config['SavePath']     = e107::getPref('session_save_path', false); // FIXME - new pref
-            $config['SaveMethod']   = e107::getPref('session_save_method', $saveMethod);
+            $config['SaveMethod']   = $this->resolveSaveMethod($saveMethod);
             $options['lifetime']    = (int) e107::getPref('session_lifetime', 86400);
             $options['path']        = e107::getPref('session_cookie_path', ''); // FIXME - new pref
             $options['secure']      = e107::getPref('ssl_enabled', false); //
@@ -314,6 +314,19 @@ class e_session
             ->setOptions($options);
 
         return $this;
+    }
+
+    /**
+     * Session storage, the database while 'disallowMultiLogin' is on: {@see userlogin::login()} can only evict from the session table.
+     *
+     * @param string $default save handler to fall back on when no preference is set
+     * @return string
+     */
+    private function resolveSaveMethod($default)
+    {
+        if (e107::getPref('disallowMultiLogin')) return 'db';
+
+        return e107::getPref('session_save_method', $default);
     }
 
     /**

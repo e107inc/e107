@@ -277,7 +277,7 @@ class userlogin
 		$user_email = $this->userData['user_email'];
 
 		/* restrict more than one person logging in using same us/pw */
-		if(!empty($pref['session_save_method']) && ($pref['session_save_method'] === 'db') && !empty($pref['disallowMultiLogin']) && !empty($user_id))
+		if(!empty($pref['disallowMultiLogin']) && !empty($user_id))
 		{
 			// logout any existing user of this account.
 			$mLog = '';
@@ -298,13 +298,6 @@ class userlogin
 				$this->logNote('LAN_ROLL_LOG_07', $mLog );
 			}
 
-		}
-		elseif(!empty($pref['track_online']) && !empty($pref['disallowMultiLogin']) && !empty($user_id))
-		{
-			if($sql->createQueryBuilder()->select('online_ip')->from('online')->where('online_user_id', $user_id.".".$user_name)->execute())
-			{
-				return $this->invalidLogin($username, LOGIN_MULTIPLE, $user_id);
-			}
 		}
 
 
@@ -712,12 +705,6 @@ class userlogin
 			case LOGIN_BAD_USERNAME :
 				$message = LAN_LOGIN_21;
 				$this->logNote('LAN_ROLL_LOG_08', $username);
-				break;
-			case LOGIN_MULTIPLE :
-				$message = LAN_LOGIN_24;
-				$this->logNote('LAN_ROLL_LOG_07', "U: {$username} IP: {$this->userIP}");
-				$this->genNote($username, LAN_LOGIN_16);
-				$doCheck = true;
 				break;
 			case LOGIN_BAD_CODE :
 				$message = $extra_text; // LAN_LOGIN_23;
