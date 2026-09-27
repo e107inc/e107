@@ -1426,11 +1426,16 @@ class xmlClass
 
 
 	/**
-	 * @return mixed
+	 * The reason the last fetch or parse failed, as one line of prose.
+	 *
+	 * @return string
 	 */
 	public function getLastErrorMessage()
 	{
-		return $this->errors;
+		$reported = is_array($this->errors) ? $this->errors : array($this->errors);
+		$message = trim(preg_replace('/\s+/', ' ', implode('; ', $reported)));
+
+		return ($message === '') ? 'No reason was reported.' : $message;
 	}
 
 

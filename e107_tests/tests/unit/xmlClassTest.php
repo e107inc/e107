@@ -334,4 +334,37 @@
 			$this->assertStringContainsString($correct, $ret);
 
 		}
+
+		/**
+		 * libxml's complaints used to reach the caller as an array, which
+		 * concatenated into the word Array (#6127).
+		 */
+		public function testGetLastErrorMessageJoinsTheParserComplaints()
+		{
+			$xml = new xmlClass();
+
+			$this->assertFalse($xml->parseXml('<feed><item></feed>'));
+
+			$message = $xml->getLastErrorMessage();
+
+			$this->assertTrue(is_string($message), 'The reason has to be a string, whatever went wrong.');
+			$this->assertStringContainsString('Line:', $message);
+			$this->assertStringNotContainsString("\n", $message, 'A log line is one line.');
+		}
+
+		/**
+		 * The commonest case of #6127: nothing below ever recorded a reason,
+		 * and the caller logged a bare colon.
+		 */
+		public function testGetLastErrorMessageNamesTheCaseWithNothingToReport()
+		{
+			$xml = new xmlClass();
+
+			$message = $xml->getLastErrorMessage();
+
+			$this->assertTrue(is_string($message),
+				'$errors is null until something sets it, and null is what reached the log.');
+			$this->assertNotSame('', $message,
+				'An unreported reason still has to read as a sentence.');
+		}
 	}

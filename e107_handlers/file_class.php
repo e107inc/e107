@@ -1401,6 +1401,8 @@ class e_file
 
 				if($status < 300 || $status > 399 || $location === '')
 				{
+					$this->recordOutboundAnswer($url, $status, $hop['result']);
+
 					return $hop['result'];
 				}
 
@@ -1432,6 +1434,36 @@ class e_file
 				{
 					call_user_func($onRedirect);
 				}
+			}
+		}
+
+
+		/**
+		 * Names an answer a caller cannot use, so {@see e_file::getErrorMessage()} has a reason to report.
+		 *
+		 * @param string $url    the address the answer came from
+		 * @param int    $status the HTTP status of the final hop
+		 * @param mixed  $body   the final hop's body, or true where the transport wrote it straight to disk
+		 * @return void
+		 */
+		private function recordOutboundAnswer($url, $status, $body)
+		{
+
+			if(!is_string($body))
+			{
+				return;
+			}
+
+			if($status > 0 && ($status < 200 || $status > 299))
+			{
+				$this->error = 'HTTP ' . $status . ' answer from: ' . $url;
+
+				return;
+			}
+
+			if($body === '')
+			{
+				$this->error = 'Empty answer from: ' . $url;
 			}
 		}
 
