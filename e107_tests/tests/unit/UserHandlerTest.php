@@ -219,20 +219,18 @@
 		public function testHasReadonlyFieldPassesTheClassColumnStageOneWrites()
 		{
 			$userMethods = e107::getUserSession();
-			$pref = e107::getConfig();
-			$restore = e107::getPref('signup_option_class');
+			$restore = $this->withCorePrefs(array('signup_option_class' => 0));
 
 			try
 			{
-				$pref->set('signup_option_class', 0);
 				$this->assertFalse($userMethods->hasReadonlyField(array('user_class' => '1,2')));
 
-				$pref->set('signup_option_class', 1);
+				e107::getConfig()->set('signup_option_class', 1);
 				$this->assertFalse($userMethods->hasReadonlyField(array('user_class' => '1,2')));
 			}
 			finally
 			{
-				$pref->set('signup_option_class', $restore);
+				$restore();
 			}
 		}
 

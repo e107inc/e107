@@ -796,16 +796,13 @@ class e_parse_shortcodeTest extends \Test\Unit
 		// SQL fixture happens to carry. What an icon is rendered for is the
 		// subject of the test, so a site whose xurl preference is empty (which is
 		// what a fresh install now has) would leave this asserting nothing.
-		$config = e107::getConfig('core');
-		$xurlWas = $config->get('xurl');
-
-		$config->set('xurl', array(
+		$restore = $this->withCorePrefs(array('xurl' => array(
 			'twitter' => 'https://x.com/e107',
 			'youtube' => 'https://youtube.com/e107Inc',
 			// The placeholder e107 shipped for years, and the one an admin
 			// reaches for when a network has no account yet.
 			'linkedin' => '#',
-		));
+		)));
 
 		try
 		{
@@ -817,7 +814,7 @@ class e_parse_shortcodeTest extends \Test\Unit
 		}
 		finally
 		{
-			$config->set('xurl', is_array($xurlWas) ? $xurlWas : array());
+			$restore();
 		}
 
 		self::assertStringContainsString('<span class="e-social-twitter fa-3x"></span>', $result);

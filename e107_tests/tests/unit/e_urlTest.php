@@ -20,7 +20,7 @@ class e_urlTest extends \Test\Unit
 	 */
 	public function testIsLegacyTreatsMissingLegacyPreferencesAsNoLegacyMappings()
 	{
-		$restore = $this->withoutCorePrefs(array('url_config', 'url_aliases'));
+		$restore = $this->withCorePrefs(array('url_config' => null, 'url_aliases' => null));
 
 		try
 		{
@@ -35,9 +35,7 @@ class e_urlTest extends \Test\Unit
 
 	public function testIsLegacyStillRecognisesALegacyRequest()
 	{
-		$config = e107::getConfig();
-		$saved = $config->get('url_config');
-		$config->set('url_config', array('news' => 'core/sef'));
+		$restore = $this->withCorePrefs(array('url_config' => array('news' => 'core/sef')));
 
 		try
 		{
@@ -50,7 +48,7 @@ class e_urlTest extends \Test\Unit
 		}
 		finally
 		{
-			$config->set('url_config', $saved);
+			$restore();
 		}
 	}
 
@@ -149,30 +147,6 @@ class e_urlTest extends \Test\Unit
 		self::assertSame(array(), $undispatchable, 'These bundled plugins register as URL modules '
 			. 'on their controllers/ folder, which shadows their e_url.php rules, and then hold no '
 			. 'index controller to dispatch, so the front end redirects to admin.php.');
-	}
-
-	/**
-	 * @param string[] $keys
-	 * @return callable puts every removed preference back as it was found
-	 */
-	private function withoutCorePrefs(array $keys)
-	{
-		$config = e107::getConfig();
-		$saved = array();
-
-		foreach($keys as $key)
-		{
-			$saved[$key] = $config->get($key);
-			$config->remove($key);
-		}
-
-		return static function () use ($config, $saved)
-		{
-			foreach($saved as $key => $value)
-			{
-				$config->set($key, $value);
-			}
-		};
 	}
 
 	/**
