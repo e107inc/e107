@@ -168,7 +168,7 @@ class e_admin_log
 	 * @param int    $logImportance [optional] default E_LOG_INFORMATIVE, E_LOG_NOTICE, E_LOG_WARNING, E_LOG_FATAL - passed directly to admin log
 	 * @param string $logEventCode  [optional] - passed directly to admin log
 	 * @param string $mstack        [optional] message stack passed to message handler
-	 * @param int LOG_TO_ADMIN|LOG_TO_ROLLING|LOG_TO_AUDIT
+	 * @param int $target LOG_TO_ADMIN|LOG_TO_ROLLING|LOG_TO_AUDIT
 	 * @return \e_admin_log
 	 * @see alias flushMessages() method below.
 	 */
@@ -1075,9 +1075,9 @@ class e_admin_log
 	 * Set and save accumulated log to a file.
 	 * Use addDebug(), addError() or addSuccess() prior to executing.
 	 *
-	 * @param string name without the extension. (ie. date prefix and .log suffix will be added automatically)
-	 * @param string Title for use inside the Log file
-	 * @param boolean true = append to file, false = new file each save.
+	 * @param string $name name without the extension. (ie. date prefix and .log suffix will be added automatically)
+	 * @param string $logTitle Title for use inside the Log file
+	 * @param boolean $append true = append to file, false = new file each save.
 	 */
 	public function toFile($name, $logTitle = '', $append = false, $opts = array())
 	{

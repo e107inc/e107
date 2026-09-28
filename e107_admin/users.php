@@ -3624,7 +3624,6 @@ class users_admin_form_ui extends e_admin_form_ui
 			{
 				case 'read':
 					return '<img src="'.e_IMAGE.'ranks/'.$curVal.'"/><br/>'.$curVal;
-					break;
 
 				case 'write':
 					$opts = $this->getController()->getFields()['gen_chardata']['writeParms']['optArray'];
@@ -3633,7 +3632,6 @@ class users_admin_form_ui extends e_admin_form_ui
 				case 'filter':
 				case 'batch':
 					return null;
-					break;
 
 			}
 		}

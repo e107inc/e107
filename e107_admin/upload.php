@@ -379,14 +379,12 @@ class upload_form_ui extends e_admin_form_ui
             case 'read':
                   $owner =  $this->getController()->getListModel()->get('upload_owner');
              return $this->findKey($owner, $opts[$owner], $value);
-            break;
 
 	        case 'write':
 	            $owner =  $this->getController()->getModel()->get('upload_owner');
 				//return $value."-- ".$owner; // $this->radio_switch('upload_active', $value, LAN_ACCEPT, LAN_PENDING, $options);
 				// make category editable instead of just displaying data
 				return e107::getForm()->select('upload_category', $opts, $value);
-            break;
 
             case 'batch':
 
@@ -424,7 +422,6 @@ class upload_form_ui extends e_admin_form_ui
         {
             case 'write':
                 return $this->radio_switch('upload_active', $value, LAN_ACCEPT, LAN_PENDING, $options);
-            break;
 
             case 'read':
                 return $value ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
@@ -446,11 +443,9 @@ class upload_form_ui extends e_admin_form_ui
 	
 				
                 return $text; // $this->option('Accept', 'upload_active', false, array('other' => 'style="padding-left: 15px"'));
-            break;
 
 	        case 'filter':
 	            return array(0=>LAN_NO, 1=>LAN_YES);
-	        break;
         }
     }
 
@@ -463,7 +458,6 @@ class upload_form_ui extends e_admin_form_ui
             case 'read':
             case 'write':
                 return e107::getFile()->file_size_encode($value);
-            break;
 
             case 'batch':
 

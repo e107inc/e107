@@ -57,6 +57,8 @@
 //	define('e_TOKEN_DISABLE', true);  // TODO FIXME cause of "Unauthorized Access!" message. SEF URL of Error pages causes e-token refresh.
 	require_once("class2.php");
 
+	$sql = e107::getDb();
+
 // ----------------------------
 
 	e107::getDebug()->logTime("Start Simple URL-ReWrite Routine");

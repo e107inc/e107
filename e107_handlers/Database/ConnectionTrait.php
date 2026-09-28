@@ -1207,7 +1207,6 @@ trait ConnectionTrait
 				}
 				$rows = $this->fetch();
 				return array_shift($rows);
-			break;
 
 			case 'one': // one row returned.
 				if($select && !$this->select($table, $fields, $where, $noWhere, $debug))
@@ -1219,7 +1218,6 @@ trait ConnectionTrait
 					return array();
 				}
 				return $this->fetch();
-			break;
 
 			case 'multi':
 				if($select && !$this->select($table, $fields, $where, $noWhere, $debug))
@@ -1237,7 +1235,6 @@ trait ConnectionTrait
 					else $ret[] = $row;
 				}
 				return $ret;
-			break;
 
 		}
 
@@ -1862,11 +1859,9 @@ trait ConnectionTrait
 			case 'int':
 			case 'integer':
 				return (int) $fieldValue;
-			break;
 
 			case 'cmd':
 				return $fieldValue;
-			break;
 
 			case 'safestr':
 				return "'{$fieldValue}'";
@@ -1876,7 +1871,6 @@ trait ConnectionTrait
 			case 'string':
 				//return "'{$fieldValue}'";
 				return "'".$this->_escape($fieldValue)."'";
-			break;
 
 			case 'float':
 				// fix - convert localized float numbers
@@ -1887,12 +1881,10 @@ trait ConnectionTrait
 				// return str_replace($search, $replace, floatval($fieldValue));
 
 				return e107::getParser()->toNumber($fieldValue);
-			break;
 
 			case 'null':
 				//return ($fieldValue && $fieldValue !== 'NULL' ? "'{$fieldValue}'" : 'NULL');
 				return ($fieldValue && $fieldValue !== 'NULL' ? "'".$this->_escape($fieldValue)."'" : 'NULL');
-				break;
 
 			case 'array':
 				if(is_array($fieldValue))
@@ -1900,17 +1892,14 @@ trait ConnectionTrait
 					return "'".e107::serialize($fieldValue, true)."'";
 				}
 				return "'". (string) $fieldValue."'";
-			break;
 
 			case 'todb': // using as default causes serious BC issues.
 				if($fieldValue == '') { return "''"; }
 				return "'".e107::getParser()->toDB($fieldValue)."'";
-			break;
 
 			case 'escape':
 			default:
 				return "'".$this->_escape($fieldValue)."'";
-			break;
 	  	}
 	}
 
@@ -1934,7 +1923,6 @@ trait ConnectionTrait
 			case "int":
 			case "integer":
 				return (int) $fieldValue;
-				break;
 
 
 
@@ -1946,7 +1934,6 @@ trait ConnectionTrait
 
 				// return str_replace($search, $replace, floatval($fieldValue));
 				return e107::getParser()->toNumber($fieldValue);
-			break;
 
 			case 'null':
 			    return (
@@ -1962,12 +1949,10 @@ trait ConnectionTrait
 					return e107::serialize($fieldValue);
 				}
 				return $fieldValue;
-			break;
 
 			case 'todb': // using as default causes serious BC issues.
 				if($fieldValue == '') { return ''; }
 				return e107::getParser()->toDB($fieldValue);
-			break;
 
 				case 'cmd':
 			case 'safestr':
@@ -1977,7 +1962,6 @@ trait ConnectionTrait
 			default:
 
 				return $fieldValue;
-				break;
 
 		}
 
@@ -1997,7 +1981,6 @@ trait ConnectionTrait
 			case "int":
 			case "integer":
 				return ConnectionInterface::PARAM_INT;
-				break;
 
 			case 'null':
 				return ($value === null) ? ConnectionInterface::PARAM_NULL : ConnectionInterface::PARAM_STR;
@@ -2012,7 +1995,6 @@ trait ConnectionTrait
 			case 'todb':
 			case 'float':
 				return ConnectionInterface::PARAM_STR;
-				break;
 
 		}
 

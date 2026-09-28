@@ -40,8 +40,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	/**
 	 * v2.1.5 - Start of Shortcode rewrite rewrite for use throughout all of the forum plugin..
 	 * return 1 piece of data. (ie. no combining of titles and urls unless absolutely required)
-	 * @param $this- >var - table data.
-	 * @param $this- >param - dynamic control of shortcode via menu configuration.
+	 * $this->var - table data.
+	 * $this->param - dynamic control of shortcode via menu configuration.
 	 * Only by nfp menu at this time.
 	 */
 
@@ -779,7 +779,6 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 			case 'userid' :
 				return $this->sc_memberid();
-				break;
 
 			case 'special':
 				if(isset($rankInfo['special']))
@@ -792,7 +791,6 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				}
 
 				return '';
-				break;
 
 			case 'glyph':
 				$text = "";
@@ -803,11 +801,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				}
 
 				return $text;
-				break;
 
 			default:
 				return varset($rankInfo[$parm], '');
-				break;
 		}
 	}
 

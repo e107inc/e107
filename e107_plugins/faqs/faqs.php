@@ -15,6 +15,8 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../../class2.php');
 }
 
+$sql = e107::getDb();
+
 if(file_exists(e_PLUGIN."faqs/controllers/list.php")) // bc for old controller.
 {
 	$url = e107::getUrl()->create('faqs/list/all', false, 'full=1&noencode=1');

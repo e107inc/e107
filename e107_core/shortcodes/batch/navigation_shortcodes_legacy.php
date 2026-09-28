@@ -156,7 +156,7 @@
 		/**
 		 * Return a generated anchor for the current link.
 		 * @deprecated 
-		 * @param unused
+		 * @param $parm unused
 		 * @return    string - a generated anchor for the current link.
 		 * @example {LINK_ANCHOR}
 		 */

@@ -12,6 +12,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $mes = e107::getMessage();
 $newarray = e107::getNav()->adminLinks('core');
 

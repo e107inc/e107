@@ -1440,9 +1440,9 @@ class e_db_mysql implements e_db
 	 *             Avoid in new code and migrate existing call sites when
 	 *             refactoring; this method remains supported and tested, with no
 	 *             removal planned.
-	 * @param string    MySQL charset may be forced in special circumstances
+	 * @param string $charset MySQL charset may be forced in special circumstances
 	 *                  UTF-8 encoding and decoding is left to the progammer
-	 * @param bool      TRUE enter debug mode. default FALSE
+	 * @param bool $debug TRUE enter debug mode. default FALSE
 	 * @return string   hardcoded error message
 	 */
 	function db_Set_Charset($charset = '', $debug = FALSE)

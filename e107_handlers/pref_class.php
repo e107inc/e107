@@ -1546,7 +1546,7 @@ class prefs
 	/**
 	* Update pref set and cache
 	*
-	* @param  string val -- pre-serialized string
+	* @param  string $val -- pre-serialized string
 	* @param  string $name -- name of pref row
 	* @param  string $table -- "core" or "user"
 	* @global  mixed $$name

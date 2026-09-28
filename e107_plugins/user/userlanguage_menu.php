@@ -16,6 +16,8 @@
 //TODO homogenisation with languagelinks + do not force www + unobtrusive redirect
 if ( ! defined('e107_INIT')) { exit(); }
 
+$ns = e107::getRender();
+
 e107::plugLan('user', null);
 $slng = e107::getLanguage();
 

@@ -14,6 +14,8 @@
 */
 require_once('class2.php');
 
+$tp = e107::getParser();
+
 $ns = e107::getRender();
 $pref = e107::getPref();
 $sql = e107::getDb();

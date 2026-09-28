@@ -199,16 +199,13 @@ class newsfeed_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $curVal;
-			break;
 
 			case 'write': // Edit Page
 				return $frm->text('newsfeed_active',$curVal, 255, 'size=large');
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -221,19 +218,16 @@ class newsfeed_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $curVal;
-			break;
 
 			case 'write': // Edit Page
 
 				$tmp = explode('::',$curVal);
 
 				return $frm->text('newsfeed_image',$tmp[0], 255, 'size=large');
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -251,19 +245,16 @@ class newsfeed_form_ui extends e_admin_form_ui
 				}
 
 				return e107::getParser()->toDate($curVal, 'relative');
-			break;
 
 			case 'write': // Edit Page
 
 				// $tmp = explode('::',$curVal);
 
 				return  e107::getParser()->toDate($curVal, 'relative').$this->hidden('newsfeed_timestamp',0);
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -278,7 +269,6 @@ class newsfeed_form_ui extends e_admin_form_ui
 				list($image,$menu,$main) = explode('::',$data);
 
 				return intval($main);
-			break;
 
 			case 'write': // Edit Page
 
@@ -291,12 +281,10 @@ class newsfeed_form_ui extends e_admin_form_ui
 				}
 
 				return $frm->number('newsfeed_showmain',$main, 3);
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -313,7 +301,6 @@ class newsfeed_form_ui extends e_admin_form_ui
 				list($image,$menu,$main) = explode('::',$data);
 
 				return intval($menu);
-			break;
 
 			case 'write': // Edit Page
 				$data = $this->getController()->getModel()->get('newsfeed_image');
@@ -325,12 +312,10 @@ class newsfeed_form_ui extends e_admin_form_ui
 				}
 
 				return $frm->number('newsfeed_showmenu',$menu, 3);
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 }

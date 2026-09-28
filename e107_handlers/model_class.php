@@ -3662,7 +3662,7 @@ class e_tree_model extends e_front_model
 	/**
 	 * Put rows with parent matching the ID of the first node into the next node's children
 	 * @param array &$nodes Current queue of nodes, the first of which may have children added to it
-	 * @param array &rows The remaining rows that have yet to be converted into children of nodes
+	 * @param array &$rows The remaining rows that have yet to be converted into children of nodes
 	 * @param string $primary_field The field name of the primary key (matches children to parents)
 	 * @param string $sort_parent The field name whose value is the parent ID
 	 * @returns null

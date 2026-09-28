@@ -3,8 +3,8 @@
 
 /**
  * @param null $parm
- * @param string ['type'] main|side|footer|alt|alt5|alt6 (the data)
- * @param string ['layout'] main|side|footer|alt|alt5|alt6| or custom template key.  (the template)
+ * $parm['type'] main|side|footer|alt|alt5|alt6 (the data)
+ * $parm['layout'] main|side|footer|alt|alt5|alt6| or custom template key.  (the template)
  * @return string
  */
 function navigation_shortcode($parm=null)

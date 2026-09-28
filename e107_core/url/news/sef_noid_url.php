@@ -223,7 +223,6 @@ class core_news_sef_noid_url extends eUrlConfig
 				$action = $parts[0] == 'short' ? 'cat' : 'list';
 				$this->legacyQueryString = $action.'.'.$id.'.'.$page;
 				return 'item/list';
-			break;
 			
 			# could be pref or LAN constant
 			case 'day':
@@ -232,7 +231,6 @@ class core_news_sef_noid_url extends eUrlConfig
 				
 				$this->legacyQueryString = 'day.'.$id.'.'.$page;
 				return 'list/day';
-			break;
 			
 			# could be pref or LAN constant
 			case 'month':
@@ -241,7 +239,6 @@ class core_news_sef_noid_url extends eUrlConfig
 				
 				$this->legacyQueryString = 'month.'.$id.'.'.$page;
 				return 'list/month';
-			break;
 			
 			# could be pref or LAN constant - not supported yet
 			case 'year':
@@ -255,22 +252,18 @@ class core_news_sef_noid_url extends eUrlConfig
 			case 'all':
 				$this->legacyQueryString = 'all.0.'.$page;
 				return 'list/all';
-			break;
 			
 			case 'tag': // url: news/tag/xxxxx
 				$this->legacyQueryString = 'tag='.$parts[1];
 				return 'list/tag';
-			break;
 
 			case 'author': // url: news/author/xxxxx
 				$this->legacyQueryString = 'author='.$parts[1].'&page='.$page;
 				return 'list/author';
-			break;
 			
 			# force not found
 			default:
 				return false;
-			break;
 		}
 		
 		return false;

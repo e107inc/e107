@@ -12,6 +12,9 @@
 
 require_once("class2.php");
 
+$tp = e107::getParser();
+$ns = e107::getRender();
+
 
 if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && !e107::getUserProvider()->isSocialLoginEnabled())) && e_QUERY !== 'preview' && !getperms('0') ) // Disable page if user logged in, or some custom e_LOGIN value is used.
 {

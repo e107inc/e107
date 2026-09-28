@@ -793,7 +793,7 @@ class e107_user_extended
 	/**
 	 * Get the field attributes of a given field-name.
 	 * @param string $field
-	 * @param string read|write|type|values|parms|applicable
+	 * @param string $att read|write|type|values|parms|applicable
 	 * @return false|string
 	 */
 	public function getFieldAttribute($field, $att)
@@ -809,7 +809,7 @@ class e107_user_extended
 	/**
 	 * Get the category attributes of a given category-name.
 	 * @param string $field
-	 * @param string read|write|applicable
+	 * @param string $att read|write|applicable
 	 * @return bool|int
 	 */
 	public function getCategoryAttribute($field, $att)
@@ -901,16 +901,13 @@ class e107_user_extended
 		 
 		case EUF_CATEGORY:
 			return '';
-		 break;
 
 		 case EUF_ADDON:
 		    return 'JSON';
-		 break;
 
 		default:
 			e107::getMessage()->addDebug("<strong>Unknown type '{$type}' for user extended field.</strong>"); 
 			return false;
-		break;
 
 	  }
 	  if($type != EUF_DB_FIELD && ($type != EUF_TEXTAREA) && ($type != EUF_RICHTEXTAREA) &&  ($type != EUF_CHECKBOX) && !empty($default))
@@ -1299,12 +1296,10 @@ class e107_user_extended
 				$attributes['method'] = 'user_'.$struct['user_extended_struct_name'];
 
 				return $form->renderElement($fname,$curval, $attributes);
-			break;
 
 
 			case EUF_COUNTRY:
 				return e107::getForm()->country($fname,$curval, $opts);
-			break;
 
 
 			case EUF_TEXT :  //textbox
@@ -1312,7 +1307,6 @@ class e107_user_extended
 		 		$ret = "<input id='{$fid}' type='text' name='{$fname}' {$title} value='{$curval}' {$include} {$required} {$placeholder} />";
 			
 		  		return $ret;
-		  	break;
 
 			case EUF_RADIO : //radio
 			
@@ -1353,7 +1347,6 @@ class e107_user_extended
 			
 				return $ret;
 				
-		    break;
 
 	        case EUF_CHECKBOX : //checkboxes
 
@@ -1364,7 +1357,6 @@ class e107_user_extended
 
 				return e107::getForm()->checkboxes($fname.'[]',$choices, $curval, array('useLabelValues'=>1));
 
-			break;
 
 			case EUF_DROPDOWN : //dropdown
 			  $ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} {$title} >\n";
@@ -1378,7 +1370,6 @@ class e107_user_extended
 			  }
 			  $ret .= "</select>\n";
 			  return $ret;
-			  break;
 
 			case EUF_PREDEFINED : // predefined list, shown in dropdown
 				$listRoot = trim($struct['user_extended_struct_values']);			// Base list name
@@ -1469,7 +1460,6 @@ class e107_user_extended
 
 				return $ret;
 
-				break;
 
 			case EUF_TEXTAREA : //textarea
 					return "<textarea id='{$fid}' {$include} name='{$fname}'  {$required} {$title}>{$curval}</textarea>";
@@ -1504,7 +1494,6 @@ class e107_user_extended
                     }
 
 					return e107::getForm()->datepicker($fname,$curval,$opts);
-					break;
 
 			case EUF_LANGUAGE : // language
 					$lanlist = e107::getLanguage()->installed();
@@ -1702,7 +1691,7 @@ class e107_user_extended
 	 * @param string $field_name eg. location
 	 * @param string $newvalue eg. USA
 	 * @param string $fieldType [optional] default 'todb' |
-	 * @return boolean;
+	 * @return boolean
 	 */
 	function set($uid, $field_name, $newvalue, $fieldType = 'todb')
 	{

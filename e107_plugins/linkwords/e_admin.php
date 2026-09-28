@@ -121,7 +121,6 @@ class linkwords_admin_form extends e_form
 				$text .= "<i class='fas fa-external-link-alt e-tip' title=\"External\"></i> <span{$clsExt}>".$stats['external']."</span></div>";
 
 				return $text;
-				break;
 
 
 			default:

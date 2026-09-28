@@ -47,33 +47,27 @@ function forum_thread_moderate($p)
 				$sql->createQueryBuilder()->update('forum_thread')
 					->set('thread_active', 0)->where('thread_id', $id)->execute();
 				return LAN_FORUM_CLOSE;
-				break;
 
 				case 'unlock':
 				$sql->createQueryBuilder()->update('forum_thread')
 					->set('thread_active', 1)->where('thread_id', $id)->execute();
 				return LAN_FORUM_OPEN;
-				break;
 
 				case 'stick':
 				$sql->createQueryBuilder()->update('forum_thread')
 					->set('thread_sticky', 1)->where('thread_id', $id)->execute();
 				return LAN_FORUM_STICK;
-				break;
 
 				case 'unstick':
 				$sql->createQueryBuilder()->update('forum_thread')
 					->set('thread_sticky', 0)->where('thread_id', $id)->execute();
 				return LAN_FORUM_UNSTICK;
-				break;
 
 				case 'deleteThread':
 				return forumDeleteThread($id);
-				break;
 
 				case 'deletePost':
 				return forumDeletePost($id);
-				break;
 
 			}
 		}
