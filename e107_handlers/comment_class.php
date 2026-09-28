@@ -383,7 +383,7 @@ class comment
 
 	/**
 	 * Check if comment is pending approval. 
-	 * @param array - a row from the comments table. 
+	 * @param array $row a row from the comments table. 
 	 * @return boolean True/False
 	 */
 	private function isPending($row)

@@ -180,7 +180,6 @@ class e_marketplace
 
 	/**
 	 * Retrieve currently used adapter
-	 * @param e_marketplace_adapter_abstract
 	 * @return \e_marketplace_adapter_abstract
 	 */
 	public function adapter()

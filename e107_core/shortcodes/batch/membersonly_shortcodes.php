@@ -51,7 +51,7 @@ class membersonly_shortcodes extends e_shortcode
 
 	/**
 	 * @example {MEMBERSONLY_LOGIN}
-	 * @return string|
+	 * @return string
 	 */
 	function sc_membersonly_login()
 	{

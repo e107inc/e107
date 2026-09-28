@@ -4223,7 +4223,7 @@ class e_parse
 	/**
 	 * Add Allowed Tags.
 	 *
-	 * @param string
+	 * @param string $tag
 	 */
 	public function addAllowedTag($tag)
 	{
@@ -4446,7 +4446,6 @@ class e_parse
 			$tmp = $doc->getElementsByTagName($find);
 
 			/**
-			 * @var             $k
 			 * @var DOMDocument $node
 			 */
 			foreach ($tmp as $k => $node)

@@ -154,7 +154,6 @@ class faq_cat_ui extends e_admin_ui
 	 *
 	 * @param int $id [optional] get category title, false - return whole array
 	 * @param mixed $default [optional] default value if not found (default 'n/a')
-	 * @return 
 	 */
 	function getFaqCategoryTree($id = false, $default = 'n/a')
 	{
