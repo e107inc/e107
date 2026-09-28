@@ -1743,7 +1743,7 @@ class e_user_provider
 			$userdata['user_realm'] = '';
 			$userdata['user_pwchange'] = $now;
 
-			/** @var e_system_user' $user */
+			/** @var e_system_user $user */
 			$user = e107::getSystemUser(0, false);
 			$user->setData($userdata);
 			$user->getExtendedModel(); // init

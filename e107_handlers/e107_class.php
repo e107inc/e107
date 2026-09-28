@@ -3376,7 +3376,7 @@ class e107
 
 	/**
 	 * Load admin icons template and define their constants
-	 * @return array;
+	 * @return array
 	 */
 	public static function loadAdminIcons()
 	{
@@ -5216,7 +5216,7 @@ class e107
 	/**
 	 * Set or Retrieve WYSIWYG active status. (replaces constant  e_WYSIWYG)
 	 *
-	 * @param bool/string $val if null, return current value, otherwise define editor to use
+	 * @param bool|string $val if null, return current value, otherwise define editor to use
 	 * @param bool $returnEditor true = return name of active editor, false = return "false" for non wysiwyg editor, return "true" if wysiwyg editor should be used
 	 * @return bool|mixed
 	 */
@@ -6706,7 +6706,7 @@ class e107
 	/**
 	 * Returns true if the number is compatible with this version of e107.
 	 * @param string $version The minimum version requirement
-	 * @param string theme|plugin
+	 * @param string $mode theme|plugin
 	 * @return bool
 	 */
 	public static function isCompatible($version, $mode)

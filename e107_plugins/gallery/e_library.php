@@ -15,7 +15,7 @@ class gallery_library
 	/**
 	 * Return information about external libraries.
 	 *
-	 * @return
+	 * @return array
 	 *   An associative array whose keys are internal names of libraries and whose values are describing each library.
 	 *   Each key is the directory name below the '{e_WEB}/lib' directory, in which the library may be found. Each
 	 *   value is an associative array containing:

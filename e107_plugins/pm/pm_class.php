@@ -981,7 +981,7 @@ class private_message
 	/**
 	 *	Get user ID matching a name
 	 *
-	 *	@param string var - name to match
+	 *	@param string $var name to match
 	 *
 	 *	@return boolean|array - FALSE if no match, array of user info if found
 	 */

@@ -343,7 +343,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		/**
 		 * Return a generated anchor for the current link.
 		 *
-		 * @param unused
+		 * @param $parm unused
 		 * @return string - a generated anchor for the current link.
 		 * @example {NAV_LINK_ANCHOR}
 		 */
