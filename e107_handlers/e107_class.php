@@ -1643,7 +1643,7 @@ class e107
 	/**
 	 * Retrieve text parser singleton object
 	 *
-	 * @return e_parse|array
+	 * @return e_parse
 	 */
 	public static function getParser()
 	{
@@ -1653,7 +1653,7 @@ class e107
 	/**
 	 * Retrieve sc parser singleton object
 	 *
-	 * @return e_parse_shortcode|array
+	 * @return e_parse_shortcode
 	 */
 	public static function getScParser()
 	{
@@ -1726,7 +1726,7 @@ class e107
 	 * </code>
 	 *
 	 * @param string $className
-	 * @param string $pluginName
+	 * @param string|true|null $pluginName
 	 * @param string|true $overrideClass
 	 * @return e_shortcode
 	 */
@@ -3047,8 +3047,8 @@ class e107
 
 	/**
 	 * @see eResponse::addMeta()
-	 * @param null $name
-	 * @param null $content
+	 * @param string|null $name
+	 * @param string|null $content
 	 * @param array $extended
 	 * @return eResponse
 	 */
