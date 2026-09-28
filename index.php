@@ -61,6 +61,8 @@
 
 	require_once(e_CORE.'dispatch.php');
 
+	$sql = e107::getDb();
+
 // ----------------------------
 
 	e107::getDebug()->logTime("Start Simple URL-ReWrite Routine");

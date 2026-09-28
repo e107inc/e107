@@ -9,6 +9,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $caption = "Front Page Help";
 /* FIXME - English native speakers: what should stay and what should go? 
 	<p>

@@ -10,6 +10,8 @@
 
 	if (!defined('e107_INIT')) { exit; }
 
+	$tp = e107::getParser();
+
 	if (!e107::isInstalled('rss_menu'))
 	{
 		return '';

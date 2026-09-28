@@ -12,6 +12,8 @@
 
 require_once (__DIR__.'/../class2.php');
 
+$tp = e107::getParser();
+
 if(!getperms('G'))
 {
 	e107::redirect('admin');

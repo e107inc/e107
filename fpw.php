@@ -14,6 +14,9 @@
 $_E107['allow_guest'] = true;
 require_once('class2.php');
 
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 e107::coreLan('fpw');
 e107::getLanguage()->bcDefs(array('LAN_112' => 'LAN_FPW22')); // BC for legacy/fpw_template.php (issue #5653)
 

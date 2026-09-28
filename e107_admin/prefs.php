@@ -12,6 +12,8 @@
 
 require_once (__DIR__."/../class2.php");
 
+$ns = e107::getRender();
+
 if(isset($_POST['newver']))
 {
 	e107::redirect("https://e107.org/index.php", 301, true);

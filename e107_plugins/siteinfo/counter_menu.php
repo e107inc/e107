@@ -11,6 +11,9 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 $text = "";
 
 $pref = e107::getPref();

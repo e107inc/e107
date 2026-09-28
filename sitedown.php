@@ -14,6 +14,8 @@
 */
 require_once('class2.php');
 
+$tp = e107::getParser();
+
 if (!varset($pref['maintainance_flag']) && !getperms('0')) // Allow main admin to test and view template before going offline.
 {
 	e107::redirect();
