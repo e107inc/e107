@@ -757,7 +757,6 @@ class links_admin_form_ui extends e_admin_form_ui
 				$this->_parents($value, $cats, $ret);
 				if($this->current_parent) array_unshift($ret, $this->current_parent);
 				return ($ret ? implode('&nbsp;&raquo;&nbsp;', $ret) : '-');
-			break;
 
 			case 'write':
 				$catid	= $this->getController()->getId();
@@ -765,7 +764,6 @@ class links_admin_form_ui extends e_admin_form_ui
 				$ret	= array();
 				$this->_parent_select_array(0, $cats, $ret);
 				return $this->select('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT."..."));
-			break;
 
 			case 'batch':
 			case 'filter':
@@ -774,7 +772,6 @@ class links_admin_form_ui extends e_admin_form_ui
 				$ret[0]	= $mode == 'batch' ? 'REMOVE PARENT' : 'Main Only';
 				$this->_parent_select_array(0, $cats, $ret);
 				return $ret;
-			break;
 		}
 	}
 

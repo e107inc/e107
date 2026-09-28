@@ -257,11 +257,9 @@ class rss_import extends base_import_class
 
 			case 'sef':
 				return '';
-			break;
 			
 			default:
 				return varset($source[$type][0]);
-			break;
 		}	
 	}
 

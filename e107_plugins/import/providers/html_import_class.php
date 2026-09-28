@@ -423,7 +423,6 @@ class html_import extends base_import_class
 			
 			default:
 				return varset($source[$type][0]);
-			break;
 		}	
 	}
 

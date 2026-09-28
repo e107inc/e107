@@ -771,7 +771,6 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 			case 'userid' :
 				return $this->sc_memberid();
-				break;
 
 			case 'special':
 				if(isset($rankInfo['special']))
@@ -784,7 +783,6 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				}
 
 				return '';
-				break;
 
 			case 'glyph':
 				$text = "";
@@ -795,11 +793,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				}
 
 				return $text;
-				break;
 
 			default:
 				return varset($rankInfo[$parm], '');
-				break;
 		}
 	}
 

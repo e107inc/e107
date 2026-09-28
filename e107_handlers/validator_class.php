@@ -515,7 +515,6 @@ class e_validator
 				$this->addValidData($name, $value);
 
 				return true;
-				break;
 
 			case 'email':
 				if (!check_email($value))
@@ -527,7 +526,6 @@ class e_validator
 				$this->addValidData($name, $value);
 
 				return true;
-				break;
 
 			case 'regexp':
 			case 'regex':
@@ -540,7 +538,6 @@ class e_validator
 				$this->addValidData($name, $value);
 
 				return true;
-				break;
 
 			case 'callback':
 				if (!call_user_func($cond, $value))
@@ -552,7 +549,6 @@ class e_validator
 				$this->addValidData($name, $value);
 
 				return true;
-				break;
 
 			case 'instanceof':
 				if (!(is_object($value) && $value instanceof $cond))
@@ -591,7 +587,6 @@ class e_validator
 				$this->addValidData($name, (int) $value);
 
 				return true;
-				break;
 
 			case 'str':
 			case 'string':
@@ -622,7 +617,6 @@ class e_validator
 				$this->addValidData($name, (string) $value);
 
 				return true;
-				break;
 
 			case 'set':
 			case 'enum':
@@ -637,7 +631,6 @@ class e_validator
 				$this->addValidData($name, (string) $value);
 
 				return true;
-				break;
 
 			case 'float':
 				$value = e107::getParser()->toNumber($value);
@@ -663,7 +656,6 @@ class e_validator
 				$this->addValidData($name, $value);
 
 				return true;
-				break;
 
 			case 'array':
 				if (!is_array($value))
@@ -732,7 +724,6 @@ class e_validator
 				$this->addValidData($name, $value);
 
 				return true;
-				break;
 
 			case 'compare':
 				if (!is_array($value))
@@ -813,7 +804,6 @@ class e_validator
 				$this->addValidateResult($name, self::ERR_UNEXPECTED_VALUE);
 
 				return false;
-				break;
 		}
 	}
 

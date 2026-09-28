@@ -118,7 +118,6 @@ class phpbb3_import extends base_import_class
 		    case 'news':
 		    case 'polls' :
 		    	return FALSE;
-			break;
 
 
 		    default :

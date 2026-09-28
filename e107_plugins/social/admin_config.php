@@ -349,7 +349,6 @@ class social_ui extends e_admin_ui
 
 				case "prefs":
 					return null; // todo?
-				break;
 
 				default:
 				case "add":

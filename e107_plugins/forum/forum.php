@@ -102,14 +102,12 @@ class forum_front
 					$forum->forumMarkAsRead($id);
 					header('location:' . e_SELF);
 					exit;
-					break;
 
 				case 'rules':
 					include_once(HEADERF);
 					$this->forum_rules('show');
 					include_once(FOOTERF);
 					exit;
-					break;
 
 				case 'track':
 					include_once(HEADERF);
@@ -117,7 +115,6 @@ class forum_front
 					$this->forum_track();
 					include_once(FOOTERF);
 					exit;
-					break;
 			}
 		}
 		else

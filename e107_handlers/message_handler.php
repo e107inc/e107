@@ -1265,7 +1265,6 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 		case "ALERT":
 			$message = isset($emessage[$message]) ? $emessage[$message] : $message;
 			echo "<noscript>$message</noscript><script>alert(".$tp->toJSON($message)."); window.history.go(-1); </script>\n"; exit;
-			break;
 
 		case "P_ALERT":
 			echo "<script>alert(".$tp->toJSON($message)."); </script>\n";
