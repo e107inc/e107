@@ -26,6 +26,9 @@
 $eplug_admin = TRUE;
 
 require_once(__DIR__.'/../../class2.php');
+
+$ns = e107::getRender();
+
 if (!getperms('4')) 
 { 
 	e107::redirect('admin');

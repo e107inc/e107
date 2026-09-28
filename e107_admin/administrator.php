@@ -11,6 +11,10 @@
 */
 
 require_once(__DIR__.'/../class2.php');
+
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 if (!getperms('3'))
 {
 	e107::redirect('admin');
@@ -46,7 +50,6 @@ if(deftrue('e_DEMOMODE') && varset($_POST['update_admin']))
 {
 	
 	$mes = e107::getMessage();
-	$ns = e107::getRender();
 	$mes->addWarning(LAN_DEMO_FORBIDDEN);
 	$ns->tablerender("Forbidden",$mes->render());	
 	require_once("footer.php");

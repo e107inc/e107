@@ -16,6 +16,8 @@ if(!defined('e_ADMIN_AREA'))
 }
 require_once(__DIR__ . '/../../class2.php');
 
+$ns = e107::getRender();
+
 if(!getperms('P'))
 {
 	e107::redirect();

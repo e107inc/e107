@@ -16,6 +16,9 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$tp = e107::getParser();
+$ns = e107::getRender();
+
 // include_lan(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
 
 

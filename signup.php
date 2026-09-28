@@ -12,6 +12,10 @@
 
 require_once("class2.php");
 
+$tp = e107::getParser();
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 if(!empty($_POST['email2'])) // spam-trap.
 {
 	exit; 	
