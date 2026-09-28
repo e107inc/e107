@@ -18,6 +18,10 @@ $eplug_admin = true;
 define('DOWNLOAD_DEBUG',FALSE);
 
 require_once(__DIR__.'/../../class2.php');
+
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 if (!getperms("P") || !e107::isInstalled('download'))
 {
 	e107::redirect('admin');

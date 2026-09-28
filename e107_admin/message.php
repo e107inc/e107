@@ -12,6 +12,8 @@
 
 require_once(__DIR__.'/../class2.php');
 
+$ns = e107::getRender();
+
 e107::coreLan('message', true);
 
 $e_sub_cat = 'message';

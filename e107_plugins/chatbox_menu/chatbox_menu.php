@@ -25,6 +25,8 @@ global $e107cache, $e_event, $e107;
 
 $tp = e107::getParser();
 $pref = e107::getPref();
+$sql = e107::getDb();
+$ns = e107::getRender();
 
 if(!e107::isInstalled('chatbox_menu'))
 {

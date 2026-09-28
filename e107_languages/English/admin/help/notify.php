@@ -16,6 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $text = "Notify sends email notifications when e107 events occur.<br /><br />
 For example, set 'IP banned for flooding site' to user class 'Admin' and all admins will be sent an email when your 
 site is being flooded.<br /><br />

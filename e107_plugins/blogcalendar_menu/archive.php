@@ -18,6 +18,9 @@
 */
 	
 require_once(__DIR__."/../../class2.php");
+
+$ns = e107::getRender();
+
 require_once(e_HANDLER."userclass_class.php");
 	
 e107::includeLan(e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php");

@@ -9,6 +9,10 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
+
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 global $pref, $eArrayStorage;
 
 if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))

@@ -9,6 +9,10 @@
  */
 
 require_once(__DIR__.'/../../class2.php');
+
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 $e107 = e107::getInstance();
 if (!$e107->isInstalled('forum')) 
 {
