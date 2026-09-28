@@ -570,7 +570,7 @@ class e_bbcode
 
 	/**
 	 * NEW bbcode button rendering function. replacing displayHelp();
-	 * @param string (optional) $template eg. news, submitnews, extended, admin, mailout, page, comment, signature
+	 * @param string $template (optional) eg. news, submitnews, extended, admin, mailout, page, comment, signature
 	 * @param string $id
 	 * @param array  $options
 	 * @return string

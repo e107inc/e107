@@ -793,7 +793,7 @@ class e107_user_extended
 	/**
 	 * Get the field attributes of a given field-name.
 	 * @param string $field
-	 * @param string read|write|type|values|parms|applicable
+	 * @param string $att read|write|type|values|parms|applicable
 	 * @return false|string
 	 */
 	public function getFieldAttribute($field, $att)
@@ -809,7 +809,7 @@ class e107_user_extended
 	/**
 	 * Get the category attributes of a given category-name.
 	 * @param string $field
-	 * @param string read|write|applicable
+	 * @param string $att read|write|applicable
 	 * @return bool|int
 	 */
 	public function getCategoryAttribute($field, $att)
@@ -1702,7 +1702,7 @@ class e107_user_extended
 	 * @param string $field_name eg. location
 	 * @param string $newvalue eg. USA
 	 * @param string $fieldType [optional] default 'todb' |
-	 * @return boolean;
+	 * @return boolean
 	 */
 	function set($uid, $field_name, $newvalue, $fieldType = 'todb')
 	{

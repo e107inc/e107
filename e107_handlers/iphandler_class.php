@@ -1283,7 +1283,7 @@ class eIPHandler
 	 *	********** @todo this is in the wrong place! Move it to a more appropriate class! *************
 	 *
 	 *	@param string $name - file with path (if ends in anything other than '/' or '\') or directory (if ends in '/' or '\')
-	 *	@param string(?) $perms - required permissions as standard *nix 3-digit string
+	 *	@param string $perms - required permissions as standard *nix 3-digit string
 	 *	@param boolean $message - if TRUE, and insufficient rights, a message is output (in 0.8, to the message handler)
 	 *
 	 *	@return boolean TRUE if sufficient permissions, FALSE if not (or error)
@@ -2051,7 +2051,7 @@ class banlistManager
 	 *
 	 *	@param int $date - standard Unix time stamp
 	 *
-	 *	@return string. '0' if date is zero, else formatted in consistent way.
+	 *	@return string '0' if date is zero, else formatted in consistent way.
 	 */
 	private function dateFormat($date)
 	{

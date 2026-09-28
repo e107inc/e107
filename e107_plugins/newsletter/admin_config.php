@@ -438,7 +438,7 @@ class newsletter
 	 * Actually release an issue of a newsletter
 	 * Add the mailing to the mail queue
 	 *
-	 * @param int id of issue
+	 * @param int $issue id of issue
 	 *
 	 * @return boolean FALSE on error
 	 */

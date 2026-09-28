@@ -145,9 +145,9 @@ class e_form
 
 	/**
 	 * Open a new form
-	 * @param string name
+	 * @param string $name
 	 * @param $method - post|get  default is post
-	 * @param string target - e_REQUEST_URI by default
+	 * @param string $target e_REQUEST_URI by default
 	 * @param array|string $options
 	 * @return string
 	 */
@@ -1625,10 +1625,10 @@ class e_form
 	/**
 	 * File Picker
 	 *
-	 * @param string name  eg. 'myfield' or 'myfield[]'
-	 * @param mixed default
-	 * @param string label
-	 * @param mixed sc_parameters
+	 * @param string $name eg. 'myfield' or 'myfield[]'
+	 * @param mixed $default
+	 * @param string $label
+	 * @param mixed $sc_parameters
 	 * @return string
 	 */
 	public function filepicker($name, $default, $label = '', $sc_parameters = null)
@@ -1697,7 +1697,7 @@ class e_form
 	 * on Submit returns unix timestamp or string value.
 	 * @param string $name the name of the field
 	 * @param int|bool $datestamp UNIX timestamp - default value of the field
-	 * @param array|string {
+	 * @param array|string $options {
 	 *      @type string mode date or datetime
 	 *      @type string format strftime format eg. '%Y-%m-%d'
 	 *      @type string timezone eg. 'America/Los_Angeles' - intended timezone of the date/time entered. (offsets UTC value)
@@ -8387,8 +8387,8 @@ var_dump($select_options);*/
 
 	/**
 	 * Generic renderForm solution
-	 * @param @forms
-	 * @param @nocontainer
+	 * @param $forms
+	 * @param $nocontainer
 	 * @return string
 	 */
 	public function renderForm($forms, $nocontainer = false)

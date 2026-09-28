@@ -1936,7 +1936,7 @@ class user_class_admin extends user_class
 	 *	@param int $classID > 0
 	 *	@param string $classList - comma-separated list of class IDs; defaults to those of current user
 	 *
-	 *	@return int:
+	 *	@return int
 	 *				0 - if editing not allowed at all
 	 *				1 - if restricted editing allowed (usually because its a fixed class)
 	 *				2 - All editing rights allowed
