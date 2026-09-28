@@ -175,16 +175,13 @@ class faq_cat_form_ui extends e_admin_form_ui
 		{
 			case 'read':
 				return e107::getParser()->toHTML($controller->getFaqCategoryTree($curVal), false, 'TITLE');
-			break;
 			
 			case 'write':
 				return $this->select('faq_info_parent', $controller->getFaqCategoryTree(), $curVal);
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return $controller->getFaqCategoryTree();
-			break;
 		}
 	}
 }
@@ -368,17 +365,14 @@ class faq_admin_form_ui extends e_admin_form_ui
 		{
 			case 'read':
 				return e107::getParser()->toHTML($controller->getFaqCategoryTree($curVal), false, 'TITLE');
-			break;
 			
 			case 'write':
 
 				return $this->select('faq_parent', $controller->getFaqCategoryTree(), $curVal).$this->hidden('pending', $pending);
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return $controller->getFaqCategoryTree();
-			break;
 		}
 	}
 }

@@ -667,11 +667,9 @@ class e_news_item extends e_front_model
 					$params = array_merge($params, explode(',', $parm['arg']));
 					//should be done with date handler (awaiting for modifications)
 					return eShims::strftime(varset($parm['arg'], e107::getPref('shortdate')), $val);
-				break;
 
 				default:
 					return $val;
-				break;
 
 			}
 			return call_user_func_array(array($callback, $method), $params);
@@ -1022,15 +1020,12 @@ class e_news_category_item extends e_front_model
 		{
 			case 'link':
 				return '<a href="'.$url.'" class="news-category">'.$this->sc_news_category_title().'</a>';
-			break;
 
 			case 'link_icon':
 				return '<a href="'.$url.'" class="news-category">'.$this->sc_news_category_icon().'&nbsp;'.$this->sc_news_category_title().'</a>';
-			break;
 
 			default:
 				return $url;
-			break;
 		}
 	}
 
@@ -1064,14 +1059,11 @@ class e_news_category_item extends e_front_model
 		{
 			case 'src':
 				return $src;
-			break;
 			case 'link':
 				return '<a href="'.$this->sc_news_category_url().'" class="news-category" title="'.$this->sc_news_category_title('attribute').'"><img src="'.$src.'" class="icon news-category" alt="'.$this->sc_news_category_title('attribute').'" /></a>';
-			break;
 
 			default:
 				return '<img src="'.$src.'" class="icon news-category" alt="'.$this->sc_news_category_title('attribute').'" />';
-			break;
 		}
 	}
 

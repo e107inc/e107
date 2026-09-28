@@ -748,20 +748,16 @@ class e_jsmanager
 				case 'auto':
 				case 'all':
 					return false;	
-				break;
 				
 				case 'admin':
 					return !$this->isInAdmin();
-				break;
 				
 				case 'front':
 					return $this->isInAdmin();
-				break;
 
 				case 'none':
 				default:
 					return true;
-				break;
 			}
 		}
 
@@ -1109,7 +1105,6 @@ class e_jsmanager
 			case 'inline_css': // no zones, TODO - media?
 				$this->_e_css_src[] = $file_path;
 				return $this;
-				break;
 			break;
 
 
@@ -1180,7 +1175,6 @@ class e_jsmanager
 				}
 				$this->_runtime_header_src[$zone][] = $file_path;
 				return $this;
-				break;
 			break;
 
 			case 'footer_inline':
@@ -1191,16 +1185,13 @@ class e_jsmanager
 				}
 				$this->_runtime_footer_src[$zone][] = $file_path;
 				return $this;
-			break;
 
 			case 'settings':
 				$this->_e_js_settings = $this->arrayMergeDeepArray(array($this->_e_js_settings, $file_path));
 				return $this;
-			break;
 
 			default:
 				return $this;
-			break;
 		}
 
 		if(in_array($file_path, $this->_index_all) || (!$runtime && $runtime_location != 'all' && $runtime_location != $this->getCurrentLocation()))
@@ -2180,7 +2171,6 @@ class e_jsmanager
 
 			default:
 				return $this;
-			break;
 		}
 
 
@@ -2233,7 +2223,6 @@ class e_jsmanager
 
 			default:
 				return $this;
-			break;
 		}
 
 

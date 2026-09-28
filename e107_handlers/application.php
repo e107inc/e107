@@ -659,7 +659,6 @@ class eDispatcher
 			
 			default:
 				return null;
-			break;
 		}
 	}
 	
@@ -688,7 +687,6 @@ class eDispatcher
 			
 			default:
 				return null;
-			break;
 		}
 	}
 	
@@ -718,7 +716,6 @@ class eDispatcher
 			
 			default:
 				return null;
-			break;
 		}
 	}
 	
@@ -747,7 +744,6 @@ class eDispatcher
 			
 			default:
 				return null;
-			break;
 		}
 	}
 	
@@ -3274,7 +3270,6 @@ class eController
 			
 			default:
 				return;
-			break;
 		}
 		
 		$request->addRouteHistory($oldRoute);
@@ -5031,44 +5026,34 @@ class eHelper
 		{
 			case 'dashl': //dasherize, to lower case
 				return self::dasherize($tp->ustrtolower($title));
-			break;
 			
 			case 'dashc': //dasherize, camel case
 				return self::dasherize(self::camelize($title, true, ' '));
-			break;
 			
 			case 'dash': //dasherize
 				return self::dasherize($title);
-			break;
 			
 			case 'underscorel': ///underscore, to lower case
 				return self::underscore($tp->ustrtolower($title));
-			break;
 			
 			case 'underscorec': ///underscore, camel case
 				return self::underscore(self::camelize($title, true, ' '));
-			break;
 			
 			case 'underscore': ///underscore
 				return self::underscore($title);
-			break;
 			
 			case 'plusl': ///plus separator, to lower case
 				return str_replace(' ', '+', $tp->ustrtolower($title));
-			break;
 			
 			case 'plusc': ///plus separator, to lower case
 				return str_replace(' ', '+', self::camelize($title, true, ' '));
-			break;
 			
 			case 'plus': ///plus separator
 				return str_replace(' ', '+', $title);
-			break;
 			
 			case 'none':
 			default:
 				return $title;
-			break;
 		}
 	}
 	

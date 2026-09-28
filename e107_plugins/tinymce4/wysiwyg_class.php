@@ -970,7 +970,6 @@ class wysiwyg
 		        {title: 'Button (Outline Dark)', value: 'btn btn-outline-dark'},
 
 		        ]";
-				break;
 
 			default:
 				return "[

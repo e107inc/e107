@@ -122,7 +122,6 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		{
 			case 'copy' :		// Not sure what to do here!
 				return FALSE;	// This is what it used to do
-				break;
 			case 'upsize' :		// Scale source up to required size
 				break;			// Just fall through to do that.
 			case 'noscale' :	// No scaling of small images- just want destination to be the same as source

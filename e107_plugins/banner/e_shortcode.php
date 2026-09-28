@@ -100,7 +100,6 @@ class banner_shortcodes extends e_shortcode
 					<embed src=\"" . e_IMAGE_ABS . "banners/" . $row['banner_image'] . "\" width=\"468\" height=\"60\" scale=\"noborder\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\"></embed>
 					</object>
 					";
-				break;
 
 			case 'html':
 			case 'js':
@@ -108,7 +107,6 @@ class banner_shortcodes extends e_shortcode
 				$file_data = file_get_contents(e_IMAGE . 'banners/' . $row['banner_image']);
 
 				return $file_data;
-				break;
 
 			default:
 

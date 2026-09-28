@@ -168,7 +168,6 @@ class drupal_import extends base_import_class
 
 				// Foreign Drupal DB: $this->DBPrefix is a dynamic cross-database table identifier validated fail-closed in base_import_class::database(); WHERE values are static literals (no request input). The builder cannot map a foreign cross-DB/custom-prefix table, so use bound execute() (result consumed statefully via getNext()->fetch()).
 				return $this->ourDB->execute($query);
-				break;
 
 			case 7:
 				$fields = array(
@@ -184,7 +183,6 @@ class drupal_import extends base_import_class
 
 				// Foreign Drupal DB: $this->DBPrefix is a dynamic cross-database table identifier validated fail-closed in base_import_class::database(); WHERE values are static literals (no request input). The builder cannot map a foreign cross-DB/custom-prefix table, so use bound execute() (result consumed statefully via getNext()->fetch()).
 				return $this->ourDB->execute($query);
-				break;
 
 			case 8:
 				$fields = array(
@@ -197,11 +195,9 @@ class drupal_import extends base_import_class
 
 				// Foreign Drupal DB: $this->DBPrefix is a dynamic cross-database table identifier validated fail-closed in base_import_class::database(); WHERE values are static literals (no request input). The builder cannot map a foreign cross-DB/custom-prefix table, so use bound execute() (result consumed statefully via getNext()->fetch()).
 				return $this->ourDB->execute($query);
-				break;
 
 			default:
 				return false;
-				break;
 		}
 	}
 
@@ -354,7 +350,6 @@ class drupal_import extends base_import_class
 			case 8:
 				// TODO: need to get user pictures url.
 				return $local_path;
-				break;
 		}
 
 		// If $src_pth is empty, we cannot save remote file, so return...

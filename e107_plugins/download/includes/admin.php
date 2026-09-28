@@ -240,16 +240,13 @@ class download_cat_form_ui extends e_admin_form_ui
 		{
 			case 'read':
 				return e107::getParser()->toHTML($controller->getDownloadCategoryTree($curVal), false, 'TITLE');
-			break;
 			
 			case 'write':
 				return $this->select('download_category_parent', $controller->getDownloadCategoryTree(), $curVal);
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return $controller->getDownloadCategoryTree();
-			break;
 		}
 	}
 
@@ -268,16 +265,13 @@ class download_cat_form_ui extends e_admin_form_ui
 		{
 			case 'read':
 				return e107::getParser()->toIcon($curVal, array('legacy'=>'{e_IMAGE}icons/'));
-			break;
 
 			case 'write':
 				return $this->iconpicker('download_category_icon', $curVal,null,array('glyphs'=>true, 'legacyPath'=>'{e_IMAGE}icons/'));
-			break;
 
 			case 'filter':
 			case 'batch':
 				return null;
-			break;
 		}
 	}
 }
@@ -1098,7 +1092,6 @@ $columnInfo = array(
 		            $text = "log - view manage download history log";
 		            header('location: '.e_ADMIN.'admin_log.php?downlog');
 		            exit();
-		            break;
 		         }
 		      }
 		   }
@@ -1644,19 +1637,14 @@ $columnInfo = array(
 		{
 			case 'B' :
 				return $size;
-				break;
 			case 'KB' :
 				return $size * 1024;
-				break;
 			case 'MB' :
 				return $size * 1024 * 1024;
-				break;
 			case 'GB' :
 				return $size * 1024 * 1024 * 1024;
-				break;
 			case 'TB' :
 				return $size * 1024 * 1024 * 1024 * 1024;
-				break;
 		}
 	}
 
@@ -2603,7 +2591,6 @@ class download_main_admin_form_ui extends e_admin_form_ui
 		{
        		case 1:
          	return DOWLAN_196;
-        	break;
          	default:
   			// return DOWLAN_197;
   		}

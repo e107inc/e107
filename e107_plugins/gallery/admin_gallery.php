@@ -696,16 +696,13 @@ class gallery_cat_admin_form_ui extends e_admin_form_ui
 		{
 			case 'read':
 				return e107::getParser()->toHTML($controller->getDownloadCategoryTree($curVal), false, 'TITLE');
-				break;
 
 			case 'write':
 				return $this->select('gallery_category_parent', $controller->getDownloadCategoryTree(), $curVal);
-				break;
 
 			case 'filter':
 			case 'batch':
 				return $controller->getDownloadCategoryTree();
-				break;
 		}
 	}
 

@@ -906,7 +906,6 @@ e107::js('footer-inline', js());
 					$ext['user_extended_struct_required'] = 0; // so the form can be posted.
 					return e107::getUserExt()->renderElement($ext,$ext['user_extended_struct_default']);
 				//	reutrn e107::getParser()>toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), FALSE, "defs")
-					break;
 
 				case 'write': // Edit Page
 
@@ -936,18 +935,15 @@ e107::js('footer-inline', js());
 			{
 				case 'read': // List Page
 					return $opts[$curVal];
-					break;
 
 				case 'write': // Edit Page
 
 
 					return $this->select('user_extended_struct_required',$opts, varset($curVal,1),'size=xxlarge');
-					break;
 
 				case 'filter':
 				case 'batch':
 					return  $opts;
-					break;
 			}
 
 
@@ -962,7 +958,6 @@ e107::js('footer-inline', js());
 				case 'read': // List Page
 
 					return str_replace('plugin_', "<span class='label label-primary'>".LAN_PLUGIN."</span> ",$curVal);
-					break;
 
 				case 'write': // Edit Page
 					$field = [];
@@ -971,12 +966,10 @@ e107::js('footer-inline', js());
 					$field['pattern'] = '[0-9a-z_]*';
 
 					return $this->renderElement('user_extended_struct_name', $curVal, $field);
-				break;
 
 				case 'filter':
 				case 'batch':
 					return  array();
-					break;
 			}
 		}
 
@@ -988,16 +981,13 @@ e107::js('footer-inline', js());
 			{
 				case 'read': // List Page
 					return $curVal;
-					break;
 
 				case 'write': // Edit Page
 					return $this->renderStructValues($curVal);
-					break;
 
 				case 'filter':
 				case 'batch':
 					return  array();
-					break;
 			}
 		}
 
