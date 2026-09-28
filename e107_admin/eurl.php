@@ -143,9 +143,9 @@ class eurl_admin_ui extends e_admin_controller_ui
 	/**
 	 * Rebuild SEF Urls for a particular table
 	 * @param $table
-	 * @param primary field id. 
-	 * @param input field (title)
-	 * @param output field (sef)
+	 * @param $primary field id. 
+	 * @param $input field (title)
+	 * @param $output field (sef)
 	 */
 	private function rebuild($table, $primary='', $input='',$output='')
 	{

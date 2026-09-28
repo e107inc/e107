@@ -231,9 +231,9 @@ class e_validator
 
 	/**
 	 * Constructore
-	 * @param string [optional] $message_stack [optional] eMessage handler namespace
-	 * @param array [optional] $rules validation rules
-	 * @param array [optional] $optrules optional validation rules
+	 * @param string $message_stack [optional] eMessage handler namespace
+	 * @param array $rules [optional] validation rules
+	 * @param array $optrules [optional] optional validation rules
 	 */
 	public function __construct($message_stack = '', $rules = array(), $optrules = array())
 	{

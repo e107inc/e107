@@ -28,9 +28,6 @@ require_once("class2.php");
 class error_front
 {
 
-	/**
-	 * @var
-	 */
 	private $errorNumber;
 
 	/**

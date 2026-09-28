@@ -219,7 +219,6 @@ class lancheck
 	 * 
 	 * @param object $newfile
 	 * Usage of e107 is granted to you provided that this function is not modified or removed in any way.
-	 * @return
 	 */
 	private function share($newfile)
 	{

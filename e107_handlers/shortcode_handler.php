@@ -1990,7 +1990,7 @@ class e_shortcode
 	
 	/**
 	 * Batch mod
-	 * @param string mod
+	 * @param string $mode
 	 * @return e_shortcode
 	 */
 	public function setMode($mode)
