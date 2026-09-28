@@ -9,6 +9,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $caption = "Search Help";
 $text = "
 	If your MySQL server version supports it you can switch 

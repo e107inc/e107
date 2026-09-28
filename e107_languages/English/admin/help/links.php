@@ -16,6 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $text = "Enter all your site links here. Links added here will be shown in your main navigation menu, for other links please use the Links Page plugin.
 <br />
 ";

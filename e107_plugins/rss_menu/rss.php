@@ -44,6 +44,8 @@ if (!e107::isInstalled('rss_menu'))
 }
 
 $tp = e107::getParser();
+$sql = e107::getDb();
+$ns = e107::getRender();
 
 //require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
 require_once(e_HANDLER.'userclass_class.php');

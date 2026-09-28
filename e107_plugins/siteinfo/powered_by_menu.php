@@ -16,6 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 
 $text = "
 <div id='powered-by-menu' class='text-center'>

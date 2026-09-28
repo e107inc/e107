@@ -22,6 +22,10 @@
  */
 
 require_once('class2.php');
+
+$tp = e107::getParser();
+$sql = e107::getDb();
+
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 	if (!empty(e107::getPref('comments_disabled')))

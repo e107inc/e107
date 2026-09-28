@@ -3,6 +3,9 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$tp = e107::getParser();
+$ns = e107::getRender();
+
 $sc =	e107::getScBatch('faqs', true);
 
 $tmpl = e107::getTemplate('faqs');

@@ -15,6 +15,9 @@
  *
 */
 if (!defined('e107_INIT')) { exit; }
+
+$ns = e107::getRender();
+
 if (!e107::isInstalled('newsfeed')) 
 {
 	return;

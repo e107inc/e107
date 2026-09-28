@@ -16,5 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $text = "Update your password here.";
 $ns -> tablerender("Update Settings Help", $text);

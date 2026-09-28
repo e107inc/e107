@@ -15,6 +15,8 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../../class2.php');
 }
 
+$sql = e107::getDb();
+
 e107::includeLan(e_PLUGIN."faqs/languages/".e_LANGUAGE."/".e_LANGUAGE."_front.php");
 
 

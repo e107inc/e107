@@ -48,6 +48,8 @@ else
 
 require_once(__DIR__.'/../class2.php');
 
+$ns = e107::getRender();
+
 
 if(e_MENUMANAGER_ACTIVE === false )
 {

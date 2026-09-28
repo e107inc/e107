@@ -16,6 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $caption = "Caching";
 $text = "If you have caching turned on it will vastly improve speed on your site and minimise the number of calls to the sql database.<br /><br /><b>IMPORTANT! If you are making your own theme turn caching off otherwise any changes you make will not be reflected immediately.</b>";
 $ns -> tablerender($caption, $text);

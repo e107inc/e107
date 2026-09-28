@@ -16,5 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $text = " This page displays all your servers PHP configuration settings. ";
 $ns -> tablerender("PHP Info Help", $text);

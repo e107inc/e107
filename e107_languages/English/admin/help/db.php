@@ -16,5 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $text = "These collection of tools allow you to manage your database.";
 $ns -> tablerender("Database Tools", $text);
