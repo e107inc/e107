@@ -12,7 +12,7 @@ $template = e107::getCoreTemplate('page','panel');
 //TODO Limits and cache etc.
 $qb = $sql->createQueryBuilder();
 $data = $qb->select('*')->from('page')
-	->whereIn('page_class', explode(',', USERCLASS_LIST))
+	->where(\e107\Userclass\Membership::current()->predicate('page_class'))
 	->where($qb->expr()->findInSet('page_template', 'panel'))
 	->setMaxResults(3)
 	->fetchAll();
