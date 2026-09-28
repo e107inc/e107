@@ -2565,7 +2565,6 @@ class e107
 		{
 			case 'detect':
 				return $libraryHandler->detect($library);
-				break;
 
 			case 'load':
 				$cdn = (bool) self::getPref('e_jslib_cdn', true);
@@ -2614,11 +2613,9 @@ class e107
 				}
 
 				return $libraryHandler->load($library, $variant, $types);
-				break;
 
 			case 'info':
 				return $libraryHandler->info($library);
-				break;
 
 			case 'files':
 				$info = $libraryHandler->info($library);
@@ -2640,7 +2637,6 @@ class e107
 
 
 				return $ret;
-				break;
 
 			case 'preload':
 
@@ -4671,15 +4667,12 @@ class e107
 		{
 			case 'core' :
 				return self::getPref($pname, $default);
-			break;
 
 			case 'theme' :
 				return self::getThemePref($pname, $default);
-			break;
 
 			default:
 				return self::getPlugPref($type, $pname, $default);
-			break;
 		}
 
 	}
@@ -7007,7 +7000,6 @@ class e107
 				trigger_error('$e107->$' . $name . ' not defined', E_USER_WARNING);
 
 				return null;
-				break;
 		}
 
 		// Store the result in the static cache

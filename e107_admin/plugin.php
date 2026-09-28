@@ -969,16 +969,13 @@ class plugin_form_ui extends e_admin_form_ui
 				}
 
 				return $curVal;
-			break;
 
 			case 'write': // Edit Page
 				return $frm->text('plugin_name',$curVal, 255, 'size=large');
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -992,16 +989,13 @@ class plugin_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $curVal;
-			break;
 
 			case 'write': // Edit Page
 				return $frm->text('plugin_addons',$curVal, 255, 'size=large');
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -1700,16 +1694,13 @@ class plugin_form_online_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $curVal;
-			break;
 
 			case 'write': // Edit Page
 				return $frm->text('plugin_name',$curVal, 255, 'size=large');
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -1723,16 +1714,13 @@ class plugin_form_online_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $curVal;
-			break;
 
 			case 'write': // Edit Page
 				return $frm->text('plugin_addons',$curVal, 255, 'size=large');
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -1753,16 +1741,13 @@ class plugin_form_online_ui extends e_admin_form_ui
 				}
 
 				return $curVal;
-			break;
 
 			case 'write': // Edit Page
 				return $frm->text('plugin_name',$curVal, 255, 'size=large');
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 

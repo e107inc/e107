@@ -41,7 +41,6 @@ function custom_shortcode($parm)
 				$ret .= "</div>\n</form>";
 			}
 			return $ret;
-			break;
 
 		case 'search':
 			if(!check_class($pref['search_restrict']))
@@ -51,7 +50,6 @@ function custom_shortcode($parm)
 			$searchflat = true;
 			include_once(e_PLUGIN.'search_menu/search_menu.php');
 			return '';
-			break;
 
 		case 'quote':
 			$qotd_file = e_BASE.'quote.txt';
@@ -65,7 +63,6 @@ function custom_shortcode($parm)
 				$quote = $tp->toHTML($quotes[rand(0, count($quotes) -1 )], true);
 			}
 			return $quote;
-			break;
 
 		case 'language':
 				//FIXME obtrusive and may not work with session or subdomains - certainly better to use {LANGUAGELINKS} anyway
@@ -88,7 +85,6 @@ function custom_shortcode($parm)
 					<input type="hidden" name="setlanguage" value="1" />
 				</form>';
 				return $text;
-				break;
 
 		case 'clock':
 			$clock_flat = true;
@@ -97,11 +93,9 @@ function custom_shortcode($parm)
 				include_once(e_PLUGIN.'clock_menu/clock_menu.php');
 			}
 			return '';
-			break;
 
 		case 'welcomemessage':
 			return $tp->parseTemplate('{WMESSAGE}');
-			break;
 	}
 }
 ?>

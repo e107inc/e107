@@ -714,7 +714,6 @@ class e107ForumThread
 
 				e107::redirect($url);
 				exit;
-				break;
 
 			case 'last':
 				$pages = ceil(($thread->threadInfo['thread_total_replies'] + 1) / $thread->perPage);

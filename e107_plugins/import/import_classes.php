@@ -66,51 +66,39 @@ class base_import_class
 		{
 	  		case 'users' :
 	    		return $this->saveUserData($dataRecord);
-	    	break;
 
 	  		case 'userclass' :
 	    		return $this->saveUserClassData($dataRecord);
-	    	break;
 
 			case 'news' :
 				return $this->saveNewsData($dataRecord);
-			break;
 
 			case 'newscategory' :
 				return $this->saveNewsCategoryData($dataRecord);
-			break;
 			
 			case 'page' :
 				return $this->savePageData($dataRecord);
-			break;
 
 			case 'pagechapter' :
 				return $this->savePageChapterData($dataRecord);
-			break;
 
 			case 'links' :
 				return $this->saveLinksData($dataRecord);
-			break;
 			
 			case 'media' :
 				return $this->saveMediaData($dataRecord);
-			break;
 			
 	  		case 'forum' :
 	    		return $this->saveForumData($dataRecord);
-	    	break;
 			
 		  	case 'forumthread' :
 	    		return $this->saveForumThreadData($dataRecord);
-	    	break;		
 			
 	  		case 'forumpost' :
 	    		return $this->saveForumPostData($dataRecord);
-	    	break;
 	
 		  	case 'forumtrack' :
 	    		return $this->saveForumTrackData($dataRecord);
-	    	break;			
 			
 	  		case 'polls' :
 	    	break;
@@ -141,51 +129,39 @@ class base_import_class
 		{
 	  		case 'users' :
 				return $this->copyUserData($initial, $result);
-			break;
 
 	  		case 'userclass' :
 				return $this->copyUserClassData($initial, $result);
-			break;
 
 			case 'news' :
 				return $this->copyNewsData($initial, $result);
-	  		break;
 
 			case 'newscategory' :
 				return $this->copyNewsCategoryData($initial, $result);
-	  		break;
 
 			case 'page' :
 				return $this->copyPageData($initial, $result);
-	  		break;
 
 			case 'pagechapter' :
 				return $this->copyPageChapterData($initial, $result);
-	  		break;
 
 			case 'links' :
 				return $this->copyLinksData($initial, $result);
-	  		break;
 
 			case 'media' :
 				return $this->copyMediaData($initial, $result);
-	  		break;
 						
 	  		case 'forum' :
 				return $this->copyForumData($initial, $result);
-	  		break; 
 			
 			case 'forumthread' :
 				return $this->copyForumThreadData($initial, $result);
-	  		break;
 				
 	  		case 'forumpost' :
 				return $this->copyForumPostData($initial, $result);
-	  		break;
 			
 			case 'forumtrack' :
 				return $this->copyForumTrackData($initial, $result);
-	  		break;
 		  
 	  		case 'polls' :
 	  		break;
