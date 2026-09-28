@@ -1589,7 +1589,6 @@ class e_admin_dispatcher
 
 			case 'response':
 				return $response;
-			break;
 
 			case 'render':
 			default:

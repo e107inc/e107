@@ -1453,12 +1453,10 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 
 
 			return e107::getConfig()->loadData($pref, false)->save(false, true);
-			break;
 
 		case 'theme':
 			//brute load, force update
 			return e107::getConfig()->set('sitetheme_pref', $theme_pref)->save(false, true);
-			break;
 
 		default:
 			$_user_pref = $tp->toDB($user_pref, true, true, 'pReFs');
@@ -1468,7 +1466,6 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 				->where('user_id', (int) $uid)
 				->execute();
 			return $tmp;
-			break;
 	}
 
 
@@ -2219,7 +2216,6 @@ class error_handler
 
 			default:
 			return true;
-			break;
 		}
 
 		return;

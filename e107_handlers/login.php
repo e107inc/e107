@@ -169,10 +169,8 @@ class userlogin
 							{
 								case LOGIN_ABORT :
 									return $this->invalidLogin($username,LOGIN_ABORT);
-								break;
 								case LOGIN_DB_ERROR :
 									return $this->invalidLogin($username,LOGIN_DB_ERROR);
-								break;
 								case AUTH_SUCCESS:
 									$authorized = true;
 								break;
@@ -183,7 +181,6 @@ class userlogin
                                         return $this->invalidLogin($username,LOGIN_ABORT);
                                     }
 									continue 2;
-								break;
 							}
 						}
 					}

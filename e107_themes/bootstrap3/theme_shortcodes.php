@@ -88,20 +88,17 @@ class theme_shortcodes extends e_shortcode
 
 				return e107::getParser()->parseTemplate('{SITELOGO: h=30}',true);
 
-			break;
 
 			case 'sitenamelogo':
 
 				return "<span class='pull-left'>".e107::getParser()->parseTemplate('{SITELOGO: h=30}',true)."</span>".SITENAME;
 
-			break;
 
 			case 'sitename':
 			default:
 
 				return SITENAME;
 
-			break;
 		}
 
 	}

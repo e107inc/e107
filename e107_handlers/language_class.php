@@ -445,7 +445,6 @@ class language{
 				natsort($natList);
 
 				return $natList;
-				break;
 
 			case "abbr":
 				$natList = array();
@@ -458,11 +457,9 @@ class language{
 				natsort($natList);
 
 				return $natList;
-				break;
 
 			case 'count':
 				return count($this->lanlist);
-			break;
 
 			case "english":
 			default:

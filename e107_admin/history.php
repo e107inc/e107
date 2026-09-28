@@ -294,16 +294,13 @@ class admin_history_form_ui extends e_admin_form_ui
 			  return print_a($curVal,true);
 
 
-			break;
 
 			
 			case 'filter':
 				return array('customfilter_1' => 'Custom Filter 1', 'customfilter_2' => 'Custom Filter 2');
-			break;
 			
 			case 'batch':
 				return array('custombatch_1' => 'Custom Batch 1', 'custombatch_2' => 'Custom Batch 2');
-			break;
 		}
 		
 		return null;

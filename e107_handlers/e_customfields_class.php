@@ -416,11 +416,9 @@
 				case 'dropdown':
 				case 'checkboxes':
 					return 'eg. { "optArray": { "blue": "Blue", "green": "Green", "red": "Red" }, "default": "blank" }';
-					break;
 
 				case 'datestamp':
 					return 'eg. (Optional) { "format": "yyyy-mm-dd" }';
-				break;
 
 
 				default:

@@ -1775,11 +1775,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		{
 			case 'sys':
 				return $this->cacheBase().$this->_md5cache[$category];
-			break;
 			
 			case 'md5':
 				return $this->_md5cache[$category];
-			break;
 		}
 	}
 

@@ -935,11 +935,9 @@ e107::css('inline',"
 			{
 				case 'read': // List Page
 					return $curVal;
-					break;
 
 				case 'write': // Edit Page
 					return $frm->text('forum_parent',$curVal);
-					break;
 
 				case 'filter':
 				case 'batch':
@@ -958,11 +956,9 @@ e107::css('inline',"
 			{
 				case 'read': // List Page
 					return $curVal;
-					break;
 
 				case 'write': // Edit Page
 					return $frm->text('forum_sub',$curVal);
-					break;
 
 				case 'filter':
 				case 'batch':
@@ -980,11 +976,9 @@ e107::css('inline',"
 			{
 				case 'read': // List Page
 					return $curVal;
-					break;
 
 				case 'write': // Edit Page
 					return $frm->text('forum_lastpost_info',$curVal);
-					break;
 
 				case 'filter':
 				case 'batch':
@@ -1002,11 +996,9 @@ e107::css('inline',"
 			{
 				case 'read': // List Page
 					return $curVal;
-					break;
 
 				case 'write': // Edit Page
 					return $frm->text('forum_options',$curVal);
-					break;
 
 				case 'filter':
 				case 'batch':
@@ -1080,12 +1072,10 @@ e107::css('inline',"
 
 				case 'write': // Edit Page
 					return $frm->text('gen_type',$curVal);
-					break;
 
 				case 'filter':
 				case 'batch':
 					return  array(1=>LAN_BAN);
-					break;
 			}
 		}
 
@@ -1098,11 +1088,9 @@ e107::css('inline',"
 			{
 				case 'read': // List Page
 					return str_replace(":::","<br />",$curVal);
-					break;
 
 				case 'write': // Edit Page
 					return $frm->text('gen_chardata',$curVal);
-					break;
 
 				case 'filter':
 				case 'batch':
@@ -1219,12 +1207,10 @@ e107::css('inline',"
 					}
 
 					return $text;
-					break;
 
 				case 'write': // Edit Page
 					$data = e107::unserialize($curVal);
 					return print_a($data,true);
-					break;
 
 				case 'filter':
 				case 'batch':

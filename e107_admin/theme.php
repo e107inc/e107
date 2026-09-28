@@ -164,7 +164,6 @@ class theme_admin extends e_admin_dispatcher
 				$mp = $themec->getMarketplace();
 				echo $mp->renderLoginForm();
 				exit;
-			break;
 
 
 				case 'info':
@@ -1617,7 +1616,6 @@ TEMPLATE;
 
 
 					return $text;
-				break;
 
 
 				case 'date':

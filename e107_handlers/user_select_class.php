@@ -53,7 +53,6 @@ class user_select
 				
 			case e_UC_NOBODY:
 				return "";
-				break;
 				
 			default:
 				$qb->where($qb->expr()->regexp('user_class', '(^|,)('.$tp -> toDB($class, true).')(,|$)'));

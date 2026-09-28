@@ -191,7 +191,6 @@ class e_date
 			
 			case 'relative':
 				return $this->computeLapse($datestamp, time(), false, true, 'short') ;
-			break;
 			
 			default:
 				if(strpos($mask, '%') === FALSE)
