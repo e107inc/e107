@@ -355,7 +355,7 @@ class e_parse_shortcode
 	 * e107::getScParser()->getScObject('news_shortcodes', 'myplug', 'news2_shortcodes');
 	 * </code>
 	 * @param string $className
-	 * @param null $pluginName
+	 * @param string|true|null $pluginName
 	 * @param string $overrideClass if true, $className is used
 	 * @return e_shortcode
 	 * @internal param string $plugName if true className is used., if string, string value is used.
