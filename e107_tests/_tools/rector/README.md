@@ -90,11 +90,11 @@ consistent fixed point instead of a half-cast one.
 
 ## The API floor
 
-A parser has no opinion on what a PHP version *has*. Four shapes cleared every
-gate this project owns and still killed a request on a real 5.6, and each one
-was found by hand and patched by hand in vendored source, which the next
-re-vendor rolls straight back. `custom-rules/FloorApi/` and
-`DowngradeConflictingUseImportRector` own those four instead:
+A parser has no opinion on what a PHP version *has*. Five shapes cleared every
+gate this project owns and still killed a request on a PHP version e107
+supports. The first four were found by hand and patched by hand in vendored
+source, which the next re-vendor rolls straight back. `custom-rules/FloorApi/`
+and `DowngradeConflictingUseImportRector` own all five instead:
 
 - **A parameter type naming a class the floor lacks.** firebase/php-jwt 7.x
   types its key-length validators against `OpenSSLAsymmetricKey`, a PHP 8.0
@@ -119,6 +119,23 @@ re-vendor rolls straight back. `custom-rules/FloorApi/` and
   `DowngradeConflictingUseImportRector` aliases the import and rewrites the
   references. This one is a name-resolution difference rather than an API gap,
   so it sits with the other `DowngradePhp70` rules.
+- **A literal passed to a by-reference parameter.** hybridauth's Apple adapter
+  calls `JWT::decode($id_token, $pem, ['RS256'])`, the php-jwt 5.x form, where
+  7.x takes `&$headers` third. The arm never runs against 7.x, but PHP 7.1 to
+  7.4 refuse the literal while compiling the call whenever `JWT` is already
+  loaded, so the adapter dies on autoload in any request that decoded a token
+  first. `HoistLiteralByReferenceArgumentRector` assigns the literal to a
+  variable named after the parameter on the line before the statement and
+  passes the variable. Where that is not safe, it fails the run and names the
+  site instead: an argument that is not a plain literal, or holds a constant
+  the surrounding code may be guarding; a loop condition, where the callee's
+  write would carry into the next iteration; top-level code, a function that
+  reads its own scope through `extract()`, `compact()`, `$$name` or an
+  include, where the new variable could clobber one the rule cannot see; a
+  function with a close tag, an echo tag or inline HTML anywhere in its source,
+  nested closures included, where the new line could be printed as text or
+  break the parse (deliberately broader than it needs to be, since it only
+  ever fails loudly); and a call another downgrade rule wrote.
 
 None of these can be proved by parsing. Tests that execute the vendored
 packages on whichever interpreter the cell is running are the other half, and
@@ -140,7 +157,7 @@ which fills in the after half for you to read.
 `tests/Downgrade/` is the exception: it points at the shipping `rector.php`
 rather than a single rule, so its fixtures go through every set and rule at
 once. That is what covers a rule being written but never registered, and the
-order two rules run in. Its four fixtures are the four vendored shapes above,
+order two rules run in. Its fixtures are the vendored shapes above,
 in the form they had before anybody patched them.
 
 The rule tests run on PHP 8.2 in CI, ahead of the whole-tree pass, because they

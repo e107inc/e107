@@ -210,9 +210,10 @@ class Apple extends OAuth2
                         ->withMGFHash('sha1');
 
                     $pem = (string)$key;
+                    $headers = ['RS256'];
 
                     $payload = (version_compare($this->getJwtVersion(), '6.2') < 0) ?
-                        JWT::decode($id_token, $pem, ['RS256']) :
+                        JWT::decode($id_token, $pem, $headers) :
                         JWT::decode($id_token, new Key($pem, 'RS256'));
                     break;
                 } catch (Exception $e) {

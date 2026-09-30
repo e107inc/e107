@@ -264,7 +264,7 @@ class social_login_config
 			}
 		}
 		$providerType = $this->getTypeOfProvider($normalizedProviderName);
-		$normalizedProviderName = preg_replace('/(OpenID|OAuth1|OAuth2)$/i', '', $normalizedProviderName);
+		$normalizedProviderName = preg_replace('/' . preg_quote((string) $providerType, '/') . '$/i', '', $normalizedProviderName);
 		if (empty($normalizedProviderName) && !empty($providerType) || $providerName == $providerType)
 			return $providerType;
 		elseif ($providerType)

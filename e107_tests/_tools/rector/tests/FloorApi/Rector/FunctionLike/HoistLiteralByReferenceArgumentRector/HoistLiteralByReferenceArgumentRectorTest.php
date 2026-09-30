@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace E107\Rector\Tests\Downgrade;
+namespace E107\Rector\Tests\FloorApi\Rector\FunctionLike\HoistLiteralByReferenceArgumentRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-/**
- * Runs the shipping rector.php over the shape each vendored hand patch had before it.
- */
-final class DowngradeConfigTest extends AbstractRectorTestCase
+final class HoistLiteralByReferenceArgumentRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -26,10 +23,10 @@ final class DowngradeConfigTest extends AbstractRectorTestCase
     }
 
     #[DataProvider('provideRefusedData')]
-    public function testRefusesALiteralAnotherRuleBindsToAByReferenceParameter(string $filePath): void
+    public function testRefusesASiteItCannotHoistSafely(string $filePath): void
     {
         $this->expectException(ShouldNotHappenException::class);
-        $this->expectExceptionMessageMatches('/\.php, in code another downgrade rule wrote, passes something other than a variable/');
+        $this->expectExceptionMessageMatches('/\.php:\d+ passes something other than a variable to a by-reference parameter/');
 
         $this->doTestFile($filePath);
     }
@@ -41,6 +38,6 @@ final class DowngradeConfigTest extends AbstractRectorTestCase
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/../../rector.php';
+        return __DIR__ . '/config/configured_rule.php';
     }
 }
