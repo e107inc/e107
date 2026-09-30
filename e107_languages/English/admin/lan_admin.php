@@ -604,3 +604,5 @@ define("LAN_PHP_OUTDATED", "Your website is currently running an [outdated versi
 define("LAN_DATABASE_UPDATE", "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.");
 define("ADLAN_REFUSED_TOKEN_MISSING", "That request was not carried out, because it carried no security token. Use the dashboard's own controls rather than a bookmark or a link on another site.");
 define("ADLAN_SITEURL_NO_HOST", "Your Site URL does not include a web address. Please set it to the full address visitors use, including http:// or https://, in Admin -> Preferences -> Site Information. Until it is set, links built where there is no incoming request to copy the address from, such as those in email sent by a scheduled task, are written as relative paths and will not work away from the site.");
+define("ADLAN_SITE_FOLDER_NOTICE", "Files were saved under the wrong site folder, [x], while this site ran an affected e107 version. Merge them into this site's folder on the [y] page.");
+define("ADLAN_SITE_FOLDER_NOTICE_LINK", "Multi-Site");
