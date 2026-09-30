@@ -3117,7 +3117,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		    'gen_chardata' 		=> array ( 'title' => LAN_ICON, 'type' => 'method', 'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
 
 
-		    'options'			=> array ( 'title' => LAN_OPTIONS, 'type' =>'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right last', 'forced' => '1', 'readParms'=>'edit=0'  ),
+		    'options'			=> array ( 'title' => LAN_OPTIONS, 'type' =>'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right last', 'forced' => '1'  ),
 		);
 
 		protected $fieldpref = array('gen_datestamp', 'gen_type', 'gen_ip', 'gen_intdata', 'gen_user_id', 'gen_chardata');
@@ -3153,6 +3153,8 @@ class users_admin_form_ui extends e_admin_form_ui
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
 			e107::getCache()->clear_sys('nomd5_user_ranks');
+
+			return true;
 		}
 
 		public function afterUpdate($new_data, $old_data, $id)
@@ -3222,22 +3224,12 @@ class users_admin_form_ui extends e_admin_form_ui
 
 			if($attributes['mode'] == 'read')
 			{
-				parse_str(str_replace('&amp;', '&', e_QUERY), $query);
-				$query['action'] = 'edit';
-				$query['id'] = $id;
-				$query = http_build_query($query, '', '&amp;');
-
-				$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
-						".ADMIN_EDIT_ICON."</a>";
-
-				$special = $this->getController()->getListModel()->get('gen_datestamp');
-
-				if($special == 0)
+				if($this->getController()->getListModel()->get('gen_datestamp') != 0)
 				{
-					$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'));
+					$attributes['readParms']['deleteClass'] = e_UC_NOBODY;
 				}
 
-				return $text;
+				return $this->renderValue('options', $value, $attributes, $id);
 			}
 		}
 
