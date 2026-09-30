@@ -309,8 +309,8 @@ class download
 		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/categories');
+		$sc->qry 	= $this->qry;
 		$sc->breadcrumb();
-		$sc->qry 	= $this->qry;	
 		
 	
 		
@@ -521,7 +521,6 @@ class download
 		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/view');
-		$sc->breadcrumb();
 		$sc->qry 	= $this->qry;
 
 		$highlight_search = FALSE;
@@ -1047,7 +1046,6 @@ class download
 		/** @var download_shortcodes $sc */
 		$sc = e107::getScBatch('download',true);
 		$sc->wrapper('download/mirror');
-		$sc->breadcrumb();
 		$sc->qry 	= $this->qry;
 		
 	//	$load_template = 'download_template';
@@ -1070,8 +1068,9 @@ class download
 			$dlrow = $sql->fetch();
 		//	$dlrow['mirrorlist'] = $mirrorList;
 			$sc->setVars($dlrow);
+			$sc->breadcrumb();
 
-			
+
 			$array = explode(chr(1), $dlrow['download_mirror']);
 			
 			if (2 == varset($pref['mirror_order']))
