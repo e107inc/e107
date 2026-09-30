@@ -202,22 +202,9 @@ class rss_ui extends e_admin_ui
 
 
 		$sqli = new db;
-		$feedlist = array();
-
-		// @see e107_plugins/news/e_rss.php
-
-		// Comments
-		$feed['name'] = LAN_COMMENTS;
-		$feed['url'] = 'comments';
-		$feed['topic_id'] = '';
-		$feed['path'] = 'comments';
-		$feed['text'] = RSS_PLUGIN_LAN_9;
-		$feed['class'] = '0';
-		$feed['limit'] = '9';
-		$feedlist[] = $feed;
 
 		// Plugin rss feeds, using e_rss.php in each plugin folder
-		$feedlist = array_merge($feedlist, rss_addons::feeds());
+		$feedlist = rss_addons::feeds();
 
 //		print_a($feedlist);
 
@@ -230,7 +217,7 @@ class rss_ui extends e_admin_ui
 			$feed['url'] = $tp->toDB($feed['url']);
 
 			// Check if feed is not yet present
-			if(!$sql->createQueryBuilder()->select('*')->from('rss')->where('rss_path', $feed['path'])->where('rss_url', $feed['url'])->where('rss_topicid', $feed['topic_id'])->execute())
+			if(!$sql->createQueryBuilder()->select('*')->from('rss')->where('rss_url', $feed['url'])->where('rss_topicid', $feed['topic_id'])->execute())
 			{
 				$render = true;
 				$rss_shortcodes->setVars($feed);

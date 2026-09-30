@@ -150,16 +150,17 @@ class RssCommentsFeedCest
 	 * @param int $newsId
 	 * @param string $marker
 	 * @param string $type comment_type, as comment::getCommentType() stores it
+	 * @param string $author comment_author_name
 	 * @return void
 	 */
-	private function seedComment(AcceptanceTester $I, $newsId, $marker, $type = '0')
+	private function seedComment(AcceptanceTester $I, $newsId, $marker, $type = '0', $author = '1.admin')
 	{
 		$I->haveInDatabase('e107_comments', array(
 			'comment_pid'          => 0,
 			'comment_item_id'      => $newsId,
 			'comment_subject'      => 'SUBJ'.$marker,
 			'comment_author_id'    => 1,
-			'comment_author_name'  => '1.admin',
+			'comment_author_name'  => $author,
 			'comment_author_email' => '',
 			'comment_datestamp'    => time(),
 			'comment_comment'      => 'BODY'.$marker,
@@ -341,6 +342,31 @@ class RssCommentsFeedCest
 		$I->amOnPage('/'.self::RESET_FILE.'?act=comments');
 
 		$I->seeInSource('SUBJ'.$marker);
+	}
+
+	/**
+	 * An author name is the one item field the feed used to emit raw. A name
+	 * carrying an XML special makes the whole document unparseable, so a reader
+	 * shows none of the feed rather than one odd item.
+	 */
+	public function theFeedEscapesAnAuthorNameCarryingAnXmlSpecial(AcceptanceTester $I)
+	{
+		$I->wantTo('keep an ampersand in a commenter name from breaking the whole feed');
+
+		$marker = 'AMP'.$this->suffix;
+		$author = 'Tom & Jerry '.$marker;
+
+		$this->seedComment($I, $this->seedNews($I, 'P6 amp news '.$this->suffix, '0', 0), $marker, '0', $author);
+
+		// Each output mode writes the author itself, in its own element.
+		foreach(array(1, 2, 3, 4) as $rssType)
+		{
+			$I->amOnPage('/e107_plugins/rss_menu/rss.php?comments.'.$rssType);
+			$I->seeResponseCodeIs(200);
+
+			$I->seeInSource('Tom &amp; Jerry '.$marker);
+			$I->dontSeeInSource($author);
+		}
 	}
 
 	/**
