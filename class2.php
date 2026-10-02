@@ -587,14 +587,12 @@ if(!isset($_E107['no_lan']))
 
 if(!isset($_E107['no_session']))
 {
-	$dbg->logTime('CHAP challenge');
+	$dbg->logTime('Session token check');
 
 	// check(false) so that the refusal is answered here rather than by the die()
 	// inside check(), which would leave the response at 200 and put the status
 	// out of reach of a log analyser, a monitor or a WAF.
-	$tokenOkay = e107::getSession()
-		->challenge() // Make sure there is a unique challenge string for CHAP login
-		->check(false); // Token protection
+	$tokenOkay = e107::getSession()->check(false); // Token protection
 
 	if($tokenOkay !== true)
 	{
@@ -847,7 +845,7 @@ $dbg->logTime('Login/logout/ban/tz');
 
 if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 {
-	e107::getUser()->login(varset($_POST['username']), varset($_POST['userpass']), (int) varset($_POST['autologin']), varset($_POST['hashchallenge']), false);
+	e107::getUser()->login(varset($_POST['username']), varset($_POST['userpass']), (int) varset($_POST['autologin']), '', false);
 //	e107_require_once(e_HANDLER.'login.php');
 //	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
 }

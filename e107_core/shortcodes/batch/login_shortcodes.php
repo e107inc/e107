@@ -71,16 +71,9 @@ class login_shortcodes extends e_shortcode
 			return null;
 		}
 
-		$pref = e107::getPref();
 		$class = (!empty($parm['class'])) ? $parm['class'] : "tbox form-control input-block-level";
-		
-		$text = "<input class='".$class."' type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
-		
-		if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) 
-		{
-		  $text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
-		}
-		return $text;	
+
+		return "<input class='".$class."' type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
 	}
 	
 	function sc_login_table_secimg_lan($parm='')

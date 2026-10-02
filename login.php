@@ -68,7 +68,7 @@ if (!USER || getperms('0'))
 		elseif(!empty($loginTpl['page']))
 		{
 			$LOGIN_TABLE_HEADER = $loginTpl['page']['header'];
-			$LOGIN_TABLE 		= "<form id='login-page' class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$loginTpl['page']['body']."</form>";
+			$LOGIN_TABLE 		= "<form id='login-page' class='form-signin' method='post' action='".e_SELF."' >".$loginTpl['page']['body']."</form>";
 			$LOGIN_TABLE_FOOTER = $loginTpl['page']['footer'];
 		}
 	}
