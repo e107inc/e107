@@ -91,7 +91,7 @@ class userlogin
 	# @param $autologin - 'signup' - uses a specially encoded password - logs in if matches
 	#					- zero for 'normal' login
 	#					- non-zero sets the 'remember me' flag in the cookie
-	' @param string $response - response string returned by CHAP login (instead of password)
+	# @param string $response - ignored since v2.3.13, when CHAP login was discontinued
 	# @return  boolean - FALSE on login fail, TRUE on login successful
 	*/
 	public function login($username, $userpass, $autologin, $response = '', $noredirect = false)
@@ -116,7 +116,7 @@ class userlogin
 		
 		$forceLogin = $this->providerLogin ? 'provider' : ($autologin === 'signup');
 
-		if(empty($username) || (empty($userpass) && empty($response) && $forceLogin !== 'provider'))
+		if(empty($username) || (empty($userpass) && $forceLogin !== 'provider'))
 		{	// Required fields blank
 			return $this->invalidLogin($username,LOGIN_BLANK_FIELD);
 		}
@@ -486,14 +486,13 @@ class userlogin
 	 *
 	 * @param string $username - the user name string as entered (might not relate to the intended user at this stage)
 	 * @param string $userpass - as entered
-	 * @param string $response - received string if CHAP used
+	 * @param string $response - ignored since v2.3.13, when CHAP login was discontinued
 	 * @param boolean $forceLogin - TRUE if login is being forced from clicking signup link; normally FALSE
 	 * @return bool|string if valid password
 	 *		   otherwise FALSE
 	 */
 	protected function checkUserPassword($username, $userpass, $response, $forceLogin)
 	{
-		$pref = e107::getPref();
 		$log = e107::getLog();
 		
 		if($forceLogin === 'provider') return true;
@@ -521,41 +520,25 @@ class userlogin
 		}
 		else
 		{
-			$session = e107::getSession();
-			$gotChallenge = $session->is('challenge');
-			//$aLogVal = "U: {$username}, P: ******, C: ".$session->get('challenge')." R:{$response} S: {$this->userData['user_password']} Prf: {$pref['password_CHAP']}/{$gotChallenge}";
-			if ((($pref['password_CHAP'] > 0) && ($response && $gotChallenge) && ($response != $session->get('challenge'))) || ($pref['password_CHAP'] == 2))
-			{  // Verify using CHAP
-			  	//$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login",$aLogVal, FALSE, LOG_TO_ROLLING);
-				if (($pass_result = $this->userMethods->CheckCHAP($session->get('challenge'), $response, $username, $this->userData['user_password'])) === PASSWORD_INVALID)
-				{
-					return $this->invalidLogin($username,LOGIN_CHAP_FAIL);
-				}
-			}
-			else // Plaintext password
+			$login_name = ($this->lookEmail) ? $this->userData['user_loginname'] : $username;
+
+		  	$auditLog = array(
+				'type'              => (($this->lookEmail) ? 'email' : 'userlogin'),
+				'login_name'        => $login_name,
+			//	'userpass'          => $userpass,
+				'pwdHash'           => $this->userData['user_password']
+			);
+
+			if (($pass_result = $this->userMethods->CheckPassword($userpass, $login_name, $this->userData['user_password'])) === PASSWORD_INVALID)
 			{
-
-				$login_name = ($this->lookEmail) ? $this->userData['user_loginname'] : $username;
-
-			  	$auditLog = array(
-					'type'              => (($this->lookEmail) ? 'email' : 'userlogin'),
-					'login_name'        => $login_name,
-				//	'userpass'          => $userpass,
-					'pwdHash'           => $this->userData['user_password']
-				);
-
-				if (($pass_result = $this->userMethods->CheckPassword($userpass, $login_name, $this->userData['user_password'])) === PASSWORD_INVALID)
-				{
-					$auditLog['result'] = intval($pass_result);
-					$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
-					return $this->invalidLogin($username,LOGIN_BAD_PW);
-				}
-
 				$auditLog['result'] = intval($pass_result);
-
 				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
+				return $this->invalidLogin($username,LOGIN_BAD_PW);
 			}
 
+			$auditLog['result'] = intval($pass_result);
+
+			$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
 
 			$this->passResult = $pass_result;
 		}

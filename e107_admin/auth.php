@@ -128,7 +128,7 @@ else
 	// login check.
 	if(!empty($_POST['authsubmit']))
 	{
-		if(e107::getUser()->login($_POST['authname'], $_POST['authpass'], false, varset($_POST['hashchallenge'])) !== false)
+		if(e107::getUser()->login($_POST['authname'], $_POST['authpass']) !== false)
 		{
 			e107::getRedirect()->go('admin'); // successful login.
 		}
@@ -265,13 +265,11 @@ class auth
 
 		$pref = e107::getPref();
 		$frm = e107::getForm();
-
-		$incChap = (vartrue($pref['password_CHAP'], 0)) ? " onsubmit='hashLoginPassword(this)'" : "";
 	
 	// Start Clean 
 	// NOTE: this should NOT be a template of the admin-template, however themes may style it using css. 
 	
-		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
+		$text = "<form id='admin-login' method='post' action='".e_SELF."' >
 		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='".LAN_LOGIN."' /></div>
 		<div id='login-admin' class='center'>
 		<div>";
@@ -315,11 +313,6 @@ class auth
 			    
 		    $text .= "<div class='admin-submit'>"
 		       	.$frm->admin_button('authsubmit',ADLAN_91,'login');				
-				
-			if (e107::getSession()->is('challenge') && varset($pref['password_CHAP'], 0))
-			{
-				$text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";		
-			}
 								
 		$text .= "</div></div>
 		</div>

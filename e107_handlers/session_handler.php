@@ -1815,8 +1815,9 @@ class e_core_session extends e_session
 	
 	/**
 	 * Make sure there is unique challenge string for CHAP login
-	 * @see class2.php
 	 * @return e_core_session
+	 * @deprecated v2.3.13 CHAP login is discontinued (issue #6653) and core no longer calls this or reads the challenge
+	 *             it stores. A login form posts the password as typed; do not build anything new on a session challenge.
 	 
 	 @TODO: Remove debug code
 	 */

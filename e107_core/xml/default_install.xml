@@ -248,7 +248,6 @@
 		<core name="old_np">0</core>
 		<core name="pageCookieExpire">84600</core>
 		<core name="passwordEncoding">0</core>
-		<core name="password_CHAP">0</core>
 		<core name="plug_installed"><![CDATA[array (
   'news' => '1.0',
   'page' => '1.0',

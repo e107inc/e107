@@ -1914,7 +1914,7 @@ class e_user extends e_user_model
 	 * @param string $uname
 	 * @param string $upass_plain
 	 * @param boolean $uauto
-	 * @param string $uchallange
+	 * @param string $uchallange ignored since v2.3.13, when CHAP login was discontinued
 	 * @param boolean $noredirect
 	 * @return boolean success
 	 */
