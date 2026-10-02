@@ -107,18 +107,9 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 	function sc_signin_input_password($parm = null)
 	{
-
-		$pref = e107::getPref();
-		$t_password = "
+		return "
 				<label class='sr-only' for='" . vartrue($parm['idprefix']) . "userpass'>" . LAN_PASSWORD . "</label>
 				<input class='form-control tbox login pass' type='password' placeholder='" . LAN_PASSWORD . "' required='required' name='userpass' id='" . vartrue($parm['idprefix']) . "userpass' size='15' value='' maxlength='30' />\n";
-
-		if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'], 0))
-		{
-			$t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='" . e107::getSession()->get('challenge') . "' />\n\n";
-		}
-
-		return $t_password;
 	}
 
 
@@ -141,7 +132,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 	function sc_signin_form($parm=null)
 	{
-		return ($parm === 'start') ? '<form method="post" onsubmit="hashLoginPassword(this);return true" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">' : '</form>';
+		return ($parm === 'start') ? '<form method="post" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">' : '</form>';
 	}
 
 	function sc_signin_imagecode_box($parm = '')
