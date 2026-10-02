@@ -441,6 +441,8 @@ class UserHandler
 	 *	@param string $stored_hash - password hash as stored in DB
 	 *
 	 *	@return bool|string
+	 *	@deprecated v2.3.13 CHAP login is discontinued (issue #6653) and core no longer calls this. Check the password as
+	 *	            typed with {@see UserHandler::CheckPassword()} instead.
 	 */
 	public function CheckCHAP($challenge, $response, $login_name, $stored_hash )
 	{
