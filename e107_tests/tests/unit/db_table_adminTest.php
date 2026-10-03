@@ -313,6 +313,21 @@
 			$this->assertSame($expected, $result);
 		}
 
+		/**
+		 * The live table is read in the schema DSL on whatever engine the site runs, in the shape the regex over
+		 * SHOW CREATE TABLE gave: the statement, the table name, the body and the table options.
+		 */
+		public function testTheCurrentTableIsReadOnEveryEngine()
+		{
+			$result = $this->dta->get_current_table('core');
+
+			$this->assertSame(MPREFIX.'core', $result[0][1]);
+			$this->assertStringStartsWith('CREATE TABLE '.MPREFIX.'core (', $result[0][0]);
+			$this->assertStringContainsString('e107_name', $result[0][2]);
+			$this->assertStringNotContainsString('`', $result[0][2]);
+			$this->assertFalse($this->dta->get_current_table('no_such_table'));
+		}
+
 		public function testGet_current_table()
 		{
 			$this->requireDatabaseDriver('mysql', "it reads MySQL's own SHOW CREATE TABLE text");

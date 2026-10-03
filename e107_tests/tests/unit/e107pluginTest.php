@@ -682,15 +682,23 @@
 				'mysql'     => array(array('@attributes' => array('name' => 'mysql', 'min_version' => '99.0.0'))),
 			);
 
-			$this->assertFalse($this->ep->XmlDependencies($tags), 'Five unmeetable dependencies must stop the install');
+			$this->assertFalse($this->ep->XmlDependencies($tags), 'Unmeetable dependencies must stop the install');
 
 			$rendered = $mes->render();
 
 			$this->assertStringContainsString(EPL_ADLAN_70 . ' notaplugin', $rendered, $rendered);
 			$this->assertStringContainsString(EPL_ADLAN_73 . ' notanextension', $rendered, $rendered);
 			$this->assertStringContainsString(EPL_ADLAN_74 . ' 99.0.0', $rendered, $rendered);
-			$this->assertStringContainsString(EPL_ADLAN_75 . ' 99.0.0', $rendered, $rendered);
 			$this->assertStringContainsString(EPL_ADLAN_71 . ' json ' . EPL_ADLAN_72 . ' 99.0.0', $rendered, $rendered);
+
+			if(e107::getDb()->getDriver()->getName() === 'mysql')
+			{
+				$this->assertStringContainsString(EPL_ADLAN_75 . ' 99.0.0', $rendered, $rendered);
+			}
+			else
+			{
+				$this->assertStringNotContainsString(EPL_ADLAN_75, $rendered, $rendered);
+			}
 
 			$mes->reset();
 		}

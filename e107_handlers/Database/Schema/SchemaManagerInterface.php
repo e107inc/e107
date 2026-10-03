@@ -69,6 +69,16 @@ interface SchemaManagerInterface
 	public function getCreateStatement($table);
 
 	/**
+	 * How much a table holds: its rows, and the bytes its rows and its indexes take on disk, as far as the engine
+	 * says; a figure it does not keep is null.
+	 *
+	 * @param string $table physical table name
+	 * @return array|null array('rows' => int|null, 'data_length' => int|null, 'index_length' => int|null,
+	 *                    'avg_row_length' => int|null); null when there is no such table
+	 */
+	public function getTableStatus($table);
+
+	/**
 	 * Create a table with the structure (columns, keys, indexes) of another, without its rows.
 	 *
 	 * @param string $from existing table

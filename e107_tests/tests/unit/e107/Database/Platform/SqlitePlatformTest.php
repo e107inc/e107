@@ -397,6 +397,7 @@ class SqlitePlatformTest extends \Test\Unit
 		$this->assertFalse($this->platform->supportsFoundRows());
 		$this->assertFalse($this->platform->supportsFullTextIndexes());
 		$this->assertTrue($this->platform->supportsTransactionalDdl());
+		$this->assertTrue($this->platform->optimizesWholeDatabase());
 		$this->assertFalse($this->platform->assignsAutoIncrementOnZero());
 		$this->assertFalse($this->platform->countsConflictingRows());
 		$this->assertTrue($this->platform->reportsInsertIdForEveryTable());

@@ -144,4 +144,5 @@ return [
     'DBLAN_SITE_FOLDER_REMOVED' => "The folder [x] was removed.",
     'DBLAN_SITE_FOLDER_REMOVE_FAILED' => "The folder [x] still holds files and was not removed.",
     'DBLAN_OPTIMIZE_TABLE_FAILED' => "Table [x] was not optimized: [y]",
+    'DBLAN_OPTIMIZE_DATABASE_FAILED' => "Database [x] was not optimized: [y]",
 ];

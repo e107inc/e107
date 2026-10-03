@@ -10,7 +10,8 @@
  * a MyISAM table keeps the space of deleted rows as Data_free until it is
  * optimised, so a probe table carrying some shows whether the tool reached it.
  * The probe's name sorts after every other fixture's, so a run that stops at the
- * first table it cannot optimise never reaches it.
+ * first table it cannot optimise never reaches it. On SQLite each VACUUM adds one
+ * to the schema version, which counts how often the tool rebuilt the file.
  *
  * @see https://github.com/e107inc/e107/issues/6665
  */
@@ -30,13 +31,19 @@ class dbOptimizeSqlTest extends \Test\Unit
 
 	protected function _before()
 	{
-		$this->requireDatabaseDriver('mysql', "it reads MyISAM's free space and the answer OPTIMIZE TABLE gives for each table");
-
 		$this->probe = MPREFIX.'optimize_sql_zz_probe';
 		$this->view = MPREFIX.'optimize_sql_view';
 		$this->oddlyNamed = MPREFIX.'optimize_sql_odd$name';
 
 		$this->dropFixtures();
+	}
+
+	/**
+	 * @return void
+	 */
+	private function seedProbe()
+	{
+		$this->requireDatabaseDriver('mysql', "it reads MyISAM's free space and the answer OPTIMIZE TABLE gives for each table");
 
 		$sql = e107::getDb();
 		$sql->execute('CREATE TABLE `'.$this->probe.'` (probe_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, probe_text VARCHAR(255) NOT NULL) ENGINE=MyISAM');
@@ -56,6 +63,7 @@ class dbOptimizeSqlTest extends \Test\Unit
 
 	public function testOptimisingReclaimsTheSpaceDeletedRowsLeftInTheSitesTables()
 	{
+		$this->seedProbe();
 		$this->renderInBootedCli('e107_admin/db.php', self::SEED);
 
 		$this->assertSame(0, $this->freeSpace(),
@@ -69,6 +77,7 @@ class dbOptimizeSqlTest extends \Test\Unit
 
 	public function testATableTheServerCannotOptimiseIsReportedInsteadOfSuccess()
 	{
+		$this->seedProbe();
 		e107::getDb()->execute('CREATE VIEW `'.$this->view.'` AS SELECT 1 AS one');
 
 		$page = $this->renderInBootedCli('e107_admin/db.php', self::SEED);
@@ -82,6 +91,7 @@ class dbOptimizeSqlTest extends \Test\Unit
 
 	public function testANameTheSchemaBuilderRefusesIsReportedAndTheOtherTablesAreStillOptimised()
 	{
+		$this->seedProbe();
 		e107::getDb()->execute('CREATE TABLE `'.$this->oddlyNamed.'` (probe_id INT NOT NULL) ENGINE=MyISAM');
 
 		$page = $this->renderInBootedCli('e107_admin/db.php', self::SEED);
@@ -89,6 +99,25 @@ class dbOptimizeSqlTest extends \Test\Unit
 		$this->assertStringContainsString('Table '.$this->oddlyNamed.' was not optimized', $page);
 		$this->assertSame(0, $this->freeSpace(),
 			'One table name the schema builder refused stopped the run before '.$this->probe.' was optimised.');
+	}
+
+	public function testAnEngineThatOptimisesTheWholeDatabaseRebuildsItOnceNotOncePerTable()
+	{
+		$this->requireDatabaseDriver('sqlite', 'VACUUM adds one to the schema version each time it runs');
+		$before = $this->schemaVersion();
+
+		$this->assertStringContainsString($this->optimizedMessage(), $this->renderInBootedCli('e107_admin/db.php', self::SEED));
+		$this->assertSame($before + 1, $this->schemaVersion(), 'Optimize SQL database did not rebuild the database file exactly once.');
+	}
+
+	public function testATableNameTheSchemaBuilderRefusesDoesNotStopTheWholeDatabaseBeingRebuilt()
+	{
+		$this->requireDatabaseDriver('sqlite', 'VACUUM adds one to the schema version each time it runs');
+		e107::getDb()->execute('CREATE TABLE `'.$this->oddlyNamed.'` (probe_id INT NOT NULL)');
+		$before = $this->schemaVersion();
+
+		$this->assertStringContainsString($this->optimizedMessage(), $this->renderInBootedCli('e107_admin/db.php', self::SEED));
+		$this->assertSame($before + 1, $this->schemaVersion(), 'A table name VACUUM never reads stopped the database being rebuilt.');
 	}
 
 	/**
@@ -106,7 +135,20 @@ class dbOptimizeSqlTest extends \Test\Unit
 	{
 		$sql = e107::getDb();
 		$sql->execute('DROP VIEW IF EXISTS `'.$this->view.'`');
-		$sql->execute('DROP TABLE IF EXISTS `'.$this->probe.'`, `'.$this->oddlyNamed.'`');
+		$sql->execute('DROP TABLE IF EXISTS `'.$this->probe.'`');
+		$sql->execute('DROP TABLE IF EXISTS `'.$this->oddlyNamed.'`');
+	}
+
+	/**
+	 * @return int the SQLite database's schema version
+	 */
+	private function schemaVersion()
+	{
+		$sql = e107::getDb();
+		$sql->execute('PRAGMA schema_version');
+		$row = $sql->fetch();
+
+		return (int) $row['schema_version'];
 	}
 
 	/**

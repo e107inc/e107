@@ -215,6 +215,50 @@ final class SqliteSchemaManager implements SchemaManagerInterface
 	}
 
 	/**
+	 * The rows are counted. The bytes come from the dbstat table, which an SQLite library built without it does
+	 * not have; they are null there.
+	 *
+	 * @inheritDoc
+	 */
+	public function getTableStatus($table)
+	{
+		list($schema, $bare) = SqliteSchemaReader::split($table);
+		$master = SqliteSchemaReader::master($schema);
+		$quoted = $this->quote($table);
+
+		if(!$this->db->execute('SELECT 1 FROM '.$master." WHERE type = 'table' AND name = :name", array('name' => $bare)))
+		{
+			return null;
+		}
+
+		$this->db->execute('SELECT COUNT(*) AS n FROM '.$quoted);
+		$row = $this->db->fetch();
+		$rows = is_array($row) ? (int) $row['n'] : null;
+		$data = null;
+		$index = null;
+
+		$pages = 'SELECT COALESCE(SUM(pgsize), 0) AS bytes FROM dbstat'.(($schema === null) ? '' : '(:schema)');
+		$params = ($schema === null) ? array('name' => $bare) : array('name' => $bare, 'schema' => $schema);
+
+		if($this->db->execute($pages.' WHERE name = :name', $params) !== false)
+		{
+			$row = $this->db->fetch();
+			$data = (int) $row['bytes'];
+
+			$this->db->execute($pages.' WHERE name IN (SELECT name FROM '.$master." WHERE type = 'index' AND tbl_name = :name)", $params);
+			$row = $this->db->fetch();
+			$index = is_array($row) ? (int) $row['bytes'] : null;
+		}
+
+		return array(
+			'rows'           => $rows,
+			'data_length'    => $data,
+			'index_length'   => $index,
+			'avg_row_length' => ($data === null) ? null : ($rows ? (int) floor($data / $rows) : 0),
+		);
+	}
+
+	/**
 	 * SQLite has no TRUNCATE: every row is deleted and the table's AUTOINCREMENT counter removed.
 	 *
 	 * @inheritDoc

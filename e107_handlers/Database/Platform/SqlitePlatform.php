@@ -223,8 +223,14 @@ class SqlitePlatform extends AbstractPlatform
 	}
 
 	/**
-	 * SQLite has substr() and instr() rather than SUBSTRING ... FROM ... FOR and POSITION.
-	 *
+	 * @inheritDoc
+	 */
+	public function compileExplain($statement)
+	{
+		return 'EXPLAIN QUERY PLAN '.$statement;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function compileSubstringBefore($expression, $delimiter)
@@ -323,6 +329,14 @@ class SqlitePlatform extends AbstractPlatform
 	public function compileOptimizeTable(array $quotedTables)
 	{
 		return 'VACUUM';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function optimizesWholeDatabase()
+	{
+		return true;
 	}
 
 	/**

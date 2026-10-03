@@ -79,7 +79,7 @@ class auth_login extends alt_auth_base
 	 */
 	public function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
-		$db = e107::getDb('alt_auth_otherdb');
+		$db = e107::getDb('alt_auth_otherdb')->useDriver('mysql');
 
 		$server = $this->conf['otherdb_server'].':'.varset($this->conf['otherdb_port'], 3306);
 

@@ -101,27 +101,11 @@ abstract class AbstractPlatform implements PlatformInterface
 	}
 
 	/**
-	 * A plain UPDATE; a row limit has no standard spelling and is refused.
-	 *
 	 * @inheritDoc
 	 */
-	public function compileUpdate($quotedTable, array $assignments, $where, $limit = null)
+	public function compileExplain($statement)
 	{
-		$this->refuseLimit($limit, 'UPDATE');
-
-		return 'UPDATE '.$quotedTable.' SET '.$this->assignmentList($assignments).$where;
-	}
-
-	/**
-	 * A plain DELETE; a row limit has no standard spelling and is refused.
-	 *
-	 * @inheritDoc
-	 */
-	public function compileDelete($quotedTable, $where, $limit = null)
-	{
-		$this->refuseLimit($limit, 'DELETE');
-
-		return 'DELETE FROM '.$quotedTable.$where;
+		return 'EXPLAIN '.$statement;
 	}
 
 	/**
@@ -267,6 +251,14 @@ abstract class AbstractPlatform implements PlatformInterface
 	/**
 	 * @inheritDoc
 	 */
+	public function optimizesWholeDatabase()
+	{
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function assignsAutoIncrementOnZero()
 	{
 		return false;
@@ -325,19 +317,5 @@ abstract class AbstractPlatform implements PlatformInterface
 		}
 
 		return 'INSERT INTO';
-	}
-
-	/**
-	 * @param int|null $limit
-	 * @param string $verb
-	 * @return void
-	 * @throws UnsupportedException when a limit is asked for
-	 */
-	private function refuseLimit($limit, $verb)
-	{
-		if($limit !== null)
-		{
-			throw new UnsupportedException(get_class($this).' cannot limit the rows of an '.$verb.'.');
-		}
 	}
 }

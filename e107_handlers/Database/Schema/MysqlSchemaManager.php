@@ -121,6 +121,40 @@ final class MysqlSchemaManager implements SchemaManagerInterface
 	}
 
 	/**
+	 * SHOW TABLE STATUS. Its row count is the engine's estimate for InnoDB.
+	 *
+	 * @inheritDoc
+	 */
+	public function getTableStatus($table)
+	{
+		list($database, $bare) = $this->split($table);
+
+		if($this->db->execute('SHOW TABLE STATUS'.(($database === null) ? '' : ' FROM '.$database).' WHERE Name = :name', array('name' => $bare)) === false)
+		{
+			return null;
+		}
+
+		$row = $this->db->fetch();
+
+		if(!is_array($row))
+		{
+			return null;
+		}
+
+		$figure = function($key) use ($row)
+		{
+			return (isset($row[$key]) && $row[$key] !== null) ? (int) $row[$key] : null;
+		};
+
+		return array(
+			'rows'           => $figure('Rows'),
+			'data_length'    => $figure('Data_length'),
+			'index_length'   => $figure('Index_length'),
+			'avg_row_length' => $figure('Avg_row_length'),
+		);
+	}
+
+	/**
 	 * Replays the source table's own SHOW CREATE TABLE under the new name, so the copy keeps every key, option and
 	 * the auto-increment counter.
 	 *

@@ -191,6 +191,15 @@ interface PlatformInterface
 	public function compileFindInSet($needle, $quotedColumn);
 
 	/**
+	 * The statement that shows how the engine would run a query, for the debug
+	 * panel: its plan, one row per step.
+	 *
+	 * @param string $statement a SELECT
+	 * @return string
+	 */
+	public function compileExplain($statement);
+
+	/**
 	 * Join strings end to end (MySQL's CONCAT(), standard SQL's ||). The result
 	 * is NULL where any part is.
 	 *
@@ -411,6 +420,13 @@ interface PlatformInterface
 	 * @return string SQL statement.
 	 */
 	public function compileOptimizeTable(array $quotedTables);
+
+	/**
+	 * Whether {@see PlatformInterface::compileOptimizeTable()} rebuilds the whole database, whichever tables it names.
+	 *
+	 * @return bool
+	 */
+	public function optimizesWholeDatabase();
 
 	/**
 	 * Build a CREATE DATABASE statement. The database identifier arrives quoted

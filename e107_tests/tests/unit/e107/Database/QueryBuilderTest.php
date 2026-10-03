@@ -2203,6 +2203,8 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame('JSON_LENGTH(`c`)', $platform->compileJsonLength('`c`'));
 			$this->assertSame('MATCH (`a`, `b`) AGAINST (:p)', $platform->compileFullText(array('`a`', '`b`'), ':p'));
 			$this->assertSame('MATCH (`a`) AGAINST (:p IN BOOLEAN MODE)', $platform->compileFullText(array('`a`'), ':p', true));
+			$this->assertSame('EXPLAIN SELECT 1', $platform->compileExplain('SELECT 1'));
+			$this->assertSame('OPTIMIZE TABLE `a`, `b`', $platform->compileOptimizeTable(array('`a`', '`b`')));
 			$this->assertSame('UPDATE `e107_t` e, (SELECT @n := :n) m  SET e.`pos` = @n := @n + :s WHERE `pos` > :t', $platform->compileRenumber('`e107_t`', '`pos`', '`id`', ':n', ':s', ':t'));
 
 			$this->assertSame('`user_name`', $platform->quoteIdentifier('user_name'));
@@ -2225,6 +2227,7 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertTrue($platform->supportsFoundRows());
 			$this->assertTrue($platform->supportsFullTextIndexes());
 			$this->assertFalse($platform->supportsTransactionalDdl());
+			$this->assertFalse($platform->optimizesWholeDatabase());
 			$this->assertTrue($platform->assignsAutoIncrementOnZero());
 			$this->assertTrue($platform->countsConflictingRows());
 			$this->assertFalse($platform->reportsInsertIdForEveryTable());

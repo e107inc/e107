@@ -99,7 +99,7 @@ class auth_login extends alt_auth_base
 
 		$server = $this->conf['e107db_server'].':'.varset($this->conf['e107db_port'], 3306);
 
-		$db = e107::getDb('alt_auth_e107db');
+		$db = e107::getDb('alt_auth_e107db')->useDriver('mysql');
 
 		if(!$db->connect($server, $this->conf['e107db_username'], $this->conf['e107db_password'], true)
 			|| !$db->database($this->conf['e107db_database'], '', false))

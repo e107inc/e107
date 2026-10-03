@@ -187,6 +187,27 @@ class SqliteDriverTest extends \Test\Unit
 			->where('b.item_name', 'one')->fetchColumn());
 	}
 
+	public function testATableReportsItsRowsAndSizeAndIsOptimised()
+	{
+		$this->insertItems();
+		$manager = $this->db->getSchemaManager();
+
+		$status = $manager->getTableStatus('e107_item');
+		$this->assertSame(3, $status['rows']);
+		$this->assertNull($manager->getTableStatus('e107_nosuch'));
+
+		if($status['data_length'] !== null) // an SQLite built without the dbstat table cannot say
+		{
+			$this->assertGreaterThan(0, $status['data_length']);
+			$this->assertGreaterThan(0, $status['index_length'], 'item has a unique and a plain index');
+			$this->assertSame((int) floor($status['data_length'] / 3), $status['avg_row_length']);
+		}
+
+		$this->assertNotFalse($this->db->schema()->optimizeTable(array('item')));
+		$this->assertSame('EXPLAIN QUERY PLAN SELECT 1', $this->db->getPlatform()->compileExplain('SELECT 1'));
+		$this->assertGreaterThan(0, $this->db->execute($this->db->getPlatform()->compileExplain('SELECT * FROM `e107_item` WHERE item_name = \'one\'')));
+	}
+
 	public function testAnUpsertCanUpdateFromTheStoredValue()
 	{
 		$bump = function()

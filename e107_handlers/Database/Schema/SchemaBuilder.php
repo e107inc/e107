@@ -438,6 +438,7 @@ class SchemaBuilder
 
 	/**
 	 * Reclaim unused space / rebuild one or more tables by prefixed name, never routed to a lan_* table, so the names {@see ConnectionInterface::tables()} lists pass as they are.
+	 * Where {@see PlatformInterface::optimizesWholeDatabase()}, the names are not read at all.
 	 *
 	 * @param string[]|string $tables Logical table names (prefix applied, no routing).
 	 * @return int|bool
@@ -447,14 +448,17 @@ class SchemaBuilder
 	{
 		$physical = array();
 
-		foreach((is_array($tables) ? $tables : array($tables)) as $table)
+		if(!$this->platform->optimizesWholeDatabase())
 		{
-			$physical[] = $this->resolvePhysicalTable($table);
-		}
+			foreach((is_array($tables) ? $tables : array($tables)) as $table)
+			{
+				$physical[] = $this->resolvePhysicalTable($table);
+			}
 
-		if(count($physical) === 0)
-		{
-			throw new InvalidArgumentException('optimizeTable() needs at least one table.');
+			if(count($physical) === 0)
+			{
+				throw new InvalidArgumentException('optimizeTable() needs at least one table.');
+			}
 		}
 
 		return $this->runStatements($this->db->getSchemaManager()->compileOptimizeTable($physical));

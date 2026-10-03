@@ -132,6 +132,16 @@ class MysqlSchemaManagerTest extends \Test\Unit
 		}
 	}
 
+	public function testATableReportsWhatShowTableStatusSays()
+	{
+		$status = $this->manager->getTableStatus(MPREFIX.'user');
+
+		$this->assertSame(array('rows', 'data_length', 'index_length', 'avg_row_length'), array_keys($status));
+		$this->assertGreaterThan(0, $status['data_length']);
+		$this->assertNull($this->manager->getTableStatus(MPREFIX.'no_such_table'));
+		$this->assertNull($this->manager->getTableStatus(MPREFIX.'use_'), 'the name is matched whole, not as a LIKE pattern');
+	}
+
 	public function testTruncatingStartsTheCounterAgain()
 	{
 		$this->db->execute('DROP TABLE IF EXISTS `'.MPREFIX.'smtest_trunc`');
