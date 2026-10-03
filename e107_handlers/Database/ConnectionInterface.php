@@ -506,6 +506,8 @@ use PDOStatement;
 		 *
 		 * @param string $table logical table name; multi-language routing applies
 		 * @return string|null the column name, or null when the table has none or does not exist
+		 * @throws \e107\Database\Exception\QueryException when the engine cannot be asked
+		 * @throws \InvalidArgumentException when the engine describes a shape the schema model cannot hold
 		 */
 		public function getAutoIncrementColumn($table);
 

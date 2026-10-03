@@ -2307,38 +2307,50 @@ class e107plugin
 		if($action == 'add')
 		{
 			$sql_data = file_get_contents($f);
-	
-			$search[0] = "CREATE TABLE ";	$replace[0] = "CREATE TABLE ".MPREFIX;
-			$search[1] = "INSERT INTO ";	$replace[1] = "INSERT INTO ".MPREFIX;
-	
-		    preg_match_all("/create(.*?)myisam;/si", $sql_data, $creation);
-		    foreach($creation[0] as $tab)
-		    {
-				// Whole-statement CREATE TABLE DDL read from a trusted core SQL
-				// file; no separable values to bind. execute() runs raw SQL.
-				$query = str_replace($search,$replace,$tab);
-		      	if(!$sql->execute($query))
-		      	{
-		        	$error = TRUE;
+
+			try
+			{
+				$declared = (new \e107\Database\Schema\Declared\SqlFileCatalogue())->parse($sql_data, 'extended_'.$field_name);
+				$definitions = array();
+
+				foreach($declared as $name => $table)
+				{
+					$definitions[$name] = (new \e107\Database\Schema\Definition\MysqlDdlParser())->parseTableBody($name, $table->getBody());
 				}
+
+				$reader = new \e107\Database\Schema\Definition\MysqlInsertReader();
+				$inserts = $reader->readAll($sql_data, $definitions);
+			}
+			catch(Exception $e)
+			{
+				$this->log("Could not read ".$f.": ".$e->getMessage());
+				return true;
+			}
+
+			foreach($declared as $table)
+			{
+				if($sql->schema()->createDeclaredTable($table) === false)
+				{
+					$error = true;
+				}
+
 				$count++;
 			}
 
-		    preg_match_all("/insert(.*?);/si", $sql_data, $inserts);
-			foreach($inserts[0] as $ins)
+			foreach($inserts as $insert)
 			{
-				// Whole-statement INSERT DDL read from a trusted core SQL file;
-				// no separable values to bind. execute() runs raw SQL.
-				$qry = str_replace($search,$replace,$ins);
-				if(!$sql->execute($qry))
+				$rows = $reader->rowsByColumn($insert, isset($definitions[$insert['table']]) ? array_keys($definitions[$insert['table']]->getColumns()) : array());
+
+				if(empty($rows) || $sql->createQueryBuilder()->insert($insert['table'])->values($rows)->execute() === false)
 				{
-				  	$error = TRUE;
+					$error = true;
 				}
+
 				$count++;
-		    }
-			
+			}
+
 			if(!$count) $error = TRUE;
-			
+
 			return $error;
 		}
 		
@@ -3585,41 +3597,37 @@ class e107plugin
 
 			foreach($tableData['tables'] as $k=>$v)
 			{
-				// Settle the engine before the character set: how wide an index
-				// may be depends on the engine that ends up holding it, so a
-				// table pushed onto MyISAM for its FULLTEXT index is measured
-				// against MyISAM's limit and not InnoDB's.
-				$requirements = $dbv->deriveTableRequirements(
-					$dbv->getFields($tableData['data'][$k]),
-					$dbv->getIndex($tableData['data'][$k])
-				);
-
-				$engine = $dbv->getIntendedStorageEngine($tableData['engine'][$k], $requirements);
-
-				$requirements['engine'] = $engine;
-
-				$charset = $dbv->getIntendedCharset($tableData['charset'][$k], $requirements);
-
 				switch($function)
 				{
 					case "install":
-						$query = "CREATE TABLE  `".MPREFIX.$v."` (\n";
-						$query .= $tableData['data'][$k];
-						$query .= "\n) ENGINE=$engine DEFAULT CHARSET=$charset ";
+						$intended = $dbv->intendedForBody($tableData['data'][$k], $tableData['engine'][$k], $tableData['charset'][$k]);
+						$declared = new \e107\Database\Schema\Declared\DeclaredTable($plug['plugin_path'], $v, $tableData['data'][$k], $tableData['engine'][$k], $tableData['charset'][$k]);
 
 						$txt = EPL_ADLAN_239." <b>{$v}</b> ";
 
-						if(!$sql->db_Query($query))
+						try
 						{
+							$created = $sql->schema()->createDeclaredTable($declared, $intended['engine'], $intended['charset']);
+							$query = $sql->getLastQuery();
 							$errno = $sql->getLastErrorNumber();
 							$error = $sql->getLastErrorText();
+						}
+						catch(Exception $e)
+						{
+							$created = false;
+							$query = $tableData['data'][$k];
+							$errno = 0;
+							$error = $e->getMessage();
+						}
 
+						if($created === false)
+						{
 							// "Table already exists" is normal rather than a
 							// failure: uninstalling a plugin leaves its tables in
 							// place unless delete_tables was asked for, so every
 							// reinstall meets them again, and the table being
 							// there is all this step wanted.
-							if((int) $errno === 1050)
+							if((int) $errno === e_db::ERROR_TABLE_EXISTS)
 							{
 								$txt = "Table {$v} already present.";
 								$status = E_MESSAGE_INFO;

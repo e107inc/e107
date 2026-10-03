@@ -2052,10 +2052,23 @@ abstract class e_db_abstractTest extends \Test\Unit
 	 */
 	protected function transactionTable()
 	{
-		$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
-		$this->db->execute('CREATE TABLE `#e_db_txn_test` (id INT NOT NULL PRIMARY KEY, v VARCHAR(10) NOT NULL DEFAULT \'\') ENGINE=InnoDB');
+		$this->db->dropTable('e_db_txn_test');
+		$this->createFixtureTable('e_db_txn_test', "id INT NOT NULL, v VARCHAR(10) NOT NULL DEFAULT '', PRIMARY KEY (id)", 'InnoDB');
 
 		return 'e_db_txn_test';
+	}
+
+	/**
+	 * Create a fixture table from a body in the schema DSL, built for the engine of the connection under test.
+	 *
+	 * @param string $table logical table name
+	 * @param string $body column and key definitions
+	 * @param string|null $engine storage engine, where the engine has them
+	 * @return int|bool
+	 */
+	private function createFixtureTable($table, $body, $engine = null)
+	{
+		return $this->db->schema()->createDeclaredTable(new \e107\Database\Schema\Declared\DeclaredTable('core', $table, $body, $engine, null));
 	}
 
 	/**
@@ -2225,7 +2238,8 @@ abstract class e_db_abstractTest extends \Test\Unit
 				});
 			});
 
-			$this->assertFalse($open, 'inTransaction() says the engine ended the transaction at the schema change');
+			$this->assertSame($db->getPlatform()->supportsTransactionalDdl(), $open,
+				'inTransaction() says whether the engine kept the transaction open across the schema change');
 			$this->assertFalse($db->inTransaction());
 			$this->assertNotFalse($db->execute('SELECT c2 FROM `#'.$table.'`'));
 
@@ -2400,6 +2414,137 @@ abstract class e_db_abstractTest extends \Test\Unit
 		}
 	}
 
+	public function testARolledBackSchemaChangeLeavesTheTableAsTheEngineHasIt()
+	{
+		$other = $this->makeDb();
+		$other->__construct();
+		$other->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		$other->database($this->dbConfig['mySQLdefaultdb'], MPREFIX);
+		$this->db->dropTable('e_db_txn_test');
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->createFixtureTable('e_db_txn_test', 'id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)', 'InnoDB');
+			$this->assertTrue($this->db->isTable('e_db_txn_test'));
+			$this->assertSame('id', $this->db->getAutoIncrementColumn('e_db_txn_test'));
+			$this->assertTrue($this->db->rollBack());
+
+			$this->assertSame($other->isTable('e_db_txn_test'), $this->db->isTable('e_db_txn_test'));
+			$this->assertSame($other->getAutoIncrementColumn('e_db_txn_test'), $this->db->getAutoIncrementColumn('e_db_txn_test'));
+		}
+		finally
+		{
+			$other->close();
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testSelectingTheDatabaseAgainReadsTheTableSchemasAfresh()
+	{
+		$table = $this->transactionTable();
+		$other = $this->makeDb();
+		$other->__construct();
+		$other->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		$other->database($this->dbConfig['mySQLdefaultdb'], MPREFIX);
+
+		try
+		{
+			$this->assertNull($this->db->getAutoIncrementColumn($table));
+			$this->assertNotFalse($other->dropTable($table));
+			$other->schema()->createDeclaredTable(new \e107\Database\Schema\Declared\DeclaredTable('core', $table, 'id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)', 'InnoDB', null));
+
+			$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+			$this->assertSame('id', $this->db->getAutoIncrementColumn($table));
+		}
+		finally
+		{
+			$other->close();
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testAnUpsertThatUpdatesCostsTheSameStatementsEveryTime()
+	{
+		$this->db->dropTable('e_db_upsert_test');
+		$this->createFixtureTable('e_db_upsert_test', "id INT NOT NULL AUTO_INCREMENT, u VARCHAR(10) NOT NULL DEFAULT '', v VARCHAR(10) NOT NULL DEFAULT '', PRIMARY KEY (id), UNIQUE KEY u (u)", 'InnoDB');
+		$upsert = function($value)
+		{
+			return $this->db->insert('e_db_upsert_test', array('data' => array('u' => 'a', 'v' => $value), '_FIELD_TYPES' => array('u' => 'str', 'v' => 'str'), '_DUPLICATE_KEY_UPDATE' => true));
+		};
+		$statements = $this->db->getPlatform()->countsConflictingRows() ? 2 : 3;
+
+		try
+		{
+			$this->assertSame(1, (int) $upsert('first'));
+
+			foreach(array('second', 'third', 'fourth') as $value)
+			{
+				$before = $this->db->queryCount();
+				$this->assertTrue($upsert($value));
+				$this->assertSame($statements, $this->db->queryCount() - $before, 'the upsert and the counter reset, and nothing read again');
+			}
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_upsert_test`');
+		}
+	}
+
+	public function testAByteDefaultIsStoredAsMysqlStoresIt()
+	{
+		$this->db->dropTable('e_db_default_test');
+		$this->assertNotFalse($this->createFixtureTable('e_db_default_test', 'id INT NOT NULL, a varbinary(4) NOT NULL DEFAULT 0x41, PRIMARY KEY (id)', 'InnoDB'), $this->db->getLastErrorText());
+
+		try
+		{
+			$this->db->createQueryBuilder()->insert('e_db_default_test')->values(array('id' => 1))->execute();
+			$this->db->createQueryBuilder()->insert('e_db_default_test')->values(array('id' => 2, 'a' => 'A'))->execute();
+
+			$this->assertSame(array(1, 2), array_map('intval', $this->db->createQueryBuilder()->select('id')->from('e_db_default_test')->where('a', 'A')->orderBy('id')->fetchColumn()),
+				'the default equals the same bytes written through a bound parameter');
+			$default = $this->db->field('e_db_default_test', 'a', '', true)['Default'];
+			$this->assertSame('A', preg_match('/^0x([0-9a-f]+)$/i', $default, $hex) ? hex2bin($hex[1]) : $default,
+				'the column reports its default as those bytes, whether spelt as text or as a hexadecimal literal');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_default_test`');
+		}
+	}
+
+	public function testALoneIntegerPrimaryKeyIsNotNumberedForAnInsertThatLeavesItOut()
+	{
+		$this->db->dropTable('e_db_key_test');
+		$this->assertNotFalse($this->createFixtureTable('e_db_key_test', "id INT, v VARCHAR(10) NOT NULL DEFAULT '', PRIMARY KEY (id)", 'InnoDB'), $this->db->getLastErrorText());
+
+		try
+		{
+			$this->assertNotFalse($this->db->createQueryBuilder()->insert('e_db_key_test')->values(array('v' => 'a'))->execute());
+			$this->assertFalse($this->db->createQueryBuilder()->insert('e_db_key_test')->values(array('v' => 'b'))->execute(), 'the key both inserts left out is the same 0, a primary key being NOT NULL whatever it declares');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_key_test`');
+		}
+	}
+
+	public function testACaseSensitiveCollationKeepsAUniqueKeyCaseSensitive()
+	{
+		$this->db->dropTable('e_db_collation_test');
+		$this->assertNotFalse($this->db->schema()->createDeclaredTable(new \e107\Database\Schema\Declared\DeclaredTable('core', 'e_db_collation_test', 'tok varchar(10) COLLATE latin1_general_cs NOT NULL, UNIQUE KEY tok (tok)', 'InnoDB', 'latin1')), $this->db->getLastErrorText());
+
+		try
+		{
+			$this->assertSame(1, $this->db->createQueryBuilder()->insert('e_db_collation_test')->values(array('tok' => 'abc'))->execute());
+			$this->assertSame(1, $this->db->createQueryBuilder()->insert('e_db_collation_test')->values(array('tok' => 'ABC'))->execute(), $this->db->getLastErrorText());
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_collation_test`');
+		}
+	}
+
 	public function testAnAdvisoryLockShutsOutAnotherConnectionUntilReleased()
 	{
 		$name = 'e107_test_lock_'.md5(__METHOD__.uniqid('', true));
@@ -2495,13 +2640,13 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 		$this->db->dropTable($table);
 
-		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
-			.'`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,'
+		$this->assertNotFalse($this->createFixtureTable($table,
+			'`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,'
 			.'`with_default` VARCHAR(20) NOT NULL DEFAULT \'x\','
 			.'`spaced_default` VARCHAR(20) NOT NULL DEFAULT \'not assigned\','
 			.'`no_default` TEXT NOT NULL,'
 			.'`nullable_col` VARCHAR(20) NULL,'
-			.'PRIMARY KEY (`id`))'),
+			.'PRIMARY KEY (`id`)'),
 			'precondition: the fixture table has to exist');
 
 		$this->assertSame(
@@ -2526,18 +2671,20 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->db->dropTable($table);
 		@unlink(e_CACHE_DB.$table.'.php');
 
-		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
-			.'`id` INT(10) UNSIGNED NOT NULL,'
-			.'PRIMARY KEY (`id`))'),
+		$this->assertNotFalse($this->createFixtureTable($table,
+			'`id` INT(10) UNSIGNED NOT NULL,'
+			.'PRIMARY KEY (`id`)'),
 			'precondition: the fixture table has to exist');
 
 		$this->assertNotFalse($this->db->getFieldDefs($table),
 			'precondition: the definition has to be on record before the table changes');
 
-		$this->assertNotFalse($this->db->execute('ALTER TABLE `'.MPREFIX.$table.'` ADD `body` TEXT NOT NULL'),
+		$this->assertNotFalse($this->db->schema()->addColumn($table, 'body', \e107\Database\Schema\Column::define('TEXT')->notNull()),
 			'precondition: the column has to be added behind the definition\'s back');
 
-		$this->assertSame(array('id' => '', 'body' => ''), $this->db->getNotNullDefaults($table));
+		// SQLite declares the 0 that MySQL leaves implicit for an INT NOT NULL column.
+		$id = ($this->db->getDriver()->getName() === 'sqlite') ? '0' : '';
+		$this->assertSame(array('id' => $id, 'body' => ''), $this->db->getNotNullDefaults($table));
 
 		@unlink(e_CACHE_DB.$table.'.php');
 		$this->db->dropTable($table);
@@ -2561,11 +2708,11 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->db->dropTable($table);
 		@unlink(e_CACHE_DB.$table.'.php');
 
-		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
-			.'`id` INT(10) UNSIGNED NOT NULL,'
+		$this->assertNotFalse($this->createFixtureTable($table,
+			'`id` INT(10) UNSIGNED NOT NULL,'
 			.'`body` TEXT NOT NULL,'
 			.'`note` VARCHAR(20) NULL,'
-			.'PRIMARY KEY (`id`))'),
+			.'PRIMARY KEY (`id`)'),
 			'precondition: the fixture table has to exist');
 
 		$this->assertNotFalse(
@@ -2945,20 +3092,17 @@ abstract class e_db_abstractTest extends \Test\Unit
 			$this->fail("Failed to select new database");
 		}
 
-		$create = "CREATE TABLE `".$database."`.".$MPREFIX.$table." (
-					 `test_id` int(4) NOT NULL AUTO_INCREMENT,
-					 `test_var` varchar(255) NOT NULL,
-					 PRIMARY KEY (`test_id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-			";
+		// cleanup, then the table as a schema file would declare it, built in the secondary database
+		$xql->dropTable($table);
 
-		// cleanup
-		$xql->gen("DROP TABLE IF EXISTS `$database`.{$MPREFIX}{$table}");
+		$created = $xql->schema()->createDeclaredTable(new \e107\Database\Schema\Declared\DeclaredTable('core', $table,
+			"`test_id` int(4) NOT NULL AUTO_INCREMENT,
+			 `test_var` varchar(255) NOT NULL,
+			 PRIMARY KEY (`test_id`)", 'InnoDB', 'utf8'));
 
-		// create table
-		if(!$xql->gen($create))
+		if(!$created)
 		{
-			$this->fail("Failed to create table in secondary database");
+			$this->fail("Failed to create table in secondary database: ".$xql->getLastErrorText());
 		}
 
 		if(!$res = $xql->db_FieldList($table))

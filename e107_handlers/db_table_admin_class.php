@@ -783,11 +783,19 @@ class db_table_admin
 		{
 		//	$e107 = e107::getInstance();
 			$tmp = $this->get_table_def($tableName, $pathToSqlFile);
+
+			if (!is_array($tmp))
+			{
+				return false;
+			}
+
 			$createText = $tmp[0][0];
 			$newTableName = ($renameTable ? $renameTable : $tableName);
 			if ($addPrefix)
 			{
-				$newTableName = MPREFIX.$newTableName;
+				$declared = (new \e107\Database\Schema\Declared\SqlFileCatalogue())->parse($createText, basename($this->last_file));
+
+				return (count($declared) === 1) ? e107::getDb()->schema()->createDeclaredTable(reset($declared), null, null, $newTableName) : false;
 			}
 			// $newTableName is a SQL identifier (cannot be bound); sanitise and backtick-quote it.
 			$newTableName = preg_replace('/[^A-Za-z0-9_]/', '', $newTableName);

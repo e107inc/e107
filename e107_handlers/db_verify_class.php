@@ -599,6 +599,22 @@ class db_verify implements EngineCharsetResolverInterface
 
 
 	/**
+	 * The engine and character set this server should build a declared body with, settled as {@see resolve()}
+	 * settles a table's but from the body alone: no index derived from e_search, no live table to keep.
+	 *
+	 * @param string $body the declared column and index definitions
+	 * @param string|null $declaredEngine the engine the declaration names
+	 * @param string|null $declaredCharset the character set the declaration names
+	 * @return array ['engine' => string|false, 'charset' => string]; '' for both on a platform with neither
+	 */
+	public function intendedForBody($body, $declaredEngine = null, $declaredCharset = null)
+	{
+
+		return $this->intendedEngineAndCharset($this->getFields($body), $this->getIndex($body), $declaredEngine, $declaredCharset);
+	}
+
+
+	/**
 	 * What a live table proves about the keys this server accepts: the character set its indexed character columns stand at, the widest such key in characters, and the engine holding it.
 	 *
 	 * @param TableSchema $live

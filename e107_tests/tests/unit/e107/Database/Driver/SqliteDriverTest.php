@@ -359,19 +359,17 @@ class SqliteDriverTest extends \Test\Unit
 		$this->assertSame(0, $materialiser->sweep());
 	}
 
-	public function testATableIsRebuiltToANewDefinitionKeepingItsRows()
+	public function testADeclaredTableIsCreatedForSqliteAndAnExistingOneIsReported()
 	{
-		$this->insertItems();
-		$manager = $this->db->getSchemaManager();
-		$definition = (new MysqlDdlParser())->parseTableBody('item', "item_id int(10) unsigned NOT NULL auto_increment, item_name varchar(200) NOT NULL default '', item_hits int(10) NOT NULL default '0', item_new varchar(10) NOT NULL default 'n', PRIMARY KEY (item_id), KEY item_name (item_name)");
+		$declared = new \e107\Database\Schema\Declared\DeclaredTable('core', 'made',
+			"made_id int(10) unsigned NOT NULL auto_increment, made_name varchar(20) NOT NULL default '', PRIMARY KEY (made_id), KEY made_name (made_name)", 'InnoDB', 'utf8mb4');
 
-		$this->assertTrue($manager->rebuildTable('e107_item', $definition));
+		$this->assertTrue($this->db->schema()->createDeclaredTable($declared));
+		$this->assertTrue($this->db->index('made', 'made_name'));
+		$this->assertSame(1, $this->db->insert('made', array('made_name' => 'x')));
 
-		$this->assertSame(array('item_id', 'item_name', 'item_hits', 'item_new'), $this->db->fields('item'));
-		$this->assertSame(array('one', 'two', 'three'), $this->db->createQueryBuilder()->select('item_name')->from('item')->orderBy('item_id')->fetchColumn());
-		$this->assertSame('n', $this->db->createQueryBuilder()->select('item_new')->from('item')->setMaxResults(1)->fetchOne());
-		$this->assertTrue($this->db->index('item', 'item_name'));
-		$this->assertFalse($this->db->index('item', 'item_hits'), 'an index the new definition drops is gone');
+		$this->assertFalse($this->db->schema()->createDeclaredTable($declared));
+		$this->assertSame(ConnectionInterface::ERROR_TABLE_EXISTS, $this->db->getLastErrorNumber(), 'the failure the rollback followed is still the one reported');
 	}
 
 	public function testATransactionThatReadsBeforeItWritesIsNotOvertakenByAnotherWriter()
@@ -721,6 +719,15 @@ class SqliteDriverTest extends \Test\Unit
 			if(is_file($this->file.$suffix))
 			{
 				unlink($this->file.$suffix);
+			}
+		}
+
+		// getFieldDefs() caches a table's field types on disk by its name, whatever connection asked.
+		foreach(array('item', 'item_copy', 'plain', 'made') as $table)
+		{
+			if(is_file(e_CACHE_DB.$table.'.php'))
+			{
+				unlink(e_CACHE_DB.$table.'.php');
 			}
 		}
 	}

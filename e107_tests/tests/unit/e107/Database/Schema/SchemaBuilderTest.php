@@ -370,10 +370,10 @@ use RuntimeException;
 			);
 
 			$this->assertEquals(
-				"CREATE TABLE `e107_foo` ("
-				."`foo_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, "
-				."`foo_name` VARCHAR(100) NOT NULL DEFAULT '', "
-				."PRIMARY KEY (`foo_id`)"
+				"CREATE TABLE `e107_foo` (\n"
+				."`foo_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n"
+				."`foo_name` VARCHAR(100) NOT NULL DEFAULT '',\n"
+				."PRIMARY KEY (`foo_id`)\n"
 				.") ENGINE = InnoDB DEFAULT CHARSET = utf8mb4",
 				$stub->lastSql
 			);
@@ -388,9 +388,23 @@ use RuntimeException;
 			);
 
 			$this->assertEquals(
-				"CREATE TABLE `e107_foo` (`foo_id` int(10) NOT NULL) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4",
+				"CREATE TABLE `e107_foo` (\n`foo_id` int(10) NOT NULL\n) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4",
 				$stub->lastSql
 			);
+		}
+
+		public function testADeclaredTableIsCreatedWithTheEngineAndCharsetItIsGiven()
+		{
+			require_once(e_HANDLER."Database/Schema/Declared/DeclaredTable.php");
+
+			$schema = $this->makeSchema($stub);
+			$declared = new \e107\Database\Schema\Declared\DeclaredTable('core', 'widget', 'widget_id int(10) NOT NULL', 'MyISAM', null);
+
+			$schema->createDeclaredTable($declared, 'InnoDB', 'utf8mb4');
+			$this->assertEquals("CREATE TABLE `e107_widget` (\nwidget_id int(10) NOT NULL\n) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4", $stub->lastSql);
+
+			$schema->createDeclaredTable($declared, null, null, 'gadget');
+			$this->assertEquals("CREATE TABLE `e107_gadget` (\nwidget_id int(10) NOT NULL\n) ENGINE = MyISAM", $stub->lastSql, 'the declared engine stands in, under another name');
 		}
 
 		public function testRenameTable()
@@ -459,7 +473,7 @@ use RuntimeException;
 
 			// Returns the statement text (no execute) for a literal prefixed table.
 			$this->assertEquals(
-				"CREATE TABLE `e107_routedtable` (id int(10) unsigned NOT NULL) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;",
+				"CREATE TABLE `e107_routedtable` (\nid int(10) unsigned NOT NULL\n) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;",
 				$sql
 			);
 			$this->assertNull($stub->lastSql);

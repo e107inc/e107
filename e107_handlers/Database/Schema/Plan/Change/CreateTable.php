@@ -70,7 +70,7 @@ final class CreateTable extends AbstractChange
 
 		return self::rendered($schema->buildCreateTablePhysicalStatements(
 			$this->getTable(),
-			SqlFragment::raw("\n".$body->getSql()."\n"),
+			$body,
 			$options
 		));
 	}

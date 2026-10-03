@@ -15,6 +15,8 @@ use e107;
 use e107\Database\ConnectionInterface;
 use e107\Database\Exception\QueryException;
 use e107\Database\Exception\UnsupportedException;
+use e107\Database\Schema\Declared\DeclaredTable;
+use e107\Database\Schema\Declared\SqlFileCatalogue;
 use e107\Database\IdentifierFilter;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\QueryBuilder;
@@ -290,6 +292,72 @@ class SchemaBuilder
 		}
 
 		return $this->runStatements($this->db->getSchemaManager()->compileCreateTable($this->resolveTable($table), array($body->getSql()), $this->_resolveOptions($options)));
+	}
+
+	/**
+	 * Create a table as a schema file declares it, on this connection's engine, under the prefix and never a lan_*
+	 * table. With no engine and no character set given, the declared table options go in as written.
+	 *
+	 * <code>
+	 * foreach((new SqlFileCatalogue())->parse(file_get_contents($sqlFile), 'myplugin') as $declared)
+	 * {
+	 *     e107::getDb()->schema()->createDeclaredTable($declared);
+	 * }
+	 * </code>
+	 *
+	 * @param DeclaredTable $table The declaration, e.g. from {@see SqlFileCatalogue::parse()}.
+	 * @param string|null $engine Storage engine in place of the declared options, as {@see \db_verify::intendedForBody()} settles it.
+	 * @param string|null $charset Character set in place of the declared options.
+	 * @param string|null $name Logical name to create it under, when not the declared one.
+	 * @return int|bool the {@see ConnectionInterface::execute()} result; false on failure, with the
+	 *                  connection's error set ({@see ConnectionInterface::ERROR_TABLE_EXISTS} when the table is
+	 *                  there already).
+	 * @throws InvalidArgumentException on an invalid table name, engine or character set, or a body the engine cannot read.
+	 * @throws UnsupportedException when the body declares what the engine cannot build.
+	 */
+	public function createDeclaredTable(DeclaredTable $table, $engine = null, $charset = null, $name = null)
+	{
+		$physical = $this->resolvePhysicalTable(($name === null || $name === '') ? $table->getName() : $name);
+
+		return $this->runStatements($this->db->getSchemaManager()->compileCreateTable($physical, array($table->getBody()), $this->_declaredOptions($table, $engine, $charset)));
+	}
+
+	/**
+	 * @param DeclaredTable $table
+	 * @param string|null $engine
+	 * @param string|null $charset
+	 * @return string table options in the schema DSL, with a leading space, or ''
+	 */
+	private function _declaredOptions(DeclaredTable $table, $engine, $charset)
+	{
+		if(empty($engine) && empty($charset) && $table->getDeclaredOptions() !== null)
+		{
+			return ' '.$table->getDeclaredOptions();
+		}
+
+		$options = array();
+
+		if($this->platform->supportsStorageEngines())
+		{
+			$engine = empty($engine) ? $table->getDeclaredEngine() : $engine;
+
+			if(!empty($engine))
+			{
+				$options['engine'] = $engine;
+			}
+		}
+
+		if($this->platform->supportsCharsets())
+		{
+			$charset = empty($charset) ? $table->getDeclaredCharset() : $charset;
+
+			if(!empty($charset))
+			{
+				$options['charset'] = $charset;
+			}
+		}
+
+		return $this->_resolveOptions($options);
 	}
 
 	/**

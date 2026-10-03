@@ -150,13 +150,14 @@ final class MysqlSchemaManager implements SchemaManagerInterface
 	}
 
 	/**
-	 * The schema DSL is MySQL's own dialect, so the definitions go into the statement as written.
+	 * The schema DSL is MySQL's own dialect, so the definitions go into the statement as written, on lines of their
+	 * own: a body may end in a line comment.
 	 *
 	 * @inheritDoc
 	 */
 	public function compileCreateTable($table, array $definitions, $options = '')
 	{
-		return array($this->db->getPlatform()->compileCreateTable($this->quoteForDdl($table), $definitions, $options));
+		return array($this->db->getPlatform()->compileCreateTable($this->quoteForDdl($table), array("\n".implode(",\n", $definitions)."\n"), $options));
 	}
 
 	/**

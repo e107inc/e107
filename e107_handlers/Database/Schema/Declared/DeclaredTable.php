@@ -38,21 +38,26 @@ final class DeclaredTable
 	/** @var string|null DEFAULT CHARSET / CHARACTER SET as declared, null when absent */
 	private $declaredCharset;
 
+	/** @var string|null every table option after the closing parenthesis, as written; null when there are none */
+	private $declaredOptions;
+
 	/**
 	 * @param string $sqlFile 'core' or a plugin folder. Non-empty.
 	 * @param string $name Unprefixed table name. Non-empty.
 	 * @param string $body Verbatim column/key block, without the enclosing parentheses or a trailing semicolon.
 	 * @param string|null $declaredEngine Engine as declared; an empty string becomes null.
 	 * @param string|null $declaredCharset Character set as declared; an empty string becomes null.
+	 * @param string|null $declaredOptions Every table option as written, e.g. 'ENGINE=MyISAM AUTO_INCREMENT=1'; an empty string becomes null.
 	 * @throws InvalidArgumentException when $sqlFile or $name is empty.
 	 */
-	public function __construct($sqlFile, $name, $body, $declaredEngine = null, $declaredCharset = null)
+	public function __construct($sqlFile, $name, $body, $declaredEngine = null, $declaredCharset = null, $declaredOptions = null)
 	{
 		$this->sqlFile = $this->_requireNonEmpty($sqlFile, 'sqlFile');
 		$this->name = $this->_requireNonEmpty($name, 'name');
 		$this->body = (string) $body;
 		$this->declaredEngine = $this->_normaliseOptional($declaredEngine);
 		$this->declaredCharset = $this->_normaliseOptional($declaredCharset);
+		$this->declaredOptions = $this->_normaliseOptional($declaredOptions);
 	}
 
 	/**
@@ -98,6 +103,14 @@ final class DeclaredTable
 	}
 
 	/**
+	 * @return string|null Every table option as written, null when the declaration states none.
+	 */
+	public function getDeclaredOptions()
+	{
+		return $this->declaredOptions;
+	}
+
+	/**
 	 * @param mixed $other
 	 * @return bool True when $other is a DeclaredTable with every field equal.
 	 */
@@ -112,7 +125,7 @@ final class DeclaredTable
 	}
 
 	/**
-	 * @return array ['sqlFile'=>string, 'name'=>string, 'body'=>string, 'engine'=>string|null, 'charset'=>string|null]
+	 * @return array ['sqlFile'=>string, 'name'=>string, 'body'=>string, 'engine'=>string|null, 'charset'=>string|null, 'options'=>string|null]
 	 */
 	public function toArray()
 	{
@@ -122,6 +135,7 @@ final class DeclaredTable
 			'body'    => $this->body,
 			'engine'  => $this->declaredEngine,
 			'charset' => $this->declaredCharset,
+			'options' => $this->declaredOptions,
 		);
 	}
 

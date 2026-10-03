@@ -423,7 +423,8 @@ DATA;
 		self::assertEquals($expected, $actual);
 
 		$actual = $this->dbv->getFixQuery('create', 'table', 'table_user', $sqlFileData, 'InnoDB');
-		$expected = 'CREATE TABLE `e107_table` (table_id int(10) unsigned NOT NULL auto_increment,
+		$expected = 'CREATE TABLE `e107_table` (
+table_id int(10) unsigned NOT NULL auto_increment,
 				  table_name varchar(100) NOT NULL default \'\',
 				  table_email varchar(100) NOT NULL default \'\',
 				  table_user int(10) unsigned NOT NULL default \'0\',
@@ -442,10 +443,11 @@ DATA;
 				  PRIMARY KEY  (table_id)
 				  UNIQUE KEY `table_email` (`table_email`),
 				  KEY `table_user` (`table_user`)
-				  ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;';
+
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;';
 
 		$expected = str_replace("\t", "", $expected);
-		$actual = str_replace("\t", "", $actual);
+		$actual = preg_replace('/ +$/m', '', str_replace("\t", "", $actual));
 
 		self::assertEquals($expected, $actual);
 
