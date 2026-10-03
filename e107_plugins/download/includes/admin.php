@@ -1935,12 +1935,9 @@ $columnInfo = array(
 		
 				$updateArray = array_merge($dlInfo,$dlMirrors);
 
-				$updateQry = $sql->createQueryBuilder()->update('download');
-				foreach($updateArray as $updateField => $updateValue)
-				{
-					$updateQry->set($updateField, $updateValue);
-				}
-				$updateQry->where('download_id', (int) $id);
+				$updateQry = $sql->createQueryBuilder()->update('download')
+					->valuesTyped($updateArray)
+					->where('download_id', (int) $id);
 
 				$mes->addAuto($updateQry->execute(), 'update', DOWLAN_2." (<a href='".e_PLUGIN."download/download.php?view.".$id."'>".$_POST['download_name']."</a>)");
 	                
