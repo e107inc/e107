@@ -10,9 +10,11 @@
 
 namespace e107\Database\Platform;
 
+use e107\Database\Driver\SqliteFunctions;
 use e107\Database\Exception\UnsupportedException;
 use e107\Database\Schema\Definition\MysqlDdlParser;
 use e107\Database\SqlLexer;
+use e107\Shims\PdoSqlite;
 use PDO;
 
 /**
@@ -32,21 +34,15 @@ class SqlitePlatformTest extends \Test\Unit
 		require_once(e_HANDLER.'e_db_interface.php');
 		require_once(e_HANDLER.'Database/Platform/SqlitePlatform.php');
 		require_once(e_HANDLER.'Database/Schema/Definition/MysqlDdlParser.php');
+		require_once(e_HANDLER.'Database/Driver/SqliteFunctions.php');
 
-		if(!extension_loaded('pdo_sqlite'))
-		{
-			$this->markTestSkipped('pdo_sqlite is not loaded');
-		}
+		$this->requireSqliteLibrary();
 
-		$this->pdo = new PDO('sqlite::memory:', null, null, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-		$this->pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true); // as the SQLite driver sets it, on every PHP version
+		$this->pdo = PdoSqlite::connect('sqlite::memory:', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+		$this->pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
 		$version = $this->pdo->query('SELECT sqlite_version()')->fetchColumn();
 		$this->platform = new SqlitePlatform($version);
-
-		if(version_compare($version, '3.35.0', '<'))
-		{
-			$this->markTestSkipped('SQLite '.$version.' is older than e107 supports');
-		}
+		SqliteFunctions::register($this->pdo, $version, false);
 	}
 
 	public function testIdentifiersAreBacktickQuotedSoAMissingColumnIsAnErrorNotAString()
@@ -112,6 +108,20 @@ class SqlitePlatformTest extends \Test\Unit
 
 		$this->assertSame(1, $this->pdo->exec($this->platform->compileDelete('`l`', '', 1)));
 		$this->assertSame('DELETE FROM `l` WHERE (`v` = 2)', $this->platform->compileDelete('`l`', ' WHERE (`v` = 2)'));
+	}
+
+	public function testFindInSetMatchesWholeItemsIgnoringCase()
+	{
+		$this->pdo->exec('CREATE TABLE s (classes TEXT)');
+		$this->pdo->exec("INSERT INTO s VALUES ('1,2,253'), ('12,3'), ('Tag,Other'), (''), (NULL)");
+		$predicate = $this->platform->compileFindInSet(':n', '`classes`');
+
+		$this->assertSame(array('1,2,253'), $this->column('SELECT classes FROM s WHERE '.$predicate, array('n' => '2')));
+		$this->assertSame(array('12,3'), $this->column('SELECT classes FROM s WHERE '.$predicate, array('n' => '12')));
+		$this->assertSame(array('Tag,Other'), $this->column('SELECT classes FROM s WHERE '.$predicate, array('n' => 'tag')));
+		$this->assertSame(array(), $this->column('SELECT classes FROM s WHERE '.$predicate, array('n' => '2,253')), 'a needle with a comma is never found, as on MySQL');
+		$this->assertSame(array(), $this->column('SELECT classes FROM s WHERE '.$predicate, array('n' => '')), 'nor is an empty one in an empty set');
+		$this->assertSame(array('3'), $this->column('SELECT '.$predicate.' FROM s WHERE classes = :c', array('n' => '253', 'c' => '1,2,253')), 'the position, as MySQL answers');
 	}
 
 	public function testTheLikeEscapeClauseMakesABackslashEscapeWildcards()

@@ -58,6 +58,22 @@ class Unit extends \Codeception\Test\Unit
 		'thumbWidth', 'thumbHeight', 'thumbCrop');
 
 	/**
+	 * Skips the test unless pdo_sqlite is loaded and linked against an SQLite library e107 installs on.
+	 *
+	 * @return void
+	 */
+	protected function requireSqliteLibrary()
+	{
+		$driver = new \e107\Database\Driver\SqliteDriver();
+		$minimum = $driver->getMinimumServerVersion();
+
+		if(!$driver->isAvailable() || version_compare($driver->getServerVersion(null), $minimum, '<'))
+		{
+			$this->markTestSkipped('pdo_sqlite with SQLite '.$minimum.' or later is not available');
+		}
+	}
+
+	/**
 	 * Copies a fixture tree, e.g. a theme out of tests/_data into e_THEME, journaled so the run takes it back out.
 	 *
 	 * @param string $src

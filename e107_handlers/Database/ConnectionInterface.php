@@ -74,6 +74,19 @@ use PDOStatement;
 		const PARAM_BOOL = 5;
 
 		/**
+		 * e107's error codes for {@see ConnectionInterface::getLastErrorNumber()}: MySQL's numbers, on every engine.
+		 */
+		const ERROR_NOT_NULL           = 1048;
+		const ERROR_UNKNOWN_DATABASE   = 1049;
+		const ERROR_TABLE_EXISTS       = 1050;
+		const ERROR_NO_SUCH_COLUMN     = 1054;
+		const ERROR_DUPLICATE_COLUMN   = 1060;
+		const ERROR_DUPLICATE_KEY_NAME = 1061;
+		const ERROR_DUPLICATE_KEY      = 1062;
+		const ERROR_SYNTAX             = 1064;
+		const ERROR_NO_SUCH_TABLE      = 1146;
+
+		/**
 		 * Connect ONLY  - used in v2.x
 		 *
 		 * @param string $mySQLserver IP Or hostname of the MySQL server
@@ -488,12 +501,16 @@ use PDOStatement;
 
 
 		/**
-		 * Open a transaction. Called inside an open one, it sets a savepoint instead, so nested units of work roll
-		 * back on their own. Pair every call with {@see ConnectionInterface::commit()} or
-		 * {@see ConnectionInterface::rollBack()}; {@see ConnectionInterface::transactional()} does the pairing.
+		 * The column of a table that takes an auto-increment value, read once per table and request.
 		 *
-		 * Engines differ in what a transaction covers: MySQL commits implicitly at any DDL statement and ignores
-		 * transactions on MyISAM tables, while SQLite rolls back DDL like any other statement.
+		 * @param string $table logical table name; multi-language routing applies
+		 * @return string|null the column name, or null when the table has none or does not exist
+		 */
+		public function getAutoIncrementColumn($table);
+
+
+		/**
+		 * Open a transaction, or a savepoint inside an open one; MySQL commits implicitly at any DDL statement.
 		 *
 		 * @return bool false, with the reason as the last error, when the engine refuses or has already ended the enclosing transaction
 		 */

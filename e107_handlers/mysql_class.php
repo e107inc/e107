@@ -260,6 +260,8 @@ class e_db_mysql implements e_db
 			return false;
 		}
 
+		$this->_forgetTableSchemas();
+
 		return true;
 	}
 
@@ -1417,10 +1419,10 @@ class e_db_mysql implements e_db
 	{
 		if (!$this->mySQLaccess) {
 			global $db_ConnectionID;
-			$this->mySQLaccess = $db_ConnectionID;
+			if ($this->_isOpenLink($db_ConnectionID)) $this->mySQLaccess = $db_ConnectionID;
 		}
-		if (!$this->mySQLaccess && ($db = e107::getDb()) !== $this) {
-			$this->mySQLaccess = $db->get_mySQLaccess();
+		if (!$this->mySQLaccess && ($db = e107::getDb()) !== $this && $this->_isOpenLink($link = $db->get_mySQLaccess())) {
+			$this->mySQLaccess = $link;
 		}
 		if (!$this->mySQLaccess) {
 			// lazy self-connect from the config loaded in the constructor, like e_db_pdo::_getMySQLaccess()
@@ -1431,13 +1433,41 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	 * mysqli reaches MySQL and MariaDB only, whatever e107_config.php names.
+	 * Whether a handle is a mysqli link that is still open.
 	 *
+	 * @param mixed $link
+	 * @return bool
+	 */
+	private function _isOpenLink($link)
+	{
+		if(!$link instanceof mysqli)
+		{
+			return false;
+		}
+
+		try
+		{
+			return @mysqli_thread_id($link) !== false;
+		}
+		catch(\Exception $e)
+		{
+			return false;
+		}
+		catch(\Throwable $e)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * mysqli reaches MySQL and MariaDB only, so the configured driver is MySQL's whatever e107_config.php names.
+	 *
+	 * @param string|null $name
 	 * @return \e107\Database\Driver\DriverInterface
 	 */
-	protected function _createConfiguredDriver()
+	protected function _createDriver($name = null)
 	{
-		return \e107\Database\Driver\DriverRegistry::create('mysql');
+		return \e107\Database\Driver\DriverRegistry::create(($name === null) ? 'mysql' : $name);
 	}
 
 	/**

@@ -26,7 +26,8 @@ final class DriverRegistry
 	 * @var array name => array(class, the file in this directory that declares it)
 	 */
 	private static $drivers = array(
-		'mysql' => array('e107\Database\Driver\MysqlDriver', 'MysqlDriver.php'),
+		'mysql'  => array('e107\Database\Driver\MysqlDriver', 'MysqlDriver.php'),
+		'sqlite' => array('e107\Database\Driver\SqliteDriver', 'SqliteDriver.php'),
 	);
 
 	/**
@@ -70,10 +71,11 @@ final class DriverRegistry
 	 * A new driver instance.
 	 *
 	 * @param string|null $name registry name; null or '' for {@see DriverRegistry::DEFAULT_DRIVER}
+	 * @param array $settings what the driver's constructor takes, e.g. {@see SqliteDriver::__construct()}'s
 	 * @return DriverInterface
 	 * @throws InvalidArgumentException when no engine is registered under the name
 	 */
-	public static function create($name = null)
+	public static function create($name = null, array $settings = array())
 	{
 		if($name === null || $name === '')
 		{
@@ -92,6 +94,6 @@ final class DriverRegistry
 			require_once(__DIR__.'/'.$file);
 		}
 
-		return new $class();
+		return new $class($settings);
 	}
 }

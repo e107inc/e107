@@ -2651,6 +2651,25 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertFalse($this->db->getFieldDefs('e107_tests_no_such_table'));
 	}
 
+	public function testGetFieldDefsIsFalseForATableTheSchemaReaderCannotRead()
+	{
+		$failures = array(
+			'e107_tests_unreadable_query' => new \e107\Database\Exception\QueryException('the engine could not be asked'),
+			'e107_tests_unreadable_name'  => new InvalidArgumentException('not a table name'),
+		);
+
+		$reader = $this->makeEmpty(\e107\Database\Schema\Introspect\SchemaReaderInterface::class, array(
+			'read' => function($physical) use ($failures) { throw $failures[substr($physical, strlen(MPREFIX))]; },
+		));
+		$manager = $this->makeEmpty(\e107\Database\Schema\SchemaManagerInterface::class, array('getReader' => $reader));
+		$this->db->useDriver($this->make(get_class($this->db->getDriver()), array('createSchemaManager' => $manager)));
+
+		foreach(array_keys($failures) as $table)
+		{
+			$this->assertFalse($this->db->getFieldDefs($table), $table);
+		}
+	}
+
 	public function testGetFieldDefsRebuildsACacheFileThatWasReadHalfWritten()
 	{
 		$file = e_CACHE_DB . 'plugin.php';

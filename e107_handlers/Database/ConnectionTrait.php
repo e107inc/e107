@@ -62,6 +62,9 @@ trait ConnectionTrait
 	/** @var SchemaManagerInterface|null lazily created by the driver, reset when the driver changes */
 	private     $schemaManager = null;
 
+	/** @var array physical table => its TableSchema, or null for none */
+	private     $tableSchemas = array();
+
 	/** @var array table => field-type definition: cached _FIELD_TYPES/_NOTNULL maps, or false where none is to be used */
 	protected   $dbFieldDefs = array();
 
@@ -121,12 +124,13 @@ trait ConnectionTrait
 	abstract protected function _getMySQLaccess();
 
 	/**
-	 * The driver a connection uses until {@see ConnectionInterface::useDriver()} names another.
+	 * A driver made with this connection's settings: the configured one, or the one {@see ConnectionInterface::useDriver()} names.
 	 *
+	 * @param string|null $name a {@see DriverRegistry} name; null for the configured driver
 	 * @return DriverInterface
-	 * @throws \InvalidArgumentException when the configured driver is not registered
+	 * @throws \InvalidArgumentException when the driver is not registered
 	 */
-	abstract protected function _createConfiguredDriver();
+	abstract protected function _createDriver($name = null);
 
 	/**
 	 * Take over a driver named through {@see ConnectionInterface::useDriver()}, refusing one this backend cannot drive.
@@ -381,10 +385,9 @@ trait ConnectionTrait
 	 * and quietly store '' where the caller meant NULL.
 	 *
 	 * The read costs one column listing per table per request, and only on a typed
-	 * write that actually binds a null, which is the rare one. It runs on its own
-	 * connection because the caller may be part way through a result set of its
-	 * own; {@see user_extended::user_extended_get_types()} takes the same
-	 * precaution.
+	 * write that actually binds a null, which is the rare one. It runs on a side
+	 * connection ({@see ConnectionTrait::_sideConnection()}) because the caller may
+	 * be part way through a result set of its own.
 	 *
 	 * An AUTO_INCREMENT column is left out on purpose: a null bound there means
 	 * "assign one", which is what the server does with NULL, whereas the stand-in
@@ -402,7 +405,7 @@ trait ConnectionTrait
 			return array();
 		}
 
-		$rows = e107::getDb('_schema')->getSchemaManager()->getColumnRows($table);
+		$rows = $this->_sideConnection()->getSchemaManager()->getColumnRows($table);
 
 		if($rows === false)
 		{
@@ -484,7 +487,7 @@ trait ConnectionTrait
 	{
 		if($this->driver === null)
 		{
-			$this->driver = $this->_createConfiguredDriver();
+			$this->driver = $this->_createDriver();
 		}
 
 		return $this->driver;
@@ -500,12 +503,7 @@ trait ConnectionTrait
 	{
 		if(!$driver instanceof DriverInterface)
 		{
-			if(!class_exists(DriverRegistry::class, false))
-			{
-				require_once(__DIR__.'/Driver/DriverRegistry.php');
-			}
-
-			$driver = DriverRegistry::create($driver);
+			$driver = $this->_createDriver((string) $driver);
 		}
 
 		$this->_switchDriver($driver);
@@ -514,6 +512,53 @@ trait ConnectionTrait
 		$this->schemaManager = null;
 
 		return $this;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::getAutoIncrementColumn()}.
+	 *
+	 * @param string $table
+	 * @return string|null
+	 */
+	public function getAutoIncrementColumn($table)
+	{
+		$schema = $this->_tableSchema($table);
+
+		if($schema !== null)
+		{
+			foreach($schema->getColumns() as $name => $column)
+			{
+				if(strpos($column->getExtra(), 'auto_increment') !== false)
+				{
+					return $name;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * A table's schema as the engine reports it, kept until a statement through this connection changes a schema.
+	 *
+	 * @param string $table logical table name
+	 * @return \e107\Database\Schema\Introspect\TableSchema|null null when the table does not exist
+	 */
+	private function _tableSchema($table)
+	{
+		$physical = $this->resolveTableName($table);
+
+		if($physical === false)
+		{
+			return null;
+		}
+
+		if(!array_key_exists($physical, $this->tableSchemas))
+		{
+			$this->tableSchemas[$physical] = $this->_sideConnection()->getSchemaManager()->getReader()->read($physical);
+		}
+
+		return $this->tableSchemas[$physical];
 	}
 
 	/**
@@ -529,13 +574,14 @@ trait ConnectionTrait
 	}
 
 	/**
-	 * A copy shares the session but not the result in hand.
+	 * A copy shares the session but not the result in hand, nor a schema manager bound to the original.
 	 *
 	 * @return void
 	 */
 	public function __clone()
 	{
 		$this->mySQLresult = null;
+		$this->schemaManager = null;
 	}
 
 	/**
@@ -755,6 +801,16 @@ trait ConnectionTrait
 		{
 			return $this->_endTransaction('ROLLBACK');
 		});
+	}
+
+	/**
+	 * Forget the table schemas read so far.
+	 *
+	 * @return void
+	 */
+	private function _forgetTableSchemas()
+	{
+		$this->tableSchemas = array();
 	}
 
 	/**
@@ -1457,15 +1513,25 @@ trait ConnectionTrait
 	 *	Generate and save a cache file in the e_CACHE_DB directory,
 	 *	Also update $this->dbFieldDefs[$tableName] - false if error, data if found
 	 *
-	 *	The table is read on a connection of its own, so the caller's current result set survives the read.
-	 *
 	 *	@param	string $tableName - name of table sought
 	 *	@return array|boolean array on success, false on not found (some errors intentionally ignored)
 	 */
 	protected function makeTableDef($tableName)
 	{
 		$physical = $this->resolvePhysicalTableName($tableName);
-		$schema = ($physical === false) ? null : e107::getDb('_schema')->getSchemaManager()->getReader()->read($physical);
+
+		try
+		{
+			$schema = ($physical === false) ? null : $this->_sideConnection()->getSchemaManager()->getReader()->read($physical);
+		}
+		catch(QueryException $e)
+		{
+			$schema = null;
+		}
+		catch(\InvalidArgumentException $e)
+		{
+			$schema = null;
+		}
 
 		if ($schema === null)
 		{
@@ -1494,6 +1560,7 @@ trait ConnectionTrait
 	{
 		$this->mySQLtableList = array();
 		$this->mySQLtableListLanguage = array();
+		$this->_forgetTableSchemas();
 	}
 
 	/**
@@ -1504,11 +1571,15 @@ trait ConnectionTrait
 	 */
 	protected function forgetTableListFor($query)
 	{
-		$sql = $this->_statementText($query);
+		$sql = (string) $this->_statementText($query);
 
-		if(preg_match('/^\s*(?:(?:CREATE|DROP|RENAME)\s+(?:TEMPORARY\s+)?TABLE|ALTER\s+TABLE\b.*\bRENAME)\b/is', (string) $sql))
+		if(preg_match('/^\s*(?:(?:CREATE|DROP|RENAME)\s+(?:TEMPORARY\s+)?TABLE|ALTER\s+TABLE\b.*\bRENAME)\b/is', $sql))
 		{
 			$this->resetTableList();
+		}
+		elseif(preg_match('/^\s*(?:CREATE|DROP|ALTER)\b/i', $sql))
+		{
+			$this->_forgetTableSchemas();
 		}
 	}
 
@@ -1584,7 +1655,7 @@ trait ConnectionTrait
 		// randomize fields that must be unique.
 		foreach ($fieldList as $fld) {
 			if (isset($unique[$fld])) {
-				$flds[] = $unique[$fld] === 'PRIMARY' ? 0 :
+				$flds[] = $unique[$fld] === 'PRIMARY' ? ($this->getPlatform()->assignsAutoIncrementOnZero() ? 0 : 'NULL') :
 					"'rand-" . e107::getUserSession()->generateRandomString('***********') . "'";
 				continue;
 			}
@@ -2219,6 +2290,12 @@ trait ConnectionTrait
 				$placeholders[] = ':'.$fk;
 				$fieldType = isset($fieldTypes[$fk]) ? $fieldTypes[$fk] : null;
 				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldType,$fv), 'type'=> $this->_getPDOType($fieldType,$this->_getPDOValue($fieldType,$fv)));
+			}
+
+			if(!$platform->assignsAutoIncrementOnZero() && ($auto = $this->getAutoIncrementColumn($tableName)) !== null
+				&& isset($bind[$auto]) && in_array($bind[$auto]['value'], array(0, '0', ''), true))
+			{
+				$bind[$auto] = array('value' => null, 'type' => ConnectionInterface::PARAM_NULL);
 			}
 
 			$physical = $this->mySQLPrefix.$table;

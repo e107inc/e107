@@ -202,7 +202,9 @@ class e_db_pdo implements e_db
 
 		try
 		{
-			if($multiple === true)
+			$firstOfItsOwn = ($this->mySQLaccess === null && !$driver->requiresServer());
+
+			if($multiple === true && !$firstOfItsOwn)
 			{
 				$this->mySQLPrefix = $driver->qualifyPrefix($this->mySQLaccess, $database, $prefix);
 				return true;
@@ -224,6 +226,8 @@ class e_db_pdo implements e_db
 			$this->resetTableList();
 			$this->_startSession();
 		}
+
+		$this->_forgetTableSchemas();
 
 		return true;
 
@@ -1290,18 +1294,30 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	 * Reads the 'driver' key of the e107_config.php 'database' block, 'mysql' when absent.
+	 * The configured driver is the 'driver' key of the e107_config.php 'database' block, 'mysql' when absent.
 	 *
+	 * @param string|null $name
 	 * @return PdoDriverInterface
 	 */
-	protected function _createConfiguredDriver()
+	protected function _createDriver($name = null)
 	{
+		$compat = e107::getMySQLConfig('mysql_compat');
+		$settings = array(
+			'root'         => defset('e_ROOT', ''),
+			'mysql_compat' => !in_array($compat, array(false, 0, '0', 'false'), true),
+		);
+
 		try
 		{
-			$driver = DriverRegistry::create(e107::getMySQLConfig('driver'));
+			$driver = DriverRegistry::create(($name === null) ? e107::getMySQLConfig('driver') : $name, $settings);
 		}
 		catch(InvalidArgumentException $e)
 		{
+			if($name !== null)
+			{
+				throw $e;
+			}
+
 			throw new InvalidArgumentException($e->getMessage().' Check the \'driver\' key in e107_config.php.', 0, $e);
 		}
 

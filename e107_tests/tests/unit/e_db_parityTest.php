@@ -73,6 +73,7 @@ class e_db_parityTest extends \Test\Unit
 	private static $allowedOffInterface = array(
 		'get_mySQLaccess', // returns the raw driver handle (PDO|mysqli), which a neutral contract cannot promise
 		'getPDO',          // driver introspection; kept off the neutral contract by maintainer decision
+		'__clone',         // magic method: a copy shares the session but keeps result sets of its own
 	);
 
 	protected function _before()

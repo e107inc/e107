@@ -13,6 +13,7 @@ namespace e107\Database;
 use e107\Database\Exception\UnsupportedException;
 use e107\Database\Platform\MysqlPlatform;
 use e107\Database\Platform\PlatformInterface;
+use e107\Database\Platform\SqlitePlatform;
 use Generator;
 use InvalidArgumentException;
 use e107\Reflection\ReflectionMethod;
@@ -1719,6 +1720,19 @@ use e107\Reflection\ReflectionMethod;
 			);
 		}
 
+		/**
+		 * A 0 written to the auto-increment column asks for the next id in every language's table, as it does in one.
+		 */
+		public function testExecuteAllLanguagesAsksForTheNextIdWhereTheEngineWouldStoreZero()
+		{
+			$stub = new QueryBuilderTest_storesZeroStub();
+			$qb = new QueryBuilder($stub);
+			$qb->insert('news')->values(array('news_id' => 0, 'news_title' => 'every language'))->executeAllLanguages();
+
+			$this->assertSame(array('value' => null, 'type' => ConnectionInterface::PARAM_NULL), $stub->lastAllLanguagesParams['qb1']);
+			$this->assertSame('every language', $stub->lastAllLanguagesParams['qb2']);
+		}
+
 		public function testExecuteAllLanguagesRejectsSelect()
 		{
 			$qb = $this->makeQb();
@@ -2202,5 +2216,22 @@ use e107\Reflection\ReflectionMethod;
 				default:
 					return ConnectionInterface::PARAM_STR;
 			}
+		}
+	}
+
+
+	/**
+	 * A connection on an engine that stores a 0 written to an auto-increment column rather than assigning the next id.
+	 */
+	class QueryBuilderTest_storesZeroStub extends QueryBuilderTest_dbStub
+	{
+		public function getPlatform()
+		{
+			return new SqlitePlatform('3.45.0');
+		}
+
+		public function getAutoIncrementColumn($table)
+		{
+			return ($table === 'news') ? 'news_id' : null;
 		}
 	}

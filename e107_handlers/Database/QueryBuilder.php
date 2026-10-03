@@ -2575,7 +2575,7 @@ class QueryBuilder
 	 */
 	public function getParameters()
 	{
-		return $this->params;
+		return $this->_autoIncrementParameters($this->params);
 	}
 
 	/**
@@ -2588,7 +2588,57 @@ class QueryBuilder
 	 */
 	public function execute()
 	{
-		return $this->db->execute($this->getSQL(), $this->params);
+		return $this->db->execute($this->getSQL(), $this->getParameters());
+	}
+
+	/**
+	 * Bind NULL for a 0 or '' written to the auto-increment column, on an engine that would store it ({@see PlatformInterface::assignsAutoIncrementOnZero()}).
+	 *
+	 * @param array $params
+	 * @return array
+	 */
+	private function _autoIncrementParameters(array $params)
+	{
+		if($this->paramOwner !== null || $this->table === null
+			|| !in_array($this->type, array(self::TYPE_INSERT, self::TYPE_UPSERT, self::TYPE_REPLACE), true)
+			|| $this->platform->assignsAutoIncrementOnZero())
+		{
+			return $params;
+		}
+
+		$column = $this->db->getAutoIncrementColumn($this->table);
+
+		if($column === null)
+		{
+			return $params;
+		}
+
+		$quoted = $this->quoteColumn($column);
+		$rows = ($this->type === self::TYPE_REPLACE) ? array($this->set) : $this->_insertRows();
+
+		foreach($rows as $row)
+		{
+			if(!isset($row[$quoted]))
+			{
+				continue;
+			}
+
+			$name = ltrim($row[$quoted], ':');
+
+			if(!array_key_exists($name, $params))
+			{
+				continue;
+			}
+
+			$value = is_array($params[$name]) ? $params[$name]['value'] : $params[$name];
+
+			if($value === 0 || $value === '0' || $value === '')
+			{
+				$params[$name] = array('value' => null, 'type' => ConnectionInterface::PARAM_NULL);
+			}
+		}
+
+		return $params;
 	}
 
 	/**
@@ -2651,7 +2701,7 @@ class QueryBuilder
 			$this->compileTableMarkers = false;
 		}
 
-		return $this->db->executeAllLanguages($sql, $this->params);
+		return $this->db->executeAllLanguages($sql, $this->getParameters());
 	}
 
 	/**
