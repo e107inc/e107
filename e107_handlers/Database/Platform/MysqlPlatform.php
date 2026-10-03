@@ -198,11 +198,38 @@ class MysqlPlatform extends AbstractPlatform
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public function compileCaseSensitiveLike($quotedColumn, $placeholder)
+	{
+		return $quotedColumn.' LIKE BINARY '.$placeholder;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileRemoveFromSet($quotedColumn, $placeholder)
+	{
+		return "TRIM(BOTH ',' FROM REPLACE(CONCAT(',', ".$quotedColumn.", ','), CONCAT(',', ".$placeholder.", ','), ','))";
+	}
+
+	/**
+	 * MySQL has no UPDATE ... FROM and, before 8.0, no ROW_NUMBER(); a user
+	 * variable counts the rows instead, in the order the server reads them.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileRenumber($quotedTable, $quotedColumn, $quotedKey, $startPlaceholder, $stepPlaceholder, $thresholdPlaceholder)
+	{
+		return 'UPDATE '.$quotedTable.' e, (SELECT @n := '.$startPlaceholder.') m  SET e.'.$quotedColumn.' = @n := @n + '.$stepPlaceholder.' WHERE '.$quotedColumn.' > '.$thresholdPlaceholder;
+	}
+
+	/**
 	 * @return string
 	 */
-	public function compileFullText(array $quotedColumns, $placeholder)
+	public function compileFullText(array $quotedColumns, $placeholder, $booleanMode = false)
 	{
-		return 'MATCH ('.implode(', ', $quotedColumns).') AGAINST ('.$placeholder.')';
+		return 'MATCH ('.implode(', ', $quotedColumns).') AGAINST ('.$placeholder.($booleanMode ? ' IN BOOLEAN MODE' : '').')';
 	}
 
 	/**

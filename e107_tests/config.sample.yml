@@ -78,8 +78,8 @@ db:
   # share it, so 'sqlite' needs the 'local' deployer.
   path: 'tests/_output/e107.sqlite'
 
-  # Whether e107 gives SQLite its MySQL compatibility functions (FIND_IN_SET,
-  # IF, LPAD, FROM_UNIXTIME ...), which a site keeps on for third-party SQL.
+  # Whether e107 gives SQLite its MySQL compatibility functions (CONCAT,
+  # LPAD, FROM_UNIXTIME ...), which a site keeps on for third-party SQL.
   # Off here, so core code cannot come to depend on them unnoticed.
   mysql_compat: false
 

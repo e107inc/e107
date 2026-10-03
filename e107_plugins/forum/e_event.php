@@ -54,7 +54,7 @@ class forum_event
 		$postThread = (int) $data['post_thread'];
 		$qb = e107::getDb()->createQueryBuilder();
 		$qb->update('user_extended')
-			->setExpression('user_plugin_forum_viewed', $qb->raw("TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), CONCAT(',', ".$qb->createNamedParameter($postThread).", ','), ','))"))
+			->setExpression('user_plugin_forum_viewed', $qb->expr()->removeFromSet('user_plugin_forum_viewed', $postThread))
 			->where($qb->expr()->findInSet('user_plugin_forum_viewed', $postThread))
 			->where('user_extended_id', '!=', (int) $data['post_user'])
 			->execute();

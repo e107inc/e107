@@ -125,11 +125,29 @@ abstract class AbstractPlatform implements PlatformInterface
 	}
 
 	/**
+	 * Standard SQL: || concatenates and TRIM(BOTH ... FROM ...) takes off the commas.
+	 *
 	 * @inheritDoc
 	 */
-	public function compileAutoIncrementReset($quotedTable)
+	public function compileRemoveFromSet($quotedColumn, $placeholder)
 	{
-		return null;
+		return "TRIM(BOTH ',' FROM REPLACE(',' || ".$quotedColumn." || ',', ',' || ".$placeholder." || ',', ','))";
+	}
+
+	/**
+	 * Standard SQL numbers the rows with ROW_NUMBER() and joins the numbers back
+	 * in with UPDATE ... FROM.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileRenumber($quotedTable, $quotedColumn, $quotedKey, $startPlaceholder, $stepPlaceholder, $thresholdPlaceholder)
+	{
+		$numbered = $this->quoteIdentifier('e107_renumber');
+
+		return 'UPDATE '.$quotedTable.' SET '.$quotedColumn.' = '.$startPlaceholder.' + '.$stepPlaceholder.' * '.$numbered.'.'.$this->quoteIdentifier('n')
+			.' FROM (SELECT '.$quotedKey.' AS '.$this->quoteIdentifier('k').', ROW_NUMBER() OVER (ORDER BY '.$quotedColumn.', '.$quotedKey.') AS '.$this->quoteIdentifier('n')
+			.' FROM '.$quotedTable.' WHERE '.$quotedColumn.' > '.$thresholdPlaceholder.') AS '.$numbered
+			.' WHERE '.$quotedTable.'.'.$quotedKey.' = '.$numbered.'.'.$this->quoteIdentifier('k');
 	}
 
 	/**
@@ -159,8 +177,6 @@ abstract class AbstractPlatform implements PlatformInterface
 	}
 
 	/**
-	 * One clause per statement, the form every engine accepts.
-	 *
 	 * @inheritDoc
 	 */
 	public function compileAlterTable($quotedTable, array $clauses)

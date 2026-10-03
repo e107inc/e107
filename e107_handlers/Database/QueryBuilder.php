@@ -1437,15 +1437,17 @@ class QueryBuilder
 
 	/**
 	 * AND a full-text search over one or more columns; the search terms are
-	 * bound and the predicate spelling comes from the dialect.
+	 * bound and the predicate spelling comes from the dialect
+	 * ({@see PlatformInterface::compileFullText()}).
 	 *
 	 * @param string|array $columns One column, or a list of columns.
 	 * @param string $value Search terms.
+	 * @param bool $booleanMode Whether the terms carry MySQL's boolean operators (+word -word word* "phrase").
 	 * @return QueryBuilder $this
 	 */
-	public function whereFullText($columns, $value)
+	public function whereFullText($columns, $value, $booleanMode = false)
 	{
-		return $this->_appendWhere('AND', $this->_fullText($columns, $value));
+		return $this->_appendWhere('AND', $this->_fullText($columns, $value, $booleanMode));
 	}
 
 	/**
@@ -1453,11 +1455,12 @@ class QueryBuilder
 	 *
 	 * @param string|array $columns
 	 * @param string $value
+	 * @param bool $booleanMode
 	 * @return QueryBuilder $this
 	 */
-	public function orWhereFullText($columns, $value)
+	public function orWhereFullText($columns, $value, $booleanMode = false)
 	{
-		return $this->_appendWhere('OR', $this->_fullText($columns, $value));
+		return $this->_appendWhere('OR', $this->_fullText($columns, $value, $booleanMode));
 	}
 
 	/**
@@ -2323,13 +2326,22 @@ class QueryBuilder
 	 *     'user_id',              // key(s) that decide a collision
 	 *     array('user_name')      // columns to refresh on collision
 	 * );
+	 *
+	 * // A column can instead take an expression, in which a bare column name is the stored value.
+	 * $qb->insert('user_extended')->upsert(
+	 *     array('user_extended_id' => 5, 'user_plugin_forum_posts' => 1),
+	 *     'user_extended_id',
+	 *     array('user_plugin_forum_posts' => $qb->raw('COALESCE(user_plugin_forum_posts, 0) + 1'))
+	 * );
 	 * </code>
 	 *
 	 * @see \e107\Database\QueryBuilderTest::testUpsert()
 	 * @see \e107\Database\QueryBuilderTest::testUpsertTyped()
 	 * @param array $values One column => value row, or a list of such rows.
 	 * @param string|array $uniqueBy Column(s) identifying a collision; validated.
-	 * @param array|null $update Columns to update on collision; when null, every
+	 * @param array|null $update Columns to update on collision, each refreshed
+	 *                   from the row that collided, or column => vouched
+	 *                   expression ({@see QueryBuilder::raw()}); when null, every
 	 *                   inserted column except those in $uniqueBy.
 	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when no table is set or an identifier fails validation.
@@ -2449,8 +2461,20 @@ class QueryBuilder
 
 		$this->upsertUpdate = array();
 
-		foreach($updateColumns as $column)
+		foreach($updateColumns as $key => $column)
 		{
+			if(is_string($key))
+			{
+				if(!$column instanceof SqlFragment)
+				{
+					throw new InvalidArgumentException('An upsert() update keyed by column name takes a vouched expression ($qb->raw(...)) for '.$key.'.');
+				}
+
+				$this->mergeParameters($column->getParameters());
+				$this->upsertUpdate[$this->quoteColumn($key)] = $column->getSql();
+				continue;
+			}
+
 			$quoted = $this->quoteColumn($column);
 			$this->upsertUpdate[$quoted] = $this->platform->getUpsertValueReference($quoted);
 		}
@@ -3668,18 +3692,12 @@ class QueryBuilder
 	/**
 	 * @param string|array $columns
 	 * @param string $value
+	 * @param bool $booleanMode
 	 * @return string
 	 */
-	private function _fullText($columns, $value)
+	private function _fullText($columns, $value, $booleanMode = false)
 	{
-		$quoted = array();
-
-		foreach((array) $columns as $column)
-		{
-			$quoted[] = $this->quoteColumn($column);
-		}
-
-		return $this->platform->compileFullText($quoted, $this->createNamedParameter($value));
+		return $this->expr()->fullText($columns, $value, $booleanMode)->getSql();
 	}
 
 	/**

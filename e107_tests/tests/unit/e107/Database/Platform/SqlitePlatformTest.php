@@ -153,6 +153,20 @@ class SqlitePlatformTest extends \Test\Unit
 		$this->assertSame('DELETE FROM `l` WHERE (`v` = 2)', $this->platform->compileDelete('`l`', ' WHERE (`v` = 2)'));
 	}
 
+	public function testRowsAboveAThresholdAreRenumberedInOrder()
+	{
+		$this->pdo->exec('CREATE TABLE r (id INTEGER PRIMARY KEY, pos INTEGER)');
+		$this->pdo->exec('INSERT INTO r VALUES (1, 999), (2, 10), (3, 999), (4, 20), (5, 500)');
+
+		$sql = $this->platform->compileRenumber('`r`', '`pos`', '`id`', ':start', ':step', ':threshold');
+		$statement = $this->pdo->prepare($sql);
+		$statement->execute(array('start' => 20, 'step' => 10, 'threshold' => 20));
+
+		$this->assertSame(3, $statement->rowCount());
+		$this->assertSame(array('10', '20', '30', '40', '50'), $this->column('SELECT pos FROM r ORDER BY pos'));
+		$this->assertSame(array('2', '4', '5', '1', '3'), $this->column('SELECT id FROM r ORDER BY pos'), 'by position, then by key');
+	}
+
 	public function testFindInSetMatchesWholeItemsIgnoringCase()
 	{
 		$this->pdo->exec('CREATE TABLE s (classes TEXT)');
@@ -165,6 +179,28 @@ class SqlitePlatformTest extends \Test\Unit
 		$this->assertSame(array(), $this->column('SELECT classes FROM s WHERE '.$predicate, array('n' => '2,253')), 'a needle with a comma is never found, as on MySQL');
 		$this->assertSame(array(), $this->column('SELECT classes FROM s WHERE '.$predicate, array('n' => '')), 'nor is an empty one in an empty set');
 		$this->assertSame(array('3'), $this->column('SELECT '.$predicate.' FROM s WHERE classes = :c', array('n' => '253', 'c' => '1,2,253')), 'the position, as MySQL answers');
+	}
+
+	public function testAnItemIsTakenOutOfASetWherePresentAndNowhereElse()
+	{
+		$this->pdo->exec('CREATE TABLE sets (id INTEGER, items TEXT)');
+		$this->pdo->exec("INSERT INTO sets VALUES (1, '3'), (2, '1,3,13'), (3, '13,31'), (4, '3,1,3'), (5, NULL)");
+
+		$statement = $this->pdo->prepare('UPDATE sets SET items = '.$this->platform->compileRemoveFromSet('`items`', ':item'));
+		$statement->execute(array('item' => 3));
+
+		$this->assertSame(array('', '1,13', '13,31', '1', null), $this->column('SELECT items FROM sets ORDER BY id'));
+	}
+
+	public function testACaseSensitiveLikeTellsUpperFromLowerCase()
+	{
+		$this->pdo->exec('CREATE TABLE xup (v TEXT COLLATE NOCASE)');
+		$this->pdo->exec("INSERT INTO xup VALUES ('Live_1'), ('live_2'), ('LiveX3'), (NULL)");
+
+		$like = 'SELECT v FROM xup WHERE '.$this->platform->compileCaseSensitiveLike('`v`', ':p').' ORDER BY v';
+		$this->assertSame(array('Live_1'), $this->column($like, array('p' => 'Live\\_%')), 'backslash takes _ as it is');
+		$this->assertSame(array('Live_1', 'LiveX3'), $this->column($like, array('p' => 'Live_%')));
+		$this->assertSame(array(), $this->column($like, array('p' => 'live')));
 	}
 
 	public function testTheLikeEscapeClauseMakesABackslashEscapeWildcards()

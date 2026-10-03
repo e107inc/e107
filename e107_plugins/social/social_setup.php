@@ -49,12 +49,10 @@ class social_setup
 		$qb = $db->createQueryBuilder();
 		$whereSegment = array_map(function ($oldProviderName) use ($qb)
 		{
-			// LIKE BINARY (case-sensitive) is not expressible by the builder's
-			// LIKE helpers, so build the predicate explicitly with a bound value.
-			// The pattern keeps the legacy SQL "\_" escape for a literal underscore.
-			return $qb->quoteColumn('user_xup') . ' LIKE BINARY ' . $qb->createNamedParameter($oldProviderName . '\_%');
+			// Case-sensitive; "\_" is a literal underscore.
+			return $qb->expr()->likeCaseSensitive('user_xup', $oldProviderName . '\_%');
 		}, array_keys(self::RENAMED_PROVIDERS));
-		$count = $qb->from('user')->where($qb->raw(implode(' OR ', $whereSegment)))->count();
+		$count = $qb->from('user')->where($qb->expr()->anyOf(...$whereSegment))->count();
 		return $count >= 1;
 	}
 

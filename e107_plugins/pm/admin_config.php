@@ -637,29 +637,23 @@ class private_msg_ui extends e_admin_ui
 
 			if (isset($opts['blocked']))
 			{
-				// Permanent raw-SQL boundary: multi-table DELETE...JOIN is not expressible by the query builder (delete() compiles to DELETE FROM <table> WHERE only). Static, no user input - kept as bound execute().
-				if ($res = $db2->execute("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_from` = `#user`.`user_id`
-							WHERE `#user`.`user_id` IS NULL"))
+				foreach (array('pm_block_from' => ADLAN_PM_69, 'pm_block_to' => ADLAN_PM_68) as $column => $done)
 				{
+					$res = $db2->createQueryBuilder()->delete('private_msg_block')
+						->whereNotIn($column, function($q)
+						{
+							$q->select('user_id')->from('user');
+						})
+						->execute();
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
-				}
-				else
-				{
-					$start = max($start + 1, time());
-					$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, ADLAN_PM_69);
-				}
-				// Permanent raw-SQL boundary: multi-table DELETE...JOIN is not expressible by the query builder (delete() compiles to DELETE FROM <table> WHERE only). Static, no user input - kept as bound execute().
-				if ($res = $db2->execute("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
-							WHERE `#user`.`user_id` IS NULL"))
-				{
-					$start = max($start + 1, time());
-					$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
-				}
-				else
-				{
-					$start = max($start + 1, time());
-					$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, ADLAN_PM_68);
+					if ($res === false)
+					{
+						$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($db2->getLastErrorNumber(), $db2->getLastErrorText()), ADLAN_PM_70);
+					}
+					else
+					{
+						$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, $done);
+					}
 				}
 			}
 

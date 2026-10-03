@@ -247,5 +247,30 @@
 			$this->assertTrue($userMethods->hasReadonlyField((object) array('user_name' => 'Someone')));
 		}
 
+		/** The tidy-up removes the extended fields of members who have gone, and only theirs. */
+		public function testDeleteExpiredRemovesTheExtendedFieldsOfMembersWhoHaveGone()
+		{
+			$db = e107::getDb();
+			$gone = 990777;
+			$db->createQueryBuilder()->insert('user_extended')->values(array('user_extended_id' => $gone))->execute();
+			$kept = (int) $db->createQueryBuilder()->select('user_extended_id')->from('user_extended')->where('user_extended_id', '!=', $gone)->setMaxResults(1)->fetchOne();
+
+			try
+			{
+				e107::getUserSession()->deleteExpired(true);
+
+				$this->assertSame(0, (int) $db->createQueryBuilder()->selectCount()->from('user_extended')->where('user_extended_id', $gone)->fetchOne());
+
+				if($kept > 0)
+				{
+					$this->assertSame(1, (int) $db->createQueryBuilder()->selectCount()->from('user_extended')->where('user_extended_id', $kept)->fetchOne());
+				}
+			}
+			finally
+			{
+				$db->createQueryBuilder()->delete('user_extended')->where('user_extended_id', $gone)->execute();
+			}
+		}
+
 
 	}

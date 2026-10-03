@@ -165,6 +165,22 @@ interface PlatformInterface
 	public function compileDelete($quotedTable, $where, $limit = null);
 
 	/**
+	 * Build an UPDATE that numbers the rows whose $quotedColumn is above a
+	 * threshold, one step apart: the first becomes start + step, the next
+	 * start + 2 * step, and so on, taken in order of $quotedColumn and then
+	 * $quotedKey (MySQL takes them in the order it reads them).
+	 *
+	 * @param string $quotedTable Quoted physical table name.
+	 * @param string $quotedColumn Quoted column to renumber.
+	 * @param string $quotedKey Quoted column that tells the rows apart, normally the primary key.
+	 * @param string $startPlaceholder Bound parameter holding the number to count on from.
+	 * @param string $stepPlaceholder Bound parameter holding the step.
+	 * @param string $thresholdPlaceholder Bound parameter holding the value a row's column must be above.
+	 * @return string SQL statement.
+	 */
+	public function compileRenumber($quotedTable, $quotedColumn, $quotedKey, $startPlaceholder, $stepPlaceholder, $thresholdPlaceholder);
+
+	/**
 	 * Test whether a value is one of the comma-separated values stored in a
 	 * column, e107's userclass-membership idiom (MySQL's FIND_IN_SET).
 	 *
@@ -173,6 +189,17 @@ interface PlatformInterface
 	 * @return string predicate: the 1-based position, 0 when absent or when the needle holds a comma
 	 */
 	public function compileFindInSet($needle, $quotedColumn);
+
+	/**
+	 * An expression for a comma-separated set column with one item taken out,
+	 * every whole occurrence of it, the commas at either end trimmed; the
+	 * counterpart to {@see PlatformInterface::compileFindInSet()}.
+	 *
+	 * @param string $quotedColumn Quoted column identifier.
+	 * @param string $placeholder Bound parameter holding the item.
+	 * @return string
+	 */
+	public function compileRemoveFromSet($quotedColumn, $placeholder);
 
 	/**
 	 * The clause, with its leading space, that makes a backslash escape '%', '_'
@@ -189,6 +216,16 @@ interface PlatformInterface
 	 * @return string $value with '%', '_' and the backslash escaped
 	 */
 	public function quoteLikeLiteral($value);
+
+	/**
+	 * A LIKE that tells upper from lower case (MySQL's LIKE BINARY), with % and _
+	 * as wildcards and a backslash escaping them, as in LIKE.
+	 *
+	 * @param string $quotedColumn Quoted column identifier.
+	 * @param string $placeholder Bound parameter holding the pattern.
+	 * @return string
+	 */
+	public function compileCaseSensitiveLike($quotedColumn, $placeholder);
 
 	/**
 	 * The statement that starts a table's auto-increment counter again from the
@@ -282,14 +319,21 @@ interface PlatformInterface
 	public function compileJsonLength($quotedColumn);
 
 	/**
-	 * Build a full-text search predicate over one or more columns (e.g. MySQL's
-	 * MATCH (...) AGAINST (...)).
+	 * Build a full-text search over one or more columns (e.g. MySQL's MATCH (...)
+	 * AGAINST (...)): an expression whose value is the row's relevance, greater
+	 * than 0 where the row matches, so it serves as a predicate and as a score.
+	 *
+	 * In boolean mode the terms carry MySQL's boolean operators: '+word' must
+	 * appear, '-word' must not, 'word*' matches a prefix and '"a phrase"' the
+	 * words together. Otherwise each word adds relevance and the operators are
+	 * only punctuation.
 	 *
 	 * @param string[] $quotedColumns Quoted column identifiers.
 	 * @param string $placeholder Bound parameter holding the search terms.
+	 * @param bool $booleanMode Whether the terms carry boolean operators.
 	 * @return string
 	 */
-	public function compileFullText(array $quotedColumns, $placeholder);
+	public function compileFullText(array $quotedColumns, $placeholder, $booleanMode = false);
 
 	/**
 	 * Build a string-aggregation expression (e.g. MySQL's GROUP_CONCAT,

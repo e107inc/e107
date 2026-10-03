@@ -45,7 +45,9 @@ if (isset($_GET['t']) && is_numeric($_GET['t']))
 
 class search_front extends e_shortcode
 {
-	
+	/** The maxlength of each text field on the search form. */
+	const FIELD_MAXLENGTH = 50;
+
 	private $search_prefs = array();
 	private $search_info = array();
 	private $auto_order = 1000;
@@ -150,7 +152,7 @@ class search_front extends e_shortcode
 		$value = isset($_GET['q']) ? $tp->post_toForm($_GET['q']) : "";
 
 		$text = "<div class='input-group input-group-btn'>
-		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />
+		<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='".self::FIELD_MAXLENGTH."' />
 		<div class='btn-group'>
 		<button class='btn btn-primary' type='submit' name='s' value='1' data-loading-icon='fa-spinner' >".$tp->toGlyph('fa-search',false)."</button>";
 
@@ -183,7 +185,7 @@ class search_front extends e_shortcode
 	{
 		$tp = e107::getParser();
 		$value = isset($_GET['q']) ? $tp->post_toForm($_GET['q']) : "";
-		return "<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";	
+		return "<input class='tbox form-control m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='".self::FIELD_MAXLENGTH."' />";	
 	}	
 	
 	function sc_search_main_submit($parm='')
@@ -335,7 +337,7 @@ class search_front extends e_shortcode
 			$var['ENHANCED_TEXT'] 							= $ENHANCED_TEXT;
 			$var['ENHANCED_DISPLAY_ID'] 				= "en_".$en_id;
 			$var['ENHANCED_DISPLAY_FIELDNAME'] 	= $en_id;
-			$var['ENHANCED_FIELD'] 							= "<input class='tbox form-control' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm(varset($_GET[$en_id]))."' maxlength='50' />";
+			$var['ENHANCED_FIELD'] 							= "<input class='tbox form-control' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$tp->post_toForm(varset($_GET[$en_id]))."' maxlength='".self::FIELD_MAXLENGTH."' />";
 		
 			$text .= $tp->simpleParse($this->template['enhanced'], $var);
 		}
@@ -928,7 +930,15 @@ class search_front extends e_shortcode
 			{
 				$_GET = $this->magic_search($_GET);
 			}
-			
+
+			foreach(array('q', 'in', 'ex', 'ep', 'be') as $field)
+			{
+				if(isset($_GET[$field]) && is_string($_GET[$field]))
+				{
+					$_GET[$field] = $tp->usubstr($_GET[$field], 0, self::FIELD_MAXLENGTH);
+				}
+			}
+
 			$full_query = $tp->filter($_GET['q']);
 			
 			if ($_GET['in']) 

@@ -238,23 +238,38 @@ class e_search
 			$this -> query = str_replace('&quot;', '"', $this -> query);
 
 			$qb = $sql->createQueryBuilder();
-			$relevance_keyword = $qb->createNamedParameter(str_replace(" ", "+", $this -> query));
-			$match_keyword = $qb->createNamedParameter($this -> query);
+			$expr = $qb->expr();
+			$relevance_keyword = str_replace(" ", "+", $this -> query);
 
-			foreach ($search_fields as $field_key => $field)
+			// Relevance: each field's boolean-mode score, weighted. A row is found
+			// when one of its fields matches and its relevance is above nothing.
+			$relevance = function () use ($expr, $search_fields, $weights, $relevance_keyword)
 			{
-				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST (".$relevance_keyword." IN BOOLEAN MODE)))";
-				$field_query[] = "MATCH(".$field.") AGAINST (".$match_keyword." IN BOOLEAN MODE)";
+				$scores = array();
+
+				foreach ($search_fields as $field_key => $field)
+				{
+					$weight = isset($weights[$field_key]) && is_numeric($weights[$field_key]) ? $weights[$field_key] : 0.6;
+					$scores[] = "(".$weight." * (".$expr->fullText($field, $relevance_keyword, true)->getSql()."))";
+				}
+
+				return implode(' + ', $scores);
+			};
+
+			$field_matches = array();
+
+			foreach ($search_fields as $field)
+			{
+				$field_matches[] = $expr->fullText($field, $this -> query, true);
 			}
 
-			$match_query = implode(' + ', $search_query);
-			$field_query = implode(' || ', $field_query);
-
-			$qb->calcFoundRows()->selectRaw($return_fields.", (".$match_query.") AS relevance")->fromRaw('#'.$table);
+			$qb->calcFoundRows()->selectRaw($return_fields.", (".$relevance().") AS relevance")->fromRaw('#'.$table);
 
 			$this->applyHandlerWhere($qb, $where);
 
-			$qb->where($qb->raw('('.$field_query.')'))->havingRaw('relevance > 0')->addOrderBy('relevance', 'DESC');
+			$qb->where($expr->anyOf(...$field_matches))
+				->where($qb->raw('('.$relevance().') > 0'))
+				->addOrderBy('relevance', 'DESC');
 
 			foreach ($order as $sort_key => $sort_value)
 			{

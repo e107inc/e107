@@ -38,6 +38,9 @@ final class SqliteFunctions
 	/** @var int bytes above which a padded string is NULL, as MySQL's is above max_allowed_packet */
 	const MAX_ALLOWED_PACKET = 16777216;
 
+	/** @var int entries each full-text cache keeps */
+	const CACHE_SIZE = 16;
+
 	/** @var int times get_lock() opens the lock file anew after finding the one it locked already let go */
 	const LOCK_REOPENS = 100;
 
@@ -46,6 +49,12 @@ final class SqliteFunctions
 
 	/** @var array[] lock name => array('handle' => the open lock file, 'count' => times taken and not yet released) */
 	private $locks = array();
+
+	/** @var array[] parsed full-text queries, by mode and query */
+	private $queries = array();
+
+	/** @var array[] full-text rows read and scored, by their raw text */
+	private $texts = array();
 
 	/**
 	 * @param string $lockPrefix
@@ -111,6 +120,8 @@ final class SqliteFunctions
 		return array(
 			'regexp'                  => array('regexp', 2),
 			'e107_match'              => array('match', -1),
+			'e107_match_boolean'      => array('matchBoolean', -1),
+			'e107_like_binary'        => array('likeBinary', 2),
 			'e107_json_contains'      => array('jsonContains', 2),
 			'e107_json_contains_path' => array('jsonContainsPath', 2),
 			'e107_json_length'        => array('jsonLength', 1),
@@ -210,26 +221,129 @@ final class SqliteFunctions
 	}
 
 	/**
-	 * Full-text relevance in the manner of MySQL's boolean-mode MATCH ... AGAINST: '+word' must appear, '-word'
-	 * must not, 'word*' matches a prefix, '"a phrase"' matches the words together, and other words add relevance.
+	 * subject LIKE BINARY pattern: % and _ match bytes, a backslash takes the next character as it is.
 	 *
-	 * @return float relevance, 0 when the text does not match
+	 * @param string|null $subject
+	 * @param string|null $pattern
+	 * @return int|null
+	 * @throws PDOException when PCRE cannot answer
 	 */
-	private function match()
+	private function likeBinary($subject, $pattern)
 	{
-		$args = func_get_args();
-		$terms = $this->searchTerms((string) array_shift($args));
-
-		$text = '';
-		foreach($args as $arg)
+		if($subject === null || $pattern === null)
 		{
-			if($arg !== null)
+			return null;
+		}
+
+		$regex = '';
+		$pattern = (string) $pattern;
+
+		for($i = 0, $length = strlen($pattern); $i < $length; $i++)
+		{
+			$char = $pattern[$i];
+
+			if($char === '\\' && $i + 1 < $length)
 			{
-				$text .= ' '.$arg;
+				$regex .= preg_quote($pattern[++$i], '/');
+			}
+			elseif($char === '%')
+			{
+				$regex .= '.*';
+			}
+			elseif($char === '_')
+			{
+				$regex .= '.';
+			}
+			else
+			{
+				$regex .= preg_quote($char, '/');
 			}
 		}
 
-		$text = mb_strtolower(strip_tags(html_entity_decode($text, ENT_QUOTES, 'UTF-8')), 'UTF-8');
+		$result = preg_match('/\A'.$regex.'\z/s', (string) $subject);
+
+		if($result === false)
+		{
+			throw new PDOException('LIKE BINARY could not match the pattern (PCRE error '.preg_last_error().').');
+		}
+
+		return $result;
+	}
+
+	/**
+	 * e107_match(query, column...): MATCH ... AGAINST in natural-language mode; each query word found adds relevance.
+	 *
+	 * @return float 0 when nothing matches
+	 */
+	private function match()
+	{
+		$columns = func_get_args();
+		$query = (string) array_shift($columns);
+
+		return $this->relevance($this->queryTerms($query, false), $columns);
+	}
+
+	/**
+	 * e107_match_boolean(query, column...): MATCH ... AGAINST in boolean mode, with '+word', '-word', 'word*' and
+	 * '"a phrase"'.
+	 *
+	 * @return float 0 when nothing matches
+	 */
+	private function matchBoolean()
+	{
+		$columns = func_get_args();
+		$query = (string) array_shift($columns);
+
+		return $this->relevance($this->queryTerms($query, true), $columns);
+	}
+
+	/**
+	 * A row's text is read once however many times a statement scores it, and a query is scored once per row
+	 * however it is spelt.
+	 *
+	 * @param array $query from {@see SqliteFunctions::queryTerms()}
+	 * @param array $columns the searched values of one row
+	 * @return float
+	 */
+	private function relevance(array $query, array $columns)
+	{
+		$text = '';
+
+		foreach($columns as $column)
+		{
+			if($column !== null)
+			{
+				$text .= ' '.$column;
+			}
+		}
+
+		if(!isset($this->texts[$text]))
+		{
+			if(count($this->texts) >= self::CACHE_SIZE)
+			{
+				$this->texts = array();
+			}
+
+			$this->texts[$text] = array('text' => mb_strtolower(strip_tags(html_entity_decode($text, ENT_QUOTES, 'UTF-8')), 'UTF-8'), 'scores' => array());
+		}
+
+		$row = &$this->texts[$text];
+
+		if(!isset($row['scores'][$query['id']]))
+		{
+			$row['scores'][$query['id']] = $this->score($query['terms'], $row['text']);
+		}
+
+		return $row['scores'][$query['id']];
+	}
+
+	/**
+	 * @param array[] $terms each array('operator' => '', '+' or '-', 'pattern' => PCRE)
+	 * @param string $text lower-case plain text
+	 * @return float
+	 */
+	private function score(array $terms, $text)
+	{
 		$score = 0;
 
 		foreach($terms as $term)
@@ -258,9 +372,51 @@ final class SqliteFunctions
 
 	/**
 	 * @param string $query
-	 * @return array[] terms, each array('operator' => '+'|'-'|'', 'pattern' => regex)
+	 * @param bool $boolean
+	 * @return array array('id' => the same for queries that parse alike, 'terms' => array[]), parsed once per query
 	 */
-	private function searchTerms($query)
+	private function queryTerms($query, $boolean)
+	{
+		$key = ($boolean ? 'b' : 'n').$query;
+
+		if(!isset($this->queries[$key]))
+		{
+			if(count($this->queries) >= self::CACHE_SIZE)
+			{
+				$this->queries = array();
+			}
+
+			$terms = $boolean ? $this->booleanTerms($query) : $this->naturalTerms($query);
+			$this->queries[$key] = array('id' => md5(serialize($terms)), 'terms' => $terms);
+		}
+
+		return $this->queries[$key];
+	}
+
+	/**
+	 * @param string $query natural-language search terms
+	 * @return array[] one optional term per word
+	 */
+	private function naturalTerms($query)
+	{
+		$terms = array();
+
+		foreach(self::splitWords(mb_strtolower($query, 'UTF-8')) as $word)
+		{
+			$terms[] = array('operator' => '', 'pattern' => '/(?<![\pL\pN_])'.preg_quote($word, '/').'(?![\pL\pN_])/u');
+		}
+
+		return $terms;
+	}
+
+	/**
+	 * A term is cut into words as MySQL cuts it: the operator binds the first word and a trailing * the last. A
+	 * phrase is its words in order, whatever lies between them.
+	 *
+	 * @param string $query boolean-mode search terms
+	 * @return array[]
+	 */
+	private function booleanTerms($query)
 	{
 		preg_match_all('/(?<!\S)([+\-~<>]?)(?:"([^"]*)"|([^\s"]+))/u', mb_strtolower($query, 'UTF-8'), $matches, PREG_SET_ORDER);
 		$terms = array();
@@ -271,27 +427,39 @@ final class SqliteFunctions
 
 			if(isset($match[2]) && $match[2] !== '')
 			{
-				$words = preg_split('/\s+/u', trim($match[2]));
-				$pattern = '/(?<![\pL\pN])'.implode('[^\pL\pN]+', array_map(function($w) { return preg_quote($w, '/'); }, $words)).'(?![\pL\pN])/u';
-			}
-			else
-			{
-				$word = isset($match[3]) ? trim($match[3], '()') : '';
-				$prefix = (substr($word, -1) === '*');
-				$word = rtrim($word, '*');
+				$words = self::splitWords($match[2]);
 
-				if($word === '')
+				if(!empty($words))
 				{
-					continue;
+					$terms[] = array('operator' => $operator, 'pattern' => '/(?<![\pL\pN_])'.implode('[^\pL\pN_]+', array_map(function($w) { return preg_quote($w, '/'); }, $words)).'(?![\pL\pN_])/u');
 				}
-
-				$pattern = '/(?<![\pL\pN])'.preg_quote($word, '/').($prefix ? '' : '(?![\pL\pN])').'/u';
+				continue;
 			}
 
-			$terms[] = array('operator' => $operator, 'pattern' => $pattern);
+			$term = isset($match[3]) ? $match[3] : '';
+			$prefix = (substr($term, -1) === '*');
+			$words = self::splitWords($term);
+			$last = count($words) - 1;
+
+			foreach($words as $i => $word)
+			{
+				$terms[] = array(
+					'operator' => ($i === 0) ? $operator : '',
+					'pattern'  => '/(?<![\pL\pN_])'.preg_quote($word, '/').(($prefix && $i === $last) ? '' : '(?![\pL\pN_])').'/u',
+				);
+			}
 		}
 
 		return $terms;
+	}
+
+	/**
+	 * @param string $text
+	 * @return string[] the runs of letters, digits and underscores in $text
+	 */
+	private static function splitWords($text)
+	{
+		return preg_split('/[^\pL\pN_]+/u', $text, -1, PREG_SPLIT_NO_EMPTY);
 	}
 
 	/**

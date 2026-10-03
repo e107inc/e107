@@ -108,10 +108,10 @@
 			$sql = e107::getDb();
 			$sql->execute('DROP TABLE IF EXISTS `' . $this->probeTable . '`');
 			$this->probeBuilt = true;
-			$sql->execute('CREATE TABLE `' . $this->probeTable . '` ('
-				. 'probe_id INT NOT NULL, probe_title VARCHAR(255) NOT NULL, probe_summary TEXT NOT NULL,'
+			$sql->schema()->createTableRaw('search_highlight_probe', $sql->createQueryBuilder()->raw(
+				'probe_id INT NOT NULL, probe_title VARCHAR(255) NOT NULL, probe_summary TEXT NOT NULL,'
 				. ' FULLTEXT KEY probe_title (probe_title), FULLTEXT KEY probe_summary (probe_summary)'
-				. ') ENGINE=MyISAM');
+			), array('engine' => 'MyISAM'));
 			$sql->execute('INSERT INTO `' . $this->probeTable
 				. '` (probe_id, probe_title, probe_summary) VALUES (1, :title, :summary), (2, :title2, :summary2)',
 				array(

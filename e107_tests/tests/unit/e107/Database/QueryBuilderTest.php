@@ -1022,6 +1022,23 @@ use e107\Reflection\ReflectionMethod;
 				.' ON DUPLICATE KEY UPDATE `user_name` = VALUES(`user_name`)',
 				$qb->getSQL()
 			);
+
+			$qb = $this->makeQb();
+			$qb->insert('user_extended')->upsert(
+				array('user_extended_id' => 5, 'user_plugin_forum_posts' => 1),
+				'user_extended_id',
+				array('user_plugin_forum_posts' => $qb->raw('COALESCE(user_plugin_forum_posts, 0) + 1'))
+			);
+			$this->assertSame(
+				'INSERT INTO `e107_user_extended` (`user_extended_id`, `user_plugin_forum_posts`) VALUES (:qb1, :qb2)'
+				.' ON DUPLICATE KEY UPDATE `user_plugin_forum_posts` = COALESCE(user_plugin_forum_posts, 0) + 1',
+				$qb->getSQL()
+			);
+
+			$this->assertThrowsInvalidArgument(function()
+			{
+				$this->makeQb()->insert('user')->upsert(array('user_id' => 5, 'user_name' => 'Bob'), 'user_id', array('user_name' => 'Bob'));
+			});
 		}
 
 		public function testUpsertTyped()
@@ -1169,6 +1186,8 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame('`a` >= :qb6', $expr->comparison('a', '>=', 9)->getSql());
 			$this->assertSame('`a` = `b`', $expr->compareColumns('a', 'b')->getSql());
 			$this->assertSame('FIND_IN_SET(:qb7, `user_class`)', $expr->findInSet('user_class', 5)->getSql());
+			$this->assertSame("TRIM(BOTH ',' FROM REPLACE(CONCAT(',', `user_class`, ','), CONCAT(',', :qb8, ','), ','))", $expr->removeFromSet('user_class', 5)->getSql());
+			$this->assertSame('`user_xup` LIKE BINARY :qb9', $expr->likeCaseSensitive('user_xup', 'Live\\_%')->getSql());
 			$this->assertSame('(`a` = 1) AND (`b` = 2)', $expr->allOf('`a` = 1', '`b` = 2')->getSql());
 			$this->assertSame('(`a` = 1) OR (`b` = 2)', $expr->anyOf('`a` = 1', '`b` = 2')->getSql());
 
@@ -1517,6 +1536,16 @@ use e107\Reflection\ReflectionMethod;
 				'SELECT * FROM `e107_news` WHERE (MATCH (`news_title`, `news_body`) AGAINST (:qb1))',
 				$qb->getSQL()
 			);
+
+			$qb = $this->makeQb();
+			$qb->selectRaw('n.news_id, '.$qb->expr()->fullText('n.news_title', '+e107 -beta', true)->getSql().' AS score')
+				->from('news', 'n')->orWhereFullText('n.news_body', 'release', true);
+			$this->assertSame(
+				'SELECT n.news_id, MATCH (`n`.`news_title`) AGAINST (:qb1 IN BOOLEAN MODE) AS score FROM `e107_news` AS `n`'
+				.' WHERE (MATCH (`n`.`news_body`) AGAINST (:qb2 IN BOOLEAN MODE))',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => '+e107 -beta', 'qb2' => 'release'), array_map(function($p) { return is_array($p) ? $p['value'] : $p; }, $qb->getParameters()));
 		}
 
 		public function testWhereIn()
@@ -2089,6 +2118,8 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame("JSON_CONTAINS_PATH(`c`, 'one', :p)", $platform->compileJsonContainsKey('`c`', ':p'));
 			$this->assertSame('JSON_LENGTH(`c`)', $platform->compileJsonLength('`c`'));
 			$this->assertSame('MATCH (`a`, `b`) AGAINST (:p)', $platform->compileFullText(array('`a`', '`b`'), ':p'));
+			$this->assertSame('MATCH (`a`) AGAINST (:p IN BOOLEAN MODE)', $platform->compileFullText(array('`a`'), ':p', true));
+			$this->assertSame('UPDATE `e107_t` e, (SELECT @n := :n) m  SET e.`pos` = @n := @n + :s WHERE `pos` > :t', $platform->compileRenumber('`e107_t`', '`pos`', '`id`', ':n', ':s', ':t'));
 
 			$this->assertSame('`user_name`', $platform->quoteIdentifier('user_name'));
 			$this->assertSame('`u`.`user_name`', $platform->quoteIdentifier(' u.user_name '));

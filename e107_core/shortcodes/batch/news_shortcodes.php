@@ -1322,43 +1322,34 @@ class news_shortcodes extends e_shortcode
 	/**
 	 * Retrieve table data from the previous or next news item.
 	 * @param string $type next/previous
-	 * @return array|string
+	 * @return array the row; empty when there is none
 	 */
 	private function getNavQuery($type)
 	{
 		$nobody_regexp = "(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)";
 
 		$var = $this->getScVar('news_item');
+		$next = ($type === 'next');
+		$now = time();
 
-		$db = e107::getDb();
+		$qb = e107::getDb()->createQueryBuilder();
+		$expr = $qb->expr();
 
-		// The comparison operator and sort direction are chosen from a fixed
-		// ternary (no user input) and inlined as static keywords; every value is
-		// bound.
-		$ok = $db->execute("
-				SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-				nc.category_meta_keywords, nc.category_meta_description, nc.category_template
-				FROM #news AS n
-				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class REGEXP :classRegexp AND NOT (n.news_class REGEXP :nobodyRegexp)
-				AND n.news_start < :now1 AND (n.news_end=0 || n.news_end > :now2)
-				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
-				AND n.news_datestamp ".(($type === 'next') ? '>=' : '<=')." :newsDatestamp AND n.news_id != :newsId ORDER by n.news_datestamp ".(($type === 'next') ? 'ASC' : 'DESC')." LIMIT 1", array(
-			'classRegexp'   => e_CLASS_REGEXP,
-			'nobodyRegexp'  => $nobody_regexp,
-			'now1'          => time(),
-			'now2'          => time(),
-			'newsDatestamp' => (int) $var['news_datestamp'],
-			'newsId'        => (int) $var['news_id'],
-		));
-
-		if($ok === false)
-		{
-			return array();
-		}
-
-		return $db->fetch();
+		return $qb->select('n.*', 'u.user_id', 'u.user_name', 'u.user_customtitle', 'u.user_image', 'nc.category_id', 'nc.category_name',
+				'nc.category_sef', 'nc.category_icon', 'nc.category_meta_keywords', 'nc.category_meta_description', 'nc.category_template')
+			->from('news', 'n')
+			->leftJoin('user', 'u', $expr->compareColumns('n.news_author', 'u.user_id'))
+			->leftJoin('news_category', 'nc', $expr->compareColumns('n.news_category', 'nc.category_id'))
+			->where($expr->regexp('n.news_class', e_CLASS_REGEXP))
+			->where($expr->not($expr->regexp('n.news_class', $nobody_regexp)))
+			->where('n.news_start', '<', $now)
+			->where($expr->anyOf($expr->eq('n.news_end', 0), $expr->gt('n.news_end', $now)))
+			->where($expr->anyOf($expr->findInSet('n.news_render_type', '0'), $expr->findInSet('n.news_render_type', '1')))
+			->where('n.news_datestamp', $next ? '>=' : '<=', (int) $var['news_datestamp'])
+			->where('n.news_id', '!=', (int) $var['news_id'])
+			->orderBy('n.news_datestamp', $next ? 'ASC' : 'DESC')
+			->setMaxResults(1)
+			->fetchRow();
 	}
 
 }

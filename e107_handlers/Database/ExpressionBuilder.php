@@ -213,6 +213,22 @@ class ExpressionBuilder
 	}
 
 	/**
+	 * A LIKE that tells upper from lower case (`column` LIKE BINARY :pattern on
+	 * MySQL), with % and _ as wildcards and a backslash escaping them.
+	 *
+	 * @param string $column
+	 * @param string $pattern bound
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	public function likeCaseSensitive($column, $pattern)
+	{
+		$placeholder = $this->qb->createNamedParameter($pattern);
+
+		return SqlFragment::fragment($this->qb->getPlatform()->compileCaseSensitiveLike($this->qb->quoteColumn($column), $placeholder));
+	}
+
+	/**
 	 * Substring match: LIKE with the needle's %, _ and \ escaped and the
 	 * result wrapped in %...%, so a literal '%' in $value matches a literal
 	 * '%' in the data.
@@ -284,6 +300,54 @@ class ExpressionBuilder
 		$needle = $this->qb->createNamedParameter($value);
 
 		return SqlFragment::fragment($this->qb->getPlatform()->compileFindInSet($needle, $this->qb->quoteColumn($column)));
+	}
+
+	/**
+	 * The comma-separated set in $column with $value taken out, for an UPDATE's
+	 * SET; the counterpart to {@see ExpressionBuilder::findInSet()}.
+	 *
+	 * <code>
+	 * $qb->update('user_extended')
+	 *     ->setExpression('user_plugin_forum_viewed', $qb->expr()->removeFromSet('user_plugin_forum_viewed', $threadId))
+	 *     ->where($qb->expr()->findInSet('user_plugin_forum_viewed', $threadId));
+	 * </code>
+	 *
+	 * @param string $column comma-separated set column
+	 * @param mixed $value the item to take out; bound
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	public function removeFromSet($column, $value)
+	{
+		$item = $this->qb->createNamedParameter($value);
+
+		return SqlFragment::fragment($this->qb->getPlatform()->compileRemoveFromSet($this->qb->quoteColumn($column), $item));
+	}
+
+	/**
+	 * A full-text match over one or more columns, above 0 where the row matches: a WHERE condition or a relevance score.
+	 *
+	 * <code>
+	 * $qb->where($qb->expr()->fullText(array('news_title', 'news_body'), '+e107 -beta', true));
+	 * // MATCH (`news_title`, `news_body`) AGAINST (:qb1 IN BOOLEAN MODE) on MySQL
+	 * </code>
+	 *
+	 * @param string|string[] $columns One column, or a list of columns.
+	 * @param string $terms Search terms.
+	 * @param bool $booleanMode Whether the terms carry MySQL's boolean operators (+word -word word* "phrase").
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when a column name fails validation.
+	 */
+	public function fullText($columns, $terms, $booleanMode = false)
+	{
+		$quoted = array();
+
+		foreach((array) $columns as $column)
+		{
+			$quoted[] = $this->qb->quoteColumn($column);
+		}
+
+		return SqlFragment::fragment($this->qb->getPlatform()->compileFullText($quoted, $this->qb->createNamedParameter($terms), (bool) $booleanMode));
 	}
 
 	/**

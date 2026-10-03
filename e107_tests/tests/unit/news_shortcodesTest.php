@@ -44,6 +44,46 @@ class news_shortcodesTest extends \Test\Unit
 		e107::getDb()->createQueryBuilder()->delete('comments')->where('comment_id', $this->commentId)->execute();
 	}
 
+	/**
+	 * The previous and next links lead to the visible news items either side of the one shown.
+	 */
+	public function testTheNavigationFindsTheNeighbouringNewsItems()
+	{
+		$ids = array();
+
+		foreach(array('earlier' => 1100000000, 'hidden' => 1100000050, 'current' => 1100000100, 'later' => 1100000200) as $name => $datestamp)
+		{
+			$ids[$name] = (int) e107::getDb()->createQueryBuilder()->insert('news')->insertGetId(array(
+				'news_title'            => 'nav '.$name,
+				'news_body'             => '',
+				'news_extended'         => '',
+				'news_meta_description' => '',
+				'news_summary'          => '',
+				'news_thumbnail'        => '',
+				'news_datestamp'        => $datestamp,
+				'news_class'            => ($name === 'hidden') ? (string) e_UC_NOBODY : '0',
+				'news_render_type'      => ($name === 'later') ? '1,4' : '0',
+			));
+		}
+
+		try
+		{
+			$this->sc->setScVar('news_item', array('news_id' => $ids['current'], 'news_datestamp' => 1100000100));
+			$nav = new ReflectionMethod($this->sc, 'getNavQuery');
+			$nav->setAccessible(true);
+
+			$previous = $nav->invoke($this->sc, 'previous');
+			$next = $nav->invoke($this->sc, 'next');
+
+			$this->assertSame('nav earlier', $previous['news_title'], 'an item only nobody may see is passed over');
+			$this->assertSame('nav later', $next['news_title'], 'an item rendered in the list as well as elsewhere counts');
+		}
+		finally
+		{
+			e107::getDb()->createQueryBuilder()->delete('news')->whereIn('news_id', array_values($ids))->execute();
+		}
+	}
+
 	public function testNewsCommentsLinkRendersWithoutLastVisit()
 	{
 		e107::getConfig()->set('comments_icon', 1);

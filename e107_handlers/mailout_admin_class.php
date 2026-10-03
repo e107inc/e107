@@ -1506,9 +1506,12 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		// Now look for 'orphaned' recipient records
-		if (($res = $this->db2->execute("DELETE `#mail_recipients` FROM `#mail_recipients`
-					LEFT JOIN `#mail_content` ON `#mail_recipients`.`mail_detail_id` = `#mail_content`.`mail_source_id`
-					WHERE `#mail_content`.`mail_source_id` IS NULL")) === false)
+		$orphans = $this->db2->createQueryBuilder()->delete('mail_recipients')
+			->whereNotIn('mail_detail_id', function($q)
+			{
+				$q->select('mail_source_id')->from('mail_content');
+			});
+		if (($res = $orphans->execute()) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' deleting orphaned records from mail_recipients';
 			$noError = false;

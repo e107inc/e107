@@ -76,20 +76,72 @@ class SqliteFunctionsTest extends \Test\Unit
 		}
 	}
 
+	public function testACaseSensitiveLikeMatchesTheWholeSubjectOnly()
+	{
+		$this->assertSame('1', $this->value("SELECT e107_like_binary('abc', 'abc')"));
+		$this->assertSame('0', $this->value("SELECT e107_like_binary('abc' || char(10), 'abc')"));
+		$this->assertSame('0', $this->value("SELECT e107_like_binary('ABC', 'abc')"));
+		$this->assertSame('1', $this->value("SELECT e107_like_binary('a' || char(10) || 'c', 'a_c')"));
+	}
+
+	public function testACaseSensitiveLikePcreCannotRunFailsTheStatement()
+	{
+		$this->expectException('PDOException');
+		$this->value("SELECT e107_like_binary('b".str_repeat('a', 60)."', '".str_repeat('%a', 18)."%b')");
+	}
+
 	public function testFullTextRelevanceFollowsBooleanModeRules()
 	{
 		$text = "'The <b>quick</b> brown fox jumps over the lazy dog'";
 
-		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match('quick', $text)"));
-		$this->assertSame('0', $this->value("SELECT e107_match('+quick -lazy', $text)"));
-		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match('+quick fox', $text)"));
-		$this->assertSame('0', $this->value("SELECT e107_match('+cat fox', $text)"));
-		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match('jum*', $text)"));
+		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match_boolean('quick', $text)"));
+		$this->assertSame('0', $this->value("SELECT e107_match_boolean('+quick -lazy', $text)"));
+		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match_boolean('+quick fox', $text)"));
+		$this->assertSame('0', $this->value("SELECT e107_match_boolean('+cat fox', $text)"));
+		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match_boolean('jum*', $text)"));
+		$this->assertSame('0', $this->value("SELECT e107_match_boolean('jum', $text)"));
+		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match_boolean('\"brown fox\"', $text)"));
+		$this->assertSame('0', $this->value("SELECT e107_match_boolean('\"fox brown\"', $text)"));
+		$this->assertSame('0', $this->value("SELECT e107_match_boolean('-cat', $text)"), 'only excluded words match nothing');
+		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match_boolean('dog', 'a', NULL, $text)"), 'every column is searched');
+		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match_boolean('+quick#cat', $text)"), 'a term is cut into words; the operator binds the first');
+		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match_boolean('\"brown+fox\"', $text)"), 'a phrase is its words, whatever lies between');
+	}
+
+	public function testFullTextScoresEachQueryAndRowOnItsOwnHoweverOftenTheyRepeat()
+	{
+		$this->pdo->exec('CREATE TABLE ft (id INTEGER, a TEXT, b TEXT)');
+
+		for($i = 1; $i <= 40; $i++)
+		{
+			$this->pdo->exec("INSERT INTO ft VALUES ($i, '".str_repeat('fox ', $i % 3)."dog', '".str_repeat('cat ', $i % 5)."')");
+		}
+
+		$statement = $this->pdo->prepare('SELECT id, e107_match_boolean(:q1, a) AS fa, e107_match_boolean(:q2, b) AS fb,'
+			.' e107_match_boolean(:q3, a, b) AS fab, e107_match(:q4, b) AS nb FROM ft WHERE e107_match_boolean(:q5, a) > 0 ORDER BY id');
+		$statement->execute(array('q1' => 'fox dog', 'q2' => 'cat', 'q3' => 'fox+cat', 'q4' => 'cat fox', 'q5' => '+dog'));
+
+		foreach($statement->fetchAll(PDO::FETCH_ASSOC) as $row)
+		{
+			$foxes = $row['id'] % 3;
+			$cats = $row['id'] % 5;
+
+			$this->assertEquals($foxes + 1, $row['fa'], 'row '.$row['id']);
+			$this->assertEquals($cats, $row['fb'], 'row '.$row['id']);
+			$this->assertEquals($foxes + $cats, $row['fab'], 'row '.$row['id']);
+			$this->assertEquals($cats, $row['nb'], 'row '.$row['id']);
+		}
+	}
+
+	public function testFullTextRelevanceInNaturalLanguageModeCountsEveryWord()
+	{
+		$text = "'The <b>quick</b> brown fox jumps over the lazy dog'";
+
+		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match('cat fox', $text)"), 'any word matches');
+		$this->assertGreaterThan((float) $this->value("SELECT e107_match('fox', $text)"), (float) $this->value("SELECT e107_match('fox dog', $text)"), 'each word adds relevance');
+		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match('+cat -fox', $text)"), 'operators are only punctuation');
 		$this->assertSame('0', $this->value("SELECT e107_match('jum', $text)"));
-		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match('\"brown fox\"', $text)"));
-		$this->assertSame('0', $this->value("SELECT e107_match('\"fox brown\"', $text)"));
-		$this->assertSame('0', $this->value("SELECT e107_match('-cat', $text)"), 'only excluded words match nothing');
-		$this->assertGreaterThan(0, (float) $this->value("SELECT e107_match('dog', 'a', NULL, $text)"), 'every column is searched');
+		$this->assertSame('0', $this->value("SELECT e107_match('cat', 'a', NULL, $text)"));
 	}
 
 	public function testJsonContainmentFollowsMysqlForNestedArraysAndObjects()

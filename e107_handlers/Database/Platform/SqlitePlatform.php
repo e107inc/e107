@@ -223,14 +223,31 @@ class SqlitePlatform extends AbstractPlatform
 	}
 
 	/**
-	 * SQLite keeps no full-text index on an ordinary table; e107_match() scores the columns as MySQL's boolean-mode
-	 * MATCH ... AGAINST does, and returns 0 for no match.
+	 * SQLite's LIKE ignores ASCII case whatever the column's collation; e107_like_binary() does not.
 	 *
 	 * @inheritDoc
 	 */
-	public function compileFullText(array $quotedColumns, $placeholder)
+	public function compileCaseSensitiveLike($quotedColumn, $placeholder)
 	{
-		return 'e107_match('.$placeholder.', '.implode(', ', $quotedColumns).')';
+		return 'e107_like_binary('.$quotedColumn.', '.$placeholder.')';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileRemoveFromSet($quotedColumn, $placeholder)
+	{
+		return "trim(replace(',' || ".$quotedColumn." || ',', ',' || ".$placeholder." || ',', ','), ',')";
+	}
+
+	/**
+	 * Scored row by row, with no index.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileFullText(array $quotedColumns, $placeholder, $booleanMode = false)
+	{
+		return ($booleanMode ? 'e107_match_boolean(' : 'e107_match(').$placeholder.', '.implode(', ', $quotedColumns).')';
 	}
 
 	/**

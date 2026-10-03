@@ -39,11 +39,8 @@ class user_shortcodesTest extends \Test\Unit
 	/** @var mixed $full_perms as found, restored in _after() */
 	private $savedFullPerms = null;
 
-	/** @var array user_id => user_name, served by the stub db's gen()/fetch() */
+	/** @var array user_id => user_name, served by the stub query builder */
 	private $userRows = array();
-
-	/** @var array|false the row the next fetch() hands back */
-	private $pendingRow = false;
 
 	public function _before()
 	{
@@ -147,48 +144,11 @@ class user_shortcodesTest extends \Test\Unit
 		$forumPostCounts = $this->forumPostCounts;
 		$tableCounts = $this->tableCounts;
 		$userRows = $this->userRows;
-		$pending = array('row' => false);
 
 		$stub = $this->make($this->dbClass, array(
-			'createQueryBuilder' => function() use ($forumPostCounts, $tableCounts)
+			'createQueryBuilder' => function() use ($forumPostCounts, $tableCounts, $userRows)
 			{
-				return new user_shortcodesTestQueryBuilder($forumPostCounts, $tableCounts);
-			},
-			'execute' => function($query, $params = array()) use (&$pending, $userRows)
-			{
-				$pending['row'] = false;
-
-				if(!preg_match('/`user_id`\s*([<>])\s*:userId/', (string) $query, $m))
-				{
-					return 0;
-				}
-
-				$pivot = isset($params['userId']) ? (int) $params['userId'] : 0;
-
-				$ids = array_keys($userRows);
-				sort($ids);
-				if($m[1] === '<')
-				{
-					$ids = array_reverse($ids);
-				}
-
-				foreach($ids as $id)
-				{
-					if(($m[1] === '>' && $id > $pivot) || ($m[1] === '<' && $id < $pivot))
-					{
-						$pending['row'] = array('user_id' => $id, 'user_name' => $userRows[$id]);
-						break;
-					}
-				}
-
-				return $pending['row'] ? 1 : 0;
-			},
-			'fetch' => function() use (&$pending)
-			{
-				$row = $pending['row'];
-				$pending['row'] = false;
-
-				return $row;
+				return new user_shortcodesTestQueryBuilder($forumPostCounts, $tableCounts, $userRows);
 			},
 		));
 
@@ -361,21 +321,26 @@ class user_shortcodesTest extends \Test\Unit
 
 /**
  * Fluent stand-in for the query builder, answering only the shapes the user
- * shortcode batch builds: a per-member lookup on user_extended, and a row
- * count on a named table.
+ * shortcode batch builds: a per-member lookup on user_extended, a row count
+ * on a named table, and the member either side of one in the user table.
  */
 class user_shortcodesTestQueryBuilder
 {
 	private $counts;
 	private $tableCounts;
+	private $userRows;
 	private $table;
 	private $columns;
 	private $userId;
 
-	public function __construct(array $counts, array $tableCounts)
+	/** @var array|null array(operator, user_id) of a user_id comparison */
+	private $pivot;
+
+	public function __construct(array $counts, array $tableCounts, array $userRows = array())
 	{
 		$this->counts = $counts;
 		$this->tableCounts = $tableCounts;
+		$this->userRows = $userRows;
 	}
 
 	public function select($columns = '*')
@@ -399,7 +364,54 @@ class user_shortcodesTestQueryBuilder
 			$this->userId = (int) $args[1];
 		}
 
+		if(isset($args[0], $args[2]) && $args[0] === 'user_id')
+		{
+			$this->pivot = array($args[1], (int) $args[2]);
+		}
+
 		return $this;
+	}
+
+	public function orderBy($sort, $direction = null)
+	{
+		return $this;
+	}
+
+	public function setMaxResults($maxResults)
+	{
+		return $this;
+	}
+
+	/**
+	 * The nearest member past the user_id comparison, in its direction.
+	 *
+	 * @return array
+	 */
+	public function fetchRow()
+	{
+		if($this->table !== 'user' || $this->pivot === null)
+		{
+			return array();
+		}
+
+		list($operator, $pivot) = $this->pivot;
+		$ids = array_keys($this->userRows);
+		sort($ids);
+
+		if($operator === '<')
+		{
+			$ids = array_reverse($ids);
+		}
+
+		foreach($ids as $id)
+		{
+			if(($operator === '>' && $id > $pivot) || ($operator === '<' && $id < $pivot))
+			{
+				return array('user_id' => $id, 'user_name' => $this->userRows[$id]);
+			}
+		}
+
+		return array();
 	}
 
 	public function count($column = '*')

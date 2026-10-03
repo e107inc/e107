@@ -142,6 +142,24 @@ class SqliteDriverTest extends \Test\Unit
 		$this->assertSame('2', $this->db->createQueryBuilder()->select('item_hits')->from('item')->where('item_name', 'u')->fetchOne());
 	}
 
+	public function testAnUpsertCanUpdateFromTheStoredValue()
+	{
+		$bump = function()
+		{
+			$qb = $this->db->createQueryBuilder();
+
+			return $qb->insert('item')
+				->upsert(array('item_name' => 'counted', 'item_hits' => 1, 'item_body' => ''), 'item_name',
+					array('item_hits' => $qb->raw('COALESCE(item_hits, 0) + 1')))
+				->execute();
+		};
+
+		$this->assertSame(1, $bump());
+		$this->assertSame(1, $bump());
+		$this->assertSame(1, $bump());
+		$this->assertSame('3', $this->db->createQueryBuilder()->select('item_hits')->from('item')->where('item_name', 'counted')->fetchOne());
+	}
+
 	public function testAnUpdateThroughTheBuilderCountsTheRowsItChanges()
 	{
 		$this->db->insert('item', array('item_name' => 'a', 'item_hits' => 1, 'item_body' => ''));
@@ -230,7 +248,7 @@ class SqliteDriverTest extends \Test\Unit
 		$this->assertSame(array('two', 'three'), $qb->select('item_name')->from('item')->where($qb->expr()->findInSet('item_class', '2'))->orderBy('item_id')->fetchColumn());
 
 		$qb = $this->db->createQueryBuilder();
-		$this->assertSame(array('three'), $qb->select('item_name')->from('item')->whereFullText('item_body', '+quick -lazy')->fetchColumn());
+		$this->assertSame(array('three'), $qb->select('item_name')->from('item')->whereFullText('item_body', '+quick -lazy', true)->fetchColumn());
 	}
 
 	public function testTheSchemaManagerDescribesTablesInTheShapesCallersRelyOn()
