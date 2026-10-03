@@ -1819,9 +1819,22 @@ class e_shortcode
 	 */
 	public function __construct($eVars = null)
 	{
-		$this->scVars = !empty($eVars) ? $eVars : new e_vars();
+		$this->scVars = !empty($eVars) ? $eVars : $this->scVarStore();
 	}
-	
+
+	/**
+	 * @return e_vars the shortcode value store, created on first use
+	 */
+	private function scVarStore()
+	{
+		if($this->scVars === null)
+		{
+			$this->scVars = new e_vars();
+		}
+
+		return $this->scVars;
+	}
+
 	/**
 	 * Startup code for child class
 	 */
@@ -1963,7 +1976,7 @@ class e_shortcode
 	 */
 	public function setScVar($name, $value)
 	{
-		$this->scVars->$name = $value;
+		$this->scVarStore()->$name = $value;
 		return $this;
 	}
 	
@@ -1976,7 +1989,7 @@ class e_shortcode
 	 */
 	public function addScVars($vars)
 	{
-		$this->scVars->addVars($vars);
+		$this->scVarStore()->addVars($vars);
 		return $this;
 	}
 
@@ -1989,7 +2002,7 @@ class e_shortcode
 	 */
 	public function getScVar($name)
 	{
-		return $this->scVars->$name;
+		return $this->scVarStore()->$name;
 	}
 	
 	/**
@@ -2000,7 +2013,7 @@ class e_shortcode
 	 */
 	public function getScVars()
 	{
-		return $this->scVars->getVars();
+		return $this->scVarStore()->getVars();
 	}
 
 	/**
@@ -2015,7 +2028,7 @@ class e_shortcode
 	 */
 	public function issetScVar($name)
 	{
-		return isset($this->scVars->$name);
+		return isset($this->scVarStore()->$name);
 	}
 
 	/**
@@ -2027,8 +2040,8 @@ class e_shortcode
 	 */
 	public function unsetScVar($name)
 	{
-		$this->scVars->$name = null;
-		unset($this->scVars->$name);
+		$this->scVarStore()->$name = null;
+		unset($this->scVarStore()->$name);
 		return $this;
 	}
 	
@@ -2038,7 +2051,7 @@ class e_shortcode
 	 */
 	public function emptyScVars()
 	{
-		$this->scVars->emptyVars();
+		$this->scVarStore()->emptyVars();
 		return $this;
 	}
 
