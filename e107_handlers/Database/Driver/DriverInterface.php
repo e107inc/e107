@@ -118,8 +118,22 @@ interface DriverInterface
 	public function getSessionMode(ConnectionInterface $connection);
 
 	/**
-	 * Take a named advisory lock without waiting longer than the timeout. Names are shared by every e107 site the
-	 * engine serves, as MySQL's GET_LOCK() names are, so a caller makes them unique to its site.
+	 * Make the session refuse, not rewrite, a value that does not fit, until {@see DriverInterface::leaveStrictMode()}.
+	 *
+	 * @param ConnectionInterface $connection
+	 * @return mixed what leaveStrictMode() needs; null on an engine that never rewrites a value to fit
+	 */
+	public function enterStrictMode(ConnectionInterface $connection);
+
+	/**
+	 * @param ConnectionInterface $connection
+	 * @param mixed $restore what {@see DriverInterface::enterStrictMode()} returned
+	 * @return void
+	 */
+	public function leaveStrictMode(ConnectionInterface $connection, $restore);
+
+	/**
+	 * Take a named advisory lock; names are shared by every site the engine serves.
 	 *
 	 * @param ConnectionInterface $connection the connection that holds the lock
 	 * @param string $name

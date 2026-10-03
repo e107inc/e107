@@ -17,6 +17,8 @@ use e107\Database\Platform\SqlitePlatform;
 use e107\Database\Schema\Definition\ColumnDefinition;
 use e107\Database\Schema\Definition\IndexDefinition;
 use e107\Database\Schema\Definition\MysqlDdlParser;
+use e107\Database\Schema\Definition\MysqlDdlWriter;
+use e107\Database\Schema\Definition\MysqlLiteral;
 use e107\Database\Schema\Definition\TableDefinition;
 use e107\Database\Schema\Introspect\IndexSchema;
 use e107\Database\Schema\Introspect\SqliteSchemaReader;
@@ -27,6 +29,7 @@ use InvalidArgumentException;
 require_once(__DIR__.'/SchemaManagerInterface.php');
 require_once(__DIR__.'/Introspect/SqliteSchemaReader.php');
 require_once(__DIR__.'/Definition/TableDefinition.php');
+require_once(__DIR__.'/Definition/MysqlLiteral.php');
 require_once(__DIR__.'/TableOperation.php');
 
 /**
@@ -564,50 +567,49 @@ final class SqliteSchemaManager implements SchemaManagerInterface
 	}
 
 	/**
-	 * Rebuild a table to a new definition ({@see SqliteSchemaManager::compileRebuild()}), in one transaction.
+	 * Written in SQLite's own types (integer, text ...), which render back to the same affinities; there are no options.
 	 *
-	 * @param string $table physical name of the table to rebuild
-	 * @param TableDefinition $target the table it is to become
-	 * @param array|null $columnMap target column => source column or SQL expression; null copies same-named columns
-	 * @return bool
-	 * @throws QueryException when a step fails; the transaction is rolled back
+	 * @inheritDoc
 	 */
-	public function rebuildTable($table, TableDefinition $target, $columnMap = null)
+	public function describeDefinitions($table)
 	{
-		$statements = $this->compileRebuild($table, $target, $columnMap);
-		$manager = $this;
+		$definition = $this->getDefinition($table);
 
-		return $this->db->transactional(function() use ($manager, $statements)
+		if($definition === null)
 		{
-			foreach($statements as $statement)
-			{
-				$manager->run($statement);
-			}
-
-			return true;
-		});
-	}
-
-	/**
-	 * Run one statement, throwing on failure.
-	 *
-	 * @param string $sql
-	 * @return void
-	 * @throws QueryException
-	 */
-	public function run($sql)
-	{
-		if($this->db->execute($sql) === false)
-		{
-			throw new QueryException($this->db->getLastErrorText().' ['.$sql.']');
+			return null;
 		}
+
+		if(!class_exists(MysqlDdlWriter::class, false))
+		{
+			require_once(__DIR__.'/Definition/MysqlDdlWriter.php');
+		}
+
+		$writer = new MysqlDdlWriter();
+		$columns = array();
+		$indexes = array();
+
+		foreach($definition->getColumns() as $name => $column)
+		{
+			$columns[$name] = $writer->writeColumn($column);
+		}
+
+		foreach($definition->getIndexes() as $name => $index)
+		{
+			$indexes[$name] = $writer->writeIndex($index);
+		}
+
+		return array(
+			'body'    => $writer->writeBody($definition),
+			'options' => '',
+			'columns' => $columns,
+			'indexes' => $indexes,
+		);
 	}
 
 	/**
-	 * A default as SHOW COLUMNS reports it: the value, unquoted.
-	 *
 	 * @param string|null $default dflt_value as SQLite stores it
-	 * @return string|null
+	 * @return string|null the default as SHOW COLUMNS reports it: the value, unquoted
 	 */
 	private function literalValue($default)
 	{
@@ -640,7 +642,7 @@ final class SqliteSchemaManager implements SchemaManagerInterface
 			return array(ColumnDefinition::DEFAULT_LITERAL, $tokens[0]['value']);
 		}
 
-		if(count($tokens) === 1 && $tokens[0]['type'] === SqlLexer::T_NUMBER && preg_match('/^(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/D', $tokens[0]['text']))
+		if(count($tokens) === 1 && $tokens[0]['type'] === SqlLexer::T_NUMBER && MysqlLiteral::isDecimal($tokens[0]['text']))
 		{
 			return array(ColumnDefinition::DEFAULT_LITERAL, (($sign !== null && $sign['text'] === '-') ? '-' : '').$tokens[0]['text']);
 		}

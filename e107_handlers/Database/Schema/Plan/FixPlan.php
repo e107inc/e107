@@ -183,6 +183,12 @@ final class FixPlan
 	 * Render every change, in order, to a flat list of executable statements. An
 	 * empty plan renders to an empty array.
 	 *
+	 * MySQL renders a change without reading the table, so the whole list is right
+	 * before any of it runs. An engine that compiles a change against the table as
+	 * it stands (SQLite, whose ALTER TABLE cannot make every change in place) needs
+	 * the earlier changes to a table applied before a later one is rendered, as
+	 * {@see \db_verify::runFix()} does by rendering each change just before it runs.
+	 *
 	 * @param SchemaBuilder $schema
 	 * @return string[] Non-empty SQL statements, without trailing semicolons.
 	 * @throws UnexpectedValueException when a change renders an empty statement, an empty list, or a non-string.

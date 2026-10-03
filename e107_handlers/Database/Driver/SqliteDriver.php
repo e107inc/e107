@@ -135,6 +135,23 @@ class SqliteDriver extends AbstractPdoDriver
 	}
 
 	/**
+	 * SQLite stores a value as given rather than cut it to fit, so there is no mode to enter.
+	 *
+	 * @inheritDoc
+	 */
+	public function enterStrictMode(ConnectionInterface $connection)
+	{
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function leaveStrictMode(ConnectionInterface $connection, $restore)
+	{
+	}
+
+	/**
 	 * Nothing to connect to until a database file is named.
 	 *
 	 * @inheritDoc

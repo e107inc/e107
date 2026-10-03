@@ -234,13 +234,17 @@ class Table
 	}
 
 	/**
-	 * The changes batched so far.
+	 * Queue a change already described as a {@see TableOperation}, for a caller
+	 * that keeps its own spelling of the MySQL clause.
 	 *
-	 * @return TableOperation[]
+	 * @param TableOperation $operation
+	 * @return $this
 	 */
-	public function getOperations()
+	public function addOperation(TableOperation $operation)
 	{
-		return $this->operations;
+		$this->operations[] = $operation;
+
+		return $this;
 	}
 
 	/**

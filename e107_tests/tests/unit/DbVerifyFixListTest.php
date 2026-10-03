@@ -8,7 +8,8 @@
  *
  */
 
-use e107\Database\Schema\Introspect\SchemaReader;
+use e107\Database\Schema\Column;
+use e107\Database\Schema\Index;
 use e107\Database\Schema\Introspect\TableSchema;
 use e107\Database\Schema\Plan\FixPlan;
 
@@ -110,17 +111,44 @@ class DbVerifyFixListTest extends \Test\Unit
 
 		$this->assertArrayHasKey('core', $dbv->fixList);
 
+		$diffs = $dbv->getTableDiffs();
+		$drifted = 0;
+
+		foreach(self::$coreTablesWithMisleadingNames as $table)
+		{
+			if(isset($diffs[$table]) && $diffs[$table]->hasDrift())
+			{
+				$drifted++;
+				$this->assertArrayHasKey(
+					$table,
+					$dbv->fixList['core'],
+					'`' . $table . '` is declared by core_sql.php and drifted on this dump, so it belongs under `core`.'
+				);
+			}
+
+			$this->assertArrayNotHasKey(
+				$table,
+				$dbv->fixList,
+				'`' . $table . '` is a table, not a schema file, and must never reach the top level of $fixList.'
+			);
+		}
+
+		$this->assertGreaterThan(0, $drifted, 'None of ' . implode(', ', self::$coreTablesWithMisleadingNames) . ' drifted, so where a drifted one is filed went unchecked.');
+	}
+
+	public function testEveryTableWithAMisleadingNameIsFiledUnderCoreOnMysql()
+	{
+
+		$this->requireDatabaseDriver('mysql', 'the v2.3.0 dump leaves all of these tables drifted only as MySQL reads them back');
+
+		$dbv = $this->verifiedCorpus();
+
 		foreach(self::$coreTablesWithMisleadingNames as $table)
 		{
 			$this->assertArrayHasKey(
 				$table,
 				$dbv->fixList['core'],
 				'`' . $table . '` is declared by core_sql.php and drifted on this dump, so it belongs under `core`.'
-			);
-			$this->assertArrayNotHasKey(
-				$table,
-				$dbv->fixList,
-				'`' . $table . '` is a table, not a schema file, and must never reach the top level of $fixList.'
 			);
 		}
 	}
@@ -129,6 +157,8 @@ class DbVerifyFixListTest extends \Test\Unit
 
 	public function testNoPlannedChangeEverRendersAnEmptyStatement()
 	{
+
+		$this->requireDatabaseDriver('mysql', 'it renders every change against the unrepaired tables, and SQLite compiles a change against the table as it stands, which an earlier change of the plan has not reached yet');
 
 		$dbv = $this->verifiedCorpus();
 		$plan = $dbv->getFixPlan();
@@ -166,6 +196,8 @@ class DbVerifyFixListTest extends \Test\Unit
 	public function testATableWideCharacterSetDriftIsReportedOnceOnTheTable()
 	{
 
+		$this->requireDatabaseDriver('mysql', "character sets are MySQL's");
+
 		$dbv = $this->verifiedCorpus();
 		$table = self::CHARSET_TABLE;
 
@@ -200,6 +232,8 @@ class DbVerifyFixListTest extends \Test\Unit
 
 	public function testNoColumnAnywhereReportsACharacterSetOrCollationDifference()
 	{
+
+		$this->requireDatabaseDriver('mysql', "character sets are MySQL's");
 
 		$dbv = $this->verifiedCorpus();
 		$converted = 0;
@@ -244,7 +278,7 @@ class DbVerifyFixListTest extends \Test\Unit
 
 		try
 		{
-			$live = (new SchemaReader(e107::getDb()))->read(MPREFIX . $table);
+			$live = e107::getDb()->getSchemaManager()->getReader()->read(MPREFIX . $table);
 
 			$this->assertInstanceOf(TableSchema::class, $live);
 			$this->assertNotNull($live->getColumn($column), 'The undeclared column must actually be on the table, or this test asserts nothing.');
@@ -280,7 +314,10 @@ class DbVerifyFixListTest extends \Test\Unit
 			$afterIndices = $after->getResults('indices');
 
 			$this->assertSame($beforeIndices[$table], $afterIndices[$table]);
-			$this->assertSame($before->fixList['core'][$table], $after->fixList['core'][$table]);
+			$this->assertSame(
+				isset($before->fixList['core'][$table]) ? $before->fixList['core'][$table] : null,
+				isset($after->fixList['core'][$table]) ? $after->fixList['core'][$table] : null
+			);
 
 			$this->assertSame(
 				$beforeStatements,
@@ -288,9 +325,30 @@ class DbVerifyFixListTest extends \Test\Unit
 				'The repair for `' . $table . '` must be the statement it was before, unchanged by a column it does not declare.'
 			);
 
-			foreach($after->getFixPlan()->toSqlStatements($schema) as $sql)
+			foreach($after->getFixPlan()->forTable($table)->toSqlStatements($schema) as $sql)
 			{
 				$this->assertStringNotContainsString($column, $sql, 'No fix anywhere may name a column nothing declares: ' . $sql);
+				$this->assertDoesNotMatchRegularExpression('/\bDROP\s+COLUMN\b/i', $sql, 'A fix plan never drops a column: ' . $sql);
+			}
+		}
+		finally
+		{
+			$this->dropUndeclaredColumn();
+		}
+	}
+
+	public function testNoFixInTheWholePlanNamesAColumnNothingDeclares()
+	{
+
+		$this->requireDatabaseDriver('mysql', 'only MySQL renders a whole plan before any of it runs; see FixPlan::toSqlStatements()');
+
+		$this->addUndeclaredColumn();
+
+		try
+		{
+			foreach($this->verifiedFile('core')->getFixPlan()->toSqlStatements(e107::getDb()->schema()) as $sql)
+			{
+				$this->assertStringNotContainsString(self::EXTRA_COLUMN, $sql, 'No fix anywhere may name a column nothing declares: ' . $sql);
 				$this->assertDoesNotMatchRegularExpression('/\bDROP\s+COLUMN\b/i', $sql, 'A fix plan never drops a column: ' . $sql);
 			}
 		}
@@ -304,6 +362,11 @@ class DbVerifyFixListTest extends \Test\Unit
 
 	public function testARedundantDerivedIndexIsFiledForDroppingAndNothingElse()
 	{
+
+		if(!e107::getDb()->getPlatform()->supportsFullTextIndexes())
+		{
+			$this->markTestSkipped('This engine builds no FULLTEXT index, declared or derived.');
+		}
 
 		$table = self::REDUNDANT_INDEX_TABLE;
 		$index = self::REDUNDANT_INDEX;
@@ -395,37 +458,25 @@ class DbVerifyFixListTest extends \Test\Unit
 	private function addUndeclaredColumn()
 	{
 
-		$sql = e107::getDb();
-
-		$this->assertNotFalse($sql->execute(
-			'ALTER TABLE `' . MPREFIX . self::EXTRA_COLUMN_TABLE . '` ADD COLUMN `' . self::EXTRA_COLUMN . "` varchar(32) NOT NULL DEFAULT ''"
-		));
+		$this->assertNotFalse(e107::getDb()->schema()->tablePhysical(self::EXTRA_COLUMN_TABLE)
+			->addColumn(self::EXTRA_COLUMN, Column::define('VARCHAR', 32)->notNull()->defaultValue(''))
+			->execute());
 	}
 
 	/**
-	 * MySQL has no DROP COLUMN IF EXISTS, so the column is looked up before it is dropped.
+	 * Neither engine drops a column only if it exists, so the column is looked up before it is dropped.
 	 *
 	 * @return void
 	 */
 	private function dropUndeclaredColumn()
 	{
 
-		$sql = e107::getDb();
+		$live = $this->live(self::EXTRA_COLUMN_TABLE);
 
-		$sql->execute(
-			'SELECT COUNT(*) AS hits FROM information_schema.COLUMNS'
-			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name AND COLUMN_NAME = :column',
-			array('name' => MPREFIX . self::EXTRA_COLUMN_TABLE, 'column' => self::EXTRA_COLUMN)
-		);
-
-		$row = $sql->fetch();
-
-		if(empty($row['hits']))
+		if($live !== null && $live->getColumn(self::EXTRA_COLUMN) !== null)
 		{
-			return;
+			e107::getDb()->schema()->tablePhysical(self::EXTRA_COLUMN_TABLE)->dropColumn(self::EXTRA_COLUMN)->execute();
 		}
-
-		$sql->execute('ALTER TABLE `' . MPREFIX . self::EXTRA_COLUMN_TABLE . '` DROP COLUMN `' . self::EXTRA_COLUMN . '`');
 	}
 
 	/**
@@ -434,12 +485,9 @@ class DbVerifyFixListTest extends \Test\Unit
 	private function addRedundantIndex()
 	{
 
-		$sql = e107::getDb();
-
-		$this->assertNotFalse($sql->execute(
-			'ALTER TABLE `' . MPREFIX . self::REDUNDANT_INDEX_TABLE . '` '
-			. 'ADD FULLTEXT `' . self::REDUNDANT_INDEX . '` (`' . self::REDUNDANT_INDEX_COLUMN . '`)'
-		));
+		$this->assertNotFalse(e107::getDb()->schema()->tablePhysical(self::REDUNDANT_INDEX_TABLE)
+			->addIndex(Index::fulltext(self::REDUNDANT_INDEX, self::REDUNDANT_INDEX_COLUMN))
+			->execute());
 	}
 
 	/**
@@ -448,21 +496,21 @@ class DbVerifyFixListTest extends \Test\Unit
 	private function dropRedundantIndex()
 	{
 
-		$sql = e107::getDb();
+		$live = $this->live(self::REDUNDANT_INDEX_TABLE);
 
-		$sql->execute(
-			'SELECT COUNT(*) AS hits FROM information_schema.STATISTICS'
-			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name AND INDEX_NAME = :index',
-			array('name' => MPREFIX . self::REDUNDANT_INDEX_TABLE, 'index' => self::REDUNDANT_INDEX)
-		);
-
-		$row = $sql->fetch();
-
-		if(empty($row['hits']))
+		if($live !== null && $live->getIndex(self::REDUNDANT_INDEX) !== null)
 		{
-			return;
+			e107::getDb()->schema()->tablePhysical(self::REDUNDANT_INDEX_TABLE)->dropIndex(self::REDUNDANT_INDEX)->execute();
 		}
+	}
 
-		$sql->execute('ALTER TABLE `' . MPREFIX . self::REDUNDANT_INDEX_TABLE . '` DROP INDEX `' . self::REDUNDANT_INDEX . '`');
+	/**
+	 * @param string $table unprefixed table name.
+	 * @return TableSchema|null the live table, as the connection's own reader reads it.
+	 */
+	private function live($table)
+	{
+
+		return e107::getDb()->getSchemaManager()->getReader()->read(MPREFIX . $table);
 	}
 }

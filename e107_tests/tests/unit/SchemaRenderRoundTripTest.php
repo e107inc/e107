@@ -41,6 +41,8 @@ class SchemaRenderRoundTripTest extends \Test\Unit
 
 	protected function _before()
 	{
+		$this->requireDatabaseDriver('mysql', "it holds the server's own SHOW CREATE TABLE text to byte identity");
+
 		$this->db = e107::getDb();
 		$this->materialiser = new Materialiser($this->db, new SchemaReader($this->db), MPREFIX);
 
@@ -49,6 +51,11 @@ class SchemaRenderRoundTripTest extends \Test\Unit
 
 	protected function _after()
 	{
+		if($this->materialiser === null)
+		{
+			return;
+		}
+
 		$this->dropLiveTable();
 		$this->materialiser->sweep();
 	}

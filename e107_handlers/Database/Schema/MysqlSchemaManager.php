@@ -11,6 +11,7 @@
 namespace e107\Database\Schema;
 
 use e107\Database\ConnectionInterface;
+use e107\Database\Schema\Introspect\MysqlCreateStatement;
 use e107\Database\Schema\Introspect\SchemaReader;
 
 require_once(__DIR__.'/SchemaManagerInterface.php');
@@ -25,6 +26,9 @@ final class MysqlSchemaManager implements SchemaManagerInterface
 
 	/** @var SchemaReader|null */
 	private $reader = null;
+
+	/** @var bool whether this session has been told to quote identifiers in SHOW CREATE TABLE */
+	private $quotesShowCreate = false;
 
 	/**
 	 * @param ConnectionInterface $db the connection every statement runs on
@@ -94,10 +98,18 @@ final class MysqlSchemaManager implements SchemaManagerInterface
 	}
 
 	/**
+	 * Written with every identifier quoted (SQL_QUOTE_SHOW_CREATE), which reading the statement back relies on.
+	 *
 	 * @inheritDoc
 	 */
 	public function getCreateStatement($table)
 	{
+		if(!$this->quotesShowCreate)
+		{
+			$this->db->execute('SET SQL_QUOTE_SHOW_CREATE = 1');
+			$this->quotesShowCreate = true;
+		}
+
 		if($this->db->execute('SHOW CREATE TABLE '.$this->quote($table)) === false)
 		{
 			return null;
@@ -178,6 +190,37 @@ final class MysqlSchemaManager implements SchemaManagerInterface
 		}
 
 		return array($this->db->getPlatform()->compileAlterTable($this->quoteForDdl($table), $clauses));
+	}
+
+	/**
+	 * Cut from the server's own SHOW CREATE TABLE, so a definition put back changes nothing the server would
+	 * otherwise spell differently. The AUTO_INCREMENT counter is left out of the options.
+	 *
+	 * @inheritDoc
+	 */
+	public function describeDefinitions($table)
+	{
+		if(!class_exists(MysqlCreateStatement::class, false))
+		{
+			require_once(__DIR__.'/Introspect/MysqlCreateStatement.php');
+		}
+
+		$create = $this->getCreateStatement($table);
+		$statement = is_string($create) ? MysqlCreateStatement::split($create) : null;
+
+		if($statement === null)
+		{
+			return null;
+		}
+
+		$definitions = MysqlCreateStatement::definitionsByName($statement['body']);
+
+		return array(
+			'body'    => $statement['body'],
+			'options' => $statement['options'],
+			'columns' => $definitions['columns'],
+			'indexes' => $definitions['indexes'],
+		);
 	}
 
 	/**

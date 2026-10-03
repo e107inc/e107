@@ -8,13 +8,19 @@
  *
  */
 
+use e107\Database\Schema\Column;
 use e107\Database\Schema\Diff\TableDiff;
+use e107\Database\Schema\Index;
+use e107\Database\Schema\Introspect\TableSchema;
+use e107\Database\Schema\Table;
 
 /**
  * The round-trip property: break a live table, repair it through {@see \db_verify}, then read the database back.
  *
  * The unit database is a v2.3.0 dump in which most core tables are already drifted, so every expected shape is stated
- * here by hand from core_sql.php rather than read back from the code under test.
+ * here by hand from core_sql.php rather than read back from the code under test. The damage goes through the schema
+ * builder and the reading through the connection's own reader, so the property is checked on whatever engine the
+ * suite runs on; a type MySQL spells back is asserted where MySQL runs.
  */
 class DbVerifyRoundTripTest extends \Test\Unit
 {
@@ -61,7 +67,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$this->snapshot('news');
 
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'news` DROP COLUMN `news_class`');
+		$this->alter('news', $this->table('news')->dropColumn('news_class'));
 
 		$broken = $this->driftOf('news');
 		$this->assertArrayHasKey(
@@ -74,7 +80,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$restored = $this->columnOf('news', 'news_class');
 		$this->assertNotNull($restored, 'news_class must be back in the live table.');
-		$this->assertEquals('varchar(255)', strtolower($restored['COLUMN_TYPE']));
+		$this->assertMysqlType('varchar(255)', $restored);
 		$this->assertEquals('NO', $restored['IS_NULLABLE']);
 		$this->assertEquals('0', self::defaultOf($restored));
 
@@ -88,15 +94,45 @@ class DbVerifyRoundTripTest extends \Test\Unit
 		$this->assertFalse($this->driftOf('news')->hasDrift(), 'The repaired news table must verify clean.');
 	}
 
+	public function testAChangeOfSeveralStatementsRunsNoneOfThemWhenNoTransactionCanBeOpened()
+	{
+
+		if(!e107::getDb()->getPlatform()->supportsTransactionalDdl())
+		{
+			$this->markTestSkipped('Only an engine whose DDL is transactional makes a change of several statements as one.');
+		}
+
+		$this->snapshot('news');
+		$this->alter('news', $this->table('news')->dropColumn('news_class'));
+
+		$dbv = $this->verifierFor('news');
+		$dbv->compare('core');
+		$dbv->compileResults();
+
+		$this->runStatement('BEGIN');
+
+		try
+		{
+			$dbv->runFix();
+			$columns = $this->columnNames('news');
+		}
+		finally
+		{
+			e107::getDb()->execute('ROLLBACK');
+		}
+
+		$this->assertNotContains('news_class', $columns, 'No statement of the rebuild may run outside a transaction of its own.');
+		$this->assertArrayHasKey('news', $dbv->getErrors(), 'A change that did not run leaves its table reported.');
+	}
+
 	public function testANarrowedColumnIsWidenedBackToItsDeclaredLength()
 	{
 
+		$this->requireDatabaseDriver('mysql', 'SQLite stores VARCHAR(10), VARCHAR(255) and TEXT as one type, so the damage is no drift there');
 		$this->snapshot('submitnews');
 
-		$this->runStatement(
-			'ALTER TABLE `' . MPREFIX . 'submitnews` '
-			. "MODIFY COLUMN `submitnews_keywords` varchar(10) NOT NULL DEFAULT ''"
-		);
+		$this->alter('submitnews', $this->table('submitnews')
+			->modifyColumn('submitnews_keywords', Column::define('VARCHAR', 10)->notNull()->defaultValue('')));
 
 		$broken = $this->driftOf('submitnews');
 		$this->assertArrayHasKey(
@@ -109,7 +145,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$restored = $this->columnOf('submitnews', 'submitnews_keywords');
 		$this->assertNotNull($restored);
-		$this->assertEquals('varchar(255)', strtolower($restored['COLUMN_TYPE']));
+		$this->assertMysqlType('varchar(255)', $restored);
 		$this->assertEquals('NO', $restored['IS_NULLABLE']);
 
 		$this->assertFalse($this->driftOf('submitnews')->hasDrift(), 'The repaired submitnews table must verify clean.');
@@ -118,12 +154,11 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	public function testAChangedColumnTypeIsRestored()
 	{
 
+		$this->requireDatabaseDriver('mysql', 'SQLite stores VARCHAR(10), VARCHAR(255) and TEXT as one type, so the damage is no drift there');
 		$this->snapshot('submitnews');
 
-		$this->runStatement(
-			'ALTER TABLE `' . MPREFIX . 'submitnews` '
-			. "MODIFY COLUMN `submitnews_item` varchar(255) NOT NULL DEFAULT ''"
-		);
+		$this->alter('submitnews', $this->table('submitnews')
+			->modifyColumn('submitnews_item', Column::define('VARCHAR', 255)->notNull()->defaultValue('')));
 
 		$broken = $this->driftOf('submitnews');
 		$this->assertArrayHasKey('submitnews_item', $broken->getModifiedColumns());
@@ -132,9 +167,13 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$restored = $this->columnOf('submitnews', 'submitnews_item');
 		$this->assertNotNull($restored);
-		$this->assertEquals('text', strtolower($restored['COLUMN_TYPE']), 'submitnews_item is declared TEXT.');
+		$this->assertMysqlType('text', $restored, 'submitnews_item is declared TEXT.');
 		$this->assertEquals('NO', $restored['IS_NULLABLE']);
-		$this->assertNull($restored['COLUMN_DEFAULT'], 'The declaration gives submitnews_item no default.');
+
+		if($this->onMysql())
+		{
+			$this->assertNull($restored['COLUMN_DEFAULT'], 'The declaration gives submitnews_item no default.');
+		}
 
 		$this->assertFalse($this->driftOf('submitnews')->hasDrift(), 'The repaired submitnews table must verify clean.');
 	}
@@ -146,7 +185,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$this->snapshot('news');
 
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'news` DROP INDEX `news_datestamp`');
+		$this->alter('news', $this->table('news')->dropIndex('news_datestamp'));
 
 		$broken = $this->driftOf('news');
 		$this->assertArrayHasKey(
@@ -171,7 +210,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$this->snapshot('news');
 
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'news` DROP INDEX `news_start_end`');
+		$this->alter('news', $this->table('news')->dropIndex('news_start_end'));
 
 		$broken = $this->driftOf('news');
 		$this->assertArrayHasKey('news_start_end', $broken->getMissingIndexes());
@@ -193,8 +232,8 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$this->snapshot('user');
 
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'user` DROP INDEX `join_ban_index`');
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'user` ADD INDEX `join_ban_index` (`user_ban`, `user_join`)');
+		$this->alter('user', $this->table('user')->dropIndex('join_ban_index'));
+		$this->alter('user', $this->table('user')->addIndex(Index::index('join_ban_index', array('user_ban', 'user_join'))));
 
 		$broken = $this->driftOf('user');
 		$this->assertArrayHasKey(
@@ -219,6 +258,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	public function testATableOnTheWrongStorageEngineIsConvertedBack()
 	{
 
+		$this->skipWithoutStorageEngines();
 		$this->snapshot('tmp');
 
 		$this->repair('tmp');
@@ -245,7 +285,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$this->snapshot('rate');
 
-		$this->runStatement('DROP TABLE `' . MPREFIX . 'rate`');
+		$this->assertNotFalse(e107::getDb()->dropTable('rate'));
 		$this->assertFalse($this->tableExists('rate'), 'The table must really be gone before the repair.');
 
 		$broken = $this->driftOf('rate');
@@ -256,7 +296,11 @@ class DbVerifyRoundTripTest extends \Test\Unit
 		$this->assertTrue($this->tableExists('rate'), 'The table must have been recreated.');
 		$this->assertEquals(self::$declaredRateColumns, $this->columnNames('rate'));
 		$this->assertEquals(array('rate_id'), $this->indexColumns('rate', 'PRIMARY'));
-		$this->assertEquals('InnoDB', $this->engineOf('rate'));
+
+		if(e107::getDb()->getPlatform()->supportsStorageEngines())
+		{
+			$this->assertEquals('InnoDB', $this->engineOf('rate'));
+		}
 
 		$rateId = $this->columnOf('rate', 'rate_id');
 		$this->assertEquals('auto_increment', strtolower($rateId['EXTRA']));
@@ -271,7 +315,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$this->snapshot('news');
 
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'news` DROP INDEX `news_datestamp`');
+		$this->alter('news', $this->table('news')->dropIndex('news_datestamp'));
 
 		$dbv = $this->verifierFor('news');
 		$dbv->compare('core');
@@ -308,8 +352,8 @@ class DbVerifyRoundTripTest extends \Test\Unit
 
 		$this->snapshot('news');
 
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'news` DROP INDEX `news_sticky`');
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'news` DROP INDEX `news_render_type`');
+		$this->alter('news', $this->table('news')->dropIndex('news_sticky'));
+		$this->alter('news', $this->table('news')->dropIndex('news_render_type'));
 
 		$dbv = $this->verifierFor('news');
 		$dbv->runFix(array('core' => array('news' => array('news_sticky' => array('index')))));
@@ -352,7 +396,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 			'precondition: the declared FULLTEXT index is absent from the v2.3.0 dump.'
 		);
 
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'user` ADD FULLTEXT `ft_user_user_signature` (`user_signature`)');
+		$this->alter('user', $this->table('user')->addIndex(Index::fulltext('ft_user_user_signature', 'user_signature')));
 
 		$reported = $this->indicesOf('user');
 
@@ -395,7 +439,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 		$this->skipWithoutFulltext();
 		$this->snapshot('user');
 
-		$this->runStatement('ALTER TABLE `' . MPREFIX . 'user` ADD FULLTEXT `ft_user_user_signature` (`user_signature`)');
+		$this->alter('user', $this->table('user')->addIndex(Index::fulltext('ft_user_user_signature', 'user_signature')));
 
 		$dbv = $this->verifierFor('user');
 		$dbv->runFix(array('core' => array('user' => array('ft_user_user_signature' => array('indexdrop')))));
@@ -494,37 +538,53 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	private function snapshot($table)
 	{
 
-		$physical = MPREFIX . $table;
-		$backup = MPREFIX . 'dbvroundtrip_' . $table;
+		$db = e107::getDb();
+		$backup = 'dbvroundtrip_' . $table;
 
-		$this->runStatement('DROP TABLE IF EXISTS `' . $backup . '`');
-		$this->runStatement('CREATE TABLE `' . $backup . '` LIKE `' . $physical . '`');
-		$this->runStatement('INSERT INTO `' . $backup . '` SELECT * FROM `' . $physical . '`');
+		$db->dropTable($backup);
+		$this->assertTrue($db->getSchemaManager()->createTableLike(MPREFIX . $table, MPREFIX . $backup), 'the backup of ' . $table . ' has to be made');
+		$this->runStatement('INSERT INTO `' . MPREFIX . $backup . '` SELECT * FROM `' . MPREFIX . $table . '`');
 
 		$this->snapshots[$table] = $backup;
 	}
 
 	/**
 	 * @param string $table unprefixed table name.
-	 * @param string $backup physical name of its copy.
+	 * @param string $backup unprefixed name of its copy.
 	 * @return void
 	 */
 	private function restore($table, $backup)
 	{
 
-		$physical = MPREFIX . $table;
-		$autoIncrement = $this->autoIncrementOf($backup);
+		$db = e107::getDb();
 
-		$this->runStatement('DROP TABLE IF EXISTS `' . $physical . '`');
-		$this->runStatement('CREATE TABLE `' . $physical . '` LIKE `' . $backup . '`');
-		$this->runStatement('INSERT INTO `' . $physical . '` SELECT * FROM `' . $backup . '`');
+		$db->dropTable($table);
+		$this->assertTrue($db->getSchemaManager()->createTableLike(MPREFIX . $backup, MPREFIX . $table), $table . ' has to be put back');
+		$this->runStatement('INSERT INTO `' . MPREFIX . $table . '` SELECT * FROM `' . MPREFIX . $backup . '`');
+		$db->dropTable($backup);
+	}
 
-		if($autoIncrement !== null)
-		{
-			$this->runStatement('ALTER TABLE `' . $physical . '` AUTO_INCREMENT = ' . (int) $autoIncrement);
-		}
+	/**
+	 * @param string $table unprefixed table name.
+	 * @return Table a batch of changes to it, compiled for the suite's engine.
+	 */
+	private function table($table)
+	{
 
-		$this->runStatement('DROP TABLE `' . $backup . '`');
+		return e107::getDb()->schema()->tablePhysical($table);
+	}
+
+	/**
+	 * Run a batch of changes the test breaks a table with.
+	 *
+	 * @param string $table unprefixed table name, for the message.
+	 * @param Table $changes
+	 * @return void
+	 */
+	private function alter($table, Table $changes)
+	{
+
+		$this->assertNotFalse($changes->execute(), 'the damage to ' . $table . ' has to be done: ' . e107::getDb()->getLastErrorText());
 	}
 
 	/**
@@ -540,25 +600,37 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	}
 
 	/**
-	 * @param string $sql
-	 * @param array $params bound values, keyed without the leading colon.
-	 * @return array[] associative rows.
+	 * @param string $table unprefixed table name.
+	 * @return TableSchema|null the live table, as the connection's own reader reads it.
 	 */
-	private function rows($sql, array $params = array())
+	private function live($table)
 	{
 
-		$db = e107::getDb();
+		return e107::getDb()->getSchemaManager()->getReader()->read(MPREFIX . $table);
+	}
 
-		$this->assertNotFalse($db->execute($sql, $params), $sql . ' :: ' . $db->getLastErrorText());
+	/**
+	 * @return bool whether the suite runs on MySQL, which spells a declared type back as declared.
+	 */
+	private function onMysql()
+	{
 
-		$rows = array();
+		return e107::getDb()->getDriver()->getName() === 'mysql';
+	}
 
-		while($row = $db->fetch())
+	/**
+	 * @param string $type the type as MySQL reports it, e.g. 'varchar(255)'
+	 * @param array $column as {@see DbVerifyRoundTripTest::columnOf()} returns it.
+	 * @param string $message
+	 * @return void
+	 */
+	private function assertMysqlType($type, array $column, $message = '')
+	{
+
+		if($this->onMysql())
 		{
-			$rows[] = $row;
+			$this->assertEquals($type, strtolower($column['COLUMN_TYPE']), $message);
 		}
-
-		return $rows;
 	}
 
 	/**
@@ -568,43 +640,37 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	private function columnNames($table)
 	{
 
-		$rows = $this->rows(
-			'SELECT COLUMN_NAME FROM information_schema.COLUMNS'
-			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name'
-			. ' ORDER BY ORDINAL_POSITION',
-			array('name' => MPREFIX . $table)
-		);
+		$live = $this->live($table);
 
-		$names = array();
-
-		foreach($rows as $row)
-		{
-			$names[] = $row['COLUMN_NAME'];
-		}
-
-		return $names;
+		return ($live === null) ? array() : array_map('strval', array_keys($live->getColumns()));
 	}
 
 	/**
 	 * @param string $table unprefixed table name.
 	 * @param string $column
-	 * @return array|null the information_schema row, or null when there is no such column.
+	 * @return array|null the column in the shape of an information_schema row, or null when there is no such column.
 	 */
 	private function columnOf($table, $column)
 	{
 
-		$rows = $this->rows(
-			'SELECT COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT, EXTRA, ORDINAL_POSITION'
-			. ' FROM information_schema.COLUMNS'
-			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name AND COLUMN_NAME = :column',
-			array('name' => MPREFIX . $table, 'column' => $column)
-		);
+		$live = $this->live($table);
+		$found = ($live === null) ? null : $live->getColumn($column);
 
-		return empty($rows) ? null : $rows[0];
+		if($found === null)
+		{
+			return null;
+		}
+
+		return array(
+			'COLUMN_TYPE'    => $found->getColumnType(),
+			'IS_NULLABLE'    => $found->isNullable() ? 'YES' : 'NO',
+			'COLUMN_DEFAULT' => $found->getDefault(),
+			'EXTRA'          => $found->getExtra(),
+		);
 	}
 
 	/**
-	 * A column's default with the quotes MariaDB wraps a string default in stripped; MySQL states it without them.
+	 * A column's default with the quotes MariaDB and SQLite wrap a string default in stripped; MySQL states it without them.
 	 *
 	 * @param array $column as {@see DbVerifyRoundTripTest::columnOf()} returns it.
 	 * @return string|null
@@ -623,26 +689,15 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	/**
 	 * @param string $table unprefixed table name.
 	 * @param string $index
-	 * @return string[] the index's columns in SEQ_IN_INDEX order; empty when there is no such index.
+	 * @return string[] the index's columns in order; empty when there is no such index.
 	 */
 	private function indexColumns($table, $index)
 	{
 
-		$rows = $this->rows(
-			'SELECT COLUMN_NAME FROM information_schema.STATISTICS'
-			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name AND INDEX_NAME = :index'
-			. ' ORDER BY SEQ_IN_INDEX',
-			array('name' => MPREFIX . $table, 'index' => $index)
-		);
+		$live = $this->live($table);
+		$found = ($live === null) ? null : $live->getIndex($index);
 
-		$columns = array();
-
-		foreach($rows as $row)
-		{
-			$columns[] = $row['COLUMN_NAME'];
-		}
-
-		return $columns;
+		return ($found === null) ? array() : $found->getColumnNames();
 	}
 
 	/**
@@ -652,34 +707,9 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	private function engineOf($table)
 	{
 
-		$rows = $this->rows(
-			'SELECT ENGINE FROM information_schema.TABLES'
-			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name',
-			array('name' => MPREFIX . $table)
-		);
+		$live = $this->live($table);
 
-		return empty($rows) ? null : $rows[0]['ENGINE'];
-	}
-
-	/**
-	 * @param string $physicalTableName
-	 * @return int|null null when the table has no AUTO_INCREMENT column.
-	 */
-	private function autoIncrementOf($physicalTableName)
-	{
-
-		$rows = $this->rows(
-			'SELECT AUTO_INCREMENT FROM information_schema.TABLES'
-			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name',
-			array('name' => $physicalTableName)
-		);
-
-		if(empty($rows) || $rows[0]['AUTO_INCREMENT'] === null)
-		{
-			return null;
-		}
-
-		return (int) $rows[0]['AUTO_INCREMENT'];
+		return ($live === null) ? null : $live->getEngine();
 	}
 
 	/**
@@ -689,7 +719,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	private function tableExists($table)
 	{
 
-		return $this->engineOf($table) !== null;
+		return $this->live($table) !== null;
 	}
 
 	/**
@@ -719,18 +749,15 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	private function fulltextIndexNamesOver($table, $column)
 	{
 
-		$rows = $this->rows(
-			'SELECT INDEX_NAME FROM information_schema.STATISTICS'
-			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name'
-			. ' AND COLUMN_NAME = :column AND INDEX_TYPE = :type',
-			array('name' => MPREFIX . $table, 'column' => $column, 'type' => 'FULLTEXT')
-		);
-
+		$live = $this->live($table);
 		$names = array();
 
-		foreach($rows as $row)
+		foreach(($live === null) ? array() : $live->getIndexes() as $name => $index)
 		{
-			$names[] = $row['INDEX_NAME'];
+			if($index->getKind() === 'FULLTEXT' && $index->getColumnNames() === array($column))
+			{
+				$names[] = (string) $name;
+			}
 		}
 
 		sort($names);
@@ -739,12 +766,18 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	}
 
 	/**
-	 * Skips the test on the mysql:5.5 and mariadb:10.0 that CI also runs, whose InnoDB has no FULLTEXT.
+	 * Skips the test where no storage engine can carry the FULLTEXT index `user` declares: an engine without FULLTEXT
+	 * indexes, or the mysql:5.5 and mariadb:10.0 that CI also runs, whose InnoDB has none.
 	 *
 	 * @return void
 	 */
 	private function skipWithoutFulltext()
 	{
+
+		if(!e107::getDb()->getPlatform()->supportsFullTextIndexes())
+		{
+			$this->markTestSkipped('This engine builds no FULLTEXT index.');
+		}
 
 		$dbv = $this->verifierFor('user');
 		$engine = $dbv->getIntendedStorageEngine('InnoDB', array('needsFulltext' => true));
@@ -752,6 +785,18 @@ class DbVerifyRoundTripTest extends \Test\Unit
 		if($engine === false || !$dbv->engineSupportsFulltext($engine))
 		{
 			$this->markTestSkipped('No storage engine on this server can carry the FULLTEXT index `user` declares.');
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	private function skipWithoutStorageEngines()
+	{
+
+		if(!e107::getDb()->getPlatform()->supportsStorageEngines())
+		{
+			$this->markTestSkipped('This engine has no storage engines to be on the wrong one of.');
 		}
 	}
 }

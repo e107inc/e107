@@ -72,15 +72,15 @@ final class AddColumn extends AbstractChange
 
 	/**
 	 * @param SchemaBuilder $schema
-	 * @return string
+	 * @return string|string[]
 	 * @throws RuntimeException when the column carries no captured definition.
 	 */
 	public function toSql(SchemaBuilder $schema)
 	{
 		$definition = $this->captured($this->column->getDdl(), 'column `'.$this->column->getName().'`');
 
-		return $schema->tablePhysical($this->getTable())
+		return self::rendered($schema->tablePhysical($this->getTable())
 			->addColumnRaw($definition, $this->after)
-			->getSQL();
+			->getStatements());
 	}
 }

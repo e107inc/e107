@@ -335,6 +335,30 @@ class SqliteDriverTest extends \Test\Unit
 		), $schema->buildCreateTablePhysicalStatements('raw', \e107\Database\SqlFragment::raw('raw_id int NOT NULL')));
 	}
 
+	public function testADeclaredTableIsMaterialisedAndNothingIsLeftBehind()
+	{
+		$materialiser = new \e107\Database\Schema\Declared\Materialiser($this->db, $this->db->getSchemaManager()->getReader(), 'e107_');
+		$declared = new \e107\Database\Schema\Declared\DeclaredTable('core', 'widget',
+			"widget_id int(10) unsigned NOT NULL auto_increment,
+			 widget_name varchar(255) NOT NULL default '',
+			 widget_body text NOT NULL,
+			 PRIMARY KEY (widget_id),
+			 UNIQUE KEY widget_name (widget_name),
+			 FULLTEXT KEY widget_body (widget_body)");
+
+		$schema = $materialiser->materialise($declared, null, null);
+
+		$this->assertSame(array('widget_id', 'widget_name', 'widget_body'), array_keys($schema->getColumns()));
+		$this->assertSame(array('PRIMARY', 'widget_name'), array_keys($schema->getIndexes()), 'no FULLTEXT index is built on SQLite');
+		$this->assertSame('', $schema->getEngine());
+		$this->assertSame("`widget_name` text NOT NULL DEFAULT ''", $schema->getColumn('widget_name')->getDdl(), 'each definition comes back in the schema DSL');
+		$this->assertSame('UNIQUE KEY `widget_name` (`widget_name`)', $schema->getIndex('widget_name')->getDdl());
+		$this->assertSame('', $schema->getCreateOptions());
+
+		$this->assertSame(array('e107_item'), $this->db->getSchemaManager()->listTableNames('e107_'), 'the scratch table was rolled back');
+		$this->assertSame(0, $materialiser->sweep());
+	}
+
 	public function testATableIsRebuiltToANewDefinitionKeepingItsRows()
 	{
 		$this->insertItems();

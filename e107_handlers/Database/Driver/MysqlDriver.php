@@ -112,6 +112,25 @@ class MysqlDriver extends AbstractPdoDriver
 	/**
 	 * @inheritDoc
 	 */
+	public function enterStrictMode(ConnectionInterface $connection)
+	{
+		$mode = (string) $connection->getMode();
+		$connection->execute("SET SESSION sql_mode = CONCAT(@@sql_mode, ',STRICT_TRANS_TABLES')");
+
+		return $mode;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function leaveStrictMode(ConnectionInterface $connection, $restore)
+	{
+		$connection->execute('SET SESSION sql_mode = :mode', array('mode' => (string) $restore));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function connect(array $params)
 	{
 		return new PDO('mysql:host='.$params['server'].';port='.$params['port'], $params['user'], $params['password'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));

@@ -24,7 +24,7 @@ use e107\Database\Schema\Diff\SchemaDiffer;
 use e107\Database\Schema\Diff\TableDiff;
 use e107\Database\Schema\Introspect\ColumnSchema;
 use e107\Database\Schema\Introspect\IndexSchema;
-use e107\Database\Schema\Introspect\SchemaReader;
+use e107\Database\Schema\Introspect\SchemaReaderInterface;
 use e107\Database\Schema\Introspect\TableSchema;
 use e107\Database\Schema\Plan\Change\AddColumn;
 use e107\Database\Schema\Plan\Change\AddIndex;
@@ -35,6 +35,8 @@ use e107\Database\Schema\Plan\Change\ModifyColumn;
 use e107\Database\Schema\Plan\ChangeInterface;
 use e107\Database\Schema\Plan\FixPlan;
 use e107\Database\Schema\Plan\PlanBuilder;
+use e107\Database\Schema\Table;
+use e107\Database\Schema\TableOperation;
 use e107\Database\SqlFragment;
 
 if(!defined('e107_INIT'))
@@ -100,7 +102,7 @@ class db_verify implements EngineCharsetResolverInterface
 	/** @var SqlFileCatalogue|null the one parser for *_sql.php text */
 	private $sqlFileCatalogue = null;
 
-	/** @var SchemaReader|null reads both sides of every comparison */
+	/** @var SchemaReaderInterface|null reads both sides of every comparison */
 	private $schemaReader = null;
 
 	/** @var Materialiser|null builds a declared body as a scratch table */
@@ -214,6 +216,11 @@ class db_verify implements EngineCharsetResolverInterface
 	 */
 	protected function getSearchFieldIndexes($tableName)
 	{
+		if(!e107::getDb()->getPlatform()->supportsFullTextIndexes())
+		{
+			return array();
+		}
+
 		$indexes = $this->getFulltextIndexer()->getIndexesForTable($tableName);
 
 		// Store definitions for use by getFixQuery()
@@ -276,7 +283,7 @@ class db_verify implements EngineCharsetResolverInterface
 	/**
 	 * Permissive field validation
 	 *
-	 * @deprecated v2.4.0 Every rule here cancels out once both sides are read from one server through {@see SchemaReader}.
+	 * @deprecated v2.4.0 Every rule here cancels out once both sides are read from one server through {@see SchemaReaderInterface}.
 	 */
 	private function diffStructurePermissive($expected, $actual)
 	{
@@ -1258,14 +1265,16 @@ class db_verify implements EngineCharsetResolverInterface
 
 
 	/**
-	 * @return SchemaReader
+	 * The connection's own reader, so the declared and the live side are read alike on any engine.
+	 *
+	 * @return SchemaReaderInterface
 	 */
 	private function schemaReader()
 	{
 
 		if($this->schemaReader === null)
 		{
-			$this->schemaReader = new SchemaReader(e107::getDb());
+			$this->schemaReader = e107::getDb()->getSchemaManager()->getReader();
 		}
 
 		return $this->schemaReader;
@@ -1341,24 +1350,28 @@ class db_verify implements EngineCharsetResolverInterface
 	 * @param string $physical table name, prefix included
 	 * @param string[] $columns the columns to convert; one the server does not define, or that is not a char or text type, is skipped
 	 * @return array ['binary' => string[], 'restore' => string[]]
-	 * @throws InvalidArgumentException when the table name is not one the schema builder will quote
+	 * @throws InvalidArgumentException when the table name is not one the schema builder takes
 	 */
 	public function utf8ConversionStatements($physical, array $columns)
 	{
+		$sql = e107::getDb();
+		$table = $sql->schema()->tablePhysical((MPREFIX !== '' && strpos($physical, MPREFIX) === 0) ? (string) substr($physical, strlen(MPREFIX)) : $physical);
+		$modify = function($clause) use ($table)
+		{
+			$statement = clone $table;
 
-		$logical = (MPREFIX !== '' && strpos($physical, MPREFIX) === 0) ? (string) substr($physical, strlen(MPREFIX)) : $physical;
-		$create = e107::getDb()->schema()->getCreateTablePhysical($logical);
-		$statement = is_string($create) ? Materialiser::splitCreateStatement($create) : null;
+			return $statement->addRaw(SqlFragment::raw('MODIFY '.$clause))->getSQL().';';
+		};
 
-		if($statement === null)
+		$definitions = $sql->getSchemaManager()->describeDefinitions($physical);
+
+		if($definitions === null)
 		{
 			return array('binary' => array(), 'restore' => array());
 		}
 
-		$definitions = Materialiser::definitionsByName($statement['body']);
 		$fulltext = array();
 		$bytesPerChar = array();
-		$sql = e107::getDb();
 
 		if($sql->execute('SELECT c.COLUMN_NAME, cs.MAXLEN FROM information_schema.COLUMNS c JOIN information_schema.CHARACTER_SETS cs ON cs.CHARACTER_SET_NAME = c.CHARACTER_SET_NAME WHERE c.TABLE_SCHEMA = DATABASE() AND c.TABLE_NAME = :table', array('table' => $physical)))
 		{
@@ -1381,7 +1394,6 @@ class db_verify implements EngineCharsetResolverInterface
 
 		$binary = array();
 		$restore = array();
-		$prefix = 'ALTER TABLE `' . str_replace('`', '``', $physical) . '` MODIFY ';
 
 		foreach($columns as $column)
 		{
@@ -1397,10 +1409,10 @@ class db_verify implements EngineCharsetResolverInterface
 					? 'varbinary(' . ((int) $m[3] * $bytesPerChar[$column]) . ')'
 					: preg_replace('/text$/i', 'blob', $m[2]);
 
-				$binary[] = $prefix . $m[1] . $binaryType . $m[5] . ';';
+				$binary[] = $modify($m[1] . $binaryType . $m[5]);
 			}
 
-			$restore[] = $prefix . $m[1] . $m[2] . ' CHARACTER SET utf8mb4' . $m[5] . ';';
+			$restore[] = $modify($m[1] . $m[2] . ' CHARACTER SET utf8mb4' . $m[5]);
 		}
 
 		return array('binary' => $binary, 'restore' => $restore);
@@ -2182,43 +2194,39 @@ class db_verify implements EngineCharsetResolverInterface
 		switch($mode)
 		{
 			case 'alter':
-				$query = $schema->tablePhysical($table)
-					->addRaw(SqlFragment::raw("CHANGE `$field` `$field` $newval"))
-					->getSQL();
+				$query = $this->fixStatements($schema->tablePhysical($table)
+					->addOperation(TableOperation::changeColumn("CHANGE `$field` `$field` $newval", $field, $field, $newval)));
 				break;
 
 			case 'insert':
-				$after = ($aft = $this->getPrevious($fdata, $field)) ? " AFTER {$aft}" : "";
-				$query = $schema->tablePhysical($table)
-					->addRaw(SqlFragment::raw("ADD `$field` $newval{$after}"))
-					->getSQL();
+				$aft = $this->getPrevious($fdata, $field);
+				$after = $aft ? " AFTER {$aft}" : "";
+				$query = $this->fixStatements($schema->tablePhysical($table)
+					->addOperation(TableOperation::addColumn("ADD `$field` $newval{$after}", $field, $newval, $aft ? trim($aft, '`') : null)));
 				break;
 
 			case 'drop':
-				$query = $schema->tablePhysical($table)
-					->addRaw(SqlFragment::raw("DROP `$field`"))
-					->getSQL();
+				$query = $this->fixStatements($schema->tablePhysical($table)
+					->addOperation(TableOperation::dropColumn("DROP `$field`", $field)));
 				break;
 
 			case 'index':
 				$newval = str_replace("PRIMARY", "PRIMARY KEY", $newval);
-				$query = $schema->tablePhysical($table)
-					->addRaw(SqlFragment::raw("ADD " . $newval))
-					->getSQL();
+				$query = $this->fixStatements($schema->tablePhysical($table)
+					->addOperation(TableOperation::addIndex("ADD " . $newval, $newval)));
 				break;
 
 			case 'indexdrop':
-				$query = $schema->tablePhysical($table)
-					->addRaw(SqlFragment::raw("DROP INDEX `$field`"))
-					->getSQL();
+				$query = $this->fixStatements($schema->tablePhysical($table)
+					->addOperation(TableOperation::dropIndex("DROP INDEX `$field`", $field)));
 				break;
 
 			case 'create':
-				$query = $schema->buildCreateTablePhysicalRaw(
+				$query = implode(";\n", $schema->buildCreateTablePhysicalStatements(
 					$table,
 					SqlFragment::raw($sqlFileData),
 					SqlFragment::raw(" ENGINE=" . $engine . " DEFAULT CHARACTER SET=" . $charset . ";")
-				);
+				));
 				break;
 
 			case 'convert':
@@ -2226,21 +2234,33 @@ class db_verify implements EngineCharsetResolverInterface
 				$currentSchema = $this->getSqlFileTables($showCreateTable);
 				if($engine != $currentSchema['engine'][0])
 				{
-					$query .= $schema->tablePhysical($table)
-						->addRaw(SqlFragment::raw("ENGINE=" . $engine . ";"))
-						->getSQL();
+					$query .= $this->fixStatements($schema->tablePhysical($table)
+						->addOperation(TableOperation::engine("ENGINE=" . $engine . ";", $engine)));
 				}
 				if($charset != $currentSchema['charset'][0])
 				{
-					$query .= $schema->tablePhysical($table)
-						->addRaw(SqlFragment::raw("CONVERT TO CHARACTER SET " . $charset . ";"))
-						->getSQL();
+					$query .= $this->fixStatements($schema->tablePhysical($table)
+						->addOperation(TableOperation::charset("CONVERT TO CHARACTER SET " . $charset . ";", $charset)));
 				}
 				break;
 		}
 
 
 		return $query;
+	}
+
+
+	/**
+	 * The statements of one fix, as text: the one ALTER TABLE MySQL always gets, or what another engine needs,
+	 * one per line.
+	 *
+	 * @param Table $table
+	 * @return string '' when the engine needs no statement
+	 */
+	private function fixStatements(Table $table)
+	{
+
+		return implode(";\n", $table->getStatements());
 	}
 
 
@@ -2399,37 +2419,35 @@ class db_verify implements EngineCharsetResolverInterface
 				continue;
 			}
 
-			$mode = $change->mayLoseData() ? $this->enterStrictMode($sql) : null;
+			$mode = $change->mayLoseData() ? $sql->getDriver()->enterStrictMode($sql) : null;
 
 			try
 			{
-				foreach($statements as $query)
+				if(count($statements) > 1 && $sql->getPlatform()->supportsTransactionalDdl())
 				{
-					if(trim((string) $query) === '')
+					$sql->transactional(function() use ($change, $statements, &$outcome)
 					{
-						$log->addDebug('No statement for ' . $change->describe() . ' on `' . $table . '`, nothing to run.');
-
-						continue;
-					}
-
-					if($sql->execute($query) !== false)
-					{
-						$log->addDebug(defset('LAN_UPDATED', 'Updated') . '  [' . $query . ']');
-						$outcome[$table]['applied']++;
-					}
-					else
-					{
-						$log->addWarning(defset('LAN_UPDATED_FAILED', 'Update Failed') . '  [' . $query . ']');
-						$log->addWarning($sql->getLastErrorText()); // PDO compatible.
-						$outcome[$table]['failed']++;
-					}
+						if(!$this->runChange($change, $statements, $outcome, true))
+						{
+							throw new QueryException('every statement of it was rolled back');
+						}
+					});
 				}
+				else
+				{
+					$this->runChange($change, $statements, $outcome, false);
+				}
+			}
+			catch(QueryException $e)
+			{
+				$log->addWarning('Could not apply ' . $change->describe() . ' on `' . $table . '`: ' . $e->getMessage());
+				$outcome[$table]['failed']++;
 			}
 			finally
 			{
 				if($mode !== null)
 				{
-					$sql->execute('SET SESSION sql_mode = :mode', array('mode' => $mode));
+					$sql->getDriver()->leaveStrictMode($sql, $mode);
 				}
 			}
 		}
@@ -2439,21 +2457,51 @@ class db_verify implements EngineCharsetResolverInterface
 
 
 	/**
-	 * Make the server refuse a statement that would rewrite data to fit, instead of doing so with a warning.
+	 * Run one change's statements in order, logging and counting each.
 	 *
-	 * Under e107's usual `NO_ENGINE_SUBSTITUTION` a `CONVERT TO CHARACTER SET` replaces every character the target
-	 * cannot hold with `?`; under `STRICT_TRANS_TABLES` the same statement fails and the table is left as it was.
-	 *
-	 * @param e_db $sql
-	 * @return string the session sql_mode to put back
+	 * @param ChangeInterface $change
+	 * @param string[] $statements
+	 * @param array $outcome as {@see applyPlan()} returns, updated in place.
+	 * @param bool $stopAtFailure
+	 * @return bool whether every statement ran.
 	 */
-	private function enterStrictMode($sql)
+	private function runChange(ChangeInterface $change, array $statements, array &$outcome, $stopAtFailure)
 	{
 
-		$mode = (string) $sql->getMode();
-		$sql->execute("SET SESSION sql_mode = CONCAT(@@sql_mode, ',STRICT_TRANS_TABLES')");
+		$log = e107::getLog();
+		$sql = e107::getDb();
+		$table = $change->getTable();
+		$ran = true;
 
-		return $mode;
+		foreach($statements as $query)
+		{
+			if(trim((string) $query) === '')
+			{
+				$log->addDebug('No statement for ' . $change->describe() . ' on `' . $table . '`, nothing to run.');
+
+				continue;
+			}
+
+			if($sql->execute($query) !== false)
+			{
+				$log->addDebug(defset('LAN_UPDATED', 'Updated') . '  [' . $query . ']');
+				$outcome[$table]['applied']++;
+
+				continue;
+			}
+
+			$log->addWarning(defset('LAN_UPDATED_FAILED', 'Update Failed') . '  [' . $query . ']');
+			$log->addWarning($sql->getLastErrorText()); // PDO compatible.
+			$outcome[$table]['failed']++;
+			$ran = false;
+
+			if($stopAtFailure)
+			{
+				break;
+			}
+		}
+
+		return $ran;
 	}
 
 
@@ -2715,33 +2763,17 @@ class db_verify implements EngineCharsetResolverInterface
 		}
 
 
-		//	mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
-		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";
+		$create = $sql->getSchemaManager()->getCreateStatement($prefix . $tbl);
 
-
-		//	$z = mysql_query($qry);
-		// SHOW CREATE TABLE introspection has no builder equivalent; $tbl is verified by isTable()
-		// above and the table name is an identifier (not a bindable value), so run via the sanctioned
-		// bound execute(). execute() returns the same rowCount() and exposes the same result set as
-		// gen(), so both the if($z) guard and the fetch('num') below are unchanged.
-		$z = $sql->execute($qry);
-		if($z)
+		if($create !== null)
 		{
-			//	$row = mysql_fetch_row($z);
-			$row = $sql->fetch('num');
-
-			//return $row[1];
-
-			return stripslashes($row[1]) . ';'; // backticks needed.
-			// return str_replace("`", "", stripslashes($row[1])).';';
+			return stripslashes($create) . ';'; // backticks needed.
 		}
-		else
-		{
-			$mes->addDebug('Failed: ' . $qry);
-			$this->internalError = true;
 
-			return false;
-		}
+		$mes->addDebug('Failed to read the CREATE TABLE of ' . $prefix . $tbl);
+		$this->internalError = true;
+
+		return false;
 
 	}
 
@@ -2872,6 +2904,12 @@ class db_verify implements EngineCharsetResolverInterface
 	{
 
 		$db = e107::getDb();
+
+		if(!$db->getPlatform()->supportsStorageEngines())
+		{
+			return array();
+		}
+
 		$db->execute("SHOW ENGINES;");
 		$output = [];
 		while($row = $db->fetch())
@@ -3086,6 +3124,13 @@ class db_verify implements EngineCharsetResolverInterface
 	 */
 	private function intendedEngineAndCharset($fields, $indexes, $declaredEngine, $declaredCharset, $proof = null)
 	{
+
+		$platform = e107::getDb()->getPlatform();
+
+		if(!$platform->supportsStorageEngines() && !$platform->supportsCharsets())
+		{
+			return array('engine' => '', 'charset' => '');
+		}
 
 		$requirements = $this->deriveTableRequirements($fields, $indexes);
 
@@ -3343,9 +3388,6 @@ class db_verify implements EngineCharsetResolverInterface
 			// changed if plugins were installed/uninstalled
 			e107::getConfig('core')->clearPrefCache()->load(null, true);
 		}
-
-		$sql = e107::getDb();
-		$sql->execute('SET SQL_QUOTE_SHOW_CREATE = 1');
 
 		if(!deftrue('e_DEBUG') && ($clearCache === false) && $tmp = e107::getCache()->retrieve(self::cachetag, 15, true, true))
 		{

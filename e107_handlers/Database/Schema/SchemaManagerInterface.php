@@ -128,4 +128,16 @@ interface SchemaManagerInterface
 	 * @throws \e107\Database\Exception\QueryException when the table cannot be read
 	 */
 	public function compileAlterTable($table, array $operations);
+
+	/**
+	 * A table's definitions in the schema DSL, ready to splice into statements that recreate them through the
+	 * schema builder: one per column and per index, the body they make together, and the table options. On MySQL
+	 * they are the server's own SHOW CREATE TABLE lines; elsewhere the table as the engine describes it, written in
+	 * the DSL.
+	 *
+	 * @param string $table physical table name
+	 * @return array|null ['body' => string, 'options' => string, 'columns' => name => string, 'indexes' => name => string],
+	 *                    indexes named as {@see SchemaReaderInterface} names them; null when the table cannot be described
+	 */
+	public function describeDefinitions($table);
 }

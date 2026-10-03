@@ -39,9 +39,11 @@ class db_verifyTest extends \Test\Unit
 
 		$table = new \e107\Database\Schema\Declared\DeclaredTable('core', 'user', 'user_id int(10) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY (user_id)', null, null);
 		$intended = $this->dbv->resolve($table);
+		$platform = e107::getDb()->getPlatform();
 
-		$this->assertNotEmpty($intended['engine']);
-		$this->assertNotEmpty($intended['charset']);
+		// Settled where the engine has them, '' where it has none (EngineCharsetResolverInterface).
+		$this->assertSame($platform->supportsStorageEngines(), $intended['engine'] !== '');
+		$this->assertSame($platform->supportsCharsets(), $intended['charset'] !== '');
 	}
 
 	public function testGetFields()
@@ -375,6 +377,8 @@ DATA;
 
 	public function testGetFixQuery()
 	{
+		$this->requireDatabaseDriver('mysql', "it pins the MySQL statements getFixQuery() writes");
+
 
 		$sqlFileData = "table_id int(10) unsigned NOT NULL auto_increment,
   table_name varchar(100) NOT NULL default '',
@@ -462,6 +466,8 @@ DATA;
 	 */
 	public function testGetFixQueryDerivedFulltextIndexOnLanguageTable()
 	{
+		$this->requireDatabaseDriver('mysql', "it pins the MySQL statement for a FULLTEXT index");
+
 
 		// Base "news" table as declared in the SQL file: the FULLTEXT index is
 		// NOT declared inline here; it is derived from an e_search config.
@@ -896,6 +902,8 @@ DATA;
 
 	public function testPrepareResults()
 	{
+		$this->requireDatabaseDriver('mysql', "it settles storage engines and character sets");
+
 
 
 		$sql = "`schedule_id` int(10) unsigned NOT NULL auto_increment,
@@ -1096,6 +1104,8 @@ DATA;
 
 	public function testGetCanonicalStorageEngine()
 	{
+		$this->requireDatabaseDriver('mysql', "storage engines are MySQL's");
+
 
 		$input = "InnoDB";
 
@@ -1138,6 +1148,8 @@ DATA;
 
 	public function testGetIntendedStorageEngine()
 	{
+		$this->requireDatabaseDriver('mysql', "storage engines are MySQL's");
+
 
 		$output = $this->dbv->getIntendedStorageEngine("MyISAM");
 		self::assertEquals("InnoDB", $output);
@@ -1232,6 +1244,8 @@ DATA;
 	 */
 	public function testGetIntendedStorageEngineHonoursAFulltextRequirement()
 	{
+		$this->requireDatabaseDriver('mysql', "storage engines are MySQL's");
+
 
 		$needsFulltext = array('needsFulltext' => true);
 
@@ -1305,6 +1319,8 @@ DATA;
 	 */
 	public function testGetFixQueryReturnsNothingForAConvertWithNothingToChange()
 	{
+		$this->requireDatabaseDriver('mysql', "a storage engine and character set conversion is MySQL's");
+
 
 		$live = $this->dbv->getSqlFileTables($this->dbv->getSqlData('user'));
 
@@ -1337,6 +1353,8 @@ DATA;
 	 */
 	public function testIntendedEngineAndCharsetNarrowsUsingTheEngineItJustChose()
 	{
+		$this->requireDatabaseDriver('mysql', "storage engines and character sets are MySQL's");
+
 
 		$method = new ReflectionMethod('db_verify', 'intendedEngineAndCharset');
 
@@ -1386,6 +1404,8 @@ DATA;
 	 */
 	public function testAWholeTableFixIsFiledUnderTheSqlFileThatDeclaredIt()
 	{
+		$this->requireDatabaseDriver('mysql', "it breaks a table's character set");
+
 
 		$sql = e107::getDb();
 
@@ -1515,6 +1535,8 @@ DATA;
 	 */
 	public function testResolveReadsTheLiveKeysBeforeNarrowing($engine, $tableCharset, $columnCharset, $keyWidth, $expected)
 	{
+		$this->requireDatabaseDriver('mysql', "storage engines and character sets are MySQL's");
+
 
 		$this->givenServerCapabilities('10.1.48-MariaDB', 'OFF');
 
@@ -1609,6 +1631,8 @@ DATA;
 	 */
 	public function testALossyCharsetConversionFailsAndLeavesTheDataAlone()
 	{
+		$this->requireDatabaseDriver('mysql', "character sets are MySQL's");
+
 
 		$sql = e107::getDb();
 		$table = MPREFIX . 'dbvtest_lossy';
@@ -1661,6 +1685,8 @@ DATA;
 	 */
 	public function testInnodbKeyLimitMatchesWhatTheServerBuilds()
 	{
+		$this->requireDatabaseDriver('mysql', "InnoDB is MySQL's");
+
 
 		$sql = e107::getDb();
 		$table = MPREFIX . 'dbvtest_keylimit';
@@ -1679,6 +1705,8 @@ DATA;
 	 */
 	public function testUtf8ConversionStatementsChangeNothingButTheTypeAndCharacterSet()
 	{
+		$this->requireDatabaseDriver('mysql', "character sets are MySQL's");
+
 
 		$sql = e107::getDb();
 		$table = MPREFIX . 'dbvtest_convert';
