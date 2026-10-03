@@ -39,8 +39,45 @@ class UnattendedInstallCest
 		$I->wantTo("Reject create_tables_unattended when the URL credentials don't match the config");
 
 		$I->haveE107ArrayConfig();
-		$I->amOnPage('/install.php?create_tables=1&username=wrong&password=wrong');
+		$I->amOnPage('/install.php?create_tables=1&username=wrong&password=wrong&install_token=wrong');
 		$this->assertUnattendedAdminAbsent($I);
+	}
+
+	public function unattendedInstallOnAFileDatabaseIsNotProvenByItsPath(AcceptanceTester $I)
+	{
+		$I->wantTo("Refuse create_tables_unattended on a database without credentials when only the database file is named");
+
+		$I->requireDatabaseDriver('sqlite', 'a database server is proven by its credentials, which unattendedInstallRejectsWrongCredentials covers');
+
+		$I->haveE107ArrayConfig();
+		$I->visitUnattendedInstall(['install_token' => null, 'db' => $I->appDatabaseName()]);
+		$this->assertUnattendedAdminAbsent($I);
+	}
+
+	public function unattendedInstallOnAFileDatabaseNeedsAConfiguredInstallToken(AcceptanceTester $I)
+	{
+		$I->wantTo("Refuse create_tables_unattended on a database without credentials when e107_config.php sets no install token");
+
+		$I->requireDatabaseDriver('sqlite', 'a database server is proven by its credentials, which unattendedInstallRejectsWrongCredentials covers');
+
+		$I->haveE107ArrayConfig(['install_token' => null]);
+		$I->visitUnattendedInstall(['install_token' => '', 'db' => $I->appDatabaseName()]);
+		$this->assertUnattendedAdminAbsent($I);
+
+		$I->haveE107ArrayConfig(['install_token' => '']);
+		$I->visitUnattendedInstall(['install_token' => '', 'db' => $I->appDatabaseName()]);
+		$this->assertUnattendedAdminAbsent($I);
+	}
+
+	public function unattendedInstallRefusesAnEngineNameTheRegistryLacks(AcceptanceTester $I)
+	{
+		$I->wantTo("Refuse create_tables_unattended when e107_config.php names its engine with a spelling e107 does not know");
+
+		$I->haveE107ArrayConfig([], ['driver' => strtoupper($I->getDbModule()->_getDbDriver())]);
+		$logged = strlen($this->installLog());
+		$I->visitUnattendedInstall();
+		$this->assertUnattendedAdminAbsent($I);
+		$I->assertStringNotContainsString('Unattended install started', (string) substr($this->installLog(), $logged), 'the request never reached the installer');
 	}
 
 	public function unattendedSecondAttemptIsRefused(AcceptanceTester $I)
@@ -53,10 +90,7 @@ class UnattendedInstallCest
 		$this->assertInstallSucceeded($I);
 
 		// Drop the admin user table, then replay the exact same install URL.
-		$dbh = $I->getDbModule()->_getDbh();
-		$dbh->exec('SET FOREIGN_KEY_CHECKS=0;');
-		$dbh->exec('DROP TABLE `'.self::MYSQL_PREFIX.'user`');
-		$dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
+		$I->dropAppTable(self::MYSQL_PREFIX.'user');
 
 		$I->visitUnattendedInstall();
 
@@ -69,6 +103,8 @@ class UnattendedInstallCest
 	public function unattendedInstallWithLegacyGlobalsConfig(AcceptanceTester $I)
 	{
 		$I->wantTo("Install e107 unattended with a legacy globals-format e107_config.php");
+
+		$I->requireDatabaseDriver('mysql', 'the legacy globals format predates database drivers and always means MySQL');
 
 		$this->writeLegacyConfig($I);
 		$I->visitUnattendedInstall();
@@ -152,10 +188,16 @@ PHP;
 		);
 	}
 
+	/**
+	 * @return string what the installer has logged so far
+	 */
+	private function installLog()
+	{
+		return (string) @file_get_contents(APP_PATH.'/e107_system/e107Install.log');
+	}
+
 	private function assertUnattendedAdminAbsent(AcceptanceTester $I)
 	{
-		$dbh = $I->getDbModule()->_getDbh();
-		$tables = $dbh->query("SHOW TABLES LIKE '".self::MYSQL_PREFIX."user'")->fetchAll(PDO::FETCH_COLUMN);
-		$I->assertEmpty($tables, 'e107_user table should not have been created when install was rejected.');
+		$I->assertFalse($I->appTableExists(self::MYSQL_PREFIX.'user'), 'e107_user table should not have been created when install was rejected.');
 	}
 }

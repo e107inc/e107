@@ -112,12 +112,14 @@ suites build from the same MySQL dump when they start
 (`lib/SqliteFixture.php`), with the MySQL compatibility functions off so core
 code cannot lean on them. `sql`
 runs statements against that file; `db-shell` needs a `sqlite3` client in
-the web image. `--install-site` is refused there until the installer can set
-up SQLite.
+the web image. `--install-site` installs e107 into that same file through the
+installer's SQLite option, so the site and the suites share it as they share
+the MySQL database.
 
 ```sh
 e107_tests/bin/e107-tests up --php 8.5 --db sqlite --no-selenium
 e107_tests/bin/e107-tests ci-unit
+e107_tests/bin/e107-tests up --php 8.5 --db sqlite --install-site
 ```
 
 ## Legacy PHP

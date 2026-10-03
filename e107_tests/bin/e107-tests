@@ -400,6 +400,19 @@ sqlite_db_file() { printf 'tests/_output/%s.sqlite' "$PROJECT"; }
 
 db_is_sqlite() { [ "${E107_DB_IMAGE:-}" = sqlite ]; }
 
+# The database as the installer is given it, which the site's folders are named
+# after, so a config has to name it exactly so: for SQLite, the file's path
+# inside the app.
+site_database() {
+    if db_is_sqlite; then printf 'e107_tests/%s' "$(sqlite_db_file)"; else printf '%s' "$DEFAULT_DB_NAME"; fi
+}
+
+# The name of the site's folders in e107_system/ and e107_media/, as
+# e107::makeSiteHash() gives it for site_database() and the e107_ prefix.
+site_hash() {
+    compose_p exec -T web php -r 'echo substr(md5($argv[1].".e107_"), 0, 10);' -- "$(site_database)"
+}
+
 # ---------------------------------------------------------------------------
 # DB flavor: charset + auth args the server needs, derived from the image
 # ---------------------------------------------------------------------------
@@ -747,13 +760,22 @@ install_site() {
     # The install Cest cleans up its e107_config.php in _afterSuite (the DB
     # tables persist), so render a persistent config against the same DB.
     note ">> Writing persistent e107_config.php"
+    local driver=mysql server=db user=$DEFAULT_DB_USER password=$DEFAULT_DB_PASSWORD
+    if db_is_sqlite; then
+        driver=sqlite server= user= password=
+    fi
+    local database site_path
+    database=$(site_database)
+    site_path=$(site_hash)
     compose_p exec -T web sh -euc "
-        SITE_PATH=\$(php -r 'echo substr(md5(\"$DEFAULT_DB_NAME.e107_\"), 0, 10);')
-        sed -e 's/{{ mySQLserver }}/db/' \
-            -e 's/{{ mySQLuser }}/$DEFAULT_DB_USER/' \
-            -e 's/{{ mySQLpassword }}/$DEFAULT_DB_PASSWORD/' \
-            -e 's/{{ mySQLdefaultdb }}/$DEFAULT_DB_NAME/' \
+        SITE_PATH=$site_path
+        sed -e 's/{{ driver }}/$driver/' \
+            -e 's/{{ mySQLserver }}/$server/' \
+            -e 's/{{ mySQLuser }}/$user/' \
+            -e 's/{{ mySQLpassword }}/$password/' \
+            -e 's#{{ mySQLdefaultdb }}#$database#' \
             -e 's/{{ mySQLprefix }}/e107_/' \
+            -e 's/{{ mysql_compat[^}]*}}/true/' \
             -e \"s/000000test/\$SITE_PATH/\" \
             $WEB_TESTS_DIR/tests/_data/e107_config.php.sample \
             > $WEB_APP_DIR/e107_config.php
@@ -806,9 +828,6 @@ cmd_up() {
     require_docker
     E107_PHP_VERSION=$PHP
     E107_DB_IMAGE=$DB
-    if db_is_sqlite && [ "$INSTALL_SITE" = yes ]; then
-        err "--install-site needs a database server; the installer cannot set up SQLite yet"
-    fi
     XDEBUG_TAG=$([ "$WITH_XDEBUG" = yes ] && echo '-xdebug' || true)
     PROJECT=$(project_name "$PHP" "$DB")
     normalise_base_path "$base"
@@ -1180,8 +1199,8 @@ cmd_reset() {
     compose_p exec -T -w "$WEB_APP_DIR" web sh -c '
         rm -f e107_config.php e107_config.php.bak
         rm -rf e107_system/000000test e107_media/000000test
-        rm -rf e107_system/416f4602e3 e107_media/416f4602e3
-    '
+        rm -rf "e107_system/${1:?}" "e107_media/${1:?}"
+    ' sh "$(site_hash)"
 }
 
 # Wipe acceptance-test artifacts that the e107 installer creates in the

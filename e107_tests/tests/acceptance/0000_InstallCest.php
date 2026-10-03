@@ -130,6 +130,104 @@ class InstallCest
 		$I->see('already in progress');
 	}
 
+	public function installOffersADatabaseFileNamedWith128RandomBits(AcceptanceTester $I)
+	{
+		$I->wantTo('Offer a database file named with 128 random bits, which the site folder hash, a public 40-bit check of the name, cannot narrow to a feasible search');
+
+		$this->startInstall($I);
+		$I->assertMatchesRegularExpression('~^e107_system/e107_[0-9a-f]{32}\.sqlite$~', $I->grabAttributeFrom('#db', 'data-default-file'));
+	}
+
+	public function installRefusesADatabaseFileTheWebServerCouldRun(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a database file the web server would run or read as configuration, and a stream wrapper');
+
+		$I->requireDatabaseDriver('sqlite', 'a database server has no database file');
+		$this->startInstall($I);
+
+		foreach(array('e107_system/site.php', 'e107_system/site.PHTML', 'e107_system/site.php.sqlite', 'e107_system/.htaccess', 'e107_system/.user.ini', 'e107_system/site.php::$DATA', 'e107_system/site.php:', 'e107_system/site<b.sqlite', 'phar://e107_system/site.sqlite', 'php://memory', 'e107_system/') as $file)
+		{
+			$this->submitDatabaseStep($I, $file, true);
+			$I->see('cannot be a stream wrapper', '.alert');
+			$I->dontSee('SQLite is available');
+		}
+	}
+
+	public function installTakesADatabaseFileByAnyPath(AcceptanceTester $I)
+	{
+		$I->wantTo('Create the database file at an absolute path outside the e107 folder, and at one with no extension');
+
+		$I->requireDatabaseDriver('sqlite', 'a database server has no database file');
+
+		foreach(array(sys_get_temp_dir().'/e107_install_'.bin2hex(random_bytes(8)).'.db3', sys_get_temp_dir().'/e107_install_'.bin2hex(random_bytes(8))) as $file)
+		{
+			try
+			{
+				$this->startInstall($I);
+				$this->submitDatabaseStep($I, $file, true);
+				$I->see('Successfully created database');
+				$I->assertFileExists($file);
+			}
+			finally
+			{
+				@unlink($file);
+			}
+		}
+	}
+
+	public function installCreatesTheDatabaseFileItOffers(AcceptanceTester $I)
+	{
+		$I->wantTo('Create the database file at the path the form offers, which is relative to the e107 folder');
+
+		$I->requireDatabaseDriver('sqlite', 'a database server has no database file');
+		$this->startInstall($I);
+		$file = $I->grabAttributeFrom('#db', 'data-default-file');
+
+		try
+		{
+			$this->submitDatabaseStep($I, $file, true);
+			$I->see('SQLite is available on this server');
+			$I->see('Successfully created database');
+			$I->dontSee('SQLite Reported Error');
+		}
+		finally
+		{
+			$I->removeAppPath($file);
+		}
+	}
+
+	public function installNamesTheEngineThatCouldNotUseTheDatabaseFile(AcceptanceTester $I)
+	{
+		$I->wantTo('Report a file SQLite cannot take for the database as an SQLite error, under a line that claims only what held before the file was tried');
+
+		$I->requireDatabaseDriver('sqlite', 'a database server has no database file');
+		$this->startInstall($I);
+		$this->submitDatabaseStep($I, 'README.md', true);
+
+		$I->see('SQLite is available on this server');
+		$I->see('SQLite Reported Error');
+		$I->see('The database file "README.md" already exists');
+		$I->dontSee('MySQL Reported Error');
+	}
+
+	public function installWarnsWhenTheBrowserCanDownloadADatabaseFileGivenByAnAbsolutePath(AcceptanceTester $I)
+	{
+		$I->wantTo('Probe whether the browser can download a database file inside the e107 folder that was given by its absolute path');
+
+		$I->requireDatabaseDriver('sqlite', 'a database server has no database file');
+		$database = $I->getDbModule()->_getDbName();
+
+		try
+		{
+			$this->installe107($I, array('db' => $database));
+		}
+		finally
+		{
+			$I->removeAppPath('e107_system/'.\E107Preparer::siteHash($database));
+			$I->removeAppPath('e107_media/'.\E107Preparer::siteHash($database));
+		}
+	}
+
 	public function installErrorPageDoesNotLeakProvisioningToken(AcceptanceTester $I)
 	{
 		$I->wantTo("Keep the provisioning token and credentials out of the installer error/debug output");
@@ -165,26 +263,13 @@ class InstallCest
 
 		$I->see("MySQL Server Details", 'h3');
 
-		$db = $I->getDbModule();
-
-		$database = !empty($params['db']) ? $params['db'] : $db->_getDbName();
-
-		$I->fillField('server',     $db->_getDbHostname());
-		$I->fillField('name',       $db->_getDbUsername());
-		$I->fillField('password',   $db->_getDbPassword());
-		$I->fillField('db',         $database);
-
-		if(empty($params['db']))
-		{
-			$I->uncheckOption('createdb');
-		}
-
-		$I->click('submit');
+		$sqlite = ($I->getDbModule()->_getDbDriver() === 'sqlite');
+		$this->submitDatabaseStep($I, !empty($params['db']) ? $params['db'] : $I->appDatabaseName(), false);
 
 		// Step 3
 
 		$I->see("MySQL Connection Verification", 'h3');
-		$I->see("Connection to the MySQL server established and verified");
+		$I->see($sqlite ? "SQLite is available on this server" : "Connection to the MySQL server established and verified");
 		$I->see("Found existing database");
 
 		$I->click('submit');
@@ -238,6 +323,15 @@ class InstallCest
 
 		$I->see("Installation Complete", 'h3');
 
+		if($sqlite)
+		{
+			$I->assertStringEndsWith('/'.$I->appDatabaseName(), $I->grabAttributeFrom('#db-file-exposed', 'data-url'));
+		}
+		else
+		{
+			$I->dontSeeElement('#db-file-exposed');
+		}
+
 		// Leave the installer the way a visitor does, by operating its own
 		// control. This step used to jump straight to /index.php with
 		// amOnPage(), which never exercised the hand-over and so never noticed
@@ -252,6 +346,56 @@ class InstallCest
 			$I->seeInSource('e107_themes/'.$params['sitetheme']);
 		}
 
+	}
+
+	/**
+	 * Fill in the database step for the suite's own engine, and submit it.
+	 *
+	 * @param string $database
+	 * @param bool $create tick Create Database
+	 * @return void
+	 */
+	private function submitDatabaseStep(AcceptanceTester $I, $database, $create)
+	{
+		$db = $I->getDbModule();
+
+		try
+		{
+			$I->selectOption('driver', $db->_getDbDriver());
+		}
+		catch (Exception $e)
+		{
+			// A PHP with one engine is offered no choice: the form names it in a hidden field.
+			$I->seeInSource("name='driver' value='".$db->_getDbDriver()."'");
+		}
+
+		if($db->_getDbDriver() !== 'sqlite')
+		{
+			$I->fillField('server',     $db->_getDbHostname());
+			$I->fillField('name',       $db->_getDbUsername());
+			$I->fillField('password',   $db->_getDbPassword());
+		}
+
+		$I->fillField('db', $database);
+
+		if($create)
+		{
+			$I->checkOption('createdb');
+		}
+		else
+		{
+			$I->uncheckOption('createdb');
+		}
+
+		$I->click('submit');
+	}
+
+	private function startInstall(AcceptanceTester $I)
+	{
+		$I->amOnPage('/install.php');
+		$I->selectOption('language', 'English');
+		$I->click('start');
+		$I->see('MySQL Server Details', 'h3');
 	}
 
 	private function loginToAdmin(AcceptanceTester $I)
