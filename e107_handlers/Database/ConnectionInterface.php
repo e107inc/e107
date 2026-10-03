@@ -755,7 +755,8 @@ use PDOStatement;
 
 		/**
 		 * Total number of results of the last query regardless of its LIMIT,
-		 * when that query used SELECT SQL_CALC_FOUND_ROWS.
+		 * when that query used SELECT SQL_CALC_FOUND_ROWS; on every engine, use
+		 * {@see QueryBuilder::calcFoundRows()}.
 		 *
 		 * @return int|false the total, or false when none was captured
 		 */

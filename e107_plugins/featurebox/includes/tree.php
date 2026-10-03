@@ -38,7 +38,7 @@ class plugin_featurebox_tree extends e_tree_model
 
 	//	$this->updateParams($options);
 		
-		$order = $this->getParam('random') ? ' ORDER BY rand()' : ' ORDER BY fb_order ASC';
+		$order = $this->getParam('random') ? ' ORDER BY '.e107::getDb()->getPlatform()->getRandomFunction() : ' ORDER BY fb_order ASC';
 		$limit = $this->getParam('limit') ? ' LIMIT '.intval($this->getParam('from'), 0).','.intval($this->getParam('limit')) : '';
 		$ids = $this->getParam('ids') ? preg_replace('/[^0-9,]/', '', $this->getParam('ids')) : '';
 		$where = $ids ? ' AND fb_id IN('.$ids.')' : '';

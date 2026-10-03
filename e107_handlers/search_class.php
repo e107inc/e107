@@ -250,7 +250,7 @@ class e_search
 			$match_query = implode(' + ', $search_query);
 			$field_query = implode(' || ', $field_query);
 
-			$qb->selectRaw("SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance")->fromRaw('#'.$table);
+			$qb->calcFoundRows()->selectRaw($return_fields.", (".$match_query.") AS relevance")->fromRaw('#'.$table);
 
 			$this->applyHandlerWhere($qb, $where);
 
@@ -444,7 +444,7 @@ class e_search
 		}
 		if ($search_prefs['mysql_sort']) 
 		{
-			$ps['results'] = $sql->total_results;		// db class reads result of SELECT FOUND_ROWS() for us
+			$ps['results'] = $qb->foundRows();
 		}
 		return $ps;
 	}

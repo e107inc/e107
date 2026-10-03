@@ -723,6 +723,30 @@ use e107\Reflection\ReflectionMethod;
 		}
 
 		/**
+		 * MySQL counts the rows a SELECT finds without its LIMIT as it runs it; the
+		 * count is taken from the connection when the query runs and kept, so a
+		 * later query on the connection does not change it.
+		 */
+		public function testMysqlCountsTheFoundRowsAsTheQueryRuns()
+		{
+			$stub = new QueryBuilderTest_calcFoundRowsStub();
+			$qb = new QueryBuilder($stub);
+			$qb->calcFoundRows()->select('a')->distinct()->from('user')->orderBy('a', 'ASC')->setMaxResults(5);
+
+			$this->assertSame('SELECT DISTINCT SQL_CALC_FOUND_ROWS `a` FROM `e107_user` ORDER BY `a` ASC LIMIT 5', $qb->getSQL());
+			$this->assertSame(0, $qb->foundRows(), 'nothing is counted before the query runs');
+
+			$stub->found = 42;
+			$qb->fetchAll();
+			$stub->found = false;
+
+			$this->assertSame(42, $qb->foundRows());
+			$this->assertSame(1, $stub->executions, 'MySQL runs no COUNT of its own');
+
+			$this->assertSame('SELECT DISTINCT `a` FROM `e107_user` ORDER BY `a` ASC LIMIT 5', $qb->calcFoundRows(false)->getSQL());
+		}
+
+		/**
 		 * The FROM sources a search handler declares: a join spelled by hand,
 		 * with '#table' markers the connection resolves at execution.
 		 *
@@ -2089,6 +2113,32 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertTrue($platform->assignsAutoIncrementOnZero());
 			$this->assertTrue($platform->countsConflictingRows());
 			$this->assertFalse($platform->reportsInsertIdForEveryTable());
+		}
+	}
+
+
+	/**
+	 * A connection stub that reports a FOUND_ROWS() total, as a MySQL connection
+	 * does after a SQL_CALC_FOUND_ROWS query.
+	 */
+	class QueryBuilderTest_calcFoundRowsStub extends QueryBuilderTest_dbStub
+	{
+		/** @var int|false */
+		public $found = false;
+
+		/** @var int */
+		public $executions = 0;
+
+		public function execute($sql, $params = array())
+		{
+			$this->executions++;
+
+			return parent::execute($sql, $params);
+		}
+
+		public function foundRows()
+		{
+			return $this->found;
 		}
 	}
 

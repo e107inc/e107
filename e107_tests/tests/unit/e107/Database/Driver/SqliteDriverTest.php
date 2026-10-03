@@ -94,6 +94,28 @@ class SqliteDriverTest extends \Test\Unit
 		$this->assertSame(2, $this->db->createQueryBuilder()->select('item_id')->from('item')->where('item_hits', '>', 5)->execute());
 	}
 
+	public function testTheBuilderCountsTheRowsAQueryFindsWithoutItsLimit()
+	{
+		$this->insertItems();
+		$this->db->createQueryBuilder()->insert('item')->values(array('item_name' => 'four', 'item_class' => '2', 'item_hits' => 12, 'item_body' => ''))->execute();
+
+		$qb = $this->db->createQueryBuilder();
+		$qb->calcFoundRows()->select('item_class')->from('item')->where('item_hits', '>', 5)
+			->groupBy('item_class')->orderBy('item_class', 'DESC')->setMaxResults(1);
+
+		$this->assertStringNotContainsString('SQL_CALC_FOUND_ROWS', $qb->getSQL());
+		$this->assertSame(1, $qb->execute());
+		$this->assertSame(2, $qb->foundRows(), 'two groups match; the LIMIT keeps one');
+		$this->assertSame(array('item_class' => '2,3'), $this->db->fetch(), 'counting left the page itself to be read');
+
+		$this->db->execute('SELECT * FROM `#item`');
+		$this->assertSame(2, $qb->foundRows(), 'the count is kept past later queries');
+
+		$page = $this->db->createQueryBuilder()->calcFoundRows()->select('item_id')->from('item')->setFirstResult(3)->setMaxResults(2);
+		$this->assertCount(1, $page->fetchAll());
+		$this->assertSame(4, $page->foundRows());
+	}
+
 	public function testTheQueryBuilderWritesAndReadsBack()
 	{
 		$qb = $this->db->createQueryBuilder();

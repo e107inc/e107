@@ -13,8 +13,6 @@
  *
 */
 
-use e107\Database\SqlFragment;
-
 require_once('class2.php');
 
 e107::coreLan('userposts');
@@ -189,10 +187,11 @@ elseif ($action == 'forums')
 
 	$sqlp = e107::getDb('posts');
 
-	// SQL_CALC_FOUND_ROWS is kept so $sqlp->foundRows() still reports the total
-	// ignoring the LIMIT; the value list and search terms are all bound.
+	// calcFoundRows() keeps the total ignoring the LIMIT for the page links; the
+	// value list and search terms are all bound.
 	$qb = $sqlp->createQueryBuilder();
-	$qb->addSelect(SqlFragment::raw('SQL_CALC_FOUND_ROWS p.*, t.*, f.*'))
+	$qb->calcFoundRows()
+		->select('p.*', 't.*', 'f.*')
 		->from('forum_post', 'p')
 		->leftJoin('forum_thread', 't', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
 		->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 'p.post_forum'))
@@ -266,7 +265,7 @@ elseif ($action == 'forums')
 
 		$vars->emptyVars();
 
-		$ftotal = $sqlp->foundRows();
+		$ftotal = $qb->foundRows();
 
 		$parms = $ftotal.",10,".$from.",".e_REQUEST_SELF."?[FROM].forums.".$id;
 		$vars->NEXTPREV = $ftotal ? $tp->parseTemplate("{NEXTPREV={$parms}}") : '';

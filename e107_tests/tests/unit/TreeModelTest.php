@@ -242,6 +242,26 @@ class TreeModelTest extends \Test\Unit
 	}
 
 	/**
+	 * Admin UIs begin their list query with MySQL's SQL_CALC_FOUND_ROWS, and the tree counts its total apart,
+	 * so the modifier is run only where the engine has it and is never counted.
+	 */
+	public function testAListQueryWithTheFoundRowsModifierRunsAndIsCountedOnEveryEngine()
+	{
+		$users = e107::getDb()->createQueryBuilder()->from('user')->count();
+
+		$tree = $this->make('e_tree_model');
+		$tree->setModelTable('user');
+		$tree->setFieldIdName('user_id');
+		$tree->setParam('model_class', 'e_model');
+		$tree->setParam('db_query', "/* listed */ SELECT sql_calc_found_rows user_id FROM #user WHERE 'SQL_CALC_FOUND_ROWS' <> ''");
+		$tree->loadBatch(true);
+
+		$this->assertGreaterThan(0, $users);
+		$this->assertCount($users, $tree->getTree(), 'every member is listed');
+		$this->assertSame($users, $tree->getTotal(), 'and counted, the literal that holds the word untouched');
+	}
+
+	/**
 	 * End-to-end guard for issue #5761: counting a list query that joins two
 	 * tables sharing a column name must not raise "1060 Duplicate column name".
 	 */

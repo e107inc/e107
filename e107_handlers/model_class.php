@@ -3601,7 +3601,7 @@ class e_tree_model extends e_front_model
 	protected function getRowsList($sql)
 	{
 		// Caller-built SQL (db_query param) - run it bound (no local values to bind).
-		$success = $sql->execute($this->getParam('db_query'));
+		$success = $sql->execute($this->runnableListQuery($sql));
 		if (!$success) return false;
 
 		return $sql->rows();
@@ -3619,7 +3619,7 @@ class e_tree_model extends e_front_model
 		$this->prepareSimulatedCustomOrdering();
 
 		// Caller-built SQL (db_query param) - run it bound (no local values to bind).
-		$success = $sql->execute($this->getParam('db_query'));
+		$success = $sql->execute($this->runnableListQuery($sql));
 		if (!$success) return false;
 
 		$rows_tree = self::arrayToTree($sql->rows(),
@@ -3636,6 +3636,38 @@ class e_tree_model extends e_front_model
 		);
 
 		return $rows;
+	}
+
+	/**
+	 * The db_query param as $sql is to run it, without the SQL_CALC_FOUND_ROWS an engine lacking it would refuse.
+	 *
+	 * @param e_db $sql connection the query runs on
+	 * @return string
+	 */
+	private function runnableListQuery($sql)
+	{
+		$qry = (string) $this->getParam('db_query');
+
+		return $sql->getPlatform()->supportsFoundRows() ? $qry : self::withoutFoundRows($qry);
+	}
+
+	/**
+	 * @param string $qry
+	 * @return string $qry without MySQL's SQL_CALC_FOUND_ROWS modifier; a string literal holding the word keeps it
+	 */
+	private static function withoutFoundRows($qry)
+	{
+		$kept = '';
+
+		foreach(\e107\Database\SqlLexer::mysql()->tokenize($qry) as $token)
+		{
+			if($token['type'] !== \e107\Database\SqlLexer::T_WORD || strcasecmp($token['text'], 'SQL_CALC_FOUND_ROWS') !== 0)
+			{
+				$kept .= $token['text'];
+			}
+		}
+
+		return $kept;
 	}
 
 	/**
@@ -3753,11 +3785,9 @@ class e_tree_model extends e_front_model
 	 */
 	protected function countResults($sql)
 	{
-		$qry = $this->getParam('db_query');
-
 		// @todo Move to $sql->foundRows();
 
-		$qry = str_replace('SQL_CALC_FOUND_ROWS', '', $qry); // Deprecated as of MySQL 8.0
+		$qry = self::withoutFoundRows((string) $this->getParam('db_query'));
 
 		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
 		{

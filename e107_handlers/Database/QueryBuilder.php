@@ -109,6 +109,12 @@ class QueryBuilder
 	/** @var bool whether to emit SELECT DISTINCT */
 	private $distinct = false;
 
+	/** @var bool whether the total ignoring LIMIT is wanted, see {@see QueryBuilder::calcFoundRows()} */
+	private $calcFoundRows = false;
+
+	/** @var int the total ignoring LIMIT, as counted when the query last ran */
+	private $foundRows = 0;
+
 	/** @var string|null logical table name (no '#', no prefix) */
 	private $table = null;
 
@@ -432,6 +438,35 @@ class QueryBuilder
 		$this->distinct = (bool) $distinct;
 
 		return $this;
+	}
+
+	/**
+	 * Ask for the number of rows this SELECT matches with no LIMIT, read with {@see QueryBuilder::foundRows()} once it has run.
+	 *
+	 * <code>
+	 * $qb = $sql->createQueryBuilder();
+	 * $page = $qb->calcFoundRows()->select('*')->from('news')->setMaxResults(10)->fetchAll();
+	 * $total = $qb->foundRows();
+	 * </code>
+	 *
+	 * @param bool $calc
+	 * @return QueryBuilder $this
+	 */
+	public function calcFoundRows($calc = true)
+	{
+		$this->calcFoundRows = (bool) $calc;
+
+		return $this;
+	}
+
+	/**
+	 * The number of rows the query matched with no LIMIT when it last ran with {@see QueryBuilder::calcFoundRows()} on; later queries on the connection leave it alone.
+	 *
+	 * @return int 0 when the query has not run with calcFoundRows() on, or failed
+	 */
+	public function foundRows()
+	{
+		return $this->foundRows;
 	}
 
 	/**
@@ -2597,7 +2632,41 @@ class QueryBuilder
 	 */
 	public function execute()
 	{
-		return $this->db->execute($this->getSQL(), $this->getParameters());
+		if(!$this->calcFoundRows || $this->type !== self::TYPE_SELECT)
+		{
+			return $this->db->execute($this->getSQL(), $this->getParameters());
+		}
+
+		$counted = $this->platform->supportsFoundRows() ? null : $this->_countFoundRows();
+		$result = $this->db->execute($this->getSQL(), $this->getParameters());
+		$this->foundRows = ($counted !== null) ? $counted : (int) $this->db->foundRows();
+
+		return $result;
+	}
+
+	/**
+	 * Count the rows this SELECT matches with no LIMIT, for an engine that cannot
+	 * report the count of the query itself.
+	 *
+	 * @return int 0 when the count fails
+	 */
+	private function _countFoundRows()
+	{
+		$q = clone $this;
+		$q->calcFoundRows = false;
+		$q->orderBy = array();
+		$q->maxResults = null;
+		$q->firstResult = null;
+		$q->lock = '';
+
+		if($this->db->execute('SELECT COUNT(*) AS found_rows FROM ('.$q->getSQL().') '.$this->_quotedAlias('e107_found_rows'), $q->getParameters()) === false)
+		{
+			return 0;
+		}
+
+		$row = $this->db->fetch();
+
+		return is_array($row) ? (int) $row['found_rows'] : 0;
 	}
 
 	/**
@@ -3880,6 +3949,7 @@ class QueryBuilder
 		}
 
 		$sql = 'SELECT '.($this->distinct ? 'DISTINCT ' : '')
+			.(($this->calcFoundRows && $this->platform->supportsFoundRows()) ? 'SQL_CALC_FOUND_ROWS ' : '')
 			.(count($this->select) === 0 ? '*' : implode(', ', $this->select));
 		$sql .= ' FROM '.$source;
 
