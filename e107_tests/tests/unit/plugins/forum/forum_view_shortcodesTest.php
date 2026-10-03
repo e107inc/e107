@@ -69,10 +69,6 @@ class forum_view_shortcodesTest extends \Codeception\Test\Unit
 	{
 		require_once(e_PLUGIN . 'forum/forum_class.php');
 
-		$scVars = new ReflectionProperty('e_shortcode', 'scVars');
-		$scVars->setAccessible(true);
-		$scVars->setValue($this->sc, new e_vars());
-
 		$this->sc->forum = $this->make('e107forum', array(
 			'checkPerm'         => $mayPost,
 			'threadGetNextPrev' => false,
