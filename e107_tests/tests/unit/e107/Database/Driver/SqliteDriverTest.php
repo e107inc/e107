@@ -208,6 +208,107 @@ class SqliteDriverTest extends \Test\Unit
 		$this->assertGreaterThan(0, $this->db->execute($this->db->getPlatform()->compileExplain('SELECT * FROM `e107_item` WHERE item_name = \'one\'')));
 	}
 
+	public function testADatabaseFileIsCreatedAdoptedAndDropped()
+	{
+		$driver = new SqliteDriver();
+		$file = $this->file.'.new';
+		$db = new \e_db_pdo();
+		$db->useDriver('sqlite');
+		$db->connect('', '', '');
+
+		try
+		{
+			$driver->adoptDatabase($db, $file);
+			$this->fail('a missing file cannot be adopted');
+		}
+		catch(\RuntimeException $e)
+		{
+			$this->assertStringContainsString('does not exist', $e->getMessage());
+		}
+
+		$driver->createDatabase($db, $file);
+		$this->assertFileExists($file);
+		$driver->adoptDatabase($db, $file);
+		$this->assertTrue($db->database($file, 'e107_'));
+		$this->assertNotFalse($db->execute('CREATE TABLE e107_t (a INTEGER)'));
+
+		try
+		{
+			$driver->createDatabase($db, $file);
+			$this->fail('an existing file is not overwritten');
+		}
+		catch(\RuntimeException $e)
+		{
+			$this->assertStringContainsString('already exists', $e->getMessage());
+		}
+
+		$driver->dropDatabase($db, $file);
+		$this->assertFileDoesNotExist($file);
+		$this->assertFileDoesNotExist($file.'-wal');
+
+		$this->expectException(\RuntimeException::class);
+		$driver->createDatabase($db, $this->file.'.nodir/inside.sqlite');
+	}
+
+	public function testAFileThatIsNotAnSqliteDatabaseIsNeitherOpenedNorRemoved()
+	{
+		$driver = new SqliteDriver();
+		$other = $this->file.'.htaccess';
+		$empty = $this->file.'.empty';
+		file_put_contents($other, "deny from all\n");
+		touch($empty);
+
+		try
+		{
+			$refusals = array(
+				'selectDatabase' => function() use ($driver, $other) { $driver->selectDatabase(null, $other, array()); },
+				'qualifyPrefix'  => function() use ($driver, $other) { $driver->qualifyPrefix($driver->selectDatabase(null, $this->file, array()), $other, 'e107_'); },
+				'adoptDatabase'  => function() use ($driver, $other) { $driver->adoptDatabase($this->db, $other); },
+				'dropDatabase'   => function() use ($driver, $other) { $driver->dropDatabase($this->db, $other); },
+			);
+
+			foreach($refusals as $method => $call)
+			{
+				try
+				{
+					$call();
+					$this->fail($method.'() took the file');
+				}
+				catch(\Exception $e)
+				{
+					$this->assertStringContainsString('not an SQLite database', $e->getMessage(), $method);
+				}
+
+				$this->assertSame("deny from all\n", file_get_contents($other), $method.'() left the file as it was');
+			}
+
+			$this->assertInstanceOf('PDO', $driver->selectDatabase(null, $empty, array()), 'an empty file is a database not yet written');
+			$driver->adoptDatabase($this->db, $empty);
+			$driver->adoptDatabase($this->db, $this->file);
+			$this->assertNotFalse($this->db->execute('SELECT 1'), 'the connection was not closed by a refused drop');
+		}
+		finally
+		{
+			unlink($other);
+			unlink($empty);
+		}
+	}
+
+	public function testCheckingADatabaseFileKeepsTheLocksThisProcessHoldsOnIt()
+	{
+		$file = $this->file.'.locked';
+		$holder = new \PDO('sqlite:'.$file, null, null, array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
+		$holder->exec('CREATE TABLE t (a INTEGER)');
+		$holder->exec('BEGIN IMMEDIATE');
+		$writer = '$pdo = new PDO('.var_export('sqlite:'.$file, true).', null, null, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 1));'
+			.' try { $pdo->exec("BEGIN IMMEDIATE"); echo "took the write lock"; } catch(PDOException $e) { echo "refused"; }';
+
+		(new SqliteDriver())->adoptDatabase($this->db, $file);
+
+		$this->assertSame('refused', shell_exec(escapeshellarg(PHP_BINARY).' -r '.escapeshellarg($writer)), 'another process still waits for this one\'s write');
+		$holder->exec('ROLLBACK');
+	}
+
 	public function testAnUpsertCanUpdateFromTheStoredValue()
 	{
 		$bump = function()
@@ -820,7 +921,7 @@ class SqliteDriverTest extends \Test\Unit
 	 */
 	private function removeFiles()
 	{
-		foreach(array('', '-wal', '-shm', '.missing', '.sql', '.counter', '.child.php') as $suffix)
+		foreach(array('', '-wal', '-shm', '.missing', '.new', '.new-wal', '.new-shm', '.locked', '.locked-journal', '.sql', '.counter', '.child.php') as $suffix)
 		{
 			if(is_file($this->file.$suffix))
 			{

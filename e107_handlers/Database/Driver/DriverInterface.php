@@ -150,4 +150,34 @@ interface DriverInterface
 	 * @return bool whether the lock was released
 	 */
 	public function releaseLock(ConnectionInterface $connection, $name);
+
+	/**
+	 * Create a new, empty database for a site to be installed in.
+	 *
+	 * @param ConnectionInterface $connection connected, and in no database yet
+	 * @param string $database a database name, or a file path for a file engine
+	 * @return void
+	 * @throws \RuntimeException when the database cannot be created, saying why
+	 */
+	public function createDatabase(ConnectionInterface $connection, $database);
+
+	/**
+	 * Make an existing database ready for a site to be installed in, e.g. give it e107's character set.
+	 *
+	 * @param ConnectionInterface $connection connected
+	 * @param string $database a database name, or a file path for a file engine
+	 * @return void
+	 * @throws \RuntimeException when the database cannot be used, saying why
+	 */
+	public function adoptDatabase(ConnectionInterface $connection, $database);
+
+	/**
+	 * Remove a database and everything in it; a connection that is in it lets go of it first.
+	 *
+	 * @param ConnectionInterface $connection connected
+	 * @param string $database a database name, or a file path for a file engine
+	 * @return void
+	 * @throws \RuntimeException when the database cannot be removed, saying why
+	 */
+	public function dropDatabase(ConnectionInterface $connection, $database);
 }

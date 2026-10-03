@@ -262,6 +262,46 @@ class MysqlDriver extends AbstractPdoDriver
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public function createDatabase(ConnectionInterface $connection, $database)
+	{
+		$this->runOnDatabase($connection, 'CREATE DATABASE '.$this->quoteDatabase($database).' CHARACTER SET `utf8mb4` ');
+	}
+
+	/**
+	 * The database's default character set becomes utf8mb4, so tables created in it without one take that.
+	 *
+	 * @inheritDoc
+	 */
+	public function adoptDatabase(ConnectionInterface $connection, $database)
+	{
+		$this->runOnDatabase($connection, 'ALTER DATABASE '.$this->quoteDatabase($database).' CHARACTER SET `utf8mb4` ');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function dropDatabase(ConnectionInterface $connection, $database)
+	{
+		$this->runOnDatabase($connection, 'DROP DATABASE '.$this->quoteDatabase($database).' ');
+	}
+
+	/**
+	 * @param ConnectionInterface $connection
+	 * @param string $statement
+	 * @return void
+	 * @throws RuntimeException carrying the server's error when the statement fails
+	 */
+	private function runOnDatabase(ConnectionInterface $connection, $statement)
+	{
+		if($connection->execute($statement) === false)
+		{
+			throw new RuntimeException($connection->getLastErrorText());
+		}
+	}
+
+	/**
 	 * @param string $database
 	 * @return string the name as a backtick-quoted identifier
 	 */

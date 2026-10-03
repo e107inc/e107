@@ -351,6 +351,77 @@ class SqliteDriver extends AbstractPdoDriver
 	}
 
 	/**
+	 * The database is the file: it is created empty, and refused where one is already there or its folder is not.
+	 *
+	 * @inheritDoc
+	 */
+	public function createDatabase(ConnectionInterface $connection, $database)
+	{
+		$path = $this->resolvePath($database);
+
+		if(file_exists($path))
+		{
+			throw new RuntimeException('The database file "'.$database.'" already exists.');
+		}
+
+		if(!is_dir(dirname($path)) || !is_writable(dirname($path)))
+		{
+			throw new RuntimeException('The folder for the database file "'.$database.'" does not exist or cannot be written to.');
+		}
+
+		if(!@touch($path))
+		{
+			throw new RuntimeException('The database file "'.$database.'" could not be created.');
+		}
+	}
+
+	/**
+	 * An SQLite file needs nothing done to it; it has to be there.
+	 *
+	 * @inheritDoc
+	 */
+	public function adoptDatabase(ConnectionInterface $connection, $database)
+	{
+		$path = $this->resolvePath($database);
+
+		if(!is_file($path))
+		{
+			throw new RuntimeException('The database file "'.$database.'" does not exist.');
+		}
+
+		if(!$this->isDatabaseFile($path))
+		{
+			throw new RuntimeException('The file "'.$database.'" is not an SQLite database.');
+		}
+	}
+
+	/**
+	 * The file goes, with the write-ahead log and shared-memory files beside it; a file that is not an SQLite
+	 * database is refused and left alone.
+	 *
+	 * @inheritDoc
+	 */
+	public function dropDatabase(ConnectionInterface $connection, $database)
+	{
+		$path = $this->resolvePath($database);
+
+		if(file_exists($path) && !$this->isDatabaseFile($path))
+		{
+			throw new RuntimeException('The file "'.$database.'" is not an SQLite database, so it is not removed.');
+		}
+
+		$connection->close();
+
+		foreach(array_merge(array(''), self::COMPANION_SUFFIXES) as $suffix)
+		{
+			if(file_exists($path.$suffix) && !@unlink($path.$suffix))
+			{
+				throw new RuntimeException('The database file "'.$database.$suffix.'" could not be removed.');
+			}
+		}
+	}
+
+	/**
 	 * Writes an SQL script that recreates the tables in SQLite: schema from sqlite_master, rows as literals SQLite's
 	 * quote() writes, so text and binary values survive exactly.
 	 *

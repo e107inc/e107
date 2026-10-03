@@ -34,6 +34,38 @@ class MysqlDriverTest extends \Test\Unit
 		$this->assertTrue(version_compare($this->driver->getMinimumServerVersion(), '4.1.2', '>='));
 	}
 
+	/**
+	 * Creating, adopting and dropping a database are the statements the installer has always sent, and a refusal
+	 * comes back carrying the server's own words.
+	 */
+	public function testTheDatabaseLifecycleIsTheInstallersStatements()
+	{
+		$sent = array();
+		$connection = $this->makeEmpty(\e107\Database\ConnectionInterface::class, array(
+			'execute' => function($statement) use (&$sent) { $sent[] = $statement; return (strpos($statement, 'DROP') === 0) ? false : 1; },
+			'getLastErrorText' => 'Access denied',
+		));
+
+		$this->driver->createDatabase($connection, 'site`db');
+		$this->driver->adoptDatabase($connection, 'site');
+
+		try
+		{
+			$this->driver->dropDatabase($connection, 'site');
+			$this->fail('a refused DROP DATABASE has to be reported');
+		}
+		catch(\RuntimeException $e)
+		{
+			$this->assertSame('Access denied', $e->getMessage());
+		}
+
+		$this->assertSame(array(
+			'CREATE DATABASE `site``db` CHARACTER SET `utf8mb4` ',
+			'ALTER DATABASE `site` CHARACTER SET `utf8mb4` ',
+			'DROP DATABASE `site` ',
+		), $sent);
+	}
+
 	public function testItSpeaksTheMysqlDialect()
 	{
 		$this->assertInstanceOf(MysqlPlatform::class, $this->driver->createPlatform());
