@@ -265,7 +265,7 @@ class faq
 			$searchPredicate = $qb->expr()->anyOf(
 				$qb->expr()->like('f.faq_question', '%'.$srch.'%'),
 				$qb->expr()->like('f.faq_answer', '%'.$srch.'%'),
-				'FIND_IN_SET ('.$qb->createNamedParameter($srch).', f.faq_tags)'
+				$qb->expr()->findInSet('f.faq_tags', $srch)
 			);
 
 

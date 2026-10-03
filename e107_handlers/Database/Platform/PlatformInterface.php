@@ -191,6 +191,25 @@ interface PlatformInterface
 	public function compileFindInSet($needle, $quotedColumn);
 
 	/**
+	 * Join strings end to end (MySQL's CONCAT(), standard SQL's ||). The result
+	 * is NULL where any part is.
+	 *
+	 * @param string[] $expressions SQL expressions: quoted columns, placeholders, literals.
+	 * @return string
+	 */
+	public function compileConcat(array $expressions);
+
+	/**
+	 * The part of a string before the first occurrence of a delimiter, or the
+	 * whole string where there is none (MySQL's SUBSTRING_INDEX(str, delim, 1)).
+	 *
+	 * @param string $expression SQL expression, e.g. a quoted column.
+	 * @param string $delimiter SQL expression for the delimiter, e.g. a quoted string literal.
+	 * @return string
+	 */
+	public function compileSubstringBefore($expression, $delimiter);
+
+	/**
 	 * An expression for a comma-separated set column with one item taken out,
 	 * every whole occurrence of it, the commas at either end trimmed; the
 	 * counterpart to {@see PlatformInterface::compileFindInSet()}.

@@ -160,6 +160,33 @@ class SqliteDriverTest extends \Test\Unit
 		$this->assertSame(array('1000'), $this->db->createQueryBuilder()->select('item_name')->from('item')->whereNotLike('item_name', '%\\%')->whereLike('item_name', '1%')->fetchColumn());
 	}
 
+	public function testTheStringAndCounterExpressionsRunOnSqlite()
+	{
+		$this->insertItems(); // one '1' 3, two '2' 6, three '2,3' 9
+
+		$qb = $this->db->createQueryBuilder();
+		$this->assertSame(3, $qb->update('item')->setExpression('item_body', $qb->expr()->concat($qb->expr()->value('pre-'), 'item_name'))->decrementNotBelowZero('item_hits', 5)->execute());
+
+		$qb = $this->db->createQueryBuilder();
+		$rows = $qb->select('item_body', 'item_hits')->selectAs($qb->expr()->substringBefore('item_class', ','), 'first_class')
+			->from('item')->orderBy('item_id', 'ASC')->fetchAll();
+		$this->assertSame(array('pre-one', 'pre-two', 'pre-three'), array_column($rows, 'item_body'));
+		$this->assertSame(array('0', '1', '4'), array_column($rows, 'item_hits'), 'a counter stops at zero');
+		$this->assertSame(array('1', '2', '2'), array_column($rows, 'first_class'), 'all of it where there is no delimiter');
+
+		$qb = $this->db->createQueryBuilder();
+		$pairs = $qb->select('a.item_name')->selectAs('b.item_id', 'class_item')->from('item', 'a')
+			->innerJoin('item', 'b', $qb->expr()->findColumnInSet('a.item_class', 'b.item_id'))
+			->orderBy('a.item_id', 'ASC')->addOrderBy('b.item_id', 'ASC')->fetchAll();
+		$this->assertSame(array('one', 'two', 'three', 'three'), array_column($pairs, 'item_name'));
+		$this->assertSame(array('1', '2', '2', '3'), array_column($pairs, 'class_item'));
+
+		$qb = $this->db->createQueryBuilder();
+		$this->assertSame(array('one'), $qb->select('a.item_name')->from('item', 'a')
+			->innerJoin('item', 'b', $qb->expr()->compareColumns($qb->expr()->substringBefore('a.item_class', ','), 'b.item_id'))
+			->where('b.item_name', 'one')->fetchColumn());
+	}
+
 	public function testAnUpsertCanUpdateFromTheStoredValue()
 	{
 		$bump = function()

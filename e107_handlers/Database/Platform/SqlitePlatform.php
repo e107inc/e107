@@ -223,8 +223,16 @@ class SqlitePlatform extends AbstractPlatform
 	}
 
 	/**
-	 * SQLite's LIKE ignores ASCII case whatever the column's collation; e107_like_binary() does not.
+	 * SQLite has substr() and instr() rather than SUBSTRING ... FROM ... FOR and POSITION.
 	 *
+	 * @inheritDoc
+	 */
+	public function compileSubstringBefore($expression, $delimiter)
+	{
+		return 'substr('.$expression.', 1, instr('.$expression.' || '.$delimiter.', '.$delimiter.') - 1)';
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function compileCaseSensitiveLike($quotedColumn, $placeholder)

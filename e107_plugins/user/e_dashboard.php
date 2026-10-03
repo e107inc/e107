@@ -96,15 +96,8 @@ class user_dashboard // plugin-folder + '_url'
 		$dayarray[$td] = array();
 		$pagearray = array();
 
-		// Permanent raw-SQL boundary (builder API gap): function-expression ORDER BY (CONCAT/LEFT/SUBSTRING/LPAD) has no builder equivalent; kept as a fully-static, injection-proof execute().
-		if($sql->execute("
-		SELECT * from #logstats WHERE log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+')
-		ORDER BY CONCAT(LEFT(log_id,4), SUBSTRING(log_id, 6, 2), LPAD(SUBSTRING(log_id, 9), 2, '0'))
-		DESC LIMIT 0,9
-		"))
+		if($array = $this->latestDays($sql, 9))
 		{
-			$array = $sql->db_getList();
-
 			$ttotal = 0;
 			$utotal = 0;
 
@@ -229,6 +222,45 @@ class user_dashboard // plugin-folder + '_url'
 
 	}
 
+
+	/**
+	 * The most recent daily rows of the site statistics.
+	 *
+	 * @param e_db $sql
+	 * @param int $days
+	 * @return array the rows, latest first
+	 */
+	private function latestDays($sql, $days)
+	{
+		$qb = $sql->createQueryBuilder();
+		$dates = array();
+
+		foreach($qb->select('log_id')->from('logstats')->where($qb->expr()->regexp('log_id', '^[0-9]+-[0-9]+-[0-9]+$'))->fetchColumn() as $logId)
+		{
+			$dates[$logId] = substr($logId, 0, 4).substr($logId, 5, 2).str_pad((string) substr($logId, 8), 2, '0', STR_PAD_LEFT);
+		}
+
+		arsort($dates, SORT_STRING);
+		$latest = array_slice(array_keys($dates), 0, $days);
+
+		if(empty($latest))
+		{
+			return array();
+		}
+
+		$rows = $sql->createQueryBuilder()->select('*')->from('logstats')->whereIn('log_id', $latest)->fetchAll('log_id');
+		$ordered = array();
+
+		foreach($latest as $logId)
+		{
+			if(isset($rows[$logId]))
+			{
+				$ordered[] = $rows[$logId];
+			}
+		}
+
+		return $ordered;
+	}
 
 	private function renderStats($type)
 	{

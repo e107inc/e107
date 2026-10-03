@@ -11,7 +11,6 @@
 */
 
 use e107\Database\QueryBuilder;
-use e107\Database\SqlFragment;
 
 require_once(__DIR__.'/../../class2.php');
 if ( ! e107::isInstalled('chatbox_menu')) {
@@ -86,9 +85,10 @@ if ( ! empty($_POST['moderate']) && CB_MOD) {
 			$kk[] = intval($k);
 		}
 
-		$rowlist = $sql->createQueryBuilder()
+		$qb = $sql->createQueryBuilder();
+		$rowlist = $qb
 			->select('c.cb_id', 'u.user_id')->from('chatbox', 'c')
-			->leftJoin('user', 'u', SqlFragment::raw("SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id"))
+			->leftJoin('user', 'u', $qb->expr()->compareColumns($qb->expr()->substringBefore('c.cb_nick', '.'), 'u.user_id'))
 			->whereIn('c.cb_id', $kk)
 			->fetchAll();
 

@@ -1506,7 +1506,7 @@ class e107forum
 			if($titleType == 0)
 			{
 				//prepend to existing title
-				$qb->setExpression('thread_name', $qb->raw('CONCAT('.$qb->createNamedParameter($threadTitle.' ').', thread_name)'));
+				$qb->setExpression('thread_name', $qb->expr()->concat($qb->expr()->value($threadTitle.' '), 'thread_name'));
 			}
 			else
 			{
@@ -2211,9 +2211,10 @@ class e107forum
 	function forum_getforums($type = 'all')
 	{
 		$sql = e107::getDb();
-		$rows = $sql->createQueryBuilder()
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb
 			->select('f.*', 'u.user_name')->from('forum', 'f')
-			->leftJoin('user', 'u', SqlFragment::raw("SUBSTRING_INDEX(f.forum_lastpost_user,'.',1) = u.user_id"))
+			->leftJoin('user', 'u', $qb->expr()->compareColumns($qb->expr()->substringBefore('f.forum_lastpost_user', '.'), 'u.user_id'))
 			->where('forum_parent', '!=', 0)->where('forum_sub', 0)
 			->orderBy('f.forum_order', 'ASC')
 			->fetchAll();
@@ -2506,7 +2507,7 @@ class e107forum
 				// e_userperms::simulateHasAdminPerms('0', ...): one of the
 				// dot-separated segments of user_perms is 0.
 				$terms[] = $expr->allOf($expr->eq('u.user_admin', 1),
-					$qb->raw("CONCAT('.', u.user_perms, '.') LIKE ".$qb->createNamedParameter('%.0.%')));
+					$expr->like($expr->concat($expr->value('.'), 'u.user_perms', $expr->value('.')), '%.0.%'));
 				break;
 		}
 

@@ -362,6 +362,43 @@
 			$this->assertStringContainsString(e_MEDIA.'images/', $result);
 		}
 
+		/**
+		 * The category screens number a new category on from the highest suffix an owner has used, or from its count.
+		 */
+		public function testEachOwnerHasTheNumberItsNextCategoryFollows()
+		{
+			$db = e107::getDb();
+			$categories = array(
+				'mediatestowner'   => array('mediatestowner_2', 'mediatestowner_10', 'mediatestowner_x'),
+				'mediatestunnumbered' => array('mediatestunnumbered_a', 'mediatestunnumbered_b'),
+			);
+
+			foreach($categories as $owner => $names)
+			{
+				foreach($names as $category)
+				{
+					$db->createQueryBuilder()->insert('core_media_cat')->values(array(
+						'media_cat_owner'    => $owner,
+						'media_cat_category' => $category,
+						'media_cat_title'    => $category,
+						'media_cat_diz'      => '',
+					))->execute();
+				}
+			}
+
+			try
+			{
+				$numbers = $this->md->lastCategoryNumbers();
+
+				$this->assertSame(10, $numbers['mediatestowner']);
+				$this->assertSame(2, $numbers['mediatestunnumbered']);
+			}
+			finally
+			{
+				$db->createQueryBuilder()->delete('core_media_cat')->whereIn('media_cat_owner', array_keys($categories))->execute();
+			}
+		}
+
 		public function testGetImages()
 		{
 			$sql = e107::getDb();

@@ -177,7 +177,7 @@ class user_mailout
 			default :
 				if (is_numeric($selectVals['email_to']))
 				{
-					$qb->where($qb->raw("u.`user_class` REGEXP concat('(^|,)',".$qb->createNamedParameter($selectVals['email_to']).",'(,|$)')"));
+					$qb->where($qb->expr()->findInSet('u.user_class', $selectVals['email_to']));
 					$hasPredicate = true;
 				}
 

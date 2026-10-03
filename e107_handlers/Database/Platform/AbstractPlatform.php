@@ -125,13 +125,13 @@ abstract class AbstractPlatform implements PlatformInterface
 	}
 
 	/**
-	 * Standard SQL: || concatenates and TRIM(BOTH ... FROM ...) takes off the commas.
+	 * Standard SQL's || operator.
 	 *
 	 * @inheritDoc
 	 */
-	public function compileRemoveFromSet($quotedColumn, $placeholder)
+	public function compileConcat(array $expressions)
 	{
-		return "TRIM(BOTH ',' FROM REPLACE(',' || ".$quotedColumn." || ',', ',' || ".$placeholder." || ',', ','))";
+		return '('.implode(' || ', $expressions).')';
 	}
 
 	/**

@@ -138,7 +138,7 @@ class core_mailout
 			default :
 				if (is_numeric($selectVals['email_to']))
 				{
-					$qb->andWhere($qb->raw("u.`user_class` REGEXP concat('(^|,)',".$qb->createNamedParameter($selectVals['email_to']).",'(,|$)')"));
+					$qb->andWhere($qb->expr()->findInSet('u.user_class', $selectVals['email_to']));
 					$whereCount++;
 				}
 

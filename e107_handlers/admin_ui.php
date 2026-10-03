@@ -5558,7 +5558,8 @@ class e_admin_controller_ui extends e_admin_controller
 				switch($_dataType)
 				{
 					case 'set':
-						$searchQry[] = "FIND_IN_SET('" . $tp->toDB($filterValue) . "', " . $fields[$filterField]['__tableField'] . ')';
+						$db = e107::getDb();
+						$searchQry[] = $db->getPlatform()->compileFindInSet($db->quoteStringLiteral($tp->toDB($filterValue)), $fields[$filterField]['__tableField']);
 					break;
 
 					case 'int':

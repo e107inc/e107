@@ -87,7 +87,6 @@ if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount']
 		}
 
 
-		$seed = mt_rand(1,2000000000);
 		$time = time();
 
 		$params = array('time' => $time);
@@ -120,8 +119,8 @@ if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount']
 
 		$query .= " ORDER BY ";
 
-		// ORDER BY RAND() / a REGEXP-weighted sort cannot be expressed by the query
-		// builder's validated ORDER BY, so this stays bound execute() (T3).
+		// A REGEXP-weighted sort cannot be expressed by the query builder's
+		// validated ORDER BY, so this stays bound execute() (T3).
 		$ord = array();
 
 		if($tags = e107::getRegistry('core/form/related'))
@@ -130,7 +129,7 @@ if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount']
 			$ord[] = " banner_keywords REGEXP :tagregexp DESC";
 		}
 
-		$ord[] = " RAND(".(int) $seed.") ASC";
+		$ord[] = " ".e107::getDb()->getPlatform()->getRandomFunction();
 
 		$query .= implode(', ', $ord);
 

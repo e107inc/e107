@@ -508,11 +508,13 @@ class QueryBuilder
 	 * column (an identifier, or table.column) and the alias are each validated
 	 * and quoted independently and fail-closed; nothing is parsed out of a bare
 	 * string, so an identifier or alias that itself contains a space or the word
-	 * "as" is handled correctly. For a function/computed/literal projection use
+	 * "as" is handled correctly. The column may instead be an expression the
+	 * expression builder made, such as {@see ExpressionBuilder::concat()}. For a
+	 * function/computed/literal projection use
 	 * {@see QueryBuilder::selectAggregate()} / {@see QueryBuilder::selectLiteral()},
 	 * or addSelect({@see QueryBuilder::raw()}).
 	 *
-	 * @param string $column Column name (or table.column); validated and quoted.
+	 * @param string|SqlFragment $column Column name (or table.column), validated and quoted; or a vouched expression.
 	 * @param string $alias Column alias; validated and quoted.
 	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the column or the alias fails validation.
@@ -520,9 +522,26 @@ class QueryBuilder
 	public function selectAs($column, $alias)
 	{
 		$this->type = self::TYPE_SELECT;
-		$this->select[] = $this->quoteColumn($column).' AS '.$this->_quotedAlias($alias);
+		$this->select[] = $this->_vouchedOrColumn($column).' AS '.$this->_quotedAlias($alias);
 
 		return $this;
+	}
+
+	/**
+	 * @param string|SqlFragment $column a column name, or a vouched expression whose parameters are taken over
+	 * @return string
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	private function _vouchedOrColumn($column)
+	{
+		if($column instanceof SqlFragment)
+		{
+			$this->mergeParameters($column->getParameters());
+
+			return $column->getSql();
+		}
+
+		return $this->quoteColumn($column);
 	}
 
 	/**

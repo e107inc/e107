@@ -198,6 +198,24 @@ class MysqlPlatform extends AbstractPlatform
 	}
 
 	/**
+	 * MySQL reads || as OR unless PIPES_AS_CONCAT is set; CONCAT() needs no mode.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileConcat(array $expressions)
+	{
+		return 'CONCAT('.implode(', ', $expressions).')';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileSubstringBefore($expression, $delimiter)
+	{
+		return 'SUBSTRING_INDEX('.$expression.', '.$delimiter.', 1)';
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function compileCaseSensitiveLike($quotedColumn, $placeholder)

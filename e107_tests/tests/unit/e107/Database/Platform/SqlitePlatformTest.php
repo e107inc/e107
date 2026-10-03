@@ -203,6 +203,15 @@ class SqlitePlatformTest extends \Test\Unit
 		$this->assertSame(array(), $this->column($like, array('p' => 'live')));
 	}
 
+	public function testStringsAreJoinedAndCutAsMysqlDoes()
+	{
+		$this->assertSame(array('a.b'), $this->column('SELECT '.$this->platform->compileConcat(array("'a'", "'.'", "'b'"))));
+		$this->assertSame(array(null), $this->column('SELECT '.$this->platform->compileConcat(array("'a'", 'NULL'))));
+		$this->assertSame(array('12'), $this->column('SELECT '.$this->platform->compileSubstringBefore("'12.admin'", "'.'")));
+		$this->assertSame(array('12'), $this->column('SELECT '.$this->platform->compileSubstringBefore("'12'", "'.'")));
+		$this->assertSame(array(''), $this->column('SELECT '.$this->platform->compileSubstringBefore("'.x'", "'.'")));
+	}
+
 	public function testTheLikeEscapeClauseMakesABackslashEscapeWildcards()
 	{
 		$this->pdo->exec('CREATE TABLE e (v TEXT)');

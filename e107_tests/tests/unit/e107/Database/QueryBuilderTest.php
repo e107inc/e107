@@ -1119,6 +1119,61 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame(array('qb1' => 3, 'qb2' => 3, 'qb3' => 2), $qb->getParameters());
 		}
 
+		/**
+		 * The string expressions spell MySQL's functions here, and take columns or bound values as operands.
+		 */
+		public function testStringExpressionsSpellMysqlFunctions()
+		{
+			$qb = $this->makeQb();
+			$expr = $qb->expr();
+			$qb->select('c.cb_id')->selectAs($expr->concat('u.user_id', $expr->value('.'), 'u.user_name'), 'online_id')
+				->from('chatbox', 'c')
+				->leftJoin('user', 'u', $expr->compareColumns($expr->substringBefore('c.cb_nick', '.'), 'u.user_id'))
+				->leftJoin('userclass_classes', 'uc', $expr->findColumnInSet('u.user_class', 'uc.userclass_id'))
+				->where($expr->like($expr->concat($expr->value('.'), 'u.user_perms', $expr->value('.')), '%.0.%'));
+
+			$this->assertSame(
+				"SELECT `c`.`cb_id`, CONCAT(`u`.`user_id`, :qb1, `u`.`user_name`) AS `online_id` FROM `e107_chatbox` AS `c`"
+				." LEFT JOIN `e107_user` AS `u` ON SUBSTRING_INDEX(`c`.`cb_nick`, '.', 1) = `u`.`user_id`"
+				." LEFT JOIN `e107_userclass_classes` AS `uc` ON FIND_IN_SET(`uc`.`userclass_id`, `u`.`user_class`)"
+				." WHERE (CONCAT(:qb2, `u`.`user_perms`, :qb3) LIKE :qb4)",
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => '.', 'qb2' => '.', 'qb3' => '.', 'qb4' => '%.0.%'), array_map(function($p) { return is_array($p) ? $p['value'] : $p; }, $qb->getParameters()));
+
+			$this->assertThrowsInvalidArgument(function()
+			{
+				$this->makeQb()->expr()->concat();
+			});
+		}
+
+		/**
+		 * An operand may be a fragment that carries its own bound values, such as one from raw() with $params.
+		 */
+		public function testAnExpressionOperandKeepsItsBoundValues()
+		{
+			$takers = array(
+				'like'                 => function($expr, $operand) { return $expr->like($operand, '%b'); },
+				'notLike'              => function($expr, $operand) { return $expr->notLike($operand, '%b'); },
+				'contains'             => function($expr, $operand) { return $expr->contains($operand, 'b'); },
+				'startsWith'           => function($expr, $operand) { return $expr->startsWith($operand, 'b'); },
+				'endsWith'             => function($expr, $operand) { return $expr->endsWith($operand, 'b'); },
+				'compareColumns left'  => function($expr, $operand) { return $expr->compareColumns($operand, 'user_name'); },
+				'compareColumns right' => function($expr, $operand) { return $expr->compareColumns('user_name', '<>', $operand); },
+				'concat'               => function($expr, $operand) { return $expr->like($expr->concat('user_name', $operand), '%b'); },
+			);
+
+			foreach($takers as $method => $take)
+			{
+				$qb = $this->makeQb();
+				$qb->select('user_id')->from('user')->where($take($qb->expr(), $qb->raw('LOWER(:who)', array('who' => 'Bob'))));
+				$params = array_map(function($p) { return is_array($p) ? $p['value'] : $p; }, $qb->getParameters());
+
+				$this->assertStringContainsString('LOWER(:who)', $qb->getSQL(), $method);
+				$this->assertSame('Bob', isset($params['who']) ? $params['who'] : null, $method.'() has to keep the value its operand binds');
+			}
+		}
+
 		public function testUpdateOrInsert()
 		{
 			// existing row -> UPDATE
@@ -1538,14 +1593,43 @@ use e107\Reflection\ReflectionMethod;
 			);
 
 			$qb = $this->makeQb();
-			$qb->selectRaw('n.news_id, '.$qb->expr()->fullText('n.news_title', '+e107 -beta', true)->getSql().' AS score')
+			$qb->select('n.news_id')->selectAs($qb->expr()->fullText('n.news_title', '+e107 -beta', true), 'score')
 				->from('news', 'n')->orWhereFullText('n.news_body', 'release', true);
 			$this->assertSame(
-				'SELECT n.news_id, MATCH (`n`.`news_title`) AGAINST (:qb1 IN BOOLEAN MODE) AS score FROM `e107_news` AS `n`'
+				'SELECT `n`.`news_id`, MATCH (`n`.`news_title`) AGAINST (:qb1 IN BOOLEAN MODE) AS `score` FROM `e107_news` AS `n`'
 				.' WHERE (MATCH (`n`.`news_body`) AGAINST (:qb2 IN BOOLEAN MODE))',
 				$qb->getSQL()
 			);
 			$this->assertSame(array('qb1' => '+e107 -beta', 'qb2' => 'release'), array_map(function($p) { return is_array($p) ? $p['value'] : $p; }, $qb->getParameters()));
+		}
+
+		/**
+		 * A relevance score weighs each match, and is compared like a column.
+		 */
+		public function testWeightedSumScoresEachExpressionByItsWeight()
+		{
+			$qb = $this->makeQb();
+			$expr = $qb->expr();
+			$qb->select('n.news_id')
+				->selectAs($expr->weightedSum(array('title' => $expr->fullText('n.news_title', 'e107', true), 'body' => 'n.news_body'), array('body' => '0.6', 'title' => 1.2)), 'score')
+				->from('news', 'n')
+				->where($expr->gt($expr->weightedSum(array($expr->fullText('n.news_body', 'e107', true)), array(2)), 0));
+
+			$this->assertSame(
+				'SELECT `n`.`news_id`, ((:qb2 * (MATCH (`n`.`news_title`) AGAINST (:qb1 IN BOOLEAN MODE))) + (:qb3 * (`n`.`news_body`))) AS `score`'
+				.' FROM `e107_news` AS `n` WHERE (((:qb5 * (MATCH (`n`.`news_body`) AGAINST (:qb4 IN BOOLEAN MODE)))) > :qb6)',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 'e107', 'qb2' => 1.2, 'qb3' => '0.6', 'qb4' => 'e107', 'qb5' => 2, 'qb6' => 0),
+				array_map(function($p) { return is_array($p) ? $p['value'] : $p; }, $qb->getParameters()));
+
+			foreach(array(array(array(), array()), array(array('a'), array()), array(array('a'), array('heavy')), array(array('a b'), array(1))) as $arguments)
+			{
+				$this->assertThrowsInvalidArgument(function() use ($arguments)
+				{
+					$this->makeQb()->expr()->weightedSum($arguments[0], $arguments[1]);
+				});
+			}
 		}
 
 		public function testWhereIn()

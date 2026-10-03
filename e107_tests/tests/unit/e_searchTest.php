@@ -127,7 +127,7 @@
 		 * Searches the probe rows the way a search handler does, returning the rendered result list.
 		 * $where and $order stand in for what a handler's own where() and order declare.
 		 */
-		private function searchProbe($searchQuery, $mysqlSort, $boundary, $where = '', $order = array())
+		private function searchProbe($searchQuery, $mysqlSort, $boundary, $where = '', $order = array(), $fields = array('probe_title', 'probe_summary'))
 		{
 			global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
 
@@ -143,7 +143,7 @@
 
 			$search = new e_search($searchQuery);
 			$ps = $search->parsesearch('search_highlight_probe', 'probe_id, probe_title, probe_summary',
-				array('probe_title', 'probe_summary'), array(1.2, 0.6), array($this, 'searchProbeResult'),
+				$fields, array(1.2, 0.6), array($this, 'searchProbeResult'),
 				'nothing found', $where, $order);
 
 			return $ps['text'];
@@ -609,6 +609,23 @@
 			self::assertSame('nothing found',
 				$this->searchProbe('builds', 1, 1, 'probe_id = 2 AND ', array('probe_id' => 'DESC')),
 				'A handler fragment that excludes the row is still applied.');
+		}
+
+		/**
+		 * A handler may name several columns in one search field, as a full-text index over all of them needs.
+		 */
+		public function testMysqlSortSearchMatchesAFieldNamingSeveralColumns()
+		{
+			self::assertStringContainsString('Release wibble#wobble',
+				$this->searchProbe('builds', 1, 1, '', array(), array('probe_title, probe_summary')),
+				'One field may name a column list, which is matched as one.');
+		}
+
+		public function testMysqlSortSearchMatchesBacktickedFields()
+		{
+			self::assertStringContainsString('Release wibble#wobble',
+				$this->searchProbe('builds', 1, 1, '', array(), array('`probe_title`', '`probe_summary`')),
+				'A field may be written with its column name quoted.');
 		}
 
 		public function testGetCommentHandlerPath()

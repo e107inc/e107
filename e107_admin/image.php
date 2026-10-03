@@ -11,8 +11,6 @@
  *
 */
 
-use e107\Database\SqlFragment;
-
 if(!empty($_GET['action']) && $_GET['action'] === 'dialog')
 {
 	define('e_MINIMAL',true);
@@ -250,28 +248,13 @@ class media_cat_ui extends e_admin_ui
 			$this->fields['media_cat_type']['noedit'] = true;
 		}
 
-		$sql = e107::getDb();
+		$this->ownerCount = e107::getMedia()->lastCategoryNumbers();
 
-
-		$rows = $sql->createQueryBuilder()
-			->select('media_cat_owner')->addSelect(SqlFragment::raw("MAX(CAST(SUBSTRING_INDEX(media_cat_category, '_', -1 ) AS UNSIGNED)) as maxnum"))->selectAggregate('COUNT', 'media_cat_id', 'number')
-			->from('core_media_cat')
-			->groupBy('media_cat_owner')
-			->fetchAll();
-		foreach($rows as $row)
+		foreach(array_keys($this->ownerCount) as $own)
 		{
+			if(!in_array($own,$this->restricted))
 			{
-				$this->ownerCount[$row['media_cat_owner']] = $row['number'];
-				$own = $row['media_cat_owner'];
-				if(!in_array($own,$this->restricted))
-				{		
-					$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
-					
-					if($row['maxnum'] > 0)
-					{
-						$this->ownerCount[$row['media_cat_owner']] = $row['maxnum']; // $maxnum;	
-					}
-				}		
+				$this->fields['media_cat_owner']['writeParms'][$own] = $own;
 			}
 		}
 		
@@ -1482,7 +1465,8 @@ class media_admin_ui extends e_admin_ui
 			return;
 		}
 
-		$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE FIND_IN_SET('".$cat."', m.media_category)  "; // without any Order or Limit.
+		$sql = e107::getDb();
+		$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE ".$sql->getPlatform()->compileFindInSet($sql->quoteStringLiteral($cat), 'm.media_category')."  "; // without any Order or Limit.
 
 		unset($this->fields['checkboxes']);
 		$this->fields['options']['type'] = 'method';
