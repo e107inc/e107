@@ -26,6 +26,7 @@ namespace Test;
 class Unit extends \Codeception\Test\Unit
 {
 	use \Helper\PhpUnitCompat;
+	use \Helper\DatabaseDriverRequirement;
 
 	/** TEST-NET-2 (RFC 5737): the range the suite's subprocesses present themselves from. */
 	const VISITOR_ADDRESS_PREFIX = '198.51.100.';
@@ -56,6 +57,14 @@ class Unit extends \Codeception\Test\Unit
 	 */
 	private static $parserSettings = array('staticUrl', 'modRewriteMedia', 'fontawesome', 'bootstrap', 'multibyte',
 		'thumbWidth', 'thumbHeight', 'thumbCrop');
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function databaseDriverName()
+	{
+		return \e107::getDb()->getDriver()->getName();
+	}
 
 	/**
 	 * Skips the test unless pdo_sqlite is loaded and linked against an SQLite library e107 installs on.

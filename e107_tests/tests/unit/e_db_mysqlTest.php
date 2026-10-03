@@ -19,6 +19,8 @@ class e_db_mysqlTest extends e_db_abstractTest
 
 	protected function _before()
 	{
+		$this->requireDatabaseDriver('mysql', 'e_db_mysql is the mysqli client, which speaks to MySQL alone');
+
 		require_once(e_HANDLER."mysql_class.php");
 		try
 		{
@@ -47,6 +49,11 @@ class e_db_mysqlTest extends e_db_abstractTest
 
 	public function _after()
 	{
+		if($this->db === null)
+		{
+			return; // skipped before a connection was made
+		}
+
 		$db_impl = $this->getDbImplementation();
 		if (@empty($db_impl->server_info)) return;
 

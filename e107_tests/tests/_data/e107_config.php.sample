@@ -40,12 +40,14 @@ const e_MOD_REWRITE = true;
 
 return [
     'database' => [
+            'driver'   => '{{ driver }}',
             'server'   => '{{ mySQLserver }}',
             'user'     => '{{ mySQLuser }}',
             'password' => '{{ mySQLpassword }}',
             'db'       => '{{ mySQLdefaultdb }}',
             'prefix'   => '{{ mySQLprefix }}',
             'charset'  => 'utf8',
+            'mysql_compat' => {{ mysql_compat ? 'true' : 'false' }},
     ],
     'paths' => [ // leave empty to use default
             'admin'      => 'e107_admin/',

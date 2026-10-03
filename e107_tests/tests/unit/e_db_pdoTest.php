@@ -38,6 +38,8 @@ class e_db_pdoTest extends e_db_abstractTest
 
 	public function testGetCharSet()
 	{
+		$this->requireDatabaseDriver('mysql', 'the connection character set is a MySQL setting');
+
 		$this->db->setCharset();
 		$result = $this->db->getCharset();
 

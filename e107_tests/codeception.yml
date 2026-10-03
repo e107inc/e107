@@ -36,11 +36,14 @@ modules:
     enabled:
         - Asserts
         - \Helper\DelayedDb:
-            dsn: 'mysql:host=%db.host%;port=%db.port%;dbname=%db.dbname%'
+            # dsn and populator follow db.driver; lib/config.php derives them.
+            dsn: '%db.dsn%'
             user: '%db.user%'
             password: '%db.password%'
             populate: '%db.populate%'
+            populator: '%db.populator%'
             dump: '%db.dump_path%'
+            mysql_compat: '%db.mysql_compat%'
 settings:
     error_level: 28671 # E_ALL & ~E_USER_DEPRECATED
 

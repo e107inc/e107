@@ -36,6 +36,8 @@ class SchemaReaderTest extends \Test\Unit
 
 	protected function _before()
 	{
+		$this->requireDatabaseDriver('mysql', 'SchemaReader reads information_schema; SqliteSchemaReader reads a SQLite database');
+
 		$this->reader = new SchemaReader(e107::getDb());
 		$this->scratch = MPREFIX.'schemareader_scratch';
 		$this->generated = array(
@@ -48,7 +50,10 @@ class SchemaReaderTest extends \Test\Unit
 
 	protected function _after()
 	{
-		$this->dropScratchTables();
+		if($this->reader !== null)
+		{
+			$this->dropScratchTables();
+		}
 	}
 
 	// --- reading a real table ---------------------------------------------

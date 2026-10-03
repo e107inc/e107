@@ -37,8 +37,13 @@ hosting:
 # there, not 'localhost'. See e107_tests/docker/README.md for the harness setup.
 url: 'http://set-this-to-your-app-url.local/'
 
-# Only MySQL/MariaDB is supported
+# The database the suites run against
 db:
+
+  # Engine: 'mysql' for MySQL or MariaDB, 'sqlite' for SQLite. The host, port,
+  # dbname, user and password keys are for 'mysql'; the path and mysql_compat
+  # keys are for 'sqlite'.
+  driver: 'mysql'
 
   # Hostname or IP address; use 'localhost' for a local server
   host: 'set-this-to-your-test-database-hostname.local'
@@ -64,7 +69,19 @@ db:
 
   # Path (absolute or relative) to the database dump of a testable installation of the app
   # Absolute path begins with "/"; relative path does not begin with "/"
+  # It is a MySQL dump whichever the driver: the 'sqlite' driver builds its
+  # database from it (see lib/SqliteFixture.php).
   dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
+
+  # SQLite database file, relative to this directory. With populate set to true
+  # it is rebuilt from dump_path when a suite starts. The site and the suites
+  # share it, so 'sqlite' needs the 'local' deployer.
+  path: 'tests/_output/e107.sqlite'
+
+  # Whether e107 gives SQLite its MySQL compatibility functions (FIND_IN_SET,
+  # IF, LPAD, FROM_UNIXTIME ...), which a site keeps on for third-party SQL.
+  # Off here, so core code cannot come to depend on them unnoticed.
+  mysql_compat: false
 
 # Selenium endpoint for the WebDriver suite. The e107-tests docker harness wires
 # this up automatically; set it by hand only for a custom Selenium server.

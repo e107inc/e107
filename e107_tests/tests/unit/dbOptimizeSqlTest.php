@@ -30,6 +30,8 @@ class dbOptimizeSqlTest extends \Test\Unit
 
 	protected function _before()
 	{
+		$this->requireDatabaseDriver('mysql', "it reads MyISAM's free space and the answer OPTIMIZE TABLE gives for each table");
+
 		$this->probe = MPREFIX.'optimize_sql_zz_probe';
 		$this->view = MPREFIX.'optimize_sql_view';
 		$this->oddlyNamed = MPREFIX.'optimize_sql_odd$name';

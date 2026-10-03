@@ -26,6 +26,8 @@ class MysqlSchemaManagerTest extends \Test\Unit
 	{
 		$this->db = e107::getDb();
 
+		$this->requireDatabaseDriver('mysql', 'it tests the MySQL schema manager');
+
 		$this->manager = $this->db->getSchemaManager();
 	}
 

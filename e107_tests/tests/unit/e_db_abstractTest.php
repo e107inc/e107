@@ -61,12 +61,16 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	public function testGetMode()
 	{
+		$this->requireDatabaseDriver('mysql', 'the session sql_mode is a MySQL setting');
+
 		$actual = $this->db->getMode();
 		$this->assertEquals('NO_ENGINE_SUBSTITUTION', $actual);
 	}
 
 	public function testDb_Connect()
 	{
+		$this->requireDatabaseDriver('mysql', 'logs in to a database server with a user and password');
+
 		$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], $this->dbConfig['mySQLdefaultdb']);
 		$this->assertTrue($result);
 
@@ -89,6 +93,8 @@ abstract class e_db_abstractTest extends \Test\Unit
 	 */
 	public function testConnect()
 	{
+		$this->requireDatabaseDriver('mysql', 'logs in to a database server with a user and password');
+
 		$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], "wrong Password");
 		$this->assertFalse($result);
 
@@ -116,11 +122,11 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	public function testUseDriverSwitchesTheDialectWithTheEngine()
 	{
-		$driver = new \e107\Database\Driver\MysqlDriver();
+		$driver = \e107\Database\Driver\DriverRegistry::create(e107::getDb()->getDriver()->getName());
 
 		$this->assertSame($this->db, $this->db->useDriver($driver));
 		$this->assertSame($driver, $this->db->getDriver());
-		$this->assertInstanceOf('e_db_platform_mysql', $this->db->getPlatform());
+		$this->assertInstanceOf(get_class($driver->createPlatform()), $this->db->getPlatform());
 
 		// a session opened through the new driver works as before
 		$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
@@ -130,6 +136,8 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	public function testASessionStartsInTheModeTheDriverSets()
 	{
+		$this->requireDatabaseDriver('mysql', 'sql_mode is a MySQL setting');
+
 		$driver = $this->make(\e107\Database\Driver\MysqlDriver::class, array(
 			'getSessionStatements' => array("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION,PIPES_AS_CONCAT';"),
 		));
@@ -149,6 +157,8 @@ abstract class e_db_abstractTest extends \Test\Unit
 	 */
 	public function testARefusedConnectionRecordsTheDriverErrorNumber()
 	{
+		$this->requireDatabaseDriver('mysql', 'a database server refuses a wrong password');
+
 		$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], 'wrong password');
 
 		$this->assertFalse($result, 'precondition: the connection has to be refused');
@@ -163,6 +173,8 @@ abstract class e_db_abstractTest extends \Test\Unit
 	 */
 	public function testConnectUsesTheConfiguredPort()
 	{
+		$this->requireDatabaseDriver('mysql', 'a port belongs to a database server');
+
 		$server = $this->dbConfig['mySQLserver'];
 		$user = $this->dbConfig['mySQLuser'];
 		$password = $this->dbConfig['mySQLpassword'];
@@ -230,8 +242,16 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 		$result = $this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX,  true);
 		$this->assertTrue($result);
-		$this->assertEquals("`".$this->dbConfig["mySQLdefaultdb"]."`.".\Helper\Unit::E107_MYSQL_PREFIX,
-			$this->db->mySQLPrefix);
+
+		if($this->db->getDriver()->requiresServer())
+		{
+			$quote = $this->db->getPlatform()->getIdentifierQuoteCharacter();
+			$this->assertEquals($quote.$this->dbConfig["mySQLdefaultdb"].$quote.".".\Helper\Unit::E107_MYSQL_PREFIX,
+				$this->db->mySQLPrefix);
+		}
+
+		$this->assertNotFalse($this->db->gen('SELECT user_id FROM '.$this->db->mySQLPrefix.'user WHERE user_id = 1'),
+			'the qualified prefix has to name the database\'s tables');
 	}
 
 	/**
@@ -612,7 +632,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 		$this->assertInstanceOf('e_db_query', $qb);
 		$this->assertInstanceOf('e_db_expr', $qb->expr());
-		$this->assertInstanceOf('e_db_platform_mysql', $this->db->getPlatform());
+		$this->assertInstanceOf('e107\Database\Platform\PlatformInterface', $this->db->getPlatform());
 		$this->assertSame($this->db->getPlatform(), $qb->getPlatform());
 	}
 
@@ -1554,8 +1574,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$row = $this->db->db_Fetch();
 		$this->assertArrayHasKey('user_ip', $row);
 
-		$qry = 'SHOW CREATE TABLE `'.MPREFIX."user`";
-		$this->db->gen($qry);
+		$this->db->gen("SELECT 'e107_user', 'CREATE TABLE `e107_user` (...)'");
 
 		$row = $this->db->db_Fetch('num');
 		$this->assertEquals('e107_user', $row[0]);
@@ -1574,8 +1593,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$row = $this->db->db_Fetch(MYSQL_ASSOC);
 		$this->assertArrayHasKey('user_ip', $row);
 
-		$qry = 'SHOW CREATE TABLE `'.MPREFIX."user`";
-		$this->db->gen($qry);
+		$this->db->gen("SELECT 'e107_user'");
 
 		$row = $this->db->db_Fetch(MYSQL_NUM);
 		$this->assertEquals('e107_user', $row[0]);
@@ -1607,6 +1625,8 @@ abstract class e_db_abstractTest extends \Test\Unit
 	}
 	public function testCloseEndsTheServerConnectionWithAResultOutstanding()
 	{
+		$this->requireDatabaseDriver('mysql', 'watches the connection leave the server\'s process list');
+
 		$id = (int) $this->db->retrieve('SELECT CONNECTION_ID()');
 		$this->assertGreaterThan(0, $id);
 		$this->assertNotFalse($this->db->select('user', 'user_id', 'user_id > 0'));
@@ -1778,7 +1798,15 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertEquals(123,$result);
 
 		$result = $this->db->escape("Can't", true);
-		$this->assertEquals("Can\'t", $result);
+
+		if($this->db->getDriver()->getName() === 'mysql')
+		{
+			$this->assertEquals("Can\'t", $result);
+		}
+
+		$this->db->gen("SELECT '".$result."' AS roundtrip");
+		$row = $this->db->fetch();
+		$this->assertSame("Can't", $row['roundtrip'], 'an escaped value has to read back as it was inside quotes');
 	}
 
 	public function testQuoteStringLiteral()
@@ -2497,9 +2525,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->db->select('doesnt_exists');
 		$result = $this->db->getLastErrorText();
 
-		$actual = (strpos($result,"doesn't exist")!== false );
-
-		$this->assertTrue($actual);
+		$this->assertStringContainsString('doesnt_exists', $result, 'the error has to name the missing table');
 	}
 
 	public function testResetLastError()
@@ -2642,6 +2668,12 @@ abstract class e_db_abstractTest extends \Test\Unit
 					'plugin_addons' => '',
 				),
 		);
+
+		if($this->db->getDriver()->getName() === 'sqlite')
+		{
+			// A SQLite table declares the default MySQL leaves implicit for a NOT NULL TEXT column.
+			unset($expected['_NOTNULL']['plugin_addons']);
+		}
 
 		$this->assertEquals($expected, $actual);
 	}
