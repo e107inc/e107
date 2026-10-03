@@ -106,6 +106,20 @@ DB flavor notes (the wrapper handles these automatically):
   clients can authenticate. `mysql:8.4` only gets the plugin enabled, and
   `mysql:9` removed it entirely; don't pair legacy PHP with those.
 
+`--db sqlite` starts no database container. e107 runs on its sqlite driver
+against `e107_tests/tests/_output/<env>.sqlite`, one file per env, which the
+suites build from the same MySQL dump when they start
+(`lib/SqliteFixture.php`), with the MySQL compatibility functions off so core
+code cannot lean on them. `sql`
+runs statements against that file; `db-shell` needs a `sqlite3` client in
+the web image. `--install-site` is refused there until the installer can set
+up SQLite.
+
+```sh
+e107_tests/bin/e107-tests up --php 8.5 --db sqlite --no-selenium
+e107_tests/bin/e107-tests ci-unit
+```
+
 ## Legacy PHP
 
 Each `php:<ver>-apache` image sits on whichever Debian release upstream last
