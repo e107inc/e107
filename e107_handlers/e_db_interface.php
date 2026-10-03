@@ -62,6 +62,11 @@ class_alias(\e107\Database\Platform\PlatformInterface::class, 'e_db_platform');
 require_once(__DIR__.'/Database/Platform/MysqlPlatform.php');
 class_alias(\e107\Database\Platform\MysqlPlatform::class, 'e_db_platform_mysql');
 
+require_once(__DIR__.'/Database/Driver/DriverInterface.php');
+require_once(__DIR__.'/Database/Driver/PdoDriverInterface.php');
+require_once(__DIR__.'/Database/Driver/DriverRegistry.php');
+require_once(__DIR__.'/Database/Driver/MysqlDriver.php');
+
 require_once(__DIR__.'/Database/Schema/SchemaBuilderTrait.php');
 class_alias(\e107\Database\Schema\SchemaBuilderTrait::class, 'e_db_schema_common');
 

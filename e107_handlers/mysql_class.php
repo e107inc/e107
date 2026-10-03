@@ -396,11 +396,13 @@ class e_db_mysql implements e_db
 
 		if ($this->_countsFoundRows($query))
 		{
+			$statement = $this->getDriver()->getFoundRowsStatement();
 
-			$fr = mysqli_query($this->mySQLaccess, 'SELECT FOUND_ROWS()');
-			$rc = mysqli_fetch_array($fr);
-			$this->total_results = (int)$rc['FOUND_ROWS()'];
-
+			if($statement !== null)
+			{
+				$rc = mysqli_fetch_row(mysqli_query($this->mySQLaccess, $statement));
+				$this->total_results = (int) $rc[0];
+			}
 		}
 
 		if ($this->debugMode === true)
@@ -1355,9 +1357,10 @@ class e_db_mysql implements e_db
 	 */
 	private function setSQLMode()
 	{
-
-		$this->db_Query("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION';");
-
+		foreach($this->getDriver()->getSessionStatements() as $statement)
+		{
+			$this->db_Query($statement);
+		}
 	}
 
 
@@ -1400,7 +1403,7 @@ class e_db_mysql implements e_db
 			$this->mySQLaccess->set_charset($charset);
 			if ( ! $debug)
 			{
-			   @mysqli_query($this->mySQLaccess, "SET NAMES `$charset`");
+			   @mysqli_query($this->mySQLaccess, $this->getDriver()->getCharsetStatement($charset));
 			}
 			else
 			{
@@ -1416,7 +1419,7 @@ class e_db_mysql implements e_db
 				else
 				{
 					// Use db_Query() debug handler
-					$this->db_Query("SET NAMES `$charset`", NULL, '', $debug);
+					$this->db_Query($this->getDriver()->getCharsetStatement($charset), NULL, '', $debug);
 				}
 			}
 		}
@@ -1619,6 +1622,31 @@ class e_db_mysql implements e_db
 			$success = $this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
 			if ($success) $success = $this->database($this->mySQLdefaultdb, $this->mySQLPrefix);
 			if (!$success) throw new RuntimeException($this->mySQLlastErrText);
+		}
+	}
+
+	/**
+	 * mysqli reaches MySQL and MariaDB only, whatever e107_config.php names.
+	 *
+	 * @return \e107\Database\Driver\DriverInterface
+	 */
+	protected function _createConfiguredDriver()
+	{
+		return \e107\Database\Driver\DriverRegistry::create('mysql');
+	}
+
+	/**
+	 * Accepts the MySQL driver only: mysqli cannot speak to another engine.
+	 *
+	 * @param \e107\Database\Driver\DriverInterface $driver
+	 * @return void
+	 * @throws \e107\Database\Exception\UnsupportedException for any other engine
+	 */
+	protected function _switchDriver(\e107\Database\Driver\DriverInterface $driver)
+	{
+		if($driver->getName() !== 'mysql')
+		{
+			throw new \e107\Database\Exception\UnsupportedException('The mysqli backend (e_db_mysql) reaches MySQL and MariaDB only; use e_db_pdo for the '.$driver->getLabel().' driver.');
 		}
 	}
 

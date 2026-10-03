@@ -99,8 +99,50 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertTrue($result);
 	}
 
+	public function testTheDriverIsTheOneTheConfigNames()
+	{
+		$configured = e107::getMySQLConfig('driver');
+
+		$this->assertSame($configured ? $configured : 'mysql', $this->db->getDriver()->getName());
+		$this->assertSame(get_class($this->db->getDriver()->createPlatform()), get_class($this->db->getPlatform()));
+	}
+
+	public function testUseDriverRefusesAnUnknownEngine()
+	{
+		$this->expectException(InvalidArgumentException::class);
+
+		$this->db->useDriver('nosuchengine');
+	}
+
+	public function testUseDriverSwitchesTheDialectWithTheEngine()
+	{
+		$driver = new \e107\Database\Driver\MysqlDriver();
+
+		$this->assertSame($this->db, $this->db->useDriver($driver));
+		$this->assertSame($driver, $this->db->getDriver());
+		$this->assertInstanceOf('e_db_platform_mysql', $this->db->getPlatform());
+
+		// a session opened through the new driver works as before
+		$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+		$this->assertTrue($this->db->isTable('user'));
+	}
+
+	public function testASessionStartsInTheModeTheDriverSets()
+	{
+		$driver = $this->make(\e107\Database\Driver\MysqlDriver::class, array(
+			'getSessionStatements' => array("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION,PIPES_AS_CONCAT';"),
+		));
+
+		$this->db->useDriver($driver);
+		$this->assertTrue($this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']));
+		$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+
+		$this->assertStringContainsString('PIPES_AS_CONCAT', $this->db->getMode());
+	}
+
 	/**
-	 * A refused connection records the driver error number rather than the SQLSTATE; before PHP 7.3.22 and 7.4.10 the exception carries no errorInfo at all and the number is only in its code, which is why {@see e_db_pdo::_errorNumber()} reads both.
+	 * A refused connection records the driver error number, not the SQLSTATE; {@see \e107\Database\Driver\MysqlDriver::errorNumber()} reads it from errorInfo, or from the exception code before PHP 7.3.22 and 7.4.10.
 	 *
 	 * @see https://github.com/e107inc/e107/issues/5993
 	 * @see https://github.com/e107inc/e107/issues/6040

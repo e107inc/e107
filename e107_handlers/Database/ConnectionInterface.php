@@ -3,6 +3,7 @@
 namespace e107\Database;
 
 use e107;
+use e107\Database\Driver\DriverInterface;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\Schema\Column;
 use e107\Database\Schema\Index;
@@ -456,6 +457,26 @@ use PDOStatement;
 		 * @return PlatformInterface
 		 */
 		public function getPlatform();
+
+
+		/**
+		 * The engine this connection talks to: e107_config.php's 'driver', or what {@see ConnectionInterface::useDriver()} chose.
+		 *
+		 * @return DriverInterface
+		 * @throws \InvalidArgumentException when the configured driver is not registered
+		 */
+		public function getDriver();
+
+
+		/**
+		 * Talk to another engine than the configured one; call it before {@see ConnectionInterface::connect()}.
+		 *
+		 * @param string|DriverInterface $driver a {@see \e107\Database\Driver\DriverRegistry} name or a driver
+		 * @return $this
+		 * @throws \InvalidArgumentException when no driver is registered under the name
+		 * @throws \e107\Database\Exception\UnsupportedException when this backend cannot drive the engine
+		 */
+		public function useDriver($driver);
 
 
 		/**

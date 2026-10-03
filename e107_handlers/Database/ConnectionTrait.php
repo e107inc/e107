@@ -12,7 +12,8 @@ namespace e107\Database;
 
 use db_verify;
 use e107;
-use e107\Database\Platform\MysqlPlatform;
+use e107\Database\Driver\DriverInterface;
+use e107\Database\Driver\DriverRegistry;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\Schema\Column;
 use e107\Database\Schema\Index;
@@ -45,6 +46,9 @@ trait ConnectionTrait
 {
 	/** @var PlatformInterface|null lazily created SQL dialect object */
 	private     $platform = null;
+
+	/** @var DriverInterface|null the engine this connection talks to; resolved on first use */
+	protected   $driver = null;
 
 	private     $pdoBind        = false;
 
@@ -103,6 +107,23 @@ trait ConnectionTrait
 
 	abstract protected function _escape($data);
 	abstract protected function _getMySQLaccess();
+
+	/**
+	 * The driver a connection uses until {@see ConnectionInterface::useDriver()} names another.
+	 *
+	 * @return DriverInterface
+	 * @throws \InvalidArgumentException when the configured driver is not registered
+	 */
+	abstract protected function _createConfiguredDriver();
+
+	/**
+	 * Take over a driver named through {@see ConnectionInterface::useDriver()}, refusing one this backend cannot drive.
+	 *
+	 * @param DriverInterface $driver
+	 * @return void
+	 * @throws \e107\Database\Exception\UnsupportedException when the backend cannot drive this engine
+	 */
+	abstract protected function _switchDriver(DriverInterface $driver);
 
 	/**
 	 * Get system config
@@ -443,15 +464,50 @@ trait ConnectionTrait
 	{
 		if($this->platform === null)
 		{
-			if(!class_exists(MysqlPlatform::class))
-			{
-				require_once(__DIR__.'/Platform/MysqlPlatform.php');
-			}
-
-			$this->platform = new MysqlPlatform();
+			$this->platform = $this->getDriver()->createPlatform();
 		}
 
 		return $this->platform;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::getDriver()}.
+	 *
+	 * @return DriverInterface
+	 */
+	public function getDriver()
+	{
+		if($this->driver === null)
+		{
+			$this->driver = $this->_createConfiguredDriver();
+		}
+
+		return $this->driver;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::useDriver()}.
+	 *
+	 * @param string|DriverInterface $driver
+	 * @return $this
+	 */
+	public function useDriver($driver)
+	{
+		if(!$driver instanceof DriverInterface)
+		{
+			if(!class_exists(DriverRegistry::class, false))
+			{
+				require_once(__DIR__.'/Driver/DriverRegistry.php');
+			}
+
+			$driver = DriverRegistry::create($driver);
+		}
+
+		$this->_switchDriver($driver);
+		$this->driver = $driver;
+		$this->platform = null;
+
+		return $this;
 	}
 
 	/**

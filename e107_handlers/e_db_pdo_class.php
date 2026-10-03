@@ -17,9 +17,13 @@ defined('MYSQL_BOTH') or define('MYSQL_BOTH', 3);
 require_once('e_db_interface.php');
 require_once('e_db_legacy_trait.php');
 
+use e107\Database\Driver\DriverInterface;
+use e107\Database\Driver\DriverRegistry;
+use e107\Database\Driver\PdoDriverInterface;
+use e107\Database\Exception\UnsupportedException;
+
 /**
- * PDO MySQL class. All legacy mysql_ methods removed.
- * Class e_db_pdo
+ * The PDO database connection, on the engine of its {@see PdoDriverInterface}. All legacy mysql_ methods removed.
  */
 class e_db_pdo implements e_db
 {
@@ -130,9 +134,14 @@ class e_db_pdo implements e_db
 		}
 
 
+		if(($driver = $this->_pdoDriver()) === false)
+		{
+			return false;
+		}
+
 		try
 		{
-			$this->mySQLaccess = new PDO("mysql:host={$this->mySQLserver};port={$this->mySQLport}", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+			$this->mySQLaccess = $driver->connect($this->_connectionParams());
 		}
 		catch(PDOException $ex)
 		{
@@ -142,8 +151,10 @@ class e_db_pdo implements e_db
 			return false;
 		}
 
-		$this->setCharset();
-		$this->setSQLMode();
+		if($this->mySQLaccess !== null)
+		{
+			$this->_startSession();
+		}
 
 		return true;
 	}
@@ -155,11 +166,16 @@ class e_db_pdo implements e_db
 	 */
 	public function getServerInfo()
 	{
+		$driver = $this->getDriver();
 
-	//	var_dump($this->mySQLaccess);
+		if($this->mySQLaccess === null && !$driver->requiresServer())
+		{
+			return $this->mySqlServerInfo = $driver->getServerVersion(null);
+		}
+
 		$this->_getMySQLaccess();
-		$this->mySqlServerInfo =  $this->mySQLaccess->query('select version()')->fetchColumn();
-	//	$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_VERSION);
+		$this->mySqlServerInfo = $driver->getServerVersion($this->mySQLaccess);
+
 		return $this->mySqlServerInfo;
 	}
 
@@ -177,26 +193,33 @@ class e_db_pdo implements e_db
 		$this->mySQLdefaultdb 	= $database;
 		$this->mySQLPrefix 		= $prefix;
 
-		$quoted = '`'.str_replace('`', '``', $database).'`';
-
-		if($multiple === true)
+		if(($driver = $this->_pdoDriver()) === false)
 		{
-			$this->mySQLPrefix 		= $quoted.".".$prefix;
-			return true;
+			return false;
 		}
-
 
 		try
 		{
-			$this->mySQLaccess->exec("use ".$quoted);
-       		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
-	    }
+			if($multiple === true)
+			{
+				$this->mySQLPrefix = $driver->qualifyPrefix($this->mySQLaccess, $database, $prefix);
+				return true;
+			}
+
+			$pdo = $driver->selectDatabase($this->mySQLaccess, $database, $this->_connectionParams());
+		}
 		catch (PDOException $e)
 		{
 			$this->mySQLlastErrText = $e->getMessage();
 			$this->mySQLlastErrNum = $this->_errorNumber($e);
 			return false;
-	    }
+		}
+
+		if($pdo !== $this->mySQLaccess)
+		{
+			$this->mySQLaccess = $pdo;
+			$this->_startSession();
+		}
 
 		return true;
 
@@ -395,9 +418,12 @@ class e_db_pdo implements e_db
 
 		if ($this->_countsFoundRows($query))
 		{
+			$statement = $this->getDriver()->getFoundRowsStatement();
 
-			$rc = $this->mySQLaccess->query('SELECT FOUND_ROWS();')->fetch(PDO::FETCH_COLUMN);
-			$this->total_results = intval($rc);
+			if($statement !== null)
+			{
+				$this->total_results = (int) $this->mySQLaccess->query($statement)->fetch(PDO::FETCH_COLUMN);
+			}
 		}
 
 		if ($this->debugMode === true)
@@ -1119,7 +1145,7 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	 * Dump MySQL Table(s) to a file in the Backup folder.
+	 * Dump table(s) to a file in the Backup folder, in the format of the connection's driver.
 	 * @param $table string - name without the prefix or '*' for all
 	 * @param $file string - optional file name. or leave blank to generate.
 	 * @param $options - additional preferences.
@@ -1156,56 +1182,29 @@ class e_db_pdo implements e_db
 		}
 
 
-   //     include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
+		$tables = array();
 
-		$dumpSettings = array(
-	        'compress'                      => !empty($options['gzip']) ? Ifsnop\Mysqldump\Mysqldump::GZIP : Ifsnop\Mysqldump\Mysqldump::NONE,
-	        'include-tables'                => array(),
-		    'no-data'                       => false,
-		    'add-drop-table'                => !empty($options['droptable']) ? true : false,
-		    'single-transaction'            => true,
-		    'lock-tables'                   => true,
-		    'add-locks'                     => true,
-		    'extended-insert'               => true,
-		    'disable-foreign-keys-check'    => true,
-		    'skip-triggers'                 => false,
-		    'add-drop-trigger'              => true,
-		    'databases'                     => false,
-		    'add-drop-database'             => false,
-		    'hex-blob'                      => true,
-		    'reset-auto-increment'          => false,
-	    );
+		foreach($tableList as $tab)
+		{
+			$tables[] = $this->mySQLPrefix.trim($tab);
+		}
 
-        foreach($tableList as $tab)
-        {
-            $dumpSettings['include-tables'][] = $this->mySQLPrefix.trim($tab);
-        }
+		$options = array(
+			'gzip'      => !empty($options['gzip']),
+			'droptable' => !empty($options['droptable']),
+		);
 
-
-        try
-        {
-            $dump = new Ifsnop\Mysqldump\Mysqldump("mysql:host={$this->mySQLserver};port={$this->mySQLport};dbname={$this->mySQLdefaultdb}", $this->mySQLuser, $this->mySQLpassword, $dumpSettings);
-		    $dump->start($backupFile);
-		    return $backupFile;
+		try
+		{
+			return $this->getDriver()->backup($this->_connectionParams(), $tables, $backupFile, $options);
 		}
 		catch (\Exception $e)
 		{
-			$this->mySQLlastErrText = 'mysqldump-php error: ' .$e->getMessage();
-			$this->mySQLlastErrNum = $this->_errorNumber($e);
+			$this->mySQLlastErrText = $e->getMessage();
+			$this->mySQLlastErrNum = $this->_errorNumber($e->getPrevious() ? $e->getPrevious() : $e);
 		    return false;
 		}
-
-
 	}
-
-
-
-
-
-
-
-
-
 
 
 	/**
@@ -1223,23 +1222,14 @@ class e_db_pdo implements e_db
 
 
 	/**
-	 * MySQL error number behind a PDO exception, matching what {@see e_db_mysql} records; -1 when the error carries no driver number.
-	 *
-	 * Before PHP 7.3.22 and 7.4.10 (php-src bug #64705) a connection failure sets no errorInfo and puts the errno in the exception code as an int, while a SQLSTATE always arrives there as a string, so the test is is_int() and never is_numeric(): SQLSTATE values such as '23000' are all digits.
+	 * The error number behind a failure, as the connection's driver numbers it ({@see PdoDriverInterface::errorNumber()}); -1 when the error carries no driver number.
 	 *
 	 * @param Exception $ex
 	 * @return int
 	 */
 	private function _errorNumber($ex)
 	{
-		if(isset($ex->errorInfo[1]) && (int) $ex->errorInfo[1] !== 0)
-		{
-			return (int) $ex->errorInfo[1];
-		}
-
-		$code = $ex->getCode();
-
-		return (is_int($code) && $code !== 0) ? $code : -1;
+		return $this->getDriver()->errorNumber($ex);
 	}
 
 
@@ -1258,30 +1248,133 @@ class e_db_pdo implements e_db
 
 
 	/**
+	 * Put the session into the mode e107 expects: the driver's session statements, then its handle attributes.
+	 *
 	 * @return void
 	 */
 	private function setSQLMode()
 	{
-		$this->db_Query("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION';");
-		/**
-		 * Disable PHP 8.1 PDO result set typing casting for consistency with PHP 5.6 through 8.0
-		 * @link https://github.com/php/php-src/blob/4025cf2875f895e9f7193cebb1c8efa4290d052e/UPGRADING#L130-L134
-		 */
-		$this->mySQLaccess->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
+		$driver = $this->getDriver();
+
+		foreach($driver->getSessionStatements() as $statement)
+		{
+			$this->db_Query($statement);
+		}
+
+		$driver->configure($this->mySQLaccess);
 	}
 
-
+	/**
+	 * Set up a session on a newly opened handle.
+	 *
+	 * @return void
+	 */
+	private function _startSession()
+	{
+		$this->setCharset();
+		$this->setSQLMode();
+	}
 
 	/**
-	 * Set Database charset to utf8mb4
+	 * Set the session's character set, utf8mb4 by default. An engine with a single fixed encoding runs nothing.
 	 *
-	 * @access private
+	 * @param string $charset
+	 * @return void
 	 */
 	public function setCharset($charset = 'utf8mb4')
 	{
-		$this->db_Query("SET NAMES `$charset`");
+		$statement = $this->getDriver()->getCharsetStatement($charset);
+
+		if($statement !== null)
+		{
+			$this->db_Query($statement);
+		}
 
 		$this->mySQLcharset = $charset;
+	}
+
+	/**
+	 * The connection parameters a driver opens a session or a dump from.
+	 *
+	 * @return array
+	 */
+	private function _connectionParams()
+	{
+		return array(
+			'server'   => $this->mySQLserver,
+			'port'     => $this->mySQLport,
+			'user'     => $this->mySQLuser,
+			'password' => $this->mySQLpassword,
+			'database' => $this->mySQLdefaultdb,
+		);
+	}
+
+	/**
+	 * The connection's driver, or false with the reason recorded as the last error when it cannot be had.
+	 *
+	 * @return PdoDriverInterface|false
+	 */
+	private function _pdoDriver()
+	{
+		try
+		{
+			return $this->getDriver();
+		}
+		catch(InvalidArgumentException $e)
+		{
+			$this->mySQLlastErrText = $e->getMessage();
+			$this->mySQLlastErrNum = -1;
+			return false;
+		}
+	}
+
+	/**
+	 * Reads the 'driver' key of the e107_config.php 'database' block, 'mysql' when absent.
+	 *
+	 * @return PdoDriverInterface
+	 */
+	protected function _createConfiguredDriver()
+	{
+		try
+		{
+			$driver = DriverRegistry::create(e107::getMySQLConfig('driver'));
+		}
+		catch(InvalidArgumentException $e)
+		{
+			throw new InvalidArgumentException($e->getMessage().' Check the \'driver\' key in e107_config.php.', 0, $e);
+		}
+
+		$this->_requirePdoDriver($driver);
+
+		return $driver;
+	}
+
+	/**
+	 * Accepts any PDO-backed driver and drops the session opened through the previous one.
+	 *
+	 * @param DriverInterface $driver
+	 * @return void
+	 */
+	protected function _switchDriver(DriverInterface $driver)
+	{
+		$this->_requirePdoDriver($driver);
+
+		$this->mySQLresult = null;
+		$this->mySQLaccess = null;
+		$this->resetTableList();
+	}
+
+	/**
+	 * @param DriverInterface $driver
+	 * @return void
+	 * @throws UnsupportedException when the driver has no PDO side
+	 */
+	private function _requirePdoDriver(DriverInterface $driver)
+	{
+		if(!$driver instanceof PdoDriverInterface)
+		{
+			throw new UnsupportedException('The '.$driver->getLabel().' driver cannot back a PDO connection.');
+		}
 	}
 
 	/**
