@@ -37,6 +37,15 @@ interface PlatformInterface
 	public function getIdentifierQuoteCharacter();
 
 	/**
+	 * Validate and quote an identifier (`column` or `table.column`) for this dialect. Fails closed: anything outside
+	 * the {@see \e107\Database\IdentifierFilter} grammar returns false.
+	 *
+	 * @param string $identifier
+	 * @return string|false
+	 */
+	public function quoteIdentifier($identifier);
+
+	/**
 	 * Build a LIMIT/OFFSET clause for this dialect, including a leading space.
 	 *
 	 * @param int|null $limit Maximum number of rows, or null for no limit.
@@ -102,14 +111,26 @@ interface PlatformInterface
 	 * Build an "insert, or update the given columns on a key collision"
 	 * statement (e.g. MySQL's INSERT ... ON DUPLICATE KEY UPDATE).
 	 *
+	 * Like MySQL, the statement reports a row it inserted, a row it changed and
+	 * a colliding row it left as it was differently where the engine can tell
+	 * them apart; a dialect that can only report "one row written" for a
+	 * changed row at least reports nothing for an unchanged one.
+	 *
 	 * @param string $quotedTable Quoted physical table name.
 	 * @param string[] $columns Quoted column identifiers for the inserted row.
 	 * @param string[] $tuples VALUES groups, one per row.
-	 * @param string[] $updateAssignments "quoted column = value-reference" strings
-	 *                 (see {@see PlatformInterface::getUpsertValueReference()}).
+	 * @param array $updateAssignments quoted column => value expression for the
+	 *                 update, e.g. the inserted value as
+	 *                 {@see PlatformInterface::getUpsertValueReference()} spells it,
+	 *                 or a bound placeholder.
+	 * @param string[] $conflictColumns Quoted columns of the key the collision is
+	 *                 detected on; empty for "any primary or unique key", which a
+	 *                 dialect that needs a named key may refuse.
+	 * @param string $modifier '' or 'IGNORE', as in MySQL's INSERT IGNORE ... ON DUPLICATE KEY UPDATE.
 	 * @return string SQL statement.
+	 * @throws UnsupportedException when the dialect needs a key and none is given, or cannot honour the modifier.
 	 */
-	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments);
+	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments, array $conflictColumns = array(), $modifier = '');
 
 	/**
 	 * How this dialect refers, in the upsert UPDATE list, to the value that was
@@ -119,6 +140,65 @@ interface PlatformInterface
 	 * @return string
 	 */
 	public function getUpsertValueReference($quotedColumn);
+
+	/**
+	 * Build an UPDATE, optionally limited to a number of rows.
+	 *
+	 * @param string $quotedTable Quoted physical table name.
+	 * @param array $assignments quoted column => value expression.
+	 * @param string $where compiled ' WHERE ...' clause with its leading space, or ''.
+	 * @param int|null $limit maximum rows to change, or null for every matching row.
+	 * @return string SQL statement.
+	 * @throws UnsupportedException when the dialect cannot limit an UPDATE.
+	 */
+	public function compileUpdate($quotedTable, array $assignments, $where, $limit = null);
+
+	/**
+	 * Build a DELETE, optionally limited to a number of rows.
+	 *
+	 * @param string $quotedTable Quoted physical table name.
+	 * @param string $where compiled ' WHERE ...' clause with its leading space, or ''.
+	 * @param int|null $limit maximum rows to delete, or null for every matching row.
+	 * @return string SQL statement.
+	 * @throws UnsupportedException when the dialect cannot limit a DELETE.
+	 */
+	public function compileDelete($quotedTable, $where, $limit = null);
+
+	/**
+	 * Test whether a value is one of the comma-separated values stored in a
+	 * column, e107's userclass-membership idiom (MySQL's FIND_IN_SET).
+	 *
+	 * @param string $needle SQL for the value sought: a bound parameter, or a literal quoted by {@see ConnectionInterface::quoteStringLiteral()}
+	 * @param string $quotedColumn Quoted column holding the comma-separated set.
+	 * @return string predicate: the 1-based position, 0 when absent or when the needle holds a comma
+	 */
+	public function compileFindInSet($needle, $quotedColumn);
+
+	/**
+	 * The clause, with its leading space, that makes a backslash escape '%', '_'
+	 * and itself in the LIKE pattern before it; '' where that is the default.
+	 *
+	 * @return string
+	 */
+	public function getLikeEscapeClause();
+
+	/**
+	 * Text LIKE matches literally, for a pattern built around it under {@see PlatformInterface::getLikeEscapeClause()}.
+	 *
+	 * @param string $value
+	 * @return string $value with '%', '_' and the backslash escaped
+	 */
+	public function quoteLikeLiteral($value);
+
+	/**
+	 * The statement that starts a table's auto-increment counter again from the
+	 * highest value in use, run after an upsert updated a row, for engines that
+	 * spend a value on every collision (MySQL), or null for none.
+	 *
+	 * @param string $quotedTable Quoted (or bare) physical table name.
+	 * @return string|null
+	 */
+	public function compileAutoIncrementReset($quotedTable);
 
 	/**
 	 * Trailing clause that takes an exclusive write lock on the selected rows
@@ -296,4 +376,50 @@ interface PlatformInterface
 	 * @throws UnsupportedException when the platform has no grant system.
 	 */
 	public function compileFlushPrivileges();
+
+	/**
+	 * Whether tables carry a storage engine (MySQL's ENGINE=).
+	 *
+	 * @return bool
+	 */
+	public function supportsStorageEngines();
+
+	/**
+	 * Whether tables and columns carry a character set of their own.
+	 *
+	 * @return bool
+	 */
+	public function supportsCharsets();
+
+	/**
+	 * Whether a SELECT can ask the engine to count the rows it would have returned
+	 * without its LIMIT (MySQL's SQL_CALC_FOUND_ROWS / FOUND_ROWS()).
+	 *
+	 * @return bool
+	 */
+	public function supportsFoundRows();
+
+	/**
+	 * Whether a table can carry a FULLTEXT index for {@see PlatformInterface::compileFullText()}.
+	 *
+	 * @return bool
+	 */
+	public function supportsFullTextIndexes();
+
+	/**
+	 * Whether DDL runs inside a transaction and rolls back with it, rather than
+	 * committing implicitly as MySQL's does.
+	 *
+	 * @return bool
+	 */
+	public function supportsTransactionalDdl();
+
+	/**
+	 * Whether inserting 0 (or '') into an auto-increment column assigns the next
+	 * value, as MySQL does unless NO_AUTO_VALUE_ON_ZERO is set, rather than
+	 * storing 0.
+	 *
+	 * @return bool
+	 */
+	public function assignsAutoIncrementOnZero();
 }

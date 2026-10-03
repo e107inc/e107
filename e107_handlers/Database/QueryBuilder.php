@@ -165,8 +165,11 @@ class QueryBuilder
 	/** @var string[] quoted target columns for INSERT ... SELECT */
 	private $insertSelectColumns = array();
 
-	/** @var string[] "quoted column = value-reference" assignments for UPSERT */
+	/** @var array quoted column => value reference, the UPSERT update list */
 	private $upsertUpdate = array();
+
+	/** @var string[] quoted columns of the key an UPSERT collides on */
+	private $upsertConflict = array();
 
 	/** @var string trailing lock clause for SELECT, e.g. ' FOR UPDATE' */
 	private $lock = '';
@@ -2405,7 +2408,14 @@ class QueryBuilder
 		foreach($updateColumns as $column)
 		{
 			$quoted = $this->quoteColumn($column);
-			$this->upsertUpdate[] = $quoted.' = '.$this->platform->getUpsertValueReference($quoted);
+			$this->upsertUpdate[$quoted] = $this->platform->getUpsertValueReference($quoted);
+		}
+
+		$this->upsertConflict = array();
+
+		foreach((array) $uniqueBy as $column)
+		{
+			$this->upsertConflict[] = $this->quoteColumn($column);
 		}
 	}
 
@@ -3910,7 +3920,8 @@ class QueryBuilder
 			$this->_quotedTable($this->table),
 			$columns,
 			$tuples,
-			$this->upsertUpdate
+			$this->upsertUpdate,
+			$this->upsertConflict
 		);
 	}
 
@@ -3941,17 +3952,12 @@ class QueryBuilder
 			throw new InvalidArgumentException('UPDATE needs a table and at least one set().');
 		}
 
-		$assignments = array();
-
-		foreach($this->set as $column => $placeholder)
-		{
-			$assignments[] = $column.' = '.$placeholder;
-		}
-
-		return 'UPDATE '.$this->_quotedTable($this->table)
-			.' SET '.implode(', ', $assignments)
-			.$this->_compileWhere()
-			.$this->platform->getLimitClause($this->maxResults);
+		return $this->platform->compileUpdate(
+			$this->_quotedTable($this->table),
+			$this->set,
+			$this->_compileWhere(),
+			$this->maxResults
+		);
 	}
 
 	/**
@@ -3964,9 +3970,11 @@ class QueryBuilder
 			throw new InvalidArgumentException('DELETE needs a table; call delete() with one.');
 		}
 
-		return 'DELETE FROM '.$this->_quotedTable($this->table)
-			.$this->_compileWhere()
-			.$this->platform->getLimitClause($this->maxResults);
+		return $this->platform->compileDelete(
+			$this->_quotedTable($this->table),
+			$this->_compileWhere(),
+			$this->maxResults
+		);
 	}
 
 	/**

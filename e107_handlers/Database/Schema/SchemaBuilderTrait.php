@@ -44,7 +44,7 @@ trait SchemaBuilderTrait
 	 */
 	protected function quoteTable($table)
 	{
-		return '`'.$this->resolveTable($table).'`';
+		return $this->quoteResolved($this->resolveTable($table), $table);
 	}
 
 	/**
@@ -77,7 +77,25 @@ trait SchemaBuilderTrait
 	 */
 	protected function quotePhysicalTable($table)
 	{
-		return '`'.$this->resolvePhysicalTable($table).'`';
+		return $this->quoteResolved($this->resolvePhysicalTable($table), $table);
+	}
+
+	/**
+	 * @param string $physical resolved physical table name
+	 * @param string $table the name the caller gave, for the error message
+	 * @return string the name quoted for this platform
+	 * @throws InvalidArgumentException when the resolved name is no plain identifier.
+	 */
+	private function quoteResolved($physical, $table)
+	{
+		$quoted = $this->platform->quoteIdentifier($physical);
+
+		if($quoted === false)
+		{
+			throw new InvalidArgumentException('Invalid table name "'.$table.'" for a schema operation.');
+		}
+
+		return $quoted;
 	}
 
 	/**
@@ -134,7 +152,7 @@ trait SchemaBuilderTrait
 			throw new InvalidArgumentException('Invalid '.$what.' "'.$name.'" for a schema operation.');
 		}
 
-		return '`'.$name.'`';
+		return $this->platform->quoteIdentifier($name);
 	}
 
 	/**

@@ -223,7 +223,7 @@ class ExpressionBuilder
 	 */
 	public function contains($column, $value)
 	{
-		return $this->_comparison($column, 'LIKE', '%'.$this->_escapeLike($value).'%');
+		return $this->_escapedLike($column, '%'.$this->qb->getPlatform()->quoteLikeLiteral($value).'%');
 	}
 
 	/**
@@ -235,7 +235,7 @@ class ExpressionBuilder
 	 */
 	public function startsWith($column, $value)
 	{
-		return $this->_comparison($column, 'LIKE', $this->_escapeLike($value).'%');
+		return $this->_escapedLike($column, $this->qb->getPlatform()->quoteLikeLiteral($value).'%');
 	}
 
 	/**
@@ -247,7 +247,7 @@ class ExpressionBuilder
 	 */
 	public function endsWith($column, $value)
 	{
-		return $this->_comparison($column, 'LIKE', '%'.$this->_escapeLike($value));
+		return $this->_escapedLike($column, '%'.$this->qb->getPlatform()->quoteLikeLiteral($value));
 	}
 
 	/**
@@ -269,7 +269,7 @@ class ExpressionBuilder
 	}
 
 	/**
-	 * <code>FIND_IN_SET(:value, `column`)</code> - true when $value is one of
+	 * <code>FIND_IN_SET(:value, `column`)</code> on MySQL - true when $value is one of
 	 * the comma-separated values stored in $column. This is e107's recurring
 	 * userclass-membership idiom; the needle binds as one parameter and the
 	 * column validates fail-closed.
@@ -281,7 +281,9 @@ class ExpressionBuilder
 	 */
 	public function findInSet($column, $value)
 	{
-		return SqlFragment::fragment('FIND_IN_SET('.$this->qb->createNamedParameter($value).', '.$this->qb->quoteColumn($column).')');
+		$needle = $this->qb->createNamedParameter($value);
+
+		return SqlFragment::fragment($this->qb->getPlatform()->compileFindInSet($needle, $this->qb->quoteColumn($column)));
 	}
 
 	/**
@@ -599,6 +601,20 @@ class ExpressionBuilder
 	}
 
 	/**
+	 * LIKE against a pattern whose metacharacters
+	 * {@see \e107\Database\Platform\PlatformInterface::quoteLikeLiteral()} escaped with a backslash, with the clause
+	 * that makes the backslash an escape on this platform.
+	 *
+	 * @param string $column
+	 * @param string $pattern
+	 * @return SqlFragment
+	 */
+	private function _escapedLike($column, $pattern)
+	{
+		return SqlFragment::fragment($this->qb->quoteColumn($column).' LIKE '.$this->qb->createNamedParameter($pattern).$this->qb->getPlatform()->getLikeEscapeClause());
+	}
+
+	/**
 	 * @param string $column
 	 * @param array $values
 	 * @param string $operator 'IN' or 'NOT IN'
@@ -701,14 +717,5 @@ class ExpressionBuilder
 		}
 
 		return self::$aggregateFunctions[$fn];
-	}
-
-	/**
-	 * @param string $value
-	 * @return string $value with LIKE metacharacters escaped
-	 */
-	private function _escapeLike($value)
-	{
-		return addcslashes((string) $value, '%_\\');
 	}
 }

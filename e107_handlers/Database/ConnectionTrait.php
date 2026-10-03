@@ -302,7 +302,7 @@ trait ConnectionTrait
 	}
 
 	/**
-	 * Validate and backtick-quote an SQL identifier (`column` or `table.column`).
+	 * Validate and quote an SQL identifier (`column` or `table.column`) for this connection's dialect.
 	 * Fails closed: anything outside the {@see IdentifierFilter::identifier()} grammar returns false.
 	 *
 	 * @param string $identifier
@@ -310,12 +310,7 @@ trait ConnectionTrait
 	 */
 	public function quoteIdentifier($identifier)
 	{
-		if(!class_exists(IdentifierFilter::class))
-		{
-			require_once(__DIR__.'/IdentifierFilter.php');
-		}
-
-		return IdentifierFilter::identifier($identifier);
+		return $this->getPlatform()->quoteIdentifier($identifier);
 	}
 
 	/**
@@ -858,7 +853,9 @@ trait ConnectionTrait
 			{
 				if(!empty($matches[1])) // `#table`
 				{
-					return '`'.$this->_resolveMarker($matches[1], $language).'`';
+					$quote = $this->getPlatform()->getIdentifierQuoteCharacter();
+
+					return $quote.$this->_resolveMarker($matches[1], $language).$quote;
 				}
 
 				if(isset($matches[2]) && $matches[2] !== '') // bare #table
@@ -2210,38 +2207,41 @@ trait ConnectionTrait
 
 
 			$fieldTypes = $this->_getTypes($arg);
-			$keyList= '`'.implode('`,`', array_keys($arg['data'])).'`';
-			$tmp = array();
+			$platform = $this->getPlatform();
+			$quote = $platform->getIdentifierQuoteCharacter();
+			$columns = array();
+			$placeholders = array();
 			$bind = array();
 
 			foreach($arg['data'] as $fk => $fv)
 			{
-				$tmp[] = ':'.$fk;
+				$columns[] = $quote.$fk.$quote;
+				$placeholders[] = ':'.$fk;
 				$fieldType = isset($fieldTypes[$fk]) ? $fieldTypes[$fk] : null;
 				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldType,$fv), 'type'=> $this->_getPDOType($fieldType,$this->_getPDOValue($fieldType,$fv)));
 			}
 
-			$valList= implode(', ', $tmp);
+			$physical = $this->mySQLPrefix.$table;
+			$tuples = array('('.implode(', ', $placeholders).')');
 
-
-			unset($tmp);
-
-
-
-			if($REPLACE === false)
+			if($REPLACE === true)
 			{
-				$query = "INSERT".$IGNORE." INTO ".$this->mySQLPrefix."{$table} ({$keyList}) VALUES ({$valList})";
-
-				if($DUPEKEY_UPDATE === true)
+				$query = $platform->compileReplace($physical, $columns, $placeholders);
+			}
+			elseif($DUPEKEY_UPDATE === true)
+			{
+				try
 				{
-					$query .= " ON DUPLICATE KEY UPDATE ";
-					$query .= $this->_prepareUpdateArg($tableName, $argUpdate);
+					$query = $platform->compileUpsert($physical, $columns, $tuples, $this->_prepareUpdateAssignments($tableName, $argUpdate), array(), ($IGNORE !== '') ? 'IGNORE' : '');
 				}
-
+				catch(\e107\Database\Exception\UnsupportedException $e)
+				{
+					return $this->_refuse($e->getMessage());
+				}
 			}
 			else
 			{
-				$query = "REPLACE INTO ".$this->mySQLPrefix."{$table} ({$keyList}) VALUES ({$valList})";
+				$query = $platform->compileInsert($physical, $columns, $tuples, ($IGNORE !== '') ? 'IGNORE' : '');
 			}
 
 
@@ -2274,7 +2274,10 @@ trait ConnectionTrait
 			{
 				$result = true;
 				// reset auto-increment to prevent gaps.
-				$this->db_Query("ALTER TABLE ".$this->mySQLPrefix.$table."  AUTO_INCREMENT=1", NULL, 'db_Insert', $debug, $log_type, $log_remark);
+				if(($reset = $this->getPlatform()->compileAutoIncrementReset($this->mySQLPrefix.$table)) !== null)
+				{
+					$this->db_Query($reset, NULL, 'db_Insert', $debug, $log_type, $log_remark);
+				}
 			}
 			elseif($this->mySQLresult === 0) // updated (no change)
 			{
@@ -2335,59 +2338,77 @@ trait ConnectionTrait
 		$this->pdoBind = array();
 		if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
 	  	{
+			$where = isset($arg['WHERE']) ? ' WHERE '.$arg['WHERE'] : '';
 
-			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
-		   	{
-			   	//Convert data if not using 'new' format
-		   		$_tmp = array();
-		   		if(isset($arg['WHERE']))
-		   		{
-		   			$_tmp['WHERE'] = $arg['WHERE'];
-		   			unset($arg['WHERE']);
-		   		}
-		   		$_tmp['data'] = $arg;
-		   		$arg = $_tmp;
-		   		unset($_tmp);
-		   	}
-
-	   		if(!isset($arg['data'])) { return false; }
-
-			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']))
+			if(($assignments = $this->_prepareUpdateAssignments($tableName, $arg)) === false)
 			{
-				$fieldDefs = $this->getFieldDefs($tableName);
-				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
+				return false;
 			}
 
-			$fieldTypes = $this->_getTypes($arg);
+			$new_data = array();
 
-
-			$new_data = '';
-			//$this->pdoBind = array(); // moved up to the beginning of the method to make sure it is initialized properly
-			foreach ($arg['data'] as $fn => $fv)
+			foreach($assignments as $column => $expression)
 			{
-				$new_data .= ($new_data ? ', ' : '');
-				$ftype =  isset($fieldTypes[$fn]) ? $fieldTypes[$fn] : 'str';
-
-				$new_data .= ($ftype !='cmd') ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
-
-				if($fv === '_NULL_')
-				{
-					$ftype = 'null';
-				}
-
-				if($ftype != 'cmd')
-				{
-					$this->pdoBind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype,$this->_getPDOValue($ftype,$fv)));
-				}
+				$new_data[] = $column.'= '.$expression;
 			}
 
-			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
-
+			$arg = implode(', ', $new_data).$where;
 		}
 
 		return $arg;
 
+	}
+
+	/**
+	 * The assignments of a legacy update() argument, or of an insert's _DUPLICATE_KEY_UPDATE, with their binds in {@see ConnectionTrait::$pdoBind}.
+	 *
+	 * @param string $tableName
+	 * @param array $arg the argument as the caller gave it
+	 * @return array|false quoted column => value expression; false without data
+	 */
+	private function _prepareUpdateAssignments($tableName, array $arg)
+	{
+		$this->pdoBind = array();
+
+		if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
+		{
+			unset($arg['WHERE']);
+			$arg = array('data' => $arg);
+		}
+
+		if(!isset($arg['data']))
+		{
+			return false;
+		}
+
+		// See if we need to auto-add field types array
+		if(!isset($arg['_FIELD_TYPES']))
+		{
+			$fieldDefs = $this->getFieldDefs($tableName);
+			if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
+		}
+
+		$fieldTypes = $this->_getTypes($arg);
+		$quote = $this->getPlatform()->getIdentifierQuoteCharacter();
+		$assignments = array();
+
+		foreach ($arg['data'] as $fn => $fv)
+		{
+			$ftype = isset($fieldTypes[$fn]) ? $fieldTypes[$fn] : 'str';
+			$assignments[$quote.$fn.$quote] = ($ftype != 'cmd') ? ':'.$fn : $this->_getFieldValue($fn, $fv, $fieldTypes);
+
+			if($fv === '_NULL_')
+			{
+				$ftype = 'null';
+			}
+
+			if($ftype != 'cmd')
+			{
+				$this->pdoBind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype,$this->_getPDOValue($ftype,$fv)));
+			}
+		}
+
+		return $assignments;
 	}
 
 	/**

@@ -60,7 +60,7 @@ final class MysqlSchemaManager implements SchemaManagerInterface
 		list($database, $bare) = $this->split($prefix);
 
 		$sql = 'SHOW TABLES'.($database === null ? '' : ' FROM '.$database)
-			.' LIKE '.$this->db->quoteStringLiteral(addcslashes($bare, '%_\\').'%');
+			.' LIKE '.$this->db->quoteStringLiteral($this->db->getPlatform()->quoteLikeLiteral($bare).'%');
 
 		if($this->db->execute($sql) === false)
 		{

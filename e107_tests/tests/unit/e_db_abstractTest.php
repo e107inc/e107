@@ -1251,6 +1251,38 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	}
 
+	public function testAnUpsertAskedToIgnoreErrorsIgnoresThemOrIsRefused()
+	{
+		try
+		{
+			$this->db->getPlatform()->compileUpsert('t', array('c'), array('(:c)'), array('c' => ':c'), array(), 'IGNORE');
+			$ignores = true;
+		}
+		catch(\e107\Database\Exception\UnsupportedException $e)
+		{
+			$ignores = false;
+		}
+
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1, 'v' => 'a'))->execute();
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 2, 'v' => 'b'))->execute();
+			$this->assertNotFalse($this->db->execute('CREATE UNIQUE INDEX e_db_txn_test_v ON `#'.$table.'` (v)'));
+
+			$result = $this->db->insert($table, array('data' => array('id' => 1, 'v' => 'b'), '_IGNORE' => true, '_DUPLICATE_KEY_UPDATE' => true));
+
+			$this->assertSame($ignores ? 0 : false, $result);
+			$this->assertSame($ignores ? 0 : -1, $this->db->getLastErrorNumber(), $this->db->getLastErrorText());
+			$this->assertSame(array('a', 'b'), $this->db->createQueryBuilder()->select('v')->from($table)->orderBy('id')->fetchColumn());
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
 	public function testReplace()
 	{
 		$insert = array(

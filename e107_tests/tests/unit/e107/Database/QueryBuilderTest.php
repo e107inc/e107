@@ -2032,7 +2032,7 @@ use e107\Reflection\ReflectionMethod;
 			);
 			$this->assertSame(
 				'INSERT INTO `e107_tmp` (`a`, `b`) VALUES (:qb1, :qb2) ON DUPLICATE KEY UPDATE `b` = VALUES(`b`)',
-				$platform->compileUpsert('`e107_tmp`', array('`a`', '`b`'), array('(:qb1, :qb2)'), array('`b` = VALUES(`b`)'))
+				$platform->compileUpsert('`e107_tmp`', array('`a`', '`b`'), array('(:qb1, :qb2)'), array('`b`' => 'VALUES(`b`)'), array('`a`'))
 			);
 			$this->assertSame('VALUES(`b`)', $platform->getUpsertValueReference('`b`'));
 			$this->assertSame(' FOR UPDATE', $platform->getForUpdateClause());
@@ -2051,6 +2051,28 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame("JSON_CONTAINS_PATH(`c`, 'one', :p)", $platform->compileJsonContainsKey('`c`', ':p'));
 			$this->assertSame('JSON_LENGTH(`c`)', $platform->compileJsonLength('`c`'));
 			$this->assertSame('MATCH (`a`, `b`) AGAINST (:p)', $platform->compileFullText(array('`a`', '`b`'), ':p'));
+
+			$this->assertSame('`user_name`', $platform->quoteIdentifier('user_name'));
+			$this->assertSame('`u`.`user_name`', $platform->quoteIdentifier(' u.user_name '));
+			$this->assertFalse($platform->quoteIdentifier('a.b.c'));
+			$this->assertFalse($platform->quoteIdentifier('a`b'));
+			$this->assertSame(
+				'UPDATE `t` SET `a` = :qb1, `b` = `b` + 1 WHERE (`id` = :qb2) LIMIT 1',
+				$platform->compileUpdate('`t`', array('`a`' => ':qb1', '`b`' => '`b` + 1'), ' WHERE (`id` = :qb2)', 1)
+			);
+			$this->assertSame('UPDATE `t` SET `a` = :qb1', $platform->compileUpdate('`t`', array('`a`' => ':qb1'), ''));
+			$this->assertSame('DELETE FROM `t` WHERE (`id` = :qb1) LIMIT 5', $platform->compileDelete('`t`', ' WHERE (`id` = :qb1)', 5));
+			$this->assertSame('DELETE FROM `t`', $platform->compileDelete('`t`', ''));
+			$this->assertSame('FIND_IN_SET(:qb1, `user_class`)', $platform->compileFindInSet(':qb1', '`user_class`'));
+			$this->assertSame('', $platform->getLikeEscapeClause());
+			$this->assertSame('ALTER TABLE e107_t  AUTO_INCREMENT=1', $platform->compileAutoIncrementReset('e107_t'));
+
+			$this->assertTrue($platform->supportsStorageEngines());
+			$this->assertTrue($platform->supportsCharsets());
+			$this->assertTrue($platform->supportsFoundRows());
+			$this->assertTrue($platform->supportsFullTextIndexes());
+			$this->assertFalse($platform->supportsTransactionalDdl());
+			$this->assertTrue($platform->assignsAutoIncrementOnZero());
 		}
 	}
 
