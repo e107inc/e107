@@ -53,9 +53,8 @@ use PDOStatement;
 	 * {@see ConnectionInterface::copyTable()}, {@see ConnectionInterface::field()}, {@see ConnectionInterface::fields()} and
 	 * {@see ConnectionInterface::index()}.
 	 *
-	 * The whole contract runs against both backends in
-	 * {@see \e_db_abstractTest}, whose test methods double as working examples
-	 * of every method here.
+	 * Ask {@see ConnectionInterface::getPlatform()} how the engine spells SQL
+	 * and what it can do, rather than testing the driver's name.
 	 */
 
 

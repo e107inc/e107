@@ -17,6 +17,13 @@ e107_tests/bin/e107-tests down              # tear it all down
 
 Pick a different matrix combo with `--php` and `--db`, e.g. `e107-tests up --php 8.4 --db mysql:8.0`. See [`docker/README.md`](docker/README.md) for the full command reference.
 
+`--db sqlite` runs the suites against e107's SQLite driver instead of a database server: the stack starts no database container, and the suites build an SQLite file from the same MySQL sample dump when they start. Tests that exercise something only MySQL has (server variables, `SHOW` statements, the mysqli connection class) skip there with the reason. The unit suite runs the SQLite driver's own tests, against throwaway databases, on every stack whose PHP links SQLite 3.35 or newer, MySQL ones included; elsewhere they skip.
+
+```sh
+e107_tests/bin/e107-tests up --php 8.5 --db sqlite
+e107_tests/bin/e107-tests run unit
+```
+
 ## Quickstart (Manual / legacy deployers)
 
 If you prefer to wire tests into your own LAMP stack — local, SFTP, cPanel, or anything else — keep reading. This is the original flow described below.
