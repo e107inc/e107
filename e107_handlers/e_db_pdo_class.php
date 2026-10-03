@@ -281,9 +281,10 @@ class e_db_pdo implements e_db
 	 * @param bool   $debug
 	 * @param string $log_type
 	 * @param string $log_remark
-	 * @return boolean|int|PDOStatement - as mysql_query() function.
+	 * @return boolean|int|PDOStatement|\e107\Database\Result\BufferedResult - as mysql_query() function.
 	 *            false indicates an error
-	 *            For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
+	 *            For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource:
+	 *            the driver's {@see \e107\Database\Driver\PdoDriverInterface::wrapResult()}, a BufferedResult on SQLite
 	 *            TRUE indicates success in other cases
 	 */
 	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = false, $log_type = '', $log_remark = '')
@@ -359,7 +360,7 @@ class e_db_pdo implements e_db
 				}
 
 				$prep->execute($execute);
-				$sQryRes = ($qry_from == 'db_Select') ? $prep : $prep->rowCount();
+				$sQryRes = ($qry_from == 'db_Select') ? $this->getDriver()->wrapResult($prep) : $prep->rowCount();
 			}
 			catch(PDOException $ex)
 			{
@@ -384,7 +385,7 @@ class e_db_pdo implements e_db
 				else
 				{
 						/** @var PDO $rli */
-						$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
+						$sQryRes = $this->getDriver()->wrapResult(is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query));
 				}
 
 			}
@@ -807,7 +808,7 @@ class e_db_pdo implements e_db
 
 		$this->dbError('execute');
 
-		if($result instanceof PDOStatement)
+		if(is_object($result))
 		{
 			if($result->columnCount() > 0) // result set; rows readable via fetch()
 			{

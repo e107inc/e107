@@ -149,22 +149,13 @@ class MysqlDriver extends AbstractPdoDriver
 	}
 
 	/**
-	 * Before PHP 7.3.22 and 7.4.10 (php-src bug #64705) a connection failure sets no errorInfo and puts the errno
-	 * in the exception code as an int, while a SQLSTATE always arrives there as a string, so the test is is_int()
-	 * and never is_numeric(): SQLSTATE values such as '23000' are all digits.
+	 * pdo_mysql buffers every result client-side already, so the statement serves as it is.
 	 *
 	 * @inheritDoc
 	 */
-	public function errorNumber($exception)
+	public function wrapResult($statement)
 	{
-		if(isset($exception->errorInfo[1]) && (int) $exception->errorInfo[1] !== 0)
-		{
-			return (int) $exception->errorInfo[1];
-		}
-
-		$code = $exception->getCode();
-
-		return (is_int($code) && $code !== 0) ? $code : -1;
+		return $statement;
 	}
 
 	/**

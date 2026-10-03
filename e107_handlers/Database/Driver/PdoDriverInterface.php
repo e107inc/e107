@@ -13,6 +13,7 @@ namespace e107\Database\Driver;
 use Exception;
 use PDO;
 use PDOException;
+use PDOStatement;
 
 require_once(__DIR__.'/DriverInterface.php');
 
@@ -67,6 +68,14 @@ interface PdoDriverInterface extends DriverInterface
 	 * @return string
 	 */
 	public function getServerVersion($pdo);
+
+	/**
+	 * The statement's result, buffered client-side so that a SELECT can be counted before any row is read.
+	 *
+	 * @param PDOStatement|false $statement an executed statement, or false when the query failed
+	 * @return PDOStatement|\e107\Database\Result\BufferedResult|false
+	 */
+	public function wrapResult($statement);
 
 	/**
 	 * The number e107 records for a failed operation, {@see \e107\Database\ConnectionInterface::getLastErrorNumber()}.
