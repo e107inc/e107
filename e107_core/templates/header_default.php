@@ -428,20 +428,6 @@ else
  	if (is_readable(e_FILE.'user.vbs') && filesize(e_FILE.'user.vbs')) { echo "<script type='text/vbscript' src='".e_FILE_ABS."user.vbs'></script>\n"; }
 }
 
-// Old Deprecated CHAP Support.
-if (!USER && varset($pref['password_CHAP'],0))
-{
-	if ($pref['password_CHAP'] == 2)
-  	{
-		// *** Add in the code to swap the display tags
-//		$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
-		$js_body_onload[] = "expandit('loginmenuchap');";
-		$js_body_onload[] = "expandit('nologinmenuchap');";
-  	}
-  	echo "<script src='".e_JS."chap_script.js'></script>\n";
-  	$js_body_onload[] = "getChallenge();";
-}
-
 //
 // F: Send Legacy Meta Tags, Icon links
 //
@@ -701,7 +687,6 @@ else
 
 	if ($body_onload)
 	{
-		// Kludge to get the CHAP code included
 		echo substr(trim($BODYTAG), 0, -1).' '.$body_onload.">\n";
 	}
 	else

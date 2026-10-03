@@ -150,7 +150,7 @@ class theme_shortcodes extends e_shortcode
 
 				$text .='	
 				
-				<form method="post" onsubmit="hashLoginPassword(this);return true" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
+				<form method="post" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
 				<p>{LM_USERNAME_INPUT}</p>
 				<p>{LM_PASSWORD_INPUT}</p>
 

@@ -346,19 +346,6 @@ if(!empty($pref['e_meta_list']))
 unset($incompatibleMeta);
 
 
-if(!USER && varset($pref['password_CHAP'], 0))
-{
-	if($pref['password_CHAP'] == 2)
-	{
-		// *** Add in the code to swap the display tags
-//		$js_body_onload[] = "expandit('loginmenuchap','nologinmenuchap');";
-		$js_body_onload[] = "expandit('loginmenuchap');";
-		$js_body_onload[] = "expandit('nologinmenuchap');";
-	}
-	echo "<script src='" . e_JS . "chap_script.js'></script>\n";
-	$js_body_onload[] = "getChallenge();";
-}
-
 
 if(function_exists('headerjs'))// required for BC.
 {

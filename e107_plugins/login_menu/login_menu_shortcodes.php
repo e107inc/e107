@@ -115,15 +115,9 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_password_input($parm=null)
 			{
-				$pref = e107::getPref();
-				$t_password = "
+				return "
 				<label class='sr-only' for='".vartrue( $parm['idprefix'] )."userpass'>".LAN_PASSWORD."</label>
 				<input class='form-control tbox login pass' type='password' placeholder='".LAN_PASSWORD."' required='required' name='userpass' id='".vartrue( $parm['idprefix'] )."userpass' size='15' value='' maxlength='30' />\n";
-
-				if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0))
-					 $t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
-
-				return $t_password;
 			}
 
 

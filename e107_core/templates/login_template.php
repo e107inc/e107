@@ -13,18 +13,7 @@ $LOGIN_TEMPLATE['page']['header'] = "
 
 $LOGIN_TEMPLATE['page']['body'] = '
 		{LOGIN_TABLE_LOGINMESSAGE}
-        <h2 class="form-signin-heading">{LAN=LOGIN_4}</h2>';
-	if (e107::pref('core', 'password_CHAP') == 2)
-	{
-		$LOGIN_TEMPLATE['page']['body'] .= "
-    	<div style='text-align: center' id='nologinmenuchap'>"."Javascript must be enabled in your browser if you wish to log into this site"."
-		</div>
-    	<span style='display:none' id='loginmenuchap'>";
-	}
-	else
-	{
-	  $LOGIN_TEMPLATE['page']['body'] .= "<span>";
-	}
+        <h2 class="form-signin-heading">{LAN=LOGIN_4}</h2><span>';
 
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_USERNAME'] = "<div class='form-group'>{---}</div>";
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_PASSWORD'] = "<div class='form-group'>{---}</div>";

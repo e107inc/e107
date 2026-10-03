@@ -722,6 +722,18 @@ function update_core_database($type = '')
 			}
 		}
 
+		if(!empty($pref['password_CHAP']))
+		{
+			if($just_check)
+			{
+				return update_needed("The login templates are still told to use CHAP, which is discontinued.");
+			}
+
+			e107::getConfig()->set('password_CHAP', 0)->save(false, true, false);
+			e107::getLog()->addEvent(4, __FILE__, "UPDATE", 'LAN_UPDATE',
+				"CHAP login is discontinued; password_CHAP reset to plaintext.", false, LOG_TO_ROLLING);
+		}
+
 		if(!isset($pref['admin_navbar_debug']))
 		{
 			if($just_check)

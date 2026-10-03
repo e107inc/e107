@@ -717,7 +717,7 @@ TMPO;
 		$us = e107::getUserSession();
 		$mes = e107::getMessage();
 
-		if($us->passwordAPIExists() === true && $us->getDefaultHashType() !== PASSWORD_E107_PHP && e107::pref('core','password_CHAP')==0)
+		if($us->passwordAPIExists() === true && $us->getDefaultHashType() !== PASSWORD_E107_PHP)
 		{
 			$message = LAN_PASSWORD_WARNING;
 			$srch = array('[',']');
