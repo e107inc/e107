@@ -440,36 +440,42 @@ class SchemaBuilder
 	}
 
 	/**
-	 * Introspect a table's columns (SHOW COLUMNS rows).
+	 * Introspect a table's columns, as SHOW COLUMNS rows whatever the engine
+	 * ({@see SchemaManagerInterface::getColumnRows()}).
 	 *
 	 * @param string $table
 	 * @return array[] one associative row per column; empty on error.
 	 */
 	public function getColumns($table)
 	{
-		return $this->_fetchRows('SHOW COLUMNS FROM '.$this->quoteTable($table));
+		$rows = $this->db->getSchemaManager()->getColumnRows($this->resolveTable($table));
+
+		return ($rows === false) ? array() : $rows;
 	}
 
 	/**
-	 * Introspect a table's indexes (SHOW INDEX rows).
+	 * Introspect a table's indexes, as SHOW INDEX rows whatever the engine
+	 * ({@see SchemaManagerInterface::getIndexRows()}).
 	 *
 	 * @param string $table
 	 * @return array[] one associative row per index part; empty on error.
 	 */
 	public function getIndexes($table)
 	{
-		return $this->_fetchRows('SHOW INDEX FROM '.$this->quoteTable($table));
+		$rows = $this->db->getSchemaManager()->getIndexRows($this->resolveTable($table));
+
+		return ($rows === false) ? array() : $rows;
 	}
 
 	/**
-	 * The CREATE TABLE statement that reproduces a table (SHOW CREATE TABLE).
+	 * The CREATE TABLE statement, in the engine's own dialect, that reproduces a table.
 	 *
 	 * @param string $table
 	 * @return string|null the statement, or null on error.
 	 */
 	public function getCreateTable($table)
 	{
-		return $this->_showCreateTable($this->quoteTable($table));
+		return $this->db->getSchemaManager()->getCreateStatement($this->resolveTable($table));
 	}
 
 	/**
@@ -483,51 +489,7 @@ class SchemaBuilder
 	 */
 	public function getCreateTablePhysical($table)
 	{
-		return $this->_showCreateTable($this->quotePhysicalTable($table));
-	}
-
-	/**
-	 * @param string $quoted backtick-quoted physical table name.
-	 * @return string|null the statement, or null on error.
-	 */
-	private function _showCreateTable($quoted)
-	{
-		if($this->db->execute('SHOW CREATE TABLE '.$quoted) === false)
-		{
-			return null;
-		}
-
-		$row = $this->db->fetch();
-
-		if(!is_array($row) || !isset($row['Create Table']))
-		{
-			return null;
-		}
-
-		return $row['Create Table'];
-	}
-
-	/**
-	 * Run a SHOW statement and collect every row.
-	 *
-	 * @param string $sql
-	 * @return array[]
-	 */
-	private function _fetchRows($sql)
-	{
-		$rows = array();
-
-		if($this->db->execute($sql) === false)
-		{
-			return $rows;
-		}
-
-		while($row = $this->db->fetch())
-		{
-			$rows[] = $row;
-		}
-
-		return $rows;
+		return $this->db->getSchemaManager()->getCreateStatement($this->resolvePhysicalTable($table));
 	}
 
 	/**

@@ -34,6 +34,7 @@ use RuntimeException;
 			require_once(e_HANDLER."Database/Platform/MysqlPlatform.php");
 			require_once(e_HANDLER."Database/SqlFragment.php");
 			require_once(e_HANDLER."Database/Schema/Column.php");
+			require_once(e_HANDLER."Database/Schema/MysqlSchemaManager.php");
 			require_once(e_HANDLER."Database/Schema/Index.php");
 			require_once(e_HANDLER."Database/Schema/SchemaBuilder.php");
 		}
@@ -750,6 +751,11 @@ use RuntimeException;
 		public function getPlatform()
 		{
 			return new MysqlPlatform();
+		}
+
+		public function getSchemaManager()
+		{
+			return new MysqlSchemaManager($this);
 		}
 
 		public function execute($sql, $params = array())

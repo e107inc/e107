@@ -12,6 +12,7 @@ namespace e107\Database\Driver;
 
 use e107\Database\ConnectionInterface;
 use e107\Database\Platform\PlatformInterface;
+use e107\Database\Schema\SchemaManagerInterface;
 
 /**
  * One stateless database engine, made by name with {@see DriverRegistry::create()}.
@@ -99,6 +100,22 @@ interface DriverInterface
 	 * @return PlatformInterface
 	 */
 	public function createPlatform($serverVersion = null);
+
+	/**
+	 * The schema manager for one connection to this engine.
+	 *
+	 * @param ConnectionInterface $connection the connection the manager runs its statements on
+	 * @return SchemaManagerInterface
+	 */
+	public function createSchemaManager(ConnectionInterface $connection);
+
+	/**
+	 * The session's SQL mode, for display ({@see ConnectionInterface::getMode()}).
+	 *
+	 * @param ConnectionInterface $connection
+	 * @return string the mode, or '' when the engine has no such setting
+	 */
+	public function getSessionMode(ConnectionInterface $connection);
 
 	/**
 	 * Take a named advisory lock without waiting longer than the timeout. Names are shared by every e107 site the

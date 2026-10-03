@@ -480,6 +480,14 @@ use PDOStatement;
 
 
 		/**
+		 * Lists, describes and changes tables on this connection, in its engine's terms.
+		 *
+		 * @return \e107\Database\Schema\SchemaManagerInterface
+		 */
+		public function getSchemaManager();
+
+
+		/**
 		 * Open a transaction. Called inside an open one, it sets a savepoint instead, so nested units of work roll
 		 * back on their own. Pair every call with {@see ConnectionInterface::commit()} or
 		 * {@see ConnectionInterface::rollBack()}; {@see ConnectionInterface::transactional()} does the pairing.

@@ -44,6 +44,18 @@ trait SchemaBuilderTrait
 	 */
 	protected function quoteTable($table)
 	{
+		return '`'.$this->resolveTable($table).'`';
+	}
+
+	/**
+	 * Resolve a logical table name to its physical name, with multi-language routing, fail-closed.
+	 *
+	 * @param string $table
+	 * @return string unquoted physical name
+	 * @throws InvalidArgumentException on an invalid table name.
+	 */
+	protected function resolveTable($table)
+	{
 		$physical = $this->db->resolveTableName($table);
 
 		if($physical === false)
@@ -51,7 +63,7 @@ trait SchemaBuilderTrait
 			throw new InvalidArgumentException('Invalid table name "'.$table.'" for a schema operation.');
 		}
 
-		return '`'.$physical.'`';
+		return $physical;
 	}
 
 	/**
@@ -65,6 +77,18 @@ trait SchemaBuilderTrait
 	 */
 	protected function quotePhysicalTable($table)
 	{
+		return '`'.$this->resolvePhysicalTable($table).'`';
+	}
+
+	/**
+	 * Resolve a logical table name to its physical name, prefix only, fail-closed.
+	 *
+	 * @param string $table
+	 * @return string unquoted physical name
+	 * @throws InvalidArgumentException on an invalid table name.
+	 */
+	protected function resolvePhysicalTable($table)
+	{
 		$physical = $this->db->resolvePhysicalTableName($table);
 
 		if($physical === false)
@@ -72,7 +96,7 @@ trait SchemaBuilderTrait
 			throw new InvalidArgumentException('Invalid table name "'.$table.'" for a schema operation.');
 		}
 
-		return '`'.$physical.'`';
+		return $physical;
 	}
 
 	/**

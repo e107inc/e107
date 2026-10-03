@@ -118,7 +118,6 @@ class e_db_mysql implements e_db
 	public      $mySQLinfo;
 	public      $mySQLtablelist = array();
 
-	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
 	protected   $mySqlServerInfo = '?';			// Server info - needed for various things
 
 	private     $stringifyFetch = false;	// Prepared-statement results carry native types; stringify on fetch for PDO parity.
@@ -1125,51 +1124,6 @@ class e_db_mysql implements e_db
 
 
 
-	/**
-	 *	Return a list of the field names in a table.
-	 *
-	 *	@param string $table - table name (no prefix)
-	 *	@param string $prefix - table prefix to apply. If empty, MPREFIX is used.
-	 *	@param boolean $retinfo = FALSE - just returns array of field names. TRUE - returns all field info
-	 *	@return array|boolean - FALSE on error, field list array on success
-	 */
-	public function fields($table, $prefix = '', $retinfo = false)
-	{
-		if(($table = $this->_safeIdentifier($table)) === false
-			|| ($prefix != '' && ($prefix = $this->_safeIdentifier($prefix, true)) === false))
-		{
-			return $this->_refuseIdentifier(__FUNCTION__);
-		}
-
-		$this->_getMySQLaccess();
-
-		if ($prefix == '')
-		{
-			 $prefix = $this->mySQLPrefix;
-		}
-
-		if (false === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table)))
-		{
-			return false;		// Error return
-		}
-		$ret = array();
-
-        if ($this->rowCount() > 0)
-		{
-			while ($row = $this->fetch())
-			{
-				if ($retinfo)
-				{
-					$ret[$row['Field']] = $row['Field'];
-				}
-				else
-				{
-					$ret[] = $row['Field'];
-				}
-			}
-		}
-		return $ret;
-	}
 
 	/**
 	 * @return int
@@ -1446,162 +1400,10 @@ class e_db_mysql implements e_db
 		$this->mySQLcharset = $charset;
 	}
 
-	/**
-	 *	Get the _FIELD_DEFS and _NOTNULL definitions for a table
-	 *<code>
-	 *	The information is sought in a specific order:
-	 *		a) In our internal cache
-	 *		b) in the directory e_CACHE_DBDIR - file name $tableName.php
-	 *		c) An override file for a core or plugin-related table. If found, the information is copied to the cache directory
-	 *			For core overrides, e_ADMIN.'core_sql/db_field_defs.php' is searched
-	 *			For plugins, $pref['e_sql_list'] is used as a search list - any file 'db_field_defs.php' in the plugin directory is earched
-	 *		d) The table structure is read from the DB, and a definition created:
-	 *			AUTOINCREMENT fields - ignored (or integer)
-	 *			integer type fields - 'int' processing
-	 *			character/string type fields - todb processing
-	 *			fields which are 'NOT NULL' but have no default are added to the '_NOTNULL' list
-	 *</code>
-	 *	@param string $tableName - table name, without any prefixes (language or general)
-	 *	@return boolean|array - FALSE if not found/not to be used. Array of field names and processing types and null overrides if found
-	 */
-	public function getFieldDefs($tableName)
-	{
-		if (!isset($this->dbFieldDefs[$tableName]))
-		{
-			$cached = null;
-			if (is_readable(e_CACHE_DB.$tableName.'.php'))
-			{
-				$temp = @file_get_contents(e_CACHE_DB.$tableName.'.php');
-				$tableIsUntyped = ($temp === '');
-				if ($tableIsUntyped)
-				{
-					$cached = array();
-				}
-				elseif ($temp !== FALSE)
-				{
-					$typeDefs = e107::unserialize($temp);
-					if (!empty($typeDefs))
-					{
-						$cached = $typeDefs;
-					}
-				}
-				unset($temp);
-			}
-
-			if ($cached !== null)
-			{
-				$this->dbFieldDefs[$tableName] = $cached;
-			}
-			else
-			{		// Need to try and find a table definition
-				$searchArray = array(e_CORE.'sql/db_field_defs.php');
-				// e107::getPref() shouldn't be used inside db handler! See db_IsLang() comments
-				$sqlFiles = (array) $this->getConfig()->get('e_sql_list', array()); // kill any PHP notices
-				foreach ($sqlFiles as $p => $f)
-				{
-					$searchArray[] = e_PLUGIN.$p.'/db_field_defs.php';
-				}
-				unset($sqlFiles);
-				$found = FALSE;
-				foreach ($searchArray as $defFile)
-				{
-					//echo "Check: {$defFile}, {$tableName}<br />";
-					if ($this->loadTableDef($defFile, $tableName))
-					{
-						$found = TRUE;
-						break;
-					}
-				}
-				if (!$found)
-				{	// Need to read table structure from DB and create the file
-					$this->makeTableDef($tableName);
-				}
-			}
-		}
-		return $this->dbFieldDefs[$tableName];
-	}
 
 
-	/**
-	 *	Search the specified file for a field type definition of the specified table.
-	 *	If found, generate and save a cache file in the e_CACHE_DB directory,
-	 *	Always also update $this->dbFieldDefs[$tableName] - FALSE if not found, data if found
-	 *	@param	string $defFile - file name, including path
-	 *	@param	string $tableName - name of table sought
-	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
-	 */
-	protected function loadTableDef($defFile, $tableName)
-	{
-		$result =false;
-
-		if (is_readable($defFile))
-		{
-			// Read the file using the array handler routines
-			// File structure is a nested array - first level is table name, second level is either FALSE (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
-			$temp = file_get_contents($defFile);
-			// Strip any comments  (only /*...*/ supported)
-			$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
-			//echo "Check: {$defFile}, {$tableName}<br />";
-			if ($temp !== false)
-			{
-			//	$array = e107::getArrayStorage();
-				$typeDefs = e107::unserialize($temp);
-
-				unset($temp);
-				if (isset($typeDefs[$tableName]))
-				{
-					$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
-
-					$fileData = e107::serialize($typeDefs[$tableName], false);
-
-					if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $fileData))
-					{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
-						$result = false;
-					}
-
-					$result = true;
-				}
-			}
-		}
-
-		if (!$result)
-		{
-			$this->dbFieldDefs[$tableName] = false;
-		}
-		return $result;
-	}
 
 
-	/**
-	 *	Creates a field type definition from the structure of the table in the DB
-	 *	Generate and save a cache file in the e_CACHE_DB directory,
-	 *	Also update $this->dbFieldDefs[$tableName] - FALSE if error, data if found
-	 *	@param	string $tableName - name of table sought
-	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
-	 */
-	protected function makeTableDef($tableName)
-	{
-		require_once(e_HANDLER.'db_table_admin_class.php');
-		$dbAdm = new db_table_admin();
-
-		$baseStruct = $dbAdm->get_current_table($tableName);
-		$baseStruct = isset($baseStruct[0][2]) ? $baseStruct[0][2] : null;
-		$fieldDefs = $dbAdm->parse_field_defs($baseStruct);					// Required definitions
-		if (!$fieldDefs) return false;
-
-		$outDefs = $dbAdm->make_field_types($fieldDefs);
-
-		$this->dbFieldDefs[$tableName] = $outDefs;
-		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
-
-		if (FALSE === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $toSave))
-		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
-			$mes = e107::getMessage();
-			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.
-			// echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
-		}
-
-	}
 
 	/**
 	 * In case e_db_mysql::$mySQLaccess is not set, set it.

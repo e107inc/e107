@@ -12,6 +12,7 @@ namespace e107\Database\Driver;
 
 use e107\Database\ConnectionInterface;
 use e107\Database\Platform\MysqlPlatform;
+use e107\Database\Schema\MysqlSchemaManager;
 use Exception;
 use Ifsnop\Mysqldump\Mysqldump;
 use PDO;
@@ -78,6 +79,34 @@ class MysqlDriver extends AbstractPdoDriver
 		}
 
 		return new MysqlPlatform();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function createSchemaManager(ConnectionInterface $connection)
+	{
+		if(!class_exists(MysqlSchemaManager::class, false))
+		{
+			require_once(dirname(__DIR__).'/Schema/MysqlSchemaManager.php');
+		}
+
+		return new MysqlSchemaManager($connection);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getSessionMode(ConnectionInterface $connection)
+	{
+		if($connection->execute('SELECT @@sql_mode') === false)
+		{
+			return '';
+		}
+
+		$row = $connection->fetch();
+
+		return isset($row['@@sql_mode']) ? (string) $row['@@sql_mode'] : '';
 	}
 
 	/**

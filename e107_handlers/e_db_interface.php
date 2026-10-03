@@ -68,6 +68,10 @@ require_once(__DIR__.'/Database/Driver/PdoDriverInterface.php');
 require_once(__DIR__.'/Database/Driver/DriverRegistry.php');
 require_once(__DIR__.'/Database/Driver/MysqlDriver.php');
 
+require_once(__DIR__.'/Database/Schema/Introspect/SchemaReaderInterface.php');
+require_once(__DIR__.'/Database/Schema/SchemaManagerInterface.php');
+require_once(__DIR__.'/Database/Schema/FieldTypeMap.php');
+
 require_once(__DIR__.'/Database/Schema/SchemaBuilderTrait.php');
 class_alias(\e107\Database\Schema\SchemaBuilderTrait::class, 'e_db_schema_common');
 

@@ -17,8 +17,10 @@ use e107\Database\Driver\DriverRegistry;
 use e107\Database\Exception\QueryException;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\Schema\Column;
+use e107\Database\Schema\FieldTypeMap;
 use e107\Database\Schema\Index;
 use e107\Database\Schema\SchemaBuilder;
+use e107\Database\Schema\SchemaManagerInterface;
 use e107_db_debug;
 use PDO;
 
@@ -56,6 +58,12 @@ trait ConnectionTrait
 
 	/** @var bool whether the engine ended the open transaction on its own, as MySQL does at DDL */
 	private     $transactionEnded = false;
+
+	/** @var SchemaManagerInterface|null lazily created by the driver, reset when the driver changes */
+	private     $schemaManager = null;
+
+	/** @var array table => field-type definition: cached _FIELD_TYPES/_NOTNULL maps, or false where none is to be used */
+	protected   $dbFieldDefs = array();
 
 	private     $pdoBind        = false;
 
@@ -103,14 +111,11 @@ trait ConnectionTrait
 	abstract public function fetch($type = null);
 	abstract public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
 	abstract public function lastInsertId();
-	abstract public function getFieldDefs($tableName);
 	abstract public function db_Query($query, $rli = null, $qry_from = '', $debug = false, $log_type = '', $log_remark = '');
 	abstract public function rowCount($result = null);
 	abstract public function isTable($table, $language = '');
 	abstract public function dbError($from);
-	abstract public function fields($table, $prefix = '', $retinfo = false);
 	abstract public function execute($sql, $params = array());
-	abstract public function quoteStringLiteral($value);
 
 	abstract protected function _escape($data);
 	abstract protected function _getMySQLaccess();
@@ -155,9 +160,7 @@ trait ConnectionTrait
 	 */
 	function getMode()
 	{
-		 $this->gen('SELECT @@sql_mode');
-		 $row = $this->fetch();
-		 return $row['@@sql_mode'];
+		return $this->getDriver()->getSessionMode($this);
 	}
 
 	/**
@@ -382,7 +385,7 @@ trait ConnectionTrait
 	 * written and, worse, would keep a stand-in for a column since made nullable
 	 * and quietly store '' where the caller meant NULL.
 	 *
-	 * The read costs one SHOW COLUMNS per table per request, and only on a typed
+	 * The read costs one column listing per table per request, and only on a typed
 	 * write that actually binds a null, which is the rare one. It runs on its own
 	 * connection because the caller may be part way through a result set of its
 	 * own; {@see user_extended::user_extended_get_types()} takes the same
@@ -404,16 +407,16 @@ trait ConnectionTrait
 			return array();
 		}
 
-		$sql = e107::getDb('_schema');
+		$rows = e107::getDb('_schema')->getSchemaManager()->getColumnRows($table);
 
-		if($sql->gen('SHOW COLUMNS FROM `'.str_replace('`', '``', $table).'`') === false)
+		if($rows === false)
 		{
 			return array();
 		}
 
 		$map = array();
 
-		while($row = $sql->fetch())
+		foreach($rows as $row)
 		{
 			if($row['Null'] === 'YES' || stripos((string) $row['Extra'], 'auto_increment') !== false)
 			{
@@ -513,6 +516,7 @@ trait ConnectionTrait
 		$this->_switchDriver($driver);
 		$this->driver = $driver;
 		$this->platform = null;
+		$this->schemaManager = null;
 
 		return $this;
 	}
@@ -537,6 +541,21 @@ trait ConnectionTrait
 	public function __clone()
 	{
 		$this->mySQLresult = null;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::getSchemaManager()}.
+	 *
+	 * @return SchemaManagerInterface
+	 */
+	public function getSchemaManager()
+	{
+		if($this->schemaManager === null)
+		{
+			$this->schemaManager = $this->getDriver()->createSchemaManager($this);
+		}
+
+		return $this->schemaManager;
 	}
 
 	/**
@@ -1097,7 +1116,7 @@ trait ConnectionTrait
 			return $this->_refuse("truncate() invalid table identifier");
 		}
 
-		return $this->gen("TRUNCATE TABLE ".$this->mySQLPrefix.$table);
+		return $this->getSchemaManager()->truncateTable($this->mySQLPrefix.$table);
 	}
 
 	/**
@@ -1215,8 +1234,9 @@ trait ConnectionTrait
 			return $unique;
 		}
 
-		$result = $this->retrieve("SHOW INDEXES FROM #".$table, true);
-		foreach($result as $row)
+		$result = $this->getSchemaManager()->getIndexRows($this->mySQLPrefix.$this->hasLanguage($table));
+
+		foreach((array) $result as $row)
 		{
 			$notUnique = (int) $row['Non_unique'];
 
@@ -1232,7 +1252,7 @@ trait ConnectionTrait
 	}
 
 	/**
-	 * The names of the tables under this connection's prefix, with the prefix cut off; a database-qualified prefix is matched without its qualifier.
+	 * The names of the tables under this connection's prefix, with the prefix cut off.
 	 *
 	 * @param string $language '' for every table, or a language whose lan_<language>_* tables to list
 	 * @return array names; for a language not yet cached, array(language => names)
@@ -1250,25 +1270,224 @@ trait ConnectionTrait
 		}
 
 		$prefix = $this->mySQLPrefix;
+		$listing = $language ? $prefix.'lan_'.strtolower($language) : $prefix;
 
 		if(($dot = strrpos($prefix, '.')) !== false)
 		{
 			$prefix = (string) substr($prefix, $dot + 1);
 		}
 
-		$database = !empty($this->mySQLdefaultdb) ? " FROM `".$this->mySQLdefaultdb."`" : '';
-		$start = $language ? $prefix.'lan_'.strtolower($language) : $prefix;
 		$tables = array();
 
-		if($this->db_Query('SHOW TABLES'.$database.' LIKE '.$this->quoteStringLiteral(addcslashes($start, '\\%_').'%')))
+		foreach($this->getSchemaManager()->listTableNames($listing) ?: array() as $name)
 		{
-			while($row = $this->fetch('num'))
-			{
-				$tables[] = (string) substr($row[0], strlen($prefix));
-			}
+			$tables[] = (string) substr($name, strlen($prefix));
 		}
 
 		return $language ? array($language => $tables) : $tables;
+	}
+
+	/**
+	 *	Return a list of the field names in a table.
+	 *
+	 *	@param string $table - table name (no prefix)
+	 *	@param string $prefix - table prefix to apply. If empty, MPREFIX is used.
+	 *	@param boolean $retinfo = false - just returns array of field names. TRUE - returns all field info
+	 *	@return array|boolean - false on error, field list array on success
+	 */
+	public function fields($table, $prefix = '', $retinfo = false)
+	{
+		if(($table = $this->_safeIdentifier($table)) === false
+			|| ($prefix != '' && ($prefix = $this->_safeIdentifier($prefix, true)) === false))
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
+		$this->_getMySQLaccess();
+
+		if ($prefix == '')
+		{
+			 $prefix = $this->mySQLPrefix;
+		}
+
+		if (false === ($rows = $this->getSchemaManager()->getColumnRows($prefix.$table)))
+		{
+			return false;		// Error return
+		}
+
+		$ret = array();
+
+		foreach ($rows as $row)
+		{
+			if ($retinfo)
+			{
+				$ret[$row['Field']] = $row['Field'];
+			}
+			else
+			{
+				$ret[] = $row['Field'];
+			}
+		}
+
+		return $ret;
+	}
+
+	/**
+	 *	Get the _FIELD_DEFS and _NOTNULL definitions for a table
+	 *<code>
+	 *	The information is sought in a specific order:
+	 *		a) In our internal cache
+	 *		b) in the directory e_CACHE_DBDIR - file name $tableName.php
+	 *		c) An override file for a core or plugin-related table. If found, the information is copied to the cache directory
+	 *			For core overrides, e_ADMIN.'core_sql/db_field_defs.php' is searched
+	 *			For plugins, $pref['e_sql_list'] is used as a search list - any file 'db_field_defs.php' in the plugin directory is earched
+	 *		d) The table structure is read from the DB, and a definition created:
+	 *			AUTOINCREMENT fields - ignored (or integer)
+	 *			integer type fields - 'int' processing
+	 *			character/string type fields - todb processing
+	 *			fields which are 'NOT NULL' but have no default are added to the '_NOTNULL' list
+	 *</code>
+	 *	@param string $tableName - table name, without any prefixes (language or general)
+	 *	@return boolean|array - false if not found/not to be used. Array of field names and processing types and null overrides if found
+	 */
+	public function getFieldDefs($tableName)
+	{
+		if (!isset($this->dbFieldDefs[$tableName]))
+		{
+			$cached = null;
+			if (is_readable(e_CACHE_DB.$tableName.'.php'))
+			{
+				$temp = @file_get_contents(e_CACHE_DB.$tableName.'.php');
+				$tableIsUntyped = ($temp === '');
+				if ($tableIsUntyped)
+				{
+					$cached = array();
+				}
+				elseif ($temp !== false)
+				{
+					$typeDefs = e107::unserialize($temp);
+					if (!empty($typeDefs))
+					{
+						$cached = $typeDefs;
+					}
+				}
+				unset($temp);
+			}
+
+			if ($cached !== null)
+			{
+				$this->dbFieldDefs[$tableName] = $cached;
+			}
+			else
+			{		// Need to try and find a table definition
+				$searchArray = array(e_CORE.'sql/db_field_defs.php');
+				// e107::getPref() shouldn't be used inside db handler! See hasLanguage() comments
+				$sqlFiles = (array) $this->getConfig()->get('e_sql_list', array()); // kill any PHP notices
+				foreach ($sqlFiles as $p => $f)
+				{
+					$searchArray[] = e_PLUGIN.$p.'/db_field_defs.php';
+				}
+				unset($sqlFiles);
+				$found = false;
+				foreach ($searchArray as $defFile)
+				{
+					//echo "Check: {$defFile}, {$tableName}<br />";
+					if ($this->loadTableDef($defFile, $tableName))
+					{
+						$found = TRUE;
+						break;
+					}
+				}
+				if (!$found)
+				{	// Need to read table structure from DB and create the file
+					$this->makeTableDef($tableName);
+				}
+			}
+		}
+		return $this->dbFieldDefs[$tableName];
+	}
+
+	/**
+	 *	Search the specified file for a field type definition of the specified table.
+	 *	If found, generate and save a cache file in the e_CACHE_DB directory,
+	 *	Always also update $this->dbFieldDefs[$tableName] - false if not found, data if found
+	 *	@param	string $defFile - file name, including path
+	 *	@param	string $tableName - name of table sought
+	 *	@return boolean TRUE on success, false on not found (some errors intentionally ignored)
+	 */
+	protected function loadTableDef($defFile, $tableName)
+	{
+		$result =false;
+
+		if (is_readable($defFile))
+		{
+			// Read the file using the array handler routines
+			// File structure is a nested array - first level is table name, second level is either false (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
+			$temp = file_get_contents($defFile);
+			// Strip any comments  (only /*...*/ supported)
+			$temp = preg_replace("#\/\*.*?\*\/#ms", '', $temp);
+			//echo "Check: {$defFile}, {$tableName}<br />";
+			if ($temp !== false)
+			{
+				$typeDefs = e107::unserialize($temp);
+
+				unset($temp);
+				if (isset($typeDefs[$tableName]))
+				{
+					$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
+
+					$fileData = e107::serialize($typeDefs[$tableName], false);
+
+					if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $fileData))
+					{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
+
+					}
+
+					$result = true;
+				}
+			}
+		}
+
+		if (!$result)
+		{
+			$this->dbFieldDefs[$tableName] = false;
+		}
+		return $result;
+	}
+
+	/**
+	 *	Creates a field type definition from the structure of the table in the DB
+	 *	Generate and save a cache file in the e_CACHE_DB directory,
+	 *	Also update $this->dbFieldDefs[$tableName] - false if error, data if found
+	 *
+	 *	The table is read on a connection of its own, so the caller's current result set survives the read.
+	 *
+	 *	@param	string $tableName - name of table sought
+	 *	@return array|boolean array on success, false on not found (some errors intentionally ignored)
+	 */
+	protected function makeTableDef($tableName)
+	{
+		$physical = $this->resolvePhysicalTableName($tableName);
+		$schema = ($physical === false) ? null : e107::getDb('_schema')->getSchemaManager()->getReader()->read($physical);
+
+		if ($schema === null)
+		{
+			$this->dbFieldDefs[$tableName] = false;
+			return false;
+		}
+
+		$outDefs = FieldTypeMap::fromTableSchema($schema);
+
+		$this->dbFieldDefs[$tableName] = $outDefs;
+		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
+
+		if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $toSave))
+		{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
+			$mes = e107::getMessage();
+			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.
+		}
+
+		return empty($outDefs) ? false : $outDefs;
 	}
 
 	/**
@@ -1403,25 +1622,16 @@ trait ConnectionTrait
 			$this->gen("DROP TABLE IF EXISTS {$new}");
 		}
 
-		//Get $old table structure
-		$this->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
-
-		$qry = "SHOW CREATE TABLE {$old}";
-		if ($this->gen($qry))
-		{
-			$row = $this->fetch('num');
-			$qry = $row[1];
-			//        $qry = str_replace($old, $new, $qry);
-			$qry = preg_replace("#CREATE\sTABLE\s`?".$old."`?\s#", "CREATE TABLE {$new} ", $qry, 1); // More selective search
-		}
-		else
-		{
-			return false;
-		}
+		$result = true;
 
 		if(!$this->isTable($newtable))
 		{
-			$result = $this->db_Query($qry);
+			$result = $this->getSchemaManager()->createTableLike($old, $new);
+		}
+
+		if($result === false)
+		{
+			return false;
 		}
 
 		if ($data) //We need to copy the data too
@@ -1746,11 +1956,12 @@ trait ConnectionTrait
 
 		$this->_getMySQLaccess();
 
-        $result = $this->gen("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table);
-        if ($result && ($this->rowCount() > 0))
+		$rows = $this->getSchemaManager()->getColumnRows($this->mySQLPrefix.$table);
+
+		if (!empty($rows))
 		{
 			$c=0;
-			while ($row = $this->fetch())
+			foreach ($rows as $row)
 			{
 				if(is_numeric($fieldid))
 				{
@@ -1805,11 +2016,12 @@ trait ConnectionTrait
 		$check_field = count($fields) > 0;
 
 		$info = array();
-		$result = $this->gen("SHOW INDEX FROM ".$this->mySQLPrefix.$table);
-		if ($result && ($this->rowCount() > 0))
+		$rows = $this->getSchemaManager()->getIndexRows($this->mySQLPrefix.$table);
+
+		if (!empty($rows))
 		{
 			$c=0;
-			while ($row = $this->fetch())
+			foreach ($rows as $row)
 			{
 				// Check for match of key name - and allow that key might not be used
 				if($keyname == $row['Key_name'])
