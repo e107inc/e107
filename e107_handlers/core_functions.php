@@ -15,8 +15,8 @@
 */
 
 // Loaded here, ahead of everything else, so that e_random is available to any
-// consumer that runs before the composer autoloader: the session token, the
-// CHAP challenge and the installer all need it early.
+// consumer that runs before the composer autoloader: the session token and the
+// installer both need it early.
 require_once(__DIR__ . '/random_handler.php');
 
 //

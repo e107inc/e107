@@ -184,12 +184,7 @@ else
     	require(e_PLUGIN."login_menu/login_menu_template.php");
 	}
 
-	$text = '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '');
-	if (vartrue($pref['password_CHAP'],0))
-	{
-	  $text .= '" onsubmit="hashLoginPassword(this)';
-	}
-	$text .= '">'.$tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
+	$text = '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">'.$tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
 	$text .= '</form>';
 
 	if (file_exists(THEME.'images/login_menu.png')) {
