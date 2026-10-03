@@ -1256,6 +1256,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	public function testFoundRows()
 	{
+		$this->requireDatabaseDriver('mysql', 'SELECT SQL_CALC_FOUND_ROWS is MySQL syntax; QueryBuilder::calcFoundRows() is the portable form');
 		$this->db->debugMode(false);
 		$this->db->gen('SELECT SQL_CALC_FOUND_ROWS * FROM `#user` WHERE user_id = 1');
 		$row = $this->db->fetch();
@@ -1272,12 +1273,27 @@ abstract class e_db_abstractTest extends \Test\Unit
 	 */
 	public function testFoundRowsOnAPreparedStatement()
 	{
+		$this->requireDatabaseDriver('mysql', 'SELECT SQL_CALC_FOUND_ROWS is MySQL syntax; QueryBuilder::calcFoundRows() is the portable form');
 		$this->db->debugMode(false);
 		$this->db->execute('SELECT SQL_CALC_FOUND_ROWS * FROM `#user` WHERE user_id = :id', array('id' => 1));
 		$row = $this->db->fetch();
 
 		$this->assertArrayHasKey('user_name', $row);
 		$this->assertEquals(1, $this->db->foundRows());
+	}
+
+	/**
+	 * The builder counts the rows a paged query matches on whatever engine the site runs.
+	 */
+	public function testTheBuilderCountsTheRowsAPagedQueryMatches()
+	{
+		$total = (int) $this->db->createQueryBuilder()->selectCount()->from('user')->fetchOne();
+
+		$qb = $this->db->createQueryBuilder();
+		$page = $qb->calcFoundRows()->select('user_id')->from('user')->orderBy('user_id', 'ASC')->setMaxResults(1)->fetchAll();
+
+		$this->assertCount(1, $page);
+		$this->assertSame($total, $qb->foundRows());
 	}
 
 	public function testDb_Rows()

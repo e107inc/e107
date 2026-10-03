@@ -33,7 +33,7 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 		require_once(__DIR__ . '/fixtures/AdminUiHistoryProbeFixture.php');
 
 		$sql = e107::getDb();
-		$sql->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->table . '`');
+		$this->dropTemporaryTable($this->table);
 		$sql->gen('CREATE TEMPORARY TABLE `' . $this->table
 			. '` (probe_id INT NOT NULL, probe_fields VARCHAR(255) NULL, probe_menu VARCHAR(255) NULL)');
 		$sql->gen('INSERT INTO `' . $this->table
@@ -43,8 +43,8 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 	protected function _after()
 	{
 		$sql = e107::getDb();
-		$sql->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->table . '`');
-		$sql->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->archive . '`');
+		$this->dropTemporaryTable($this->table);
+		$this->dropTemporaryTable($this->archive);
 
 		$this->forgetArchiveFieldDefinition();
 	}

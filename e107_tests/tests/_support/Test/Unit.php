@@ -83,6 +83,21 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Drops a temporary table if there is one, and never the permanent table of the same name it may be shadowing:
+	 * DROP TEMPORARY TABLE on MySQL, the temp schema on engines that keep temporary tables there.
+	 *
+	 * @param string $table physical table name, prefix included
+	 * @return void
+	 */
+	protected function dropTemporaryTable($table)
+	{
+		$db = \e107::getDb();
+		$quoted = $db->quoteIdentifier($table);
+
+		$db->execute(($db->getDriver()->getName() === 'mysql') ? 'DROP TEMPORARY TABLE IF EXISTS '.$quoted : 'DROP TABLE IF EXISTS temp.'.$quoted);
+	}
+
+	/**
 	 * Copies a fixture tree, e.g. a theme out of tests/_data into e_THEME, journaled so the run takes it back out.
 	 *
 	 * @param string $src

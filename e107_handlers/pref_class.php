@@ -908,7 +908,7 @@ class e_pref extends e_front_model
 	 */
 	protected function encodePref(array $data)
 	{
-		return $this->serial_bc ? serialize($data) : e107::serialize($data, false);
+		return (string) ($this->serial_bc ? serialize($data) : e107::serialize($data, false));
 	}
 
 	/**

@@ -142,6 +142,24 @@ class SqliteDriverTest extends \Test\Unit
 		$this->assertSame('2', $this->db->createQueryBuilder()->select('item_hits')->from('item')->where('item_name', 'u')->fetchOne());
 	}
 
+	public function testABackslashInALikePatternEscapesAWildcardAsOnMysql()
+	{
+		foreach(array('a_b', 'axb', '100%', '1000') as $name)
+		{
+			$this->db->createQueryBuilder()->insert('item')->values(array('item_name' => $name, 'item_body' => ''))->execute();
+		}
+
+		$names = function($pattern)
+		{
+			return $this->db->createQueryBuilder()->select('item_name')->from('item')->whereLike('item_name', $pattern)->orderBy('item_name', 'ASC')->fetchColumn();
+		};
+
+		$this->assertSame(array('a_b'), $names('a\\_b'));
+		$this->assertSame(array('a_b', 'axb'), $names('a_b'));
+		$this->assertSame(array('100%'), $names('100\\%'));
+		$this->assertSame(array('1000'), $this->db->createQueryBuilder()->select('item_name')->from('item')->whereNotLike('item_name', '%\\%')->whereLike('item_name', '1%')->fetchColumn());
+	}
+
 	public function testAnUpsertCanUpdateFromTheStoredValue()
 	{
 		$bump = function()

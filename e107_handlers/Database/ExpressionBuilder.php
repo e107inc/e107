@@ -195,7 +195,8 @@ class ExpressionBuilder
 
 	/**
 	 * `column` LIKE :pattern, with $pattern bound verbatim: the caller
-	 * controls the % and _ wildcards. For matching plain substrings, use
+	 * controls the % and _ wildcards, and a backslash escapes the character
+	 * after it on every engine. For matching plain substrings, use
 	 * {@see ExpressionBuilder::contains()} instead.
 	 *
 	 * <code>
@@ -209,7 +210,7 @@ class ExpressionBuilder
 	 */
 	public function like($column, $pattern)
 	{
-		return $this->_comparison($column, 'LIKE', $pattern);
+		return $this->_escapedLike($column, $pattern);
 	}
 
 	/**
@@ -465,7 +466,7 @@ class ExpressionBuilder
 	 */
 	public function notLike($column, $pattern)
 	{
-		return $this->_comparison($column, 'NOT LIKE', $pattern);
+		return $this->_escapedLike($column, $pattern, 'NOT LIKE');
 	}
 
 	/**
@@ -671,11 +672,12 @@ class ExpressionBuilder
 	 *
 	 * @param string $column
 	 * @param string $pattern
+	 * @param string $operator 'LIKE' or 'NOT LIKE'
 	 * @return SqlFragment
 	 */
-	private function _escapedLike($column, $pattern)
+	private function _escapedLike($column, $pattern, $operator = 'LIKE')
 	{
-		return SqlFragment::fragment($this->qb->quoteColumn($column).' LIKE '.$this->qb->createNamedParameter($pattern).$this->qb->getPlatform()->getLikeEscapeClause());
+		return SqlFragment::fragment($this->qb->quoteColumn($column).' '.$operator.' '.$this->qb->createNamedParameter($pattern).$this->qb->getPlatform()->getLikeEscapeClause());
 	}
 
 	/**

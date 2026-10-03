@@ -33,11 +33,7 @@ class forumSubForumGuardTest extends \Test\Unit
 		// after borrowing its routes, which drops them. Whether they are still
 		// there when this runs is down to the shuffle, so put them back and
 		// give them up again the same way.
-		//
-		// Asked of the server rather than through isTable(), which answers from
-		// a list the connection cached the first time anything asked, long
-		// before the drop.
-		if(!e107::getDb()->gen("SHOW TABLES LIKE '".MPREFIX."forum'"))
+		if(!e107::getDb()->isTable('forum'))
 		{
 			e107::getPlugin()->install('forum');
 			$this->forumInstalled = true;
@@ -73,8 +69,8 @@ class forumSubForumGuardTest extends \Test\Unit
 
 		foreach(array('forum', 'forum_thread', 'forum_post', 'forum_track') as $table)
 		{
-			self::assertNotEmpty(
-				$sql->gen("SHOW TABLES LIKE '".MPREFIX.$table."'"),
+			self::assertTrue(
+				$sql->isTable($table),
 				$table." is declared in forum_sql.php, so installing the plugin must create it"
 			);
 		}
