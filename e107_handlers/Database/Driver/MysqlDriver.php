@@ -10,6 +10,7 @@
 
 namespace e107\Database\Driver;
 
+use e107\Database\ConnectionInterface;
 use e107\Database\Platform\MysqlPlatform;
 use Exception;
 use Ifsnop\Mysqldump\Mysqldump;
@@ -138,6 +139,22 @@ class MysqlDriver extends AbstractPdoDriver
 	public function getFoundRowsStatement()
 	{
 		return 'SELECT FOUND_ROWS()';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getBeginTransactionStatements()
+	{
+		return array('START TRANSACTION');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function isTransactionOpen(ConnectionInterface $connection)
+	{
+		return $connection->execute('SAVEPOINT e107_probe') !== false && $connection->execute('RELEASE SAVEPOINT e107_probe') !== false;
 	}
 
 	/**

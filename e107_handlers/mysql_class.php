@@ -200,6 +200,8 @@ class e_db_mysql implements e_db
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
 
+		$this->_dropTransaction();
+
 		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, null, (int) $this->mySQLport))
 		{
 			$this->mySQLlastErrNum = mysqli_connect_errno();
@@ -874,6 +876,7 @@ class e_db_mysql implements e_db
 	{
 		$this->_getMySQLaccess();
 		e107::getSingleton('e107_traffic')->BumpWho('db Close', 1);
+		$this->_dropTransaction();
 		@mysqli_close($this->mySQLaccess);
 	}
 

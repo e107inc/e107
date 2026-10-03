@@ -1912,6 +1912,385 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertEquals('French', $result);
 
 	}
+
+	/**
+	 * A table whose engine honours transactions, created for the transaction tests and dropped after each.
+	 *
+	 * @return string logical table name
+	 */
+	protected function transactionTable()
+	{
+		$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		$this->db->execute('CREATE TABLE `#e_db_txn_test` (id INT NOT NULL PRIMARY KEY, v VARCHAR(10) NOT NULL DEFAULT \'\') ENGINE=InnoDB');
+
+		return 'e_db_txn_test';
+	}
+
+	/**
+	 * @param string $table
+	 * @return int[] the ids in the table, ascending
+	 */
+	protected function transactionIds($table)
+	{
+		return array_map('intval', $this->db->createQueryBuilder()->select('id')->from($table)->orderBy('id')->fetchColumn());
+	}
+
+	public function testATransactionKeepsWhatItCommitsAndDropsWhatItRollsBack()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertFalse($this->db->inTransaction());
+			$this->assertTrue($this->db->beginTransaction());
+			$this->assertTrue($this->db->inTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->commit());
+			$this->assertFalse($this->db->inTransaction());
+
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 2))->execute();
+			$this->assertTrue($this->db->rollBack());
+
+			$this->assertSame(array(1), $this->transactionIds($table));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testANestedTransactionRollsBackToItsOwnSavepoint()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->db->beginTransaction();
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+
+			$this->assertTrue($this->db->beginTransaction(), 'a nested begin sets a savepoint');
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 2))->execute();
+			$this->assertTrue($this->db->rollBack());
+			$this->assertTrue($this->db->inTransaction(), 'rolling the savepoint back leaves the outer transaction open');
+
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 3))->execute();
+			$this->assertTrue($this->db->commit());
+
+			$this->assertSame(array(1, 3), $this->transactionIds($table));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testTransactionalCommitsOnReturnAndRollsBackOnThrow()
+	{
+		$table = $this->transactionTable();
+		$db = $this->db;
+
+		try
+		{
+			$result = $db->transactional(function($sql) use ($table)
+			{
+				$sql->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+				return 'done';
+			});
+			$this->assertSame('done', $result);
+
+			try
+			{
+				$db->transactional(function($sql) use ($table)
+				{
+					$sql->createQueryBuilder()->insert($table)->values(array('id' => 2))->execute();
+					throw new RuntimeException('abandon');
+				});
+				$this->fail('The callback\'s exception was swallowed.');
+			}
+			catch(RuntimeException $e)
+			{
+				$this->assertSame('abandon', $e->getMessage());
+			}
+
+			$this->assertFalse($db->inTransaction());
+			$this->assertSame(array(1), $this->transactionIds($table));
+		}
+		finally
+		{
+			$db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testARollbackKeepsTheErrorThatLedToIt()
+	{
+		$this->db->beginTransaction();
+		$this->assertFalse($this->db->execute('SELECT * FROM `#e107_tests_no_such_table`'));
+		$this->db->beginTransaction();
+		$this->assertFalse($this->db->execute('SELECT * FROM `#e107_tests_no_such_table_either`'));
+		$errorNumber = $this->db->getLastErrorNumber();
+		$this->assertNotSame(0, $errorNumber);
+
+		$this->assertTrue($this->db->rollBack());
+		$this->assertSame($errorNumber, $this->db->getLastErrorNumber(), 'a savepoint rolled back keeps the error');
+		$this->assertStringContainsString('e107_tests_no_such_table_either', $this->db->getLastErrorText());
+
+		$this->assertFalse($this->db->execute('SELECT * FROM `#e107_tests_no_such_table`'));
+		$this->assertTrue($this->db->rollBack());
+		$this->assertSame($errorNumber, $this->db->getLastErrorNumber(), 'so does a whole transaction');
+		$this->assertStringContainsString('e107_tests_no_such_table', $this->db->getLastErrorText());
+	}
+
+	public function testCommittingOrRollingBackNothingIsRefused()
+	{
+		$this->assertFalse($this->db->commit());
+		$this->assertSame(-1, $this->db->getLastErrorNumber());
+		$this->assertFalse($this->db->rollBack());
+		$this->assertSame(-1, $this->db->getLastErrorNumber());
+	}
+
+	public function testEndingATransactionASchemaChangeCommittedSucceeds()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->assertNotFalse($this->db->execute('ALTER TABLE `#'.$table.'` ADD c2 INT'));
+			$this->assertFalse($this->db->execute('SELECT nope FROM `#'.$table.'`'));
+			$errorNumber = $this->db->getLastErrorNumber();
+			$errorText = $this->db->getLastErrorText();
+
+			$this->assertTrue($this->db->rollBack());
+			$this->assertSame($errorNumber, $this->db->getLastErrorNumber(), 'the rollback keeps the error that led to it');
+			$this->assertSame($errorText, $this->db->getLastErrorText());
+
+			$this->assertTrue($this->db->beginTransaction());
+			$this->assertNotFalse($this->db->execute('ALTER TABLE `#'.$table.'` ADD c3 INT'));
+			$this->assertTrue($this->db->commit());
+			$this->assertFalse($this->db->inTransaction());
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testATransactionNestedAroundASchemaChangeEnds()
+	{
+		$table = $this->transactionTable();
+		$db = $this->db;
+		$open = null;
+
+		try
+		{
+			$db->transactional(function($outer) use ($table, &$open)
+			{
+				$outer->transactional(function($inner) use ($table, &$open)
+				{
+					$inner->execute('ALTER TABLE `#'.$table.'` ADD c2 INT');
+					$open = $inner->inTransaction();
+				});
+			});
+
+			$this->assertFalse($open, 'inTransaction() says the engine ended the transaction at the schema change');
+			$this->assertFalse($db->inTransaction());
+			$this->assertNotFalse($db->execute('SELECT c2 FROM `#'.$table.'`'));
+
+			$this->assertTrue($db->beginTransaction());
+			$this->assertTrue($db->beginTransaction());
+			$this->assertNotFalse($db->execute('ALTER TABLE `#'.$table.'` ADD c3 INT'));
+			$this->assertFalse($db->execute('SELECT nope FROM `#'.$table.'`'));
+			$errorNumber = $db->getLastErrorNumber();
+
+			$this->assertTrue($db->rollBack());
+			$this->assertSame($errorNumber, $db->getLastErrorNumber(), 'the nested rollback keeps the error that led to it');
+			$this->assertTrue($db->rollBack());
+			$this->assertFalse($db->inTransaction());
+		}
+		finally
+		{
+			$db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testATransactionDoesNotOutliveAClosedConnection()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->close();
+			$this->assertFalse($this->db->inTransaction());
+
+			$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+			$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->rollBack());
+
+			$this->assertSame(array(), $this->transactionIds($table), 'the new session opened a transaction, not a savepoint');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testATransactionDoesNotOutliveAReconnection()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']));
+			$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+
+			$this->assertFalse($this->db->inTransaction());
+			$this->assertFalse($this->db->commit(), 'the work went with the session it was done in');
+			$this->assertSame(array(), $this->transactionIds($table));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testACommitAfterTheDatabaseIsSelectedAgainReportsWhatItDid()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+
+			$committed = $this->db->commit();
+			$this->assertSame($committed ? array(1) : array(), $this->transactionIds($table), 'commit() said '.var_export($committed, true));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testABeginInsideATransactionTheEngineEndedOpensOneOrIsRefused()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->assertNotFalse($this->db->execute('ALTER TABLE `#'.$table.'` ADD c2 INT'));
+
+			if(!$this->db->beginTransaction())
+			{
+				$this->assertSame(-1, $this->db->getLastErrorNumber());
+				$this->assertTrue($this->db->rollBack());
+
+				return;
+			}
+
+			$this->assertTrue($this->db->inTransaction(), 'a begin that succeeded left a transaction open');
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->rollBack());
+			$this->assertSame(array(), $this->transactionIds($table), 'and the rollBack() paired with it dropped what was done in it');
+			$this->db->rollBack();
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testABeginInsideATransactionEndedBehindTheConnectionIsRefused()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertNotFalse($this->db->execute('ROLLBACK'));
+
+			$this->assertFalse($this->db->inTransaction());
+			$this->assertFalse($this->db->beginTransaction(), 'a savepoint set now would open a transaction of its own');
+			$this->assertSame(-1, $this->db->getLastErrorNumber());
+			$this->db->rollBack();
+
+			$this->assertFalse($this->db->inTransaction());
+			$this->assertSame(array(), $this->transactionIds($table));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testAskingWhetherATransactionIsOpenLeavesTheResultInHand()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			foreach(array(1, 2, 3) as $id)
+			{
+				$this->db->createQueryBuilder()->insert($table)->values(array('id' => $id))->execute();
+			}
+
+			$this->db->gen('SELECT SQL_CALC_FOUND_ROWS * FROM `#'.$table.'` LIMIT 1');
+			$found = $this->db->foundRows();
+
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->execute('SELECT id FROM `#'.$table.'` ORDER BY id');
+			$ids = array();
+
+			while($row = $this->db->fetch())
+			{
+				$this->assertTrue($this->db->inTransaction());
+				$ids[] = (int) $row['id'];
+			}
+
+			$this->assertSame(array(1, 2, 3), $ids);
+
+			$this->db->gen('SELECT SQL_CALC_FOUND_ROWS * FROM `#'.$table.'` LIMIT 1');
+			$this->assertTrue($this->db->inTransaction());
+			$this->assertSame($found, $this->db->foundRows());
+			$this->assertTrue($this->db->commit());
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testAnAdvisoryLockShutsOutAnotherConnectionUntilReleased()
+	{
+		$name = 'e107_test_lock_'.md5(__METHOD__.uniqid('', true));
+		$other = $this->makeDb();
+		$other->__construct();
+		$other->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		$other->database($this->dbConfig['mySQLdefaultdb'], MPREFIX);
+
+		try
+		{
+			$this->assertTrue($this->db->acquireLock($name));
+			$this->assertFalse($other->acquireLock($name), 'a held lock is refused to another connection');
+			$this->assertTrue($this->db->releaseLock($name));
+			$this->assertFalse($this->db->releaseLock($name), 'a lock no longer held is not released twice');
+			$this->assertTrue($other->acquireLock($name), 'and is free once released');
+		}
+		finally
+		{
+			$other->releaseLock($name);
+			$other->close();
+		}
+	}
+
 	/**
 	 * Both backends answer with the MySQL error number. The PDO driver used to
 	 * store PDOException::getCode(), which is the SQLSTATE, so a caller

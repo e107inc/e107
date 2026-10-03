@@ -1798,13 +1798,10 @@ class banlistManager
 	 */
 	private function takeReplaceLock()
 	{
-		$sql = e107::getDb();
-		$sql->execute('SELECT GET_LOCK(:name, 0) AS locked', array('name' => $this->replaceLockName()));
-		$row = $sql->fetch();
-		$locked = (is_array($row) && isset($row['locked'])) ? (string) $row['locked'] : null;
-		$this->replaceLockHeld = ($locked === '1');
+		$locked = e107::getDb()->acquireLock($this->replaceLockName(), 0);
+		$this->replaceLockHeld = ($locked === true);
 
-		return ($locked === null) ? null : $this->replaceLockHeld;
+		return $locked;
 	}
 
 	/**
@@ -1818,7 +1815,7 @@ class banlistManager
 		}
 
 		$this->replaceLockHeld = false;
-		e107::getDb()->execute('SELECT RELEASE_LOCK(:name)', array('name' => $this->replaceLockName()));
+		e107::getDb()->releaseLock($this->replaceLockName());
 	}
 
 	/**

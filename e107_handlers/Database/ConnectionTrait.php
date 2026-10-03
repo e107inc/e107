@@ -14,6 +14,7 @@ use db_verify;
 use e107;
 use e107\Database\Driver\DriverInterface;
 use e107\Database\Driver\DriverRegistry;
+use e107\Database\Exception\QueryException;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\Schema\Column;
 use e107\Database\Schema\Index;
@@ -49,6 +50,12 @@ trait ConnectionTrait
 
 	/** @var DriverInterface|null the engine this connection talks to; resolved on first use */
 	protected   $driver = null;
+
+	/** @var int open transactions: 1 for the outermost, plus one per savepoint nested inside it */
+	private     $transactionDepth = 0;
+
+	/** @var bool whether the engine ended the open transaction on its own, as MySQL does at DDL */
+	private     $transactionEnded = false;
 
 	private     $pdoBind        = false;
 
@@ -508,6 +515,300 @@ trait ConnectionTrait
 		$this->platform = null;
 
 		return $this;
+	}
+
+	/**
+	 * A copy of this connection that shares its session but keeps result sets of its own.
+	 *
+	 * @return static
+	 */
+	protected function _sideConnection()
+	{
+		$this->_getMySQLaccess();
+
+		return clone $this;
+	}
+
+	/**
+	 * A copy shares the session but not the result in hand.
+	 *
+	 * @return void
+	 */
+	public function __clone()
+	{
+		$this->mySQLresult = null;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::beginTransaction()}.
+	 *
+	 * @return bool
+	 */
+	public function beginTransaction()
+	{
+		if($this->transactionDepth > 0 && !$this->inTransaction())
+		{
+			return $this->_refuse('beginTransaction() inside a transaction the engine has already ended; end that one first');
+		}
+
+		$statements = ($this->transactionDepth === 0)
+			? $this->getDriver()->getBeginTransactionStatements()
+			: array('SAVEPOINT '.$this->_savepoint($this->transactionDepth));
+
+		foreach($statements as $statement)
+		{
+			if(!$this->_runInSession($statement))
+			{
+				return false;
+			}
+		}
+
+		$this->transactionDepth++;
+		$this->resetLastError();
+
+		return true;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::commit()}.
+	 *
+	 * @return bool
+	 */
+	public function commit()
+	{
+		if($this->transactionDepth === 0)
+		{
+			return $this->_refuse('commit() without an open transaction');
+		}
+
+		$this->transactionDepth--;
+
+		if(($this->transactionDepth > 0) ? !$this->_leaveSavepoint(array('RELEASE SAVEPOINT ')) : !$this->_endTransaction('COMMIT'))
+		{
+			return false;
+		}
+
+		$this->resetLastError();
+
+		return true;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::rollBack()}.
+	 *
+	 * @return bool
+	 */
+	public function rollBack()
+	{
+		if($this->transactionDepth === 0)
+		{
+			return $this->_refuse('rollBack() without an open transaction');
+		}
+
+		$this->transactionDepth--;
+		$this->resetTableList();
+		$errorNumber = $this->mySQLlastErrNum;
+		$errorText = $this->mySQLlastErrText;
+
+		if(($this->transactionDepth > 0) ? !$this->_leaveSavepoint(array('ROLLBACK TO SAVEPOINT ', 'RELEASE SAVEPOINT ')) : !$this->_endTransaction('ROLLBACK'))
+		{
+			return false;
+		}
+
+		$this->mySQLlastErrNum = $errorNumber;
+		$this->mySQLlastErrText = $errorText;
+
+		return true;
+	}
+
+	/**
+	 * End the whole transaction; one the engine will not end as asked, such as a COMMIT it refuses, is rolled back.
+	 *
+	 * @param string $statement COMMIT or ROLLBACK
+	 * @return bool false, with the engine's reason as the last error, when it refused
+	 */
+	private function _endTransaction($statement)
+	{
+		$this->transactionEnded = false;
+
+		if($this->_runInSession($statement))
+		{
+			return true;
+		}
+
+		$this->resetTableList();
+		$this->_keepingLastError(function()
+		{
+			return $this->_runInSession('ROLLBACK');
+		});
+
+		return false;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::inTransaction()}.
+	 *
+	 * @return bool
+	 */
+	public function inTransaction()
+	{
+		if($this->transactionDepth > 0 && !$this->transactionEnded && !$this->_transactionSurvived())
+		{
+			$this->transactionEnded = true;
+		}
+
+		return $this->transactionDepth > 0 && !$this->transactionEnded;
+	}
+
+	/**
+	 * Leave the savepoint of the level just closed; one the engine dropped with the whole transaction counts as left.
+	 *
+	 * @param string[] $verbs statements to suffix with the savepoint name, in order
+	 * @return bool false, with the reason as the last error, when the engine refuses
+	 */
+	private function _leaveSavepoint(array $verbs)
+	{
+		$savepoint = $this->_savepoint($this->transactionDepth);
+
+		foreach($verbs as $verb)
+		{
+			if($this->transactionEnded)
+			{
+				return true;
+			}
+
+			if(!$this->_runInSession($verb.$savepoint))
+			{
+				if($this->_transactionSurvived())
+				{
+					return false;
+				}
+
+				$this->transactionEnded = true;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Whether the engine still has the open transaction, which a schema change or its own rollback may have ended.
+	 *
+	 * @return bool
+	 */
+	private function _transactionSurvived()
+	{
+		return $this->getDriver()->isTransactionOpen($this->_sideConnection());
+	}
+
+	/**
+	 * Run a statement in this connection's session, leaving the result in hand and the rows it found untouched.
+	 *
+	 * @param string $statement
+	 * @return bool false, with the reason as the last error, when the engine refuses
+	 */
+	private function _runInSession($statement)
+	{
+		$side = $this->_sideConnection();
+
+		if($side->execute($statement) !== false)
+		{
+			return true;
+		}
+
+		$this->mySQLlastErrNum = $side->getLastErrorNumber();
+		$this->mySQLlastErrText = $side->getLastErrorText();
+
+		return false;
+	}
+
+	/**
+	 * Roll back the open transaction of a session about to be dropped or replaced, and forget it.
+	 *
+	 * @return void
+	 */
+	private function _dropTransaction()
+	{
+		if($this->transactionDepth === 0)
+		{
+			return;
+		}
+
+		$this->transactionDepth = 0;
+		$this->resetTableList();
+
+		$this->_keepingLastError(function()
+		{
+			return $this->_endTransaction('ROLLBACK');
+		});
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::transactional()}.
+	 *
+	 * @param callable $callback
+	 * @return mixed
+	 */
+	public function transactional($callback)
+	{
+		if(!$this->beginTransaction())
+		{
+			throw new QueryException('Could not open a transaction: '.$this->getLastErrorText());
+		}
+
+		try
+		{
+			$result = call_user_func($callback, $this);
+		}
+		catch(\Exception $e)
+		{
+			$this->rollBack();
+			throw $e;
+		}
+		catch(\Throwable $e)
+		{
+			$this->rollBack();
+			throw $e;
+		}
+
+		if(!$this->commit())
+		{
+			throw new QueryException('Could not commit the transaction: '.$this->getLastErrorText());
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @param int $depth nesting level the savepoint stands for
+	 * @return string savepoint name
+	 */
+	private function _savepoint($depth)
+	{
+		return 'e107_savepoint_'.(int) $depth;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::acquireLock()}.
+	 *
+	 * @param string $name
+	 * @param int $timeout
+	 * @return bool|null
+	 */
+	public function acquireLock($name, $timeout = 0)
+	{
+		return $this->getDriver()->acquireLock($this, (string) $name, (int) $timeout);
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::releaseLock()}.
+	 *
+	 * @param string $name
+	 * @return bool
+	 */
+	public function releaseLock($name)
+	{
+		return $this->getDriver()->releaseLock($this, (string) $name);
 	}
 
 	/**
@@ -1185,6 +1486,25 @@ trait ConnectionTrait
 		$this->mySQLlastErrText = $text;
 
 		return false;
+	}
+
+	/**
+	 * Runs statements whose failure must not become the last error a caller reads.
+	 *
+	 * @param callable $run
+	 * @return mixed what $run returns
+	 */
+	private function _keepingLastError($run)
+	{
+		$errorNumber = $this->mySQLlastErrNum;
+		$errorText = $this->mySQLlastErrText;
+
+		$result = call_user_func($run);
+
+		$this->mySQLlastErrNum = $errorNumber;
+		$this->mySQLlastErrText = $errorText;
+
+		return $result;
 	}
 
 	/**

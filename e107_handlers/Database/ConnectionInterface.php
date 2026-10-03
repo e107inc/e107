@@ -480,6 +480,70 @@ use PDOStatement;
 
 
 		/**
+		 * Open a transaction. Called inside an open one, it sets a savepoint instead, so nested units of work roll
+		 * back on their own. Pair every call with {@see ConnectionInterface::commit()} or
+		 * {@see ConnectionInterface::rollBack()}; {@see ConnectionInterface::transactional()} does the pairing.
+		 *
+		 * Engines differ in what a transaction covers: MySQL commits implicitly at any DDL statement and ignores
+		 * transactions on MyISAM tables, while SQLite rolls back DDL like any other statement.
+		 *
+		 * @return bool false, with the reason as the last error, when the engine refuses or has already ended the enclosing transaction
+		 */
+		public function beginTransaction();
+
+
+		/**
+		 * Commit the innermost open transaction, or release its savepoint when it is nested.
+		 *
+		 * @return bool false, with the reason as the last error, when nothing is open or the engine refuses
+		 */
+		public function commit();
+
+
+		/**
+		 * Roll back the innermost open transaction, or back to its savepoint when it is nested.
+		 *
+		 * @return bool false, with the reason as the last error, when nothing is open or the engine refuses
+		 */
+		public function rollBack();
+
+
+		/**
+		 * @return bool whether a transaction opened through this connection is still open
+		 */
+		public function inTransaction();
+
+
+		/**
+		 * Run a callback in a transaction, or a savepoint inside one, rolling back and rethrowing when it throws.
+		 *
+		 * @param callable $callback receives this connection
+		 * @return mixed whatever the callback returned
+		 * @throws \e107\Database\Exception\QueryException when the transaction cannot be opened or committed
+		 */
+		public function transactional($callback);
+
+
+		/**
+		 * Take a named advisory lock until it is released or the connection ends; every site on the server shares names.
+		 *
+		 * @param string $name
+		 * @param int $timeout seconds; 0 fails at once when the lock is held
+		 * @return bool|null true when taken, false when held elsewhere, null when the engine did not say
+		 */
+		public function acquireLock($name, $timeout = 0);
+
+
+		/**
+		 * Give back a lock taken with {@see ConnectionInterface::acquireLock()}.
+		 *
+		 * @param string $name
+		 * @return bool
+		 */
+		public function releaseLock($name);
+
+
+		/**
 		 * Apply the e107 field-type STORAGE transform to a value, returning what
 		 * the deprecated array-form {@see ConnectionInterface::insert()}/{@see ConnectionInterface::update()}
 		 * would bind for that token. Shared with {@see QueryBuilder::setTyped()} and

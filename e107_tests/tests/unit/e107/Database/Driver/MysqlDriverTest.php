@@ -69,4 +69,20 @@ class MysqlDriverTest extends \Test\Unit
 
 		$this->assertSame(-1, $this->driver->errorNumber(new Exception('no number')));
 	}
+
+	public function testTheLockStatementBindsEveryValue()
+	{
+		$sent = array();
+		$connection = $this->makeEmpty(\e107\Database\ConnectionInterface::class, array(
+			'execute' => function($statement, $params = array()) use (&$sent) { $sent[] = array($statement, $params); return 1; },
+			'fetch' => array('answer' => '1'),
+		));
+
+		$this->assertTrue($this->driver->acquireLock($connection, 'e107_import', 5));
+		$this->assertTrue($this->driver->releaseLock($connection, 'e107_import'));
+		$this->assertSame(array(
+			array('SELECT GET_LOCK(:name, :timeout) AS answer', array('name' => 'e107_import', 'timeout' => 5)),
+			array('SELECT RELEASE_LOCK(:name) AS answer', array('name' => 'e107_import')),
+		), $sent);
+	}
 }

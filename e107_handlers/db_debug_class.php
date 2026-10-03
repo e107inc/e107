@@ -225,9 +225,7 @@ class e107_db_debug
 			$sql = e107::getDb($rli);
 
 			// Explain the query, if possible...
-			list($qtype, $args) = explode(" ", ltrim($query), 2);
-
-			unset($args);
+			$qtype = explode(" ", ltrim($query), 2)[0];
 			$nFields = 0;
 			$bExplained = false;
 			$ExplainText = '';

@@ -141,7 +141,7 @@ class e_db_pdo implements e_db
 
 		try
 		{
-			$this->mySQLaccess = $driver->connect($this->_connectionParams());
+			$pdo = $driver->connect($this->_connectionParams());
 		}
 		catch(PDOException $ex)
 		{
@@ -150,6 +150,9 @@ class e_db_pdo implements e_db
 			$this->dbg->log($this->mySQLlastErrText);
 			return false;
 		}
+
+		$this->_dropTransaction();
+		$this->mySQLaccess = $pdo;
 
 		if($this->mySQLaccess !== null)
 		{
@@ -217,7 +220,9 @@ class e_db_pdo implements e_db
 
 		if($pdo !== $this->mySQLaccess)
 		{
+			$this->_dropTransaction();
 			$this->mySQLaccess = $pdo;
+			$this->resetTableList();
 			$this->_startSession();
 		}
 
@@ -707,6 +712,7 @@ class e_db_pdo implements e_db
 	function close()
 	{
 		$this->traffic->BumpWho('db Close', 1);
+		$this->_dropTransaction();
 		$this->mySQLresult = null;
 		$this->mySQLaccess = null;
 		$this->dbError('dbClose');
@@ -1360,6 +1366,7 @@ class e_db_pdo implements e_db
 	{
 		$this->_requirePdoDriver($driver);
 
+		$this->_dropTransaction();
 		$this->mySQLresult = null;
 		$this->mySQLaccess = null;
 		$this->resetTableList();

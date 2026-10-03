@@ -78,10 +78,45 @@ interface DriverInterface
 	public function getFoundRowsStatement();
 
 	/**
+	 * The statements that open a transaction, run in order until one fails; COMMIT or ROLLBACK ends it, and SAVEPOINT nests inside it.
+	 *
+	 * @return string[]
+	 */
+	public function getBeginTransactionStatements();
+
+	/**
+	 * Whether the engine has a transaction open in the connection's session; asking leaves the session as it was.
+	 *
+	 * @param ConnectionInterface $connection a connection to the session that holds no result the question could replace
+	 * @return bool
+	 */
+	public function isTransactionOpen(ConnectionInterface $connection);
+
+	/**
 	 * The SQL dialect of this engine.
 	 *
 	 * @param string|null $serverVersion the server's version, or null when not yet known
 	 * @return PlatformInterface
 	 */
 	public function createPlatform($serverVersion = null);
+
+	/**
+	 * Take a named advisory lock without waiting longer than the timeout. Names are shared by every e107 site the
+	 * engine serves, as MySQL's GET_LOCK() names are, so a caller makes them unique to its site.
+	 *
+	 * @param ConnectionInterface $connection the connection that holds the lock
+	 * @param string $name
+	 * @param int $timeout seconds to wait for a holder to let go; 0 to fail at once
+	 * @return bool|null true when taken, false when another session holds it, null when the engine did not say
+	 */
+	public function acquireLock(ConnectionInterface $connection, $name, $timeout);
+
+	/**
+	 * Give back a lock {@see DriverInterface::acquireLock()} took.
+	 *
+	 * @param ConnectionInterface $connection the connection that holds the lock
+	 * @param string $name
+	 * @return bool whether the lock was released
+	 */
+	public function releaseLock(ConnectionInterface $connection, $name);
 }

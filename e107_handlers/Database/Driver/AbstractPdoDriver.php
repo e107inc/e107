@@ -10,10 +10,12 @@
 
 namespace e107\Database\Driver;
 
+use e107\Database\ConnectionInterface;
+
 require_once(__DIR__.'/PdoDriverInterface.php');
 
 /**
- * What every PDO-backed engine does alike: error numbers read from the exception.
+ * What every PDO-backed engine does alike: advisory locks through GET_LOCK() and RELEASE_LOCK(), and error numbers read from the exception.
  */
 abstract class AbstractPdoDriver implements PdoDriverInterface
 {
@@ -34,5 +36,43 @@ abstract class AbstractPdoDriver implements PdoDriverInterface
 		$code = $exception->getCode();
 
 		return (is_int($code) && $code !== 0) ? $code : -1;
+	}
+
+	/**
+	 * GET_LOCK(), held by the connection's session until released or until the session ends.
+	 *
+	 * @inheritDoc
+	 */
+	public function acquireLock(ConnectionInterface $connection, $name, $timeout)
+	{
+		$answer = $this->lockAnswer($connection, 'GET_LOCK(:name, :timeout)', array('name' => $name, 'timeout' => (int) $timeout));
+
+		return ($answer === null) ? null : ($answer === '1');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function releaseLock(ConnectionInterface $connection, $name)
+	{
+		return $this->lockAnswer($connection, 'RELEASE_LOCK(:name)', array('name' => $name)) === '1';
+	}
+
+	/**
+	 * @param ConnectionInterface $connection
+	 * @param string $call a lock function call with bound arguments
+	 * @param array $params
+	 * @return string|null the function's answer, or null when it failed or answered NULL
+	 */
+	private function lockAnswer(ConnectionInterface $connection, $call, array $params)
+	{
+		if($connection->execute('SELECT '.$call.' AS answer', $params) === false)
+		{
+			return null;
+		}
+
+		$row = $connection->fetch();
+
+		return (is_array($row) && isset($row['answer'])) ? (string) $row['answer'] : null;
 	}
 }

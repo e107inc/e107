@@ -174,4 +174,26 @@ class e_db_pdoTest extends e_db_abstractTest
 
 		e107::setRegistry('core/e107/singleton/UserHandler', $original_user_handler);
 	}
+
+	public function testATransactionDoesNotOutliveTheDriverItWasOpenedThrough()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->useDriver($this->db->getDriver()->getName());
+			$this->assertFalse($this->db->inTransaction());
+
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->rollBack());
+
+			$this->assertSame(array(), $this->transactionIds($table), 'the new session opened a transaction, not a savepoint');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
 }
