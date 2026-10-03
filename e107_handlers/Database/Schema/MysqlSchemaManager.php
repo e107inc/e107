@@ -138,6 +138,62 @@ final class MysqlSchemaManager implements SchemaManagerInterface
 	}
 
 	/**
+	 * The schema DSL is MySQL's own dialect, so the definitions go into the statement as written.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileCreateTable($table, array $definitions, $options = '')
+	{
+		return array($this->db->getPlatform()->compileCreateTable($this->quoteForDdl($table), $definitions, $options));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileRenameTable($from, $to)
+	{
+		return array($this->db->getPlatform()->compileRenameTable($this->quoteForDdl($from), $this->quoteForDdl($to)));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileOptimizeTable(array $tables)
+	{
+		return array($this->db->getPlatform()->compileOptimizeTable(array_map(array($this, 'quoteForDdl'), $tables)));
+	}
+
+	/**
+	 * One ALTER TABLE of every clause, as written.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileAlterTable($table, array $operations)
+	{
+		$clauses = array();
+
+		foreach($operations as $operation)
+		{
+			$clauses[] = $operation->getClause();
+		}
+
+		return array($this->db->getPlatform()->compileAlterTable($this->quoteForDdl($table), $clauses));
+	}
+
+	/**
+	 * A table name quoted for DDL, inside the identifier grammar or not.
+	 *
+	 * @param string $table
+	 * @return string
+	 */
+	private function quoteForDdl($table)
+	{
+		$quoted = $this->db->getPlatform()->quoteIdentifier($table);
+
+		return ($quoted === false) ? $this->quote($table) : $quoted;
+	}
+
+	/**
 	 * Run a statement and collect every row.
 	 *
 	 * @param string $sql

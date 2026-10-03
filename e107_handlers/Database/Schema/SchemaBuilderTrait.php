@@ -11,6 +11,7 @@
 namespace e107\Database\Schema;
 
 use e107\Database\ConnectionInterface;
+use e107\Database\Exception\QueryException;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\SqlFragment;
 use InvalidArgumentException;
@@ -35,16 +36,40 @@ trait SchemaBuilderTrait
 	protected $platform;
 
 	/**
-	 * Resolve a logical e107 table name to its quoted physical name (prefix and
-	 * language routing applied), fail-closed.
+	 * Run compiled DDL. A single statement's result is the connection's own;
+	 * several run in one transaction, so all take effect or none does.
 	 *
-	 * @param string $table
-	 * @return string backtick-quoted physical name
-	 * @throws InvalidArgumentException on an invalid table name.
+	 * @param string[] $statements
+	 * @return int|bool the {@see ConnectionInterface::execute()} result of a single statement; for several (or none), whether they all ran.
 	 */
-	protected function quoteTable($table)
+	protected function runStatements(array $statements)
 	{
-		return $this->quoteResolved($this->resolveTable($table), $table);
+		if(count($statements) === 1)
+		{
+			return $this->db->execute(reset($statements));
+		}
+
+		$db = $this->db;
+
+		try
+		{
+			return $db->transactional(function() use ($db, $statements)
+			{
+				foreach($statements as $sql)
+				{
+					if($db->execute($sql) === false)
+					{
+						throw new QueryException($db->getLastErrorText());
+					}
+				}
+
+				return true;
+			});
+		}
+		catch(QueryException $e)
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -64,38 +89,6 @@ trait SchemaBuilderTrait
 		}
 
 		return $physical;
-	}
-
-	/**
-	 * Resolve a logical table name to its quoted physical name applying the
-	 * prefix only, fail-closed, with no multi-language lan_* routing (see
-	 * {@see ConnectionInterface::resolvePhysicalTableName()}).
-	 *
-	 * @param string $table
-	 * @return string backtick-quoted physical name
-	 * @throws InvalidArgumentException on an invalid table name.
-	 */
-	protected function quotePhysicalTable($table)
-	{
-		return $this->quoteResolved($this->resolvePhysicalTable($table), $table);
-	}
-
-	/**
-	 * @param string $physical resolved physical table name
-	 * @param string $table the name the caller gave, for the error message
-	 * @return string the name quoted for this platform
-	 * @throws InvalidArgumentException when the resolved name is no plain identifier.
-	 */
-	private function quoteResolved($physical, $table)
-	{
-		$quoted = $this->platform->quoteIdentifier($physical);
-
-		if($quoted === false)
-		{
-			throw new InvalidArgumentException('Invalid table name "'.$table.'" for a schema operation.');
-		}
-
-		return $quoted;
 	}
 
 	/**

@@ -190,6 +190,27 @@ use RuntimeException;
 			);
 		}
 
+		public function testABatchIsOneStatementOnMysqlAndKeepsEachChange()
+		{
+			$schema = $this->makeSchema();
+			$table = $schema->table('comments')
+				->dropIndex('comment_ip')
+				->modifyColumn('comment_ip', Column::define('VARCHAR', 45)->notNull()->defaultValue(''))
+				->engine('InnoDB');
+
+			$this->assertSame(array("ALTER TABLE `e107_comments` DROP INDEX `comment_ip`, MODIFY COLUMN `comment_ip` VARCHAR(45) NOT NULL DEFAULT '', ENGINE = InnoDB"), $table->getStatements());
+		}
+
+		public function testAnOperationReadsItsChangeAsTheNeutralModel()
+		{
+			$modify = TableOperation::modifyColumn("MODIFY COLUMN `comment_ip` VARCHAR(45) NOT NULL DEFAULT ''", 'comment_ip', "VARCHAR(45) NOT NULL DEFAULT ''");
+			$drop = TableOperation::dropIndex('DROP INDEX `comment_ip`', 'comment_ip');
+
+			$this->assertSame(array(TableOperation::MODIFY_COLUMN, 'comment_ip', '45'), array($modify->getType(), $modify->getColumnName(), $modify->getColumnDefinition()->getLength()));
+			$this->assertSame(array(TableOperation::DROP_INDEX, 'comment_ip'), array($drop->getType(), $drop->getValue()));
+			$this->assertSame('InnoDB', TableOperation::engine('ENGINE = InnoDB', 'InnoDB')->getValue());
+		}
+
 		public function testEmptyAlterThrows()
 		{
 			$schema = $this->makeSchema();
@@ -486,6 +507,21 @@ use RuntimeException;
 			$this->assertEquals("OPTIMIZE TABLE `e107_routedtable`, `e107_lan_test_routedtable`", $stub->lastSql);
 		}
 
+		public function testAPrefixOutsideTheIdentifierGrammarIsQuotedRatherThanRefused()
+		{
+			$schema = $this->makeSchema($stub);
+			$stub->prefix = 'e107$';
+
+			$schema->table('generic')->addIndex(Index::index('gen_type', 'gen_type'))->execute();
+			$this->assertEquals("ALTER TABLE `e107\$generic` ADD INDEX `gen_type` (`gen_type`)", $stub->lastSql);
+
+			$schema->tablePhysical('generic')->addRaw(SqlFragment::raw("DROP `foo`"))->execute();
+			$this->assertEquals("ALTER TABLE `e107\$generic` DROP `foo`", $stub->lastSql);
+
+			$schema->optimizeTable(array('news', 'user'));
+			$this->assertEquals("OPTIMIZE TABLE `e107\$news`, `e107\$user`", $stub->lastSql);
+		}
+
 		// --- ADMIN-FENCED VERBS --------------------------------------------
 
 		public function testCreateDatabase()
@@ -704,6 +740,7 @@ use RuntimeException;
 	 */
 	class SchemaBuilderTest_dbStub
 	{
+		public $prefix = 'e107_';
 		public $lastSql = null;
 		public $lastParams = null;
 		public $rows = array();
@@ -727,7 +764,7 @@ use RuntimeException;
 				return 'e107_lan_test_routedtable';
 			}
 
-			return 'e107_'.$table;
+			return $this->prefix.$table;
 		}
 
 		public function resolvePhysicalTableName($table)
@@ -740,7 +777,7 @@ use RuntimeException;
 			}
 
 			// Prefix only, never the lan_* routing resolveTableName() applies.
-			return 'e107_'.$table;
+			return $this->prefix.$table;
 		}
 
 		public function quoteIdentifier($identifier)

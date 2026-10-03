@@ -396,6 +396,13 @@ class FixPlanTest_dbStub
 		return new MysqlPlatform();
 	}
 
+	public function getSchemaManager()
+	{
+		require_once(e_HANDLER.'Database/Schema/MysqlSchemaManager.php');
+
+		return new \e107\Database\Schema\MysqlSchemaManager($this);
+	}
+
 	public function resolvePhysicalTableName($table)
 	{
 		if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $table))

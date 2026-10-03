@@ -13,7 +13,10 @@ namespace e107\Database\Driver;
 use e107\Database\ConnectionInterface;
 use e107\Database\Platform\SqlitePlatform;
 use e107\Database\Result\BufferedResult;
+use e107\Database\Schema\Column;
 use e107\Database\Schema\Definition\MysqlDdlParser;
+use e107\Database\Schema\Index;
+use e107\Database\Schema\SchemaBuilder;
 use e107\Database\Schema\SqliteSchemaManager;
 
 /**
@@ -243,6 +246,93 @@ class SqliteDriverTest extends \Test\Unit
 		$this->db->insert('item_copy', array('item_name' => 'gone', 'item_body' => ''));
 		$this->db->rollBack();
 		$this->assertSame(1, $this->db->count('item_copy'));
+	}
+
+	public function testTableChangesSqliteCanMakeInPlaceAreOneStatementEach()
+	{
+		$this->insertItems();
+		$table = $this->db->schema()->table('item')
+			->addColumn('item_note', Column::define('VARCHAR', 50)->notNull()->defaultValue('n/a'), 'item_body')
+			->addIndex(Index::index('item_class', 'item_class'))
+			->dropIndex('item_hits')
+			->engine('InnoDB');
+
+		$this->assertSame(array(
+			"ALTER TABLE `e107_item` ADD COLUMN `item_note` TEXT COLLATE NOCASE NOT NULL DEFAULT 'n/a'",
+			'CREATE INDEX `e107_item__item_class` ON `e107_item` (`item_class`)',
+			'DROP INDEX `e107_item__item_hits`',
+		), $table->getStatements(), 'no statement for the storage engine');
+		$this->assertTrue($table->execute());
+
+		$this->assertSame('n/a', $this->db->retrieve('item', 'item_note', 'item_id = 1'));
+		$this->assertTrue($this->db->index('item', 'item_class'));
+		$this->assertFalse($this->db->index('item', 'item_hits'));
+
+		$rename = $this->db->schema()->table('item')->changeColumn('item_note', 'item_remark', Column::define('VARCHAR', 50)->notNull()->defaultValue('n/a'));
+		$this->assertSame(array('ALTER TABLE `e107_item` RENAME COLUMN `item_note` TO `item_remark`'), $rename->getStatements());
+		$this->assertSame('ALTER TABLE `e107_item` RENAME COLUMN `item_note` TO `item_remark`', $rename->getSQL());
+		$this->assertNotFalse($rename->execute());
+		$this->assertNotFalse($this->db->schema()->dropColumn('item', 'item_remark'));
+		$this->assertSame(array('item_id', 'item_name', 'item_class', 'item_hits', 'item_body'), $this->db->fields('item'));
+	}
+
+	public function testOtherTableChangesRebuildTheTableKeepingItsRowsAndItsCounter()
+	{
+		$this->insertItems();
+		$this->db->delete('item', 'item_id = 3');
+
+		$table = $this->db->schema()->table('item')
+			->modifyColumn('item_hits', Column::define('VARCHAR', 10)->notNull()->defaultValue(''))
+			->changeColumn('item_class', 'item_classes', Column::define('TEXT')->notNull(), 'item_id')
+			->addColumn('item_first', Column::define('INT', 10)->notNull()->defaultValue(7), SchemaBuilder::FIRST)
+			->dropColumn('item_body');
+
+		$statements = $table->getStatements();
+		$this->assertSame('DROP TABLE IF EXISTS `e107_item__rebuild`', $statements[0]);
+		$this->assertContains('DROP TABLE `e107_item`', $statements);
+
+		try
+		{
+			$table->getSQL();
+			$this->fail('a rebuild is no single statement');
+		}
+		catch(\e107\Database\Exception\UnsupportedException $e)
+		{
+			$this->assertStringContainsString('getStatements()', $e->getMessage());
+		}
+
+		$this->assertTrue($table->execute());
+		$this->assertSame(array('item_first', 'item_id', 'item_classes', 'item_name', 'item_hits'), $this->db->fields('item'));
+		$rows = $this->db->createQueryBuilder()->select('*')->from('item')->where('item_id', 1)->fetchAll();
+		$this->assertSame(array('item_first' => '7', 'item_id' => '1', 'item_classes' => '1', 'item_name' => 'one', 'item_hits' => '3'), $rows[0]);
+		$this->assertSame('text', $this->db->field('item', 'item_hits', '', true)['Type']);
+		$this->assertTrue($this->db->index('item', 'item_name'), 'the unique index came back');
+
+		$this->db->insert('item', array('item_name' => 'four', 'item_classes' => ''));
+		$this->assertSame(4, (int) $this->db->lastInsertId(), 'the counter went on from 3, not from the highest id left');
+	}
+
+	public function testATableChangeSqliteCannotMakeIsRefused()
+	{
+		$this->expectException(\e107\Database\Exception\UnsupportedException::class);
+
+		$this->db->schema()->table('item')->addRaw(\e107\Database\SqlFragment::raw('ALGORITHM=INPLACE'))->getStatements();
+	}
+
+	public function testATableIsCreatedFromTheSchemaDsl()
+	{
+		$schema = $this->db->schema();
+		$this->assertTrue($schema->createTable('made', array(
+			'made_id' => Column::define('INT', 10)->unsigned()->notNull()->autoIncrement(),
+			'made_name' => Column::define('VARCHAR', 20)->notNull()->defaultValue(''),
+		), array(Index::primary('made_id'), Index::unique('made_name', 'made_name')), array('engine' => 'InnoDB')));
+
+		$this->assertSame(1, $this->db->insert('made', array('made_name' => 'x')));
+		$this->assertTrue($this->db->index('made', 'made_name'));
+
+		$this->assertSame(array(
+			"CREATE TABLE `e107_raw` (\n  `raw_id` INTEGER NOT NULL DEFAULT 0\n)",
+		), $schema->buildCreateTablePhysicalStatements('raw', \e107\Database\SqlFragment::raw('raw_id int NOT NULL')));
 	}
 
 	public function testATableIsRebuiltToANewDefinitionKeepingItsRows()

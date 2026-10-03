@@ -12,9 +12,11 @@ namespace e107\Database\Schema;
 
 use e107\Database\ConnectionInterface;
 use e107\Database\Exception\QueryException;
+use e107\Database\Exception\UnsupportedException;
 use e107\Database\Platform\SqlitePlatform;
 use e107\Database\Schema\Definition\ColumnDefinition;
 use e107\Database\Schema\Definition\IndexDefinition;
+use e107\Database\Schema\Definition\MysqlDdlParser;
 use e107\Database\Schema\Definition\TableDefinition;
 use e107\Database\Schema\Introspect\IndexSchema;
 use e107\Database\Schema\Introspect\SqliteSchemaReader;
@@ -25,6 +27,7 @@ use InvalidArgumentException;
 require_once(__DIR__.'/SchemaManagerInterface.php');
 require_once(__DIR__.'/Introspect/SqliteSchemaReader.php');
 require_once(__DIR__.'/Definition/TableDefinition.php');
+require_once(__DIR__.'/TableOperation.php');
 
 /**
  * Schema work on SQLite through sqlite_master and the schema pragmas; a change its ALTER TABLE cannot make rebuilds
@@ -284,8 +287,284 @@ final class SqliteSchemaManager implements SchemaManagerInterface
 	}
 
 	/**
-	 * Rebuild a table to a new definition: create it under a temporary name, copy the rows of the columns both
-	 * share (or as $columnMap says), drop the old table and rename the new one, in one transaction.
+	 * Read from the schema DSL and rendered in SQLite's dialect; of the table options only a collation has a meaning here.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileCreateTable($table, array $definitions, $options = '')
+	{
+		$this->requireUnqualified($table, 'create');
+
+		if(!class_exists(MysqlDdlParser::class, false))
+		{
+			require_once(__DIR__.'/Definition/MysqlDdlParser.php');
+		}
+
+		$parser = new MysqlDdlParser();
+
+		return $this->platform()->compileTableDefinition($table, $parser->parseTableBody($table, implode(', ', $definitions), $parser->parseTableOptions($options)));
+	}
+
+	/**
+	 * The statements that rename a table, and its indexes after it, since SQLite's index names are global.
+	 *
+	 * @param string $from physical name of the table
+	 * @param string $to physical name it is to have
+	 * @return string[]
+	 * @throws QueryException when the table does not exist
+	 */
+	public function compileRenameTable($from, $to)
+	{
+		$this->requireUnqualified($from, 'rename');
+		$this->requireUnqualified($to, 'rename');
+
+		$definition = $this->getDefinition($from);
+
+		if($definition === null)
+		{
+			throw new QueryException('Cannot rename "'.$from.'": no such table.');
+		}
+
+		$platform = $this->platform();
+		$statements = array($platform->compileRenameTable($this->quote($from), $this->quote($to)));
+		$physical = $this->indexNames($from);
+
+		foreach($definition->getIndexes() as $index)
+		{
+			$old = $platform->physicalIndexName($from, $index->getName());
+
+			if(in_array($old, $physical, true))
+			{
+				$statements[] = 'DROP INDEX '.$this->quote($old);
+				$statements[] = $platform->compileCreateIndex($to, $index);
+			}
+		}
+
+		return $statements;
+	}
+
+	/**
+	 * VACUUM, which names no table.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileOptimizeTable(array $tables)
+	{
+		return array($this->platform()->compileOptimizeTable(array()));
+	}
+
+	/**
+	 * One statement per change SQLite's ALTER TABLE, CREATE INDEX or DROP INDEX can make; a rebuild of the table for
+	 * any other change in the batch; none for an engine or character set; a raw MySQL clause is refused.
+	 *
+	 * @inheritDoc
+	 * @throws QueryException when the table, or a column or index a change names, is not there
+	 * @throws InvalidArgumentException on a definition that cannot be read, or a column or index added twice
+	 */
+	public function compileAlterTable($table, array $operations)
+	{
+		$this->requireUnqualified($table, 'alter');
+
+		$current = $this->getDefinition($table);
+
+		if($current === null)
+		{
+			throw new QueryException('Cannot alter "'.$table.'": no such table.');
+		}
+
+		$platform = $this->platform();
+		$quoted = $this->quote($table);
+		$target = $current;
+		$sourceOf = array();
+
+		foreach(array_keys($current->getColumns()) as $name)
+		{
+			$sourceOf[$name] = $name;
+		}
+
+		$native = array();
+		$rebuild = false;
+
+		foreach($operations as $operation)
+		{
+			switch($operation->getType())
+			{
+				case TableOperation::ADD_COLUMN:
+					$column = $operation->getColumnDefinition();
+					$names = array_keys($target->getColumns());
+					$after = $operation->getAfter();
+
+					if($column->isAutoIncrement() || $column->getDefaultKind() === ColumnDefinition::DEFAULT_EXPRESSION || ($after !== null && $after !== end($names)))
+					{
+						$rebuild = true;
+					}
+					else
+					{
+						$native[] = 'ALTER TABLE '.$quoted.' ADD COLUMN '.$platform->compileColumnDefinition($column);
+					}
+
+					$target = self::withColumn($target, $column, $after);
+					break;
+
+				case TableOperation::MODIFY_COLUMN:
+				case TableOperation::CHANGE_COLUMN:
+					$existing = self::requireColumn($target, $operation->getColumnName());
+					$old = $existing->getName();
+					$column = $operation->getColumnDefinition();
+					$renameOnly = ($operation->getAfter() === null && !$column->isAutoIncrement() && !$existing->isAutoIncrement()
+						&& $platform->compileColumnDefinition($existing->withName($column->getName())) === $platform->compileColumnDefinition($column));
+
+					if(!$renameOnly)
+					{
+						$rebuild = true;
+					}
+					elseif($old !== $column->getName())
+					{
+						$native[] = 'ALTER TABLE '.$quoted.' RENAME COLUMN '.$this->quote($old).' TO '.$this->quote($column->getName());
+					}
+
+					if(isset($sourceOf[$old]) && $old !== $column->getName())
+					{
+						$sourceOf[$column->getName()] = $sourceOf[$old];
+						unset($sourceOf[$old]);
+					}
+
+					$target = self::withColumn($target, $column, $operation->getAfter(), $old);
+					break;
+
+				case TableOperation::DROP_COLUMN:
+					$dropped = self::requireColumn($target, $operation->getColumnName());
+					$name = $dropped->getName();
+
+					if($dropped->isAutoIncrement() || self::isIndexed($target, $name))
+					{
+						$rebuild = true;
+					}
+					else
+					{
+						$native[] = 'ALTER TABLE '.$quoted.' DROP COLUMN '.$this->quote($name);
+					}
+
+					unset($sourceOf[$name]);
+					$target = self::withoutColumn($target, $name);
+					break;
+
+				case TableOperation::ADD_INDEX:
+					$index = $operation->getIndexDefinition();
+
+					if($index->isPrimary())
+					{
+						$rebuild = true;
+					}
+					elseif($platform->materialises($index))
+					{
+						$native[] = $platform->compileCreateIndex($table, $index);
+					}
+
+					$target = self::withIndex($target, $index);
+					break;
+
+				case TableOperation::DROP_INDEX:
+					$index = $target->getIndex($operation->getValue());
+
+					if($index === null)
+					{
+						throw new QueryException('Cannot drop index "'.$operation->getValue().'" of "'.$table.'": no such index.');
+					}
+
+					if($index->isPrimary())
+					{
+						$rebuild = true;
+					}
+					elseif($platform->materialises($index))
+					{
+						$native[] = 'DROP INDEX '.$this->quote($platform->physicalIndexName($table, $index->getName()));
+					}
+
+					$target = self::withoutIndex($target, $index->getName());
+					break;
+
+				case TableOperation::DROP_PRIMARY_KEY:
+					$rebuild = true;
+					$target = self::withoutIndex($target, 'PRIMARY');
+					break;
+
+				case TableOperation::SET_ENGINE:
+				case TableOperation::CONVERT_CHARSET:
+					break;
+
+				default:
+					throw new UnsupportedException('SQLite cannot run a raw MySQL ALTER TABLE clause: '.$operation->getClause());
+			}
+		}
+
+		if(!$rebuild)
+		{
+			return $native;
+		}
+
+		return $this->compileRebuild($table, $target, $sourceOf);
+	}
+
+	/**
+	 * @param string $table
+	 * @param string $temporary the table rebuilt from it, whose counter starts from its highest id
+	 * @return string[] the statements that raise the rebuilt table's AUTOINCREMENT counter to the old one's
+	 */
+	private function compileCounterCarry($table, $temporary)
+	{
+		$old = "(SELECT seq FROM sqlite_sequence WHERE name = '".$table."')";
+
+		return array(
+			"INSERT INTO sqlite_sequence (name, seq) SELECT '".$temporary."', ".$old
+				." WHERE ".$old." IS NOT NULL AND NOT EXISTS (SELECT 1 FROM sqlite_sequence WHERE name = '".$temporary."')",
+			"UPDATE sqlite_sequence SET seq = ".$old." WHERE name = '".$temporary."' AND seq < ".$old,
+		);
+	}
+
+	/**
+	 * The statements, for one transaction, that rebuild a table to a new definition under a temporary name and give it
+	 * the old one's name, rows and AUTOINCREMENT counter.
+	 *
+	 * @param string $table physical name of the table to rebuild
+	 * @param TableDefinition $target the table it is to become
+	 * @param string[] $sourceOf column of the target => the column of the table its rows are copied from
+	 * @return string[]
+	 */
+	private function compileRebuild($table, TableDefinition $target, array $sourceOf)
+	{
+		$platform = $this->platform();
+		$temporary = $table.'__rebuild';
+		$definition = $platform->compileTableDefinition($temporary, $target->withName($temporary));
+		$statements = array('DROP TABLE IF EXISTS '.$this->quote($temporary), array_shift($definition));
+
+		if(!empty($sourceOf))
+		{
+			$statements[] = 'INSERT INTO '.$this->quote($temporary).' ('.implode(', ', array_map(array($this, 'quote'), array_keys($sourceOf))).')'
+				.' SELECT '.implode(', ', array_map(array($this, 'quote'), $sourceOf)).' FROM '.$this->quote($table);
+		}
+
+		if($target->getAutoIncrementColumn() !== null)
+		{
+			$statements = array_merge($statements, $this->compileCounterCarry($table, $temporary));
+		}
+
+		$statements[] = 'DROP TABLE '.$this->quote($table);
+		$statements[] = 'ALTER TABLE '.$this->quote($temporary).' RENAME TO '.$this->quote($table);
+
+		foreach($target->getIndexes() as $index)
+		{
+			if(!$index->isPrimary() && $platform->materialises($index))
+			{
+				$statements[] = $platform->compileCreateIndex($table, $index);
+			}
+		}
+
+		return $statements;
+	}
+
+	/**
+	 * Rebuild a table to a new definition ({@see SqliteSchemaManager::compileRebuild()}), in one transaction.
 	 *
 	 * @param string $table physical name of the table to rebuild
 	 * @param TableDefinition $target the table it is to become
@@ -295,57 +574,14 @@ final class SqliteSchemaManager implements SchemaManagerInterface
 	 */
 	public function rebuildTable($table, TableDefinition $target, $columnMap = null)
 	{
-		$current = $this->getReader()->read($table);
-
-		if($current === null)
-		{
-			throw new QueryException('Cannot rebuild "'.$table.'": no such table.');
-		}
-
-		if($columnMap === null)
-		{
-			$columnMap = array();
-			foreach(array_keys($target->getColumns()) as $name)
-			{
-				if($current->getColumn($name) !== null)
-				{
-					$columnMap[$name] = '`'.str_replace('`', '``', $name).'`';
-				}
-			}
-		}
-
-		$temporary = $table.'__rebuild';
-		$platform = $this->platform();
-		$db = $this->db;
+		$statements = $this->compileRebuild($table, $target, $columnMap);
 		$manager = $this;
 
-		return $db->transactional(function() use ($db, $platform, $manager, $table, $temporary, $target, $columnMap, $current)
+		return $this->db->transactional(function() use ($manager, $statements)
 		{
-			$manager->run('DROP TABLE IF EXISTS `'.$temporary.'`');
-
-			$statements = $platform->compileTableDefinition($temporary, $target->withName($temporary));
-			$manager->run(array_shift($statements)); // the table; its indexes are made once it has its real name
-
-			if(!empty($columnMap))
+			foreach($statements as $statement)
 			{
-				$quoted = array();
-				foreach(array_keys($columnMap) as $name)
-				{
-					$quoted[] = '`'.str_replace('`', '``', $name).'`';
-				}
-
-				$manager->run('INSERT INTO `'.$temporary.'` ('.implode(', ', $quoted).') SELECT '.implode(', ', $columnMap).' FROM `'.$table.'`');
-			}
-
-			$manager->run('DROP TABLE `'.$table.'`');
-			$manager->run('ALTER TABLE `'.$temporary.'` RENAME TO `'.$table.'`');
-
-			foreach($target->getIndexes() as $index)
-			{
-				if(!$index->isPrimary() && $platform->materialises($index))
-				{
-					$manager->run($platform->compileCreateIndex($table, $index));
-				}
+				$manager->run($statement);
 			}
 
 			return true;
@@ -457,6 +693,242 @@ final class SqliteSchemaManager implements SchemaManagerInterface
 		}
 
 		return ($schema === null) ? false : $schema;
+	}
+
+	/**
+	 * @param string $table
+	 * @return string[] the physical names of the table's indexes
+	 */
+	private function indexNames($table)
+	{
+		$names = array();
+
+		if($this->db->execute("SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = :t", array('t' => $table)) !== false)
+		{
+			while($row = $this->db->fetch())
+			{
+				$names[] = (string) $row['name'];
+			}
+		}
+
+		return $names;
+	}
+
+	/**
+	 * @param string $table
+	 * @param string $what the operation, for the message
+	 * @return void
+	 * @throws UnsupportedException for a table of an attached database
+	 * @throws InvalidArgumentException on an invalid table name
+	 */
+	private function requireUnqualified($table, $what)
+	{
+		if(strpos($table, '.') !== false)
+		{
+			throw new UnsupportedException('SQLite cannot '.$what.' "'.$table.'" here: it belongs to an attached database.');
+		}
+
+		$this->quote($table);
+	}
+
+	/**
+	 * @param TableDefinition $table
+	 * @param string $name
+	 * @return ColumnDefinition
+	 * @throws QueryException when the table has no such column
+	 */
+	private static function requireColumn(TableDefinition $table, $name)
+	{
+		$column = $table->getColumn($name);
+
+		if($column === null)
+		{
+			throw new QueryException('Table "'.$table->getName().'" has no column "'.$name.'".');
+		}
+
+		return $column;
+	}
+
+	/**
+	 * @param TableDefinition $table
+	 * @param string $column
+	 * @return bool whether an index holds the column
+	 */
+	private static function isIndexed(TableDefinition $table, $column)
+	{
+		foreach($table->getIndexes() as $index)
+		{
+			if(in_array($column, $index->getColumnNames(), true))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * A copy with a column added, or put in place of another, where $after says.
+	 *
+	 * @param TableDefinition $table
+	 * @param ColumnDefinition $column
+	 * @param string|null $after null for the end (or, when replacing, the replaced column's place),
+	 *                           {@see SchemaBuilder::FIRST}, or the column to follow, in any case
+	 * @param string|null $replaces the column it takes the place of
+	 * @return TableDefinition
+	 */
+	private static function withColumn(TableDefinition $table, ColumnDefinition $column, $after, $replaces = null)
+	{
+		$columns = array();
+		$placed = false;
+		$anchor = ($after === null || $after === SchemaBuilder::FIRST) ? null : $table->getColumn($after);
+
+		if($anchor !== null)
+		{
+			$after = $anchor->getName();
+		}
+
+		if($after === SchemaBuilder::FIRST)
+		{
+			$columns[] = $column;
+			$placed = true;
+		}
+
+		foreach($table->getColumns() as $name => $existing)
+		{
+			if($name === $replaces)
+			{
+				if($after === null)
+				{
+					$columns[] = $column;
+					$placed = true;
+				}
+
+				continue;
+			}
+
+			$columns[] = $existing;
+
+			if($after !== null && $name === $after && !$placed)
+			{
+				$columns[] = $column;
+				$placed = true;
+			}
+		}
+
+		if(!$placed)
+		{
+			if($after !== null && $after !== SchemaBuilder::FIRST)
+			{
+				throw new QueryException('Table "'.$table->getName().'" has no column "'.$after.'" to place "'.$column->getName().'" after.');
+			}
+
+			$columns[] = $column;
+		}
+
+		$indexes = $table->getIndexes();
+
+		if($replaces !== null && $replaces !== $column->getName())
+		{
+			$indexes = self::renameInIndexes($indexes, $replaces, $column->getName());
+		}
+
+		return new TableDefinition($table->getName(), $columns, $indexes, $table->getOptions());
+	}
+
+	/**
+	 * A copy without a column; an index loses the column, and goes when it holds nothing else, as in MySQL.
+	 *
+	 * @param TableDefinition $table
+	 * @param string $name
+	 * @return TableDefinition
+	 */
+	private static function withoutColumn(TableDefinition $table, $name)
+	{
+		$columns = $table->getColumns();
+		unset($columns[$name]);
+		$indexes = array();
+
+		foreach($table->getIndexes() as $index)
+		{
+			$parts = array();
+
+			foreach($index->getParts() as $part)
+			{
+				if($part['column'] !== $name)
+				{
+					$parts[] = $part;
+				}
+			}
+
+			if(!empty($parts))
+			{
+				$indexes[] = new IndexDefinition($index->getName(), $index->getKind(), $parts);
+			}
+		}
+
+		return new TableDefinition($table->getName(), $columns, $indexes, $table->getOptions());
+	}
+
+	/**
+	 * @param TableDefinition $table
+	 * @param IndexDefinition $index
+	 * @return TableDefinition
+	 */
+	private static function withIndex(TableDefinition $table, IndexDefinition $index)
+	{
+		if($table->getIndex($index->getName()) !== null)
+		{
+			throw new QueryException('Table "'.$table->getName().'" already has an index "'.$index->getName().'".');
+		}
+
+		$indexes = $table->getIndexes();
+		$indexes[] = $index;
+
+		return new TableDefinition($table->getName(), $table->getColumns(), $indexes, $table->getOptions());
+	}
+
+	/**
+	 * @param TableDefinition $table
+	 * @param string $name
+	 * @return TableDefinition
+	 */
+	private static function withoutIndex(TableDefinition $table, $name)
+	{
+		$indexes = $table->getIndexes();
+		unset($indexes[$name]);
+
+		return new TableDefinition($table->getName(), $table->getColumns(), $indexes, $table->getOptions());
+	}
+
+	/**
+	 * @param IndexDefinition[] $indexes
+	 * @param string $from
+	 * @param string $to
+	 * @return IndexDefinition[]
+	 */
+	private static function renameInIndexes(array $indexes, $from, $to)
+	{
+		$renamed = array();
+
+		foreach($indexes as $index)
+		{
+			$parts = array();
+
+			foreach($index->getParts() as $part)
+			{
+				if($part['column'] === $from)
+				{
+					$part['column'] = $to;
+				}
+
+				$parts[] = $part;
+			}
+
+			$renamed[] = new IndexDefinition($index->getName(), $index->getKind(), $parts);
+		}
+
+		return $renamed;
 	}
 
 	/**

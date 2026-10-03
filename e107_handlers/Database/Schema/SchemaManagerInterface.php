@@ -84,4 +84,48 @@ interface SchemaManagerInterface
 	 * @return int|bool what the connection returned for the emptying statement; false on error
 	 */
 	public function truncateTable($table);
+
+	/**
+	 * The statements that create a table from e107's schema DSL: column definitions with their names and key
+	 * clauses as core_sql.php and plugin *_sql.php files write them, and MySQL table options.
+	 *
+	 * @param string $table physical name of the table to create
+	 * @param string[] $definitions column and key definitions in the schema DSL
+	 * @param string $options table options in the schema DSL with a leading space, e.g. ' ENGINE=InnoDB', or ''
+	 * @return string[] the statements, in order
+	 * @throws \e107\Database\Exception\UnsupportedException when a definition holds what the engine cannot build
+	 */
+	public function compileCreateTable($table, array $definitions, $options = '');
+
+	/**
+	 * The statements that rename a table, in order: on MySQL one RENAME TABLE; elsewhere also whatever keeps the
+	 * table's indexes named after it.
+	 *
+	 * @param string $from physical name of the table to rename
+	 * @param string $to physical name it takes
+	 * @return string[]
+	 * @throws \e107\Database\Exception\QueryException when the engine must read the table and there is no such table
+	 */
+	public function compileRenameTable($from, $to);
+
+	/**
+	 * The statements that rebuild tables to reclaim their unused space: on MySQL one OPTIMIZE TABLE of them all; on
+	 * SQLite one VACUUM, which rebuilds the whole database whichever tables are named.
+	 *
+	 * @param string[] $tables physical table names
+	 * @return string[]
+	 */
+	public function compileOptimizeTable(array $tables);
+
+	/**
+	 * The statements that make a batch of changes to a table, in order: on MySQL one ALTER TABLE; elsewhere one
+	 * statement per change, a rebuild of the table, or none for a change the engine has no notion of.
+	 *
+	 * @param string $table physical name of the table to change
+	 * @param TableOperation[] $operations
+	 * @return string[]
+	 * @throws \e107\Database\Exception\UnsupportedException when the engine cannot make a change
+	 * @throws \e107\Database\Exception\QueryException when the table cannot be read
+	 */
+	public function compileAlterTable($table, array $operations);
 }

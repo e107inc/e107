@@ -13,6 +13,7 @@ namespace e107\Database\Schema;
 use db_verify;
 use e107;
 use e107\Database\ConnectionInterface;
+use e107\Database\Exception\QueryException;
 use e107\Database\Exception\UnsupportedException;
 use e107\Database\IdentifierFilter;
 use e107\Database\Platform\PlatformInterface;
@@ -89,7 +90,7 @@ class SchemaBuilder
 	 */
 	public function table($table)
 	{
-		return new Table($this->db, $this->platform, $this->quoteTable($table));
+		return new Table($this->db, $this->platform, $this->resolveTable($table));
 	}
 
 	/**
@@ -107,7 +108,7 @@ class SchemaBuilder
 	 */
 	public function tablePhysical($table)
 	{
-		return new Table($this->db, $this->platform, $this->quotePhysicalTable($table));
+		return new Table($this->db, $this->platform, $this->resolvePhysicalTable($table));
 	}
 
 	/**
@@ -267,9 +268,7 @@ class SchemaBuilder
 			throw new InvalidArgumentException('createTable() needs at least one column.');
 		}
 
-		$sql = $this->platform->compileCreateTable($this->quoteTable($table), $defs, $this->_resolveOptions($options));
-
-		return $this->db->execute($sql);
+		return $this->runStatements($this->db->getSchemaManager()->compileCreateTable($this->resolveTable($table), $defs, $this->_resolveOptions($options)));
 	}
 
 	/**
@@ -290,9 +289,7 @@ class SchemaBuilder
 			throw new InvalidArgumentException('createTableRaw() expects a SqlFragment body fragment (e.g. $qb->raw(...)); a bare string is not accepted.');
 		}
 
-		$sql = $this->platform->compileCreateTable($this->quoteTable($table), array($body->getSql()), $this->_resolveOptions($options));
-
-		return $this->db->execute($sql);
+		return $this->runStatements($this->db->getSchemaManager()->compileCreateTable($this->resolveTable($table), array($body->getSql()), $this->_resolveOptions($options)));
 	}
 
 	/**
@@ -312,29 +309,63 @@ class SchemaBuilder
 	 *                       vouched trailing-options fragment.
 	 * @return string
 	 * @throws InvalidArgumentException when $body is not a vouched fragment.
+	 * @throws UnsupportedException when the engine needs several statements; see
+	 *                              {@see SchemaBuilder::buildCreateTablePhysicalStatements()}.
 	 */
 	public function buildCreateTablePhysicalRaw($table, $body, $options = array())
+	{
+		$statements = $this->buildCreateTablePhysicalStatements($table, $body, $options);
+
+		if(count($statements) !== 1)
+		{
+			throw new UnsupportedException('Creating this table takes '.count($statements).' statements on this engine; read them with buildCreateTablePhysicalStatements().');
+		}
+
+		return reset($statements);
+	}
+
+	/**
+	 * The statements, in order, that create a literal physical table from a
+	 * vouched body fragment in the schema DSL: one CREATE TABLE on MySQL, which
+	 * reads the body as written; on another engine the table rendered in its own
+	 * dialect, followed by its CREATE INDEX statements.
+	 * @param string $table Logical table name (prefix applied, no routing).
+	 * @param SqlFragment $body Vouched inner column/key block.
+	 * @param array|SqlFragment $options ['engine' => ..., 'charset' => ...] or a
+	 *                       vouched trailing-options fragment.
+	 * @return string[]
+	 * @throws InvalidArgumentException when $body is not a vouched fragment.
+	 */
+	public function buildCreateTablePhysicalStatements($table, $body, $options = array())
 	{
 		if(!$body instanceof SqlFragment)
 		{
 			throw new InvalidArgumentException('buildCreateTablePhysicalRaw() expects a SqlFragment body fragment (e.g. $qb->raw(...)); a bare string is not accepted.');
 		}
 
-		return $this->platform->compileCreateTable($this->quotePhysicalTable($table), array($body->getSql()), $this->_resolveOptions($options));
+		return $this->db->getSchemaManager()->compileCreateTable($this->resolvePhysicalTable($table), array($body->getSql()), $this->_resolveOptions($options));
 	}
 
 	/**
-	 * Rename a table.
+	 * Rename a table, its indexes going with it.
 	 *
 	 * @param string $from
 	 * @param string $to
-	 * @return int|bool
+	 * @return int|bool false, as on MySQL, when there is no such table
+	 * @throws InvalidArgumentException on an invalid table name.
 	 */
 	public function renameTable($from, $to)
 	{
-		$sql = $this->platform->compileRenameTable($this->quoteTable($from), $this->quoteTable($to));
+		try
+		{
+			$statements = $this->db->getSchemaManager()->compileRenameTable($this->resolveTable($from), $this->resolveTable($to));
+		}
+		catch(QueryException $e)
+		{
+			return false;
+		}
 
-		return $this->db->execute($sql);
+		return $this->runStatements($statements);
 	}
 
 	/**
@@ -346,26 +377,19 @@ class SchemaBuilder
 	 */
 	public function optimizeTable($tables)
 	{
-		if(!is_array($tables))
+		$physical = array();
+
+		foreach((is_array($tables) ? $tables : array($tables)) as $table)
 		{
-			$tables = array($tables);
+			$physical[] = $this->resolvePhysicalTable($table);
 		}
 
-		$quoted = array();
-
-		foreach($tables as $table)
-		{
-			$quoted[] = $this->quotePhysicalTable($table);
-		}
-
-		if(count($quoted) === 0)
+		if(count($physical) === 0)
 		{
 			throw new InvalidArgumentException('optimizeTable() needs at least one table.');
 		}
 
-		$sql = $this->platform->compileOptimizeTable($quoted);
-
-		return $this->db->execute($sql);
+		return $this->runStatements($this->db->getSchemaManager()->compileOptimizeTable($physical));
 	}
 
 	/**

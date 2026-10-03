@@ -11,18 +11,20 @@
 namespace e107\Database\Schema;
 
 use e107\Database\ConnectionInterface;
+use e107\Database\Exception\QueryException;
+use e107\Database\Exception\UnsupportedException;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\SqlFragment;
 use InvalidArgumentException;
 use RuntimeException;
 
 require_once(__DIR__.'/SchemaBuilderTrait.php');
+require_once(__DIR__.'/TableOperation.php');
 
 /**
- * A batch of ALTER TABLE clauses targeting one table, compiled into a single
- * statement. Obtained from {@see SchemaBuilder::table()}; every verb returns $this
- * for chaining and the accumulated clauses run together when
- * {@see Table::execute()} is called.
+ * A batch of changes to one table. Obtained from {@see SchemaBuilder::table()};
+ * every verb returns $this for chaining and the accumulated changes run together,
+ * all or none, when {@see Table::execute()} is called.
  *
  * The same identifier/definition guards as {@see SchemaBuilder} apply (via the
  * shared {@see SchemaBuilderTrait} trait), so a bad identifier or a bare-string
@@ -32,22 +34,22 @@ class Table
 {
 	use SchemaBuilderTrait;
 
-	/** @var string backtick-quoted physical table name */
-	private $quotedTable;
+	/** @var string unquoted physical table name */
+	private $physicalTable;
 
-	/** @var string[] accumulated ALTER clauses */
-	private $clauses = array();
+	/** @var TableOperation[] accumulated changes */
+	private $operations = array();
 
 	/**
 	 * @param ConnectionInterface $db
 	 * @param PlatformInterface $platform
-	 * @param string $quotedTable Already-validated, backtick-quoted table name.
+	 * @param string $physicalTable Already-resolved, unquoted physical table name.
 	 */
-	public function __construct($db, $platform, $quotedTable)
+	public function __construct($db, $platform, $physicalTable)
 	{
 		$this->db = $db;
 		$this->platform = $platform;
-		$this->quotedTable = $quotedTable;
+		$this->physicalTable = (string) $physicalTable;
 	}
 
 	/**
@@ -59,7 +61,8 @@ class Table
 	 */
 	public function addColumn($name, $definition, $after = null)
 	{
-		$this->clauses[] = 'ADD COLUMN '.$this->quoteColumn($name).' '.$this->resolveColumnDefinition($definition).$this->_position($after);
+		$sql = $this->resolveColumnDefinition($definition);
+		$this->operations[] = TableOperation::addColumn('ADD COLUMN '.$this->quoteColumn($name).' '.$sql.$this->_position($after), $name, $sql, $after);
 
 		return $this;
 	}
@@ -72,7 +75,8 @@ class Table
 	 */
 	public function modifyColumn($name, $definition, $after = null)
 	{
-		$this->clauses[] = 'MODIFY COLUMN '.$this->quoteColumn($name).' '.$this->resolveColumnDefinition($definition).$this->_position($after);
+		$sql = $this->resolveColumnDefinition($definition);
+		$this->operations[] = TableOperation::modifyColumn('MODIFY COLUMN '.$this->quoteColumn($name).' '.$sql.$this->_position($after), $name, $sql, $after);
 
 		return $this;
 	}
@@ -87,7 +91,8 @@ class Table
 	 */
 	public function addColumnRaw($definition, $after = null)
 	{
-		$this->clauses[] = 'ADD '.$this->_vouchedDefinition($definition, 'addColumnRaw').$this->_position($after);
+		$sql = $this->_vouchedDefinition($definition, 'addColumnRaw');
+		$this->operations[] = TableOperation::addNamedColumn('ADD '.$sql.$this->_position($after), $sql, $after);
 
 		return $this;
 	}
@@ -101,7 +106,8 @@ class Table
 	 */
 	public function modifyColumnRaw($definition)
 	{
-		$this->clauses[] = 'MODIFY '.$this->_vouchedDefinition($definition, 'modifyColumnRaw');
+		$sql = $this->_vouchedDefinition($definition, 'modifyColumnRaw');
+		$this->operations[] = TableOperation::modifyNamedColumn('MODIFY '.$sql, $sql);
 
 		return $this;
 	}
@@ -115,7 +121,8 @@ class Table
 	 */
 	public function changeColumn($oldName, $newName, $definition, $after = null)
 	{
-		$this->clauses[] = 'CHANGE COLUMN '.$this->quoteColumn($oldName).' '.$this->quoteColumn($newName).' '.$this->resolveColumnDefinition($definition).$this->_position($after);
+		$sql = $this->resolveColumnDefinition($definition);
+		$this->operations[] = TableOperation::changeColumn('CHANGE COLUMN '.$this->quoteColumn($oldName).' '.$this->quoteColumn($newName).' '.$sql.$this->_position($after), $oldName, $newName, $sql, $after);
 
 		return $this;
 	}
@@ -126,7 +133,7 @@ class Table
 	 */
 	public function dropColumn($name)
 	{
-		$this->clauses[] = 'DROP COLUMN '.$this->quoteColumn($name);
+		$this->operations[] = TableOperation::dropColumn('DROP COLUMN '.$this->quoteColumn($name), $name);
 
 		return $this;
 	}
@@ -137,7 +144,8 @@ class Table
 	 */
 	public function addIndex($index)
 	{
-		$this->clauses[] = 'ADD '.$this->resolveIndexDefinition($index);
+		$sql = $this->resolveIndexDefinition($index);
+		$this->operations[] = TableOperation::addIndex('ADD '.$sql, $sql);
 
 		return $this;
 	}
@@ -148,7 +156,7 @@ class Table
 	 */
 	public function dropIndex($name)
 	{
-		$this->clauses[] = 'DROP INDEX '.$this->quoteColumn($name);
+		$this->operations[] = TableOperation::dropIndex('DROP INDEX '.$this->quoteColumn($name), $name);
 
 		return $this;
 	}
@@ -159,7 +167,8 @@ class Table
 	 */
 	public function addPrimaryKey($columns)
 	{
-		$this->clauses[] = 'ADD '.Index::primary($columns)->getDefinition();
+		$sql = Index::primary($columns)->getDefinition();
+		$this->operations[] = TableOperation::addIndex('ADD '.$sql, $sql);
 
 		return $this;
 	}
@@ -169,7 +178,7 @@ class Table
 	 */
 	public function dropPrimaryKey()
 	{
-		$this->clauses[] = 'DROP PRIMARY KEY';
+		$this->operations[] = TableOperation::dropPrimaryKey('DROP PRIMARY KEY');
 
 		return $this;
 	}
@@ -180,7 +189,8 @@ class Table
 	 */
 	public function engine($engine)
 	{
-		$this->clauses[] = 'ENGINE = '.$this->validateEngine($engine);
+		$engine = $this->validateEngine($engine);
+		$this->operations[] = TableOperation::engine('ENGINE = '.$engine, $engine);
 
 		return $this;
 	}
@@ -191,7 +201,8 @@ class Table
 	 */
 	public function charset($charset)
 	{
-		$this->clauses[] = 'CONVERT TO CHARACTER SET '.$this->validateCharset($charset);
+		$charset = $this->validateCharset($charset);
+		$this->operations[] = TableOperation::charset('CONVERT TO CHARACTER SET '.$charset, $charset);
 
 		return $this;
 	}
@@ -200,8 +211,11 @@ class Table
 	 * Append a vouched, already-rendered ALTER clause (the escape hatch for
 	 * clauses the structured verbs cannot spell, e.g. an inline PRIMARY KEY or a
 	 * FIRST placement combined with other attributes). The table identifier is
-	 * still owned and quoted here; only the clause body is developer-vouched, so
-	 * it must never carry user input.
+	 * still owned here, and quoted by the schema manager; only the clause body
+	 * is developer-vouched, so it must never carry user input. The clause is
+	 * MySQL's, so only an engine that reads the schema DSL as its own dialect
+	 * can run it; another throws {@see UnsupportedException} when the batch is
+	 * compiled.
 	 *
 	 * @param SqlFragment $clause
 	 * @return $this
@@ -214,35 +228,86 @@ class Table
 			throw new InvalidArgumentException('addRaw() expects a SqlFragment (e.g. $qb->raw(...)); a bare string is not accepted.');
 		}
 
-		$this->clauses[] = $clause->getSql();
+		$this->operations[] = TableOperation::raw($clause->getSql());
 
 		return $this;
 	}
 
 	/**
-	 * The compiled ALTER TABLE statement.
+	 * The changes batched so far.
 	 *
-	 * @return string
-	 * @throws RuntimeException when no clause has been added.
+	 * @return TableOperation[]
 	 */
-	public function getSQL()
+	public function getOperations()
 	{
-		if(count($this->clauses) === 0)
+		return $this->operations;
+	}
+
+	/**
+	 * The statements that make the batched changes on this connection's engine,
+	 * in order: one ALTER TABLE on MySQL; elsewhere possibly several, or none for
+	 * a change the engine has no notion of (a storage engine on SQLite).
+	 *
+	 * @return string[]
+	 * @throws RuntimeException when no change has been added.
+	 * @throws UnsupportedException when the engine cannot make a change.
+	 * @throws QueryException when the table, or a column or index a change names, is not there.
+	 * @throws InvalidArgumentException when a definition cannot be read, or a column or index is added twice.
+	 */
+	public function getStatements()
+	{
+		if(count($this->operations) === 0)
 		{
 			throw new RuntimeException('An ALTER TABLE needs at least one change; none was added.');
 		}
 
-		return $this->platform->compileAlterTable($this->quotedTable, $this->clauses);
+		return $this->db->getSchemaManager()->compileAlterTable($this->physicalTable, $this->operations);
 	}
 
 	/**
-	 * Compile and run the batched ALTER TABLE.
+	 * The compiled statement, for a batch that compiles to exactly one, as it
+	 * always does on MySQL.
 	 *
-	 * @return int|bool the {@see ConnectionInterface::execute()} result.
+	 * @return string
+	 * @throws RuntimeException when no change has been added.
+	 * @throws UnsupportedException when the engine needs other than one statement; see {@see Table::getStatements()}.
+	 */
+	public function getSQL()
+	{
+		$statements = $this->getStatements();
+
+		if(count($statements) !== 1)
+		{
+			throw new UnsupportedException('These changes take '.count($statements).' statements on this engine; read them with getStatements().');
+		}
+
+		return reset($statements);
+	}
+
+	/**
+	 * Compile and run the batched changes, several statements in one transaction.
+	 *
+	 * @return int|bool the {@see ConnectionInterface::execute()} result of a single statement; for several, whether they
+	 *                  all ran; false, as on MySQL, for a change the table cannot take.
+	 * @throws RuntimeException when no change has been added.
+	 * @throws UnsupportedException when the engine cannot make a change.
 	 */
 	public function execute()
 	{
-		return $this->db->execute($this->getSQL());
+		try
+		{
+			$statements = $this->getStatements();
+		}
+		catch(QueryException $e)
+		{
+			return false;
+		}
+		catch(InvalidArgumentException $e)
+		{
+			return false;
+		}
+
+		return $this->runStatements($statements);
 	}
 
 	/**
