@@ -315,26 +315,26 @@ class e_db_pdo implements e_db
 
 		if(is_array($query) && !empty($query['PREPARE']))
 		{
-			/** @var PDOStatement $prep */
-			$prep = $this->mySQLaccess->prepare($query['PREPARE']);
-
-			if(!empty($query['BIND']))
-			{
-				foreach($query['BIND'] as $k=>$v)
-				{
-					// A PARAM_NULL bind must carry a null value: PHP's modern
-					// PDO discards the value and sends SQL NULL either way,
-					// but PHP 5's pdo_mysql sends whatever value it was
-					// handed, silently un-nulling the bind.
-					$value = ($v['type'] === PDO::PARAM_NULL) ? null : $v['value'];
-					$prep->bindValue(':'.$k, $value, $v['type']);
-				}
-			}
-
 			$execute = !empty($query['EXECUTE']) ? $query['EXECUTE'] : null;
 
 			try
 			{
+				/** @var PDOStatement $prep */
+				$prep = $this->mySQLaccess->prepare($query['PREPARE']);
+
+				if(!empty($query['BIND']))
+				{
+					foreach($query['BIND'] as $k=>$v)
+					{
+						// A PARAM_NULL bind must carry a null value: PHP's modern
+						// PDO discards the value and sends SQL NULL either way,
+						// but PHP 5's pdo_mysql sends whatever value it was
+						// handed, silently un-nulling the bind.
+						$value = ($v['type'] === PDO::PARAM_NULL) ? null : $v['value'];
+						$prep->bindValue(':'.$k, $value, $v['type']);
+					}
+				}
+
 				$prep->execute($execute);
 				$sQryRes = ($qry_from == 'db_Select') ? $prep : $prep->rowCount();
 			}
