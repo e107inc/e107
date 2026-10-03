@@ -257,6 +257,30 @@ abstract class AbstractPlatform implements PlatformInterface
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public function countsConflictingRows()
+	{
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function reportsInsertIdForEveryTable()
+	{
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function resetsAutoIncrementOnAnyTable()
+	{
+		return false;
+	}
+
+	/**
 	 * @param array $assignments quoted column => value expression
 	 * @return string "col = expr, ..."
 	 */

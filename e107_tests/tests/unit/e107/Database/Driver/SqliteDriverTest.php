@@ -117,6 +117,55 @@ class SqliteDriverTest extends \Test\Unit
 		$this->assertSame('2', $this->db->createQueryBuilder()->select('item_hits')->from('item')->where('item_name', 'u')->fetchOne());
 	}
 
+	public function testAnUpdateThroughTheBuilderCountsTheRowsItChanges()
+	{
+		$this->db->insert('item', array('item_name' => 'a', 'item_hits' => 1, 'item_body' => ''));
+		$this->db->insert('item', array('item_name' => 'b', 'item_hits' => 2, 'item_body' => ''));
+		$update = function($hits)
+		{
+			return $this->db->createQueryBuilder()->update('item')->set('item_hits', $hits)->execute();
+		};
+
+		$this->assertSame(1, $update(2), 'the row already holding 2 is not changed');
+		$this->assertSame(0, $update(2));
+	}
+
+	public function testALegacyReplaceAndDuplicateKeyInsertReportWhatTheyDidAsMysqlDoes()
+	{
+		$this->assertSame(1, $this->db->replace('item', array('item_name' => 'r', 'item_body' => '')), 'added');
+		$id = $this->db->retrieve('item', 'item_id', "item_name = 'r'");
+		$this->assertSame(2, $this->db->replace('item', array('item_id' => $id, 'item_name' => 'r', 'item_hits' => 3, 'item_body' => '')), 'replaced');
+
+		$upsert = array('item_name' => 'r', 'item_hits' => 4, 'item_body' => '', '_DUPLICATE_KEY_UPDATE' => true);
+		$this->assertTrue($this->db->insert('item', $upsert), 'updated through the unique name');
+		$this->assertSame(0, $this->db->insert('item', $upsert), 'nothing to change');
+
+		$fresh = array('item_name' => 'f', 'item_body' => '', '_DUPLICATE_KEY_UPDATE' => true);
+		$this->assertSame((int) $id + 2, $this->db->insert('item', $fresh),
+			'inserted: the new id, one past the value the unchanged upsert spent; the update gave its own back');
+	}
+
+	public function testAnUpsertThatUpdatesATableWithoutAutoIncrementReportsNoError()
+	{
+		$this->db->close();
+		$this->removeFiles();
+		touch($this->file);
+		$this->db = $this->connect();
+		$this->createTable("CREATE TABLE plain (plain_key varchar(10) NOT NULL default '', plain_value varchar(10) NOT NULL default '', UNIQUE KEY plain_key (plain_key))");
+
+		$this->assertTrue($this->db->insert('plain', array('plain_key' => 'k', 'plain_value' => 'a')));
+		$this->assertTrue($this->db->insert('plain', array('plain_key' => 'k', 'plain_value' => 'b', '_DUPLICATE_KEY_UPDATE' => true)));
+		$this->assertSame(0, $this->db->getLastErrorNumber(), $this->db->getLastErrorText());
+	}
+
+	public function testAnInsertIntoATableWithoutAutoIncrementReportsNoId()
+	{
+		$this->createTable("CREATE TABLE plain (plain_key varchar(10) NOT NULL default '', UNIQUE KEY plain_key (plain_key))");
+
+		$this->assertTrue($this->db->insert('plain', array('plain_key' => 'k')));
+		$this->assertTrue($this->db->createQueryBuilder()->insert('plain')->insertGetId(array('plain_key' => 'l')));
+	}
+
 	public function testTheLegacyArrayInsertAndItsFieldTypesWork()
 	{
 		$id = $this->db->insert('item', array('item_name' => 'legacy', 'item_hits' => '12', 'item_body' => 'b'));

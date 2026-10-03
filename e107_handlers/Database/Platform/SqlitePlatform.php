@@ -83,17 +83,12 @@ class SqlitePlatform extends AbstractPlatform
 			throw new UnsupportedException('SQLite has no INSERT '.$modifier.' for an upsert: a key collision its DO UPDATE makes still fails.');
 		}
 
-		$guard = array();
-
-		foreach($updateAssignments as $column => $expression)
-		{
-			$guard[] = $column.' IS NOT ('.$expression.') COLLATE BINARY';
-		}
+		$guard = $this->changeGuard($updateAssignments);
 
 		return $this->compileInsert($quotedTable, $columns, $tuples)
 			.' ON CONFLICT'.(empty($conflictColumns) ? '' : ' ('.implode(', ', $conflictColumns).')')
 			.' DO UPDATE SET '.$this->assignmentList($updateAssignments)
-			.(empty($guard) ? '' : ' WHERE '.implode(' OR ', $guard));
+			.(($guard === null) ? '' : ' WHERE '.$guard);
 	}
 
 	/**
@@ -105,13 +100,21 @@ class SqlitePlatform extends AbstractPlatform
 	}
 
 	/**
-	 * A limited UPDATE picks its rows through their rowids, which every e107 table has.
+	 * Counts the rows changed, as MySQL does; a limit picks its rows by rowid from the rows matched.
 	 *
 	 * @inheritDoc
 	 */
 	public function compileUpdate($quotedTable, array $assignments, $where, $limit = null)
 	{
-		return 'UPDATE '.$quotedTable.' SET '.$this->assignmentList($assignments).$this->limitedWhere($quotedTable, $where, $limit);
+		$where = $this->limitedWhere($quotedTable, $where, $limit);
+		$guard = $this->changeGuard($assignments);
+
+		if($guard !== null)
+		{
+			$where = ($where === '') ? ' WHERE '.$guard : ' WHERE ('.$this->condition($where).') AND '.$guard;
+		}
+
+		return 'UPDATE '.$quotedTable.' SET '.$this->assignmentList($assignments).$where;
 	}
 
 	/**
@@ -480,21 +483,66 @@ class SqlitePlatform extends AbstractPlatform
 	}
 
 	/**
+	 * Puts the sequence back to the highest rowid in use, in the table's own database when it is an attached one.
+	 *
 	 * @inheritDoc
 	 */
-	public function supportsTransactionalDdl()
+	public function compileAutoIncrementReset($quotedTable)
+	{
+		$name = str_replace('`', '', $quotedTable);
+		$quoted = $this->quoteIdentifier($name);
+
+		if($quoted === false)
+		{
+			throw new \InvalidArgumentException('Not a table name: '.$quotedTable);
+		}
+
+		$parts = explode('.', trim($name));
+		$table = array_pop($parts);
+		$schema = empty($parts) ? '' : $this->quoteDeclared($parts[0]).'.';
+
+		return 'UPDATE '.$schema.'sqlite_sequence SET seq = (SELECT COALESCE(MAX(rowid), 0) FROM '.$quoted.") WHERE name = '".$table."'";
+	}
+
+	/**
+	 * last_insert_rowid() follows every insert, whatever the table.
+	 *
+	 * @inheritDoc
+	 */
+	public function reportsInsertIdForEveryTable()
 	{
 		return true;
 	}
 
 	/**
-	 * Only NULL takes the next value; 0 is stored as 0.
-	 *
-	 * @inheritDoc
+	 * @param array $assignments quoted column => value expression
+	 * @return string|null the condition under which they change a row, a change of letter case included; null when
+	 *                     there is nothing to assign
 	 */
-	public function assignsAutoIncrementOnZero()
+	private function changeGuard(array $assignments)
 	{
-		return false;
+		$tests = array();
+
+		foreach($assignments as $column => $expression)
+		{
+			$tests[] = $column.' IS NOT ('.$expression.') COLLATE BINARY';
+		}
+
+		return empty($tests) ? null : '('.implode(' OR ', $tests).')';
+	}
+
+	/**
+	 * @param string $where ' WHERE ...', as the compile methods take it
+	 * @return string the condition alone
+	 */
+	private function condition($where)
+	{
+		if(!preg_match('/^\s*WHERE\s+(.+)$/is', $where, $match))
+		{
+			throw new \InvalidArgumentException('Expected a WHERE clause, got: '.$where);
+		}
+
+		return $match[1];
 	}
 
 	/**

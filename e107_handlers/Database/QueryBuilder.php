@@ -1942,6 +1942,11 @@ class QueryBuilder
 			return false;
 		}
 
+		if($this->platform->reportsInsertIdForEveryTable() && $this->db->getAutoIncrementColumn($this->table) === null)
+		{
+			return true;
+		}
+
 		return $this->db->lastInsertId();
 	}
 
@@ -1951,6 +1956,8 @@ class QueryBuilder
 	 * {@see QueryBuilder::values()} (or {@see QueryBuilder::set()}); every value is
 	 * bound. The dialect-specific statement is produced by the platform, so the
 	 * call site stays portable.
+	 *
+	 * execute() counts a replaced row 2 or more on MySQL and 1 on SQLite ({@see PlatformInterface::countsConflictingRows()}).
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @return QueryBuilder $this
@@ -2272,6 +2279,8 @@ class QueryBuilder
 	 * would collide on a primary or unique key. Start by naming the table with
 	 * {@see QueryBuilder::insert()}. Every value is bound and the dialect-specific
 	 * statement is produced by the platform, so the call site stays portable.
+	 *
+	 * execute() counts an updated row 2 on MySQL and 1 elsewhere, and an unchanged row 0 ({@see PlatformInterface::countsConflictingRows()}).
 	 *
 	 * <code>
 	 * $qb->insert('user')->upsert(

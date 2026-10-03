@@ -1148,10 +1148,6 @@ abstract class e_db_abstractTest extends \Test\Unit
 			"UPDATE `#user` SET user_signature = 'e_db' WHERE user_id = 1"
 		);
 		$this->assertEquals(1,$result);
-		$result = $this->db->db_Select_gen(
-			"UPDATE `#user` SET user_signature = 'e_db' WHERE user_id = 1"
-		);
-		$this->assertEquals(0,$result);
 
 
 		$qry = "INSERT INTO #core_media_cat(media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order) SELECT media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order FROM #core_media_cat WHERE media_cat_id = 1";
@@ -1168,6 +1164,40 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertFalse($result, $err);
 
 
+	}
+
+	public function testUpdateCountsTheRowsItChanged()
+	{
+		$this->db->delete('tmp');
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => 5, 'tmp_info' => 'same'));
+		$where = "tmp_ip = '127.0.0.1'";
+
+		$this->assertSame(0, $this->db->update('tmp', array('tmp_info' => 'same', 'WHERE' => $where)));
+		$this->assertSame(0, $this->db->update('tmp', array('data' => array('tmp_time' => 'tmp_time + 0'), '_FIELD_TYPES' => array('tmp_time' => 'cmd'), 'WHERE' => $where)));
+		$this->assertSame(0, $this->db->update('tmp', "tmp_info = 'same', tmp_time = 5 WHERE ".$where));
+		$this->assertSame(0, $this->db->update('tmp', "tmp_info = 'same' WHERE ".$where.' LIMIT 1'));
+		$this->assertSame(1, $this->db->update('tmp', "tmp_time = tmp_time + 1 WHERE ".$where));
+	}
+
+	public function testUpdateLimitPicksFromTheMatchedRowsBeforeSkippingTheUnchanged()
+	{
+		$this->db->delete('tmp');
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => 1, 'tmp_info' => 'done'));
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.2', 'tmp_time' => 2, 'tmp_info' => 'todo'));
+
+		$this->assertSame(0, $this->db->update('tmp', "tmp_info = 'done' WHERE tmp_time > 0 LIMIT 1"));
+		$this->assertSame('todo', $this->db->retrieve('tmp', 'tmp_info', "tmp_ip = '127.0.0.2'"));
+	}
+
+	public function testUpdateRunsTextItCannotSplitAsWritten()
+	{
+		$this->db->delete('tmp');
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => 1, 'tmp_info' => 'first'));
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.2', 'tmp_time' => 2, 'tmp_info' => 'second'));
+
+		$this->assertSame(1, $this->db->update('tmp', "tmp_info = 'noted' WHERE tmp_ip = '127.0.0.1' -- a comment"));
+		$this->assertSame(1, $this->db->update('tmp', "tmp_info = 'last' WHERE tmp_time > 0 ORDER BY tmp_time DESC LIMIT 1"));
+		$this->assertSame(array('noted', 'last'), array_column($this->db->retrieve('tmp', 'tmp_info', 'tmp_time > 0 ORDER BY tmp_time', true), 'tmp_info'));
 	}
 
 	public function testInsert()
@@ -1336,6 +1366,48 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$result = $this->db->db_Replace('generic', $insert);
 
 		$this->assertNotEmpty($result);
+	}
+
+	public function testAWriteThatSettlesAKeyConflictReadsTheTableSchemaOnce()
+	{
+		$table = $this->transactionTable();
+		$statements = $this->db->getPlatform()->countsConflictingRows() ? 1 : 2;
+
+		try
+		{
+			$this->assertSame(1, $this->db->replace($table, array('id' => 1, 'v' => 'a')));
+
+			$before = $this->db->queryCount();
+			$this->assertSame(2, $this->db->replace($table, array('id' => 1, 'v' => 'b')));
+			$this->assertSame($statements, $this->db->queryCount() - $before, 'a second REPLACE read the schema again');
+
+			$before = $this->db->queryCount();
+			$this->assertSame(0, $this->db->insert($table, array('data' => array('id' => 1, 'v' => 'b'), '_DUPLICATE_KEY_UPDATE' => 1)));
+			$this->assertSame($statements, $this->db->queryCount() - $before, 'an upsert read the schema again');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testAReplaceCountsAKeyAddedAfterTheTableWasFirstWritten()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1, 'v' => 'a'))->execute();
+			$this->assertSame(1, $this->db->replace($table, array('id' => 2, 'v' => 'b')));
+
+			$this->assertNotFalse($this->db->execute('CREATE UNIQUE INDEX e_db_txn_test_v ON `#'.$table.'` (v)'));
+
+			$this->assertSame(2, $this->db->replace($table, array('id' => 3, 'v' => 'a')), 'the REPLACE missed the row the new key made it delete');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
 	}
 
 	public function testUpdate()

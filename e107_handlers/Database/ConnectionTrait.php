@@ -19,6 +19,7 @@ use e107\Database\Platform\PlatformInterface;
 use e107\Database\Schema\Column;
 use e107\Database\Schema\FieldTypeMap;
 use e107\Database\Schema\Index;
+use e107\Database\Schema\Introspect\IndexSchema;
 use e107\Database\Schema\SchemaBuilder;
 use e107\Database\Schema\SchemaManagerInterface;
 use e107_db_debug;
@@ -559,6 +560,55 @@ trait ConnectionTrait
 		}
 
 		return $this->tableSchemas[$physical];
+	}
+
+	/**
+	 * The rows of a table that already hold a primary or unique key value of $row; a key it leaves out or nulls takes no part.
+	 *
+	 * @param string $table logical table name
+	 * @param array $row column => value about to be written
+	 * @return int
+	 */
+	private function _countConflictingRows($table, array $row)
+	{
+		$schema = $this->_tableSchema($table);
+
+		if($schema === null)
+		{
+			return 0;
+		}
+
+		$qb = $this->_sideConnection()->createQueryBuilder();
+		$keys = array();
+
+		foreach($schema->getIndexes() as $index)
+		{
+			if($index->getKind() !== IndexSchema::KIND_PRIMARY && $index->getKind() !== IndexSchema::KIND_UNIQUE)
+			{
+				continue;
+			}
+
+			$parts = array();
+
+			foreach($index->getColumnNames() as $column)
+			{
+				if(!isset($row[$column]))
+				{
+					continue 2;
+				}
+
+				$parts[] = $qb->expr()->eq($column, $row[$column]);
+			}
+
+			$keys[] = call_user_func_array(array($qb->expr(), 'allOf'), $parts);
+		}
+
+		if(empty($keys))
+		{
+			return 0;
+		}
+
+		return $qb->from($table)->where(call_user_func_array(array($qb->expr(), 'anyOf'), $keys))->count();
 	}
 
 	/**
@@ -2301,6 +2351,20 @@ trait ConnectionTrait
 			$physical = $this->mySQLPrefix.$table;
 			$tuples = array('('.implode(', ', $placeholders).')');
 
+			$conflicting = null;
+
+			if(($REPLACE === true || $DUPEKEY_UPDATE === true) && !$platform->countsConflictingRows())
+			{
+				$values = array();
+
+				foreach($bind as $column => $bound)
+				{
+					$values[$column] = $bound['value'];
+				}
+
+				$conflicting = $this->_countConflictingRows($tableName, $values);
+			}
+
 			if($REPLACE === true)
 			{
 				$query = $platform->compileReplace($physical, $columns, $placeholders);
@@ -2343,6 +2407,11 @@ trait ConnectionTrait
 		{
 			$result = false; // ie. there was an error.
 
+			if($conflicting !== null && $this->mySQLresult === 1)
+			{
+				$this->mySQLresult = ($conflicting > 0) ? 2 : 1;
+			}
+
 			if($this->mySQLresult === 1 ) // insert.
 			{
 				$result = $this->lastInsertId();
@@ -2350,11 +2419,6 @@ trait ConnectionTrait
 			elseif($this->mySQLresult === 2 || $this->mySQLresult === true) // updated
 			{
 				$result = true;
-				// reset auto-increment to prevent gaps.
-				if(($reset = $this->getPlatform()->compileAutoIncrementReset($this->mySQLPrefix.$table)) !== null)
-				{
-					$this->db_Query($reset, NULL, 'db_Insert', $debug, $log_type, $log_remark);
-				}
 			}
 			elseif($this->mySQLresult === 0) // updated (no change)
 			{
@@ -2362,6 +2426,17 @@ trait ConnectionTrait
 			}
 
 			$this->dbError('db_Insert');
+
+			// reset auto-increment to prevent gaps.
+			if($result === true && ($reset = $platform->compileAutoIncrementReset($physical)) !== null
+				&& ($platform->resetsAutoIncrementOnAnyTable() || $this->getAutoIncrementColumn($tableName) !== null))
+			{
+				$this->_keepingLastError(function() use ($reset, $debug, $log_type, $log_remark)
+				{
+					return $this->db_Query($reset, NULL, 'db_Insert', $debug, $log_type, $log_remark);
+				});
+			}
+
 			return $result;
 		}
 
@@ -2370,7 +2445,7 @@ trait ConnectionTrait
 		{
 			if(true === $REPLACE)
 			{
-				$tmp = $this->mySQLresult ;
+				$tmp = ($conflicting !== null && is_int($this->mySQLresult)) ? $this->mySQLresult + $conflicting : $this->mySQLresult;
 				$this->dbError('db_Replace');
 				// $tmp == -1 (error), $tmp == 0 (not modified), $tmp == 1 (added), greater (replaced)
 				if ($tmp == -1) { return false; } // mysql_affected_rows error
@@ -2379,7 +2454,8 @@ trait ConnectionTrait
 
 		//	$tmp = ($this->pdo) ? $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);
 
-			$tmp = $this->lastInsertId();
+			$tmp = ($this->getPlatform()->reportsInsertIdForEveryTable() && $this->getAutoIncrementColumn($tableName) === null)
+				? true : $this->lastInsertId();
 
 			$this->dbError('db_Insert');
 			return ($tmp) ? $tmp : TRUE; // return true even if table doesn't have auto-increment.
@@ -2515,7 +2591,7 @@ trait ConnectionTrait
 			return $this->_refuse("update() needs a data array");
 		}
 
-		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
+		$query = $this->_compileUpdateText($this->mySQLPrefix.$table, $arg);
 
 		if(!empty($this->pdoBind))
 		{
@@ -2546,6 +2622,100 @@ trait ConnectionTrait
 			$this->dbError('db_Update ('.print_r($query, true).')');
 			return false;
 		}
+	}
+
+	/**
+	 * The UPDATE for update()'s text: compiled by the platform when it is assignments, a WHERE and a LIMIT, else as written.
+	 *
+	 * @param string $physicalTable
+	 * @param string $text the SET clause and what follows it, as update() takes it
+	 * @return string the UPDATE statement
+	 */
+	private function _compileUpdateText($physicalTable, $text)
+	{
+		if(!class_exists(SqlLexer::class))
+		{
+			require_once(__DIR__.'/SqlLexer.php');
+		}
+
+		$written = 'UPDATE '.$physicalTable.' SET '.$text;
+		$tokens = SqlLexer::mysql()->tokenize($text.';');
+
+		if(array_column($tokens, 'text') !== array_column(SqlLexer::sqlite()->tokenize($text.';'), 'text') || array_pop($tokens)['text'] !== ';')
+		{
+			return $written;
+		}
+
+		$clauses = array('SET' => array(array()), 'WHERE' => null, 'LIMIT' => null);
+		$order = array_keys($clauses);
+		$clause = 'SET';
+		$depth = 0;
+
+		foreach($tokens as $token)
+		{
+			$depth += ($token['text'] === '(') - ($token['text'] === ')');
+			$keyword = ($depth === 0 && $token['type'] === SqlLexer::T_WORD) ? strtoupper($token['text']) : '';
+
+			if($depth < 0 || $token['type'] === SqlLexer::T_COMMENT || $token['text'] === ';' || $keyword === 'ORDER')
+			{
+				return $written;
+			}
+
+			if(in_array($keyword, $order, true))
+			{
+				if(array_search($keyword, $order, true) <= array_search($clause, $order, true))
+				{
+					return $written;
+				}
+
+				$clause = $keyword;
+				$clauses[$clause] = array(array());
+			}
+			elseif($depth === 0 && $token['text'] === ',')
+			{
+				if($clause !== 'SET')
+				{
+					return $written;
+				}
+
+				$clauses['SET'][] = array();
+			}
+			else
+			{
+				$clauses[$clause][count($clauses[$clause]) - 1][] = $token;
+			}
+		}
+
+		$join = function (array $tokens)
+		{
+			return trim(implode('', array_column($tokens, 'text')));
+		};
+		$assignments = array();
+		$columns = array();
+
+		foreach($clauses['SET'] as $item)
+		{
+			$at = array_keys(array_diff(array_column($item, 'type'), array(SqlLexer::T_WHITESPACE)));
+
+			if(count($at) < 3 || $item[$at[1]]['text'] !== '=' || isset($columns[strtolower($item[$at[0]]['value'])])
+				|| !in_array($item[$at[0]]['type'], array(SqlLexer::T_WORD, SqlLexer::T_QUOTED_IDENTIFIER), true))
+			{
+				return $written;
+			}
+
+			$columns[strtolower($item[$at[0]]['value'])] = true;
+			$assignments[$item[$at[0]]['text']] = $join(array_slice($item, $at[1] + 1));
+		}
+
+		$where = ($clauses['WHERE'] === null) ? null : $join($clauses['WHERE'][0]);
+		$limit = ($clauses['LIMIT'] === null) ? null : $join($clauses['LIMIT'][0]);
+
+		if($depth !== 0 || $where === '' || ($limit !== null && (!ctype_digit($limit) || (string) (int) $limit !== $limit)))
+		{
+			return $written;
+		}
+
+		return $this->getPlatform()->compileUpdate($physicalTable, $assignments, ($where === null) ? '' : ' WHERE '.$where, ($limit === null) ? null : (int) $limit);
 	}
 
 	/**

@@ -318,7 +318,8 @@ use PDOStatement;
 		 * @param string $sql SQL with optional `#table` markers and :named placeholders
 		 * @param array $params name => value, or name => array('value' => mixed, 'type' => ConnectionInterface::PARAM_*)
 		 * @return int|bool row count for result sets (read rows with {@see ConnectionInterface::fetch()});
-		 *                  affected rows for DELETE/INSERT/REPLACE/UPDATE;
+		 *                  affected rows for DELETE/INSERT/REPLACE/UPDATE, an UPDATE counting the
+		 *                  rows it changed on MySQL and the rows it matched on SQLite;
 		 *                  true for other successful statements; false on error
 		 */
 		public function execute($sql, $params = array());
@@ -717,7 +718,9 @@ use PDOStatement;
 		 * @param bool         $debug
 		 * @param string       $log_type
 		 * @param string       $log_remark
-		 * @return int|false number of affected rows, or false on error
+		 * @return int|false number of rows changed, or false on error. Text the dialects read
+		 *         differently, or with a comment or an ORDER BY, runs as written, and SQLite
+		 *         then counts the rows it matched.
 		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
 		 *             <code>
 		 *             $qb = e107::getDb()->createQueryBuilder();

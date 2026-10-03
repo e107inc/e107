@@ -69,28 +69,6 @@ class MysqlPlatform extends AbstractPlatform
 	}
 
 	/**
-	 * @return string
-	 */
-	public function compileReplace($quotedTable, array $columns, array $placeholders)
-	{
-		return 'REPLACE INTO '.$quotedTable
-			.' ('.implode(', ', $columns).')'
-			.' VALUES ('.implode(', ', $placeholders).')';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileInsert($quotedTable, array $columns, array $tuples, $modifier = '')
-	{
-		$verb = ($modifier === 'IGNORE') ? 'INSERT IGNORE INTO' : 'INSERT INTO';
-
-		return $verb.' '.$quotedTable
-			.' ('.implode(', ', $columns).')'
-			.' VALUES '.implode(', ', $tuples);
-	}
-
-	/**
 	 * MySQL limits an UPDATE with a trailing LIMIT.
 	 *
 	 * @inheritDoc
@@ -164,17 +142,6 @@ class MysqlPlatform extends AbstractPlatform
 	public function getSharedLockClause()
 	{
 		return ' LOCK IN SHARE MODE';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileInsertSelect($quotedTable, array $columns, $selectSql, $modifier = '')
-	{
-		$verb = ($modifier === 'IGNORE') ? 'INSERT IGNORE INTO' : 'INSERT INTO';
-		$cols = (count($columns) > 0) ? ' ('.implode(', ', $columns).')' : '';
-
-		return $verb.' '.$quotedTable.$cols.' '.$selectSql;
 	}
 
 	/**
@@ -350,5 +317,34 @@ class MysqlPlatform extends AbstractPlatform
 	public function assignsAutoIncrementOnZero()
 	{
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function countsConflictingRows()
+	{
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function resetsAutoIncrementOnAnyTable()
+	{
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function insertVerb($modifier)
+	{
+		if($modifier === 'IGNORE')
+		{
+			return 'INSERT IGNORE INTO';
+		}
+
+		return parent::insertVerb($modifier);
 	}
 }

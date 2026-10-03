@@ -201,6 +201,14 @@ interface PlatformInterface
 	public function compileAutoIncrementReset($quotedTable);
 
 	/**
+	 * Whether {@see PlatformInterface::compileAutoIncrementReset()}'s statement runs on any table, as MySQL's does,
+	 * rather than only on one with an auto-increment column.
+	 *
+	 * @return bool
+	 */
+	public function resetsAutoIncrementOnAnyTable();
+
+	/**
 	 * Trailing clause that takes an exclusive write lock on the selected rows
 	 * (e.g. ' FOR UPDATE'), including a leading space, or '' if unsupported.
 	 *
@@ -422,4 +430,24 @@ interface PlatformInterface
 	 * @return bool
 	 */
 	public function assignsAutoIncrementOnZero();
+
+	/**
+	 * Whether a write that settles a key conflict counts the conflicting row on
+	 * top of its insert, as MySQL does: an ON DUPLICATE KEY UPDATE that updates
+	 * reports 2, a REPLACE that replaces reports 2 or more. Where it does not,
+	 * the affected-row count cannot tell an insert from an update or a
+	 * replacement.
+	 *
+	 * @return bool
+	 */
+	public function countsConflictingRows();
+
+	/**
+	 * Whether an insert into a table without an auto-increment column still sets
+	 * the connection's last insert id, as SQLite does with the rowid every table
+	 * has. MySQL leaves it at 0 for such a table.
+	 *
+	 * @return bool
+	 */
+	public function reportsInsertIdForEveryTable();
 }

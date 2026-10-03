@@ -2087,6 +2087,8 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertTrue($platform->supportsFullTextIndexes());
 			$this->assertFalse($platform->supportsTransactionalDdl());
 			$this->assertTrue($platform->assignsAutoIncrementOnZero());
+			$this->assertTrue($platform->countsConflictingRows());
+			$this->assertFalse($platform->reportsInsertIdForEveryTable());
 		}
 	}
 

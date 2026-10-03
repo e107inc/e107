@@ -97,13 +97,56 @@ class SqlitePlatformTest extends \Test\Unit
 		$this->assertSame(array('1|ABC|6'), $this->column("SELECT id || '|' || name || '|' || hits FROM u"));
 	}
 
+	public function testAnUpdateCountsTheRowsItChangesAsMysqlDoes()
+	{
+		$this->pdo->exec('CREATE TABLE c (id INTEGER PRIMARY KEY, name TEXT COLLATE NOCASE, hits INTEGER, note TEXT)');
+		$this->pdo->exec("INSERT INTO c VALUES (1, 'abc', 5, NULL), (2, 'abc', 6, 'x')");
+		$update = function($sql, array $params)
+		{
+			$statement = $this->pdo->prepare($sql);
+			$statement->execute($params);
+
+			return $statement->rowCount();
+		};
+
+		$set = $this->platform->compileUpdate('`c`', array('`hits`' => ':hits'), ' WHERE (`name` = :name)');
+		$this->assertSame(1, $update($set, array('hits' => '5', 'name' => 'abc')), "'5' into an INTEGER 5 is no change; the other row changes");
+		$this->assertSame(0, $update($set, array('hits' => 5, 'name' => 'abc')), 'nothing left to change');
+
+		$this->assertSame(2, $update($this->platform->compileUpdate('`c`', array('`name`' => ':name'), ''), array('name' => 'ABC')),
+			'a change of letter case is a change even in a NOCASE column');
+		$this->assertSame(1, $update($this->platform->compileUpdate('`c`', array('`note`' => ':note'), ' WHERE (`id` > 0)'), array('note' => null)),
+			'NULL is compared as a value: only the row holding one changes');
+		$this->assertSame(2, $update($this->platform->compileUpdate('`c`', array('`hits`' => '`hits` + 1'), ''), array()),
+			'an expression is compared by what it gives');
+
+		$this->pdo->exec('CREATE TABLE o (k INTEGER, v INTEGER)');
+		$this->pdo->exec('INSERT INTO o VALUES (1, 9), (2, 1)');
+		$this->assertSame(0, $this->pdo->exec($this->platform->compileUpdate('`o`', array('`v`' => '9'), '', 1)),
+			'the limit picks from the rows matched before any is skipped as unchanged, as MySQL\'s does');
+	}
+
+	public function testAnAutoIncrementResetGivesBackTheValueAnUpsertSpent()
+	{
+		$this->pdo->exec('CREATE TABLE a (id INTEGER PRIMARY KEY AUTOINCREMENT, k TEXT UNIQUE)');
+		$this->pdo->exec("INSERT INTO a (k) VALUES ('x')");
+		$this->pdo->exec("INSERT INTO a (k) VALUES ('x') ON CONFLICT (k) DO UPDATE SET k = excluded.k");
+
+		$this->pdo->exec($this->platform->compileAutoIncrementReset('`a`'));
+		$this->pdo->exec("INSERT INTO a (k) VALUES ('y')");
+
+		$this->assertSame(array('1', '2'), $this->column('SELECT id FROM a ORDER BY id'));
+		$this->assertSame("UPDATE `aux`.sqlite_sequence SET seq = (SELECT COALESCE(MAX(rowid), 0) FROM `aux`.`e107_a`) WHERE name = 'e107_a'",
+			$this->platform->compileAutoIncrementReset('aux.e107_a'), 'an attached database keeps its own sequence table');
+	}
+
 	public function testALimitedUpdateOrDeleteTouchesOnlyThatManyRows()
 	{
 		$this->pdo->exec('CREATE TABLE l (v INTEGER)');
 		$this->pdo->exec('INSERT INTO l VALUES (1), (1), (1), (2)');
 
 		$update = $this->platform->compileUpdate('`l`', array('`v`' => '9'), ' WHERE (`v` = 1)', 2);
-		$this->assertSame('UPDATE `l` SET `v` = 9 WHERE rowid IN (SELECT rowid FROM `l` WHERE (`v` = 1) LIMIT 2)', $update);
+		$this->assertSame('UPDATE `l` SET `v` = 9 WHERE (rowid IN (SELECT rowid FROM `l` WHERE (`v` = 1) LIMIT 2)) AND (`v` IS NOT (9) COLLATE BINARY)', $update);
 		$this->assertSame(2, $this->pdo->exec($update));
 
 		$this->assertSame(1, $this->pdo->exec($this->platform->compileDelete('`l`', '', 1)));
@@ -297,6 +340,9 @@ class SqlitePlatformTest extends \Test\Unit
 				$this->assertStringContainsString($name, $e->getMessage());
 			}
 		}
+
+		$this->expectException(\InvalidArgumentException::class);
+		$this->platform->compileAutoIncrementReset('`a`.`b`.`c`');
 	}
 
 	public function testTheCapabilitiesAreSqlites()
@@ -307,7 +353,8 @@ class SqlitePlatformTest extends \Test\Unit
 		$this->assertFalse($this->platform->supportsFullTextIndexes());
 		$this->assertTrue($this->platform->supportsTransactionalDdl());
 		$this->assertFalse($this->platform->assignsAutoIncrementOnZero());
-		$this->assertNull($this->platform->compileAutoIncrementReset('`t`'));
+		$this->assertFalse($this->platform->countsConflictingRows());
+		$this->assertTrue($this->platform->reportsInsertIdForEveryTable());
 		$this->assertSame('ALTER TABLE `a` RENAME TO `b`', $this->platform->compileRenameTable('`a`', '`b`'));
 		$this->assertSame('', $this->platform->getForUpdateClause());
 		$this->assertSame('RANDOM()', $this->platform->getRandomFunction());
