@@ -29,6 +29,12 @@ class DbVerifyRepairCest
 	/** COLUMN_TYPE core_sql.php declares for {@see COLUMN}. */
 	const COLUMN_TYPE = 'varchar(100)';
 
+	/** {@see COLUMN} as core_sql.php declares it. */
+	const COLUMN_DECLARATION = "varchar(100) NOT NULL default ''";
+
+	/** The type SQLite gives {@see COLUMN_TYPE}: its text affinity, the length being MySQL's alone. */
+	const SQLITE_COLUMN_TYPE = 'TEXT';
+
 	/** Where the declaration puts {@see COLUMN}; column order is never reported as drift. */
 	const COLUMN_ORDINAL = 4;
 
@@ -36,6 +42,9 @@ class DbVerifyRepairCest
 	const INDEX = 'upload_active';
 
 	const INDEXED_COLUMN = 'upload_active';
+
+	/** {@see INDEXED_COLUMN} as core_sql.php declares it. */
+	const INDEXED_COLUMN_DECLARATION = "tinyint(3) unsigned NOT NULL default '0'";
 
 	/** Where the declaration puts {@see INDEXED_COLUMN}. */
 	const INDEXED_COLUMN_ORDINAL = 13;
@@ -61,7 +70,7 @@ class DbVerifyRepairCest
 	/** {@see db_verify::$modes} entry for an index the live table does not have. */
 	const MODE_ADD_INDEX = 'index';
 
-	/** @var string|null DDL for {@see TABLE} as it stood before this Cest touched it */
+	/** @var string[]|null statements that create {@see TABLE} as it stood before this Cest touched it */
 	private static $pristineDdl = null;
 
 	public function _before(AcceptanceTester $I)
@@ -107,7 +116,7 @@ class DbVerifyRepairCest
 
 		$I->assertNotNull($column,
 			'The repair did not land: `'.self::PREFIXED_TABLE.'` still has no `'.self::COLUMN.'` column.');
-		$I->assertSame(self::COLUMN_TYPE, $column['COLUMN_TYPE'],
+		$I->assertSame($this->isSqlite($I) ? self::SQLITE_COLUMN_TYPE : self::COLUMN_TYPE, $column['COLUMN_TYPE'],
 			'`'.self::COLUMN.'` came back with a type core_sql.php does not declare.');
 		$I->assertSame('NO', $column['IS_NULLABLE'],
 			'`'.self::COLUMN.'` came back nullable, which core_sql.php does not declare.');
@@ -126,7 +135,12 @@ class DbVerifyRepairCest
 		$I->assertSame(1, (int) $parts[0]['NON_UNIQUE'],
 			'Index `'.self::INDEX.'` came back unique, which core_sql.php does not declare.');
 
-		$ddl = $this->showCreateTable($I);
+		if($this->isSqlite($I))
+		{
+			return;
+		}
+
+		$ddl = implode("\n", $this->showCreateTable($I));
 
 		$I->assertStringContainsString('`'.self::COLUMN.'` '.self::COLUMN_TYPE, $ddl);
 		$I->assertStringContainsString('KEY `'.self::INDEX.'` (`'.self::INDEXED_COLUMN.'`)', $ddl);
@@ -244,12 +258,70 @@ class DbVerifyRepairCest
 	}
 
 	/**
+	 * @return bool whether the suite runs on SQLite, whose account of a table comes from PRAGMAs and sqlite_master
+	 */
+	private function isSqlite(AcceptanceTester $I)
+	{
+		return $I->getDbModule()->_getDbDriver() === 'sqlite';
+	}
+
+	/**
+	 * @return \e107\Database\Platform\SqlitePlatform the dialect e107 builds SQLite tables with
+	 */
+	private function sqlitePlatform()
+	{
+		require_once(codecept_root_dir().'lib/SqliteFixture.php');
+
+		return new \e107\Database\Platform\SqlitePlatform();
+	}
+
+	/**
+	 * @param string $name
+	 * @return string the name quoted for SQLite
+	 */
+	private function sqliteQuote($name)
+	{
+		return $this->sqlitePlatform()->quoteIdentifier($name);
+	}
+
+	/**
+	 * @param string $index as core_sql.php names it
+	 * @return string the name SQLite knows it by
+	 */
+	private function sqliteIndexName($index)
+	{
+		return $this->sqlitePlatform()->physicalIndexName(self::PREFIXED_TABLE, $index);
+	}
+
+	/**
+	 * Drop a column, and with it any index over it.
+	 *
+	 * MySQL drops such an index itself; SQLite refuses to drop an indexed
+	 * column, so the index goes first there.
+	 *
 	 * @param string $column defaults to {@see COLUMN}
 	 * @return void
 	 */
 	private function dropColumn(AcceptanceTester $I, $column = self::COLUMN)
 	{
-		$this->dbh($I)->exec('ALTER TABLE `'.self::PREFIXED_TABLE.'` DROP COLUMN `'.$column.'`');
+		$dbh = $this->dbh($I);
+
+		if($this->isSqlite($I))
+		{
+			$indexes = $dbh->query('PRAGMA index_list('.$this->sqliteQuote(self::PREFIXED_TABLE).')')->fetchAll(\PDO::FETCH_ASSOC);
+
+			foreach($indexes as $index)
+			{
+				$columns = $dbh->query('PRAGMA index_info('.$this->sqliteQuote($index['name']).')')->fetchAll(\PDO::FETCH_COLUMN, 2);
+
+				if($index['origin'] === 'c' && in_array($column, $columns, true))
+				{
+					$dbh->exec('DROP INDEX '.$this->sqliteQuote($index['name']));
+				}
+			}
+		}
+
+		$dbh->exec('ALTER TABLE `'.self::PREFIXED_TABLE.'` DROP COLUMN `'.$column.'`');
 	}
 
 	/**
@@ -257,17 +329,44 @@ class DbVerifyRepairCest
 	 */
 	private function dropIndex(AcceptanceTester $I)
 	{
+		if($this->isSqlite($I))
+		{
+			$this->dbh($I)->exec('DROP INDEX '.$this->sqliteQuote($this->sqliteIndexName(self::INDEX)));
+
+			return;
+		}
+
 		$this->dbh($I)->exec('ALTER TABLE `'.self::PREFIXED_TABLE.'` DROP INDEX `'.self::INDEX.'`');
 	}
 
 	/**
-	 * One column as information_schema has it.
+	 * One column as information_schema has it, or as SQLite's PRAGMA table_xinfo has it in the same shape.
 	 *
 	 * @param string $column
 	 * @return array|null null when the table does not have it
 	 */
 	private function column(AcceptanceTester $I, $column)
 	{
+		if($this->isSqlite($I))
+		{
+			$columns = $this->dbh($I)->query('PRAGMA table_xinfo('.$this->sqliteQuote(self::PREFIXED_TABLE).')')->fetchAll(\PDO::FETCH_ASSOC);
+
+			foreach($columns as $row)
+			{
+				if($row['name'] === $column)
+				{
+					return array(
+						'COLUMN_TYPE'      => $row['type'],
+						'IS_NULLABLE'      => $row['notnull'] ? 'NO' : 'YES',
+						'COLUMN_DEFAULT'   => $row['dflt_value'],
+						'ORDINAL_POSITION' => $row['cid'] + 1,
+					);
+				}
+			}
+
+			return null;
+		}
+
 		$statement = $this->dbh($I)->prepare('
 			SELECT COLUMN_TYPE, IS_NULLABLE, COLUMN_DEFAULT, ORDINAL_POSITION
 			FROM information_schema.COLUMNS
@@ -304,13 +403,44 @@ class DbVerifyRepairCest
 	}
 
 	/**
-	 * One index's parts, in order.
+	 * One index's parts, in order, as information_schema has them.
 	 *
 	 * @param string $index
 	 * @return array empty when the table does not have it
 	 */
 	private function index(AcceptanceTester $I, $index)
 	{
+		if($this->isSqlite($I))
+		{
+			$dbh = $this->dbh($I);
+			$name = $this->sqliteIndexName($index);
+
+			foreach($dbh->query('PRAGMA index_list('.$this->sqliteQuote(self::PREFIXED_TABLE).')')->fetchAll(\PDO::FETCH_ASSOC) as $row)
+			{
+				if($row['name'] !== $name)
+				{
+					continue;
+				}
+
+				$parts = array();
+
+				foreach($dbh->query('PRAGMA index_info('.$this->sqliteQuote($name).')')->fetchAll(\PDO::FETCH_ASSOC) as $part)
+				{
+					$parts[(int) $part['seqno']] = array(
+						'COLUMN_NAME'  => $part['name'],
+						'NON_UNIQUE'   => $row['unique'] ? 0 : 1,
+						'SEQ_IN_INDEX' => $part['seqno'] + 1,
+					);
+				}
+
+				ksort($parts);
+
+				return array_values($parts);
+			}
+
+			return array();
+		}
+
 		$statement = $this->dbh($I)->prepare('
 			SELECT COLUMN_NAME, NON_UNIQUE, SEQ_IN_INDEX
 			FROM information_schema.STATISTICS
@@ -323,15 +453,25 @@ class DbVerifyRepairCest
 	}
 
 	/**
-	 * @return string the server's own DDL for the table under test
+	 * @return string[] the engine's own statements that create the table under test: the server's SHOW CREATE
+	 *                  TABLE, or on SQLite the table's and then its indexes' statements as sqlite_master keeps them
 	 */
 	private function showCreateTable(AcceptanceTester $I)
 	{
+		if($this->isSqlite($I))
+		{
+			$statement = $this->dbh($I)->prepare(
+				"SELECT sql FROM sqlite_master WHERE tbl_name = ? AND sql IS NOT NULL ORDER BY type = 'table' DESC, name");
+			$statement->execute(array(self::PREFIXED_TABLE));
+
+			return $statement->fetchAll(\PDO::FETCH_COLUMN);
+		}
+
 		$row = $this->dbh($I)
 			->query('SHOW CREATE TABLE `'.self::PREFIXED_TABLE.'`')
 			->fetch(\PDO::FETCH_NUM);
 
-		return $row[1];
+		return array($row[1]);
 	}
 
 	/**
@@ -358,7 +498,11 @@ class DbVerifyRepairCest
 		$dbh = $this->dbh($I);
 
 		$dbh->exec('DROP TABLE `'.self::PREFIXED_TABLE.'`');
-		$dbh->exec(self::$pristineDdl);
+
+		foreach(self::$pristineDdl as $statement)
+		{
+			$dbh->exec($statement);
+		}
 	}
 
 	/**
@@ -372,16 +516,39 @@ class DbVerifyRepairCest
 	{
 		$dbh = $this->dbh($I);
 
+		if($this->isSqlite($I))
+		{
+			$platform = $this->sqlitePlatform();
+			$parser = new \e107\Database\Schema\Definition\MysqlDdlParser();
+
+			foreach(array(self::COLUMN => self::COLUMN_DECLARATION, self::INDEXED_COLUMN => self::INDEXED_COLUMN_DECLARATION) as $column => $declaration)
+			{
+				if($this->column($I, $column) === null)
+				{
+					$dbh->exec('ALTER TABLE '.$platform->quoteIdentifier(self::PREFIXED_TABLE).' ADD COLUMN '
+						.$platform->compileColumnDefinition($parser->parseColumn($column, $declaration)));
+				}
+			}
+
+			if($this->index($I, self::INDEX) === array())
+			{
+				$dbh->exec($platform->compileCreateIndex(self::PREFIXED_TABLE,
+					$parser->parseIndex('KEY '.self::INDEX.' ('.self::INDEXED_COLUMN.')')));
+			}
+
+			return;
+		}
+
 		if($this->column($I, self::COLUMN) === null)
 		{
 			$dbh->exec('ALTER TABLE `'.self::PREFIXED_TABLE.'` ADD COLUMN `'.self::COLUMN.'` '
-				."varchar(100) NOT NULL DEFAULT '' AFTER `upload_email`");
+				.self::COLUMN_DECLARATION.' AFTER `upload_email`');
 		}
 
 		if($this->column($I, self::INDEXED_COLUMN) === null)
 		{
 			$dbh->exec('ALTER TABLE `'.self::PREFIXED_TABLE.'` ADD COLUMN `'.self::INDEXED_COLUMN.'` '
-				."tinyint(3) unsigned NOT NULL DEFAULT '0' AFTER `upload_filesize`");
+				.self::INDEXED_COLUMN_DECLARATION.' AFTER `upload_filesize`');
 		}
 
 		if($this->index($I, self::INDEX) === array())

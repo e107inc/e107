@@ -410,13 +410,8 @@ class Acceptance extends E107Base
 	 */
 	public function dontSeeTableInDatabase($table)
 	{
-		$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
-
-		$statement = $dbh->prepare('SHOW TABLES LIKE ?');
-		$statement->execute([$table]);
-
 		\PHPUnit\Framework\Assert::assertFalse(
-			$statement->fetchColumn(), "Table `$table` still exists.");
+			$this->appTableExists($table), "Table `$table` still exists.");
 	}
 
 	/**
@@ -450,6 +445,24 @@ class Acceptance extends E107Base
 		if (!$tables)
 		{
 			throw new \RuntimeException("No CREATE TABLE statements found in $sqlFile");
+		}
+
+		if ($this->getDbModule()->_getDbDriver() === 'sqlite')
+		{
+			require_once(codecept_root_dir().'lib/SqliteFixture.php');
+			$fixture = new \SqliteFixture($dbh);
+
+			foreach ($tables as $table)
+			{
+				$name = $prefix.$table['name'];
+
+				if (!$this->appTableExists($name))
+				{
+					$fixture->load("CREATE TABLE `$name` ({$table['body']}) ENGINE={$table['engine']};");
+				}
+			}
+
+			return;
 		}
 
 		$available = $this->availableStorageEngines($dbh);

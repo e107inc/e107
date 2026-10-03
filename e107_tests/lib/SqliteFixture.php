@@ -116,8 +116,8 @@ final class SqliteFixture
 			throw $e;
 		}
 
-		// The web server of the acceptance lane writes to it as another user.
 		@chmod($databaseFile, 0666);
+		@chmod(dirname($databaseFile), 0777);
 	}
 
 	/**
