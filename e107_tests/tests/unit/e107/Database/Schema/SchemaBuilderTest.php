@@ -477,6 +477,14 @@ use RuntimeException;
 			$this->assertEquals("OPTIMIZE TABLE `e107_news`, `e107_user`", $stub->lastSql);
 		}
 
+		public function testOptimizeTableBypassesLanguageRouting()
+		{
+			$schema = $this->makeSchema($stub);
+			$schema->optimizeTable(array('routedtable', 'lan_test_routedtable'));
+
+			$this->assertEquals("OPTIMIZE TABLE `e107_routedtable`, `e107_lan_test_routedtable`", $stub->lastSql);
+		}
+
 		// --- ADMIN-FENCED VERBS --------------------------------------------
 
 		public function testCreateDatabase()

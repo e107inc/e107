@@ -261,6 +261,31 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Loads an entry script in a booted CLI child once $seed has run, and returns everything it wrote; the page arrives on shutdown, because footer.php leaves its output buffer open.
+	 *
+	 * @param string $script path under the app root, e.g. 'e107_admin/db.php'
+	 * @param string $seed PHP setting up preferences and request data before the script is loaded
+	 * @return string
+	 */
+	protected function renderInBootedCli($script, $seed)
+	{
+		$booted = 'E107-BOOTED';
+
+		$php = "fwrite(STDERR, '".$booted."'); ";
+		$php .= "register_shutdown_function(function() { while(ob_get_level() > 0) { @ob_end_flush(); } }); ";
+		$php .= $seed;
+		$php .= "require_once('".addslashes(APP_PATH.'/'.$script)."'); ";
+
+		list($output) = $this->runInBootedCli($php);
+		$page = implode("\n", $output);
+
+		$this->assertStringContainsString($booted, $page,
+			"The subprocess did not get as far as booting e107, so nothing below can be trusted.\n".$page);
+
+		return $page;
+	}
+
+	/**
 	 * Runs $php in a booted CLI child holding one query string and one installed plugin, which is what a plugin's own front-end files need before they will run.
 	 *
 	 * e_QUERY is defined ahead of the boot, and this is why the child cannot be

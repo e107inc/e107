@@ -185,8 +185,6 @@ class system_tools
 
 	function __construct()
 	{
-		global $mySQLdefaultdb;
-		
 		$this->_utf8_exclude = array(MPREFIX."core");
 
 		$this->_options = array(
@@ -304,7 +302,7 @@ class system_tools
 
 		if(isset($_POST['optimize_sql']) || $_GET['mode']=='optimize_sql')
 		{
-			$this->optimizesql($mySQLdefaultdb);
+			$this->optimizesql();
 		}
 
 		if(isset($_POST['pref_editor']) || $_GET['mode']=='pref_editor' || isset($_POST['delpref']) || isset($_POST['delpref_checked']))
@@ -1814,29 +1812,63 @@ class system_tools
 
 	/**
 	 * Optimize SQL
-	 * @param $mySQLdefaultdb
 	 * @return null
 	 */
-	private function optimizesql($mySQLdefaultdb) 
+	private function optimizesql()
 	{
 		$mes = e107::getMessage();
-		$tables = e107::getDb()->tables();
-		
-		foreach($tables as $table)
+		$tp = e107::getParser();
+		$optimized = true;
+
+		foreach(e107::getDb()->tables() as $table)
 		{
-			// OPTIMIZE TABLE with a dynamic table-name identifier from tables().
-			// Left as raw DDL on purpose: tables() returns LOGICAL (un-prefixed)
-			// names, and this statement consumes them un-prefixed (a pre-existing
-			// quirk), whereas SchemaBuilder::optimizeTable() resolves the prefix.
-			// Routing it through the schema builder would silently change which
-			// tables are optimised, so the behaviour-preserving choice is to keep
-			// the raw statement; the name is introspected (not user input) and the
-			// backtick is escaped, so there is no injection surface.
-			e107::getDb()->gen("OPTIMIZE TABLE `".str_replace('`', '``', $table)."`");
+			if(($reason = $this->optimizeOne($table)) !== null)
+			{
+				$mes->addError($tp->lanVars(defset('DBLAN_OPTIMIZE_TABLE_FAILED', 'Table [x] was not optimized: [y]'),
+					array('x' => htmlspecialchars(MPREFIX.$table, ENT_QUOTES, 'UTF-8'), 'y' => htmlspecialchars($reason, ENT_QUOTES, 'UTF-8'))));
+				$optimized = false;
+			}
 		}
 
-		$mes->addSuccess(e107::getParser()->lanVars(DBLAN_11, $mySQLdefaultdb));
+		if($optimized)
+		{
+			$mes->addSuccess($tp->lanVars(DBLAN_11, e107::getMySQLConfig('defaultdb')));
+		}
+
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_7, $mes->render());
+
+		return null;
+	}
+
+	/**
+	 * @param string $table logical table name, as {@see \e107\Database\ConnectionInterface::tables()} lists it
+	 * @return string|null why the table was not optimized, or null when it was
+	 */
+	private function optimizeOne($table)
+	{
+		$sql = e107::getDb();
+
+		try
+		{
+			$result = $sql->schema()->optimizeTable($table);
+		}
+		catch(InvalidArgumentException $e)
+		{
+			return $e->getMessage();
+		}
+
+		if($result === false)
+		{
+			return $sql->getLastErrorText();
+		}
+
+		foreach($sql->rows() as $row)
+		{
+			if(strcasecmp($row['Msg_type'], 'error') === 0)
+			{
+				return $row['Msg_text'];
+			}
+		}
 
 		return null;
 	}
