@@ -1449,7 +1449,7 @@ class e107forum
 		if($replies < 0) { $replies = 0; }
 
 		//change thread counts accordingly
-		$sql->update('forum', "forum_threads=forum_threads-1, forum_replies=forum_replies-$replies WHERE forum_id={$oldForumId}");
+		$sql->update('forum', $this->decrementNotBelowZero('forum_threads').', '.$this->decrementNotBelowZero('forum_replies', $replies)." WHERE forum_id={$oldForumId}");
 		$sql->update('forum', "forum_threads=forum_threads+1, forum_replies=forum_replies+$replies WHERE forum_id={$newForumId}");
 
 		// update lastpost information for old and new forums
@@ -3158,7 +3158,7 @@ class e107forum
 			{
 				foreach ($postCount as $k => $v)
 				{
-					$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-'.$v.',0) WHERE user_extended_id='.$k);
+					$sql->update('user_extended', $this->decrementNotBelowZero('user_plugin_forum_posts', $v).' WHERE user_extended_id='.$k);
 				}
 			}
 
@@ -3191,7 +3191,7 @@ class e107forum
 			}
 			
 			// update forum with correct thread/reply counts
-			$sql->update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
+			$sql->update('forum', $this->decrementNotBelowZero('forum_threads').', '.$this->decrementNotBelowZero('forum_replies', $threadInfo['thread_total_replies']).' WHERE forum_id='.$threadInfo['thread_forum_id']);
 
 			if($updateForumLastpost)
 			{
@@ -3241,14 +3241,14 @@ class e107forum
 			// decrement user post counts
 			if ($postInfo['post_user'])
 			{
-				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$postInfo['post_user']);
+				$sql->update('user_extended', $this->decrementNotBelowZero('user_plugin_forum_posts').' WHERE user_extended_id='.$postInfo['post_user']);
 			}
 
 			// update thread with correct reply counts
-			$sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$postInfo['post_thread']);
+			$sql->update('forum_thread', $this->decrementNotBelowZero('thread_total_replies').' WHERE thread_id='.$postInfo['post_thread']);
 
 			// update forum with correct thread/reply counts
-			$sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$postInfo['post_forum']);
+			$sql->update('forum', $this->decrementNotBelowZero('forum_replies').' WHERE forum_id='.$postInfo['post_forum']);
 
 			// update thread lastpost info
 			$this->forumUpdateLastpost('thread', $postInfo['post_thread']);
@@ -3257,6 +3257,16 @@ class e107forum
 			$this->forumUpdateLastpost('forum', $postInfo['post_forum']);
 		}
 		return $deleted;
+	}
+
+	/**
+	 * @param string $column a counter column
+	 * @param int $amount
+	 * @return string the SET assignment that takes $amount off $column and stops at zero
+	 */
+	private function decrementNotBelowZero($column, $amount = 1)
+	{
+		return $column.' = CAST(GREATEST(CAST('.$column.' AS SIGNED) - '.(int) $amount.', 0) AS UNSIGNED)';
 	}
 
 
