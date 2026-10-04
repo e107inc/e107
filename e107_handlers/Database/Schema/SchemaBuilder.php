@@ -338,11 +338,11 @@ class SchemaBuilder
 	}
 
 	/**
-	 * Reclaim unused space / rebuild one or more tables.
+	 * Reclaim unused space / rebuild one or more tables by prefixed name, never routed to a lan_* table, so the names {@see ConnectionInterface::tables()} lists pass as they are.
 	 *
-	 * @param string[]|string $tables
+	 * @param string[]|string $tables Logical table names (prefix applied, no routing).
 	 * @return int|bool
-	 * @throws InvalidArgumentException when no table is given.
+	 * @throws InvalidArgumentException when no table is given or a name is invalid.
 	 */
 	public function optimizeTable($tables)
 	{
@@ -355,7 +355,7 @@ class SchemaBuilder
 
 		foreach($tables as $table)
 		{
-			$quoted[] = $this->quoteTable($table);
+			$quoted[] = $this->quotePhysicalTable($table);
 		}
 
 		if(count($quoted) === 0)
