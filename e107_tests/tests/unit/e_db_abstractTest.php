@@ -1732,6 +1732,42 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	}
 
+	public function testTablesLeaveOutAnotherInstallWhosePrefixDiffersAtTheUnderscore()
+	{
+		$this->assertSame('e107_', MPREFIX);
+		$this->db->execute('CREATE TABLE IF NOT EXISTS e107b_news (id INT)');
+
+		try
+		{
+			$list = $this->db->tables();
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS e107b_news');
+		}
+
+		$this->assertContains('news', $list);
+		$this->assertNotContains('_news', $list);
+	}
+
+	public function testTablesQuoteAPrefixRatherThanRefuseItsCharacters()
+	{
+		$this->db->execute('CREATE TABLE IF NOT EXISTS `e107$\'_news` (id INT)');
+
+		try
+		{
+			$this->db->mySQLPrefix = 'e107$\'_';
+			$this->db->resetTableList();
+			$list = $this->db->tables();
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `e107$\'_news`');
+		}
+
+		$this->assertSame(array('news'), $list);
+	}
+
 	public function testDb_CopyRow()
 	{
 		$result = $this->db->db_CopyRow('news', '*', "news_id = 1");
