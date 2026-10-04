@@ -113,6 +113,15 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 			'a refused connection has to report the driver error text');
 	}
 
+	public function testARefusedDb_ConnectRecordsTheDriverErrorNumber()
+	{
+		$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], 'wrong password', $this->dbConfig['mySQLdefaultdb']);
+
+		$this->assertSame('e1', $result, 'precondition: db_Connect() has to be refused');
+		$this->assertSame(1045, $this->db->getLastErrorNumber(),
+			'a refused db_Connect() has to report the driver error number');
+	}
+
 	/**
 	 * @see https://github.com/e107inc/e107/issues/6663
 	 */
