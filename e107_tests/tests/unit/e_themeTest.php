@@ -326,8 +326,6 @@ class e_themeTest extends \Test\Unit
 
 		//	$result = e107::getTheme('bootstrap5')->getThemeFiles('css', 'wysiwyg');
 
-			/** Expecting bootstrap 5 files fontawesome 5 (js only)  */
-
 		$expected = array (
 		  0 =>
 		  array (
@@ -343,10 +341,10 @@ class e_themeTest extends \Test\Unit
 		  ),
 		  1 =>
 		  array (
-		    'js' =>
+		    'css' =>
 		    array (
-		      0 => '{e_WEB}lib/font-awesome/5/js/all.min.js',
-		      1 => '{e_WEB}lib/font-awesome/5/js/v4-shims.min.js',
+		      0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
+		      1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
 		    ),
 		  ),
 		  2 =>
@@ -700,7 +698,7 @@ class e_themeTest extends \Test\Unit
 					    'name' => 'fontawesome',
 					    'version' => '5',
 					    'scope' => 'front',
-					    'files'  => 'js',
+					    'files'  => 'css',
 					  ),
 					  2 =>
 					  array (
