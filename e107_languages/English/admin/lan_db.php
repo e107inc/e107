@@ -168,3 +168,4 @@ define("DBLAN_SITE_FOLDER_FAILED", "These files could not be moved:");
 define("DBLAN_SITE_FOLDER_CONTENT_REFERENCES", "Content still refers to the old folder by its full path in: [x]. Those entries need editing by hand.");
 define("DBLAN_SITE_FOLDER_REMOVED", "The folder [x] was removed.");
 define("DBLAN_SITE_FOLDER_REMOVE_FAILED", "The folder [x] still holds files and was not removed.");
+define("DBLAN_OPTIMIZE_TABLE_FAILED", "Table [x] was not optimized: [y]");

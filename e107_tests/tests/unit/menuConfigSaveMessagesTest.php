@@ -19,9 +19,6 @@ class menuConfigSaveMessagesTest extends \Codeception\Test\Unit
 {
 	use \Test\BootedCli;
 
-	/** Marker proving the subprocess got past booting e107. */
-	const BOOTED = 'E107-BOOTED';
-
 	/** The class the message handler puts on a success box, {@see eMessage::formatMessage()}. */
 	const SUCCESS_BOX = 'alert-success';
 
@@ -53,25 +50,14 @@ class menuConfigSaveMessagesTest extends \Codeception\Test\Unit
 	/**
 	 * Posts the screen's own save button and returns what the administrator would have read.
 	 *
-	 * The screens finish in footer.php, which ends the request with its output buffer still open, so the page arrives on shutdown rather than after the require.
-	 *
 	 * @param string $screen path under e107_plugins
 	 * @param string $seed PHP setting up preferences and post data before the screen is loaded
 	 * @return string everything the screen wrote
 	 */
 	private function submitScreen($screen, $seed)
 	{
-		$php = "fwrite(STDERR, '".self::BOOTED."'); ";
-		$php .= "register_shutdown_function(function() { while(ob_get_level() > 0) { @ob_end_flush(); } }); ";
-		$php .= "\$_POST['update_menu'] = 1; ";
-		$php .= $seed;
-		$php .= "require_once('".addslashes(APP_PATH.'/e107_plugins/'.$screen)."'); ";
+		$page = $this->renderInBootedCli('e107_plugins/'.$screen, "\$_POST['update_menu'] = 1; ".$seed);
 
-		list($output) = $this->runInBootedCli($php);
-		$page = implode("\n", $output);
-
-		$this->assertStringContainsString(self::BOOTED, $page,
-			"The subprocess did not get as far as booting e107, so nothing below can be trusted.\n".$page);
 		$this->assertStringContainsString('update_menu', $page,
 			"The screen did not render its form, so what it did or did not say proves nothing.\n".$page);
 
