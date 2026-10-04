@@ -1704,18 +1704,52 @@ class system_tools
 	 * @param $mySQLdefaultdb
 	 * @return null
 	 */
-	private function optimizesql($mySQLdefaultdb) 
+	private function optimizesql($mySQLdefaultdb)
 	{
 		$mes = e107::getMessage();
-		$tables = e107::getDb()->tables();
-		
-		foreach($tables as $table)
+		$tp = e107::getParser();
+		$optimized = true;
+
+		foreach(e107::getDb()->tables() as $table)
 		{
-			e107::getDb()->gen("OPTIMIZE TABLE ".$table);
+			if(($reason = $this->optimizeOne($table)) !== null)
+			{
+				$mes->addError($tp->lanVars(defset('DBLAN_OPTIMIZE_TABLE_FAILED', 'Table [x] was not optimized: [y]'),
+					array('x' => htmlspecialchars(MPREFIX.$table, ENT_QUOTES, 'UTF-8'), 'y' => htmlspecialchars($reason, ENT_QUOTES, 'UTF-8'))));
+				$optimized = false;
+			}
 		}
 
-		$mes->addSuccess(e107::getParser()->lanVars(DBLAN_11, $mySQLdefaultdb));
+		if($optimized)
+		{
+			$mes->addSuccess($tp->lanVars(DBLAN_11, $mySQLdefaultdb));
+		}
+
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_7, $mes->render());
+
+		return null;
+	}
+
+	/**
+	 * @param string $table table name without the prefix, as {@see e_db::tables()} lists it
+	 * @return string|null why the table was not optimized, or null when it was
+	 */
+	private function optimizeOne($table)
+	{
+		$sql = e107::getDb();
+
+		if($sql->gen("OPTIMIZE TABLE `".str_replace('`', '``', MPREFIX.$table)."`") === false)
+		{
+			return $sql->getLastErrorText();
+		}
+
+		foreach($sql->rows() as $row)
+		{
+			if(strcasecmp($row['Msg_type'], 'error') === 0)
+			{
+				return $row['Msg_text'];
+			}
+		}
 
 		return null;
 	}
