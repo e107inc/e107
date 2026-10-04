@@ -9,7 +9,6 @@
  */
 
 use e107\Database\QueryBuilder;
-use e107\Database\SqlFragment;
 
 require_once(__DIR__.'/../class2.php');
 if (!getperms("B")) 
@@ -208,7 +207,7 @@ class comments_admin_ui extends e_admin_ui
 				case '0' :
 				case 'news' :		// Need to update count in news record as well
 					$sql->createQueryBuilder()->update('news')
-						->setExpression('news_comment_total', SqlFragment::raw('CAST(GREATEST(CAST(news_comment_total AS SIGNED) - 1, 0) AS UNSIGNED)'))
+						->decrementNotBelowZero('news_comment_total')
 						->where('news_id', (int) $deleted_data['comment_item_id'])
 						->execute();
 				break;
