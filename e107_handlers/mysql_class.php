@@ -64,6 +64,7 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
 class e_db_mysql implements e_db
 {
 	use e_db_identifier;
+	use e_db_table_list;
 	use e_db_tree;
 
 	// TODO switch to protected vars where needed
@@ -1579,7 +1580,7 @@ class e_db_mysql implements e_db
 
 			if(!$this->mySQLtableList)
 			{
-				$this->mySQLtableList = $this->db_mySQLtableList();
+				$this->mySQLtableList = $this->_getTableList();
 			}
 
 			$lanlist = array();
@@ -2042,7 +2043,7 @@ class e_db_mysql implements e_db
 
 			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
-				$this->mySQLtableListLanguage = $this->db_mySQLtableList($language);
+				$this->mySQLtableListLanguage = $this->_getTableList($language);
 			}
 
 			return in_array('lan_'.strtolower($language)."_".$table,$this->mySQLtableListLanguage[$language]);
@@ -2051,7 +2052,7 @@ class e_db_mysql implements e_db
 		{
 			if(!$this->mySQLtableList)
 			{
-				$this->mySQLtableList = $this->db_mySQLtableList();
+				$this->mySQLtableList = $this->_getTableList();
 			}
 
 			return in_array($table,$this->mySQLtableList);
@@ -2084,64 +2085,6 @@ class e_db_mysql implements e_db
 
 
 
-
-	/**
-	 * Populate mySQLtableList and mySQLtableListLanguage
-	 * TODO - better runtime cache - use e107::getRegistry() && e107::setRegistry()
-	 * @return array
-	 */
-	private function db_mySQLtableList($language='')
-	{
-
-		$database = !empty($this->mySQLdefaultdb) ? "FROM  `".$this->mySQLdefaultdb."`" : "";
-		$prefix = $this->mySQLPrefix;
-
-		if(strpos($prefix, ".") !== false) // eg. `my_database`.$prefix
-		{
-			$tmp = explode(".",$prefix);
-			$prefix = $tmp[1];
-		}
-
-		if($language)
-		{
-			if(!isset($this->mySQLtableListLanguage[$language]))
-			{
-				$table = array();
-				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".$this->escape(strtolower($language))."%' "))
-				{
-					while($rows = $this->fetch('num'))
-					{
-						$table[] = str_replace($prefix,"",$rows[0]);
-					}
-				}
-
-				return array($language =>$table);
-			}
-			else
-			{
-				return $this->mySQLtableListLanguage[$language];
-			}
-		}
-
-		if(!$this->mySQLtableList)
-		{
-			$table = array();
-
-			if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."%' "))
-			{
-				$length = strlen($prefix);
-				while($rows = $this->fetch('num'))
-				{
-					$table[] = substr($rows[0],$length);
-				}
-			}
-			return $table;
-		}
-		else
-		{
-			return $this->mySQLtableList;
-		}
-	}
 
 	/**
 	 * @return void
@@ -2197,7 +2140,7 @@ class e_db_mysql implements e_db
 
 		if(!$this->mySQLtableList)
 		{
-			$this->mySQLtableList = $this->db_mySQLtableList();
+			$this->mySQLtableList = $this->_getTableList();
 		}
 
 		if($mode == 'nologs')

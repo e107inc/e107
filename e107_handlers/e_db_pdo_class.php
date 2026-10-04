@@ -26,6 +26,7 @@ class e_db_pdo implements e_db
 
 	use e_db_legacy;
 	use e_db_identifier;
+	use e_db_table_list;
 	use e_db_tree;
 
 	// TODO switch to protected vars where needed
@@ -2165,65 +2166,6 @@ class e_db_pdo implements e_db
 	}
 
 
-
-
-	/**
-	 * Populate mySQLtableList and mySQLtableListLanguage
-	 * TODO - better runtime cache - use e107::getRegistry() && e107::setRegistry()
-	 * @return array
-	 */
-	private function _getTableList($language='')
-	{
-
-		$database = !empty($this->mySQLdefaultdb) ? "FROM  `".$this->mySQLdefaultdb."`" : "";
-		$prefix = $this->mySQLPrefix;
-
-		if(strpos($prefix, ".") !== false) // eg. `my_database`.$prefix
-		{
-			$tmp = explode(".",$prefix);
-			$prefix = $tmp[1];
-		}
-
-		if($language)
-		{
-			if(!isset($this->mySQLtableListLanguage[$language]))
-			{
-				$table = array();
-				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".strtolower($language)."%' "))
-				{
-					while($rows = $this->fetch('num'))
-					{
-						$table[] = str_replace($prefix,"",$rows[0]);
-					}
-				}
-
-				return array($language =>$table);
-			}
-			else
-			{
-				return $this->mySQLtableListLanguage[$language];
-			}
-		}
-
-		if(!$this->mySQLtableList)
-		{
-			$table = array();
-
-			if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."%' "))
-			{
-				$length = strlen($prefix);
-				while($rows = $this->fetch('num'))
-				{
-					$table[] = substr($rows[0],$length);
-				}
-			}
-			return $table;
-		}
-		else
-		{
-			return $this->mySQLtableList;
-		}
-	}
 
 
 	/**
