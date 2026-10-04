@@ -1530,7 +1530,7 @@ class e107forum
 		if($replies < 0) { $replies = 0; }
 
 		//change thread counts accordingly
-		$sql->createQueryBuilder()->update('forum')->decrement('forum_threads')->decrement('forum_replies', (int) $replies)->where('forum_id', $oldForumId)->execute();
+		$sql->createQueryBuilder()->update('forum')->decrementNotBelowZero('forum_threads')->decrementNotBelowZero('forum_replies', (int) $replies)->where('forum_id', $oldForumId)->execute();
 		$sql->createQueryBuilder()->update('forum')->increment('forum_threads')->increment('forum_replies', (int) $replies)->where('forum_id', $newForumId)->execute();
 
 		// update lastpost information for old and new forums
@@ -3264,7 +3264,7 @@ class e107forum
 				foreach ($postCount as $k => $v)
 				{
 					$sql->createQueryBuilder()->update('user_extended')
-						->setExpression('user_plugin_forum_posts', SqlFragment::raw('GREATEST(user_plugin_forum_posts-'.(int) $v.',0)'))
+						->decrementNotBelowZero('user_plugin_forum_posts', (int) $v)
 						->where('user_extended_id', (int) $k)->execute();
 				}
 			}
@@ -3303,8 +3303,8 @@ class e107forum
 
 			// update forum with correct thread/reply counts
 			$sql->createQueryBuilder()->update('forum')
-				->setExpression('forum_threads', SqlFragment::raw('GREATEST(forum_threads-1,0)'))
-				->setExpression('forum_replies', SqlFragment::raw('GREATEST(forum_replies-'.(int) $threadInfo['thread_total_replies'].',0)'))
+				->decrementNotBelowZero('forum_threads')
+				->decrementNotBelowZero('forum_replies', (int) $threadInfo['thread_total_replies'])
 				->where('forum_id', (int) $threadInfo['thread_forum_id'])->execute();
 
 			if($updateForumLastpost)
@@ -3359,18 +3359,18 @@ class e107forum
 			if ($postInfo['post_user'])
 			{
 				$sql->createQueryBuilder()->update('user_extended')
-					->setExpression('user_plugin_forum_posts', SqlFragment::raw('GREATEST(user_plugin_forum_posts-1,0)'))
+					->decrementNotBelowZero('user_plugin_forum_posts')
 					->where('user_extended_id', (int) $postInfo['post_user'])->execute();
 			}
 
 			// update thread with correct reply counts
 			$sql->createQueryBuilder()->update('forum_thread')
-				->setExpression('thread_total_replies', SqlFragment::raw('GREATEST(thread_total_replies-1,0)'))
+				->decrementNotBelowZero('thread_total_replies')
 				->where('thread_id', (int) $postInfo['post_thread'])->execute();
 
 			// update forum with correct thread/reply counts
 			$sql->createQueryBuilder()->update('forum')
-				->setExpression('forum_replies', SqlFragment::raw('GREATEST(forum_replies-1,0)'))
+				->decrementNotBelowZero('forum_replies')
 				->where('forum_id', (int) $postInfo['post_forum'])->execute();
 
 			// update thread lastpost info

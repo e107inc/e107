@@ -1067,6 +1067,14 @@ use e107\Reflection\ReflectionMethod;
 				'UPDATE `e107_user` SET `user_score` = `user_score` - :qb1, `user_name` = :qb2 WHERE (`user_id` = :qb3)',
 				$qb->getSQL()
 			);
+
+			$qb = $this->makeQb();
+			$qb->update('forum')->decrementNotBelowZero('forum_replies', 3)->where('forum_id', 2);
+			$this->assertSame(
+				'UPDATE `e107_forum` SET `forum_replies` = CASE WHEN `forum_replies` > :qb1 THEN `forum_replies` - :qb2 ELSE 0 END WHERE (`forum_id` = :qb3)',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 3, 'qb2' => 3, 'qb3' => 2), $qb->getParameters());
 		}
 
 		public function testUpdateOrInsert()

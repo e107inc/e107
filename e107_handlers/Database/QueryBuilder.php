@@ -2503,6 +2503,28 @@ class QueryBuilder
 	}
 
 	/**
+	 * Queue a decrement for UPDATE that stops at zero, where
+	 * {@see QueryBuilder::decrement()} on an unsigned column fails instead.
+	 *
+	 * <code>
+	 * $qb->update('forum')->decrementNotBelowZero('forum_replies', $removed)->where('forum_id', $id)->execute();
+	 * // `forum_replies` = CASE WHEN `forum_replies` > :qb1 THEN `forum_replies` - :qb2 ELSE 0 END
+	 * </code>
+	 *
+	 * @param string $column
+	 * @param int|float $amount
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	public function decrementNotBelowZero($column, $amount = 1)
+	{
+		$quoted = $this->quoteColumn($column);
+
+		return $this->setExpression($column, 'CASE WHEN '.$quoted.' > '.$this->createNamedParameter($amount)
+			.' THEN '.$quoted.' - '.$this->createNamedParameter($amount).' ELSE 0 END');
+	}
+
+	/**
 	 * Compile the query to SQL. Together with
 	 * {@see QueryBuilder::getParameters()} this is the query's complete
 	 * intermediate representation; no caller-supplied value remains in the
