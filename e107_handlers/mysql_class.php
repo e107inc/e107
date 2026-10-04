@@ -137,7 +137,7 @@ class e_db_mysql implements e_db
 		$this->mySQLuser        = isset($config['mySQLuser']) ? $config['mySQLuser'] : '';
 		$this->mySQLpassword    = isset($config['mySQLpassword']) ? $config['mySQLpassword'] : '';
 		$this->mySQLdefaultdb   = isset($config['mySQLdefaultdb']) ? $config['mySQLdefaultdb'] : '';
-		$this->mySQLport        = varset($config['port'], 3306);
+		$this->mySQLport        = varset($config['mySQLport'], 3306);
 		$this->mySQLPrefix      = varset($config['mySQLprefix'], MPREFIX);
 
 		/*$langid = (isset($pref['cookie_name'])) ? 'e107language_'.$pref['cookie_name'] : 'e107language_temp';
@@ -200,7 +200,7 @@ class e_db_mysql implements e_db
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
 
-		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
+		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, null, (int) $this->mySQLport))
 		{
 			$this->mySQLlastErrNum = mysqli_connect_errno();
 			$this->mySQLlastErrText = mysqli_connect_error();
