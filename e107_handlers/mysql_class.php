@@ -205,7 +205,7 @@ class e_db_mysql implements e_db
 		$this->mySQLPrefix      = $mySQLPrefix;
 		$this->mySQLerror       = false;
 
-		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
+		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, null, (int) $this->mySQLport))
 		{
 			$this->mySQLlastErrText = mysqli_connect_error();
 			return 'e1';
@@ -259,7 +259,7 @@ class e_db_mysql implements e_db
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
 
-		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
+		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, null, (int) $this->mySQLport))
 		{
 			$this->mySQLlastErrNum = mysqli_connect_errno();
 			$this->mySQLlastErrText = mysqli_connect_error();

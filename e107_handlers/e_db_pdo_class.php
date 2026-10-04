@@ -95,15 +95,8 @@ class e_db_pdo implements e_db
 		$this->mySQLuser        = $config['mySQLuser'];
 		$this->mySQLpassword    = $config['mySQLpassword'];
 		$this->mySQLdefaultdb   = $config['mySQLdefaultdb'];
-		$this->mySQLport        = varset($config['port'], 3306);
+		$this->mySQLport        = varset($config['mySQLport'], 3306);
 		$this->mySQLPrefix      = varset($config['mySQLprefix'], 'e107_');
-
-		/*
-
-		if($port = e107::getMySQLConfig('port'))
-		{
-			$this->mySQLport = intval($port);
-		}*/
 
 		// Detect is already done in language handler, use it if not too early
 		if(defined('e_LANGUAGE'))

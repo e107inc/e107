@@ -17,26 +17,17 @@ class DelayedDb extends \Codeception\Module\Db
 
 	public function _getDbHostname()
 	{
-		$matches = [];
-		$matched = preg_match('~host=([^;]+)~s', $this->config['dsn'], $matches);
-		if (!$matched)
-		{
-			return false;
-		}
+		return $this->dsnParameter('host');
+	}
 
-		return $matches[1];
+	public function _getDbPort()
+	{
+		return $this->dsnParameter('port');
 	}
 
 	public function _getDbName()
 	{
-		$matches = [];
-		$matched = preg_match('~dbname=([^;]+)~s', $this->config['dsn'], $matches);
-		if (!$matched)
-		{
-			return false;
-		}
-
-		return $matches[1];
+		return $this->dsnParameter('dbname');
 	}
 
 	public function _getDbUsername()
@@ -47,5 +38,17 @@ class DelayedDb extends \Codeception\Module\Db
 	public function _getDbPassword()
 	{
 		return $this->config['password'];
+	}
+
+	private function dsnParameter($name)
+	{
+		$matches = [];
+		$matched = preg_match('~' . $name . '=([^;]+)~s', $this->config['dsn'], $matches);
+		if (!$matched)
+		{
+			return false;
+		}
+
+		return $matches[1];
 	}
 }
