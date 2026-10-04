@@ -99,9 +99,9 @@ trait ConnectionTrait
 	abstract public function dbError($from);
 	abstract public function fields($table, $prefix = '', $retinfo = false);
 	abstract public function execute($sql, $params = array());
+	abstract public function quoteStringLiteral($value);
 
 	abstract protected function _escape($data);
-	abstract protected function _getTableList($language = '');
 	abstract protected function _getMySQLaccess();
 
 	/**
@@ -872,6 +872,46 @@ trait ConnectionTrait
 		}
 
 		return $unique;
+	}
+
+	/**
+	 * The names of the tables under this connection's prefix, with the prefix cut off; a database-qualified prefix is matched without its qualifier.
+	 *
+	 * @param string $language '' for every table, or a language whose lan_<language>_* tables to list
+	 * @return array names; for a language not yet cached, array(language => names)
+	 */
+	protected function _getTableList($language='')
+	{
+		if($language && isset($this->mySQLtableListLanguage[$language]))
+		{
+			return $this->mySQLtableListLanguage[$language];
+		}
+
+		if(!$language && $this->mySQLtableList)
+		{
+			return $this->mySQLtableList;
+		}
+
+		$prefix = $this->mySQLPrefix;
+
+		if(($dot = strrpos($prefix, '.')) !== false)
+		{
+			$prefix = (string) substr($prefix, $dot + 1);
+		}
+
+		$database = !empty($this->mySQLdefaultdb) ? " FROM `".$this->mySQLdefaultdb."`" : '';
+		$start = $language ? $prefix.'lan_'.strtolower($language) : $prefix;
+		$tables = array();
+
+		if($this->db_Query('SHOW TABLES'.$database.' LIKE '.$this->quoteStringLiteral(addcslashes($start, '\\%_').'%')))
+		{
+			while($row = $this->fetch('num'))
+			{
+				$tables[] = (string) substr($row[0], strlen($prefix));
+			}
+		}
+
+		return $language ? array($language => $tables) : $tables;
 	}
 
 	/**
