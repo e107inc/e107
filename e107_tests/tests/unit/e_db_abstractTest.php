@@ -45,6 +45,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 		$config = array();
 		$config['mySQLserver']      = $db->_getDbHostname();
+		$config['mySQLport']        = $db->_getDbPort();
 		$config['mySQLuser']        = $db->_getDbUsername();
 		$config['mySQLpassword']    = $db->_getDbPassword();
 		$config['mySQLdefaultdb']   = $db->_getDbName();
@@ -113,6 +114,66 @@ abstract class e_db_abstractTest extends \Test\Unit
 			'a refused connection has to report the driver error number');
 		$this->assertNotSame('', $this->db->getLastErrorText(),
 			'a refused connection has to report the driver error text');
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6663
+	 */
+	public function testConnectUsesTheConfiguredPort()
+	{
+		$server = $this->dbConfig['mySQLserver'];
+		$user = $this->dbConfig['mySQLuser'];
+		$password = $this->dbConfig['mySQLpassword'];
+		$port = $this->dbConfig['mySQLport'];
+		$closedPort = 1;
+
+		if($server === 'localhost')
+		{
+			$this->markTestSkipped("'localhost' is reached through the socket, where no port applies");
+		}
+
+		$this->assertFalse($this->makeDbWithConfiguredPort($closedPort)->connect($server, $user, $password),
+			'a configured port that nothing listens on has to refuse the connection');
+		$this->assertTrue($this->makeDbWithConfiguredPort($port)->connect($server, $user, $password),
+			'the configured port has to connect');
+
+		$this->assertFalse($this->db->connect($server.':'.$closedPort, $user, $password),
+			'a server string naming a port that nothing listens on has to refuse the connection');
+		$this->assertTrue($this->db->connect($server.':'.$port, $user, $password),
+			'a server string naming the right port has to connect');
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6663
+	 */
+	public function testConnectAskingForANewLinkConnects()
+	{
+		$this->assertTrue($this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], true));
+	}
+
+	/**
+	 * @param int|string $port
+	 * @return e_db built while e107_config.php names $port.
+	 */
+	private function makeDbWithConfiguredPort($port)
+	{
+		$e107 = e107::getInstance();
+		$config = new ReflectionProperty($e107, 'e107_config_mysql_info');
+		$original = $config->getValue($e107);
+
+		$db = $this->makeDb();
+		$config->setValue($e107, array('mySQLport' => $port) + $original);
+
+		try
+		{
+			$db->__construct();
+		}
+		finally
+		{
+			$config->setValue($e107, $original);
+		}
+
+		return $db;
 	}
 
 	public function testDatabase()

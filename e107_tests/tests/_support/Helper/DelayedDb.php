@@ -22,15 +22,23 @@ class DelayedDb extends \Codeception\Module\Db
 
     public function _getDbHostname()
     {
-        $matches = [];
-        $matched = preg_match('~host=([^;]+)~s', $this->config['dsn'], $matches);
-        return $matched ? $matches[1] : false;
+        return $this->dsnParameter('host');
+    }
+
+    public function _getDbPort()
+    {
+        return $this->dsnParameter('port');
     }
 
     public function _getDbName()
     {
+        return $this->dsnParameter('dbname');
+    }
+
+    private function dsnParameter($name)
+    {
         $matches = [];
-        $matched = preg_match('~dbname=([^;]+)~s', $this->config['dsn'], $matches);
+        $matched = preg_match('~' . $name . '=([^;]+)~s', $this->config['dsn'], $matches);
         return $matched ? $matches[1] : false;
     }
 
