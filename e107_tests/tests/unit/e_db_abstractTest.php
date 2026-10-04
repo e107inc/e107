@@ -42,6 +42,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$config = array();
 		$config['mySQLserver']      = $db->_getDbHostname();
+		$config['mySQLport']        = $db->_getDbPort();
 		$config['mySQLuser']        = $db->_getDbUsername();
 		$config['mySQLpassword']    = $db->_getDbPassword();
 		$config['mySQLdefaultdb']   = $db->_getDbName();
@@ -110,6 +111,85 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 			'a refused connection has to report the driver error number');
 		$this->assertNotSame('', $this->db->getLastErrorText(),
 			'a refused connection has to report the driver error text');
+	}
+
+	public function testARefusedDb_ConnectRecordsTheDriverErrorNumber()
+	{
+		$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], 'wrong password', $this->dbConfig['mySQLdefaultdb']);
+
+		$this->assertSame('e1', $result, 'precondition: db_Connect() has to be refused');
+		$this->assertSame(1045, $this->db->getLastErrorNumber(),
+			'a refused db_Connect() has to report the driver error number');
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6663
+	 */
+	public function testConnectUsesTheConfiguredPort()
+	{
+		$server = $this->dbConfig['mySQLserver'];
+		$user = $this->dbConfig['mySQLuser'];
+		$password = $this->dbConfig['mySQLpassword'];
+		$database = $this->dbConfig['mySQLdefaultdb'];
+		$port = $this->dbConfig['mySQLport'];
+		$closedPort = 1;
+
+		if($server === 'localhost' || !$port)
+		{
+			$this->markTestSkipped("needs the suite's database reached over TCP on a port its DSN names");
+		}
+
+		$this->assertFalse($this->makeDbWithConfiguredPort($closedPort)->connect($server, $user, $password),
+			'a configured port that nothing listens on has to refuse the connection');
+		$this->assertTrue($this->makeDbWithConfiguredPort($port)->connect($server, $user, $password),
+			'the configured port has to connect');
+		$this->assertSame('e1', $this->makeDbWithConfiguredPort($closedPort)->db_Connect($server, $user, $password, $database),
+			'db_Connect() has to refuse a configured port that nothing listens on');
+		$this->assertTrue($this->makeDbWithConfiguredPort($port)->db_Connect($server, $user, $password, $database),
+			'db_Connect() has to connect on the configured port');
+
+		$this->assertFalse($this->db->connect($server.':'.$closedPort, $user, $password),
+			'a server string naming a port that nothing listens on has to refuse the connection');
+		$this->assertTrue($this->db->connect($server.':'.$port, $user, $password),
+			'a server string naming the right port has to connect');
+
+		$this->assertSame('e1', $this->db->db_Connect($server.':'.$closedPort, $user, $password, $database),
+			'db_Connect() has to refuse a server string naming a port that nothing listens on');
+		$this->assertTrue($this->db->db_Connect($server.':'.$port, $user, $password, $database),
+			'db_Connect() has to connect on a server string naming the right port');
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6663
+	 */
+	public function testConnectAskingForANewLinkConnects()
+	{
+		$this->assertTrue($this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], true));
+	}
+
+	/**
+	 * @param int|string $port
+	 * @return e_db built while e107_config.php names $port.
+	 */
+	private function makeDbWithConfiguredPort($port)
+	{
+		$e107 = e107::getInstance();
+		$config = new \e107\Reflection\ReflectionProperty($e107, 'e107_config_mysql_info');
+		$original = $config->getValue($e107);
+
+		$db = $this->makeDb();
+		$config->setValue($e107, array('mySQLport' => $port) + $original);
+
+		try
+		{
+			$db->__construct();
+		}
+		finally
+		{
+			$config->setValue($e107, $original);
+		}
+
+		return $db;
 	}
 
 	public function testDatabase()

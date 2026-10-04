@@ -205,9 +205,8 @@ class e_db_mysql implements e_db
 		$this->mySQLPrefix      = $mySQLPrefix;
 		$this->mySQLerror       = false;
 
-		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
+		if (!$this->openLink())
 		{
-			$this->mySQLlastErrText = mysqli_connect_error();
 			return 'e1';
 		}
 
@@ -259,10 +258,8 @@ class e_db_mysql implements e_db
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
 
-		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
+		if (!$this->openLink())
 		{
-			$this->mySQLlastErrNum = mysqli_connect_errno();
-			$this->mySQLlastErrText = mysqli_connect_error();
 			return false;
 		}
 
@@ -272,6 +269,23 @@ class e_db_mysql implements e_db
 		$this->setSQLMode();
 
 		$db_ConnectionID = $this->mySQLaccess;
+
+		return true;
+	}
+
+	/**
+	 * Open the link to {@see e_db_mysql::$mySQLserver} on {@see e_db_mysql::$mySQLport}, recording the driver's error when it is refused.
+	 *
+	 * @return bool
+	 */
+	private function openLink()
+	{
+		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, null, (int) $this->mySQLport))
+		{
+			$this->mySQLlastErrNum = mysqli_connect_errno();
+			$this->mySQLlastErrText = mysqli_connect_error();
+			return false;
+		}
 
 		return true;
 	}
