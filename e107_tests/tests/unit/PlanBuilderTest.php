@@ -501,6 +501,8 @@ class PlanBuilderTest extends \Test\Unit
 
 	public function testABrokenTableIsRepairedByItsOwnPlanAndDiffsCleanAfterwards()
 	{
+		$this->requireDatabaseDriver('mysql', 'it breaks a table with MySQL storage engines and character sets; DbVerifyRoundTripTest repairs on every engine');
+
 		$db = e107::getDb();
 		$table = 'dbvplanprobe';
 		$physical = MPREFIX.$table;
@@ -562,6 +564,8 @@ class PlanBuilderTest extends \Test\Unit
 
 	public function testACreateTableFromACapturedBodyBuildsATableThatDiffsClean()
 	{
+		$this->requireDatabaseDriver('mysql', "it re-runs the server's own CREATE TABLE text; DbVerifyRoundTripTest recreates a table on every engine");
+
 		$db = e107::getDb();
 		$table = 'dbvplanprobe';
 		$physical = MPREFIX.$table;
@@ -594,6 +598,8 @@ class PlanBuilderTest extends \Test\Unit
 
 	public function testApplyingEveryCapturedDefinitionToAMatchingTableChangesNothing()
 	{
+		$this->requireDatabaseDriver('mysql', "it holds the server's own SHOW CREATE TABLE text to byte identity");
+
 		$db = e107::getDb();
 		$table = 'dbvplanprobe';
 		$physical = MPREFIX.$table;
@@ -908,6 +914,13 @@ class PlanBuilderTest_dbStub
 	public function getPlatform()
 	{
 		return new MysqlPlatform();
+	}
+
+	public function getSchemaManager()
+	{
+		require_once(e_HANDLER.'Database/Schema/MysqlSchemaManager.php');
+
+		return new \e107\Database\Schema\MysqlSchemaManager($this);
 	}
 
 	public function resolvePhysicalTableName($table)

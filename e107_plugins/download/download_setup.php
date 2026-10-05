@@ -117,7 +117,7 @@ class download_setup
 
 			$qb = $sql->createQueryBuilder();
 			if($qb->update('download')
-				->setExpression('download_image', "CONCAT(".$qb->createNamedParameter('{e_FILE}downloadimages/').", download_image)")
+				->setExpression('download_image', $qb->expr()->concat($qb->expr()->value('{e_FILE}downloadimages/'), 'download_image'))
 				->where('download_image', '!=', '')
 				->execute())
 			{
@@ -130,7 +130,7 @@ class download_setup
 
 			$qb = $sql->createQueryBuilder();
 			if($qb->update('download')
-				->setExpression('download_thumb', "CONCAT(".$qb->createNamedParameter('{e_FILE}downloadthumbs/').", download_thumb)")
+				->setExpression('download_thumb', $qb->expr()->concat($qb->expr()->value('{e_FILE}downloadthumbs/'), 'download_thumb'))
 				->where('download_thumb', '!=', '')
 				->execute())
 			{
@@ -154,7 +154,7 @@ class download_setup
 
 			$qb = $sql->createQueryBuilder();
 			if($qb->update('download_category')
-				->setExpression('download_category_icon', "CONCAT(".$qb->createNamedParameter('{e_IMAGE}icons/').", download_category_icon)")
+				->setExpression('download_category_icon', $qb->expr()->concat($qb->expr()->value('{e_IMAGE}icons/'), 'download_category_icon'))
 				->where('download_category_icon', '!=', '')
 				->execute())
 			{

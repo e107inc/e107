@@ -1392,14 +1392,11 @@ class e107forum
 
 		if($result && USER && $addUserPostCount)
 		{
-			// ON DUPLICATE KEY UPDATE with a column-referencing expression (IFNULL(...) + 1)
-			// is not expressible by the query builder; use a bound execute().
-			$result = e107::getDb()->execute(
-				'INSERT INTO `#user_extended` (user_extended_id, user_plugin_forum_posts)
-				VALUES (:uid, 1)
-				ON DUPLICATE KEY UPDATE user_plugin_forum_posts = IFNULL(user_plugin_forum_posts, 0) + 1',
-				array('uid' => (int) USERID)
-			);
+			$qb = e107::getDb()->createQueryBuilder();
+			$result = $qb->insert('user_extended')
+				->upsert(array('user_extended_id' => (int) USERID, 'user_plugin_forum_posts' => 1), 'user_extended_id',
+					array('user_plugin_forum_posts' => $qb->raw('COALESCE(user_plugin_forum_posts, 0) + 1')))
+				->execute();
 		}
 
 
@@ -1422,16 +1419,11 @@ class e107forum
 
 		$threadId = intval($threadId);
 
-		// Vendor functions (TRIM/REPLACE/CONCAT/FIND_IN_SET) are not expressible by the
-		// query builder; use a bound execute(). $threadId is bound as :tid.
-		e107::getDb()->execute(
-			"UPDATE `#user_extended`
-			SET
-			user_plugin_forum_viewed = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), CONCAT(',', :tid, ','), ','))
-			WHERE
-			FIND_IN_SET(:tid, user_plugin_forum_viewed)",
-			array('tid' => $threadId)
-		);
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->update('user_extended')
+			->setExpression('user_plugin_forum_viewed', $qb->expr()->removeFromSet('user_plugin_forum_viewed', $threadId))
+			->where($qb->expr()->findInSet('user_plugin_forum_viewed', $threadId))
+			->execute();
 
 	}
 
@@ -1514,7 +1506,7 @@ class e107forum
 			if($titleType == 0)
 			{
 				//prepend to existing title
-				$qb->setExpression('thread_name', $qb->raw('CONCAT('.$qb->createNamedParameter($threadTitle.' ').', thread_name)'));
+				$qb->setExpression('thread_name', $qb->expr()->concat($qb->expr()->value($threadTitle.' '), 'thread_name'));
 			}
 			else
 			{
@@ -2219,9 +2211,10 @@ class e107forum
 	function forum_getforums($type = 'all')
 	{
 		$sql = e107::getDb();
-		$rows = $sql->createQueryBuilder()
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb
 			->select('f.*', 'u.user_name')->from('forum', 'f')
-			->leftJoin('user', 'u', SqlFragment::raw("SUBSTRING_INDEX(f.forum_lastpost_user,'.',1) = u.user_id"))
+			->leftJoin('user', 'u', $qb->expr()->compareColumns($qb->expr()->substringBefore('f.forum_lastpost_user', '.'), 'u.user_id'))
 			->where('forum_parent', '!=', 0)->where('forum_sub', 0)
 			->orderBy('f.forum_order', 'ASC')
 			->fetchAll();
@@ -2514,7 +2507,7 @@ class e107forum
 				// e_userperms::simulateHasAdminPerms('0', ...): one of the
 				// dot-separated segments of user_perms is 0.
 				$terms[] = $expr->allOf($expr->eq('u.user_admin', 1),
-					$qb->raw("CONCAT('.', u.user_perms, '.') LIKE ".$qb->createNamedParameter('%.0.%')));
+					$expr->like($expr->concat($expr->value('.'), 'u.user_perms', $expr->value('.')), '%.0.%'));
 				break;
 		}
 

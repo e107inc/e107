@@ -53,32 +53,22 @@ class db_table_admin
 			$prefix = MPREFIX;
 		}
 		//	echo "Get table structure for: {$table_name}, prefix: {$prefix}<br />";
-		// Session pragma, not DDL: the schema builder deliberately has no SET verb, so
-		// this stays on the sanctioned execute(). Fully static, no injection surface.
-		$sql->execute('SET SQL_QUOTE_SHOW_CREATE = 1');
-		// Physical schema-policy introspection: this reads an arbitrary caller-supplied
-		// $prefix.$table (not the connection prefix) and regex-parses the raw statement,
-		// so the routed, connection-prefixed schema()->getCreateTable() cannot express it.
-		// $prefix.$table_name form a SQL identifier (inside backticks) that cannot be
-		// bound; strip to identifier-safe characters so a backtick cannot break out.
 		$safePrefix = preg_replace('/[^A-Za-z0-9_]/', '', $prefix);
 		$safeTable  = preg_replace('/[^A-Za-z0-9_]/', '', $table_name);
-		$qry = 'SHOW CREATE TABLE `'.$safePrefix.$safeTable."`";
-		if (!($z = $sql->execute($qry)))
+		$definitions = $sql->getSchemaManager()->describeDefinitions($safePrefix.$safeTable);
+		if ($definitions === null)
 		{
 			return FALSE;
 		}
-		$row = $sql->fetch('num');
-		$tmp = str_replace("`", "", stripslashes($row[1])).';'; // Add semicolon to work with our parser
-		$count = preg_match_all("#CREATE\s+?TABLE\s+?`?({$prefix}{$table_name})`?\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $tmp, $matches, PREG_SET_ORDER);
-		if ($count === FALSE)
-		{
-			return "Error occurred";
-		}
-		if (!$count)
-		{
-			return "No matches";
-		}
+		$name = $safePrefix.$safeTable;
+		$body = str_replace("`", "", stripslashes($definitions['body']));
+		$options = str_replace("`", "", stripslashes($definitions['options']));
+		$matches = array(array(
+			'CREATE TABLE '.$name." (\n".$body."\n)".(($options !== '') ? ' '.$options : '').';',
+			$name,
+			$body,
+			(string) preg_replace('/^(?:TYPE|ENGINE)\s*=\s*/i', '', $options),
+		));
 
 		if(isset($matches[0][2]) && is_string($matches[0][2]))
 		{
@@ -783,11 +773,19 @@ class db_table_admin
 		{
 		//	$e107 = e107::getInstance();
 			$tmp = $this->get_table_def($tableName, $pathToSqlFile);
+
+			if (!is_array($tmp))
+			{
+				return false;
+			}
+
 			$createText = $tmp[0][0];
 			$newTableName = ($renameTable ? $renameTable : $tableName);
 			if ($addPrefix)
 			{
-				$newTableName = MPREFIX.$newTableName;
+				$declared = (new \e107\Database\Schema\Declared\SqlFileCatalogue())->parse($createText, basename($this->last_file));
+
+				return (count($declared) === 1) ? e107::getDb()->schema()->createDeclaredTable(reset($declared), null, null, $newTableName) : false;
 			}
 			// $newTableName is a SQL identifier (cannot be bound); sanitise and backtick-quote it.
 			$newTableName = preg_replace('/[^A-Za-z0-9_]/', '', $newTableName);

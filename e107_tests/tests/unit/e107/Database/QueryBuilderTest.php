@@ -13,6 +13,7 @@ namespace e107\Database;
 use e107\Database\Exception\UnsupportedException;
 use e107\Database\Platform\MysqlPlatform;
 use e107\Database\Platform\PlatformInterface;
+use e107\Database\Platform\SqlitePlatform;
 use Generator;
 use InvalidArgumentException;
 use e107\Reflection\ReflectionMethod;
@@ -722,6 +723,30 @@ use e107\Reflection\ReflectionMethod;
 		}
 
 		/**
+		 * MySQL counts the rows a SELECT finds without its LIMIT as it runs it; the
+		 * count is taken from the connection when the query runs and kept, so a
+		 * later query on the connection does not change it.
+		 */
+		public function testMysqlCountsTheFoundRowsAsTheQueryRuns()
+		{
+			$stub = new QueryBuilderTest_calcFoundRowsStub();
+			$qb = new QueryBuilder($stub);
+			$qb->calcFoundRows()->select('a')->distinct()->from('user')->orderBy('a', 'ASC')->setMaxResults(5);
+
+			$this->assertSame('SELECT DISTINCT SQL_CALC_FOUND_ROWS `a` FROM `e107_user` ORDER BY `a` ASC LIMIT 5', $qb->getSQL());
+			$this->assertSame(0, $qb->foundRows(), 'nothing is counted before the query runs');
+
+			$stub->found = 42;
+			$qb->fetchAll();
+			$stub->found = false;
+
+			$this->assertSame(42, $qb->foundRows());
+			$this->assertSame(1, $stub->executions, 'MySQL runs no COUNT of its own');
+
+			$this->assertSame('SELECT DISTINCT `a` FROM `e107_user` ORDER BY `a` ASC LIMIT 5', $qb->calcFoundRows(false)->getSQL());
+		}
+
+		/**
 		 * The FROM sources a search handler declares: a join spelled by hand,
 		 * with '#table' markers the connection resolves at execution.
 		 *
@@ -997,6 +1022,23 @@ use e107\Reflection\ReflectionMethod;
 				.' ON DUPLICATE KEY UPDATE `user_name` = VALUES(`user_name`)',
 				$qb->getSQL()
 			);
+
+			$qb = $this->makeQb();
+			$qb->insert('user_extended')->upsert(
+				array('user_extended_id' => 5, 'user_plugin_forum_posts' => 1),
+				'user_extended_id',
+				array('user_plugin_forum_posts' => $qb->raw('COALESCE(user_plugin_forum_posts, 0) + 1'))
+			);
+			$this->assertSame(
+				'INSERT INTO `e107_user_extended` (`user_extended_id`, `user_plugin_forum_posts`) VALUES (:qb1, :qb2)'
+				.' ON DUPLICATE KEY UPDATE `user_plugin_forum_posts` = COALESCE(user_plugin_forum_posts, 0) + 1',
+				$qb->getSQL()
+			);
+
+			$this->assertThrowsInvalidArgument(function()
+			{
+				$this->makeQb()->insert('user')->upsert(array('user_id' => 5, 'user_name' => 'Bob'), 'user_id', array('user_name' => 'Bob'));
+			});
 		}
 
 		public function testUpsertTyped()
@@ -1077,6 +1119,61 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame(array('qb1' => 3, 'qb2' => 3, 'qb3' => 2), $qb->getParameters());
 		}
 
+		/**
+		 * The string expressions spell MySQL's functions here, and take columns or bound values as operands.
+		 */
+		public function testStringExpressionsSpellMysqlFunctions()
+		{
+			$qb = $this->makeQb();
+			$expr = $qb->expr();
+			$qb->select('c.cb_id')->selectAs($expr->concat('u.user_id', $expr->value('.'), 'u.user_name'), 'online_id')
+				->from('chatbox', 'c')
+				->leftJoin('user', 'u', $expr->compareColumns($expr->substringBefore('c.cb_nick', '.'), 'u.user_id'))
+				->leftJoin('userclass_classes', 'uc', $expr->findColumnInSet('u.user_class', 'uc.userclass_id'))
+				->where($expr->like($expr->concat($expr->value('.'), 'u.user_perms', $expr->value('.')), '%.0.%'));
+
+			$this->assertSame(
+				"SELECT `c`.`cb_id`, CONCAT(`u`.`user_id`, :qb1, `u`.`user_name`) AS `online_id` FROM `e107_chatbox` AS `c`"
+				." LEFT JOIN `e107_user` AS `u` ON SUBSTRING_INDEX(`c`.`cb_nick`, '.', 1) = `u`.`user_id`"
+				." LEFT JOIN `e107_userclass_classes` AS `uc` ON FIND_IN_SET(`uc`.`userclass_id`, `u`.`user_class`)"
+				." WHERE (CONCAT(:qb2, `u`.`user_perms`, :qb3) LIKE :qb4)",
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => '.', 'qb2' => '.', 'qb3' => '.', 'qb4' => '%.0.%'), array_map(function($p) { return is_array($p) ? $p['value'] : $p; }, $qb->getParameters()));
+
+			$this->assertThrowsInvalidArgument(function()
+			{
+				$this->makeQb()->expr()->concat();
+			});
+		}
+
+		/**
+		 * An operand may be a fragment that carries its own bound values, such as one from raw() with $params.
+		 */
+		public function testAnExpressionOperandKeepsItsBoundValues()
+		{
+			$takers = array(
+				'like'                 => function($expr, $operand) { return $expr->like($operand, '%b'); },
+				'notLike'              => function($expr, $operand) { return $expr->notLike($operand, '%b'); },
+				'contains'             => function($expr, $operand) { return $expr->contains($operand, 'b'); },
+				'startsWith'           => function($expr, $operand) { return $expr->startsWith($operand, 'b'); },
+				'endsWith'             => function($expr, $operand) { return $expr->endsWith($operand, 'b'); },
+				'compareColumns left'  => function($expr, $operand) { return $expr->compareColumns($operand, 'user_name'); },
+				'compareColumns right' => function($expr, $operand) { return $expr->compareColumns('user_name', '<>', $operand); },
+				'concat'               => function($expr, $operand) { return $expr->like($expr->concat('user_name', $operand), '%b'); },
+			);
+
+			foreach($takers as $method => $take)
+			{
+				$qb = $this->makeQb();
+				$qb->select('user_id')->from('user')->where($take($qb->expr(), $qb->raw('LOWER(:who)', array('who' => 'Bob'))));
+				$params = array_map(function($p) { return is_array($p) ? $p['value'] : $p; }, $qb->getParameters());
+
+				$this->assertStringContainsString('LOWER(:who)', $qb->getSQL(), $method);
+				$this->assertSame('Bob', isset($params['who']) ? $params['who'] : null, $method.'() has to keep the value its operand binds');
+			}
+		}
+
 		public function testUpdateOrInsert()
 		{
 			// existing row -> UPDATE
@@ -1144,6 +1241,8 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame('`a` >= :qb6', $expr->comparison('a', '>=', 9)->getSql());
 			$this->assertSame('`a` = `b`', $expr->compareColumns('a', 'b')->getSql());
 			$this->assertSame('FIND_IN_SET(:qb7, `user_class`)', $expr->findInSet('user_class', 5)->getSql());
+			$this->assertSame("TRIM(BOTH ',' FROM REPLACE(CONCAT(',', `user_class`, ','), CONCAT(',', :qb8, ','), ','))", $expr->removeFromSet('user_class', 5)->getSql());
+			$this->assertSame('`user_xup` LIKE BINARY :qb9', $expr->likeCaseSensitive('user_xup', 'Live\\_%')->getSql());
 			$this->assertSame('(`a` = 1) AND (`b` = 2)', $expr->allOf('`a` = 1', '`b` = 2')->getSql());
 			$this->assertSame('(`a` = 1) OR (`b` = 2)', $expr->anyOf('`a` = 1', '`b` = 2')->getSql());
 
@@ -1492,6 +1591,45 @@ use e107\Reflection\ReflectionMethod;
 				'SELECT * FROM `e107_news` WHERE (MATCH (`news_title`, `news_body`) AGAINST (:qb1))',
 				$qb->getSQL()
 			);
+
+			$qb = $this->makeQb();
+			$qb->select('n.news_id')->selectAs($qb->expr()->fullText('n.news_title', '+e107 -beta', true), 'score')
+				->from('news', 'n')->orWhereFullText('n.news_body', 'release', true);
+			$this->assertSame(
+				'SELECT `n`.`news_id`, MATCH (`n`.`news_title`) AGAINST (:qb1 IN BOOLEAN MODE) AS `score` FROM `e107_news` AS `n`'
+				.' WHERE (MATCH (`n`.`news_body`) AGAINST (:qb2 IN BOOLEAN MODE))',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => '+e107 -beta', 'qb2' => 'release'), array_map(function($p) { return is_array($p) ? $p['value'] : $p; }, $qb->getParameters()));
+		}
+
+		/**
+		 * A relevance score weighs each match, and is compared like a column.
+		 */
+		public function testWeightedSumScoresEachExpressionByItsWeight()
+		{
+			$qb = $this->makeQb();
+			$expr = $qb->expr();
+			$qb->select('n.news_id')
+				->selectAs($expr->weightedSum(array('title' => $expr->fullText('n.news_title', 'e107', true), 'body' => 'n.news_body'), array('body' => '0.6', 'title' => 1.2)), 'score')
+				->from('news', 'n')
+				->where($expr->gt($expr->weightedSum(array($expr->fullText('n.news_body', 'e107', true)), array(2)), 0));
+
+			$this->assertSame(
+				'SELECT `n`.`news_id`, ((:qb2 * (MATCH (`n`.`news_title`) AGAINST (:qb1 IN BOOLEAN MODE))) + (:qb3 * (`n`.`news_body`))) AS `score`'
+				.' FROM `e107_news` AS `n` WHERE (((:qb5 * (MATCH (`n`.`news_body`) AGAINST (:qb4 IN BOOLEAN MODE)))) > :qb6)',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 'e107', 'qb2' => 1.2, 'qb3' => '0.6', 'qb4' => 'e107', 'qb5' => 2, 'qb6' => 0),
+				array_map(function($p) { return is_array($p) ? $p['value'] : $p; }, $qb->getParameters()));
+
+			foreach(array(array(array(), array()), array(array('a'), array()), array(array('a'), array('heavy')), array(array('a b'), array(1))) as $arguments)
+			{
+				$this->assertThrowsInvalidArgument(function() use ($arguments)
+				{
+					$this->makeQb()->expr()->weightedSum($arguments[0], $arguments[1]);
+				});
+			}
 		}
 
 		public function testWhereIn()
@@ -1717,6 +1855,19 @@ use e107\Reflection\ReflectionMethod;
 				'UPDATE `e107_news` SET `news_title` = :qb1 WHERE (`news_id` = :qb2)',
 				$qb->getSQL()
 			);
+		}
+
+		/**
+		 * A 0 written to the auto-increment column asks for the next id in every language's table, as it does in one.
+		 */
+		public function testExecuteAllLanguagesAsksForTheNextIdWhereTheEngineWouldStoreZero()
+		{
+			$stub = new QueryBuilderTest_storesZeroStub();
+			$qb = new QueryBuilder($stub);
+			$qb->insert('news')->values(array('news_id' => 0, 'news_title' => 'every language'))->executeAllLanguages();
+
+			$this->assertSame(array('value' => null, 'type' => ConnectionInterface::PARAM_NULL), $stub->lastAllLanguagesParams['qb1']);
+			$this->assertSame('every language', $stub->lastAllLanguagesParams['qb2']);
 		}
 
 		public function testExecuteAllLanguagesRejectsSelect()
@@ -2032,7 +2183,7 @@ use e107\Reflection\ReflectionMethod;
 			);
 			$this->assertSame(
 				'INSERT INTO `e107_tmp` (`a`, `b`) VALUES (:qb1, :qb2) ON DUPLICATE KEY UPDATE `b` = VALUES(`b`)',
-				$platform->compileUpsert('`e107_tmp`', array('`a`', '`b`'), array('(:qb1, :qb2)'), array('`b` = VALUES(`b`)'))
+				$platform->compileUpsert('`e107_tmp`', array('`a`', '`b`'), array('(:qb1, :qb2)'), array('`b`' => 'VALUES(`b`)'), array('`a`'))
 			);
 			$this->assertSame('VALUES(`b`)', $platform->getUpsertValueReference('`b`'));
 			$this->assertSame(' FOR UPDATE', $platform->getForUpdateClause());
@@ -2051,6 +2202,61 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame("JSON_CONTAINS_PATH(`c`, 'one', :p)", $platform->compileJsonContainsKey('`c`', ':p'));
 			$this->assertSame('JSON_LENGTH(`c`)', $platform->compileJsonLength('`c`'));
 			$this->assertSame('MATCH (`a`, `b`) AGAINST (:p)', $platform->compileFullText(array('`a`', '`b`'), ':p'));
+			$this->assertSame('MATCH (`a`) AGAINST (:p IN BOOLEAN MODE)', $platform->compileFullText(array('`a`'), ':p', true));
+			$this->assertSame('EXPLAIN SELECT 1', $platform->compileExplain('SELECT 1'));
+			$this->assertSame('OPTIMIZE TABLE `a`, `b`', $platform->compileOptimizeTable(array('`a`', '`b`')));
+			$this->assertSame('UPDATE `e107_t` e, (SELECT @n := :n) m  SET e.`pos` = @n := @n + :s WHERE `pos` > :t', $platform->compileRenumber('`e107_t`', '`pos`', '`id`', ':n', ':s', ':t'));
+
+			$this->assertSame('`user_name`', $platform->quoteIdentifier('user_name'));
+			$this->assertSame('`u`.`user_name`', $platform->quoteIdentifier(' u.user_name '));
+			$this->assertFalse($platform->quoteIdentifier('a.b.c'));
+			$this->assertFalse($platform->quoteIdentifier('a`b'));
+			$this->assertSame(
+				'UPDATE `t` SET `a` = :qb1, `b` = `b` + 1 WHERE (`id` = :qb2) LIMIT 1',
+				$platform->compileUpdate('`t`', array('`a`' => ':qb1', '`b`' => '`b` + 1'), ' WHERE (`id` = :qb2)', 1)
+			);
+			$this->assertSame('UPDATE `t` SET `a` = :qb1', $platform->compileUpdate('`t`', array('`a`' => ':qb1'), ''));
+			$this->assertSame('DELETE FROM `t` WHERE (`id` = :qb1) LIMIT 5', $platform->compileDelete('`t`', ' WHERE (`id` = :qb1)', 5));
+			$this->assertSame('DELETE FROM `t`', $platform->compileDelete('`t`', ''));
+			$this->assertSame('FIND_IN_SET(:qb1, `user_class`)', $platform->compileFindInSet(':qb1', '`user_class`'));
+			$this->assertSame('', $platform->getLikeEscapeClause());
+			$this->assertSame('ALTER TABLE e107_t  AUTO_INCREMENT=1', $platform->compileAutoIncrementReset('e107_t'));
+
+			$this->assertTrue($platform->supportsStorageEngines());
+			$this->assertTrue($platform->supportsCharsets());
+			$this->assertTrue($platform->supportsFoundRows());
+			$this->assertTrue($platform->supportsFullTextIndexes());
+			$this->assertFalse($platform->supportsTransactionalDdl());
+			$this->assertFalse($platform->optimizesWholeDatabase());
+			$this->assertTrue($platform->assignsAutoIncrementOnZero());
+			$this->assertTrue($platform->countsConflictingRows());
+			$this->assertFalse($platform->reportsInsertIdForEveryTable());
+		}
+	}
+
+
+	/**
+	 * A connection stub that reports a FOUND_ROWS() total, as a MySQL connection
+	 * does after a SQL_CALC_FOUND_ROWS query.
+	 */
+	class QueryBuilderTest_calcFoundRowsStub extends QueryBuilderTest_dbStub
+	{
+		/** @var int|false */
+		public $found = false;
+
+		/** @var int */
+		public $executions = 0;
+
+		public function execute($sql, $params = array())
+		{
+			$this->executions++;
+
+			return parent::execute($sql, $params);
+		}
+
+		public function foundRows()
+		{
+			return $this->found;
 		}
 	}
 
@@ -2180,5 +2386,22 @@ use e107\Reflection\ReflectionMethod;
 				default:
 					return ConnectionInterface::PARAM_STR;
 			}
+		}
+	}
+
+
+	/**
+	 * A connection on an engine that stores a 0 written to an auto-increment column rather than assigning the next id.
+	 */
+	class QueryBuilderTest_storesZeroStub extends QueryBuilderTest_dbStub
+	{
+		public function getPlatform()
+		{
+			return new SqlitePlatform('3.45.0');
+		}
+
+		public function getAutoIncrementColumn($table)
+		{
+			return ($table === 'news') ? 'news_id' : null;
 		}
 	}

@@ -17,9 +17,13 @@ defined('MYSQL_BOTH') or define('MYSQL_BOTH', 3);
 require_once('e_db_interface.php');
 require_once('e_db_legacy_trait.php');
 
+use e107\Database\Driver\DriverInterface;
+use e107\Database\Driver\DriverRegistry;
+use e107\Database\Driver\PdoDriverInterface;
+use e107\Database\Exception\UnsupportedException;
+
 /**
- * PDO MySQL class. All legacy mysql_ methods removed.
- * Class e_db_pdo
+ * The PDO database connection, on the engine of its {@see PdoDriverInterface}. All legacy mysql_ methods removed.
  */
 class e_db_pdo implements e_db
 {
@@ -44,7 +48,6 @@ class e_db_pdo implements e_db
 	public      $mySQLinfo;
 	public      $mySQLtablelist = array();
 
-	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
 	protected   $mySqlServerInfo = '?';			// Server info - needed for various things
 
 	private     $pdo            = true; // using PDO or not.
@@ -130,9 +133,14 @@ class e_db_pdo implements e_db
 		}
 
 
+		if(($driver = $this->_pdoDriver()) === false)
+		{
+			return false;
+		}
+
 		try
 		{
-			$this->mySQLaccess = new PDO("mysql:host={$this->mySQLserver};port={$this->mySQLport}", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+			$pdo = $driver->connect($this->_connectionParams());
 		}
 		catch(PDOException $ex)
 		{
@@ -142,8 +150,13 @@ class e_db_pdo implements e_db
 			return false;
 		}
 
-		$this->setCharset();
-		$this->setSQLMode();
+		$this->_dropTransaction();
+		$this->mySQLaccess = $pdo;
+
+		if($this->mySQLaccess !== null)
+		{
+			$this->_startSession();
+		}
 
 		return true;
 	}
@@ -155,11 +168,16 @@ class e_db_pdo implements e_db
 	 */
 	public function getServerInfo()
 	{
+		$driver = $this->getDriver();
 
-	//	var_dump($this->mySQLaccess);
+		if($this->mySQLaccess === null && !$driver->requiresServer())
+		{
+			return $this->mySqlServerInfo = $driver->getServerVersion(null);
+		}
+
 		$this->_getMySQLaccess();
-		$this->mySqlServerInfo =  $this->mySQLaccess->query('select version()')->fetchColumn();
-	//	$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_VERSION);
+		$this->mySqlServerInfo = $driver->getServerVersion($this->mySQLaccess);
+
 		return $this->mySqlServerInfo;
 	}
 
@@ -177,26 +195,39 @@ class e_db_pdo implements e_db
 		$this->mySQLdefaultdb 	= $database;
 		$this->mySQLPrefix 		= $prefix;
 
-		$quoted = '`'.str_replace('`', '``', $database).'`';
-
-		if($multiple === true)
+		if(($driver = $this->_pdoDriver()) === false)
 		{
-			$this->mySQLPrefix 		= $quoted.".".$prefix;
-			return true;
+			return false;
 		}
-
 
 		try
 		{
-			$this->mySQLaccess->exec("use ".$quoted);
-       		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
-	    }
+			$firstOfItsOwn = ($this->mySQLaccess === null && !$driver->requiresServer());
+
+			if($multiple === true && !$firstOfItsOwn)
+			{
+				$this->mySQLPrefix = $driver->qualifyPrefix($this->mySQLaccess, $database, $prefix);
+				return true;
+			}
+
+			$pdo = $driver->selectDatabase($this->mySQLaccess, $database, $this->_connectionParams());
+		}
 		catch (PDOException $e)
 		{
 			$this->mySQLlastErrText = $e->getMessage();
 			$this->mySQLlastErrNum = $this->_errorNumber($e);
 			return false;
-	    }
+		}
+
+		if($pdo !== $this->mySQLaccess)
+		{
+			$this->_dropTransaction();
+			$this->mySQLaccess = $pdo;
+			$this->resetTableList();
+			$this->_startSession();
+		}
+
+		$this->_forgetTableSchemas();
 
 		return true;
 
@@ -258,9 +289,10 @@ class e_db_pdo implements e_db
 	 * @param bool   $debug
 	 * @param string $log_type
 	 * @param string $log_remark
-	 * @return boolean|int|PDOStatement - as mysql_query() function.
+	 * @return boolean|int|PDOStatement|\e107\Database\Result\BufferedResult - as mysql_query() function.
 	 *            false indicates an error
-	 *            For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource
+	 *            For SELECT, SHOW, DESCRIBE, EXPLAIN and others returning a result set, returns a resource:
+	 *            the driver's {@see \e107\Database\Driver\PdoDriverInterface::wrapResult()}, a BufferedResult on SQLite
 	 *            TRUE indicates success in other cases
 	 */
 	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = false, $log_type = '', $log_remark = '')
@@ -315,28 +347,28 @@ class e_db_pdo implements e_db
 
 		if(is_array($query) && !empty($query['PREPARE']))
 		{
-			/** @var PDOStatement $prep */
-			$prep = $this->mySQLaccess->prepare($query['PREPARE']);
-
-			if(!empty($query['BIND']))
-			{
-				foreach($query['BIND'] as $k=>$v)
-				{
-					// A PARAM_NULL bind must carry a null value: PHP's modern
-					// PDO discards the value and sends SQL NULL either way,
-					// but PHP 5's pdo_mysql sends whatever value it was
-					// handed, silently un-nulling the bind.
-					$value = ($v['type'] === PDO::PARAM_NULL) ? null : $v['value'];
-					$prep->bindValue(':'.$k, $value, $v['type']);
-				}
-			}
-
 			$execute = !empty($query['EXECUTE']) ? $query['EXECUTE'] : null;
 
 			try
 			{
+				/** @var PDOStatement $prep */
+				$prep = $this->mySQLaccess->prepare($query['PREPARE']);
+
+				if(!empty($query['BIND']))
+				{
+					foreach($query['BIND'] as $k=>$v)
+					{
+						// A PARAM_NULL bind must carry a null value: PHP's modern
+						// PDO discards the value and sends SQL NULL either way,
+						// but PHP 5's pdo_mysql sends whatever value it was
+						// handed, silently un-nulling the bind.
+						$value = ($v['type'] === PDO::PARAM_NULL) ? null : $v['value'];
+						$prep->bindValue(':'.$k, $value, $v['type']);
+					}
+				}
+
 				$prep->execute($execute);
-				$sQryRes = ($qry_from == 'db_Select') ? $prep : $prep->rowCount();
+				$sQryRes = ($qry_from == 'db_Select') ? $this->getDriver()->wrapResult($prep) : $prep->rowCount();
 			}
 			catch(PDOException $ex)
 			{
@@ -361,7 +393,7 @@ class e_db_pdo implements e_db
 				else
 				{
 						/** @var PDO $rli */
-						$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
+						$sQryRes = $this->getDriver()->wrapResult(is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query));
 				}
 
 			}
@@ -395,9 +427,12 @@ class e_db_pdo implements e_db
 
 		if ($this->_countsFoundRows($query))
 		{
+			$statement = $this->getDriver()->getFoundRowsStatement();
 
-			$rc = $this->mySQLaccess->query('SELECT FOUND_ROWS();')->fetch(PDO::FETCH_COLUMN);
-			$this->total_results = intval($rc);
+			if($statement !== null)
+			{
+				$this->total_results = (int) $this->mySQLaccess->query($statement)->fetch(PDO::FETCH_COLUMN);
+			}
 		}
 
 		if ($this->debugMode === true)
@@ -680,6 +715,7 @@ class e_db_pdo implements e_db
 	function close()
 	{
 		$this->traffic->BumpWho('db Close', 1);
+		$this->_dropTransaction();
 		$this->mySQLresult = null;
 		$this->mySQLaccess = null;
 		$this->dbError('dbClose');
@@ -781,7 +817,7 @@ class e_db_pdo implements e_db
 
 		$this->dbError('execute');
 
-		if($result instanceof PDOStatement)
+		if(is_object($result))
 		{
 			if($result->columnCount() > 0) // result set; rows readable via fetch()
 			{
@@ -925,51 +961,6 @@ class e_db_pdo implements e_db
 
 
 
-	/**
-	 *	Return a list of the field names in a table.
-	 *
-	 *	@param string $table - table name (no prefix)
-	 *	@param string $prefix - table prefix to apply. If empty, MPREFIX is used.
-	 *	@param boolean $retinfo = false - just returns array of field names. TRUE - returns all field info
-	 *	@return array|boolean - false on error, field list array on success
-	 */
-	public function fields($table, $prefix = '', $retinfo = false)
-	{
-		if(($table = $this->_safeIdentifier($table)) === false
-			|| ($prefix != '' && ($prefix = $this->_safeIdentifier($prefix, true)) === false))
-		{
-			return $this->_refuseIdentifier(__FUNCTION__);
-		}
-
-		$this->_getMySQLaccess();
-
-		if ($prefix == '')
-		{
-			 $prefix = $this->mySQLPrefix;
-		}
-
-		if (false === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table)))
-		{
-			return false;		// Error return
-		}
-		$ret = array();
-
-        if ($this->rowCount() > 0)
-		{
-			while ($row = $this->fetch())
-			{
-				if ($retinfo)
-				{
-					$ret[$row['Field']] = $row['Field'];
-				}
-				else
-				{
-					$ret[] = $row['Field'];
-				}
-			}
-		}
-		return $ret;
-	}
 
 
 	/**
@@ -1119,7 +1110,7 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	 * Dump MySQL Table(s) to a file in the Backup folder.
+	 * Dump table(s) to a file in the Backup folder, in the format of the connection's driver.
 	 * @param $table string - name without the prefix or '*' for all
 	 * @param $file string - optional file name. or leave blank to generate.
 	 * @param $options - additional preferences.
@@ -1156,56 +1147,29 @@ class e_db_pdo implements e_db
 		}
 
 
-   //     include_once(dirname(__FILE__) . '/Ifsnop/Mysqldump/Mysqldump.php');
+		$tables = array();
 
-		$dumpSettings = array(
-	        'compress'                      => !empty($options['gzip']) ? Ifsnop\Mysqldump\Mysqldump::GZIP : Ifsnop\Mysqldump\Mysqldump::NONE,
-	        'include-tables'                => array(),
-		    'no-data'                       => false,
-		    'add-drop-table'                => !empty($options['droptable']) ? true : false,
-		    'single-transaction'            => true,
-		    'lock-tables'                   => true,
-		    'add-locks'                     => true,
-		    'extended-insert'               => true,
-		    'disable-foreign-keys-check'    => true,
-		    'skip-triggers'                 => false,
-		    'add-drop-trigger'              => true,
-		    'databases'                     => false,
-		    'add-drop-database'             => false,
-		    'hex-blob'                      => true,
-		    'reset-auto-increment'          => false,
-	    );
+		foreach($tableList as $tab)
+		{
+			$tables[] = $this->mySQLPrefix.trim($tab);
+		}
 
-        foreach($tableList as $tab)
-        {
-            $dumpSettings['include-tables'][] = $this->mySQLPrefix.trim($tab);
-        }
+		$options = array(
+			'gzip'      => !empty($options['gzip']),
+			'droptable' => !empty($options['droptable']),
+		);
 
-
-        try
-        {
-            $dump = new Ifsnop\Mysqldump\Mysqldump("mysql:host={$this->mySQLserver};port={$this->mySQLport};dbname={$this->mySQLdefaultdb}", $this->mySQLuser, $this->mySQLpassword, $dumpSettings);
-		    $dump->start($backupFile);
-		    return $backupFile;
+		try
+		{
+			return $this->getDriver()->backup($this->_connectionParams(), $tables, $backupFile, $options);
 		}
 		catch (\Exception $e)
 		{
-			$this->mySQLlastErrText = 'mysqldump-php error: ' .$e->getMessage();
-			$this->mySQLlastErrNum = $this->_errorNumber($e);
+			$this->mySQLlastErrText = $e->getMessage();
+			$this->mySQLlastErrNum = $this->_errorNumber($e->getPrevious() ? $e->getPrevious() : $e);
 		    return false;
 		}
-
-
 	}
-
-
-
-
-
-
-
-
-
 
 
 	/**
@@ -1223,23 +1187,14 @@ class e_db_pdo implements e_db
 
 
 	/**
-	 * MySQL error number behind a PDO exception, matching what {@see e_db_mysql} records; -1 when the error carries no driver number.
-	 *
-	 * Before PHP 7.3.22 and 7.4.10 (php-src bug #64705) a connection failure sets no errorInfo and puts the errno in the exception code as an int, while a SQLSTATE always arrives there as a string, so the test is is_int() and never is_numeric(): SQLSTATE values such as '23000' are all digits.
+	 * The error number behind a failure, as the connection's driver numbers it ({@see PdoDriverInterface::errorNumber()}); -1 when the error carries no driver number.
 	 *
 	 * @param Exception $ex
 	 * @return int
 	 */
 	private function _errorNumber($ex)
 	{
-		if(isset($ex->errorInfo[1]) && (int) $ex->errorInfo[1] !== 0)
-		{
-			return (int) $ex->errorInfo[1];
-		}
-
-		$code = $ex->getCode();
-
-		return (is_int($code) && $code !== 0) ? $code : -1;
+		return $this->getDriver()->errorNumber($ex);
 	}
 
 
@@ -1258,190 +1213,152 @@ class e_db_pdo implements e_db
 
 
 	/**
+	 * Put the session into the mode e107 expects: the driver's session statements, then its handle attributes.
+	 *
 	 * @return void
 	 */
 	private function setSQLMode()
 	{
-		$this->db_Query("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION';");
-		/**
-		 * Disable PHP 8.1 PDO result set typing casting for consistency with PHP 5.6 through 8.0
-		 * @link https://github.com/php/php-src/blob/4025cf2875f895e9f7193cebb1c8efa4290d052e/UPGRADING#L130-L134
-		 */
-		$this->mySQLaccess->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
+		$driver = $this->getDriver();
+
+		foreach($driver->getSessionStatements() as $statement)
+		{
+			$this->db_Query($statement);
+		}
+
+		$driver->configure($this->mySQLaccess);
 	}
 
-
+	/**
+	 * Set up a session on a newly opened handle.
+	 *
+	 * @return void
+	 */
+	private function _startSession()
+	{
+		$this->setCharset();
+		$this->setSQLMode();
+	}
 
 	/**
-	 * Set Database charset to utf8mb4
+	 * Set the session's character set, utf8mb4 by default. An engine with a single fixed encoding runs nothing.
 	 *
-	 * @access private
+	 * @param string $charset
+	 * @return void
 	 */
 	public function setCharset($charset = 'utf8mb4')
 	{
-		$this->db_Query("SET NAMES `$charset`");
+		$statement = $this->getDriver()->getCharsetStatement($charset);
+
+		if($statement !== null)
+		{
+			$this->db_Query($statement);
+		}
 
 		$this->mySQLcharset = $charset;
 	}
 
 	/**
-	 *	Get the _FIELD_DEFS and _NOTNULL definitions for a table
-	 *<code>
-	 *	The information is sought in a specific order:
-	 *		a) In our internal cache
-	 *		b) in the directory e_CACHE_DBDIR - file name $tableName.php
-	 *		c) An override file for a core or plugin-related table. If found, the information is copied to the cache directory
-	 *			For core overrides, e_ADMIN.'core_sql/db_field_defs.php' is searched
-	 *			For plugins, $pref['e_sql_list'] is used as a search list - any file 'db_field_defs.php' in the plugin directory is earched
-	 *		d) The table structure is read from the DB, and a definition created:
-	 *			AUTOINCREMENT fields - ignored (or integer)
-	 *			integer type fields - 'int' processing
-	 *			character/string type fields - todb processing
-	 *			fields which are 'NOT NULL' but have no default are added to the '_NOTNULL' list
-	 *</code>
-	 *	@param string $tableName - table name, without any prefixes (language or general)
-	 *	@return boolean|array - false if not found/not to be used. Array of field names and processing types and null overrides if found
+	 * The connection parameters a driver opens a session or a dump from.
+	 *
+	 * @return array
 	 */
-	public function getFieldDefs($tableName)
+	private function _connectionParams()
 	{
-		if (!isset($this->dbFieldDefs[$tableName]))
-		{
-			$cached = null;
-			if (is_readable(e_CACHE_DB.$tableName.'.php'))
-			{
-				$temp = @file_get_contents(e_CACHE_DB.$tableName.'.php');
-				$tableIsUntyped = ($temp === '');
-				if ($tableIsUntyped)
-				{
-					$cached = array();
-				}
-				elseif ($temp !== false)
-				{
-					$typeDefs = e107::unserialize($temp);
-					if (!empty($typeDefs))
-					{
-						$cached = $typeDefs;
-					}
-				}
-				unset($temp);
-			}
-
-			if ($cached !== null)
-			{
-				$this->dbFieldDefs[$tableName] = $cached;
-			}
-			else
-			{		// Need to try and find a table definition
-				$searchArray = array(e_CORE.'sql/db_field_defs.php');
-				// e107::getPref() shouldn't be used inside db handler! See hasLanguage() comments
-				$sqlFiles = (array) $this->getConfig()->get('e_sql_list', array()); // kill any PHP notices
-				foreach ($sqlFiles as $p => $f)
-				{
-					$searchArray[] = e_PLUGIN.$p.'/db_field_defs.php';
-				}
-				unset($sqlFiles);
-				$found = false;
-				foreach ($searchArray as $defFile)
-				{
-					//echo "Check: {$defFile}, {$tableName}<br />";
-					if ($this->loadTableDef($defFile, $tableName))
-					{
-						$found = TRUE;
-						break;
-					}
-				}
-				if (!$found)
-				{	// Need to read table structure from DB and create the file
-					$this->makeTableDef($tableName);
-				}
-			}
-		}
-		return $this->dbFieldDefs[$tableName];
+		return array(
+			'server'   => $this->mySQLserver,
+			'port'     => $this->mySQLport,
+			'user'     => $this->mySQLuser,
+			'password' => $this->mySQLpassword,
+			'database' => $this->mySQLdefaultdb,
+		);
 	}
-
 
 	/**
-	 *	Search the specified file for a field type definition of the specified table.
-	 *	If found, generate and save a cache file in the e_CACHE_DB directory,
-	 *	Always also update $this->dbFieldDefs[$tableName] - false if not found, data if found
-	 *	@param	string $defFile - file name, including path
-	 *	@param	string $tableName - name of table sought
-	 *	@return boolean TRUE on success, false on not found (some errors intentionally ignored)
+	 * The connection's driver, or false with the reason recorded as the last error when it cannot be had.
+	 *
+	 * @return PdoDriverInterface|false
 	 */
-	protected function loadTableDef($defFile, $tableName)
+	private function _pdoDriver()
 	{
-		$result =false;
-
-		if (is_readable($defFile))
+		try
 		{
-			// Read the file using the array handler routines
-			// File structure is a nested array - first level is table name, second level is either false (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
-			$temp = file_get_contents($defFile);
-			// Strip any comments  (only /*...*/ supported)
-			$temp = preg_replace("#\/\*.*?\*\/#ms", '', $temp);
-			//echo "Check: {$defFile}, {$tableName}<br />";
-			if ($temp !== false)
-			{
-			//	$array = e107::getArrayStorage();
-				$typeDefs = e107::unserialize($temp);
-
-				unset($temp);
-				if (isset($typeDefs[$tableName]))
-				{
-					$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
-
-					$fileData = e107::serialize($typeDefs[$tableName], false);
-
-					if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $fileData))
-					{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
-
-					}
-
-					$result = true;
-				}
-			}
+			return $this->getDriver();
 		}
-
-		if (!$result)
+		catch(InvalidArgumentException $e)
 		{
-			$this->dbFieldDefs[$tableName] = false;
+			$this->mySQLlastErrText = $e->getMessage();
+			$this->mySQLlastErrNum = -1;
+			return false;
 		}
-		return $result;
 	}
-
 
 	/**
-	 *	Creates a field type definition from the structure of the table in the DB
-	 *	Generate and save a cache file in the e_CACHE_DB directory,
-	 *	Also update $this->dbFieldDefs[$tableName] - false if error, data if found
-	 *	@param	string $tableName - name of table sought
-	 *	@return array|boolean array on success, false on not found (some errors intentionally ignored)
+	 * The configured driver is the 'driver' key of the e107_config.php 'database' block, 'mysql' when absent.
+	 *
+	 * @param string|null $name
+	 * @return PdoDriverInterface
 	 */
-	protected function makeTableDef($tableName)
+	protected function _createDriver($name = null)
 	{
-		require_once(e_HANDLER.'db_table_admin_class.php');
-		$dbAdm = new db_table_admin();
+		$compat = e107::getMySQLConfig('mysql_compat');
+		$settings = array(
+			'root'         => defset('e_ROOT', ''),
+			'mysql_compat' => !in_array($compat, array(false, 0, '0', 'false'), true),
+		);
 
-		$baseStruct = $dbAdm->get_current_table($tableName);
-		$baseStruct = isset($baseStruct[0][2]) ? $baseStruct[0][2] : null;
-		$fieldDefs = $dbAdm->parse_field_defs($baseStruct);					// Required definitions
-		if (!$fieldDefs) return false;
+		try
+		{
+			$driver = DriverRegistry::create(($name === null) ? e107::getMySQLConfig('driver') : $name, $settings);
+		}
+		catch(InvalidArgumentException $e)
+		{
+			if($name !== null)
+			{
+				throw $e;
+			}
 
-		$outDefs = $dbAdm->make_field_types($fieldDefs);
-
-		$this->dbFieldDefs[$tableName] = $outDefs;
-		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
-
-		if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $toSave))
-		{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
-			$mes = e107::getMessage();
-			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.
-			// echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
+			throw new InvalidArgumentException($e->getMessage().' Check the \'driver\' key in e107_config.php.', 0, $e);
 		}
 
-		return empty($outDefs) ? false : $outDefs;
+		$this->_requirePdoDriver($driver);
 
+		return $driver;
 	}
+
+	/**
+	 * Accepts any PDO-backed driver and drops the session opened through the previous one.
+	 *
+	 * @param DriverInterface $driver
+	 * @return void
+	 */
+	protected function _switchDriver(DriverInterface $driver)
+	{
+		$this->_requirePdoDriver($driver);
+
+		$this->_dropTransaction();
+		$this->mySQLresult = null;
+		$this->mySQLaccess = null;
+		$this->resetTableList();
+	}
+
+	/**
+	 * @param DriverInterface $driver
+	 * @return void
+	 * @throws UnsupportedException when the driver has no PDO side
+	 */
+	private function _requirePdoDriver(DriverInterface $driver)
+	{
+		if(!$driver instanceof PdoDriverInterface)
+		{
+			throw new UnsupportedException('The '.$driver->getLabel().' driver cannot back a PDO connection.');
+		}
+	}
+
+
+
+
+
 
 	/**
 	 * In case e_db_mysql::$mySQLaccess is not set, set it.

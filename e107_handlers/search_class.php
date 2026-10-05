@@ -238,23 +238,39 @@ class e_search
 			$this -> query = str_replace('&quot;', '"', $this -> query);
 
 			$qb = $sql->createQueryBuilder();
-			$relevance_keyword = $qb->createNamedParameter(str_replace(" ", "+", $this -> query));
-			$match_keyword = $qb->createNamedParameter($this -> query);
+			$expr = $qb->expr();
+			$relevance_keyword = str_replace(" ", "+", $this -> query);
+
+			$field_columns = array();
+			$field_weights = array();
+			$field_matches = array();
 
 			foreach ($search_fields as $field_key => $field)
 			{
-				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST (".$relevance_keyword." IN BOOLEAN MODE)))";
-				$field_query[] = "MATCH(".$field.") AGAINST (".$match_keyword." IN BOOLEAN MODE)";
+				$field_columns[$field_key] = $this->fullTextColumns($field);
+				$field_weights[$field_key] = isset($weights[$field_key]) && is_numeric($weights[$field_key]) ? $weights[$field_key] : 0.6;
+				$field_matches[] = $expr->fullText($field_columns[$field_key], $this -> query, true);
 			}
 
-			$match_query = implode(' + ', $search_query);
-			$field_query = implode(' || ', $field_query);
+			$relevance = function () use ($expr, $field_columns, $field_weights, $relevance_keyword)
+			{
+				$scores = array();
 
-			$qb->selectRaw("SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance")->fromRaw('#'.$table);
+				foreach ($field_columns as $field_key => $columns)
+				{
+					$scores[$field_key] = $expr->fullText($columns, $relevance_keyword, true);
+				}
+
+				return $expr->weightedSum($scores, $field_weights);
+			};
+
+			$qb->calcFoundRows()->selectRaw($return_fields)->selectAs($relevance(), 'relevance')->fromRaw('#'.$table);
 
 			$this->applyHandlerWhere($qb, $where);
 
-			$qb->where($qb->raw('('.$field_query.')'))->havingRaw('relevance > 0')->addOrderBy('relevance', 'DESC');
+			$qb->where($expr->anyOf(...$field_matches))
+				->where($expr->gt($relevance(), 0))
+				->addOrderBy('relevance', 'DESC');
 
 			foreach ($order as $sort_key => $sort_value)
 			{
@@ -444,7 +460,7 @@ class e_search
 		}
 		if ($search_prefs['mysql_sort']) 
 		{
-			$ps['results'] = $sql->total_results;		// db class reads result of SELECT FOUND_ROWS() for us
+			$ps['results'] = $qb->foundRows();
 		}
 		return $ps;
 	}
@@ -465,6 +481,31 @@ class e_search
 		{
 			$qb->where($qb->raw($where_clause));
 		}
+	}
+
+	/**
+	 * The columns a handler's search field names: one, or several for a full-text index over more than one, backticked or not.
+	 *
+	 * @param string $field e.g. "n.news_title" or "`t`.`title`, `t`.`body`"
+	 * @return string[]
+	 */
+	private function fullTextColumns($field)
+	{
+		$columns = array('');
+
+		foreach (\e107\Database\SqlLexer::mysql()->tokenize($field) as $token)
+		{
+			if ($token['type'] === \e107\Database\SqlLexer::T_SYMBOL && $token['text'] === ',')
+			{
+				$columns[] = '';
+				continue;
+			}
+
+			$bare = ($token['type'] === \e107\Database\SqlLexer::T_QUOTED_IDENTIFIER && strpos($token['value'], '.') === false);
+			$columns[count($columns) - 1] .= $bare ? $token['value'] : $token['text'];
+		}
+
+		return array_map('trim', $columns);
 	}
 
 	/**

@@ -594,18 +594,19 @@ class user_shortcodes extends e_shortcode
 		$cacheKey = 'userjump/'.intval($this->var['user_id']);
 		if(!$userjump = e107::getRegistry($cacheKey))
 		{
-		  $sql->execute("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` > :userId AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1", array('userId' => (int) $this->var['user_id']));
-		  if ($row = $sql->fetch())
+		  foreach(array('next' => array('>', 'ASC'), 'prev' => array('<', 'DESC')) as $dir => $way)
 		  {
-			$userjump['next']['id'] = $row['user_id'];
-			$userjump['next']['name'] = $row['user_name'];
-		  }
-
-		  $sql->execute("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` < :userId AND `user_ban`=0 ORDER BY user_id DESC LIMIT 1", array('userId' => (int) $this->var['user_id']));
-		  if ($row = $sql->fetch())
-		  {
-			$userjump['prev']['id'] = $row['user_id'];
-			$userjump['prev']['name'] = $row['user_name'];
+			$row = $sql->createQueryBuilder()->select('user_id', 'user_name')->from('user')
+				->where('user_id', $way[0], (int) $this->var['user_id'])
+				->where('user_ban', 0)
+				->orderBy('user_id', $way[1])
+				->setMaxResults(1)
+				->fetchRow();
+			if ($row)
+			{
+			  $userjump[$dir]['id'] = $row['user_id'];
+			  $userjump[$dir]['name'] = $row['user_name'];
+			}
 		  }
 		  e107::setRegistry($cacheKey, $userjump);
 		}

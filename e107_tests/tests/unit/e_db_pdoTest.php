@@ -38,10 +38,36 @@ class e_db_pdoTest extends e_db_abstractTest
 
 	public function testGetCharSet()
 	{
+		$this->requireDatabaseDriver('mysql', 'the connection character set is a MySQL setting');
+
 		$this->db->setCharset();
 		$result = $this->db->getCharset();
 
 		$this->assertEquals('utf8mb4', $result);
+	}
+
+	public function testAnUnknownDriverInTheConfigIsReportedWithWhereItIsSet()
+	{
+		$e107 = e107::getInstance();
+		$property = new \e107\Reflection\ReflectionProperty($e107, 'e107_config_mysql_info');
+		$property->setAccessible(true);
+		$saved = $property->getValue($e107);
+		$db = $this->makeDb();
+		$db->__construct();
+
+		try
+		{
+			$property->setValue($e107, array_merge($saved, array('mySQLdriver' => 'nosuchengine')));
+			$connected = $db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		}
+		finally
+		{
+			$property->setValue($e107, $saved);
+		}
+
+		$this->assertFalse($connected);
+		$this->assertStringContainsString('nosuchengine', $db->getLastErrorText());
+		$this->assertStringContainsString('e107_config.php', $db->getLastErrorText());
 	}
 
 	public function testBackup()
@@ -149,5 +175,27 @@ class e_db_pdoTest extends e_db_abstractTest
 		);
 
 		e107::setRegistry('core/e107/singleton/UserHandler', $original_user_handler);
+	}
+
+	public function testATransactionDoesNotOutliveTheDriverItWasOpenedThrough()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->useDriver($this->db->getDriver()->getName());
+			$this->assertFalse($this->db->inTransaction());
+
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->rollBack());
+
+			$this->assertSame(array(), $this->transactionIds($table), 'the new session opened a transaction, not a savepoint');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
 	}
 }

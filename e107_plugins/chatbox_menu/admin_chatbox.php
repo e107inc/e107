@@ -63,10 +63,11 @@ if (isset($_POST['recalculate']))
 	$sql->createQueryBuilder()->update('user')->set('user_chats', 0)->execute();
 
 	$list = array();
-	$rows = $sql->createQueryBuilder()
+	$qb = $sql->createQueryBuilder();
+	$rows = $qb
 		->addSelect(SqlFragment::raw("u.user_id AS uid, count(c.cb_nick) AS count"))
 		->from('chatbox', 'c')
-		->leftJoin('user', 'u', SqlFragment::raw("SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id"))
+		->leftJoin('user', 'u', $qb->expr()->compareColumns($qb->expr()->substringBefore('c.cb_nick', '.'), 'u.user_id'))
 		->where('u.user_id', '>', 0)
 		->groupBy('uid')
 		->fetchAll();

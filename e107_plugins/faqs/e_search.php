@@ -58,7 +58,7 @@ class faqs_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-		$qry = " find_in_set(x.faq_info_class,'".USERCLASS_LIST."') AND ";
+		$qry = " x.faq_info_class IN (".implode(',', array_map('intval', explode(',', USERCLASS_LIST))).") AND ";
 
 		/*
 		if (vartrue($parm['time']) && is_numeric($parm['time'])) 

@@ -35,7 +35,7 @@ class adminUiBatchTriggerTest extends \Test\Unit
 
 	protected function _after()
 	{
-		e107::getDb()->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->table . '`');
+		$this->dropTemporaryTable($this->table);
 		$this->restoreUserRegistry();
 	}
 
@@ -418,7 +418,7 @@ class adminUiBatchTriggerTest extends \Test\Unit
 	private function makeTree()
 	{
 		$sql = e107::getDb();
-		$sql->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->table . '`');
+		$this->dropTemporaryTable($this->table);
 		$sql->gen('CREATE TEMPORARY TABLE `' . $this->table
 			. '` (id INT NOT NULL, a VARCHAR(255) NULL)');
 		$sql->gen("INSERT INTO `" . $this->table . "` (id, a) VALUES (1, 'orig_a')");

@@ -670,12 +670,9 @@ function update_core_database($type = '')
 		}
 
 		$genericIndexes = array();
-		if($sql->gen("SHOW INDEX FROM `".MPREFIX."generic`"))
+		foreach($sql->getSchemaManager()->getIndexRows(MPREFIX.'generic') ?: array() as $row)
 		{
-			while($row = $sql->fetch())
-			{
-				$genericIndexes[$row['Key_name']] = true;
-			}
+			$genericIndexes[$row['Key_name']] = true;
 		}
 
 		if(!isset($genericIndexes['gen_type_ip']) || !isset($genericIndexes['gen_type_ts']))
@@ -685,14 +682,16 @@ function update_core_database($type = '')
 				return update_needed("The failed-login table is missing the indexes the auto-ban counter reads.");
 			}
 
+			$generic = $sql->schema()->tablePhysical('generic');
 			if(!isset($genericIndexes['gen_type_ip']))
 			{
-				$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type_ip` (`gen_type`,`gen_ip`);");
+				$generic->addIndex(Index::index('gen_type_ip', array('gen_type', 'gen_ip')));
 			}
 			if(!isset($genericIndexes['gen_type_ts']))
 			{
-				$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type_ts` (`gen_type`,`gen_datestamp`);");
+				$generic->addIndex(Index::index('gen_type_ts', array('gen_type', 'gen_datestamp')));
 			}
+			$generic->execute();
 		}
 
 		if(empty($pref['ban_durations_login_default_applied']))

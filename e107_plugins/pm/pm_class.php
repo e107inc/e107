@@ -1111,18 +1111,21 @@ class private_message
 		$limit = intval($limit);
 		if ($limit < 2) { $limit = 10; }
 		$from = intval($from);
-		$qry = "
-		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM `#private_msg` AS pm
-		LEFT JOIN `#user` AS u ON u.user_id = pm.pm_from
-		WHERE pm.pm_to = ".(int) $uid." AND pm.pm_read_del = 0
-		ORDER BY pm.pm_sent DESC
-		LIMIT ".(int) $from.", ".(int) $limit."
-		";
+		$qb = $sql->createQueryBuilder();
+		$messages = $qb->calcFoundRows()
+			->select('pm.*', 'u.user_image', 'u.user_name')
+			->from('private_msg', 'pm')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 'pm.pm_from'))
+			->where('pm.pm_to', $uid)
+			->where('pm.pm_read_del', 0)
+			->orderBy('pm.pm_sent', 'DESC')
+			->setFirstResult($from)->setMaxResults($limit)
+			->fetchAll();
 
-		if($sql->execute($qry))
+		if($messages)
 		{
-			$total_messages = $sql->foundRows(); 		// Total number of messages
-			$ret['messages'] = $sql->db_getList();
+			$total_messages = $qb->foundRows(); 		// Total number of messages
+			$ret['messages'] = $messages;
 		}
 
 		$ret['total_messages'] = $total_messages;		// Should always be defined
@@ -1148,18 +1151,21 @@ class private_message
 		$limit = intval($limit);
 		if ($limit < 2) { $limit = 10; }
 		$from = intval($from);
-		$qry = "
-		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
-		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
-		WHERE pm.pm_from = ".(int) $uid." AND pm.pm_sent_del = '0'
+		$qb = $sql->createQueryBuilder();
+		$messages = $qb->calcFoundRows()
+			->select('pm.*', 'u.user_image', 'u.user_name')
+			->from('private_msg', 'pm')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 'pm.pm_to'))
+			->where('pm.pm_from', $uid)
+			->where('pm.pm_sent_del', 0)
+			->orderBy('pm.pm_sent', 'DESC')
+			->setFirstResult($from)->setMaxResults($limit)
+			->fetchAll();
 
-		ORDER BY pm.pm_sent DESC
-		LIMIT ".(int) $from.', '.(int) $limit;
-
-		if($sql->execute($qry))
+		if($messages)
 		{
-			$total_messages = $sql->total_results;		// Total number of messages
-			$ret['messages'] = $sql->db_getList();
+			$total_messages = $qb->foundRows();		// Total number of messages
+			$ret['messages'] = $messages;
 		}
 		$ret['total_messages'] = $total_messages;
 		return $ret;

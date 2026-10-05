@@ -119,26 +119,13 @@ class forumStats
 		$open_days = floor((time()-$open_ds) / 86400);
 		$postsperday = ($open_days < 1 ? $total_posts : round($total_posts / $open_days));
 
-		global $mySQLdefaultdb;
-
 		$db_size = 0;
 		$avg_row_len = 0;
-		// SHOW TABLE STATUS cannot be expressed by the query builder; the database
-		// name is an identifier (not a bindable value), so validate it fail-closed.
-		$dbIdentifier = $sql->quoteIdentifier($mySQLdefaultdb);
-		if($dbIdentifier !== false)
+		$status = $sql->getSchemaManager()->getTableStatus(MPREFIX.'forum_post');
+		if($status !== null)
 		{
-			$sql->execute("SHOW TABLE STATUS FROM ".$dbIdentifier);
-			$array = $sql->db_getList();
-			foreach($array as $table)
-			{
-				if($table['Name'] == MPREFIX.'forum_post')
-				{
-					$db_size = eHelper::parseMemorySize($table['Data_length']);
-					$avg_row_len = eHelper::parseMemorySize($table['Avg_row_length']);
-					break;
-				}
-			}
+			$db_size = eHelper::parseMemorySize((int) $status['data_length']);
+			$avg_row_len = eHelper::parseMemorySize((int) $status['avg_row_length']);
 		}
 
 		$visibleForums = $forum->getForumPermList('view');

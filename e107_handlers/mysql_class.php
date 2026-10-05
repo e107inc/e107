@@ -118,7 +118,6 @@ class e_db_mysql implements e_db
 	public      $mySQLinfo;
 	public      $mySQLtablelist = array();
 
-	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
 	protected   $mySqlServerInfo = '?';			// Server info - needed for various things
 
 	private     $stringifyFetch = false;	// Prepared-statement results carry native types; stringify on fetch for PDO parity.
@@ -200,6 +199,8 @@ class e_db_mysql implements e_db
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
 
+		$this->_dropTransaction();
+
 		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, null, (int) $this->mySQLport))
 		{
 			$this->mySQLlastErrNum = mysqli_connect_errno();
@@ -258,6 +259,8 @@ class e_db_mysql implements e_db
 			$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
 			return false;
 		}
+
+		$this->_forgetTableSchemas();
 
 		return true;
 	}
@@ -396,11 +399,13 @@ class e_db_mysql implements e_db
 
 		if ($this->_countsFoundRows($query))
 		{
+			$statement = $this->getDriver()->getFoundRowsStatement();
 
-			$fr = mysqli_query($this->mySQLaccess, 'SELECT FOUND_ROWS()');
-			$rc = mysqli_fetch_array($fr);
-			$this->total_results = (int)$rc['FOUND_ROWS()'];
-
+			if($statement !== null)
+			{
+				$rc = mysqli_fetch_row(mysqli_query($this->mySQLaccess, $statement));
+				$this->total_results = (int) $rc[0];
+			}
 		}
 
 		if ($this->debugMode === true)
@@ -872,6 +877,7 @@ class e_db_mysql implements e_db
 	{
 		$this->_getMySQLaccess();
 		e107::getSingleton('e107_traffic')->BumpWho('db Close', 1);
+		$this->_dropTransaction();
 		@mysqli_close($this->mySQLaccess);
 	}
 
@@ -1120,51 +1126,6 @@ class e_db_mysql implements e_db
 
 
 
-	/**
-	 *	Return a list of the field names in a table.
-	 *
-	 *	@param string $table - table name (no prefix)
-	 *	@param string $prefix - table prefix to apply. If empty, MPREFIX is used.
-	 *	@param boolean $retinfo = FALSE - just returns array of field names. TRUE - returns all field info
-	 *	@return array|boolean - FALSE on error, field list array on success
-	 */
-	public function fields($table, $prefix = '', $retinfo = false)
-	{
-		if(($table = $this->_safeIdentifier($table)) === false
-			|| ($prefix != '' && ($prefix = $this->_safeIdentifier($prefix, true)) === false))
-		{
-			return $this->_refuseIdentifier(__FUNCTION__);
-		}
-
-		$this->_getMySQLaccess();
-
-		if ($prefix == '')
-		{
-			 $prefix = $this->mySQLPrefix;
-		}
-
-		if (false === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table)))
-		{
-			return false;		// Error return
-		}
-		$ret = array();
-
-        if ($this->rowCount() > 0)
-		{
-			while ($row = $this->fetch())
-			{
-				if ($retinfo)
-				{
-					$ret[$row['Field']] = $row['Field'];
-				}
-				else
-				{
-					$ret[] = $row['Field'];
-				}
-			}
-		}
-		return $ret;
-	}
 
 	/**
 	 * @return int
@@ -1355,9 +1316,10 @@ class e_db_mysql implements e_db
 	 */
 	private function setSQLMode()
 	{
-
-		$this->db_Query("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION';");
-
+		foreach($this->getDriver()->getSessionStatements() as $statement)
+		{
+			$this->db_Query($statement);
+		}
 	}
 
 
@@ -1400,7 +1362,7 @@ class e_db_mysql implements e_db
 			$this->mySQLaccess->set_charset($charset);
 			if ( ! $debug)
 			{
-			   @mysqli_query($this->mySQLaccess, "SET NAMES `$charset`");
+			   @mysqli_query($this->mySQLaccess, $this->getDriver()->getCharsetStatement($charset));
 			}
 			else
 			{
@@ -1416,7 +1378,7 @@ class e_db_mysql implements e_db
 				else
 				{
 					// Use db_Query() debug handler
-					$this->db_Query("SET NAMES `$charset`", NULL, '', $debug);
+					$this->db_Query($this->getDriver()->getCharsetStatement($charset), NULL, '', $debug);
 				}
 			}
 		}
@@ -1440,162 +1402,10 @@ class e_db_mysql implements e_db
 		$this->mySQLcharset = $charset;
 	}
 
-	/**
-	 *	Get the _FIELD_DEFS and _NOTNULL definitions for a table
-	 *<code>
-	 *	The information is sought in a specific order:
-	 *		a) In our internal cache
-	 *		b) in the directory e_CACHE_DBDIR - file name $tableName.php
-	 *		c) An override file for a core or plugin-related table. If found, the information is copied to the cache directory
-	 *			For core overrides, e_ADMIN.'core_sql/db_field_defs.php' is searched
-	 *			For plugins, $pref['e_sql_list'] is used as a search list - any file 'db_field_defs.php' in the plugin directory is earched
-	 *		d) The table structure is read from the DB, and a definition created:
-	 *			AUTOINCREMENT fields - ignored (or integer)
-	 *			integer type fields - 'int' processing
-	 *			character/string type fields - todb processing
-	 *			fields which are 'NOT NULL' but have no default are added to the '_NOTNULL' list
-	 *</code>
-	 *	@param string $tableName - table name, without any prefixes (language or general)
-	 *	@return boolean|array - FALSE if not found/not to be used. Array of field names and processing types and null overrides if found
-	 */
-	public function getFieldDefs($tableName)
-	{
-		if (!isset($this->dbFieldDefs[$tableName]))
-		{
-			$cached = null;
-			if (is_readable(e_CACHE_DB.$tableName.'.php'))
-			{
-				$temp = @file_get_contents(e_CACHE_DB.$tableName.'.php');
-				$tableIsUntyped = ($temp === '');
-				if ($tableIsUntyped)
-				{
-					$cached = array();
-				}
-				elseif ($temp !== FALSE)
-				{
-					$typeDefs = e107::unserialize($temp);
-					if (!empty($typeDefs))
-					{
-						$cached = $typeDefs;
-					}
-				}
-				unset($temp);
-			}
-
-			if ($cached !== null)
-			{
-				$this->dbFieldDefs[$tableName] = $cached;
-			}
-			else
-			{		// Need to try and find a table definition
-				$searchArray = array(e_CORE.'sql/db_field_defs.php');
-				// e107::getPref() shouldn't be used inside db handler! See db_IsLang() comments
-				$sqlFiles = (array) $this->getConfig()->get('e_sql_list', array()); // kill any PHP notices
-				foreach ($sqlFiles as $p => $f)
-				{
-					$searchArray[] = e_PLUGIN.$p.'/db_field_defs.php';
-				}
-				unset($sqlFiles);
-				$found = FALSE;
-				foreach ($searchArray as $defFile)
-				{
-					//echo "Check: {$defFile}, {$tableName}<br />";
-					if ($this->loadTableDef($defFile, $tableName))
-					{
-						$found = TRUE;
-						break;
-					}
-				}
-				if (!$found)
-				{	// Need to read table structure from DB and create the file
-					$this->makeTableDef($tableName);
-				}
-			}
-		}
-		return $this->dbFieldDefs[$tableName];
-	}
 
 
-	/**
-	 *	Search the specified file for a field type definition of the specified table.
-	 *	If found, generate and save a cache file in the e_CACHE_DB directory,
-	 *	Always also update $this->dbFieldDefs[$tableName] - FALSE if not found, data if found
-	 *	@param	string $defFile - file name, including path
-	 *	@param	string $tableName - name of table sought
-	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
-	 */
-	protected function loadTableDef($defFile, $tableName)
-	{
-		$result =false;
-
-		if (is_readable($defFile))
-		{
-			// Read the file using the array handler routines
-			// File structure is a nested array - first level is table name, second level is either FALSE (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
-			$temp = file_get_contents($defFile);
-			// Strip any comments  (only /*...*/ supported)
-			$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
-			//echo "Check: {$defFile}, {$tableName}<br />";
-			if ($temp !== false)
-			{
-			//	$array = e107::getArrayStorage();
-				$typeDefs = e107::unserialize($temp);
-
-				unset($temp);
-				if (isset($typeDefs[$tableName]))
-				{
-					$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
-
-					$fileData = e107::serialize($typeDefs[$tableName], false);
-
-					if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $fileData))
-					{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
-						$result = false;
-					}
-
-					$result = true;
-				}
-			}
-		}
-
-		if (!$result)
-		{
-			$this->dbFieldDefs[$tableName] = false;
-		}
-		return $result;
-	}
 
 
-	/**
-	 *	Creates a field type definition from the structure of the table in the DB
-	 *	Generate and save a cache file in the e_CACHE_DB directory,
-	 *	Also update $this->dbFieldDefs[$tableName] - FALSE if error, data if found
-	 *	@param	string $tableName - name of table sought
-	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
-	 */
-	protected function makeTableDef($tableName)
-	{
-		require_once(e_HANDLER.'db_table_admin_class.php');
-		$dbAdm = new db_table_admin();
-
-		$baseStruct = $dbAdm->get_current_table($tableName);
-		$baseStruct = isset($baseStruct[0][2]) ? $baseStruct[0][2] : null;
-		$fieldDefs = $dbAdm->parse_field_defs($baseStruct);					// Required definitions
-		if (!$fieldDefs) return false;
-
-		$outDefs = $dbAdm->make_field_types($fieldDefs);
-
-		$this->dbFieldDefs[$tableName] = $outDefs;
-		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
-
-		if (FALSE === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $toSave))
-		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
-			$mes = e107::getMessage();
-			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.
-			// echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
-		}
-
-	}
 
 	/**
 	 * In case e_db_mysql::$mySQLaccess is not set, set it.
@@ -1609,16 +1419,69 @@ class e_db_mysql implements e_db
 	{
 		if (!$this->mySQLaccess) {
 			global $db_ConnectionID;
-			$this->mySQLaccess = $db_ConnectionID;
+			if ($this->_isOpenLink($db_ConnectionID)) $this->mySQLaccess = $db_ConnectionID;
 		}
-		if (!$this->mySQLaccess && ($db = e107::getDb()) !== $this) {
-			$this->mySQLaccess = $db->get_mySQLaccess();
+		if (!$this->mySQLaccess && ($db = e107::getDb()) !== $this && $this->_isOpenLink($link = $db->get_mySQLaccess())) {
+			$this->mySQLaccess = $link;
 		}
 		if (!$this->mySQLaccess) {
 			// lazy self-connect from the config loaded in the constructor, like e_db_pdo::_getMySQLaccess()
 			$success = $this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
 			if ($success) $success = $this->database($this->mySQLdefaultdb, $this->mySQLPrefix);
 			if (!$success) throw new RuntimeException($this->mySQLlastErrText);
+		}
+	}
+
+	/**
+	 * Whether a handle is a mysqli link that is still open.
+	 *
+	 * @param mixed $link
+	 * @return bool
+	 */
+	private function _isOpenLink($link)
+	{
+		if(!$link instanceof mysqli)
+		{
+			return false;
+		}
+
+		try
+		{
+			return @mysqli_thread_id($link) !== false;
+		}
+		catch(\Exception $e)
+		{
+			return false;
+		}
+		catch(\Throwable $e)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * mysqli reaches MySQL and MariaDB only, so the configured driver is MySQL's whatever e107_config.php names.
+	 *
+	 * @param string|null $name
+	 * @return \e107\Database\Driver\DriverInterface
+	 */
+	protected function _createDriver($name = null)
+	{
+		return \e107\Database\Driver\DriverRegistry::create(($name === null) ? 'mysql' : $name);
+	}
+
+	/**
+	 * Accepts the MySQL driver only: mysqli cannot speak to another engine.
+	 *
+	 * @param \e107\Database\Driver\DriverInterface $driver
+	 * @return void
+	 * @throws \e107\Database\Exception\UnsupportedException for any other engine
+	 */
+	protected function _switchDriver(\e107\Database\Driver\DriverInterface $driver)
+	{
+		if($driver->getName() !== 'mysql')
+		{
+			throw new \e107\Database\Exception\UnsupportedException('The mysqli backend (e_db_mysql) reaches MySQL and MariaDB only; use e_db_pdo for the '.$driver->getLabel().' driver.');
 		}
 	}
 

@@ -37,14 +37,28 @@ class E107Preparer implements Preparer
 	/**
 	 * The directory name a real install keeps its state under. {@see \e107::makeSiteHash()}
 	 *
+	 * @param string $database the database as the installer is given it
 	 * @return string
 	 */
-	private static function siteHash()
+	public static function siteHash($database)
+	{
+		return substr(md5($database.'.'.\Helper\E107Base::E107_MYSQL_PREFIX), 0, 10);
+	}
+
+	/**
+	 * @return string the suite's database as the installer is given it: the server's database name, or the SQLite
+	 *                file's path inside the app
+	 */
+	public static function installedDatabase()
 	{
 		$params = unserialize(PARAMS_SERIALIZED);
-		$dbname = isset($params['db']['dbname']) ? $params['db']['dbname'] : '';
 
-		return substr(md5($dbname.'.'.\Helper\E107Base::E107_MYSQL_PREFIX), 0, 10);
+		if(isset($params['db']['driver']) && $params['db']['driver'] === 'sqlite')
+		{
+			return 'e107_tests/'.$params['db']['path'];
+		}
+
+		return isset($params['db']['dbname']) ? $params['db']['dbname'] : '';
 	}
 
 	protected function deleteHashDirs()
@@ -55,7 +69,7 @@ class E107Preparer implements Preparer
 		$media = APP_PATH."/e107_media/".self::TEST_HASH;
 		$this->deleteDir($media);
 
-		$hash = self::siteHash();
+		$hash = self::siteHash(self::installedDatabase());
 		$this->deleteDir(APP_PATH."/e107_system/".$hash);
 		$this->deleteDir(APP_PATH."/e107_media/".$hash);
 

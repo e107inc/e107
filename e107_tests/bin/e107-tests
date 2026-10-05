@@ -215,12 +215,23 @@ load_env_from_labels() {
     XDEBUG_TAG=$([ "$WITH_XDEBUG" = yes ] && echo '-xdebug' || true)
 }
 
-# The project this worktree's managed Codeception config points at. Written
-# by `up`, so it marks the most recently upped env for this worktree.
+# The project a managed Codeception config (this worktree's by default) points
+# at. Written by `up`, so it marks the most recently upped env of the worktree.
 worktree_marker_project() {
-    [ -f "$MANAGED_CONFIG" ] || return 1
-    sed -n 's/^# Managed by e107-tests\. Generated for project: //p' "$MANAGED_CONFIG" \
+    local config=${1:-$MANAGED_CONFIG}
+    [ -f "$config" ] || return 1
+    sed -n 's/^# Managed by e107-tests\. Generated for project: //p' "$config" \
         | head -n1 | grep .
+}
+
+# The suites read the managed config of the env's own worktree, which names the
+# database the last `up` there chose, so a run for any other env is refused.
+assert_managed_config_is_ours() {
+    local owner marker
+    owner=$(project_label "$PROJECT" app-path)
+    marker=$(worktree_marker_project "${owner:-$APP_PATH}/e107_tests/config.docker.yml") || marker=
+    [ "$marker" = "$PROJECT" ] || err "the suites in ${owner:-$APP_PATH} are set up for ${marker:-no env}, not $PROJECT.
+       Bring $PROJECT up again first: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE"
 }
 
 # Soft resolver: sets PROJECT or returns 1. Precedence:
@@ -294,6 +305,7 @@ compose_up_cmd() {
     COMPOSE_PROJECT_NAME=$PROJECT \
     E107_PHP_VERSION=$E107_PHP_VERSION \
     E107_DB_IMAGE=$E107_DB_IMAGE \
+    E107_DB_HOST=$(db_is_sqlite || echo db) \
     E107_APP_PATH=$APP_PATH \
     E107_DB_NAME=$DEFAULT_DB_NAME \
     E107_DB_USER=$DEFAULT_DB_USER \
@@ -378,6 +390,30 @@ base_url() {
 }
 
 # ---------------------------------------------------------------------------
+# SQLite: `--db sqlite` brings up no database server. The suites run e107 on
+# a database file in the worktree, built from the same dump the server envs
+# load (see lib/SqliteFixture.php).
+# ---------------------------------------------------------------------------
+
+# One file per env, so two SQLite envs of a worktree never build or reset each other's.
+sqlite_db_file() { printf 'tests/_output/%s.sqlite' "$PROJECT"; }
+
+db_is_sqlite() { [ "${E107_DB_IMAGE:-}" = sqlite ]; }
+
+# The database as the installer is given it, which the site's folders are named
+# after, so a config has to name it exactly so: for SQLite, the file's path
+# inside the app.
+site_database() {
+    if db_is_sqlite; then printf 'e107_tests/%s' "$(sqlite_db_file)"; else printf '%s' "$DEFAULT_DB_NAME"; fi
+}
+
+# The name of the site's folders in e107_system/ and e107_media/, as
+# e107::makeSiteHash() gives it for site_database() and the e107_ prefix.
+site_hash() {
+    compose_p exec -T web php -r 'echo substr(md5($argv[1].".e107_"), 0, 10);' -- "$(site_database)"
+}
+
+# ---------------------------------------------------------------------------
 # DB flavor: charset + auth args the server needs, derived from the image
 # ---------------------------------------------------------------------------
 
@@ -438,18 +474,7 @@ deployer: 'local'
 # The path component follows --base-path: the container aliases it onto the
 # same docroot, so a subdirectory install needs no separate deployment.
 url: '$(base_url)'
-# The suites connect as the site's own account, which holds ALL PRIVILEGES on
-# this one database and nothing global: the grant a hosting control panel
-# issues, so what passes here passes on such a host. Only the harness's own
-# reset, sql and db-shell commands use root.
-db:
-  host: 'db'
-  port: '3306'
-  dbname: '$DEFAULT_DB_NAME'
-  user: '$DEFAULT_DB_USER'
-  password: '$DEFAULT_DB_PASSWORD'
-  populate: true
-  dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
+$(managed_db_config)
 # WebDriver suite drives the dedicated 'selenium' service over the compose
 # network. The grid serves the W3C protocol at the root '/'.
 selenium:
@@ -459,13 +484,45 @@ selenium:
 EOF
 }
 
+# The db section of config.docker.yml.
+managed_db_config() {
+    if db_is_sqlite; then
+        cat <<EOF
+# No database server: e107 runs on its sqlite driver against this file, which
+# the suites rebuild from the same dump when they start.
+db:
+  driver: 'sqlite'
+  path: '$(sqlite_db_file)'
+  mysql_compat: false
+  populate: true
+  dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
+EOF
+        return
+    fi
+    cat <<EOF
+# The suites connect as the site's own account, which holds ALL PRIVILEGES on
+# this one database and nothing global: the grant a hosting control panel
+# issues, so what passes here passes on such a host. Only the harness's own
+# reset, sql and db-shell commands use root.
+db:
+  driver: 'mysql'
+  host: 'db'
+  port: '3306'
+  dbname: '$DEFAULT_DB_NAME'
+  user: '$DEFAULT_DB_USER'
+  password: '$DEFAULT_DB_PASSWORD'
+  populate: true
+  dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
+EOF
+}
+
 # ---------------------------------------------------------------------------
 # Self-heals used by `up`
 # ---------------------------------------------------------------------------
 
 # The images a registry has to supply for this `up`, as "service image" rows.
 registry_images() {
-    printf 'db %s\n' "$E107_DB_IMAGE"
+    db_is_sqlite || printf 'db %s\n' "$E107_DB_IMAGE"
     if [ "$WITH_SELENIUM" = yes ]; then
         printf 'selenium %s\n' "${E107_SELENIUM_IMAGE:-docker.io/selenium/standalone-chrome:latest}"
     fi
@@ -498,7 +555,7 @@ up_with_registry_fallback() {
         if [ "$missing" = no ]; then
             warn "registry refused the pull but all images exist locally; retrying with --pull never"
             rc=0
-            compose_up_cmd up -d --wait --pull never || rc=$?
+            compose_up_cmd up -d --wait --pull never "${UP_SERVICES[@]}" || rc=$?
         fi
     fi
     rm -f "$tmp"
@@ -507,10 +564,15 @@ up_with_registry_fallback() {
 
 assert_stack_healthy() {
     # Generic across stack shapes: every service must be running, and any
-    # service with a healthcheck must report healthy. db must be present.
+    # service with a healthcheck must report healthy. db must be present,
+    # unless the env runs on SQLite and has none; web always.
     local ps_out ok=yes svc state health
     ps_out=$(compose_p ps --format '{{.Service}} {{.State}} {{.Health}}' 2>/dev/null || true)
-    printf '%s\n' "$ps_out" | grep -q '^db running healthy' || ok=no
+    if db_is_sqlite; then
+        printf '%s\n' "$ps_out" | grep -q '^web running' || ok=no
+    else
+        printf '%s\n' "$ps_out" | grep -q '^db running healthy' || ok=no
+    fi
     while read -r svc state health; do
         [ -n "$svc" ] || continue
         [ "$state" = running ] || ok=no
@@ -698,13 +760,22 @@ install_site() {
     # The install Cest cleans up its e107_config.php in _afterSuite (the DB
     # tables persist), so render a persistent config against the same DB.
     note ">> Writing persistent e107_config.php"
+    local driver=mysql server=db user=$DEFAULT_DB_USER password=$DEFAULT_DB_PASSWORD
+    if db_is_sqlite; then
+        driver=sqlite server= user= password=
+    fi
+    local database site_path
+    database=$(site_database)
+    site_path=$(site_hash)
     compose_p exec -T web sh -euc "
-        SITE_PATH=\$(php -r 'echo substr(md5(\"$DEFAULT_DB_NAME.e107_\"), 0, 10);')
-        sed -e 's/{{ mySQLserver }}/db/' \
-            -e 's/{{ mySQLuser }}/$DEFAULT_DB_USER/' \
-            -e 's/{{ mySQLpassword }}/$DEFAULT_DB_PASSWORD/' \
-            -e 's/{{ mySQLdefaultdb }}/$DEFAULT_DB_NAME/' \
+        SITE_PATH=$site_path
+        sed -e 's/{{ driver }}/$driver/' \
+            -e 's/{{ mySQLserver }}/$server/' \
+            -e 's/{{ mySQLuser }}/$user/' \
+            -e 's/{{ mySQLpassword }}/$password/' \
+            -e 's#{{ mySQLdefaultdb }}#$database#' \
             -e 's/{{ mySQLprefix }}/e107_/' \
+            -e 's/{{ mysql_compat[^}]*}}/true/' \
             -e \"s/000000test/\$SITE_PATH/\" \
             $WEB_TESTS_DIR/tests/_data/e107_config.php.sample \
             > $WEB_APP_DIR/e107_config.php
@@ -778,9 +849,14 @@ cmd_up() {
     fi
 
     # The WebDriver suite needs the browser; nothing else does, and the image
-    # is over a gigabyte, so CI legs that only run acceptance skip it.
+    # is over a gigabyte, so CI legs that only run acceptance skip it. A SQLite
+    # env has no db to start, and --no-deps keeps web's depends_on from
+    # starting one anyway.
     UP_SERVICES=()
-    if [ "$WITH_SELENIUM" != yes ]; then
+    if db_is_sqlite; then
+        UP_SERVICES=(--no-deps web)
+        [ "$WITH_SELENIUM" != yes ] || UP_SERVICES+=(selenium)
+    elif [ "$WITH_SELENIUM" != yes ]; then
         UP_SERVICES=(db web)
     fi
 
@@ -904,6 +980,12 @@ PHP version:  $E107_PHP_VERSION
 DB image:     $E107_DB_IMAGE
 App URL:      http://localhost:$port/$base
 Admin URL:    http://localhost:$port/${base}e107_admin/
+EOF
+    if db_is_sqlite; then
+        printf 'DB file:      e107_tests/%s (sqlite driver; no server)\n' "$(sqlite_db_file)"
+        return
+    fi
+    cat <<EOF
 DB (host):    127.0.0.1:$(compose_p port db 3306 2>/dev/null | awk -F: '{print $NF}' | tail -n1)
               user=$DEFAULT_DB_USER  pw=$DEFAULT_DB_PASSWORD  db=$DEFAULT_DB_NAME
               root pw=$DEFAULT_DB_ROOT_PASSWORD
@@ -949,6 +1031,14 @@ cmd_shell() {
 cmd_db_shell() {
     resolve_env
     ensure_web_exec
+    if db_is_sqlite; then
+        compose_p exec -w "$WEB_TESTS_DIR" web sh -c '
+            command -v sqlite3 >/dev/null 2>&1 \
+                || { echo "no sqlite3 client in the web image; use: e107-tests sql" >&2; exit 1; }
+            exec sqlite3 "$1"
+        ' sh "$(sqlite_db_file)"
+        return
+    fi
     compose_p exec db sh -c '
         if command -v mariadb >/dev/null 2>&1; then
             exec mariadb --skip-ssl -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"
@@ -958,10 +1048,37 @@ cmd_db_shell() {
     '
 }
 
+# Runs a SQL script from stdin against the SQLite file through PDO, so it needs
+# nothing the web image lacks: each statement in turn, rows tab-separated under
+# a header line, as the mysql client prints them when not on a terminal.
+SQLITE_SQL_RUNNER='
+    require "../e107_handlers/Database/SqlLexer.php";
+    $pdo = new PDO("sqlite:" . $argv[1], null, null, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+    foreach (e107\Database\SqlLexer::sqlite()->splitStatements(stream_get_contents(STDIN)) as $sql) {
+        $result = $pdo->query($sql);
+        if ($result->columnCount() === 0) continue;
+        $header = array();
+        for ($i = 0; $i < $result->columnCount(); $i++) { $meta = $result->getColumnMeta($i); $header[] = $meta["name"]; }
+        echo implode("\t", $header), "\n";
+        while (($row = $result->fetch(PDO::FETCH_NUM)) !== false) {
+            echo implode("\t", array_map(function ($v) { return $v === null ? "NULL" : $v; }, $row)), "\n";
+        }
+    }
+'
+
 # One-shot SQL: statement as args, or a script on stdin.
 cmd_sql() {
     resolve_env
     ensure_web_exec
+    if db_is_sqlite; then
+        local runner=(compose_p exec -T -w "$WEB_TESTS_DIR" web php -r "$SQLITE_SQL_RUNNER" "$(sqlite_db_file)")
+        if [ $# -gt 0 ]; then
+            printf '%s\n' "$*" | "${runner[@]}"
+        else
+            "${runner[@]}"
+        fi
+        return
+    fi
     local runner='
         if command -v mariadb >/dev/null 2>&1; then
             exec mariadb --skip-ssl -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"
@@ -1000,6 +1117,7 @@ set_coverage_exec_env() {
 
 cmd_run() {
     resolve_env
+    assert_managed_config_is_ours
     ensure_web_exec
     deps_ensure
     # Build: codecept run [<suite>] [user args...]
@@ -1043,6 +1161,7 @@ cmd_run() {
 # handling: CI parity means the colours exactly as CI gets them.
 cmd_ci_unit() {
     resolve_env
+    assert_managed_config_is_ours
     ensure_web_exec
     deps_ensure
     set_coverage_exec_env "$@"
@@ -1063,21 +1182,25 @@ cmd_reset() {
     assert_env_is_ours reset "$force"
     ensure_web_exec
     note ">> Resetting database for $PROJECT"
-    compose_p exec -T db sh -c '
-        CLIENT=mariadb; command -v mariadb >/dev/null 2>&1 || CLIENT=mysql
-        SKIP_SSL=--skip-ssl; [ "$CLIENT" = mysql ] && SKIP_SSL=
-        "$CLIENT" $SKIP_SSL -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
-            DROP DATABASE IF EXISTS \`$MYSQL_DATABASE\`;
-            CREATE DATABASE \`$MYSQL_DATABASE\`;
-            GRANT ALL PRIVILEGES ON \`$MYSQL_DATABASE\`.* TO \`$MYSQL_USER\`@\`%\`;
-            FLUSH PRIVILEGES;"
-    '
+    if db_is_sqlite; then
+        compose_p exec -T -w "$WEB_TESTS_DIR" web sh -c 'rm -f "$1" "$1-wal" "$1-shm" "$1-journal"' sh "$(sqlite_db_file)"
+    else
+        compose_p exec -T db sh -c '
+            CLIENT=mariadb; command -v mariadb >/dev/null 2>&1 || CLIENT=mysql
+            SKIP_SSL=--skip-ssl; [ "$CLIENT" = mysql ] && SKIP_SSL=
+            "$CLIENT" $SKIP_SSL -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
+                DROP DATABASE IF EXISTS \`$MYSQL_DATABASE\`;
+                CREATE DATABASE \`$MYSQL_DATABASE\`;
+                GRANT ALL PRIVILEGES ON \`$MYSQL_DATABASE\`.* TO \`$MYSQL_USER\`@\`%\`;
+                FLUSH PRIVILEGES;"
+        '
+    fi
     note ">> Removing test-written app state (e107_config.php, hash dirs)"
     compose_p exec -T -w "$WEB_APP_DIR" web sh -c '
         rm -f e107_config.php e107_config.php.bak
         rm -rf e107_system/000000test e107_media/000000test
-        rm -rf e107_system/416f4602e3 e107_media/416f4602e3
-    '
+        rm -rf "e107_system/${1:?}" "e107_media/${1:?}"
+    ' sh "$(site_hash)"
 }
 
 # Wipe acceptance-test artifacts that the e107 installer creates in the
@@ -1334,6 +1457,9 @@ LIFECYCLE:
                                      Start, install deps, mark active. Builds the
                                      web image if missing, else reuses it.
                                      Default: PHP 8.5 + MariaDB 10.11.
+                                     --db sqlite starts no database server:
+                                     e107 runs on its sqlite driver against
+                                     a file built from the same dump.
                                      --install-site also installs e107 itself
                                      (persistent config, admin/x107).
                                      --base-path serves the site from a
@@ -1387,7 +1513,8 @@ INSPECT:
 
 INTERACT:
   shell                              Bash inside the web container.
-  db-shell                           DB client inside the db container.
+  db-shell                           DB client inside the db container
+                                     (sqlite3 in the web container on SQLite).
   sql [statement]                    Run SQL (args or stdin) against the DB.
   exec <cmd>...                      Run a one-shot command in the web container.
 
@@ -1413,7 +1540,8 @@ TEST:
 VERSIONS:
   Pick any PHP and DB image you like. Validated combos:
     PHP:  5.6, 7.0, 7.4, 8.1, 8.2, 8.3, 8.4, 8.5
-    DB:   mariadb:10.6, mariadb:10.11, mariadb:11.4, mysql:5.7, mysql:8.0
+    DB:   mariadb:10.6, mariadb:10.11, mariadb:11.4, mysql:5.7, mysql:8.0,
+          sqlite (no server; the PHP image's own SQLite library)
 
   Notes:
     * An image whose Debian base has moved to the Debian archive builds from
@@ -1427,7 +1555,9 @@ STATE:
   files. Each worktree+PHP+DB combo is its own compose project with its own
   per-env vendor volume, so parallel envs never share dependencies and the
   repo's lock files are only ever rewritten by `relock`. `list` sees every
-  worktree; use --env <project> to drive any env from anywhere.
+  worktree; use --env <project> to drive any env from anywhere. The suites
+  of a worktree are set up for the env its last `up` started, so `run` and
+  `ci-unit` refuse any other until that env is brought up again.
 EOF
 }
 

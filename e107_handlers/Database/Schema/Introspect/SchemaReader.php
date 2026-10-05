@@ -13,6 +13,12 @@ namespace e107\Database\Schema\Introspect;
 use e107\Database\ConnectionInterface;
 use e107\Database\Exception\QueryException;
 
+require_once(__DIR__.'/SchemaReaderInterface.php');
+require_once(__DIR__.'/IndexPart.php');
+require_once(__DIR__.'/ColumnSchema.php');
+require_once(__DIR__.'/IndexSchema.php');
+require_once(__DIR__.'/TableSchema.php');
+
 /**
  * Reads a live table out of information_schema and returns it as a
  * {@see TableSchema}.
@@ -30,7 +36,7 @@ use e107\Database\Exception\QueryException;
  * $all = $reader->readMany(array(MPREFIX.'news', MPREFIX.'user'));
  * </code>
  */
-final class SchemaReader
+final class SchemaReader implements SchemaReaderInterface
 {
 	/** @var ConnectionInterface */
 	private $db;

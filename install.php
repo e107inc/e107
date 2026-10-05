@@ -449,7 +449,7 @@ function include_lan($path, $force = false)
 
 if(isset($_GET['create_tables']))
 {
-	create_tables_unattended();
+	create_tables_unattended($installState['token']);
 	exit;
 }
 
@@ -873,6 +873,7 @@ return [
 			$v24PathLines .= '        '.$prefix.str_pad("'".$short."'", 11)." => '".$default."',\n";
 		}
 
+		$driver   = $this->configString(isset($steps['mysql']['driver']) ? $steps['mysql']['driver'] : 'mysql');
 		$server   = $this->configString($steps['mysql']['server']);
 		$user     = $this->configString($steps['mysql']['user']);
 		$password = $this->configString($steps['mysql']['password']);
@@ -907,6 +908,7 @@ return [
 
 return [
     'database' => [
+        'driver'   => '{$driver}',
         'server'   => '{$server}',
         'user'     => '{$user}',
         'password' => '{$password}',
@@ -1017,14 +1019,26 @@ return [
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 		$isrequired = (($_SERVER['SERVER_ADDR'] === "127.0.0.1") || ($_SERVER['SERVER_ADDR'] === "localhost") || ($_SERVER['SERVER_ADDR'] === "::1") || preg_match('/^192\.168\.\d{1,3}\.\d{1,3}$/',$_SERVER['SERVER_ADDR'])) ? "" :  "required='required'"; // Deals with IP V6, and 192.168.x.x address ranges, could be improved to validate x.x to a valid IP but for this use, I dont think its required to be that picky.
 
+		$driver = $this->databaseDriver();
+		$serverDisplay = $driver->requiresServer() ? '' : " style='display:none'";
+		$fileDisplay = $driver->requiresServer() ? " style='display:none'" : '';
+		$serverRequired = $driver->requiresServer() ? " required='required'" : '';
+		$passwordRequired = ($driver->requiresServer() && $isrequired !== '') ? " required='required'" : '';
+		$dbValue = varset($this->previous_steps['mysql']['db']);
+		if($dbValue === '' && !$driver->requiresServer())
+		{
+			$dbValue = $this->defaultDatabaseFile();
+		}
+
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
-			<table class='table table-striped table-bordered' >
+			<table class='table table-striped table-bordered' >".$this->driverRow(false)."
+				<tbody id='db-server-fields'{$serverDisplay}>
 				<tr>
 					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label>".HELPICON."
 					<span class='field-help'>".LANINS_030."</span></td>
 					<td style='border-top: 1px solid #999;'>
-						<input class='form-control input-large' type='text' id='server' name='server' autofocus size='40' value='".varset($this->previous_steps['mysql']['server'],'localhost')."' maxlength='100' required='required' />
+						<input class='form-control input-large' type='text' id='server' name='server' autofocus size='40' value='".varset($this->previous_steps['mysql']['server'],'localhost')."' maxlength='100' data-server-required='1'{$serverRequired} />
 						
 					</td>
 				</tr>
@@ -1032,22 +1046,23 @@ return [
 				<tr>
 					<td><label for='name'>".LANINS_025."</label>".HELPICON."<span class='field-help'>".LANINS_031."</span></td>
 					<td>
-						<input class='form-control input-large' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40'  maxlength='100' required='required' />
+						<input class='form-control input-large' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40'  maxlength='100' data-server-required='1'{$serverRequired} />
 					</td>
 				</tr>
 				
 				<tr>
 					<td><label for='password'>".LANINS_026."</label>".HELPICON."<span class='field-help'>".LANINS_032."</span></td>
 					<td>
-						<input class='form-control input-large' type='password' name='password' size='40' id='password' value='".varset($this->previous_steps['mysql']['password'])."' maxlength='100' {$isrequired}  pattern='[^\x22]+' />
+						<input class='form-control input-large' type='password' name='password' size='40' id='password' value='".varset($this->previous_steps['mysql']['password'])."' maxlength='100' data-server-required='".($isrequired !== '' ? '1' : '0')."'{$passwordRequired}  pattern='[^\x22]+' />
 
 					</td>
 				</tr>
+				</tbody>
 				
 				<tr>
-					<td><label for='db'>".LANINS_027."</label>".HELPICON."<span class='field-help'>".LANINS_033."</span></td>
+					<td><label for='db'><span class='db-server-only'{$serverDisplay}>".LANINS_027."</span><span class='db-file-only'{$fileDisplay}>".defset('LANINS_DB_FILE', "Database file:")."</span></label>".HELPICON."<span class='field-help'><span class='db-server-only'{$serverDisplay}>".LANINS_033."</span><span class='db-file-only'{$fileDisplay}>".defset('LANINS_DB_FILE_HELP', "The path to the database file, absolute or relative to the e107 folder. Anyone who knows the name of a file inside the web root can download it, unless the web server honours .htaccess or is set to refuse it, so a folder outside the web root is the safe place. Tick Create Database to have it made.")."</span></span></td>
 					<td class='form-inline'>
-						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern=\"[^';]+\" />
+						<input class='form-control input-large' type='text' name='db' size='40' id='db' value='{$dbValue}' maxlength='255' required='required' pattern=\"[^';]+\" data-default-file='".$this->defaultDatabaseFile()."' />
 						<label class='checkbox-inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
 						
 					</td>
@@ -1062,7 +1077,7 @@ return [
 			</table>
 			<br /><br />
 			</div>
-			\n";
+			".$this->driverToggleScript()."\n";
 			
 		$e_forms->add_plain_html($output);
 
@@ -1122,28 +1137,35 @@ return [
 		$this->template->SetTag("bartype", 'warning');
 		$tp = e107::getParser();
 	
-		if(!empty($_POST['server']))
+		if(isset($_POST['db']))
 		{
-			$this->previous_steps['mysql']['server']    = trim($tp->filter($_POST['server']));
-			$this->previous_steps['mysql']['user']      = trim($tp->filter($_POST['name']));
-			$this->previous_steps['mysql']['password']  = trim($tp->filter($_POST['password']));
-			$this->previous_steps['mysql']['db']        = trim($tp->filter($_POST['db']));
+			$this->previous_steps['mysql']['driver']    = $this->postedDriverName();
+			$server = $this->databaseDriver()->requiresServer();
+			$this->previous_steps['mysql']['server']    = $server ? trim($tp->filter($_POST['server'])) : '';
+			$this->previous_steps['mysql']['user']      = $server ? trim($tp->filter($_POST['name'])) : '';
+			$this->previous_steps['mysql']['password']  = $server ? trim($tp->filter($_POST['password'])) : '';
+			$this->previous_steps['mysql']['db']        = trim($server ? $tp->filter($_POST['db']) : htmlspecialchars((string) $_POST['db'], ENT_QUOTES));
 			$this->previous_steps['mysql']['createdb']  = isset($_POST['createdb']) && $_POST['createdb'] == true;
 			$this->previous_steps['mysql']['prefix']    = trim($tp->filter($_POST['prefix']));
-
-			$this->setDb();
 		}
 		
 		if(!empty($_POST['overwritedb']))
 		{
 			$this->previous_steps['mysql']['overwritedb'] = 1;
 		}
+
+		$this->setDb();
 					
 		$dbName = $this->previous_steps['mysql']['db'];
 		$prefix = $this->previous_steps['mysql']['prefix'];
 
+		$driver = $this->databaseDriver();
 		$nameError = '';
-		if (($dbName !== '' && !$this->check_name($dbName)) || ($prefix !== '' && !$this->check_name($prefix, TRUE)))
+		if (!$driver->requiresServer() && $dbName !== '' && !$this->checkDatabaseFile($dbName))
+		{
+			$nameError = defset('LANINS_DB_FILE_REFUSED', "The database file has to be a path to a file, absolute or relative to the e107 folder. It cannot be a stream wrapper such as phar://, contain &amp;, ', \", &lt; or &gt;, or carry an extension the web server runs or reads as its configuration, such as .php or .htaccess.");
+		}
+		elseif (($driver->requiresServer() && $dbName !== '' && !$this->check_name($dbName)) || ($prefix !== '' && !$this->check_name($prefix, TRUE)))
 		{
 			$nameError = LANINS_105;
 		}
@@ -1158,19 +1180,24 @@ return [
 		}
 
 		$success = ($dbName !== '' && $nameError === '');
-		
-		if(!$success || $this->previous_steps['mysql']['server'] == "" || $this->previous_steps['mysql']['user'] == "")
+		$needsCredentials = $driver->requiresServer() && ($this->previous_steps['mysql']['server'] == "" || $this->previous_steps['mysql']['user'] == "");
+
+		if(!$success || $needsCredentials)
 		{
 			$this->stage = 3;
 			$this->template->SetTag("stage_num", LANINS_021);
 			$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
 			$head = ($nameError !== '' ? $nameError : LANINS_039)."<br /><br />\n";
+			$serverDisplay = $driver->requiresServer() ? '' : " style='display:none'";
+			$fileDisplay = $driver->requiresServer() ? " style='display:none'" : '';
+			$dbValue = ($dbName === '' && !$driver->requiresServer()) ? $this->defaultDatabaseFile() : $dbName;
 			$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
-			<table class='table table-bordered table-striped'>
+			<table class='table table-bordered table-striped'>".$this->driverRow()."
+				<tbody id='db-server-fields'{$serverDisplay}>
 				<tr>
 					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label></td>
-					<td style='border-top: 1px solid #999;'><input class='form-control' type='text' id='server' name='server' size='40' value='{$this->previous_steps['mysql']['server']}' maxlength='100' required /></td>
+					<td style='border-top: 1px solid #999;'><input class='form-control' type='text' id='server' name='server' size='40' value='{$this->previous_steps['mysql']['server']}' maxlength='100' data-server-required='1'".($driver->requiresServer() ? ' required' : '')." /></td>
 					<td style='width: 40%; border-top: 1px solid #999;'>".LANINS_030."</td>
 				</tr>
 
@@ -1185,12 +1212,13 @@ return [
 					<td><input class='form-control' type='password' name='password' id='password' size='40' value='{$this->previous_steps['mysql']['password']}' maxlength='100' /></td>
 					<td>".LANINS_032."</td>
 				</tr>
+				</tbody>
 
 				<tr>
-					<td><label for='db'>".LANINS_027."</label></td>
-					<td><input type='text' name='db' id='db' size='20' value='{$this->previous_steps['mysql']['db']}' maxlength='100' />
-						<br /><label class='defaulttext'><input type='checkbox' name='createdb' " .($this->previous_steps['mysql']['createdb'] == 1 ? " checked='checked'" : "") . " value='1' />".LANINS_028."</label></td>
-					<td>".LANINS_033."</td>
+					<td><label for='db'><span class='db-server-only'{$serverDisplay}>".LANINS_027."</span><span class='db-file-only'{$fileDisplay}>".defset('LANINS_DB_FILE', "Database file:")."</span></label></td>
+					<td><input type='text' name='db' id='db' size='40' value='{$dbValue}' maxlength='255' data-default-file='".$this->defaultDatabaseFile()."' />
+						<br /><label class='defaulttext'><input type='checkbox' name='createdb' " .($this->previous_steps['mysql']['createdb'] == 1 || ($dbName === '' && !$driver->requiresServer()) ? " checked='checked'" : "") . " value='1' />".LANINS_028."</label></td>
+					<td><span class='db-server-only'{$serverDisplay}>".LANINS_033."</span><span class='db-file-only'{$fileDisplay}>".defset('LANINS_DB_FILE_HELP', "The path to the database file, absolute or relative to the e107 folder. Anyone who knows the name of a file inside the web root can download it, unless the web server honours .htaccess or is set to refuse it, so a folder outside the web root is the safe place. Tick Create Database to have it made.")."</span></td>
 				</tr>
 
 				<tr>
@@ -1203,7 +1231,7 @@ return [
 			</table>
 			<br /><br />
 			</div>
-			\n";
+			".$this->driverToggleScript()."\n";
 			$e_forms->add_plain_html($output);
 			$this->add_button("submit", LAN_CONTINUE);
 			$this->template->SetTag("stage_title", LANINS_040);
@@ -1242,7 +1270,7 @@ return [
 			else
 			{
 				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
-				$page_content = "<span class='glyphicon glyphicon-ok'></span> ".LANINS_042;
+				$page_content = "<span class='glyphicon glyphicon-ok'></span> ".($driver->requiresServer() ? LANINS_042 : str_replace('[x]', $driver->getLabel(), defset('LANINS_DB_ENGINE_AVAILABLE', "[x] is available on this server.")));
 				// @TODO Check database version here?
 /*
 				$mysql_note = mysql_get_server_info();
@@ -1253,48 +1281,50 @@ return [
 				}
 */
 				// Do brute force for now - Should be enough
-				
+				$database = $this->previous_steps['mysql']['db'];
+
 				if(!empty($this->previous_steps['mysql']['overwritedb']))
 				{
-					if($this->dbqry('DROP DATABASE '.$this->quoteDbName($this->previous_steps['mysql']['db']).' '))
+					try
 					{
+						$driver->dropDatabase($sql, $database);
 						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span>  ".LANINS_136;
 					}
-					else 
+					catch(RuntimeException $e)
 					{
+						installLog::add('Could not drop the database: '.$e->getMessage(), 'error');
 						$success = false;
-						$page_content .= "<br /><br />".LANINS_043.nl2br("\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
+						$page_content .= "<br /><br />".LANINS_043.nl2br("\n\n<b>".$this->engineErrorLabel()."\n</b><i>".$e->getMessage()."</i>");
 					}
-						
-				}
-				
-				if($this->previous_steps['mysql']['createdb'] == 1)
-				{
-					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_044;
-				    $query = 'CREATE DATABASE '.$this->quoteDbName($this->previous_steps['mysql']['db']).' CHARACTER SET `utf8mb4` ';
-					
-				}
-				else
-				{
-					$notification = "<br /><span class='glyphicon glyphicon-ok'></span>  ".LANINS_137;
-				    $query = 'ALTER DATABASE '.$this->quoteDbName($this->previous_steps['mysql']['db']).' CHARACTER SET `utf8mb4` ';
 				}
 
-				if (!$this->dbqry($query))
+				$created = ($this->previous_steps['mysql']['createdb'] == 1);
+				$notification = "<br /><span class='glyphicon glyphicon-ok'></span> ".($created ? LANINS_044 : LANINS_137);
+
+				try
 				{
+					if($success)
+					{
+						if($created)
+						{
+							$driver->createDatabase($sql, $database);
+						}
+						else
+						{
+							$driver->adoptDatabase($sql, $database);
+						}
+
+						$page_content .= $notification;
+					}
+				}
+				catch(RuntimeException $e)
+				{
+					installLog::add('Could not '.($created ? 'create' : 'prepare').' the database: '.$e->getMessage(), 'error');
 					$success = false;
 					$alertType = 'error';
 					$page_content .= "<br /><br />";
-					$page_content .= (empty($this->previous_steps['mysql']['createdb'])) ? LANINS_129 : LANINS_043;
-
-
-					$page_content .= nl2br("\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
-				}
-				else
-				{
-                    $this->dbqry('SET NAMES `utf8mb4`');
-
-					$page_content .= $notification; // "
+					$page_content .= $created ? LANINS_043 : LANINS_129;
+					$page_content .= nl2br("\n\n<b>".$this->engineErrorLabel()."\n</b><i>".$e->getMessage()."</i>");
 				}
 			}
 			
@@ -1347,6 +1377,7 @@ return [
 		$mysql_pass = false;
 
 		$this->setDb();
+		$driver = $this->databaseDriver();
 
 		if(count($not_writable))
 		{
@@ -1402,14 +1433,18 @@ return [
 				$mysql_note .= " (PDO)";
 			}
 
-			if (version_compare($mysql_note, MIN_MYSQL_VERSION, '>='))
+			$minimum = (string) $driver->getMinimumServerVersion();
+
+			if ($minimum === '' || version_compare($mysql_note, $minimum, '>='))
 			{
 				$mysql_help = "<span class='glyphicon glyphicon-ok'></span> ".LANINS_017;
 				$mysql_pass = true;
 			}
 			else
 			{
-				$mysql_help = "<span class='glyphicon glyphicon-remove'></span> ".str_replace('[x]', MIN_MYSQL_VERSION, LANINS_150);
+				$mysql_help = "<span class='glyphicon glyphicon-remove'></span> ".($driver->getName() === 'mysql'
+					? str_replace('[x]', $minimum, LANINS_150)
+					: str_replace(array('[x]', '[y]'), array($minimum, $driver->getLabel()), defset('LANINS_DB_VERSION_TOO_OLD', "The version of [y] on your server does not meet the minimum requirement of [x]. Please upgrade it or contact your host.")));
 			}
 		}
 
@@ -1437,7 +1472,7 @@ return [
 
 		$extensionCheck = array(
 			'csprng'   => array('label' => defset('LANINS_151', 'Secure Random Number Generator'), 'status' => e_random::isAvailable(), 'url' => 'https://www.php.net/manual/en/function.random-bytes.php'),
-			'pdo'      => array('label' => "PDO (MySQL)", 'status' => extension_loaded('pdo_mysql'), 'url' => 'https:/php.net/manual/en/book.pdo.php'),
+			'pdo'      => array('label' => "PDO (".$driver->getLabel().")", 'status' => $driver->isAvailable(), 'url' => 'https:/php.net/manual/en/book.pdo.php'),
 			'xml'      => array('label' => LANINS_050, 'status' => function_exists('utf8_encode') && class_exists('DOMDocument', false), 'url' => 'http://php.net/manual/en/ref.xml.php'),
 			'exif'     => array('label' => LANINS_048, 'status' => function_exists('exif_imagetype'), 'url' => 'http://php.net/manual/en/book.exif.php'),
 			'fileinfo' => array('label' => "FileInfo. Extension", 'status' => extension_loaded('fileinfo'), 'url' => 'https://www.php.net/manual/en/book.fileinfo'),
@@ -1463,7 +1498,7 @@ return [
 				</tr>
 				
 				<tr>
-					<td>MySQL</td>
+					<td>".$driver->getLabel()."</td>
 					<td>{$mysql_note}</td>
 					<td class='{$mysqlColor}'>{$mysql_help}</td>
 				</tr>";
@@ -2071,7 +2106,7 @@ return [
 			install_clear_state_cookie();
 		}
 
-		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$page."</div>".$e_forms->return_form());
+		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$page."</div>".$e_forms->return_form().($alertType === 'success' ? $this->databaseExposureProbe() : ''));
 		installLog::add('Stage 8 completed');
 
 		e107::getMessage()->reset(false, false, true);
@@ -2168,6 +2203,26 @@ return [
 
 		$htaccessError = $this->htaccess();
 		$this->saveFileTypes();
+
+		$driver = $this->databaseDriver();
+		if(!$driver->requiresServer())
+		{
+			try
+			{
+				$driver->adoptDatabase(e107::getDb(), $this->previous_steps['mysql']['db']);
+			}
+			catch(RuntimeException $e)
+			{
+				try
+				{
+					$driver->createDatabase(e107::getDb(), $this->previous_steps['mysql']['db']);
+				}
+				catch(RuntimeException $e)
+				{
+					return array('errors' => $e->getMessage(), 'htaccess' => $htaccessError);
+				}
+			}
+		}
 
 		installLog::add('Unattended install started');
 		$errors = $this->create_tables();
@@ -2372,17 +2427,42 @@ return [
 
 		$hash = $us->HashPassword($this->previous_steps['admin']['password'],$this->previous_steps['admin']['user'], $pwdEncoding);
 
-		// REMOTE_ADDR is interpolated raw into the REPLACE INTO VALUES below; restrict
-		// it to IP-address characters so no SQL metacharacter can be injected.
 		$ip = preg_replace('/[^0-9a-fA-F:.]/', '', (string) $_SERVER['REMOTE_ADDR']);
-		$userp = "1, '{$this->previous_steps['admin']['display']}', '{$this->previous_steps['admin']['user']}', '', '".$hash."', '', '{$this->previous_steps['admin']['email']}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ip}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
-	//	$qry = "REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})";
-		$this->dbqry("REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})" );
+		$now = time();
+		e107::getDb()->createQueryBuilder()->replace('user')->values(array(
+			'user_id'           => 1,
+			'user_name'         => $this->previous_steps['admin']['display'],
+			'user_loginname'    => $this->previous_steps['admin']['user'],
+			'user_customtitle'  => '',
+			'user_password'     => $hash,
+			'user_sess'         => '',
+			'user_email'        => $this->previous_steps['admin']['email'],
+			'user_signature'    => '',
+			'user_image'        => '',
+			'user_hideemail'    => 0,
+			'user_join'         => $now,
+			'user_lastvisit'    => 0,
+			'user_currentvisit' => 0,
+			'user_lastpost'     => 0,
+			'user_chats'        => 0,
+			'user_comments'     => 0,
+			'user_ip'           => $ip,
+			'user_ban'          => 0,
+			'user_prefs'        => '',
+			'user_visits'       => 0,
+			'user_admin'        => 1,
+			'user_login'        => '',
+			'user_class'        => '',
+			'user_perms'        => '0',
+			'user_realm'        => '',
+			'user_pwchange'     => $now,
+			'user_xup'          => '',
+		))->execute();
 		installLog::add('Admin user created');
 
 		// Add Default user-extended values;
-		$extendedQuery = "REPLACE INTO `{$this->previous_steps['mysql']['prefix']}user_extended` (`user_extended_id` ,	`user_hidden_fields`) VALUES ('1', NULL 	);";
-		$this->dbqry($extendedQuery);
+		e107::getDb()->createQueryBuilder()->replace('user_extended')
+			->values(array('user_extended_id' => 1, 'user_hidden_fields' => null))->execute();
 
 		// Create FULLTEXT indexes derived from e_search configurations
 		$this->createSearchIndexes();
@@ -2481,6 +2561,255 @@ return [
 			return false;
 		}
 		return TRUE;
+	}
+
+	/** @var string|null the database file offered by default this request */
+	private $defaultDatabaseFile = null;
+
+	/**
+	 * The engine the site's database runs on, as chosen on the database form.
+	 *
+	 * @return \e107\Database\Driver\DriverInterface
+	 */
+	private function databaseDriver()
+	{
+		$name = isset($this->previous_steps['mysql']['driver']) ? (string) $this->previous_steps['mysql']['driver'] : '';
+
+		return \e107\Database\Driver\DriverRegistry::create(\e107\Database\Driver\DriverRegistry::has($name) ? $name : $this->defaultDriverName(), array('root' => e_ROOT));
+	}
+
+	/**
+	 * @return string the heading of an error the database reported, naming the engine the site's database runs on
+	 */
+	private function engineErrorLabel()
+	{
+		$driver = $this->databaseDriver();
+
+		return $driver->requiresServer() ? LANINS_083 : str_replace('[x]', $driver->getLabel(), defset('LANINS_DB_REPORTED_ERROR', "[x] Reported Error:"));
+	}
+
+	/**
+	 * @return string the default engine where this PHP can use it, else the first one it can
+	 */
+	private function defaultDriverName()
+	{
+		$available = array_keys($this->availableDrivers());
+
+		return (empty($available) || in_array(\e107\Database\Driver\DriverRegistry::DEFAULT_DRIVER, $available, true))
+			? \e107\Database\Driver\DriverRegistry::DEFAULT_DRIVER
+			: $available[0];
+	}
+
+	/**
+	 * @return string the engine the database form names, when this PHP can use it; else the default engine
+	 */
+	private function postedDriverName()
+	{
+		$posted = isset($_POST['driver']) ? (string) $_POST['driver'] : '';
+
+		return array_key_exists($posted, $this->availableDrivers()) ? $posted : $this->defaultDriverName();
+	}
+
+	/**
+	 * @return string[] name => label of each engine this PHP installation can use
+	 */
+	private function availableDrivers()
+	{
+		$drivers = array();
+
+		foreach(\e107\Database\Driver\DriverRegistry::available() as $name)
+		{
+			$drivers[$name] = \e107\Database\Driver\DriverRegistry::create($name)->getLabel();
+		}
+
+		return $drivers;
+	}
+
+	/**
+	 * The database form's engine choice, shown only where there is a choice to make.
+	 *
+	 * @param bool $helpColumn true for the form whose help sits in a third column, false for the one whose help is
+	 *                         a tooltip beside the label
+	 * @return string table row, or a hidden field when one engine is all there is
+	 */
+	private function driverRow($helpColumn = true)
+	{
+		$drivers = $this->availableDrivers();
+		$current = $this->databaseDriver()->getName();
+
+		if(count($drivers) < 2)
+		{
+			return "<input type='hidden' name='driver' value='".htmlspecialchars($current, ENT_QUOTES)."' />";
+		}
+
+		$options = '';
+
+		foreach($drivers as $name => $label)
+		{
+			$options .= "<option value='".htmlspecialchars($name, ENT_QUOTES)."'".($name === $current ? " selected='selected'" : '').">".htmlspecialchars($label, ENT_QUOTES)."</option>";
+		}
+
+		$label = "<label for='driver'>".defset('LANINS_DB_ENGINE', "Database engine:")."</label>";
+		$help = defset('LANINS_DB_ENGINE_HELP', "MySQL or MariaDB runs on a server and suits most sites. SQLite keeps the database in a single file and needs no server.");
+		$select = "<select class='form-control' name='driver' id='driver'>{$options}</select>";
+
+		if(!$helpColumn)
+		{
+			return "
+				<tr>
+					<td style='border-top: 1px solid #999;'>{$label}".HELPICON."<span class='field-help'>{$help}</span></td>
+					<td style='border-top: 1px solid #999;'>{$select}</td>
+				</tr>";
+		}
+
+		return "
+				<tr>
+					<td style='border-top: 1px solid #999;'>{$label}</td>
+					<td style='border-top: 1px solid #999;'>{$select}</td>
+					<td style='width: 40%; border-top: 1px solid #999;'>{$help}</td>
+				</tr>";
+	}
+
+	/**
+	 * Switches the database form between a server engine's fields and a file engine's as the engine changes.
+	 *
+	 * @return string
+	 */
+	private function driverToggleScript()
+	{
+		$fileDrivers = array();
+
+		foreach(array_keys($this->availableDrivers()) as $name)
+		{
+			if(!\e107\Database\Driver\DriverRegistry::create($name)->requiresServer())
+			{
+				$fileDrivers[] = $name;
+			}
+		}
+
+		return "<script>
+			(function () {
+				var select = document.getElementById('driver');
+				if (!select) { return; }
+				var fileDrivers = ".json_encode($fileDrivers).";
+				select.addEventListener('change', function () {
+					var file = fileDrivers.indexOf(select.value) !== -1;
+					document.getElementById('db-server-fields').style.display = file ? 'none' : '';
+					var needed = document.querySelectorAll('[data-server-required]');
+					for (var n = 0; n < needed.length; n++) {
+						needed[n].required = !file && needed[n].getAttribute('data-server-required') === '1';
+					}
+					var parts = document.querySelectorAll('.db-server-only, .db-file-only');
+					for (var i = 0; i < parts.length; i++) {
+						parts[i].style.display = (parts[i].className === 'db-file-only') === file ? '' : 'none';
+					}
+					var db = document.getElementById('db');
+					if (file && db.value === '') { db.value = db.getAttribute('data-default-file'); }
+				});
+			})();
+		</script>";
+	}
+
+	/**
+	 * @return string a database file with a name nobody can guess, under the system folder, relative to the e107 root
+	 */
+	private function defaultDatabaseFile()
+	{
+		if($this->defaultDatabaseFile === null)
+		{
+			$base = isset($this->e107->e107_dirs['SYSTEM_BASE_DIRECTORY']) ? $this->e107->e107_dirs['SYSTEM_BASE_DIRECTORY'] : 'e107_system/';
+			$this->defaultDatabaseFile = $base.'e107_'.e_random::hex(32).'.sqlite';
+		}
+
+		return $this->defaultDatabaseFile;
+	}
+
+	/**
+	 * A warning the browser reveals only if it can download the database file; '' for a server database or a file
+	 * no URL of the site reaches.
+	 *
+	 * @param string $root the e107 folder
+	 * @param string $http the URL path of the e107 folder
+	 * @return string
+	 */
+	private function databaseExposureProbe($root = e_ROOT, $http = e_HTTP)
+	{
+		$database = str_replace('\\', '/', (string) $this->previous_steps['mysql']['db']);
+
+		if(preg_match('#^(/|[A-Za-z]:)#', $database))
+		{
+			$folder = $this->pathSegments(realpath(dirname($database)));
+			$base = $this->pathSegments($root);
+			$shared = 0;
+
+			while(isset($folder[$shared], $base[$shared]) && $folder[$shared] === $base[$shared])
+			{
+				$shared++;
+			}
+
+			$up = count($base) - $shared;
+			$database = ($folder === array() || $up > count($this->pathSegments($http))) ? ''
+				: implode('/', array_merge(array_fill(0, $up, '..'), array_slice($folder, $shared), array(basename($database))));
+		}
+
+		if($database === '' || $this->databaseDriver()->requiresServer())
+		{
+			return '';
+		}
+
+		$url = htmlspecialchars($http.implode('/', array_map('rawurlencode', explode('/', $database))), ENT_QUOTES);
+		$notice = str_replace('[x]', $url, defset('LANINS_DB_FILE_EXPOSED', "Anyone can download your database from [x]. Move it, with the -wal, -shm and -journal files SQLite keeps beside it, to a folder outside the web root and change 'db' in e107_config.php to the new path, or have the web server refuse that whole folder."));
+
+		return "<div id='db-file-exposed' class='alert alert-block alert-danger' style='display:none' data-url='{$url}'>{$notice}</div>
+			<script>
+			(function () {
+				var notice = document.getElementById('db-file-exposed');
+				if (!window.fetch) { return; }
+				fetch(notice.getAttribute('data-url'), {cache: 'no-store', credentials: 'omit', headers: {Range: 'bytes=0-15'}})
+					.then(function (response) { return response.ok ? response.arrayBuffer() : null; })
+					.then(function (bytes) {
+						if (bytes && String.fromCharCode.apply(null, new Uint8Array(bytes, 0, Math.min(15, bytes.byteLength))) === 'SQLite format 3') {
+							notice.style.display = '';
+						}
+					});
+			})();
+			</script>";
+	}
+
+	/**
+	 * @param string|false $path
+	 * @return string[] the names along a path, split at either slash
+	 */
+	private function pathSegments($path)
+	{
+		return array_values(array_filter(explode('/', str_replace('\\', '/', (string) $path)), 'strlen'));
+	}
+
+	/** @var string[] extensions a web server may run as code, or read as its own configuration */
+	private static $executableExtensions = array('php', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'phtml', 'pht',
+		'phar', 'phps', 'inc', 'shtml', 'shtm', 'cgi', 'fcgi', 'pl', 'py', 'asp', 'aspx', 'ashx', 'asmx', 'jsp', 'cfm',
+		'htaccess', 'htpasswd', 'ini', 'config');
+
+	/**
+	 * Any path to a file, absolute or relative to the e107 root, except one the web server could run.
+	 *
+	 * @param string $path as the database form escaped it
+	 * @return bool false for a null byte, a character the form escaped, a stream wrapper or other URI, a folder, or a
+	 *              name with an extension from {@see e_install::$executableExtensions} among its dot- or colon-separated
+	 *              parts (NTFS reads x.php::$DATA as x.php)
+	 */
+	private function checkDatabaseFile($path)
+	{
+		$path = (string) $path;
+
+		if($path === '' || strpbrk($path, "\0&") !== false || preg_match('#^[A-Za-z][A-Za-z0-9+.-]+:#', $path) || in_array(substr($path, -1), array('/', '\\'), true))
+		{
+			return false;
+		}
+
+		$extensions = array_map('trim', array_slice(preg_split('/[.:]/', strtolower(basename(str_replace('\\', '/', $path)))), 1));
+
+		return array_intersect($extensions, self::$executableExtensions) === array();
 	}
 
 	/**
@@ -2731,7 +3060,7 @@ return [
 
 		if(!$link)
 		{
-			return nl2br(LANINS_084."\n\n<b>".LANINS_083."\n</b><i>".$sql->getLastErrorText()."</i>");
+			return nl2br(LANINS_084."\n\n<b>".$this->engineErrorLabel()."\n</b><i>".$sql->getLastErrorText()."</i>");
 		}
 
 		installLog::add("DB Connection made");
@@ -2741,45 +3070,40 @@ return [
 		$db_selected = $sql->database($this->previous_steps['mysql']['db'],$this->previous_steps['mysql']['prefix']);
 		if(!$db_selected)
 		{
-			return nl2br(LANINS_085." '{$this->previous_steps['mysql']['db']}'\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
+			return nl2br(LANINS_085." '{$this->previous_steps['mysql']['db']}'\n\n<b>".$this->engineErrorLabel()."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
 		}
 
 		installLog::add("DB Database Selected");
 
 		$filename = "{$this->e107->e107_dirs['CORE_DIRECTORY']}sql/core_sql.php";
-		$fd = fopen ($filename, "r");
-		$sql_data = fread($fd, filesize($filename));
-		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);		// Strip comments
-		fclose ($fd);
+		$sql_data = file_get_contents($filename);
 
 		if (!$sql_data)
 		{
 			return nl2br(LANINS_060)."<br /><br />";
 		}
 
-		preg_match_all("/create(.*?)(?:myisam|innodb);/si", $sql_data, $result );
-
-		// Force UTF-8 again
-		$this->dbqry('SET NAMES `utf8mb4`');
-
-		$srch = array("CREATE TABLE","(");
-		$repl = array("DROP TABLE IF EXISTS","");
-
-		foreach ($result[0] as $sql_table)
+		try
 		{
-			$sql_table = preg_replace("/create table\s/si", "CREATE TABLE {$this->previous_steps['mysql']['prefix']}", $sql_table);
+			$tables = (new \e107\Database\Schema\Declared\SqlFileCatalogue())->parse($sql_data, 'core');
+		}
+		catch (Exception $e)
+		{
+			installLog::add("Could not read ".$filename.": ".$e->getMessage(), 'error');
+			return nl2br(LANINS_060)."<br /><br />";
+		}
 
-			$sql_table = $this->adaptTableToServer($sql_table);
-
+		foreach ($tables as $name => $table)
+		{
 			// Drop existing tables before creating.
-			$tmp = explode("\n",$sql_table);
-			$drop_table = str_replace($srch,$repl,$tmp[0]);
-			$this->dbqry($drop_table);
+			$sql->dropTable($name);
 
-			if (!$this->dbqry($sql_table))
+			list($engine, $charset) = $this->fitTableToServer($table);
+
+			if ($sql->schema()->createDeclaredTable($table, $engine, $charset) === false)
 			{
-				installLog::add("Query Failed in ".$filename." : ".$sql_table, 'error');
-				return nl2br(LANINS_061."\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
+				installLog::add("Table creation failed in ".$filename." : ".$name, 'error');
+				return nl2br(LANINS_061."\n\n<b>".$this->engineErrorLabel()."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
 			}
 		}
 
@@ -2791,7 +3115,7 @@ return [
 	private $tableAdviser = null;
 
 	/**
-	 * Fit one CREATE TABLE statement to what this server can actually do.
+	 * The storage engine and character set this server should build one core table with.
 	 *
 	 * core_sql.php declares InnoDB for all 30 tables and names no character set,
 	 * so they inherit the database default. That has worked by luck rather than
@@ -2801,13 +3125,13 @@ return [
 	 * with 1071. db_verify already knows which engine and character set this
 	 * server can give a table, so ask it and say the answer out loud.
 	 *
-	 * If it cannot be consulted the statement is used exactly as written, which
-	 * is how installation behaved before.
+	 * If it cannot be consulted the table is built as declared, which is how
+	 * installation behaved before.
 	 *
-	 * @param string $statement one CREATE TABLE, already prefixed
-	 * @return string
+	 * @param \e107\Database\Schema\Declared\DeclaredTable $table
+	 * @return array array(engine|null, charset|null); null for the declared one
 	 */
-	private function adaptTableToServer($statement)
+	private function fitTableToServer($table)
 	{
 		try
 		{
@@ -2821,41 +3145,21 @@ return [
 				$this->tableAdviser->availableStorageEngines = $this->tableAdviser->getAvailableStorageEngines();
 			}
 
-			$dbv = $this->tableAdviser;
+			$intended = $this->tableAdviser->intendedForBody($table->getBody(), $table->getDeclaredEngine(), $table->getDeclaredCharset());
 
-			if (!preg_match('/^(.*\))\s*ENGINE\s*=\s*(\w+)(.*?);?\s*$/is', $statement, $m))
+			if (empty($intended['engine']))
 			{
-				return $statement;
+				return array(null, null);
 			}
 
-			$body     = $m[1];
-			$declared = $m[2];
-			$trailing = trim($m[3]);
-
-			// Engine first: how wide an index may be depends on the engine that
-			// ends up holding it.
-			$requirements = $dbv->deriveTableRequirements($dbv->getFields($body), $dbv->getIndex($body));
-
-			$engine = $dbv->getIntendedStorageEngine($declared, $requirements);
-
-			if (empty($engine))
-			{
-				return $statement;
-			}
-
-			$requirements['engine'] = $engine;
-
-			$charset = $dbv->getIntendedCharset('', $requirements);
-
-			return $body . ' ENGINE=' . $engine . ' DEFAULT CHARSET=' . $charset
-				. ($trailing !== '' ? ' ' . $trailing : '') . ';';
+			return array($intended['engine'], $intended['charset']);
 		}
 		catch (Exception $e)
 		{
-			installLog::add('Could not fit a table definition to this server, using it as written: '
+			installLog::add('Could not fit a table definition to this server, using it as declared: '
 				. $e->getMessage(), 'error');
 
-			return $statement;
+			return array(null, null);
 		}
 	}
 
@@ -2884,38 +3188,18 @@ return [
 
 	private function setDb()
 	{
+		$driver = $this->databaseDriver()->getName();
 		$sqlInfo = array(
 				'mySQLserver'       => $this->previous_steps['mysql']['server'],
 				'mySQLuser'         => $this->previous_steps['mysql']['user'],
 				'mySQLpassword'     => $this->previous_steps['mysql']['password'],
 				'mySQLdefaultdb'    => $this->previous_steps['mysql']['db'],
-				'mySQLprefix'       => $this->previous_steps['mysql']['prefix']
+				'mySQLprefix'       => $this->previous_steps['mysql']['prefix'],
+				'mySQLdriver'       => $driver,
 		);
 
 		$this->e107->initInstallSql($sqlInfo);
-	}
-
-
-	private function dbqry($qry)
-	{
-		$sql = e107::getDb();
-		$return =  $sql->db_Query($qry);
-
-		if($return === false)
-		{
-			installLog::add('Query Failed: '.$qry, 'error');
-		}
-
-		return $return;
-
-		/*if($error = $sql->getLastErrorNumber())
-		{
-			$errorInfo = 'Query Error [#'.$error.']: '.$sql->getLastErrorText()."\nQuery: {$qry}";
-			$this->debug_db_info['db_error_log'][] = $errorInfo;
-			return false;
-		}
-
-		return true;*/
+		e107::getDb()->useDriver($driver);
 	}
 }
 
@@ -2975,14 +3259,14 @@ class e_forms
 	}
 }
 
-function create_tables_unattended()
+/**
+ * @param string|null $installToken other.install_token from e107_config.php, which a database without credentials
+ *                                  (SQLite) requires as install_token in the query string
+ * @return bool
+ */
+function create_tables_unattended($installToken)
 {
-	//If username or password not specified, exit
-	if(!isset($_GET['username']) || !isset($_GET['password']))
-	{
-		return false;
-	}
-
+	$mySQLdriver = '';
 	$mySQLserver = null;
 	$mySQLuser = null;
 	$mySQLpassword = null;
@@ -3005,6 +3289,7 @@ function create_tables_unattended()
 	if(is_array($config) && !empty($config['database'])) // New e107_config.php format. v2.4+
 	{
 		$dbInfo = $config['database'];
+		$mySQLdriver    = isset($dbInfo['driver']) ? (string) $dbInfo['driver'] : '';
 		$mySQLserver    = isset($dbInfo['server']) ? $dbInfo['server'] : null;
 		$mySQLuser      = isset($dbInfo['user']) ? $dbInfo['user'] : null;
 		$mySQLpassword  = isset($dbInfo['password']) ? $dbInfo['password'] : null;
@@ -3012,8 +3297,25 @@ function create_tables_unattended()
 		$mySQLprefix    = isset($dbInfo['prefix']) ? $dbInfo['prefix'] : null;
 	}
 
+	if($mySQLdriver === '')
+	{
+		$mySQLdriver = \e107\Database\Driver\DriverRegistry::DEFAULT_DRIVER;
+	}
+
+	if(!\e107\Database\Driver\DriverRegistry::has($mySQLdriver))
+	{
+		return false;
+	}
+
+	$byCredentials = \e107\Database\Driver\DriverRegistry::create($mySQLdriver)->requiresServer();
+
+	if($byCredentials ? (!isset($_GET['username']) || !isset($_GET['password'])) : (!is_string($installToken) || $installToken === '' || !isset($_GET['install_token'])))
+	{
+		return false;
+	}
+
 	//If mysql info not set, config file is not created properly
-	if(!isset($mySQLuser) || !isset($mySQLpassword) || !isset($mySQLdefaultdb) || !isset($mySQLprefix))
+	if(($byCredentials && (!isset($mySQLuser) || !isset($mySQLpassword))) || !isset($mySQLdefaultdb) || !isset($mySQLprefix))
 	{
 		return false;
 	}
@@ -3023,7 +3325,7 @@ function create_tables_unattended()
 	// and returns identically to the credential check below, so it is not a
 	// credential oracle. The probe uses a dedicated db instance so its table
 	// list never pollutes the connection runUnattendedInstall() reuses.
-	$probe = e107::getDb('install_provision_check');
+	$probe = e107::getDb('install_provision_check')->useDriver($mySQLdriver);
 	if($probe->connect($mySQLserver, $mySQLuser, $mySQLpassword)
 		&& $probe->database($mySQLdefaultdb, $mySQLprefix)
 		&& !empty($probe->tables()))
@@ -3031,14 +3333,15 @@ function create_tables_unattended()
 		return false;
 	}
 
-	// If specified username and password does not match the ones in config, exit
-	if(!hash_equals((string) $mySQLuser, (string) $_GET['username'])
-		|| !hash_equals((string) $mySQLpassword, (string) $_GET['password']))
+	if($byCredentials
+		? (!hash_equals((string) $mySQLuser, (string) $_GET['username']) || !hash_equals((string) $mySQLpassword, (string) $_GET['password']))
+		: !hash_equals($installToken, (string) $_GET['install_token']))
 	{
 		return false;
 	}
 
 	$einstall = new e_install();
+	$einstall->previous_steps['mysql']['driver'] 	= $mySQLdriver;
 	$einstall->previous_steps['mysql']['server'] 	= $mySQLserver;
 	$einstall->previous_steps['mysql']['user']		= $mySQLuser;
 	$einstall->previous_steps['mysql']['password'] 	= $mySQLpassword;

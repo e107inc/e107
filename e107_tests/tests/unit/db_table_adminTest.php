@@ -32,6 +32,8 @@
 
 		public function testParse_field_defs()
 		{
+			$this->requireDatabaseDriver('mysql', "it reads MySQL's own SHOW CREATE TABLE text");
+
 			$baseStruct = $this->dta->get_current_table('core');
 			$baseStruct = isset($baseStruct[0][2]) ? $baseStruct[0][2] : null;
 
@@ -311,8 +313,25 @@
 			$this->assertSame($expected, $result);
 		}
 
+		/**
+		 * The live table is read in the schema DSL on whatever engine the site runs, in the shape the regex over
+		 * SHOW CREATE TABLE gave: the statement, the table name, the body and the table options.
+		 */
+		public function testTheCurrentTableIsReadOnEveryEngine()
+		{
+			$result = $this->dta->get_current_table('core');
+
+			$this->assertSame(MPREFIX.'core', $result[0][1]);
+			$this->assertStringStartsWith('CREATE TABLE '.MPREFIX.'core (', $result[0][0]);
+			$this->assertStringContainsString('e107_name', $result[0][2]);
+			$this->assertStringNotContainsString('`', $result[0][2]);
+			$this->assertFalse($this->dta->get_current_table('no_such_table'));
+		}
+
 		public function testGet_current_table()
 		{
+			$this->requireDatabaseDriver('mysql', "it reads MySQL's own SHOW CREATE TABLE text");
+
 
 
 			$expected = array (
@@ -345,6 +364,50 @@
 
 			$this->assertSame($expected, $result);
 
+		}
+
+		public function testACopyKeepsEveryTableOptionItsSchemaFileDeclares()
+		{
+			$this->requireDatabaseDriver('mysql', "the table options after the column list are MySQL's");
+
+			$file = tempnam(sys_get_temp_dir(), 'dta');
+			file_put_contents($file, "CREATE TABLE dta_probe (\n  probe_id int(10) NOT NULL,\n  PRIMARY KEY (probe_id)\n) ENGINE=InnoDB COMMENT='kept as declared';\n");
+			$db = e107::getDb();
+			$db->dropTable('dta_probe_copy');
+
+			try
+			{
+				$this->assertNotFalse($this->dta->createTable($file, 'dta_probe', true, 'dta_probe_copy'), $db->getLastErrorText());
+				$create = $db->getSchemaManager()->getCreateStatement(MPREFIX.'dta_probe_copy');
+			}
+			finally
+			{
+				$db->dropTable('dta_probe_copy');
+				unlink($file);
+			}
+
+			$this->assertStringContainsString("COMMENT='kept as declared'", $create);
+		}
+
+		public function testWithNoFileNameATableIsCreatedFromTheFileReadLast()
+		{
+			$file = tempnam(sys_get_temp_dir(), 'dta');
+			file_put_contents($file, "CREATE TABLE dta_first (\n  first_id int(10) NOT NULL,\n  PRIMARY KEY (first_id)\n) ENGINE=InnoDB;\n"
+				."CREATE TABLE dta_second (\n  second_id int(10) NOT NULL,\n  PRIMARY KEY (second_id)\n) ENGINE=InnoDB;\n");
+			$db = e107::getDb();
+
+			try
+			{
+				$this->assertNotFalse($this->dta->createTable($file, 'dta_first'), $db->getLastErrorText());
+				$this->assertNotFalse($this->dta->createTable('', 'dta_second'), $db->getLastErrorText());
+				$this->assertNotEmpty($db->schema()->getColumns('dta_second'));
+			}
+			finally
+			{
+				$db->dropTable('dta_first');
+				$db->dropTable('dta_second');
+				unlink($file);
+			}
 		}
 
 	}

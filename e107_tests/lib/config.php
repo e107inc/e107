@@ -24,4 +24,32 @@ if (!empty($params['app_path']))
 	$params['app_path'] = rtrim($params['app_path'], '/\\') . '/';
 }
 
+$db = isset($params['db']) && is_array($params['db']) ? $params['db'] : [];
+$db['driver'] = empty($db['driver']) ? 'mysql' : $db['driver'];
+
+switch ($db['driver'])
+{
+	case 'mysql':
+		$db['dsn'] = 'mysql:host=' . $db['host'] . ';port=' . $db['port'] . ';dbname=' . $db['dbname'];
+		$db['populator'] = '';
+		break;
+
+	case 'sqlite':
+		if (!in_array(isset($params['deployer']) ? $params['deployer'] : 'none', ['local', 'none'], true))
+		{
+			throw new InvalidArgumentException("db.driver 'sqlite' needs the 'local' deployer: the site and the suites have to share one database file, and deployer '" . $params['deployer'] . "' puts the site somewhere else.");
+		}
+
+		// Codeception reads the part after "sqlite:" relative to this directory.
+		$db['dsn'] = 'sqlite:' . $db['path'];
+		$db['populator'] = escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__DIR__ . '/sqlite-fixture.php') . " '\$dump' '\$dsn'";
+		break;
+
+	default:
+		throw new InvalidArgumentException("Unknown db.driver '" . $db['driver'] . "' in the test configuration; use 'mysql' or 'sqlite'.");
+}
+
+$db['mysql_compat'] = !empty($db['mysql_compat']);
+$params['db'] = $db;
+
 return $params;

@@ -109,6 +109,12 @@ class QueryBuilder
 	/** @var bool whether to emit SELECT DISTINCT */
 	private $distinct = false;
 
+	/** @var bool whether the total ignoring LIMIT is wanted, see {@see QueryBuilder::calcFoundRows()} */
+	private $calcFoundRows = false;
+
+	/** @var int the total ignoring LIMIT, as counted when the query last ran */
+	private $foundRows = 0;
+
 	/** @var string|null logical table name (no '#', no prefix) */
 	private $table = null;
 
@@ -165,8 +171,11 @@ class QueryBuilder
 	/** @var string[] quoted target columns for INSERT ... SELECT */
 	private $insertSelectColumns = array();
 
-	/** @var string[] "quoted column = value-reference" assignments for UPSERT */
+	/** @var array quoted column => value reference, the UPSERT update list */
 	private $upsertUpdate = array();
+
+	/** @var string[] quoted columns of the key an UPSERT collides on */
+	private $upsertConflict = array();
 
 	/** @var string trailing lock clause for SELECT, e.g. ' FOR UPDATE' */
 	private $lock = '';
@@ -432,6 +441,35 @@ class QueryBuilder
 	}
 
 	/**
+	 * Ask for the number of rows this SELECT matches with no LIMIT, read with {@see QueryBuilder::foundRows()} once it has run.
+	 *
+	 * <code>
+	 * $qb = $sql->createQueryBuilder();
+	 * $page = $qb->calcFoundRows()->select('*')->from('news')->setMaxResults(10)->fetchAll();
+	 * $total = $qb->foundRows();
+	 * </code>
+	 *
+	 * @param bool $calc
+	 * @return QueryBuilder $this
+	 */
+	public function calcFoundRows($calc = true)
+	{
+		$this->calcFoundRows = (bool) $calc;
+
+		return $this;
+	}
+
+	/**
+	 * The number of rows the query matched with no LIMIT when it last ran with {@see QueryBuilder::calcFoundRows()} on; later queries on the connection leave it alone.
+	 *
+	 * @return int 0 when the query has not run with calcFoundRows() on, or failed
+	 */
+	public function foundRows()
+	{
+		return $this->foundRows;
+	}
+
+	/**
 	 * Start a SELECT whose column list is a single developer-authored
 	 * expression, taken verbatim: the explicit raw hatch for a SELECT list
 	 * {@see QueryBuilder::select()} refuses (it accepts only identifiers and
@@ -470,11 +508,13 @@ class QueryBuilder
 	 * column (an identifier, or table.column) and the alias are each validated
 	 * and quoted independently and fail-closed; nothing is parsed out of a bare
 	 * string, so an identifier or alias that itself contains a space or the word
-	 * "as" is handled correctly. For a function/computed/literal projection use
+	 * "as" is handled correctly. The column may instead be an expression the
+	 * expression builder made, such as {@see ExpressionBuilder::concat()}. For a
+	 * function/computed/literal projection use
 	 * {@see QueryBuilder::selectAggregate()} / {@see QueryBuilder::selectLiteral()},
 	 * or addSelect({@see QueryBuilder::raw()}).
 	 *
-	 * @param string $column Column name (or table.column); validated and quoted.
+	 * @param string|SqlFragment $column Column name (or table.column), validated and quoted; or a vouched expression.
 	 * @param string $alias Column alias; validated and quoted.
 	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the column or the alias fails validation.
@@ -482,9 +522,26 @@ class QueryBuilder
 	public function selectAs($column, $alias)
 	{
 		$this->type = self::TYPE_SELECT;
-		$this->select[] = $this->quoteColumn($column).' AS '.$this->_quotedAlias($alias);
+		$this->select[] = $this->_vouchedOrColumn($column).' AS '.$this->_quotedAlias($alias);
 
 		return $this;
+	}
+
+	/**
+	 * @param string|SqlFragment $column a column name, or a vouched expression whose parameters are taken over
+	 * @return string
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	private function _vouchedOrColumn($column)
+	{
+		if($column instanceof SqlFragment)
+		{
+			$this->mergeParameters($column->getParameters());
+
+			return $column->getSql();
+		}
+
+		return $this->quoteColumn($column);
 	}
 
 	/**
@@ -1399,15 +1456,17 @@ class QueryBuilder
 
 	/**
 	 * AND a full-text search over one or more columns; the search terms are
-	 * bound and the predicate spelling comes from the dialect.
+	 * bound and the predicate spelling comes from the dialect
+	 * ({@see PlatformInterface::compileFullText()}).
 	 *
 	 * @param string|array $columns One column, or a list of columns.
 	 * @param string $value Search terms.
+	 * @param bool $booleanMode Whether the terms carry MySQL's boolean operators (+word -word word* "phrase").
 	 * @return QueryBuilder $this
 	 */
-	public function whereFullText($columns, $value)
+	public function whereFullText($columns, $value, $booleanMode = false)
 	{
-		return $this->_appendWhere('AND', $this->_fullText($columns, $value));
+		return $this->_appendWhere('AND', $this->_fullText($columns, $value, $booleanMode));
 	}
 
 	/**
@@ -1415,11 +1474,12 @@ class QueryBuilder
 	 *
 	 * @param string|array $columns
 	 * @param string $value
+	 * @param bool $booleanMode
 	 * @return QueryBuilder $this
 	 */
-	public function orWhereFullText($columns, $value)
+	public function orWhereFullText($columns, $value, $booleanMode = false)
 	{
-		return $this->_appendWhere('OR', $this->_fullText($columns, $value));
+		return $this->_appendWhere('OR', $this->_fullText($columns, $value, $booleanMode));
 	}
 
 	/**
@@ -1939,6 +1999,11 @@ class QueryBuilder
 			return false;
 		}
 
+		if($this->platform->reportsInsertIdForEveryTable() && $this->db->getAutoIncrementColumn($this->table) === null)
+		{
+			return true;
+		}
+
 		return $this->db->lastInsertId();
 	}
 
@@ -1948,6 +2013,8 @@ class QueryBuilder
 	 * {@see QueryBuilder::values()} (or {@see QueryBuilder::set()}); every value is
 	 * bound. The dialect-specific statement is produced by the platform, so the
 	 * call site stays portable.
+	 *
+	 * execute() counts a replaced row 2 or more on MySQL and 1 on SQLite ({@see PlatformInterface::countsConflictingRows()}).
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @return QueryBuilder $this
@@ -2270,11 +2337,20 @@ class QueryBuilder
 	 * {@see QueryBuilder::insert()}. Every value is bound and the dialect-specific
 	 * statement is produced by the platform, so the call site stays portable.
 	 *
+	 * execute() counts an updated row 2 on MySQL and 1 elsewhere, and an unchanged row 0 ({@see PlatformInterface::countsConflictingRows()}).
+	 *
 	 * <code>
 	 * $qb->insert('user')->upsert(
 	 *     array('user_id' => 5, 'user_name' => 'Bob'),
 	 *     'user_id',              // key(s) that decide a collision
 	 *     array('user_name')      // columns to refresh on collision
+	 * );
+	 *
+	 * // A column can instead take an expression, in which a bare column name is the stored value.
+	 * $qb->insert('user_extended')->upsert(
+	 *     array('user_extended_id' => 5, 'user_plugin_forum_posts' => 1),
+	 *     'user_extended_id',
+	 *     array('user_plugin_forum_posts' => $qb->raw('COALESCE(user_plugin_forum_posts, 0) + 1'))
 	 * );
 	 * </code>
 	 *
@@ -2282,7 +2358,9 @@ class QueryBuilder
 	 * @see \e107\Database\QueryBuilderTest::testUpsertTyped()
 	 * @param array $values One column => value row, or a list of such rows.
 	 * @param string|array $uniqueBy Column(s) identifying a collision; validated.
-	 * @param array|null $update Columns to update on collision; when null, every
+	 * @param array|null $update Columns to update on collision, each refreshed
+	 *                   from the row that collided, or column => vouched
+	 *                   expression ({@see QueryBuilder::raw()}); when null, every
 	 *                   inserted column except those in $uniqueBy.
 	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when no table is set or an identifier fails validation.
@@ -2402,10 +2480,29 @@ class QueryBuilder
 
 		$this->upsertUpdate = array();
 
-		foreach($updateColumns as $column)
+		foreach($updateColumns as $key => $column)
 		{
+			if(is_string($key))
+			{
+				if(!$column instanceof SqlFragment)
+				{
+					throw new InvalidArgumentException('An upsert() update keyed by column name takes a vouched expression ($qb->raw(...)) for '.$key.'.');
+				}
+
+				$this->mergeParameters($column->getParameters());
+				$this->upsertUpdate[$this->quoteColumn($key)] = $column->getSql();
+				continue;
+			}
+
 			$quoted = $this->quoteColumn($column);
-			$this->upsertUpdate[] = $quoted.' = '.$this->platform->getUpsertValueReference($quoted);
+			$this->upsertUpdate[$quoted] = $this->platform->getUpsertValueReference($quoted);
+		}
+
+		$this->upsertConflict = array();
+
+		foreach((array) $uniqueBy as $column)
+		{
+			$this->upsertConflict[] = $this->quoteColumn($column);
 		}
 	}
 
@@ -2565,7 +2662,7 @@ class QueryBuilder
 	 */
 	public function getParameters()
 	{
-		return $this->params;
+		return $this->_autoIncrementParameters($this->params);
 	}
 
 	/**
@@ -2578,7 +2675,91 @@ class QueryBuilder
 	 */
 	public function execute()
 	{
-		return $this->db->execute($this->getSQL(), $this->params);
+		if(!$this->calcFoundRows || $this->type !== self::TYPE_SELECT)
+		{
+			return $this->db->execute($this->getSQL(), $this->getParameters());
+		}
+
+		$counted = $this->platform->supportsFoundRows() ? null : $this->_countFoundRows();
+		$result = $this->db->execute($this->getSQL(), $this->getParameters());
+		$this->foundRows = ($counted !== null) ? $counted : (int) $this->db->foundRows();
+
+		return $result;
+	}
+
+	/**
+	 * Count the rows this SELECT matches with no LIMIT, for an engine that cannot
+	 * report the count of the query itself.
+	 *
+	 * @return int 0 when the count fails
+	 */
+	private function _countFoundRows()
+	{
+		$q = clone $this;
+		$q->calcFoundRows = false;
+		$q->orderBy = array();
+		$q->maxResults = null;
+		$q->firstResult = null;
+		$q->lock = '';
+
+		if($this->db->execute('SELECT COUNT(*) AS found_rows FROM ('.$q->getSQL().') '.$this->_quotedAlias('e107_found_rows'), $q->getParameters()) === false)
+		{
+			return 0;
+		}
+
+		$row = $this->db->fetch();
+
+		return is_array($row) ? (int) $row['found_rows'] : 0;
+	}
+
+	/**
+	 * Bind NULL for a 0 or '' written to the auto-increment column, on an engine that would store it ({@see PlatformInterface::assignsAutoIncrementOnZero()}).
+	 *
+	 * @param array $params
+	 * @return array
+	 */
+	private function _autoIncrementParameters(array $params)
+	{
+		if($this->paramOwner !== null || $this->table === null
+			|| !in_array($this->type, array(self::TYPE_INSERT, self::TYPE_UPSERT, self::TYPE_REPLACE), true)
+			|| $this->platform->assignsAutoIncrementOnZero())
+		{
+			return $params;
+		}
+
+		$column = $this->db->getAutoIncrementColumn($this->table);
+
+		if($column === null)
+		{
+			return $params;
+		}
+
+		$quoted = $this->quoteColumn($column);
+		$rows = ($this->type === self::TYPE_REPLACE) ? array($this->set) : $this->_insertRows();
+
+		foreach($rows as $row)
+		{
+			if(!isset($row[$quoted]))
+			{
+				continue;
+			}
+
+			$name = ltrim($row[$quoted], ':');
+
+			if(!array_key_exists($name, $params))
+			{
+				continue;
+			}
+
+			$value = is_array($params[$name]) ? $params[$name]['value'] : $params[$name];
+
+			if($value === 0 || $value === '0' || $value === '')
+			{
+				$params[$name] = array('value' => null, 'type' => ConnectionInterface::PARAM_NULL);
+			}
+		}
+
+		return $params;
 	}
 
 	/**
@@ -2641,7 +2822,7 @@ class QueryBuilder
 			$this->compileTableMarkers = false;
 		}
 
-		return $this->db->executeAllLanguages($sql, $this->params);
+		return $this->db->executeAllLanguages($sql, $this->getParameters());
 	}
 
 	/**
@@ -3530,18 +3711,12 @@ class QueryBuilder
 	/**
 	 * @param string|array $columns
 	 * @param string $value
+	 * @param bool $booleanMode
 	 * @return string
 	 */
-	private function _fullText($columns, $value)
+	private function _fullText($columns, $value, $booleanMode = false)
 	{
-		$quoted = array();
-
-		foreach((array) $columns as $column)
-		{
-			$quoted[] = $this->quoteColumn($column);
-		}
-
-		return $this->platform->compileFullText($quoted, $this->createNamedParameter($value));
+		return $this->expr()->fullText($columns, $value, $booleanMode)->getSql();
 	}
 
 	/**
@@ -3811,6 +3986,7 @@ class QueryBuilder
 		}
 
 		$sql = 'SELECT '.($this->distinct ? 'DISTINCT ' : '')
+			.(($this->calcFoundRows && $this->platform->supportsFoundRows()) ? 'SQL_CALC_FOUND_ROWS ' : '')
 			.(count($this->select) === 0 ? '*' : implode(', ', $this->select));
 		$sql .= ' FROM '.$source;
 
@@ -3910,7 +4086,8 @@ class QueryBuilder
 			$this->_quotedTable($this->table),
 			$columns,
 			$tuples,
-			$this->upsertUpdate
+			$this->upsertUpdate,
+			$this->upsertConflict
 		);
 	}
 
@@ -3941,17 +4118,12 @@ class QueryBuilder
 			throw new InvalidArgumentException('UPDATE needs a table and at least one set().');
 		}
 
-		$assignments = array();
-
-		foreach($this->set as $column => $placeholder)
-		{
-			$assignments[] = $column.' = '.$placeholder;
-		}
-
-		return 'UPDATE '.$this->_quotedTable($this->table)
-			.' SET '.implode(', ', $assignments)
-			.$this->_compileWhere()
-			.$this->platform->getLimitClause($this->maxResults);
+		return $this->platform->compileUpdate(
+			$this->_quotedTable($this->table),
+			$this->set,
+			$this->_compileWhere(),
+			$this->maxResults
+		);
 	}
 
 	/**
@@ -3964,9 +4136,11 @@ class QueryBuilder
 			throw new InvalidArgumentException('DELETE needs a table; call delete() with one.');
 		}
 
-		return 'DELETE FROM '.$this->_quotedTable($this->table)
-			.$this->_compileWhere()
-			.$this->platform->getLimitClause($this->maxResults);
+		return $this->platform->compileDelete(
+			$this->_quotedTable($this->table),
+			$this->_compileWhere(),
+			$this->maxResults
+		);
 	}
 
 	/**

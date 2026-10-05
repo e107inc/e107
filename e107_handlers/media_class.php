@@ -446,6 +446,40 @@ class e_media
 	}
 
 	/**
+	 * The number each owner's categories have reached, for a new one to follow: the highest any ends in after its last underscore (3 for "gallery_3"), else how many it has.
+	 *
+	 * @return int[] owner => number, in owner order
+	 */
+	public function lastCategoryNumbers()
+	{
+		$owners = array();
+
+		$rows = e107::getDb()->createQueryBuilder()
+			->select('media_cat_owner', 'media_cat_category')->from('core_media_cat')
+			->orderBy('media_cat_owner', 'ASC')
+			->fetchAll();
+
+		foreach($rows as $row)
+		{
+			$owner = $row['media_cat_owner'];
+
+			if(!isset($owners[$owner]))
+			{
+				$owners[$owner] = array('number' => 0, 'maxnum' => 0);
+			}
+
+			$parts = explode('_', (string) $row['media_cat_category']);
+			$owners[$owner]['number']++;
+			$owners[$owner]['maxnum'] = max($owners[$owner]['maxnum'], (int) end($parts));
+		}
+
+		return array_map(function($count)
+		{
+			return ($count['maxnum'] > 0) ? $count['maxnum'] : $count['number'];
+		}, $owners);
+	}
+
+	/**
 	 * Return the total number of Images in a particular category
 	 *
 	 * @param string $cat

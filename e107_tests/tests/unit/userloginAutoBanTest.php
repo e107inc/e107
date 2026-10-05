@@ -404,12 +404,21 @@ class userloginAutoBanTest extends \Test\Unit
 		))->execute();
 	}
 
+	/**
+	 * Take an index off generic if it is there; a site upgraded from before it was declared has none.
+	 */
+	protected function dropIndexIfPresent($name)
+	{
+		if($this->liveIndexColumns($name) !== '')
+		{
+			e107::getDb()->schema()->table('generic')->dropIndex($name)->execute();
+		}
+	}
+
 	protected function liveIndexColumns($name)
 	{
-		$sql = e107::getDb();
-		$sql->gen("SHOW INDEX FROM `#generic`");
 		$cols = array();
-		while($row = $sql->fetch())
+		foreach(e107::getDb()->schema()->getIndexes('generic') as $row)
 		{
 			if($row['Key_name'] === $name) { $cols[(int) $row['Seq_in_index']] = $row['Column_name']; }
 		}
@@ -440,8 +449,7 @@ class userloginAutoBanTest extends \Test\Unit
 	{
 		require_once(e_HANDLER . 'db_verify_class.php');
 
-		$sql = e107::getDb();
-		$sql->gen("ALTER TABLE `#generic` DROP INDEX `gen_type_ip`");
+		$this->dropIndexIfPresent('gen_type_ip');
 
 		$dbv = new db_verify();
 		$dbv->clearCache();
@@ -469,14 +477,48 @@ class userloginAutoBanTest extends \Test\Unit
 	{
 		require_once(e_ADMIN . 'update_routines.php');
 
-		$sql = e107::getDb();
-		$sql->gen("ALTER TABLE `#generic` DROP INDEX `gen_type_ip`");
-		$sql->gen("ALTER TABLE `#generic` DROP INDEX `gen_type_ts`");
+		$this->dropIndexIfPresent('gen_type_ip');
+		$this->dropIndexIfPresent('gen_type_ts');
 
 		$this->assertSame('', $this->liveIndexColumns('gen_type_ip'));
 		$this->assertFalse(update_20x_to_latest('check'), 'update_needed() reports by returning false');
 
 		update_20x_to_latest('do');
+
+		$this->assertSame('gen_type,gen_ip', $this->liveIndexColumns('gen_type_ip'));
+		$this->assertSame('gen_type,gen_datestamp', $this->liveIndexColumns('gen_type_ts'));
+	}
+
+	public function testTheUpgradeRoutineIndexesTheBaseTableWhicheverLanguageTheAdminBrowsesIn()
+	{
+		require_once(e_ADMIN . 'update_routines.php');
+
+		$db = e107::getDb();
+		$config = e107::getConfig();
+		$multilanguage = $config->get('multilanguage');
+
+		$this->dropIndexIfPresent('gen_type_ip');
+		$this->dropIndexIfPresent('gen_type_ts');
+		$db->dropTable('lan_spanish_generic');
+		$this->assertTrue($db->getSchemaManager()->createTableLike(MPREFIX . 'generic', MPREFIX . 'lan_spanish_generic'));
+		$this->assertNotFalse($db->schema()->tablePhysical('lan_spanish_generic')
+			->addIndex(\e107\Database\Schema\Index::index('gen_type_ip', array('gen_type', 'gen_ip')))
+			->addIndex(\e107\Database\Schema\Index::index('gen_type_ts', array('gen_type', 'gen_datestamp')))
+			->execute());
+
+		$config->set('multilanguage', 1);
+		$db->setLanguage('Spanish');
+
+		try
+		{
+			update_20x_to_latest('do');
+		}
+		finally
+		{
+			$db->setLanguage('English');
+			$config->set('multilanguage', $multilanguage);
+			$db->dropTable('lan_spanish_generic');
+		}
 
 		$this->assertSame('gen_type,gen_ip', $this->liveIndexColumns('gen_type_ip'));
 		$this->assertSame('gen_type,gen_datestamp', $this->liveIndexColumns('gen_type_ts'));

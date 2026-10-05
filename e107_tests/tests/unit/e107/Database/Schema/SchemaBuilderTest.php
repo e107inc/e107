@@ -34,6 +34,7 @@ use RuntimeException;
 			require_once(e_HANDLER."Database/Platform/MysqlPlatform.php");
 			require_once(e_HANDLER."Database/SqlFragment.php");
 			require_once(e_HANDLER."Database/Schema/Column.php");
+			require_once(e_HANDLER."Database/Schema/MysqlSchemaManager.php");
 			require_once(e_HANDLER."Database/Schema/Index.php");
 			require_once(e_HANDLER."Database/Schema/SchemaBuilder.php");
 		}
@@ -187,6 +188,27 @@ use RuntimeException;
 				." ADD COLUMN `comment_author_name` VARCHAR(100) NOT NULL DEFAULT '' AFTER `comment_author_id`",
 				$stub->lastSql
 			);
+		}
+
+		public function testABatchIsOneStatementOnMysqlAndKeepsEachChange()
+		{
+			$schema = $this->makeSchema();
+			$table = $schema->table('comments')
+				->dropIndex('comment_ip')
+				->modifyColumn('comment_ip', Column::define('VARCHAR', 45)->notNull()->defaultValue(''))
+				->engine('InnoDB');
+
+			$this->assertSame(array("ALTER TABLE `e107_comments` DROP INDEX `comment_ip`, MODIFY COLUMN `comment_ip` VARCHAR(45) NOT NULL DEFAULT '', ENGINE = InnoDB"), $table->getStatements());
+		}
+
+		public function testAnOperationReadsItsChangeAsTheNeutralModel()
+		{
+			$modify = TableOperation::modifyColumn("MODIFY COLUMN `comment_ip` VARCHAR(45) NOT NULL DEFAULT ''", 'comment_ip', "VARCHAR(45) NOT NULL DEFAULT ''");
+			$drop = TableOperation::dropIndex('DROP INDEX `comment_ip`', 'comment_ip');
+
+			$this->assertSame(array(TableOperation::MODIFY_COLUMN, 'comment_ip', '45'), array($modify->getType(), $modify->getColumnName(), $modify->getColumnDefinition()->getLength()));
+			$this->assertSame(array(TableOperation::DROP_INDEX, 'comment_ip'), array($drop->getType(), $drop->getValue()));
+			$this->assertSame('InnoDB', TableOperation::engine('ENGINE = InnoDB', 'InnoDB')->getValue());
 		}
 
 		public function testEmptyAlterThrows()
@@ -348,10 +370,10 @@ use RuntimeException;
 			);
 
 			$this->assertEquals(
-				"CREATE TABLE `e107_foo` ("
-				."`foo_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, "
-				."`foo_name` VARCHAR(100) NOT NULL DEFAULT '', "
-				."PRIMARY KEY (`foo_id`)"
+				"CREATE TABLE `e107_foo` (\n"
+				."`foo_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n"
+				."`foo_name` VARCHAR(100) NOT NULL DEFAULT '',\n"
+				."PRIMARY KEY (`foo_id`)\n"
 				.") ENGINE = InnoDB DEFAULT CHARSET = utf8mb4",
 				$stub->lastSql
 			);
@@ -366,9 +388,23 @@ use RuntimeException;
 			);
 
 			$this->assertEquals(
-				"CREATE TABLE `e107_foo` (`foo_id` int(10) NOT NULL) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4",
+				"CREATE TABLE `e107_foo` (\n`foo_id` int(10) NOT NULL\n) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4",
 				$stub->lastSql
 			);
+		}
+
+		public function testADeclaredTableIsCreatedWithTheEngineAndCharsetItIsGiven()
+		{
+			require_once(e_HANDLER."Database/Schema/Declared/DeclaredTable.php");
+
+			$schema = $this->makeSchema($stub);
+			$declared = new \e107\Database\Schema\Declared\DeclaredTable('core', 'widget', 'widget_id int(10) NOT NULL', 'MyISAM', null);
+
+			$schema->createDeclaredTable($declared, 'InnoDB', 'utf8mb4');
+			$this->assertEquals("CREATE TABLE `e107_widget` (\nwidget_id int(10) NOT NULL\n) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4", $stub->lastSql);
+
+			$schema->createDeclaredTable($declared, null, null, 'gadget');
+			$this->assertEquals("CREATE TABLE `e107_gadget` (\nwidget_id int(10) NOT NULL\n) ENGINE = MyISAM", $stub->lastSql, 'the declared engine stands in, under another name');
 		}
 
 		public function testRenameTable()
@@ -437,7 +473,7 @@ use RuntimeException;
 
 			// Returns the statement text (no execute) for a literal prefixed table.
 			$this->assertEquals(
-				"CREATE TABLE `e107_routedtable` (id int(10) unsigned NOT NULL) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;",
+				"CREATE TABLE `e107_routedtable` (\nid int(10) unsigned NOT NULL\n) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;",
 				$sql
 			);
 			$this->assertNull($stub->lastSql);
@@ -483,6 +519,21 @@ use RuntimeException;
 			$schema->optimizeTable(array('routedtable', 'lan_test_routedtable'));
 
 			$this->assertEquals("OPTIMIZE TABLE `e107_routedtable`, `e107_lan_test_routedtable`", $stub->lastSql);
+		}
+
+		public function testAPrefixOutsideTheIdentifierGrammarIsQuotedRatherThanRefused()
+		{
+			$schema = $this->makeSchema($stub);
+			$stub->prefix = 'e107$';
+
+			$schema->table('generic')->addIndex(Index::index('gen_type', 'gen_type'))->execute();
+			$this->assertEquals("ALTER TABLE `e107\$generic` ADD INDEX `gen_type` (`gen_type`)", $stub->lastSql);
+
+			$schema->tablePhysical('generic')->addRaw(SqlFragment::raw("DROP `foo`"))->execute();
+			$this->assertEquals("ALTER TABLE `e107\$generic` DROP `foo`", $stub->lastSql);
+
+			$schema->optimizeTable(array('news', 'user'));
+			$this->assertEquals("OPTIMIZE TABLE `e107\$news`, `e107\$user`", $stub->lastSql);
 		}
 
 		// --- ADMIN-FENCED VERBS --------------------------------------------
@@ -703,6 +754,7 @@ use RuntimeException;
 	 */
 	class SchemaBuilderTest_dbStub
 	{
+		public $prefix = 'e107_';
 		public $lastSql = null;
 		public $lastParams = null;
 		public $rows = array();
@@ -726,7 +778,7 @@ use RuntimeException;
 				return 'e107_lan_test_routedtable';
 			}
 
-			return 'e107_'.$table;
+			return $this->prefix.$table;
 		}
 
 		public function resolvePhysicalTableName($table)
@@ -739,7 +791,7 @@ use RuntimeException;
 			}
 
 			// Prefix only, never the lan_* routing resolveTableName() applies.
-			return 'e107_'.$table;
+			return $this->prefix.$table;
 		}
 
 		public function quoteIdentifier($identifier)
@@ -750,6 +802,11 @@ use RuntimeException;
 		public function getPlatform()
 		{
 			return new MysqlPlatform();
+		}
+
+		public function getSchemaManager()
+		{
+			return new MysqlSchemaManager($this);
 		}
 
 		public function execute($sql, $params = array())

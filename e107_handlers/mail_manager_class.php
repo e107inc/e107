@@ -609,34 +609,55 @@ class e107MailManager
 
 
 	/**
-	 * Validate a developer-supplied SELECT field list fail-closed so it can be
-	 * embedded in a query. Accepts '*' or a comma-separated list of column
-	 * identifiers; falls back to '*' if any token is not a valid identifier.
+	 * Validate a developer-supplied SELECT field list fail-closed. Accepts '*' or a
+	 * comma-separated list of column identifiers; falls back to '*' if any token
+	 * is not a valid identifier.
 	 *
 	 * @param e_db   $db     Connection instance providing quoteIdentifier().
 	 * @param string $fields
-	 * @return string Validated/quoted field list, or '*'.
+	 * @return string[] the column names for {@see \e107\Database\QueryBuilder::select()}, or array('*')
 	 */
 	protected function validateFieldList($db, $fields)
 	{
 		$fields = trim((string) $fields);
 		if ($fields === '' || $fields === '*')
 		{
-			return '*';
+			return array('*');
 		}
 
 		$out = array();
 		foreach (explode(',', $fields) as $field)
 		{
-			$quoted = $db->quoteIdentifier(trim($field));
-			if ($quoted === false)
+			$field = trim($field);
+			if ($db->quoteIdentifier($field) === false)
 			{
-				return '*';                    // Anything unexpected -> safe default
+				return array('*');                    // Anything unexpected -> safe default
 			}
-			$out[] = $quoted;
+			$out[] = $field;
 		}
 
-		return implode(', ', $out);
+		return $out;
+	}
+
+
+	/**
+	 * Order a status listing by the column the caller names, or by $fallbackField where that is not a column name.
+	 *
+	 * @param \e107\Database\QueryBuilder $qb
+	 * @param e_db   $db
+	 * @param string $orderField    nothing is ordered when empty
+	 * @param string $sortOrder     'desc' for descending, anything else ascending
+	 * @param string $fallbackField
+	 * @return void
+	 */
+	private function orderStatusListing($qb, $db, $orderField, $sortOrder, $fallbackField)
+	{
+		if (!$orderField)
+		{
+			return;
+		}
+
+		$qb->orderBy(($db->quoteIdentifier($orderField) !== false) ? $orderField : $fallbackField, (strtoupper((string) $sortOrder) === 'DESC') ? 'DESC' : 'ASC');
 	}
 
 
@@ -1845,74 +1866,37 @@ class e107MailManager
 	{
 
 		$this->checkDB(1);            // Make sure DB object created
-		if (!is_array($filters) && $filters)
-		{    // Assume a textual email type
-			switch ($filters)
+		$statusFilters = array(
+			'pending'     => array(MAIL_STATUS_PENDING),
+			'held'        => array(MAIL_STATUS_HELD),
+			'pendingheld' => array(MAIL_STATUS_PENDING, MAIL_STATUS_HELD),
+			'sent'        => array(MAIL_STATUS_SENT),
+			'allcomplete' => array(MAIL_STATUS_SENT, MAIL_STATUS_PARTIAL, MAIL_STATUS_CANCELLED),
+			'failed'      => array(MAIL_STATUS_FAILED),
+			'saved'       => array(MAIL_STATUS_SAVED),
+		);
+		$qb = $this->db->createQueryBuilder();
+		$qb->calcFoundRows()
+			->select($this->validateFieldList($this->db, $fields))
+			->from('mail_content');
+		if (is_array($filters))
+		{
+			foreach ($filters as $filter)
 			{
-				case 'pending' :
-					$filters = array('`mail_content_status` = ' . MAIL_STATUS_PENDING);
-					break;
-				case 'held' :
-					$filters = array('`mail_content_status` = ' . MAIL_STATUS_HELD);
-					break;
-				case 'pendingheld' :
-					$filters = array('((`mail_content_status` = ' . MAIL_STATUS_PENDING . ') OR (`mail_content_status` = ' . MAIL_STATUS_HELD . '))');
-					break;
-				case 'sent' :
-					$filters = array('`mail_content_status` = ' . MAIL_STATUS_SENT);
-					break;
-				case 'allcomplete' :
-					$filters = array('((`mail_content_status` = ' . MAIL_STATUS_SENT . ') OR (`mail_content_status` = ' . MAIL_STATUS_PARTIAL . ') OR (`mail_content_status` = ' . MAIL_STATUS_CANCELLED . '))');
-					break;
-				case 'failed' :
-					$filters = array('`mail_content_status` = ' . MAIL_STATUS_FAILED);
-					break;
-				case 'saved' :
-					$filters = array('`mail_content_status` = ' . MAIL_STATUS_SAVED);
-					break;
+				$qb->where($qb->raw($filter));
 			}
 		}
-		if (!is_array($filters))
+		elseif (is_string($filters) && isset($statusFilters[$filters]))
 		{
-			$filters = array();
+			$qb->whereIn('mail_content_status', $statusFilters[$filters]);
 		}
-		// $fields is a developer-supplied column list (no request input); validate
-		// it fail-closed so it can be embedded in the SQL_CALC_FOUND_ROWS query.
-		$safeFields = $this->validateFieldList($this->db, $fields);
-		$query = "SELECT SQL_CALC_FOUND_ROWS {$safeFields} FROM `#mail_content`";
-		if (count($filters))
-		{
-			$query .= ' WHERE ' . implode(' AND ', $filters);
-		}
-		if ($orderField)
-		{
-			// $orderField is a column identifier (cannot be bound); validate it.
-			$safeOrderField = $this->db->quoteIdentifier($orderField);
-			if ($safeOrderField === false)
-			{
-				$safeOrderField = '`mail_source_id`';
-			}
-			$query .= " ORDER BY " . $safeOrderField;
-		}
-		if ($sortOrder)
-		{
-			$sortOrder = strtoupper($sortOrder);
-			$query .= ($sortOrder == 'DESC') ? ' DESC' : ' ASC';
-		}
+		$this->orderStatusListing($qb, $this->db, $orderField, $sortOrder, 'mail_source_id');
 		if ($count)
 		{
-			$query .= " LIMIT " . (int) $start . ", " . (int) $count;
+			$qb->setFirstResult((int) $start)->setMaxResults((int) $count);
 		}
-		//echo "{$start}, {$count} Mail query: {$query}<br />";
-		$result = $this->db->execute($query);
-		if ($result !== false)
-		{
-			$this->queryCount[1] = $this->db->total_results;            // Save number of records found
-		}
-		else
-		{
-			$this->queryCount[1] = 0;
-		}
+		$result = $qb->execute();
+		$this->queryCount[1] = ($result !== false) ? $qb->foundRows() : 0;            // Save number of records found
 
 		return $result;
 	}
@@ -1967,39 +1951,18 @@ class e107MailManager
 		$this->checkDB(2);            // Make sure DB object created
 
 		// TODO: Implement filters if needed
-		// $fields is a developer-supplied column list (no request input); validate
-		// it fail-closed so it can be embedded in the SQL_CALC_FOUND_ROWS query.
-		$safeFields = $this->validateFieldList($this->db2, $fields);
-		$query = "SELECT SQL_CALC_FOUND_ROWS {$safeFields} FROM `#mail_recipients` WHERE `mail_detail_id`=" . (int) $handle;
-		if ($orderField)
-		{
-			// $orderField is a column identifier (cannot be bound); validate it.
-			$safeOrderField = $this->db2->quoteIdentifier($orderField);
-			if ($safeOrderField === false)
-			{
-				$safeOrderField = '`mail_source_id`';
-			}
-			$query .= " ORDER BY " . $safeOrderField;
-		}
-		if ($sortOrder)
-		{
-			$sortOrder = strtoupper($sortOrder);
-			$query .= ($sortOrder == 'DESC') ? ' DESC' : ' ASC';
-		}
+		$qb = $this->db2->createQueryBuilder();
+		$qb->calcFoundRows()
+			->select($this->validateFieldList($this->db2, $fields))
+			->from('mail_recipients')
+			->where('mail_detail_id', $handle);
+		$this->orderStatusListing($qb, $this->db2, $orderField, $sortOrder, 'mail_target_id');
 		if ($count)
 		{
-			$query .= " LIMIT " . (int) $start . ", " . (int) $count;
+			$qb->setFirstResult((int) $start)->setMaxResults((int) $count);
 		}
-//		echo "{$start}, {$count} Target query: {$query}<br />";
-		$result = $this->db2->execute($query);
-		if ($result !== false)
-		{
-			$this->queryCount[2] = $this->db2->total_results;            // Save number of records found
-		}
-		else
-		{
-			$this->queryCount[2] = 0;
-		}
+		$result = $qb->execute();
+		$this->queryCount[2] = ($result !== false) ? $qb->foundRows() : 0;            // Save number of records found
 
 //		echo "Result: {$result}.  Total: {$this->queryCount[2]}<br />";
 		return $result;

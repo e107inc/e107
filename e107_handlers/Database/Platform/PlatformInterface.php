@@ -37,6 +37,15 @@ interface PlatformInterface
 	public function getIdentifierQuoteCharacter();
 
 	/**
+	 * Validate and quote an identifier (`column` or `table.column`) for this dialect. Fails closed: anything outside
+	 * the {@see \e107\Database\IdentifierFilter} grammar returns false.
+	 *
+	 * @param string $identifier
+	 * @return string|false
+	 */
+	public function quoteIdentifier($identifier);
+
+	/**
 	 * Build a LIMIT/OFFSET clause for this dialect, including a leading space.
 	 *
 	 * @param int|null $limit Maximum number of rows, or null for no limit.
@@ -102,14 +111,26 @@ interface PlatformInterface
 	 * Build an "insert, or update the given columns on a key collision"
 	 * statement (e.g. MySQL's INSERT ... ON DUPLICATE KEY UPDATE).
 	 *
+	 * Like MySQL, the statement reports a row it inserted, a row it changed and
+	 * a colliding row it left as it was differently where the engine can tell
+	 * them apart; a dialect that can only report "one row written" for a
+	 * changed row at least reports nothing for an unchanged one.
+	 *
 	 * @param string $quotedTable Quoted physical table name.
 	 * @param string[] $columns Quoted column identifiers for the inserted row.
 	 * @param string[] $tuples VALUES groups, one per row.
-	 * @param string[] $updateAssignments "quoted column = value-reference" strings
-	 *                 (see {@see PlatformInterface::getUpsertValueReference()}).
+	 * @param array $updateAssignments quoted column => value expression for the
+	 *                 update, e.g. the inserted value as
+	 *                 {@see PlatformInterface::getUpsertValueReference()} spells it,
+	 *                 or a bound placeholder.
+	 * @param string[] $conflictColumns Quoted columns of the key the collision is
+	 *                 detected on; empty for "any primary or unique key", which a
+	 *                 dialect that needs a named key may refuse.
+	 * @param string $modifier '' or 'IGNORE', as in MySQL's INSERT IGNORE ... ON DUPLICATE KEY UPDATE.
 	 * @return string SQL statement.
+	 * @throws UnsupportedException when the dialect needs a key and none is given, or cannot honour the modifier.
 	 */
-	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments);
+	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments, array $conflictColumns = array(), $modifier = '');
 
 	/**
 	 * How this dialect refers, in the upsert UPDATE list, to the value that was
@@ -119,6 +140,138 @@ interface PlatformInterface
 	 * @return string
 	 */
 	public function getUpsertValueReference($quotedColumn);
+
+	/**
+	 * Build an UPDATE, optionally limited to a number of rows.
+	 *
+	 * @param string $quotedTable Quoted physical table name.
+	 * @param array $assignments quoted column => value expression.
+	 * @param string $where compiled ' WHERE ...' clause with its leading space, or ''.
+	 * @param int|null $limit maximum rows to change, or null for every matching row.
+	 * @return string SQL statement.
+	 * @throws UnsupportedException when the dialect cannot limit an UPDATE.
+	 */
+	public function compileUpdate($quotedTable, array $assignments, $where, $limit = null);
+
+	/**
+	 * Build a DELETE, optionally limited to a number of rows.
+	 *
+	 * @param string $quotedTable Quoted physical table name.
+	 * @param string $where compiled ' WHERE ...' clause with its leading space, or ''.
+	 * @param int|null $limit maximum rows to delete, or null for every matching row.
+	 * @return string SQL statement.
+	 * @throws UnsupportedException when the dialect cannot limit a DELETE.
+	 */
+	public function compileDelete($quotedTable, $where, $limit = null);
+
+	/**
+	 * Build an UPDATE that numbers the rows whose $quotedColumn is above a
+	 * threshold, one step apart: the first becomes start + step, the next
+	 * start + 2 * step, and so on, taken in order of $quotedColumn and then
+	 * $quotedKey (MySQL takes them in the order it reads them).
+	 *
+	 * @param string $quotedTable Quoted physical table name.
+	 * @param string $quotedColumn Quoted column to renumber.
+	 * @param string $quotedKey Quoted column that tells the rows apart, normally the primary key.
+	 * @param string $startPlaceholder Bound parameter holding the number to count on from.
+	 * @param string $stepPlaceholder Bound parameter holding the step.
+	 * @param string $thresholdPlaceholder Bound parameter holding the value a row's column must be above.
+	 * @return string SQL statement.
+	 */
+	public function compileRenumber($quotedTable, $quotedColumn, $quotedKey, $startPlaceholder, $stepPlaceholder, $thresholdPlaceholder);
+
+	/**
+	 * Test whether a value is one of the comma-separated values stored in a
+	 * column, e107's userclass-membership idiom (MySQL's FIND_IN_SET).
+	 *
+	 * @param string $needle SQL for the value sought: a bound parameter, or a literal quoted by {@see ConnectionInterface::quoteStringLiteral()}
+	 * @param string $quotedColumn Quoted column holding the comma-separated set.
+	 * @return string predicate: the 1-based position, 0 when absent or when the needle holds a comma
+	 */
+	public function compileFindInSet($needle, $quotedColumn);
+
+	/**
+	 * The statement that shows how the engine would run a query, for the debug
+	 * panel: its plan, one row per step.
+	 *
+	 * @param string $statement a SELECT
+	 * @return string
+	 */
+	public function compileExplain($statement);
+
+	/**
+	 * Join strings end to end (MySQL's CONCAT(), standard SQL's ||). The result
+	 * is NULL where any part is.
+	 *
+	 * @param string[] $expressions SQL expressions: quoted columns, placeholders, literals.
+	 * @return string
+	 */
+	public function compileConcat(array $expressions);
+
+	/**
+	 * The part of a string before the first occurrence of a delimiter, or the
+	 * whole string where there is none (MySQL's SUBSTRING_INDEX(str, delim, 1)).
+	 *
+	 * @param string $expression SQL expression, e.g. a quoted column.
+	 * @param string $delimiter SQL expression for the delimiter, e.g. a quoted string literal.
+	 * @return string
+	 */
+	public function compileSubstringBefore($expression, $delimiter);
+
+	/**
+	 * An expression for a comma-separated set column with one item taken out,
+	 * every whole occurrence of it, the commas at either end trimmed; the
+	 * counterpart to {@see PlatformInterface::compileFindInSet()}.
+	 *
+	 * @param string $quotedColumn Quoted column identifier.
+	 * @param string $placeholder Bound parameter holding the item.
+	 * @return string
+	 */
+	public function compileRemoveFromSet($quotedColumn, $placeholder);
+
+	/**
+	 * The clause, with its leading space, that makes a backslash escape '%', '_'
+	 * and itself in the LIKE pattern before it; '' where that is the default.
+	 *
+	 * @return string
+	 */
+	public function getLikeEscapeClause();
+
+	/**
+	 * Text LIKE matches literally, for a pattern built around it under {@see PlatformInterface::getLikeEscapeClause()}.
+	 *
+	 * @param string $value
+	 * @return string $value with '%', '_' and the backslash escaped
+	 */
+	public function quoteLikeLiteral($value);
+
+	/**
+	 * A LIKE that tells upper from lower case (MySQL's LIKE BINARY), with % and _
+	 * as wildcards and a backslash escaping them, as in LIKE.
+	 *
+	 * @param string $quotedColumn Quoted column identifier.
+	 * @param string $placeholder Bound parameter holding the pattern.
+	 * @return string
+	 */
+	public function compileCaseSensitiveLike($quotedColumn, $placeholder);
+
+	/**
+	 * The statement that starts a table's auto-increment counter again from the
+	 * highest value in use, run after an upsert updated a row, for engines that
+	 * spend a value on every collision (MySQL), or null for none.
+	 *
+	 * @param string $quotedTable Quoted (or bare) physical table name.
+	 * @return string|null
+	 */
+	public function compileAutoIncrementReset($quotedTable);
+
+	/**
+	 * Whether {@see PlatformInterface::compileAutoIncrementReset()}'s statement runs on any table, as MySQL's does,
+	 * rather than only on one with an auto-increment column.
+	 *
+	 * @return bool
+	 */
+	public function resetsAutoIncrementOnAnyTable();
 
 	/**
 	 * Trailing clause that takes an exclusive write lock on the selected rows
@@ -194,14 +347,21 @@ interface PlatformInterface
 	public function compileJsonLength($quotedColumn);
 
 	/**
-	 * Build a full-text search predicate over one or more columns (e.g. MySQL's
-	 * MATCH (...) AGAINST (...)).
+	 * Build a full-text search over one or more columns (e.g. MySQL's MATCH (...)
+	 * AGAINST (...)): an expression whose value is the row's relevance, greater
+	 * than 0 where the row matches, so it serves as a predicate and as a score.
+	 *
+	 * In boolean mode the terms carry MySQL's boolean operators: '+word' must
+	 * appear, '-word' must not, 'word*' matches a prefix and '"a phrase"' the
+	 * words together. Otherwise each word adds relevance and the operators are
+	 * only punctuation.
 	 *
 	 * @param string[] $quotedColumns Quoted column identifiers.
 	 * @param string $placeholder Bound parameter holding the search terms.
+	 * @param bool $booleanMode Whether the terms carry boolean operators.
 	 * @return string
 	 */
-	public function compileFullText(array $quotedColumns, $placeholder);
+	public function compileFullText(array $quotedColumns, $placeholder, $booleanMode = false);
 
 	/**
 	 * Build a string-aggregation expression (e.g. MySQL's GROUP_CONCAT,
@@ -262,6 +422,13 @@ interface PlatformInterface
 	public function compileOptimizeTable(array $quotedTables);
 
 	/**
+	 * Whether {@see PlatformInterface::compileOptimizeTable()} rebuilds the whole database, whichever tables it names.
+	 *
+	 * @return bool
+	 */
+	public function optimizesWholeDatabase();
+
+	/**
 	 * Build a CREATE DATABASE statement. The database identifier arrives quoted
 	 * and the character set already validated. Engines without the concept throw
 	 * {@see UnsupportedException}.
@@ -296,4 +463,70 @@ interface PlatformInterface
 	 * @throws UnsupportedException when the platform has no grant system.
 	 */
 	public function compileFlushPrivileges();
+
+	/**
+	 * Whether tables carry a storage engine (MySQL's ENGINE=).
+	 *
+	 * @return bool
+	 */
+	public function supportsStorageEngines();
+
+	/**
+	 * Whether tables and columns carry a character set of their own.
+	 *
+	 * @return bool
+	 */
+	public function supportsCharsets();
+
+	/**
+	 * Whether a SELECT can ask the engine to count the rows it would have returned
+	 * without its LIMIT (MySQL's SQL_CALC_FOUND_ROWS / FOUND_ROWS()).
+	 *
+	 * @return bool
+	 */
+	public function supportsFoundRows();
+
+	/**
+	 * Whether a table can carry a FULLTEXT index for {@see PlatformInterface::compileFullText()}.
+	 *
+	 * @return bool
+	 */
+	public function supportsFullTextIndexes();
+
+	/**
+	 * Whether DDL runs inside a transaction and rolls back with it, rather than
+	 * committing implicitly as MySQL's does.
+	 *
+	 * @return bool
+	 */
+	public function supportsTransactionalDdl();
+
+	/**
+	 * Whether inserting 0 (or '') into an auto-increment column assigns the next
+	 * value, as MySQL does unless NO_AUTO_VALUE_ON_ZERO is set, rather than
+	 * storing 0.
+	 *
+	 * @return bool
+	 */
+	public function assignsAutoIncrementOnZero();
+
+	/**
+	 * Whether a write that settles a key conflict counts the conflicting row on
+	 * top of its insert, as MySQL does: an ON DUPLICATE KEY UPDATE that updates
+	 * reports 2, a REPLACE that replaces reports 2 or more. Where it does not,
+	 * the affected-row count cannot tell an insert from an update or a
+	 * replacement.
+	 *
+	 * @return bool
+	 */
+	public function countsConflictingRows();
+
+	/**
+	 * Whether an insert into a table without an auto-increment column still sets
+	 * the connection's last insert id, as SQLite does with the rowid every table
+	 * has. MySQL leaves it at 0 for such a table.
+	 *
+	 * @return bool
+	 */
+	public function reportsInsertIdForEveryTable();
 }

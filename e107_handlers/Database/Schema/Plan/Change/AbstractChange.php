@@ -68,6 +68,17 @@ abstract class AbstractChange implements ChangeInterface
 	}
 
 	/**
+	 * Compiled statements in the shape {@see ChangeInterface::toSql()} returns: a lone statement as a string.
+	 *
+	 * @param string[] $statements
+	 * @return string|string[]
+	 */
+	protected static function rendered(array $statements)
+	{
+		return (count($statements) === 1) ? reset($statements) : $statements;
+	}
+
+	/**
 	 * A definition the server itself wrote, as a vouched fragment ready to be
 	 * spliced into a statement.
 	 *

@@ -20,7 +20,8 @@ interface EngineCharsetResolverInterface
 	/**
 	 * @param DeclaredTable $table
 	 * @param TableSchema|null $live the table as it stands, when it exists
-	 * @return array ['engine' => string, 'charset' => string], both non-empty
+	 * @return array ['engine' => string, 'charset' => string], each non-empty where the platform has storage
+	 *               engines or character sets, and '' where it has none
 	 */
 	public function resolve(DeclaredTable $table, $live = null);
 }

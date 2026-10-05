@@ -709,7 +709,7 @@ class e_news_item extends e_front_model
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_id={$id} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
-		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
+		AND n.news_start < ".time()." AND (n.news_end=0 OR n.news_end>".time().")";
 
 		$this->setParam('db_query', $query);
 
@@ -859,7 +859,7 @@ class e_news_tree extends e_front_tree_model
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$time = time();
 		
-		$where .= ($where ? ' AND ' : '')."n.news_start < {$time} AND (n.news_end=0 || n.news_end>{$time})
+		$where .= ($where ? ' AND ' : '')."n.news_start < {$time} AND (n.news_end=0 OR n.news_end>{$time})
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		";
 		
@@ -1137,7 +1137,7 @@ class e_news_category_tree extends e_front_tree_model
 			SELECT COUNT(n.news_id) AS category_news_count, nc.* FROM #news_category AS nc
 			LEFT JOIN #news AS n ON n.news_category=nc.category_id
 			WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
-				AND n.news_start < ".$time." AND (n.news_end=0 || n.news_end>".$time.")
+				AND n.news_start < ".$time." AND (n.news_end=0 OR n.news_end>".$time.")
 			GROUP BY nc.category_id
 			ORDER BY nc.category_order ASC
 			";

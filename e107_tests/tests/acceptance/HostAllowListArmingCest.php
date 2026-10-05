@@ -383,12 +383,32 @@ echo 'PROBE_REACHED'
  */
 function host_arming_prefs($value = null)
 {
-	mysqli_report(MYSQLI_REPORT_OFF);
-
 	$config = include __DIR__.'/e107_config.php';
 	$database = is_array($config) && isset($config['database']) ? $config['database'] : array(
 		'server' => $mySQLserver, 'user' => $mySQLuser, 'password' => $mySQLpassword,
 		'db' => $mySQLdefaultdb, 'prefix' => $mySQLprefix);
+
+	$result = (isset($database['driver']) && $database['driver'] === 'sqlite')
+		? host_arming_prefs_sqlite($database, $value)
+		: host_arming_prefs_mysql($database, $value);
+
+	if($value !== null)
+	{
+		// e_pref serves this row out of the system cache for a day, so a row put
+		// back while the cache stands is a row the next request does not read.
+		$system = isset($config['paths']['system']) ? $config['paths']['system'] : 'e107_system/';
+		foreach(glob(__DIR__.'/'.$system.'*/cache/content/S_Config_*.cache.php') ?: array() as $cached)
+		{
+			@unlink($cached);
+		}
+	}
+
+	return $result;
+}
+
+function host_arming_prefs_mysql(array $database, $value)
+{
+	mysqli_report(MYSQLI_REPORT_OFF);
 
 	$server = $database['server'];
 	$port = null;
@@ -426,20 +446,43 @@ function host_arming_prefs($value = null)
 	{
 		$statement->bind_param('ss', $value, $name);
 		$result = $statement->execute();
-
-		// e_pref serves this row out of the system cache for a day, so a row put
-		// back while the cache stands is a row the next request does not read.
-		$system = isset($config['paths']['system']) ? $config['paths']['system'] : 'e107_system/';
-		foreach(glob(__DIR__.'/'.$system.'*/cache/content/S_Config_*.cache.php') ?: array() as $cached)
-		{
-			@unlink($cached);
-		}
 	}
 
 	$statement->close();
 	$link->close();
 
 	return $result;
+}
+
+function host_arming_prefs_sqlite(array $database, $value)
+{
+	$file = (substr($database['db'], 0, 1) === '/') ? $database['db'] : __DIR__.'/'.$database['db'];
+	if(!is_file($file))
+	{
+		return false;
+	}
+
+	$table = '"'.str_replace('"', '""', $database['prefix'].'core').'"';
+
+	try
+	{
+		$pdo = new PDO('sqlite:'.$file, null, null, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+		$pdo->exec('PRAGMA busy_timeout = 10000');
+
+		if($value === null)
+		{
+			$statement = $pdo->prepare('SELECT e107_value FROM '.$table.' WHERE e107_name = ?');
+			$statement->execute(array('SitePrefs'));
+
+			return (string) $statement->fetchColumn();
+		}
+
+		return $pdo->prepare('UPDATE '.$table.' SET e107_value = ? WHERE e107_name = ?')->execute(array($value, 'SitePrefs'));
+	}
+	catch(PDOException $e)
+	{
+		return false;
+	}
 }
 PHP
 		);

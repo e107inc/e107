@@ -68,6 +68,39 @@ class PluginNewsTest extends \Test\Unit
 		);
 	}
 
+	public function testNewsGridMenuTemplateSourceListsTheItemsRenderedInTheGrid()
+	{
+		$ids = array();
+
+		foreach(array('gridded' => '0,6', 'listed' => '0', 'sixteenth' => '16') as $name => $renderType)
+		{
+			$ids[] = (int) e107::getDb()->createQueryBuilder()->insert('news')->insertGetId(array(
+				'news_title'            => 'render type probe '.$name,
+				'news_body'             => '',
+				'news_extended'         => '',
+				'news_meta_description' => '',
+				'news_summary'          => '',
+				'news_thumbnail'        => '',
+				'news_datestamp'        => time(),
+				'news_class'            => '0',
+				'news_render_type'      => $renderType,
+			));
+		}
+
+		try
+		{
+			$grid = $this->renderNewsGrid(array('source' => 'template', 'count' => 50));
+
+			$this->assertStringContainsString('render type probe gridded', $grid);
+			$this->assertStringNotContainsString('render type probe listed', $grid);
+			$this->assertStringNotContainsString('render type probe sixteenth', $grid);
+		}
+		finally
+		{
+			e107::getDb()->createQueryBuilder()->delete('news')->whereIn('news_id', $ids)->execute();
+		}
+	}
+
 	public function testNewsFrontCategoryUrl()
 	{
 		$payload = $this->simulateShowNewsItem();

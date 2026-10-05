@@ -11,6 +11,7 @@
 namespace e107\Database\Schema;
 
 use e107\Database\ConnectionInterface;
+use e107\Database\Exception\QueryException;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\SqlFragment;
 use InvalidArgumentException;
@@ -35,14 +36,50 @@ trait SchemaBuilderTrait
 	protected $platform;
 
 	/**
-	 * Resolve a logical e107 table name to its quoted physical name (prefix and
-	 * language routing applied), fail-closed.
+	 * Run compiled DDL. A single statement's result is the connection's own;
+	 * several run in one transaction, so all take effect or none does.
+	 *
+	 * @param string[] $statements
+	 * @return int|bool the {@see ConnectionInterface::execute()} result of a single statement; for several (or none), whether they all ran.
+	 */
+	protected function runStatements(array $statements)
+	{
+		if(count($statements) === 1)
+		{
+			return $this->db->execute(reset($statements));
+		}
+
+		$db = $this->db;
+
+		try
+		{
+			return $db->transactional(function() use ($db, $statements)
+			{
+				foreach($statements as $sql)
+				{
+					if($db->execute($sql) === false)
+					{
+						throw new QueryException($db->getLastErrorText());
+					}
+				}
+
+				return true;
+			});
+		}
+		catch(QueryException $e)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Resolve a logical table name to its physical name, with multi-language routing, fail-closed.
 	 *
 	 * @param string $table
-	 * @return string backtick-quoted physical name
+	 * @return string unquoted physical name
 	 * @throws InvalidArgumentException on an invalid table name.
 	 */
-	protected function quoteTable($table)
+	protected function resolveTable($table)
 	{
 		$physical = $this->db->resolveTableName($table);
 
@@ -51,19 +88,17 @@ trait SchemaBuilderTrait
 			throw new InvalidArgumentException('Invalid table name "'.$table.'" for a schema operation.');
 		}
 
-		return '`'.$physical.'`';
+		return $physical;
 	}
 
 	/**
-	 * Resolve a logical table name to its quoted physical name applying the
-	 * prefix only, fail-closed, with no multi-language lan_* routing (see
-	 * {@see ConnectionInterface::resolvePhysicalTableName()}).
+	 * Resolve a logical table name to its physical name, prefix only, fail-closed.
 	 *
 	 * @param string $table
-	 * @return string backtick-quoted physical name
+	 * @return string unquoted physical name
 	 * @throws InvalidArgumentException on an invalid table name.
 	 */
-	protected function quotePhysicalTable($table)
+	protected function resolvePhysicalTable($table)
 	{
 		$physical = $this->db->resolvePhysicalTableName($table);
 
@@ -72,7 +107,7 @@ trait SchemaBuilderTrait
 			throw new InvalidArgumentException('Invalid table name "'.$table.'" for a schema operation.');
 		}
 
-		return '`'.$physical.'`';
+		return $physical;
 	}
 
 	/**
@@ -110,7 +145,7 @@ trait SchemaBuilderTrait
 			throw new InvalidArgumentException('Invalid '.$what.' "'.$name.'" for a schema operation.');
 		}
 
-		return '`'.$name.'`';
+		return $this->platform->quoteIdentifier($name);
 	}
 
 	/**

@@ -3,6 +3,7 @@
 namespace e107\Database;
 
 use e107;
+use e107\Database\Driver\DriverInterface;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\Schema\Column;
 use e107\Database\Schema\Index;
@@ -52,9 +53,8 @@ use PDOStatement;
 	 * {@see ConnectionInterface::copyTable()}, {@see ConnectionInterface::field()}, {@see ConnectionInterface::fields()} and
 	 * {@see ConnectionInterface::index()}.
 	 *
-	 * The whole contract runs against both backends in
-	 * {@see \e_db_abstractTest}, whose test methods double as working examples
-	 * of every method here.
+	 * Ask {@see ConnectionInterface::getPlatform()} how the engine spells SQL
+	 * and what it can do, rather than testing the driver's name.
 	 */
 
 
@@ -71,6 +71,19 @@ use PDOStatement;
 		const PARAM_STR  = 2;
 		const PARAM_LOB  = 3;
 		const PARAM_BOOL = 5;
+
+		/**
+		 * e107's error codes for {@see ConnectionInterface::getLastErrorNumber()}: MySQL's numbers, on every engine.
+		 */
+		const ERROR_NOT_NULL           = 1048;
+		const ERROR_UNKNOWN_DATABASE   = 1049;
+		const ERROR_TABLE_EXISTS       = 1050;
+		const ERROR_NO_SUCH_COLUMN     = 1054;
+		const ERROR_DUPLICATE_COLUMN   = 1060;
+		const ERROR_DUPLICATE_KEY_NAME = 1061;
+		const ERROR_DUPLICATE_KEY      = 1062;
+		const ERROR_SYNTAX             = 1064;
+		const ERROR_NO_SUCH_TABLE      = 1146;
 
 		/**
 		 * Connect ONLY  - used in v2.x
@@ -304,7 +317,8 @@ use PDOStatement;
 		 * @param string $sql SQL with optional `#table` markers and :named placeholders
 		 * @param array $params name => value, or name => array('value' => mixed, 'type' => ConnectionInterface::PARAM_*)
 		 * @return int|bool row count for result sets (read rows with {@see ConnectionInterface::fetch()});
-		 *                  affected rows for DELETE/INSERT/REPLACE/UPDATE;
+		 *                  affected rows for DELETE/INSERT/REPLACE/UPDATE, an UPDATE counting the
+		 *                  rows it changed on MySQL and the rows it matched on SQLite;
 		 *                  true for other successful statements; false on error
 		 */
 		public function execute($sql, $params = array());
@@ -459,6 +473,104 @@ use PDOStatement;
 
 
 		/**
+		 * The engine this connection talks to: e107_config.php's 'driver', or what {@see ConnectionInterface::useDriver()} chose.
+		 *
+		 * @return DriverInterface
+		 * @throws \InvalidArgumentException when the configured driver is not registered
+		 */
+		public function getDriver();
+
+
+		/**
+		 * Talk to another engine than the configured one; call it before {@see ConnectionInterface::connect()}.
+		 *
+		 * @param string|DriverInterface $driver a {@see \e107\Database\Driver\DriverRegistry} name or a driver
+		 * @return $this
+		 * @throws \InvalidArgumentException when no driver is registered under the name
+		 * @throws \e107\Database\Exception\UnsupportedException when this backend cannot drive the engine
+		 */
+		public function useDriver($driver);
+
+
+		/**
+		 * Lists, describes and changes tables on this connection, in its engine's terms.
+		 *
+		 * @return \e107\Database\Schema\SchemaManagerInterface
+		 */
+		public function getSchemaManager();
+
+
+		/**
+		 * The column of a table that takes an auto-increment value, read once per table and request.
+		 *
+		 * @param string $table logical table name; multi-language routing applies
+		 * @return string|null the column name, or null when the table has none or does not exist
+		 * @throws \e107\Database\Exception\QueryException when the engine cannot be asked
+		 * @throws \InvalidArgumentException when the engine describes a shape the schema model cannot hold
+		 */
+		public function getAutoIncrementColumn($table);
+
+
+		/**
+		 * Open a transaction, or a savepoint inside an open one; MySQL commits implicitly at any DDL statement.
+		 *
+		 * @return bool false, with the reason as the last error, when the engine refuses or has already ended the enclosing transaction
+		 */
+		public function beginTransaction();
+
+
+		/**
+		 * Commit the innermost open transaction, or release its savepoint when it is nested.
+		 *
+		 * @return bool false, with the reason as the last error, when nothing is open or the engine refuses
+		 */
+		public function commit();
+
+
+		/**
+		 * Roll back the innermost open transaction, or back to its savepoint when it is nested.
+		 *
+		 * @return bool false, with the reason as the last error, when nothing is open or the engine refuses
+		 */
+		public function rollBack();
+
+
+		/**
+		 * @return bool whether a transaction opened through this connection is still open
+		 */
+		public function inTransaction();
+
+
+		/**
+		 * Run a callback in a transaction, or a savepoint inside one, rolling back and rethrowing when it throws.
+		 *
+		 * @param callable $callback receives this connection
+		 * @return mixed whatever the callback returned
+		 * @throws \e107\Database\Exception\QueryException when the transaction cannot be opened or committed
+		 */
+		public function transactional($callback);
+
+
+		/**
+		 * Take a named advisory lock until it is released or the connection ends; every site on the server shares names.
+		 *
+		 * @param string $name
+		 * @param int $timeout seconds; 0 fails at once when the lock is held
+		 * @return bool|null true when taken, false when held elsewhere, null when the engine did not say
+		 */
+		public function acquireLock($name, $timeout = 0);
+
+
+		/**
+		 * Give back a lock taken with {@see ConnectionInterface::acquireLock()}.
+		 *
+		 * @param string $name
+		 * @return bool
+		 */
+		public function releaseLock($name);
+
+
+		/**
 		 * Apply the e107 field-type STORAGE transform to a value, returning what
 		 * the deprecated array-form {@see ConnectionInterface::insert()}/{@see ConnectionInterface::update()}
 		 * would bind for that token. Shared with {@see QueryBuilder::setTyped()} and
@@ -607,7 +719,9 @@ use PDOStatement;
 		 * @param bool         $debug
 		 * @param string       $log_type
 		 * @param string       $log_remark
-		 * @return int|false number of affected rows, or false on error
+		 * @return int|false number of rows changed, or false on error. Text the dialects read
+		 *         differently, or with a comment or an ORDER BY, runs as written, and SQLite
+		 *         then counts the rows it matched.
 		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
 		 *             <code>
 		 *             $qb = e107::getDb()->createQueryBuilder();
@@ -640,7 +754,8 @@ use PDOStatement;
 
 		/**
 		 * Total number of results of the last query regardless of its LIMIT,
-		 * when that query used SELECT SQL_CALC_FOUND_ROWS.
+		 * when that query used SELECT SQL_CALC_FOUND_ROWS; on every engine, use
+		 * {@see QueryBuilder::calcFoundRows()}.
 		 *
 		 * @return int|false the total, or false when none was captured
 		 */

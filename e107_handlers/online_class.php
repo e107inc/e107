@@ -10,8 +10,6 @@
  *
 */
 
-use e107\Database\SqlFragment;
-
 /**
  *	@package    e107
  *	@subpackage	e107_handlers
@@ -484,8 +482,10 @@ class e_online
 		if($debug === true)
 		{
 			//print_a($this->users);
-			return e107::getDb()->createQueryBuilder()
-				->select('user_id', 'user_name', 'user_image')->selectLiteral(1, 'user_active')->addSelect(SqlFragment::raw('CONCAT_WS(".",user_id,user_name) as online_user_id'))
+			$qb = e107::getDb()->createQueryBuilder();
+
+			return $qb
+				->select('user_id', 'user_name', 'user_image')->selectLiteral(1, 'user_active')->selectAs($qb->expr()->concat('user_id', $qb->expr()->value('.'), 'user_name'), 'online_user_id')
 				->from('user')
 				->setMaxResults(7)
 				->fetchAll();

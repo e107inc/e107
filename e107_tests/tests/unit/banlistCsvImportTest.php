@@ -35,9 +35,6 @@ class banlistCsvImportTest extends \Test\Unit
 	/** @var eIPHandler|null the singleton as found, put back in _after() where a test stood in front of it */
 	private $savedIpHandler = null;
 
-	/** @var int the session the importer speaks on, read in _before() where no run is part-way through a result set */
-	private $importerConnectionId = 0;
-
 	/** @var bool whether the probe took the lock and still owes it back */
 	private $probeHoldsLock = false;
 
@@ -51,7 +48,6 @@ class banlistCsvImportTest extends \Test\Unit
 
 		$this->mgr = new banlistManager();
 		$this->savedDurations = e107::getConfig()->get('ban_durations');
-		$this->importerConnectionId = $this->connectionId(e107::getDb());
 	}
 
 	protected function _after()
@@ -151,13 +147,8 @@ class banlistCsvImportTest extends \Test\Unit
 		if($this->lockProbe === null)
 		{
 			$this->lockProbe = e107::getDb('banlistReplaceLockProbe');
-			$probeConnectionId = $this->connectionId($this->lockProbe);
 
-			self::assertGreaterThan(0, $this->importerConnectionId,
-				'a connection that cannot name its own session answers every question with a zero, and two of those look identical');
-			self::assertGreaterThan(0, $probeConnectionId,
-				'the same for the probe, which would otherwise prove nothing by matching nothing');
-			self::assertNotSame($this->importerConnectionId, $probeConnectionId,
+			self::assertNotSame(e107::getDb(), $this->lockProbe,
 				'a probe sharing the importer connection would re-take the lock rather than block it, and prove nothing');
 		}
 
@@ -165,12 +156,12 @@ class banlistCsvImportTest extends \Test\Unit
 	}
 
 	/**
-	 * @return int 1 where the probe took the lock, 0 where a run already holds it, -1 where the server did not say
+	 * @return int 1 where the probe took the lock, 0 where a run already holds it, -1 where the engine did not say
 	 */
 	private function probeAsksForTheLock()
 	{
-		$row = $this->lockQuery($this->probeDb(), 'SELECT GET_LOCK(:name, 0) AS locked');
-		$locked = isset($row['locked']) ? (int) $row['locked'] : -1;
+		$taken = $this->probeDb()->acquireLock($this->lockName(), 0);
+		$locked = ($taken === null) ? -1 : (int) $taken;
 
 		if($locked === 1)
 		{
@@ -198,6 +189,16 @@ class banlistCsvImportTest extends \Test\Unit
 	{
 		self::assertSame(1, $this->probeAsksForTheLock(),
 			'the standing run has to hold the lock before the second import is asked for');
+
+		$importerTook = e107::getDb()->acquireLock($this->lockName(), 0);
+
+		if($importerTook)
+		{
+			e107::getDb()->releaseLock($this->lockName());
+		}
+
+		self::assertFalse($importerTook,
+			'the importer\'s own connection has to be shut out by the probe, or the two share a session and the test proves nothing');
 	}
 
 	private function releaseProbeLock()
@@ -208,9 +209,8 @@ class banlistCsvImportTest extends \Test\Unit
 		}
 
 		$this->probeHoldsLock = false;
-		$row = $this->lockQuery($this->lockProbe, 'SELECT RELEASE_LOCK(:name) AS released');
 
-		self::assertSame(1, isset($row['released']) ? (int) $row['released'] : -1,
+		self::assertTrue($this->lockProbe->releaseLock($this->lockName()),
 			'the probe has to give the lock back, or a later test in this class fails for a reason that names nothing about itself');
 	}
 
@@ -241,36 +241,12 @@ class banlistCsvImportTest extends \Test\Unit
 	}
 
 	/**
-	 * @param e_db $db handle to run it on
-	 * @param string $statement SQL naming the lock as :name
-	 * @return array|false the row it answers with
-	 */
-	private function lockQuery($db, $statement)
-	{
-		$db->execute($statement, array('name' => $this->lockName()));
-
-		return $db->fetch();
-	}
-
-	/**
 	 * @return string the name the importer derives, restated here so these tests still reach their own assertions against an importer that takes no lock at all
 	 */
 	private function lockName()
 	{
 		return 'e107_banlist_replace_import_'
 			. md5(e107::getMySQLConfig('defaultdb').'/'.e107::getMySQLConfig('prefix'));
-	}
-
-	/**
-	 * @param e_db $db
-	 * @return int the server-side connection this handle speaks on
-	 */
-	private function connectionId($db)
-	{
-		$db->execute('SELECT CONNECTION_ID() AS id');
-		$row = $db->fetch();
-
-		return is_array($row) ? (int) $row['id'] : 0;
 	}
 
 	public function testImportRoundTripsTheExportFormat()
@@ -396,8 +372,8 @@ class banlistCsvImportTest extends \Test\Unit
 			'and writes none of its own, so the file can be imported again as it stands');
 		self::assertSame(BANLAN_IMPORT_REPLACE_BUSY, $result['fatal'],
 			'the second replace-import is refused and told why, rather than snapshotting rows the first run is still writing');
-		self::assertSame(1, $queriesDuring,
-			'one statement runs in that window and it is the lock: the run asks before it reads, where a run that snapshots first is the run that deletes rows the standing one has just written');
+		self::assertLessThanOrEqual(1, $queriesDuring,
+			'at most one statement runs in that window and it is the lock, where the engine takes it with a statement at all: the run asks before it reads, where a run that snapshots first is the run that deletes rows the standing one has just written');
 	}
 
 	public function testTheReplaceLockIsStillHeldWhenTheReplacedRowsHaveGone()

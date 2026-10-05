@@ -10,8 +10,6 @@
  *
 */
 
-use e107\Database\SqlFragment;
-
 if(isset($_POST['chatbox_ajax']))
 {
 	define('e_MINIMAL', true);
@@ -281,9 +279,10 @@ if(!$text = e107::getCache()->retrieve('nq_chatbox'))
 
 	$sc = e107::getScBatch('chatbox_menu', true);
 
-	$cbpost = $sql->createQueryBuilder()
+	$qb = $sql->createQueryBuilder();
+	$cbpost = $qb
 		->select('c.*', 'u.user_name', 'u.user_image')->from('chatbox', 'c')
-		->leftJoin('user', 'u', SqlFragment::raw("SUBSTRING_INDEX(c.cb_nick, '.', 1) = u.user_id"))
+		->leftJoin('user', 'u', $qb->expr()->compareColumns($qb->expr()->substringBefore('c.cb_nick', '.'), 'u.user_id'))
 		->orderBy('c.cb_datestamp', 'DESC')
 		->setFirstResult(0)->setMaxResults((int) $chatbox_posts)
 		->fetchAll();

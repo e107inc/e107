@@ -91,7 +91,7 @@ class ExpressionBuilder
 	/**
 	 * `column` = :value
 	 *
-	 * @param string $column
+	 * @param string|SqlFragment $column
 	 * @param mixed $value
 	 * @return SqlFragment
 	 * @throws InvalidArgumentException when the column name fails validation.
@@ -104,7 +104,7 @@ class ExpressionBuilder
 	/**
 	 * `column` <> :value
 	 *
-	 * @param string $column
+	 * @param string|SqlFragment $column
 	 * @param mixed $value
 	 * @return SqlFragment
 	 */
@@ -116,7 +116,7 @@ class ExpressionBuilder
 	/**
 	 * `column` < :value
 	 *
-	 * @param string $column
+	 * @param string|SqlFragment $column
 	 * @param mixed $value
 	 * @return SqlFragment
 	 */
@@ -128,7 +128,7 @@ class ExpressionBuilder
 	/**
 	 * `column` <= :value
 	 *
-	 * @param string $column
+	 * @param string|SqlFragment $column
 	 * @param mixed $value
 	 * @return SqlFragment
 	 */
@@ -140,7 +140,7 @@ class ExpressionBuilder
 	/**
 	 * `column` > :value
 	 *
-	 * @param string $column
+	 * @param string|SqlFragment $column
 	 * @param mixed $value
 	 * @return SqlFragment
 	 */
@@ -152,7 +152,7 @@ class ExpressionBuilder
 	/**
 	 * `column` >= :value
 	 *
-	 * @param string $column
+	 * @param string|SqlFragment $column
 	 * @param mixed $value
 	 * @return SqlFragment
 	 */
@@ -195,7 +195,8 @@ class ExpressionBuilder
 
 	/**
 	 * `column` LIKE :pattern, with $pattern bound verbatim: the caller
-	 * controls the % and _ wildcards. For matching plain substrings, use
+	 * controls the % and _ wildcards, and a backslash escapes the character
+	 * after it on every engine. For matching plain substrings, use
 	 * {@see ExpressionBuilder::contains()} instead.
 	 *
 	 * <code>
@@ -203,13 +204,29 @@ class ExpressionBuilder
 	 * // `user_email` LIKE :qb1
 	 * </code>
 	 *
-	 * @param string $column
+	 * @param string|SqlFragment $column a column name, or an expression this builder made
 	 * @param string $pattern
 	 * @return SqlFragment
 	 */
 	public function like($column, $pattern)
 	{
-		return $this->_comparison($column, 'LIKE', $pattern);
+		return $this->_escapedLike($column, $pattern);
+	}
+
+	/**
+	 * A LIKE that tells upper from lower case (`column` LIKE BINARY :pattern on
+	 * MySQL), with % and _ as wildcards and a backslash escaping them.
+	 *
+	 * @param string $column
+	 * @param string $pattern bound
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	public function likeCaseSensitive($column, $pattern)
+	{
+		$placeholder = $this->qb->createNamedParameter($pattern);
+
+		return SqlFragment::fragment($this->qb->getPlatform()->compileCaseSensitiveLike($this->qb->quoteColumn($column), $placeholder));
 	}
 
 	/**
@@ -223,7 +240,7 @@ class ExpressionBuilder
 	 */
 	public function contains($column, $value)
 	{
-		return $this->_comparison($column, 'LIKE', '%'.$this->_escapeLike($value).'%');
+		return $this->_escapedLike($column, '%'.$this->qb->getPlatform()->quoteLikeLiteral($value).'%');
 	}
 
 	/**
@@ -235,7 +252,7 @@ class ExpressionBuilder
 	 */
 	public function startsWith($column, $value)
 	{
-		return $this->_comparison($column, 'LIKE', $this->_escapeLike($value).'%');
+		return $this->_escapedLike($column, $this->qb->getPlatform()->quoteLikeLiteral($value).'%');
 	}
 
 	/**
@@ -247,7 +264,7 @@ class ExpressionBuilder
 	 */
 	public function endsWith($column, $value)
 	{
-		return $this->_comparison($column, 'LIKE', '%'.$this->_escapeLike($value));
+		return $this->_escapedLike($column, '%'.$this->qb->getPlatform()->quoteLikeLiteral($value));
 	}
 
 	/**
@@ -269,7 +286,7 @@ class ExpressionBuilder
 	}
 
 	/**
-	 * <code>FIND_IN_SET(:value, `column`)</code> - true when $value is one of
+	 * <code>FIND_IN_SET(:value, `column`)</code> on MySQL - true when $value is one of
 	 * the comma-separated values stored in $column. This is e107's recurring
 	 * userclass-membership idiom; the needle binds as one parameter and the
 	 * column validates fail-closed.
@@ -281,7 +298,175 @@ class ExpressionBuilder
 	 */
 	public function findInSet($column, $value)
 	{
-		return SqlFragment::fragment('FIND_IN_SET('.$this->qb->createNamedParameter($value).', '.$this->qb->quoteColumn($column).')');
+		$needle = $this->qb->createNamedParameter($value);
+
+		return SqlFragment::fragment($this->qb->getPlatform()->compileFindInSet($needle, $this->qb->quoteColumn($column)));
+	}
+
+	/**
+	 * True when the value in $needleColumn is one of the comma-separated values
+	 * stored in $column: {@see ExpressionBuilder::findInSet()} with a column for
+	 * the needle, e.g. to join the classes a member holds.
+	 *
+	 * <code>
+	 * $qb->leftJoin('user', 'u', $qb->expr()->findColumnInSet('u.user_class', 'uc.userclass_id'));
+	 * </code>
+	 *
+	 * @param string $column comma-separated SET column (the haystack)
+	 * @param string $needleColumn column holding the value searched for
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when a column name fails validation.
+	 */
+	public function findColumnInSet($column, $needleColumn)
+	{
+		return SqlFragment::fragment($this->qb->getPlatform()->compileFindInSet($this->qb->quoteColumn($needleColumn), $this->qb->quoteColumn($column)));
+	}
+
+	/**
+	 * A bound value, as an operand for the expressions that take one, such as
+	 * {@see ExpressionBuilder::concat()}.
+	 *
+	 * @param mixed $value
+	 * @return SqlFragment
+	 */
+	public function value($value)
+	{
+		return SqlFragment::fragment($this->qb->createNamedParameter($value));
+	}
+
+	/**
+	 * Strings joined end to end, NULL where any part is (CONCAT() on MySQL).
+	 * A string part is a column name; a value goes in through
+	 * {@see ExpressionBuilder::value()}.
+	 *
+	 * <code>
+	 * $qb->update('download')
+	 *     ->setExpression('download_image', $qb->expr()->concat($qb->expr()->value('{e_FILE}downloadimages/'), 'download_image'));
+	 * </code>
+	 *
+	 * @param string|SqlFragment ...$parts
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when a column name fails validation or no part is given.
+	 */
+	public function concat(...$parts)
+	{
+		if(count($parts) === 0)
+		{
+			throw new InvalidArgumentException('concat() needs at least one part.');
+		}
+
+		$expressions = array();
+
+		foreach($parts as $part)
+		{
+			$expressions[] = $this->_operand($part);
+		}
+
+		return SqlFragment::fragment($this->qb->getPlatform()->compileConcat($expressions));
+	}
+
+	/**
+	 * The part of $column's value before the first $delimiter, or all of it
+	 * where there is none (MySQL's SUBSTRING_INDEX(col, delim, 1)), e.g. the id
+	 * of an "id.name" pair. The delimiter is developer-authored and inlined as a
+	 * quoted string literal.
+	 *
+	 * <code>
+	 * $qb->leftJoin('user', 'u', $qb->expr()->compareColumns($qb->expr()->substringBefore('c.cb_nick', '.'), 'u.user_id'));
+	 * </code>
+	 *
+	 * @param string $column
+	 * @param string $delimiter
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	public function substringBefore($column, $delimiter)
+	{
+		return SqlFragment::fragment($this->qb->getPlatform()->compileSubstringBefore($this->qb->quoteColumn($column), $this->qb->quoteStringLiteral((string) $delimiter)));
+	}
+
+	/**
+	 * The comma-separated set in $column with $value taken out, for an UPDATE's
+	 * SET; the counterpart to {@see ExpressionBuilder::findInSet()}.
+	 *
+	 * <code>
+	 * $qb->update('user_extended')
+	 *     ->setExpression('user_plugin_forum_viewed', $qb->expr()->removeFromSet('user_plugin_forum_viewed', $threadId))
+	 *     ->where($qb->expr()->findInSet('user_plugin_forum_viewed', $threadId));
+	 * </code>
+	 *
+	 * @param string $column comma-separated set column
+	 * @param mixed $value the item to take out; bound
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	public function removeFromSet($column, $value)
+	{
+		$item = $this->qb->createNamedParameter($value);
+
+		return SqlFragment::fragment($this->qb->getPlatform()->compileRemoveFromSet($this->qb->quoteColumn($column), $item));
+	}
+
+	/**
+	 * A full-text match over one or more columns, above 0 where the row matches: a WHERE condition or a relevance score.
+	 *
+	 * <code>
+	 * $qb->where($qb->expr()->fullText(array('news_title', 'news_body'), '+e107 -beta', true));
+	 * // MATCH (`news_title`, `news_body`) AGAINST (:qb1 IN BOOLEAN MODE) on MySQL
+	 * </code>
+	 *
+	 * @param string|string[] $columns One column, or a list of columns.
+	 * @param string $terms Search terms.
+	 * @param bool $booleanMode Whether the terms carry MySQL's boolean operators (+word -word word* "phrase").
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when a column name fails validation.
+	 */
+	public function fullText($columns, $terms, $booleanMode = false)
+	{
+		$quoted = array();
+
+		foreach((array) $columns as $column)
+		{
+			$quoted[] = $this->qb->quoteColumn($column);
+		}
+
+		return SqlFragment::fragment($this->qb->getPlatform()->compileFullText($quoted, $this->qb->createNamedParameter($terms), (bool) $booleanMode));
+	}
+
+	/**
+	 * The expressions added up, each multiplied by its weight, e.g. a relevance score over several {@see ExpressionBuilder::fullText()} matches.
+	 *
+	 * <code>
+	 * $expr = $qb->expr();
+	 * $qb->selectAs($expr->weightedSum(array($expr->fullText('news_title', $terms), $expr->fullText('news_body', $terms)), array(1.2, 0.6)), 'relevance');
+	 * // ((:qb3 * (MATCH (`news_title`) AGAINST (:qb1))) + (:qb4 * (MATCH (`news_body`) AGAINST (:qb2)))) AS `relevance` on MySQL
+	 * </code>
+	 *
+	 * @param array $expressions column names, or expressions this builder made
+	 * @param array $weights the number each expression is multiplied by, under the same key; bound
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when there is no expression, one has no numeric weight, or a column name fails validation.
+	 */
+	public function weightedSum(array $expressions, array $weights)
+	{
+		if(count($expressions) === 0)
+		{
+			throw new InvalidArgumentException('weightedSum() needs at least one expression.');
+		}
+
+		$terms = array();
+
+		foreach($expressions as $key => $expression)
+		{
+			if(!isset($weights[$key]) || !is_numeric($weights[$key]))
+			{
+				throw new InvalidArgumentException('weightedSum() has no numeric weight for expression '.$key.'.');
+			}
+
+			$terms[] = '('.$this->qb->createNamedParameter($weights[$key]).' * ('.$this->_operand($expression).'))';
+		}
+
+		return SqlFragment::fragment('('.implode(' + ', $terms).')');
 	}
 
 	/**
@@ -317,7 +502,7 @@ class ExpressionBuilder
 	 * // `download_datestamp` >= :qb1
 	 * </code>
 	 *
-	 * @param string $column
+	 * @param string|SqlFragment $column
 	 * @param string $operator
 	 * @param mixed $value
 	 * @return SqlFragment
@@ -399,13 +584,14 @@ class ExpressionBuilder
 	 */
 	public function notLike($column, $pattern)
 	{
-		return $this->_comparison($column, 'NOT LIKE', $pattern);
+		return $this->_escapedLike($column, $pattern, 'NOT LIKE');
 	}
 
 	/**
 	 * Compare two columns, e.g. `a` < `b`. With two arguments the operator
-	 * defaults to '='. Both sides are validated identifiers and nothing is
-	 * bound, so neither may carry user input. This is the JOIN condition
+	 * defaults to '='. Both sides are validated identifiers or expressions
+	 * this builder made, such as {@see ExpressionBuilder::substringBefore()};
+	 * neither may carry unbound user input. This is the JOIN condition
 	 * workhorse:
 	 *
 	 * <code>
@@ -414,9 +600,9 @@ class ExpressionBuilder
 	 * // LEFT JOIN `e107_user_extended` AS `ue` ON `ue`.`user_extended_id` = `u`.`user_id`
 	 * </code>
 	 *
-	 * @param string $first
-	 * @param string $operator Operator, or the second column when $second is null.
-	 * @param string|null $second
+	 * @param string|SqlFragment $first
+	 * @param string|SqlFragment $operator Operator, or the second column when $second is null.
+	 * @param string|SqlFragment|null $second
 	 * @return SqlFragment
 	 * @throws InvalidArgumentException on an unsupported operator or invalid identifier.
 	 */
@@ -435,7 +621,28 @@ class ExpressionBuilder
 			throw new InvalidArgumentException('Unsupported column-comparison operator: '.$operator);
 		}
 
-		return SqlFragment::fragment($this->qb->quoteColumn($first).' '.$op.' '.$this->qb->quoteColumn($second));
+		return SqlFragment::fragment($this->_operand($first).' '.$op.' '.$this->_operand($second));
+	}
+
+	/**
+	 * @param string|SqlFragment $operand a column name, or an expression this builder made
+	 * @return string
+	 * @throws InvalidArgumentException when a column name fails validation.
+	 */
+	private function _operand($operand)
+	{
+		return ($operand instanceof SqlFragment) ? $this->_absorb($operand) : $this->qb->quoteColumn($operand);
+	}
+
+	/**
+	 * @param SqlFragment $fragment
+	 * @return string its SQL, with its bound parameters taken over by the owning query
+	 */
+	private function _absorb(SqlFragment $fragment)
+	{
+		$this->qb->mergeParameters($fragment->getParameters());
+
+		return $fragment->getSql();
 	}
 
 	/**
@@ -588,14 +795,29 @@ class ExpressionBuilder
 	}
 
 	/**
-	 * @param string $column
+	 * @param string|SqlFragment $column
 	 * @param string $operator
 	 * @param mixed $value
 	 * @return SqlFragment
 	 */
 	private function _comparison($column, $operator, $value)
 	{
-		return SqlFragment::fragment($this->qb->quoteColumn($column).' '.$operator.' '.$this->qb->createNamedParameter($value));
+		return SqlFragment::fragment($this->_operand($column).' '.$operator.' '.$this->qb->createNamedParameter($value));
+	}
+
+	/**
+	 * LIKE against a pattern whose metacharacters
+	 * {@see \e107\Database\Platform\PlatformInterface::quoteLikeLiteral()} escaped with a backslash, with the clause
+	 * that makes the backslash an escape on this platform.
+	 *
+	 * @param string|SqlFragment $column
+	 * @param string $pattern
+	 * @param string $operator 'LIKE' or 'NOT LIKE'
+	 * @return SqlFragment
+	 */
+	private function _escapedLike($column, $pattern, $operator = 'LIKE')
+	{
+		return SqlFragment::fragment($this->_operand($column).' '.$operator.' '.$this->qb->createNamedParameter($pattern).$this->qb->getPlatform()->getLikeEscapeClause());
 	}
 
 	/**
@@ -640,12 +862,7 @@ class ExpressionBuilder
 
 		foreach($parts as $part)
 		{
-			if($part instanceof SqlFragment)
-			{
-				$this->qb->mergeParameters($part->getParameters());
-			}
-
-			$strings[] = (string) $part;
+			$strings[] = ($part instanceof SqlFragment) ? $this->_absorb($part) : (string) $part;
 		}
 
 		if($conjunction === 'NOT')
@@ -701,14 +918,5 @@ class ExpressionBuilder
 		}
 
 		return self::$aggregateFunctions[$fn];
-	}
-
-	/**
-	 * @param string $value
-	 * @return string $value with LIKE metacharacters escaped
-	 */
-	private function _escapeLike($value)
-	{
-		return addcslashes((string) $value, '%_\\');
 	}
 }

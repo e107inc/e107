@@ -60,7 +60,7 @@ final class DropIndex extends AbstractChange
 
 	/**
 	 * @param SchemaBuilder $schema
-	 * @return string
+	 * @return string|string[]
 	 */
 	public function toSql(SchemaBuilder $schema)
 	{
@@ -75,6 +75,6 @@ final class DropIndex extends AbstractChange
 			$table->dropIndex($this->index->getName());
 		}
 
-		return $table->getSQL();
+		return self::rendered($table->getStatements());
 	}
 }

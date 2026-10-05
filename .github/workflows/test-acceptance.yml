@@ -32,8 +32,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Spelled out rather than built from axes: four entries are easier to
-        # read, and to add one to, than the rules for how `include` merges.
+        # Spelled out rather than built from axes: a handful of entries is
+        # easier to read, and to add one to, than the rules for how `include`
+        # merges.
         # Old PHP is paired with old MySQL and new with new, which is how
         # these are actually deployed.
         #
@@ -58,6 +59,8 @@ jobs:
         #               index would not fit at utf8mb4 gets utf8 instead
         # Keeping 5.5 here is what stops that regressing, since it is the only
         # row where the FULLTEXT fallback is exercised at all.
+        #
+        # The SQLite rows need no server: `e107-tests up --db sqlite`.
         include:
           - php: '8.1'
             db: 'mysql:5.5'
@@ -75,6 +78,14 @@ jobs:
             db: 'mariadb:12.3'
             layout: subdirectory
             base_path: 'e107'
+          - php: '8.1'
+            db: 'sqlite'
+            layout: subdirectory
+            base_path: 'e107'
+          - php: '8.5'
+            db: 'sqlite'
+            layout: docroot
+            base_path: ''
 
     runs-on: ubuntu-latest
 
@@ -103,7 +114,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: acceptance-php${{ matrix.php }}-${{ matrix.layout }}
+          name: acceptance-php${{ matrix.php }}-${{ matrix.db == 'sqlite' && 'sqlite-' || '' }}${{ matrix.layout }}
           path: |
             e107_tests/tests/_output/
             /tmp/container.log

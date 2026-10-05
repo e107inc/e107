@@ -6,6 +6,8 @@ namespace Helper;
 
 class Acceptance extends E107Base
 {
+	use DatabaseDriverRequirement;
+
 	/**
 	 * Copy of db_verify's storage engine aliases, so a table this helper creates
 	 * uses the same engine e107 would have chosen for it.
@@ -54,6 +56,9 @@ class Acceptance extends E107Base
 
 	/** @var bool whether this run has stood a site up yet */
 	private $siteInstalled = false;
+
+	/** @var string|null */
+	private $installToken = null;
 
 	/**
 	 * Show the run's probe secret on every request, so a fixture in the docroot
@@ -405,13 +410,8 @@ class Acceptance extends E107Base
 	 */
 	public function dontSeeTableInDatabase($table)
 	{
-		$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
-
-		$statement = $dbh->prepare('SHOW TABLES LIKE ?');
-		$statement->execute([$table]);
-
 		\PHPUnit\Framework\Assert::assertFalse(
-			$statement->fetchColumn(), "Table `$table` still exists.");
+			$this->appTableExists($table), "Table `$table` still exists.");
 	}
 
 	/**
@@ -445,6 +445,24 @@ class Acceptance extends E107Base
 		if (!$tables)
 		{
 			throw new \RuntimeException("No CREATE TABLE statements found in $sqlFile");
+		}
+
+		if ($this->getDbModule()->_getDbDriver() === 'sqlite')
+		{
+			require_once(codecept_root_dir().'lib/SqliteFixture.php');
+			$fixture = new \SqliteFixture($dbh);
+
+			foreach ($tables as $table)
+			{
+				$name = $prefix.$table['name'];
+
+				if (!$this->appTableExists($name))
+				{
+					$fixture->load("CREATE TABLE `$name` ({$table['body']}) ENGINE={$table['engine']};");
+				}
+			}
+
+			return;
 		}
 
 		$available = $this->availableStorageEngines($dbh);
@@ -914,6 +932,43 @@ PHP;
 	}
 
 	/**
+	 * @param string $table physical table name
+	 * @return bool whether the test database holds the table
+	 */
+	public function appTableExists($table)
+	{
+		$dbh = $this->getDbModule()->_getDbh();
+		$query = ($this->getDbModule()->_getDbDriver() === 'sqlite')
+			? $dbh->prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
+			: $dbh->prepare('SHOW TABLES LIKE ?');
+		$query->execute([$table]);
+
+		return $query->fetchColumn() !== false;
+	}
+
+	/**
+	 * Drop one table from the test database.
+	 *
+	 * @param string $table physical table name
+	 * @return void
+	 */
+	public function dropAppTable($table)
+	{
+		$dbh = $this->getDbModule()->_getDbh();
+
+		if ($this->getDbModule()->_getDbDriver() === 'sqlite')
+		{
+			$dbh->exec('DROP TABLE "'.str_replace('"', '""', $table).'"');
+
+			return;
+		}
+
+		$dbh->exec('SET FOREIGN_KEY_CHECKS=0;');
+		$dbh->exec('DROP TABLE `'.str_replace('`', '``', $table).'`');
+		$dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
+	}
+
+	/**
 	 * Drop every table the app owns, leaving an empty database.
 	 *
 	 * @return void
@@ -921,6 +976,16 @@ PHP;
 	public function dropAllAppTables()
 	{
 		$dbh = $this->getDbModule()->_getDbh();
+
+		if ($this->getDbModule()->_getDbDriver() === 'sqlite')
+		{
+			foreach ($dbh->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")->fetchAll(\PDO::FETCH_COLUMN) as $table)
+			{
+				$dbh->exec('DROP TABLE "'.str_replace('"', '""', $table).'"');
+			}
+
+			return;
+		}
 
 		$dbh->exec('SET FOREIGN_KEY_CHECKS=0;');
 
@@ -936,23 +1001,40 @@ PHP;
 	}
 
 	/**
+	 * @return string the database as e107_config.php names it: a server's database name, or the SQLite file's path
+	 *                relative to the app
+	 */
+	public function appDatabaseName()
+	{
+		return \E107Preparer::installedDatabase();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function databaseDriverName()
+	{
+		return $this->getDbModule()->_getDbDriver();
+	}
+
+	/**
 	 * Write a v2.4 array-format e107_config.php pointing at the test database.
 	 *
+	 * @param array $other entries to change in its 'other' block; null removes one
+	 * @param array $database entries to change in its 'database' block
 	 * @return void
 	 */
-	public function haveE107ArrayConfig()
+	public function haveE107ArrayConfig(array $other = [], array $database = [])
 	{
 		$db = $this->getDbModule();
 
 		$this->writeE107ConfigToTestEnvironment("<?php\nreturn ".var_export([
-			'database' => [
-				'server'   => $db->_getDbHostname(),
-				'user'     => $db->_getDbUsername(),
-				'password' => $db->_getDbPassword(),
-				'db'       => $db->_getDbName(),
+			'database' => array_merge(['driver' => $db->_getDbDriver()], $this->serverLogin(), [
+				'db'       => $this->appDatabaseName(),
 				'prefix'   => self::E107_MYSQL_PREFIX,
 				'charset'  => 'utf8mb4',
-			],
+				'mysql_compat' => $db->_getDbMysqlCompat(),
+			], $database),
 			'paths' => [
 				'admin'     => 'e107_admin/',
 				'files'     => 'e107_files/',
@@ -965,27 +1047,57 @@ PHP;
 				'media'     => 'e107_media/',
 				'system'    => 'e107_system/',
 			],
-			'other' => [
-				'site_path' => self::INSTALL_SITE_PATH,
-			],
+			'other' => array_filter(array_merge([
+				'site_path'     => self::INSTALL_SITE_PATH,
+				'install_token' => $this->installToken(),
+			], $other), function($value) { return $value !== null; }),
 		], true).";\n");
 	}
 
 	/**
-	 * Browse to install.php's unattended route with the credentials the config
-	 * written by haveE107ArrayConfig() carries.
+	 * @return string[] the server, user and password {@see haveE107ArrayConfig()} writes; empty for a database file
+	 */
+	private function serverLogin()
+	{
+		$db = $this->getDbModule();
+		$server = ($db->_getDbDriver() !== 'sqlite');
+
+		return [
+			'server'   => $server ? $db->_getDbHostname() : '',
+			'user'     => $server ? $db->_getDbUsername() : '',
+			'password' => $server ? $db->_getDbPassword() : '',
+		];
+	}
+
+	/**
+	 * @return string the install token {@see haveE107ArrayConfig()} writes, fresh for each run
+	 */
+	public function installToken()
+	{
+		if ($this->installToken === null)
+		{
+			$this->installToken = bin2hex(random_bytes(16));
+		}
+
+		return $this->installToken;
+	}
+
+	/**
+	 * Browse to install.php's unattended route with the credentials and install
+	 * token the config written by haveE107ArrayConfig() carries.
 	 *
-	 * @param array $overrides query parameters to change
+	 * @param array $overrides query parameters to change; null leaves one out
 	 * @return array the parameters the installer was given
 	 */
 	public function visitUnattendedInstall(array $overrides = [])
 	{
-		$db = $this->getDbModule();
+		$login = $this->serverLogin();
 
 		$params = array_merge([
 			'create_tables'  => 1,
-			'username'       => $db->_getDbUsername(),
-			'password'       => $db->_getDbPassword(),
+			'username'       => $login['user'],
+			'password'       => $login['password'],
+			'install_token'  => $this->installToken(),
 			'admin_user'     => AdminLogin::ADMIN_USER,
 			'admin_password' => AdminLogin::ADMIN_PASS,
 			'admin_display'  => self::INSTALL_ADMIN_DISPLAY,

@@ -242,6 +242,26 @@ class TreeModelTest extends \Test\Unit
 	}
 
 	/**
+	 * Admin UIs begin their list query with MySQL's SQL_CALC_FOUND_ROWS, and the tree counts its total apart,
+	 * so the modifier is run only where the engine has it and is never counted.
+	 */
+	public function testAListQueryWithTheFoundRowsModifierRunsAndIsCountedOnEveryEngine()
+	{
+		$users = e107::getDb()->createQueryBuilder()->from('user')->count();
+
+		$tree = $this->make('e_tree_model');
+		$tree->setModelTable('user');
+		$tree->setFieldIdName('user_id');
+		$tree->setParam('model_class', 'e_model');
+		$tree->setParam('db_query', "/* listed */ SELECT sql_calc_found_rows user_id FROM #user WHERE 'SQL_CALC_FOUND_ROWS' <> ''");
+		$tree->loadBatch(true);
+
+		$this->assertGreaterThan(0, $users);
+		$this->assertCount($users, $tree->getTree(), 'every member is listed');
+		$this->assertSame($users, $tree->getTotal(), 'and counted, the literal that holds the word untouched');
+	}
+
+	/**
 	 * End-to-end guard for issue #5761: counting a list query that joins two
 	 * tables sharing a column name must not raise "1060 Duplicate column name".
 	 */
@@ -249,8 +269,8 @@ class TreeModelTest extends \Test\Unit
 	{
 		$sql = e107::getDb();
 
-		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_a");
-		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_b");
+		$this->dropTemporaryTable('tmp_5761_a');
+		$this->dropTemporaryTable('tmp_5761_b');
 		$sql->gen("CREATE TEMPORARY TABLE tmp_5761_a (id INT PRIMARY KEY, user_timezone VARCHAR(10) NOT NULL DEFAULT '')");
 		$sql->gen("CREATE TEMPORARY TABLE tmp_5761_b (ext_id INT PRIMARY KEY, user_timezone VARCHAR(10) NOT NULL DEFAULT '')");
 		$sql->gen("INSERT INTO tmp_5761_a (id, user_timezone) VALUES (1,'UTC'),(2,'CET'),(3,'PST')");
@@ -266,8 +286,8 @@ class TreeModelTest extends \Test\Unit
 		$this->assertEquals(0, $sql->getLastErrorNumber(), $sql->getLastErrorText());
 		$this->assertEquals(3, $total);
 
-		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_a");
-		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_b");
+		$this->dropTemporaryTable('tmp_5761_a');
+		$this->dropTemporaryTable('tmp_5761_b');
 	}
 
 	/**
@@ -281,8 +301,8 @@ class TreeModelTest extends \Test\Unit
 	{
 		$sql = e107::getDb();
 
-		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_chapters");
-		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_pages");
+		$this->dropTemporaryTable('tmp_5761_chapters');
+		$this->dropTemporaryTable('tmp_5761_pages');
 		$sql->gen("CREATE TEMPORARY TABLE tmp_5761_chapters (chapter_id INT PRIMARY KEY, chapter_parent INT NOT NULL DEFAULT 0, chapter_order INT NOT NULL DEFAULT 0)");
 		$sql->gen("CREATE TEMPORARY TABLE tmp_5761_pages (page_id INT PRIMARY KEY, page_chapter INT NOT NULL DEFAULT 0)");
 		$sql->gen("INSERT INTO tmp_5761_chapters (chapter_id, chapter_parent, chapter_order) VALUES (1,0,1),(2,1,1),(3,1,2),(4,0,2)");
@@ -298,8 +318,8 @@ class TreeModelTest extends \Test\Unit
 		$this->assertEquals(0, $sql->getLastErrorNumber(), $sql->getLastErrorText());
 		$this->assertEquals(4, $total);
 
-		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_chapters");
-		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_pages");
+		$this->dropTemporaryTable('tmp_5761_chapters');
+		$this->dropTemporaryTable('tmp_5761_pages');
 	}
 
 	protected $sample_rows =

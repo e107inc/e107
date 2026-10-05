@@ -5558,7 +5558,8 @@ class e_admin_controller_ui extends e_admin_controller
 				switch($_dataType)
 				{
 					case 'set':
-						$searchQry[] = "FIND_IN_SET('" . $tp->toDB($filterValue) . "', " . $fields[$filterField]['__tableField'] . ')';
+						$db = e107::getDb();
+						$searchQry[] = $db->getPlatform()->compileFindInSet($db->quoteStringLiteral($tp->toDB($filterValue)), $fields[$filterField]['__tableField']);
 					break;
 
 					case 'int':
@@ -7317,18 +7318,19 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$changed = $c - $step;
 
-		// User-variable derived-table UPDATE (vendor-specific @n counter) that the
-		// query builder cannot express; values are bound, the dynamic sort column
-		// identifier is validated fail-closed via quoteIdentifier().
+		// Values are bound; the table and the dynamic sort and key columns are
+		// validated fail-closed via quoteIdentifier().
+		$tableId = $sql->quoteIdentifier((string) $sql->resolveTableName($this->table));
 		$sortFieldId = $sql->quoteIdentifier($this->sortField);
-		if($sortFieldId === false)
+		$pidId = $sql->quoteIdentifier($this->pid);
+		if($tableId === false || $sortFieldId === false || $pidId === false)
 		{
-			$this->_log('Sort Qry: invalid sort field identifier: '.$this->sortField);
+			$this->_log('Sort Qry: invalid table, sort field or key identifier: '.$this->table.'.'.$this->sortField.' / '.$this->pid);
 			$result = false;
 		}
 		else
 		{
-			$qry = 'UPDATE `#' .$this->table. '` e, (SELECT @n := :n_init) m  SET e.' .$sortFieldId. ' = @n := @n + :step WHERE ' .$sortFieldId. ' > :threshold';
+			$qry = $sql->getPlatform()->compileRenumber($tableId, $sortFieldId, $pidId, ':n_init', ':step', ':threshold');
 			$result = $sql->execute($qry, array(
 				'n_init'    => (int) $changed,
 				'step'      => (int) $step,

@@ -27,7 +27,7 @@ class sqliDeferralBurndownTest extends \Test\Unit
 
 	protected function _after()
 	{
-		e107::getDb()->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->batchTable . '`');
+		$this->dropTemporaryTable($this->batchTable);
 	}
 
 	// ---- Group 1: admin_ui search-field identifier guard ----
@@ -106,7 +106,7 @@ class sqliDeferralBurndownTest extends \Test\Unit
 	private function makeBatchTree()
 	{
 		$sql = e107::getDb();
-		$sql->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->batchTable . '`');
+		$this->dropTemporaryTable($this->batchTable);
 		$sql->gen('CREATE TEMPORARY TABLE `' . $this->batchTable
 			. '` (id INT NOT NULL, a VARCHAR(255) NULL, b VARCHAR(255) NULL)');
 		$sql->gen("INSERT INTO `" . $this->batchTable . "` (id, a, b) VALUES (1, 'orig_a', 'orig_b')");

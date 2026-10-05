@@ -12,11 +12,16 @@ namespace e107\Database;
 
 use db_verify;
 use e107;
-use e107\Database\Platform\MysqlPlatform;
+use e107\Database\Driver\DriverInterface;
+use e107\Database\Driver\DriverRegistry;
+use e107\Database\Exception\QueryException;
 use e107\Database\Platform\PlatformInterface;
 use e107\Database\Schema\Column;
+use e107\Database\Schema\FieldTypeMap;
 use e107\Database\Schema\Index;
+use e107\Database\Schema\Introspect\IndexSchema;
 use e107\Database\Schema\SchemaBuilder;
+use e107\Database\Schema\SchemaManagerInterface;
 use e107_db_debug;
 use PDO;
 
@@ -45,6 +50,24 @@ trait ConnectionTrait
 {
 	/** @var PlatformInterface|null lazily created SQL dialect object */
 	private     $platform = null;
+
+	/** @var DriverInterface|null the engine this connection talks to; resolved on first use */
+	protected   $driver = null;
+
+	/** @var int open transactions: 1 for the outermost, plus one per savepoint nested inside it */
+	private     $transactionDepth = 0;
+
+	/** @var bool whether the engine ended the open transaction on its own, as MySQL does at DDL */
+	private     $transactionEnded = false;
+
+	/** @var SchemaManagerInterface|null lazily created by the driver, reset when the driver changes */
+	private     $schemaManager = null;
+
+	/** @var array physical table => its TableSchema, or null for none */
+	private     $tableSchemas = array();
+
+	/** @var array table => field-type definition: cached _FIELD_TYPES/_NOTNULL maps, or false where none is to be used */
+	protected   $dbFieldDefs = array();
 
 	private     $pdoBind        = false;
 
@@ -92,17 +115,32 @@ trait ConnectionTrait
 	abstract public function fetch($type = null);
 	abstract public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
 	abstract public function lastInsertId();
-	abstract public function getFieldDefs($tableName);
 	abstract public function db_Query($query, $rli = null, $qry_from = '', $debug = false, $log_type = '', $log_remark = '');
 	abstract public function rowCount($result = null);
 	abstract public function isTable($table, $language = '');
 	abstract public function dbError($from);
-	abstract public function fields($table, $prefix = '', $retinfo = false);
 	abstract public function execute($sql, $params = array());
-	abstract public function quoteStringLiteral($value);
 
 	abstract protected function _escape($data);
 	abstract protected function _getMySQLaccess();
+
+	/**
+	 * A driver made with this connection's settings: the configured one, or the one {@see ConnectionInterface::useDriver()} names.
+	 *
+	 * @param string|null $name a {@see DriverRegistry} name; null for the configured driver
+	 * @return DriverInterface
+	 * @throws \InvalidArgumentException when the driver is not registered
+	 */
+	abstract protected function _createDriver($name = null);
+
+	/**
+	 * Take over a driver named through {@see ConnectionInterface::useDriver()}, refusing one this backend cannot drive.
+	 *
+	 * @param DriverInterface $driver
+	 * @return void
+	 * @throws \e107\Database\Exception\UnsupportedException when the backend cannot drive this engine
+	 */
+	abstract protected function _switchDriver(DriverInterface $driver);
 
 	/**
 	 * Get system config
@@ -127,9 +165,7 @@ trait ConnectionTrait
 	 */
 	function getMode()
 	{
-		 $this->gen('SELECT @@sql_mode');
-		 $row = $this->fetch();
-		 return $row['@@sql_mode'];
+		return $this->getDriver()->getSessionMode($this);
 	}
 
 	/**
@@ -271,7 +307,7 @@ trait ConnectionTrait
 	}
 
 	/**
-	 * Validate and backtick-quote an SQL identifier (`column` or `table.column`).
+	 * Validate and quote an SQL identifier (`column` or `table.column`) for this connection's dialect.
 	 * Fails closed: anything outside the {@see IdentifierFilter::identifier()} grammar returns false.
 	 *
 	 * @param string $identifier
@@ -279,12 +315,7 @@ trait ConnectionTrait
 	 */
 	public function quoteIdentifier($identifier)
 	{
-		if(!class_exists(IdentifierFilter::class))
-		{
-			require_once(__DIR__.'/IdentifierFilter.php');
-		}
-
-		return IdentifierFilter::identifier($identifier);
+		return $this->getPlatform()->quoteIdentifier($identifier);
 	}
 
 	/**
@@ -354,11 +385,10 @@ trait ConnectionTrait
 	 * written and, worse, would keep a stand-in for a column since made nullable
 	 * and quietly store '' where the caller meant NULL.
 	 *
-	 * The read costs one SHOW COLUMNS per table per request, and only on a typed
-	 * write that actually binds a null, which is the rare one. It runs on its own
-	 * connection because the caller may be part way through a result set of its
-	 * own; {@see user_extended::user_extended_get_types()} takes the same
-	 * precaution.
+	 * The read costs one column listing per table per request, and only on a typed
+	 * write that actually binds a null, which is the rare one. It runs on a side
+	 * connection ({@see ConnectionTrait::_sideConnection()}) because the caller may
+	 * be part way through a result set of its own.
 	 *
 	 * An AUTO_INCREMENT column is left out on purpose: a null bound there means
 	 * "assign one", which is what the server does with NULL, whereas the stand-in
@@ -376,16 +406,16 @@ trait ConnectionTrait
 			return array();
 		}
 
-		$sql = e107::getDb('_schema');
+		$rows = $this->_sideConnection()->getSchemaManager()->getColumnRows($table);
 
-		if($sql->gen('SHOW COLUMNS FROM `'.str_replace('`', '``', $table).'`') === false)
+		if($rows === false)
 		{
 			return array();
 		}
 
 		$map = array();
 
-		while($row = $sql->fetch())
+		foreach($rows as $row)
 		{
 			if($row['Null'] === 'YES' || stripos((string) $row['Extra'], 'auto_increment') !== false)
 			{
@@ -443,15 +473,462 @@ trait ConnectionTrait
 	{
 		if($this->platform === null)
 		{
-			if(!class_exists(MysqlPlatform::class))
-			{
-				require_once(__DIR__.'/Platform/MysqlPlatform.php');
-			}
-
-			$this->platform = new MysqlPlatform();
+			$this->platform = $this->getDriver()->createPlatform();
 		}
 
 		return $this->platform;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::getDriver()}.
+	 *
+	 * @return DriverInterface
+	 */
+	public function getDriver()
+	{
+		if($this->driver === null)
+		{
+			$this->driver = $this->_createDriver();
+		}
+
+		return $this->driver;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::useDriver()}.
+	 *
+	 * @param string|DriverInterface $driver
+	 * @return $this
+	 */
+	public function useDriver($driver)
+	{
+		if(!$driver instanceof DriverInterface)
+		{
+			$driver = $this->_createDriver((string) $driver);
+		}
+
+		$this->_switchDriver($driver);
+		$this->driver = $driver;
+		$this->platform = null;
+		$this->schemaManager = null;
+
+		return $this;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::getAutoIncrementColumn()}.
+	 *
+	 * @param string $table
+	 * @return string|null
+	 */
+	public function getAutoIncrementColumn($table)
+	{
+		$schema = $this->_tableSchema($table);
+
+		if($schema !== null)
+		{
+			foreach($schema->getColumns() as $name => $column)
+			{
+				if(strpos($column->getExtra(), 'auto_increment') !== false)
+				{
+					return $name;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * A table's schema as the engine reports it, kept until a statement through this connection changes a schema.
+	 *
+	 * @param string $table logical table name
+	 * @return \e107\Database\Schema\Introspect\TableSchema|null null when the table does not exist
+	 */
+	private function _tableSchema($table)
+	{
+		$physical = $this->resolveTableName($table);
+
+		if($physical === false)
+		{
+			return null;
+		}
+
+		if(!array_key_exists($physical, $this->tableSchemas))
+		{
+			$this->tableSchemas[$physical] = $this->_sideConnection()->getSchemaManager()->getReader()->read($physical);
+		}
+
+		return $this->tableSchemas[$physical];
+	}
+
+	/**
+	 * The rows of a table that already hold a primary or unique key value of $row; a key it leaves out or nulls takes no part.
+	 *
+	 * @param string $table logical table name
+	 * @param array $row column => value about to be written
+	 * @return int
+	 */
+	private function _countConflictingRows($table, array $row)
+	{
+		$schema = $this->_tableSchema($table);
+
+		if($schema === null)
+		{
+			return 0;
+		}
+
+		$qb = $this->_sideConnection()->createQueryBuilder();
+		$keys = array();
+
+		foreach($schema->getIndexes() as $index)
+		{
+			if($index->getKind() !== IndexSchema::KIND_PRIMARY && $index->getKind() !== IndexSchema::KIND_UNIQUE)
+			{
+				continue;
+			}
+
+			$parts = array();
+
+			foreach($index->getColumnNames() as $column)
+			{
+				if(!isset($row[$column]))
+				{
+					continue 2;
+				}
+
+				$parts[] = $qb->expr()->eq($column, $row[$column]);
+			}
+
+			$keys[] = call_user_func_array(array($qb->expr(), 'allOf'), $parts);
+		}
+
+		if(empty($keys))
+		{
+			return 0;
+		}
+
+		return $qb->from($table)->where(call_user_func_array(array($qb->expr(), 'anyOf'), $keys))->count();
+	}
+
+	/**
+	 * A copy of this connection that shares its session but keeps result sets of its own.
+	 *
+	 * @return static
+	 */
+	protected function _sideConnection()
+	{
+		$this->_getMySQLaccess();
+
+		return clone $this;
+	}
+
+	/**
+	 * A copy shares the session but not the result in hand, nor a schema manager bound to the original.
+	 *
+	 * @return void
+	 */
+	public function __clone()
+	{
+		$this->mySQLresult = null;
+		$this->schemaManager = null;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::getSchemaManager()}.
+	 *
+	 * @return SchemaManagerInterface
+	 */
+	public function getSchemaManager()
+	{
+		if($this->schemaManager === null)
+		{
+			$this->schemaManager = $this->getDriver()->createSchemaManager($this);
+		}
+
+		return $this->schemaManager;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::beginTransaction()}.
+	 *
+	 * @return bool
+	 */
+	public function beginTransaction()
+	{
+		if($this->transactionDepth > 0 && !$this->inTransaction())
+		{
+			return $this->_refuse('beginTransaction() inside a transaction the engine has already ended; end that one first');
+		}
+
+		$statements = ($this->transactionDepth === 0)
+			? $this->getDriver()->getBeginTransactionStatements()
+			: array('SAVEPOINT '.$this->_savepoint($this->transactionDepth));
+
+		foreach($statements as $statement)
+		{
+			if(!$this->_runInSession($statement))
+			{
+				return false;
+			}
+		}
+
+		$this->transactionDepth++;
+		$this->resetLastError();
+
+		return true;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::commit()}.
+	 *
+	 * @return bool
+	 */
+	public function commit()
+	{
+		if($this->transactionDepth === 0)
+		{
+			return $this->_refuse('commit() without an open transaction');
+		}
+
+		$this->transactionDepth--;
+
+		if(($this->transactionDepth > 0) ? !$this->_leaveSavepoint(array('RELEASE SAVEPOINT ')) : !$this->_endTransaction('COMMIT'))
+		{
+			return false;
+		}
+
+		$this->resetLastError();
+
+		return true;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::rollBack()}.
+	 *
+	 * @return bool
+	 */
+	public function rollBack()
+	{
+		if($this->transactionDepth === 0)
+		{
+			return $this->_refuse('rollBack() without an open transaction');
+		}
+
+		$this->transactionDepth--;
+		$this->resetTableList();
+		$errorNumber = $this->mySQLlastErrNum;
+		$errorText = $this->mySQLlastErrText;
+
+		if(($this->transactionDepth > 0) ? !$this->_leaveSavepoint(array('ROLLBACK TO SAVEPOINT ', 'RELEASE SAVEPOINT ')) : !$this->_endTransaction('ROLLBACK'))
+		{
+			return false;
+		}
+
+		$this->mySQLlastErrNum = $errorNumber;
+		$this->mySQLlastErrText = $errorText;
+
+		return true;
+	}
+
+	/**
+	 * End the whole transaction; one the engine will not end as asked, such as a COMMIT it refuses, is rolled back.
+	 *
+	 * @param string $statement COMMIT or ROLLBACK
+	 * @return bool false, with the engine's reason as the last error, when it refused
+	 */
+	private function _endTransaction($statement)
+	{
+		$this->transactionEnded = false;
+
+		if($this->_runInSession($statement))
+		{
+			return true;
+		}
+
+		$this->resetTableList();
+		$this->_keepingLastError(function()
+		{
+			return $this->_runInSession('ROLLBACK');
+		});
+
+		return false;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::inTransaction()}.
+	 *
+	 * @return bool
+	 */
+	public function inTransaction()
+	{
+		if($this->transactionDepth > 0 && !$this->transactionEnded && !$this->_transactionSurvived())
+		{
+			$this->transactionEnded = true;
+		}
+
+		return $this->transactionDepth > 0 && !$this->transactionEnded;
+	}
+
+	/**
+	 * Leave the savepoint of the level just closed; one the engine dropped with the whole transaction counts as left.
+	 *
+	 * @param string[] $verbs statements to suffix with the savepoint name, in order
+	 * @return bool false, with the reason as the last error, when the engine refuses
+	 */
+	private function _leaveSavepoint(array $verbs)
+	{
+		$savepoint = $this->_savepoint($this->transactionDepth);
+
+		foreach($verbs as $verb)
+		{
+			if($this->transactionEnded)
+			{
+				return true;
+			}
+
+			if(!$this->_runInSession($verb.$savepoint))
+			{
+				if($this->_transactionSurvived())
+				{
+					return false;
+				}
+
+				$this->transactionEnded = true;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Whether the engine still has the open transaction, which a schema change or its own rollback may have ended.
+	 *
+	 * @return bool
+	 */
+	private function _transactionSurvived()
+	{
+		return $this->getDriver()->isTransactionOpen($this->_sideConnection());
+	}
+
+	/**
+	 * Run a statement in this connection's session, leaving the result in hand and the rows it found untouched.
+	 *
+	 * @param string $statement
+	 * @return bool false, with the reason as the last error, when the engine refuses
+	 */
+	private function _runInSession($statement)
+	{
+		$side = $this->_sideConnection();
+
+		if($side->execute($statement) !== false)
+		{
+			return true;
+		}
+
+		$this->mySQLlastErrNum = $side->getLastErrorNumber();
+		$this->mySQLlastErrText = $side->getLastErrorText();
+
+		return false;
+	}
+
+	/**
+	 * Roll back the open transaction of a session about to be dropped or replaced, and forget it.
+	 *
+	 * @return void
+	 */
+	private function _dropTransaction()
+	{
+		if($this->transactionDepth === 0)
+		{
+			return;
+		}
+
+		$this->transactionDepth = 0;
+		$this->resetTableList();
+
+		$this->_keepingLastError(function()
+		{
+			return $this->_endTransaction('ROLLBACK');
+		});
+	}
+
+	/**
+	 * Forget the table schemas read so far.
+	 *
+	 * @return void
+	 */
+	private function _forgetTableSchemas()
+	{
+		$this->tableSchemas = array();
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::transactional()}.
+	 *
+	 * @param callable $callback
+	 * @return mixed
+	 */
+	public function transactional($callback)
+	{
+		if(!$this->beginTransaction())
+		{
+			throw new QueryException('Could not open a transaction: '.$this->getLastErrorText());
+		}
+
+		try
+		{
+			$result = call_user_func($callback, $this);
+		}
+		catch(\Exception $e)
+		{
+			$this->rollBack();
+			throw $e;
+		}
+		catch(\Throwable $e)
+		{
+			$this->rollBack();
+			throw $e;
+		}
+
+		if(!$this->commit())
+		{
+			throw new QueryException('Could not commit the transaction: '.$this->getLastErrorText());
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @param int $depth nesting level the savepoint stands for
+	 * @return string savepoint name
+	 */
+	private function _savepoint($depth)
+	{
+		return 'e107_savepoint_'.(int) $depth;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::acquireLock()}.
+	 *
+	 * @param string $name
+	 * @param int $timeout
+	 * @return bool|null
+	 */
+	public function acquireLock($name, $timeout = 0)
+	{
+		return $this->getDriver()->acquireLock($this, (string) $name, (int) $timeout);
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::releaseLock()}.
+	 *
+	 * @param string $name
+	 * @return bool
+	 */
+	public function releaseLock($name)
+	{
+		return $this->getDriver()->releaseLock($this, (string) $name);
 	}
 
 	/**
@@ -482,7 +959,9 @@ trait ConnectionTrait
 			{
 				if(!empty($matches[1])) // `#table`
 				{
-					return '`'.$this->_resolveMarker($matches[1], $language).'`';
+					$quote = $this->getPlatform()->getIdentifierQuoteCharacter();
+
+					return $quote.$this->_resolveMarker($matches[1], $language).$quote;
 				}
 
 				if(isset($matches[2]) && $matches[2] !== '') // bare #table
@@ -740,7 +1219,7 @@ trait ConnectionTrait
 			return $this->_refuse("truncate() invalid table identifier");
 		}
 
-		return $this->gen("TRUNCATE TABLE ".$this->mySQLPrefix.$table);
+		return $this->getSchemaManager()->truncateTable($this->mySQLPrefix.$table);
 	}
 
 	/**
@@ -858,8 +1337,9 @@ trait ConnectionTrait
 			return $unique;
 		}
 
-		$result = $this->retrieve("SHOW INDEXES FROM #".$table, true);
-		foreach($result as $row)
+		$result = $this->getSchemaManager()->getIndexRows($this->mySQLPrefix.$this->hasLanguage($table));
+
+		foreach((array) $result as $row)
 		{
 			$notUnique = (int) $row['Non_unique'];
 
@@ -875,7 +1355,7 @@ trait ConnectionTrait
 	}
 
 	/**
-	 * The names of the tables under this connection's prefix, with the prefix cut off; a database-qualified prefix is matched without its qualifier.
+	 * The names of the tables under this connection's prefix, with the prefix cut off.
 	 *
 	 * @param string $language '' for every table, or a language whose lan_<language>_* tables to list
 	 * @return array names; for a language not yet cached, array(language => names)
@@ -893,25 +1373,234 @@ trait ConnectionTrait
 		}
 
 		$prefix = $this->mySQLPrefix;
+		$listing = $language ? $prefix.'lan_'.strtolower($language) : $prefix;
 
 		if(($dot = strrpos($prefix, '.')) !== false)
 		{
 			$prefix = (string) substr($prefix, $dot + 1);
 		}
 
-		$database = !empty($this->mySQLdefaultdb) ? " FROM `".$this->mySQLdefaultdb."`" : '';
-		$start = $language ? $prefix.'lan_'.strtolower($language) : $prefix;
 		$tables = array();
 
-		if($this->db_Query('SHOW TABLES'.$database.' LIKE '.$this->quoteStringLiteral(addcslashes($start, '\\%_').'%')))
+		foreach($this->getSchemaManager()->listTableNames($listing) ?: array() as $name)
 		{
-			while($row = $this->fetch('num'))
-			{
-				$tables[] = (string) substr($row[0], strlen($prefix));
-			}
+			$tables[] = (string) substr($name, strlen($prefix));
 		}
 
 		return $language ? array($language => $tables) : $tables;
+	}
+
+	/**
+	 *	Return a list of the field names in a table.
+	 *
+	 *	@param string $table - table name (no prefix)
+	 *	@param string $prefix - table prefix to apply. If empty, MPREFIX is used.
+	 *	@param boolean $retinfo = false - just returns array of field names. TRUE - returns all field info
+	 *	@return array|boolean - false on error, field list array on success
+	 */
+	public function fields($table, $prefix = '', $retinfo = false)
+	{
+		if(($table = $this->_safeIdentifier($table)) === false
+			|| ($prefix != '' && ($prefix = $this->_safeIdentifier($prefix, true)) === false))
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
+		$this->_getMySQLaccess();
+
+		if ($prefix == '')
+		{
+			 $prefix = $this->mySQLPrefix;
+		}
+
+		if (false === ($rows = $this->getSchemaManager()->getColumnRows($prefix.$table)))
+		{
+			return false;		// Error return
+		}
+
+		$ret = array();
+
+		foreach ($rows as $row)
+		{
+			if ($retinfo)
+			{
+				$ret[$row['Field']] = $row['Field'];
+			}
+			else
+			{
+				$ret[] = $row['Field'];
+			}
+		}
+
+		return $ret;
+	}
+
+	/**
+	 *	Get the _FIELD_DEFS and _NOTNULL definitions for a table
+	 *<code>
+	 *	The information is sought in a specific order:
+	 *		a) In our internal cache
+	 *		b) in the directory e_CACHE_DBDIR - file name $tableName.php
+	 *		c) An override file for a core or plugin-related table. If found, the information is copied to the cache directory
+	 *			For core overrides, e_ADMIN.'core_sql/db_field_defs.php' is searched
+	 *			For plugins, $pref['e_sql_list'] is used as a search list - any file 'db_field_defs.php' in the plugin directory is earched
+	 *		d) The table structure is read from the DB, and a definition created:
+	 *			AUTOINCREMENT fields - ignored (or integer)
+	 *			integer type fields - 'int' processing
+	 *			character/string type fields - todb processing
+	 *			fields which are 'NOT NULL' but have no default are added to the '_NOTNULL' list
+	 *</code>
+	 *	@param string $tableName - table name, without any prefixes (language or general)
+	 *	@return boolean|array - false if not found/not to be used. Array of field names and processing types and null overrides if found
+	 */
+	public function getFieldDefs($tableName)
+	{
+		if (!isset($this->dbFieldDefs[$tableName]))
+		{
+			$cached = null;
+			if (is_readable(e_CACHE_DB.$tableName.'.php'))
+			{
+				$temp = @file_get_contents(e_CACHE_DB.$tableName.'.php');
+				$tableIsUntyped = ($temp === '');
+				if ($tableIsUntyped)
+				{
+					$cached = array();
+				}
+				elseif ($temp !== false)
+				{
+					$typeDefs = e107::unserialize($temp);
+					if (!empty($typeDefs))
+					{
+						$cached = $typeDefs;
+					}
+				}
+				unset($temp);
+			}
+
+			if ($cached !== null)
+			{
+				$this->dbFieldDefs[$tableName] = $cached;
+			}
+			else
+			{		// Need to try and find a table definition
+				$searchArray = array(e_CORE.'sql/db_field_defs.php');
+				// e107::getPref() shouldn't be used inside db handler! See hasLanguage() comments
+				$sqlFiles = (array) $this->getConfig()->get('e_sql_list', array()); // kill any PHP notices
+				foreach ($sqlFiles as $p => $f)
+				{
+					$searchArray[] = e_PLUGIN.$p.'/db_field_defs.php';
+				}
+				unset($sqlFiles);
+				$found = false;
+				foreach ($searchArray as $defFile)
+				{
+					//echo "Check: {$defFile}, {$tableName}<br />";
+					if ($this->loadTableDef($defFile, $tableName))
+					{
+						$found = TRUE;
+						break;
+					}
+				}
+				if (!$found)
+				{	// Need to read table structure from DB and create the file
+					$this->makeTableDef($tableName);
+				}
+			}
+		}
+		return $this->dbFieldDefs[$tableName];
+	}
+
+	/**
+	 *	Search the specified file for a field type definition of the specified table.
+	 *	If found, generate and save a cache file in the e_CACHE_DB directory,
+	 *	Always also update $this->dbFieldDefs[$tableName] - false if not found, data if found
+	 *	@param	string $defFile - file name, including path
+	 *	@param	string $tableName - name of table sought
+	 *	@return boolean TRUE on success, false on not found (some errors intentionally ignored)
+	 */
+	protected function loadTableDef($defFile, $tableName)
+	{
+		$result =false;
+
+		if (is_readable($defFile))
+		{
+			// Read the file using the array handler routines
+			// File structure is a nested array - first level is table name, second level is either false (for do nothing) or array(_FIELD_DEFS => array(), _NOTNULL => array())
+			$temp = file_get_contents($defFile);
+			// Strip any comments  (only /*...*/ supported)
+			$temp = preg_replace("#\/\*.*?\*\/#ms", '', $temp);
+			//echo "Check: {$defFile}, {$tableName}<br />";
+			if ($temp !== false)
+			{
+				$typeDefs = e107::unserialize($temp);
+
+				unset($temp);
+				if (isset($typeDefs[$tableName]))
+				{
+					$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
+
+					$fileData = e107::serialize($typeDefs[$tableName], false);
+
+					if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $fileData))
+					{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
+
+					}
+
+					$result = true;
+				}
+			}
+		}
+
+		if (!$result)
+		{
+			$this->dbFieldDefs[$tableName] = false;
+		}
+		return $result;
+	}
+
+	/**
+	 *	Creates a field type definition from the structure of the table in the DB
+	 *	Generate and save a cache file in the e_CACHE_DB directory,
+	 *	Also update $this->dbFieldDefs[$tableName] - false if error, data if found
+	 *
+	 *	@param	string $tableName - name of table sought
+	 *	@return array|boolean array on success, false on not found (some errors intentionally ignored)
+	 */
+	protected function makeTableDef($tableName)
+	{
+		$physical = $this->resolvePhysicalTableName($tableName);
+
+		try
+		{
+			$schema = ($physical === false) ? null : $this->_sideConnection()->getSchemaManager()->getReader()->read($physical);
+		}
+		catch(QueryException $e)
+		{
+			$schema = null;
+		}
+		catch(\InvalidArgumentException $e)
+		{
+			$schema = null;
+		}
+
+		if ($schema === null)
+		{
+			$this->dbFieldDefs[$tableName] = false;
+			return false;
+		}
+
+		$outDefs = FieldTypeMap::fromTableSchema($schema);
+
+		$this->dbFieldDefs[$tableName] = $outDefs;
+		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
+
+		if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $toSave))
+		{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
+			$mes = e107::getMessage();
+			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.
+		}
+
+		return empty($outDefs) ? false : $outDefs;
 	}
 
 	/**
@@ -921,6 +1610,7 @@ trait ConnectionTrait
 	{
 		$this->mySQLtableList = array();
 		$this->mySQLtableListLanguage = array();
+		$this->_forgetTableSchemas();
 	}
 
 	/**
@@ -931,11 +1621,15 @@ trait ConnectionTrait
 	 */
 	protected function forgetTableListFor($query)
 	{
-		$sql = $this->_statementText($query);
+		$sql = (string) $this->_statementText($query);
 
-		if(preg_match('/^\s*(?:(?:CREATE|DROP|RENAME)\s+(?:TEMPORARY\s+)?TABLE|ALTER\s+TABLE\b.*\bRENAME)\b/is', (string) $sql))
+		if(preg_match('/^\s*(?:(?:CREATE|DROP|RENAME)\s+(?:TEMPORARY\s+)?TABLE|ALTER\s+TABLE\b.*\bRENAME)\b/is', $sql))
 		{
 			$this->resetTableList();
+		}
+		elseif(preg_match('/^\s*(?:CREATE|DROP|ALTER)\b/i', $sql))
+		{
+			$this->_forgetTableSchemas();
 		}
 	}
 
@@ -1011,7 +1705,7 @@ trait ConnectionTrait
 		// randomize fields that must be unique.
 		foreach ($fieldList as $fld) {
 			if (isset($unique[$fld])) {
-				$flds[] = $unique[$fld] === 'PRIMARY' ? 0 :
+				$flds[] = $unique[$fld] === 'PRIMARY' ? ($this->getPlatform()->assignsAutoIncrementOnZero() ? 0 : 'NULL') :
 					"'rand-" . e107::getUserSession()->generateRandomString('***********') . "'";
 				continue;
 			}
@@ -1046,25 +1740,16 @@ trait ConnectionTrait
 			$this->gen("DROP TABLE IF EXISTS {$new}");
 		}
 
-		//Get $old table structure
-		$this->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
-
-		$qry = "SHOW CREATE TABLE {$old}";
-		if ($this->gen($qry))
-		{
-			$row = $this->fetch('num');
-			$qry = $row[1];
-			//        $qry = str_replace($old, $new, $qry);
-			$qry = preg_replace("#CREATE\sTABLE\s`?".$old."`?\s#", "CREATE TABLE {$new} ", $qry, 1); // More selective search
-		}
-		else
-		{
-			return false;
-		}
+		$result = true;
 
 		if(!$this->isTable($newtable))
 		{
-			$result = $this->db_Query($qry);
+			$result = $this->getSchemaManager()->createTableLike($old, $new);
+		}
+
+		if($result === false)
+		{
+			return false;
 		}
 
 		if ($data) //We need to copy the data too
@@ -1129,6 +1814,25 @@ trait ConnectionTrait
 		$this->mySQLlastErrText = $text;
 
 		return false;
+	}
+
+	/**
+	 * Runs statements whose failure must not become the last error a caller reads.
+	 *
+	 * @param callable $run
+	 * @return mixed what $run returns
+	 */
+	private function _keepingLastError($run)
+	{
+		$errorNumber = $this->mySQLlastErrNum;
+		$errorText = $this->mySQLlastErrText;
+
+		$result = call_user_func($run);
+
+		$this->mySQLlastErrNum = $errorNumber;
+		$this->mySQLlastErrText = $errorText;
+
+		return $result;
 	}
 
 	/**
@@ -1370,11 +2074,12 @@ trait ConnectionTrait
 
 		$this->_getMySQLaccess();
 
-        $result = $this->gen("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table);
-        if ($result && ($this->rowCount() > 0))
+		$rows = $this->getSchemaManager()->getColumnRows($this->mySQLPrefix.$table);
+
+		if (!empty($rows))
 		{
 			$c=0;
-			while ($row = $this->fetch())
+			foreach ($rows as $row)
 			{
 				if(is_numeric($fieldid))
 				{
@@ -1429,11 +2134,12 @@ trait ConnectionTrait
 		$check_field = count($fields) > 0;
 
 		$info = array();
-		$result = $this->gen("SHOW INDEX FROM ".$this->mySQLPrefix.$table);
-		if ($result && ($this->rowCount() > 0))
+		$rows = $this->getSchemaManager()->getIndexRows($this->mySQLPrefix.$table);
+
+		if (!empty($rows))
 		{
 			$c=0;
-			while ($row = $this->fetch())
+			foreach ($rows as $row)
 			{
 				// Check for match of key name - and allow that key might not be used
 				if($keyname == $row['Key_name'])
@@ -1622,38 +2328,61 @@ trait ConnectionTrait
 
 
 			$fieldTypes = $this->_getTypes($arg);
-			$keyList= '`'.implode('`,`', array_keys($arg['data'])).'`';
-			$tmp = array();
+			$platform = $this->getPlatform();
+			$quote = $platform->getIdentifierQuoteCharacter();
+			$columns = array();
+			$placeholders = array();
 			$bind = array();
 
 			foreach($arg['data'] as $fk => $fv)
 			{
-				$tmp[] = ':'.$fk;
+				$columns[] = $quote.$fk.$quote;
+				$placeholders[] = ':'.$fk;
 				$fieldType = isset($fieldTypes[$fk]) ? $fieldTypes[$fk] : null;
 				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldType,$fv), 'type'=> $this->_getPDOType($fieldType,$this->_getPDOValue($fieldType,$fv)));
 			}
 
-			$valList= implode(', ', $tmp);
-
-
-			unset($tmp);
-
-
-
-			if($REPLACE === false)
+			if(!$platform->assignsAutoIncrementOnZero() && ($auto = $this->getAutoIncrementColumn($tableName)) !== null
+				&& isset($bind[$auto]) && in_array($bind[$auto]['value'], array(0, '0', ''), true))
 			{
-				$query = "INSERT".$IGNORE." INTO ".$this->mySQLPrefix."{$table} ({$keyList}) VALUES ({$valList})";
+				$bind[$auto] = array('value' => null, 'type' => ConnectionInterface::PARAM_NULL);
+			}
 
-				if($DUPEKEY_UPDATE === true)
+			$physical = $this->mySQLPrefix.$table;
+			$tuples = array('('.implode(', ', $placeholders).')');
+
+			$conflicting = null;
+
+			if(($REPLACE === true || $DUPEKEY_UPDATE === true) && !$platform->countsConflictingRows())
+			{
+				$values = array();
+
+				foreach($bind as $column => $bound)
 				{
-					$query .= " ON DUPLICATE KEY UPDATE ";
-					$query .= $this->_prepareUpdateArg($tableName, $argUpdate);
+					$values[$column] = $bound['value'];
 				}
 
+				$conflicting = $this->_countConflictingRows($tableName, $values);
+			}
+
+			if($REPLACE === true)
+			{
+				$query = $platform->compileReplace($physical, $columns, $placeholders);
+			}
+			elseif($DUPEKEY_UPDATE === true)
+			{
+				try
+				{
+					$query = $platform->compileUpsert($physical, $columns, $tuples, $this->_prepareUpdateAssignments($tableName, $argUpdate), array(), ($IGNORE !== '') ? 'IGNORE' : '');
+				}
+				catch(\e107\Database\Exception\UnsupportedException $e)
+				{
+					return $this->_refuse($e->getMessage());
+				}
 			}
 			else
 			{
-				$query = "REPLACE INTO ".$this->mySQLPrefix."{$table} ({$keyList}) VALUES ({$valList})";
+				$query = $platform->compileInsert($physical, $columns, $tuples, ($IGNORE !== '') ? 'IGNORE' : '');
 			}
 
 
@@ -1678,6 +2407,11 @@ trait ConnectionTrait
 		{
 			$result = false; // ie. there was an error.
 
+			if($conflicting !== null && $this->mySQLresult === 1)
+			{
+				$this->mySQLresult = ($conflicting > 0) ? 2 : 1;
+			}
+
 			if($this->mySQLresult === 1 ) // insert.
 			{
 				$result = $this->lastInsertId();
@@ -1685,8 +2419,6 @@ trait ConnectionTrait
 			elseif($this->mySQLresult === 2 || $this->mySQLresult === true) // updated
 			{
 				$result = true;
-				// reset auto-increment to prevent gaps.
-				$this->db_Query("ALTER TABLE ".$this->mySQLPrefix.$table."  AUTO_INCREMENT=1", NULL, 'db_Insert', $debug, $log_type, $log_remark);
 			}
 			elseif($this->mySQLresult === 0) // updated (no change)
 			{
@@ -1694,6 +2426,17 @@ trait ConnectionTrait
 			}
 
 			$this->dbError('db_Insert');
+
+			// reset auto-increment to prevent gaps.
+			if($result === true && ($reset = $platform->compileAutoIncrementReset($physical)) !== null
+				&& ($platform->resetsAutoIncrementOnAnyTable() || $this->getAutoIncrementColumn($tableName) !== null))
+			{
+				$this->_keepingLastError(function() use ($reset, $debug, $log_type, $log_remark)
+				{
+					return $this->db_Query($reset, NULL, 'db_Insert', $debug, $log_type, $log_remark);
+				});
+			}
+
 			return $result;
 		}
 
@@ -1702,7 +2445,7 @@ trait ConnectionTrait
 		{
 			if(true === $REPLACE)
 			{
-				$tmp = $this->mySQLresult ;
+				$tmp = ($conflicting !== null && is_int($this->mySQLresult)) ? $this->mySQLresult + $conflicting : $this->mySQLresult;
 				$this->dbError('db_Replace');
 				// $tmp == -1 (error), $tmp == 0 (not modified), $tmp == 1 (added), greater (replaced)
 				if ($tmp == -1) { return false; } // mysql_affected_rows error
@@ -1711,7 +2454,8 @@ trait ConnectionTrait
 
 		//	$tmp = ($this->pdo) ? $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);
 
-			$tmp = $this->lastInsertId();
+			$tmp = ($this->getPlatform()->reportsInsertIdForEveryTable() && $this->getAutoIncrementColumn($tableName) === null)
+				? true : $this->lastInsertId();
 
 			$this->dbError('db_Insert');
 			return ($tmp) ? $tmp : TRUE; // return true even if table doesn't have auto-increment.
@@ -1747,59 +2491,77 @@ trait ConnectionTrait
 		$this->pdoBind = array();
 		if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
 	  	{
+			$where = isset($arg['WHERE']) ? ' WHERE '.$arg['WHERE'] : '';
 
-			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
-		   	{
-			   	//Convert data if not using 'new' format
-		   		$_tmp = array();
-		   		if(isset($arg['WHERE']))
-		   		{
-		   			$_tmp['WHERE'] = $arg['WHERE'];
-		   			unset($arg['WHERE']);
-		   		}
-		   		$_tmp['data'] = $arg;
-		   		$arg = $_tmp;
-		   		unset($_tmp);
-		   	}
-
-	   		if(!isset($arg['data'])) { return false; }
-
-			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']))
+			if(($assignments = $this->_prepareUpdateAssignments($tableName, $arg)) === false)
 			{
-				$fieldDefs = $this->getFieldDefs($tableName);
-				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
+				return false;
 			}
 
-			$fieldTypes = $this->_getTypes($arg);
+			$new_data = array();
 
-
-			$new_data = '';
-			//$this->pdoBind = array(); // moved up to the beginning of the method to make sure it is initialized properly
-			foreach ($arg['data'] as $fn => $fv)
+			foreach($assignments as $column => $expression)
 			{
-				$new_data .= ($new_data ? ', ' : '');
-				$ftype =  isset($fieldTypes[$fn]) ? $fieldTypes[$fn] : 'str';
-
-				$new_data .= ($ftype !='cmd') ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
-
-				if($fv === '_NULL_')
-				{
-					$ftype = 'null';
-				}
-
-				if($ftype != 'cmd')
-				{
-					$this->pdoBind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype,$this->_getPDOValue($ftype,$fv)));
-				}
+				$new_data[] = $column.'= '.$expression;
 			}
 
-			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
-
+			$arg = implode(', ', $new_data).$where;
 		}
 
 		return $arg;
 
+	}
+
+	/**
+	 * The assignments of a legacy update() argument, or of an insert's _DUPLICATE_KEY_UPDATE, with their binds in {@see ConnectionTrait::$pdoBind}.
+	 *
+	 * @param string $tableName
+	 * @param array $arg the argument as the caller gave it
+	 * @return array|false quoted column => value expression; false without data
+	 */
+	private function _prepareUpdateAssignments($tableName, array $arg)
+	{
+		$this->pdoBind = array();
+
+		if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
+		{
+			unset($arg['WHERE']);
+			$arg = array('data' => $arg);
+		}
+
+		if(!isset($arg['data']))
+		{
+			return false;
+		}
+
+		// See if we need to auto-add field types array
+		if(!isset($arg['_FIELD_TYPES']))
+		{
+			$fieldDefs = $this->getFieldDefs($tableName);
+			if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
+		}
+
+		$fieldTypes = $this->_getTypes($arg);
+		$quote = $this->getPlatform()->getIdentifierQuoteCharacter();
+		$assignments = array();
+
+		foreach ($arg['data'] as $fn => $fv)
+		{
+			$ftype = isset($fieldTypes[$fn]) ? $fieldTypes[$fn] : 'str';
+			$assignments[$quote.$fn.$quote] = ($ftype != 'cmd') ? ':'.$fn : $this->_getFieldValue($fn, $fv, $fieldTypes);
+
+			if($fv === '_NULL_')
+			{
+				$ftype = 'null';
+			}
+
+			if($ftype != 'cmd')
+			{
+				$this->pdoBind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype,$this->_getPDOValue($ftype,$fv)));
+			}
+		}
+
+		return $assignments;
 	}
 
 	/**
@@ -1829,7 +2591,7 @@ trait ConnectionTrait
 			return $this->_refuse("update() needs a data array");
 		}
 
-		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
+		$query = $this->_compileUpdateText($this->mySQLPrefix.$table, $arg);
 
 		if(!empty($this->pdoBind))
 		{
@@ -1860,6 +2622,100 @@ trait ConnectionTrait
 			$this->dbError('db_Update ('.print_r($query, true).')');
 			return false;
 		}
+	}
+
+	/**
+	 * The UPDATE for update()'s text: compiled by the platform when it is assignments, a WHERE and a LIMIT, else as written.
+	 *
+	 * @param string $physicalTable
+	 * @param string $text the SET clause and what follows it, as update() takes it
+	 * @return string the UPDATE statement
+	 */
+	private function _compileUpdateText($physicalTable, $text)
+	{
+		if(!class_exists(SqlLexer::class))
+		{
+			require_once(__DIR__.'/SqlLexer.php');
+		}
+
+		$written = 'UPDATE '.$physicalTable.' SET '.$text;
+		$tokens = SqlLexer::mysql()->tokenize($text.';');
+
+		if(array_column($tokens, 'text') !== array_column(SqlLexer::sqlite()->tokenize($text.';'), 'text') || array_pop($tokens)['text'] !== ';')
+		{
+			return $written;
+		}
+
+		$clauses = array('SET' => array(array()), 'WHERE' => null, 'LIMIT' => null);
+		$order = array_keys($clauses);
+		$clause = 'SET';
+		$depth = 0;
+
+		foreach($tokens as $token)
+		{
+			$depth += ($token['text'] === '(') - ($token['text'] === ')');
+			$keyword = ($depth === 0 && $token['type'] === SqlLexer::T_WORD) ? strtoupper($token['text']) : '';
+
+			if($depth < 0 || $token['type'] === SqlLexer::T_COMMENT || $token['text'] === ';' || $keyword === 'ORDER')
+			{
+				return $written;
+			}
+
+			if(in_array($keyword, $order, true))
+			{
+				if(array_search($keyword, $order, true) <= array_search($clause, $order, true))
+				{
+					return $written;
+				}
+
+				$clause = $keyword;
+				$clauses[$clause] = array(array());
+			}
+			elseif($depth === 0 && $token['text'] === ',')
+			{
+				if($clause !== 'SET')
+				{
+					return $written;
+				}
+
+				$clauses['SET'][] = array();
+			}
+			else
+			{
+				$clauses[$clause][count($clauses[$clause]) - 1][] = $token;
+			}
+		}
+
+		$join = function (array $tokens)
+		{
+			return trim(implode('', array_column($tokens, 'text')));
+		};
+		$assignments = array();
+		$columns = array();
+
+		foreach($clauses['SET'] as $item)
+		{
+			$at = array_keys(array_diff(array_column($item, 'type'), array(SqlLexer::T_WHITESPACE)));
+
+			if(count($at) < 3 || $item[$at[1]]['text'] !== '=' || isset($columns[strtolower($item[$at[0]]['value'])])
+				|| !in_array($item[$at[0]]['type'], array(SqlLexer::T_WORD, SqlLexer::T_QUOTED_IDENTIFIER), true))
+			{
+				return $written;
+			}
+
+			$columns[strtolower($item[$at[0]]['value'])] = true;
+			$assignments[$item[$at[0]]['text']] = $join(array_slice($item, $at[1] + 1));
+		}
+
+		$where = ($clauses['WHERE'] === null) ? null : $join($clauses['WHERE'][0]);
+		$limit = ($clauses['LIMIT'] === null) ? null : $join($clauses['LIMIT'][0]);
+
+		if($depth !== 0 || $where === '' || ($limit !== null && (!ctype_digit($limit) || (string) (int) $limit !== $limit)))
+		{
+			return $written;
+		}
+
+		return $this->getPlatform()->compileUpdate($physicalTable, $assignments, ($where === null) ? '' : ' WHERE '.$where, ($limit === null) ? null : (int) $limit);
 	}
 
 	/**

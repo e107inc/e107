@@ -203,6 +203,11 @@ class system_tools
 			'backup'				=> array('diz'=>DBLAN_68,'label'=>DBLAN_69, 'icon'=>'fas-archive.glyph')
 		);
 		
+		if(!$this->hasCharsets())
+		{
+			unset($this->_options['convert_to_utf8']);
+		}
+
 		$this->_options['multisite'] = array(
 			'diz' => defset('DBLAN_MULTISITE_HELP', "The site folders under e107_media/ and e107_system/: this site's own, and any left behind or shared with another site."),
 			'label' => defset('DBLAN_MULTISITE', "Multi-Site"),
@@ -290,7 +295,7 @@ class system_tools
 			return;
 		}
 		
-		if(isset($_POST['convert_to_utf8']) ||  $_GET['mode'] =='convert_to_utf8')
+		if((isset($_POST['convert_to_utf8']) ||  $_GET['mode'] =='convert_to_utf8') && $this->hasCharsets())
 		{
 			$this->convertUTF8Form();
 		}
@@ -321,7 +326,7 @@ class system_tools
 			$this->plugin_viewscan('refresh');
 		}
 		
-		if(!empty($_POST['create_multisite']))
+		if(!empty($_POST['create_multisite']) && $this->hasDatabaseServer())
 		{
 			$this->multiSiteProcess();
 		}
@@ -336,7 +341,7 @@ class system_tools
 			$this->removeSiteFolder($_POST['remove_site_folder']);
 		}
 
-		if(!empty($_POST['perform_utf8_convert']))
+		if(!empty($_POST['perform_utf8_convert']) && $this->hasCharsets())
 		{
 			$this->perform_utf8_convert();
 			return;
@@ -677,6 +682,22 @@ class system_tools
 
 
 	/**
+	 * @return bool whether the site's database engine keeps a character set per table and column
+	 */
+	private function hasCharsets()
+	{
+		return e107::getDb()->getPlatform()->supportsCharsets();
+	}
+
+	/**
+	 * @return bool whether the site's database is a server, on which another site's database can be created
+	 */
+	private function hasDatabaseServer()
+	{
+		return e107::getDb()->getDriver()->requiresServer();
+	}
+
+	/**
 	 * @deprecated
 	 * @return false
 	 */
@@ -684,7 +705,7 @@ class system_tools
 	{
 		$text = $this->siteFoldersForm();
 
-		if(deftrue('e_DEVELOPER'))
+		if(deftrue('e_DEVELOPER') && $this->hasDatabaseServer())
 		{
 			$text .= $this->multiSiteCreateForm();
 		}
@@ -1818,21 +1839,35 @@ class system_tools
 	{
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$database = e107::getMySQLConfig('defaultdb');
 		$optimized = true;
 
-		foreach(e107::getDb()->tables() as $table)
+		if($sql->getPlatform()->optimizesWholeDatabase())
 		{
-			if(($reason = $this->optimizeOne($table)) !== null)
+			if(($reason = $this->optimizeOne($sql->tables())) !== null)
 			{
-				$mes->addError($tp->lanVars(defset('DBLAN_OPTIMIZE_TABLE_FAILED', 'Table [x] was not optimized: [y]'),
-					array('x' => htmlspecialchars(MPREFIX.$table, ENT_QUOTES, 'UTF-8'), 'y' => htmlspecialchars($reason, ENT_QUOTES, 'UTF-8'))));
+				$mes->addError($tp->lanVars(defset('DBLAN_OPTIMIZE_DATABASE_FAILED', 'Database [x] was not optimized: [y]'),
+					array('x' => htmlspecialchars($database, ENT_QUOTES, 'UTF-8'), 'y' => htmlspecialchars($reason, ENT_QUOTES, 'UTF-8'))));
 				$optimized = false;
+			}
+		}
+		else
+		{
+			foreach($sql->tables() as $table)
+			{
+				if(($reason = $this->optimizeOne($table)) !== null)
+				{
+					$mes->addError($tp->lanVars(defset('DBLAN_OPTIMIZE_TABLE_FAILED', 'Table [x] was not optimized: [y]'),
+						array('x' => htmlspecialchars(MPREFIX.$table, ENT_QUOTES, 'UTF-8'), 'y' => htmlspecialchars($reason, ENT_QUOTES, 'UTF-8'))));
+					$optimized = false;
+				}
 			}
 		}
 
 		if($optimized)
 		{
-			$mes->addSuccess($tp->lanVars(DBLAN_11, e107::getMySQLConfig('defaultdb')));
+			$mes->addSuccess($tp->lanVars(DBLAN_11, $database));
 		}
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_7, $mes->render());
@@ -1841,16 +1876,16 @@ class system_tools
 	}
 
 	/**
-	 * @param string $table logical table name, as {@see \e107\Database\ConnectionInterface::tables()} lists it
-	 * @return string|null why the table was not optimized, or null when it was
+	 * @param string|string[] $tables logical table names, as {@see \e107\Database\ConnectionInterface::tables()} lists them
+	 * @return string|null why they were not optimized, or null when they were
 	 */
-	private function optimizeOne($table)
+	private function optimizeOne($tables)
 	{
 		$sql = e107::getDb();
 
 		try
 		{
-			$result = $sql->schema()->optimizeTable($table);
+			$result = $sql->schema()->optimizeTable($tables);
 		}
 		catch(InvalidArgumentException $e)
 		{

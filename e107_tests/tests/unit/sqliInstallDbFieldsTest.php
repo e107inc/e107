@@ -137,6 +137,31 @@ class sqliInstallDbFieldsTest extends \Test\Unit
 		);
 	}
 
+	public function testADatabaseFileBesideTheE107FolderIsProbedThroughTheUrlThatReachesIt()
+	{
+		$dir = codecept_output_dir().'exposure_probe_'.getmypid();
+		mkdir($dir.'/html/e107', 0777, true);
+		mkdir($dir.'/html/data');
+
+		try
+		{
+			$base = str_replace('\\', '/', realpath($dir));
+			$installer = $this->installer();
+			$installer->previous_steps = array('mysql' => array('driver' => 'sqlite', 'db' => $base.'/html/data/site.sqlite'));
+			$probe = new \e107\Reflection\ReflectionMethod(self::$renamedClass, 'databaseExposureProbe');
+
+			$this->assertStringContainsString("data-url='/e107/../data/site.sqlite'", $probe->invoke($installer, $base.'/html/e107/', '/e107/'));
+			$this->assertSame('', $probe->invoke($installer, $base.'/html/e107/', '/'), 'above the site\'s URL root a URL reaches some other file');
+		}
+		finally
+		{
+			rmdir($dir.'/html/data');
+			rmdir($dir.'/html/e107');
+			rmdir($dir.'/html');
+			rmdir($dir);
+		}
+	}
+
 	/**
 	 * Token-walk the class definition out of install.php so it can be eval'd
 	 * without running the file's top-level installer bootstrap. Copied from

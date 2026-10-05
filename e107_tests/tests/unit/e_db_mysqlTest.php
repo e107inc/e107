@@ -19,6 +19,8 @@ class e_db_mysqlTest extends e_db_abstractTest
 
 	protected function _before()
 	{
+		$this->requireDatabaseDriver('mysql', 'e_db_mysql is the mysqli client, which speaks to MySQL alone');
+
 		require_once(e_HANDLER."mysql_class.php");
 		try
 		{
@@ -47,6 +49,11 @@ class e_db_mysqlTest extends e_db_abstractTest
 
 	public function _after()
 	{
+		if($this->db === null)
+		{
+			return; // skipped before a connection was made
+		}
+
 		$db_impl = $this->getDbImplementation();
 		if (@empty($db_impl->server_info)) return;
 
@@ -119,5 +126,25 @@ class e_db_mysqlTest extends e_db_abstractTest
 		// A plain charset token is accepted (empty message, no error).
 		$this->assertSame('', $db->db_Set_Charset('utf8mb4'),
 			'db_Set_Charset() must still accept a plain charset token');
+	}
+
+	public function testATransactionOutlivesChoosingTheDriverTheSessionAlreadyHas()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->db->useDriver('mysql');
+			$this->assertTrue($this->db->inTransaction());
+
+			$this->assertTrue($this->db->rollBack());
+			$this->assertSame(array(), $this->transactionIds($table));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
 	}
 }

@@ -105,14 +105,16 @@ final class SqlFileCatalogue
 				throw new InvalidArgumentException('Unnamed CREATE TABLE statement in "'.$sqlFile.'" (statement '.$statement.').');
 			}
 
-			$options = $this->_parseTableOptions((string) substr($sqlText, $bodyEnd + 1, $end - $bodyEnd - 1), $sqlFile);
+			$tail = (string) substr($sqlText, $bodyEnd + 1, $end - $bodyEnd - 1);
+			$options = $this->_parseTableOptions($tail, $sqlFile);
 
 			$tables[$name] = new DeclaredTable(
 				$sqlFile,
 				$name,
 				$this->_cleanBody((string) substr($sqlText, $bodyStart, $bodyEnd - $bodyStart)),
 				$options['engine'],
-				$options['charset']
+				$options['charset'],
+				$tail
 			);
 		}
 

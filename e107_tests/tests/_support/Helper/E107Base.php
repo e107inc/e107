@@ -119,6 +119,8 @@ abstract class E107Base extends Base
         $db = $this->getModule('\Helper\DelayedDb');
 
         return $twig->render('e107_config.php', [
+            'driver'         => $db->_getDbDriver(),
+            'mysql_compat'   => $db->_getDbMysqlCompat(),
             'mySQLserver'    => $db->_getDbHostname(),
             'mySQLuser'      => $db->_getDbUsername(),
             'mySQLpassword'  => $db->_getDbPassword(),

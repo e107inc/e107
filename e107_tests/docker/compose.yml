@@ -68,7 +68,9 @@ services:
       db:
         condition: service_healthy
     environment:
-      E107_DB_HOST: db
+      # Empty on a SQLite env, which has no db service for the entrypoint to
+      # wait for.
+      E107_DB_HOST: ${E107_DB_HOST-db}
       E107_DB_PORT: "3306"
       E107_DB_USER: ${E107_DB_USER}
       E107_DB_PASSWORD: ${E107_DB_PASSWORD}

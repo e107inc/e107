@@ -41,7 +41,7 @@ class list_news
 		}
 		else
 		{
-			$qry = " (n.news_start=0 || n.news_start < ".time().") AND (n.news_end=0 || n.news_end>".time().") ";
+			$qry = " (n.news_start=0 OR n.news_start < ".time().") AND (n.news_end=0 OR n.news_end>".time().") ";
 		}
 
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);

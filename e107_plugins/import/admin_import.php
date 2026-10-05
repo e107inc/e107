@@ -482,6 +482,15 @@ class import_main_ui extends e_admin_ui
 
 		if($proObj->sourceType == 'db' || !$proObj->sourceType) // STANDARD db Setup 
 		{
+			if(!e107::getDb()->getDriver()->requiresServer())
+			{
+				$mes->addWarning(defset('LAN_CONVERT_NEEDS_DATABASE_SERVER', "Importing from another database needs a site on a MySQL or MariaDB server. This site keeps its database in a file, so it has no other databases to read."));
+				$this->addTitle($importType);
+				echo $mes->render();
+
+				return;
+			}
+
 	    	$databases = $this->getDatabases();
 	    	$prefix = (varset($_POST['dbParamPrefix']) ? $_POST['dbParamPrefix'] : $proObj->mprefix);
 	/*

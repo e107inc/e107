@@ -741,17 +741,13 @@ class mailoutAdminClass extends e107MailManager
 			$sel = ($k == $curSel) ? " selected='selected'" : '';
 			$ret .= "<option value='{$k}'{$sel}>{$v}</option>\n";
 		}
-		$this->db2->execute("SELECT uc.*, count(u.user_id) AS members
-				FROM #userclass_classes AS uc
-				LEFT JOIN #user AS u ON u.user_class REGEXP concat('(^|,)',uc.userclass_id,'(,|$)')
-				WHERE NOT uc.userclass_id IN (:ucPublic, :ucNobody, :ucReadonly, :ucBots)
-				GROUP BY uc.userclass_id
-						", array(
-			'ucPublic'   => (int) e_UC_PUBLIC,
-			'ucNobody'   => (int) e_UC_NOBODY,
-			'ucReadonly' => (int) e_UC_READONLY,
-			'ucBots'     => (int) e_UC_BOTS
-		));
+		$classes = $this->db2->createQueryBuilder();
+		$classes->select('uc.*')->selectAggregate('COUNT', 'u.user_id', 'members')
+			->from('userclass_classes', 'uc')
+			->leftJoin('user', 'u', $classes->expr()->findColumnInSet('u.user_class', 'uc.userclass_id'))
+			->whereNotIn('uc.userclass_id', array((int) e_UC_PUBLIC, (int) e_UC_NOBODY, (int) e_UC_READONLY, (int) e_UC_BOTS))
+			->groupBy('uc.userclass_id')
+			->execute();
 		while ($row = $this->db2->fetch())
 		{
 			$public = ($row['userclass_editclass'] == e_UC_PUBLIC) ? "(" . LAN_MAILOUT_10 . ")" : "";
@@ -1506,9 +1502,12 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		// Now look for 'orphaned' recipient records
-		if (($res = $this->db2->execute("DELETE `#mail_recipients` FROM `#mail_recipients`
-					LEFT JOIN `#mail_content` ON `#mail_recipients`.`mail_detail_id` = `#mail_content`.`mail_source_id`
-					WHERE `#mail_content`.`mail_source_id` IS NULL")) === false)
+		$orphans = $this->db2->createQueryBuilder()->delete('mail_recipients')
+			->whereNotIn('mail_detail_id', function($q)
+			{
+				$q->select('mail_source_id')->from('mail_content');
+			});
+		if (($res = $orphans->execute()) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' deleting orphaned records from mail_recipients';
 			$noError = false;

@@ -952,9 +952,12 @@ Following fields auto-filled in code as required:
 
 		if ($force) // Remove 'orphaned' extended user field records
 		{
-			// Boundary: builder delete() is single-table and cannot express a multi-table DELETE ... LEFT JOIN, so this stays on the sanctioned bound execute() (SQL fully static, no values, static identifiers - injection-proof).
-			$sql->execute("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id` = `#user`.`user_id`
-					WHERE `#user`.`user_id` IS NULL");
+			$sql->createQueryBuilder()->delete('user_extended')
+				->whereNotIn('user_extended_id', function($q)
+				{
+					$q->select('user_id')->from('user');
+				})
+				->execute();
 		}
 
 		return $temp1;

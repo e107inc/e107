@@ -61,15 +61,15 @@ final class AddIndex extends AbstractChange
 
 	/**
 	 * @param SchemaBuilder $schema
-	 * @return string
+	 * @return string|string[]
 	 * @throws RuntimeException when the index carries no captured key clause.
 	 */
 	public function toSql(SchemaBuilder $schema)
 	{
 		$definition = $this->captured($this->index->getDdl(), 'index `'.$this->index->getName().'`');
 
-		return $schema->tablePhysical($this->getTable())
+		return self::rendered($schema->tablePhysical($this->getTable())
 			->addIndex($definition)
-			->getSQL();
+			->getStatements());
 	}
 }

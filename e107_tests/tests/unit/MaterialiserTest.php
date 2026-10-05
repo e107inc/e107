@@ -35,13 +35,18 @@ class MaterialiserTest extends \Test\Unit
 
 	protected function _before()
 	{
+		$this->requireDatabaseDriver('mysql', "it pins the server's own SHOW CREATE TABLE text, storage engines and character sets; SqliteDriverTest materialises on SQLite");
+
 		$this->db = e107::getDb();
 		$this->materialiser = new Materialiser($this->db, new SchemaReader($this->db), MPREFIX);
 	}
 
 	protected function _after()
 	{
-		$this->materialiser->sweep();
+		if($this->materialiser !== null)
+		{
+			$this->materialiser->sweep();
+		}
 	}
 
 	// --- the scratch table ------------------------------------------------
@@ -399,7 +404,7 @@ class MaterialiserTest extends \Test\Unit
 	 */
 	public function testTheCounterStripRemovesTheCounterAndNothingElse($options, $expected, $why)
 	{
-		$strip = new ReflectionMethod('e107\\Database\\Schema\\Declared\\Materialiser', '_withoutAutoIncrement');
+		$strip = new ReflectionMethod('e107\\Database\\Schema\\Introspect\\MysqlCreateStatement', 'withoutAutoIncrement');
 
 		$this->assertSame($expected, $strip->invoke(null, $options), $why);
 	}

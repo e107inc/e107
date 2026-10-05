@@ -61,12 +61,16 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	public function testGetMode()
 	{
+		$this->requireDatabaseDriver('mysql', 'the session sql_mode is a MySQL setting');
+
 		$actual = $this->db->getMode();
 		$this->assertEquals('NO_ENGINE_SUBSTITUTION', $actual);
 	}
 
 	public function testDb_Connect()
 	{
+		$this->requireDatabaseDriver('mysql', 'logs in to a database server with a user and password');
+
 		$result = $this->db->db_Connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], $this->dbConfig['mySQLdefaultdb']);
 		$this->assertTrue($result);
 
@@ -89,6 +93,8 @@ abstract class e_db_abstractTest extends \Test\Unit
 	 */
 	public function testConnect()
 	{
+		$this->requireDatabaseDriver('mysql', 'logs in to a database server with a user and password');
+
 		$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], "wrong Password");
 		$this->assertFalse($result);
 
@@ -99,14 +105,60 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertTrue($result);
 	}
 
+	public function testTheDriverIsTheOneTheConfigNames()
+	{
+		$configured = e107::getMySQLConfig('driver');
+
+		$this->assertSame($configured ? $configured : 'mysql', $this->db->getDriver()->getName());
+		$this->assertSame(get_class($this->db->getDriver()->createPlatform()), get_class($this->db->getPlatform()));
+	}
+
+	public function testUseDriverRefusesAnUnknownEngine()
+	{
+		$this->expectException(InvalidArgumentException::class);
+
+		$this->db->useDriver('nosuchengine');
+	}
+
+	public function testUseDriverSwitchesTheDialectWithTheEngine()
+	{
+		$driver = \e107\Database\Driver\DriverRegistry::create(e107::getDb()->getDriver()->getName());
+
+		$this->assertSame($this->db, $this->db->useDriver($driver));
+		$this->assertSame($driver, $this->db->getDriver());
+		$this->assertInstanceOf(get_class($driver->createPlatform()), $this->db->getPlatform());
+
+		// a session opened through the new driver works as before
+		$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+		$this->assertTrue($this->db->isTable('user'));
+	}
+
+	public function testASessionStartsInTheModeTheDriverSets()
+	{
+		$this->requireDatabaseDriver('mysql', 'sql_mode is a MySQL setting');
+
+		$driver = $this->make(\e107\Database\Driver\MysqlDriver::class, array(
+			'getSessionStatements' => array("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION,PIPES_AS_CONCAT';"),
+		));
+
+		$this->db->useDriver($driver);
+		$this->assertTrue($this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']));
+		$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+
+		$this->assertStringContainsString('PIPES_AS_CONCAT', $this->db->getMode());
+	}
+
 	/**
-	 * A refused connection records the driver error number rather than the SQLSTATE; before PHP 7.3.22 and 7.4.10 the exception carries no errorInfo at all and the number is only in its code, which is why {@see e_db_pdo::_errorNumber()} reads both.
+	 * A refused connection records the driver error number, not the SQLSTATE; {@see \e107\Database\Driver\MysqlDriver::errorNumber()} reads it from errorInfo, or from the exception code before PHP 7.3.22 and 7.4.10.
 	 *
 	 * @see https://github.com/e107inc/e107/issues/5993
 	 * @see https://github.com/e107inc/e107/issues/6040
 	 */
 	public function testARefusedConnectionRecordsTheDriverErrorNumber()
 	{
+		$this->requireDatabaseDriver('mysql', 'a database server refuses a wrong password');
+
 		$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], 'wrong password');
 
 		$this->assertFalse($result, 'precondition: the connection has to be refused');
@@ -121,6 +173,8 @@ abstract class e_db_abstractTest extends \Test\Unit
 	 */
 	public function testConnectUsesTheConfiguredPort()
 	{
+		$this->requireDatabaseDriver('mysql', 'a port belongs to a database server');
+
 		$server = $this->dbConfig['mySQLserver'];
 		$user = $this->dbConfig['mySQLuser'];
 		$password = $this->dbConfig['mySQLpassword'];
@@ -188,8 +242,16 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 		$result = $this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX,  true);
 		$this->assertTrue($result);
-		$this->assertEquals("`".$this->dbConfig["mySQLdefaultdb"]."`.".\Helper\Unit::E107_MYSQL_PREFIX,
-			$this->db->mySQLPrefix);
+
+		if($this->db->getDriver()->requiresServer())
+		{
+			$quote = $this->db->getPlatform()->getIdentifierQuoteCharacter();
+			$this->assertEquals($quote.$this->dbConfig["mySQLdefaultdb"].$quote.".".\Helper\Unit::E107_MYSQL_PREFIX,
+				$this->db->mySQLPrefix);
+		}
+
+		$this->assertNotFalse($this->db->gen('SELECT user_id FROM '.$this->db->mySQLPrefix.'user WHERE user_id = 1'),
+			'the qualified prefix has to name the database\'s tables');
 	}
 
 	/**
@@ -570,7 +632,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 		$this->assertInstanceOf('e_db_query', $qb);
 		$this->assertInstanceOf('e_db_expr', $qb->expr());
-		$this->assertInstanceOf('e_db_platform_mysql', $this->db->getPlatform());
+		$this->assertInstanceOf('e107\Database\Platform\PlatformInterface', $this->db->getPlatform());
 		$this->assertSame($this->db->getPlatform(), $qb->getPlatform());
 	}
 
@@ -1086,10 +1148,6 @@ abstract class e_db_abstractTest extends \Test\Unit
 			"UPDATE `#user` SET user_signature = 'e_db' WHERE user_id = 1"
 		);
 		$this->assertEquals(1,$result);
-		$result = $this->db->db_Select_gen(
-			"UPDATE `#user` SET user_signature = 'e_db' WHERE user_id = 1"
-		);
-		$this->assertEquals(0,$result);
 
 
 		$qry = "INSERT INTO #core_media_cat(media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order) SELECT media_cat_owner,media_cat_title,media_cat_sef,media_cat_diz,media_cat_class,media_cat_image,media_cat_order FROM #core_media_cat WHERE media_cat_id = 1";
@@ -1106,6 +1164,40 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertFalse($result, $err);
 
 
+	}
+
+	public function testUpdateCountsTheRowsItChanged()
+	{
+		$this->db->delete('tmp');
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => 5, 'tmp_info' => 'same'));
+		$where = "tmp_ip = '127.0.0.1'";
+
+		$this->assertSame(0, $this->db->update('tmp', array('tmp_info' => 'same', 'WHERE' => $where)));
+		$this->assertSame(0, $this->db->update('tmp', array('data' => array('tmp_time' => 'tmp_time + 0'), '_FIELD_TYPES' => array('tmp_time' => 'cmd'), 'WHERE' => $where)));
+		$this->assertSame(0, $this->db->update('tmp', "tmp_info = 'same', tmp_time = 5 WHERE ".$where));
+		$this->assertSame(0, $this->db->update('tmp', "tmp_info = 'same' WHERE ".$where.' LIMIT 1'));
+		$this->assertSame(1, $this->db->update('tmp', "tmp_time = tmp_time + 1 WHERE ".$where));
+	}
+
+	public function testUpdateLimitPicksFromTheMatchedRowsBeforeSkippingTheUnchanged()
+	{
+		$this->db->delete('tmp');
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => 1, 'tmp_info' => 'done'));
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.2', 'tmp_time' => 2, 'tmp_info' => 'todo'));
+
+		$this->assertSame(0, $this->db->update('tmp', "tmp_info = 'done' WHERE tmp_time > 0 LIMIT 1"));
+		$this->assertSame('todo', $this->db->retrieve('tmp', 'tmp_info', "tmp_ip = '127.0.0.2'"));
+	}
+
+	public function testUpdateRunsTextItCannotSplitAsWritten()
+	{
+		$this->db->delete('tmp');
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.1', 'tmp_time' => 1, 'tmp_info' => 'first'));
+		$this->db->insert('tmp', array('tmp_ip' => '127.0.0.2', 'tmp_time' => 2, 'tmp_info' => 'second'));
+
+		$this->assertSame(1, $this->db->update('tmp', "tmp_info = 'noted' WHERE tmp_ip = '127.0.0.1' -- a comment"));
+		$this->assertSame(1, $this->db->update('tmp', "tmp_info = 'last' WHERE tmp_time > 0 ORDER BY tmp_time DESC LIMIT 1"));
+		$this->assertSame(array('noted', 'last'), array_column($this->db->retrieve('tmp', 'tmp_info', 'tmp_time > 0 ORDER BY tmp_time', true), 'tmp_info'));
 	}
 
 	public function testInsert()
@@ -1164,6 +1256,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	public function testFoundRows()
 	{
+		$this->requireDatabaseDriver('mysql', 'SELECT SQL_CALC_FOUND_ROWS is MySQL syntax; QueryBuilder::calcFoundRows() is the portable form');
 		$this->db->debugMode(false);
 		$this->db->gen('SELECT SQL_CALC_FOUND_ROWS * FROM `#user` WHERE user_id = 1');
 		$row = $this->db->fetch();
@@ -1180,12 +1273,27 @@ abstract class e_db_abstractTest extends \Test\Unit
 	 */
 	public function testFoundRowsOnAPreparedStatement()
 	{
+		$this->requireDatabaseDriver('mysql', 'SELECT SQL_CALC_FOUND_ROWS is MySQL syntax; QueryBuilder::calcFoundRows() is the portable form');
 		$this->db->debugMode(false);
 		$this->db->execute('SELECT SQL_CALC_FOUND_ROWS * FROM `#user` WHERE user_id = :id', array('id' => 1));
 		$row = $this->db->fetch();
 
 		$this->assertArrayHasKey('user_name', $row);
 		$this->assertEquals(1, $this->db->foundRows());
+	}
+
+	/**
+	 * The builder counts the rows a paged query matches on whatever engine the site runs.
+	 */
+	public function testTheBuilderCountsTheRowsAPagedQueryMatches()
+	{
+		$total = (int) $this->db->createQueryBuilder()->selectCount()->from('user')->fetchOne();
+
+		$qb = $this->db->createQueryBuilder();
+		$page = $qb->calcFoundRows()->select('user_id')->from('user')->orderBy('user_id', 'ASC')->setMaxResults(1)->fetchAll();
+
+		$this->assertCount(1, $page);
+		$this->assertSame($total, $qb->foundRows());
 	}
 
 	public function testDb_Rows()
@@ -1207,6 +1315,38 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertFalse($actual);
 		$this->db->debugMode(false);
 
+	}
+
+	public function testAnUpsertAskedToIgnoreErrorsIgnoresThemOrIsRefused()
+	{
+		try
+		{
+			$this->db->getPlatform()->compileUpsert('t', array('c'), array('(:c)'), array('c' => ':c'), array(), 'IGNORE');
+			$ignores = true;
+		}
+		catch(\e107\Database\Exception\UnsupportedException $e)
+		{
+			$ignores = false;
+		}
+
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1, 'v' => 'a'))->execute();
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 2, 'v' => 'b'))->execute();
+			$this->assertNotFalse($this->db->execute('CREATE UNIQUE INDEX e_db_txn_test_v ON `#'.$table.'` (v)'));
+
+			$result = $this->db->insert($table, array('data' => array('id' => 1, 'v' => 'b'), '_IGNORE' => true, '_DUPLICATE_KEY_UPDATE' => true));
+
+			$this->assertSame($ignores ? 0 : false, $result);
+			$this->assertSame($ignores ? 0 : -1, $this->db->getLastErrorNumber(), $this->db->getLastErrorText());
+			$this->assertSame(array('a', 'b'), $this->db->createQueryBuilder()->select('v')->from($table)->orderBy('id')->fetchColumn());
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
 	}
 
 	public function testReplace()
@@ -1242,6 +1382,48 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$result = $this->db->db_Replace('generic', $insert);
 
 		$this->assertNotEmpty($result);
+	}
+
+	public function testAWriteThatSettlesAKeyConflictReadsTheTableSchemaOnce()
+	{
+		$table = $this->transactionTable();
+		$statements = $this->db->getPlatform()->countsConflictingRows() ? 1 : 2;
+
+		try
+		{
+			$this->assertSame(1, $this->db->replace($table, array('id' => 1, 'v' => 'a')));
+
+			$before = $this->db->queryCount();
+			$this->assertSame(2, $this->db->replace($table, array('id' => 1, 'v' => 'b')));
+			$this->assertSame($statements, $this->db->queryCount() - $before, 'a second REPLACE read the schema again');
+
+			$before = $this->db->queryCount();
+			$this->assertSame(0, $this->db->insert($table, array('data' => array('id' => 1, 'v' => 'b'), '_DUPLICATE_KEY_UPDATE' => 1)));
+			$this->assertSame($statements, $this->db->queryCount() - $before, 'an upsert read the schema again');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testAReplaceCountsAKeyAddedAfterTheTableWasFirstWritten()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1, 'v' => 'a'))->execute();
+			$this->assertSame(1, $this->db->replace($table, array('id' => 2, 'v' => 'b')));
+
+			$this->assertNotFalse($this->db->execute('CREATE UNIQUE INDEX e_db_txn_test_v ON `#'.$table.'` (v)'));
+
+			$this->assertSame(2, $this->db->replace($table, array('id' => 3, 'v' => 'a')), 'the REPLACE missed the row the new key made it delete');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
 	}
 
 	public function testUpdate()
@@ -1480,8 +1662,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$row = $this->db->db_Fetch();
 		$this->assertArrayHasKey('user_ip', $row);
 
-		$qry = 'SHOW CREATE TABLE `'.MPREFIX."user`";
-		$this->db->gen($qry);
+		$this->db->gen("SELECT 'e107_user', 'CREATE TABLE `e107_user` (...)'");
 
 		$row = $this->db->db_Fetch('num');
 		$this->assertEquals('e107_user', $row[0]);
@@ -1500,8 +1681,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$row = $this->db->db_Fetch(MYSQL_ASSOC);
 		$this->assertArrayHasKey('user_ip', $row);
 
-		$qry = 'SHOW CREATE TABLE `'.MPREFIX."user`";
-		$this->db->gen($qry);
+		$this->db->gen("SELECT 'e107_user'");
 
 		$row = $this->db->db_Fetch(MYSQL_NUM);
 		$this->assertEquals('e107_user', $row[0]);
@@ -1533,6 +1713,8 @@ abstract class e_db_abstractTest extends \Test\Unit
 	}
 	public function testCloseEndsTheServerConnectionWithAResultOutstanding()
 	{
+		$this->requireDatabaseDriver('mysql', 'watches the connection leave the server\'s process list');
+
 		$id = (int) $this->db->retrieve('SELECT CONNECTION_ID()');
 		$this->assertGreaterThan(0, $id);
 		$this->assertNotFalse($this->db->select('user', 'user_id', 'user_id > 0'));
@@ -1704,7 +1886,15 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertEquals(123,$result);
 
 		$result = $this->db->escape("Can't", true);
-		$this->assertEquals("Can\'t", $result);
+
+		if($this->db->getDriver()->getName() === 'mysql')
+		{
+			$this->assertEquals("Can\'t", $result);
+		}
+
+		$this->db->gen("SELECT '".$result."' AS roundtrip");
+		$row = $this->db->fetch();
+		$this->assertSame("Can't", $row['roundtrip'], 'an escaped value has to read back as it was inside quotes');
 	}
 
 	public function testQuoteStringLiteral()
@@ -1870,6 +2060,530 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertEquals('French', $result);
 
 	}
+
+	/**
+	 * A table whose engine honours transactions, created for the transaction tests and dropped after each.
+	 *
+	 * @return string logical table name
+	 */
+	protected function transactionTable()
+	{
+		$this->db->dropTable('e_db_txn_test');
+		$this->createFixtureTable('e_db_txn_test', "id INT NOT NULL, v VARCHAR(10) NOT NULL DEFAULT '', PRIMARY KEY (id)", 'InnoDB');
+
+		return 'e_db_txn_test';
+	}
+
+	/**
+	 * Create a fixture table from a body in the schema DSL, built for the engine of the connection under test.
+	 *
+	 * @param string $table logical table name
+	 * @param string $body column and key definitions
+	 * @param string|null $engine storage engine, where the engine has them
+	 * @return int|bool
+	 */
+	private function createFixtureTable($table, $body, $engine = null)
+	{
+		return $this->db->schema()->createDeclaredTable(new \e107\Database\Schema\Declared\DeclaredTable('core', $table, $body, $engine, null));
+	}
+
+	/**
+	 * @param string $table
+	 * @return int[] the ids in the table, ascending
+	 */
+	protected function transactionIds($table)
+	{
+		return array_map('intval', $this->db->createQueryBuilder()->select('id')->from($table)->orderBy('id')->fetchColumn());
+	}
+
+	public function testATransactionKeepsWhatItCommitsAndDropsWhatItRollsBack()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertFalse($this->db->inTransaction());
+			$this->assertTrue($this->db->beginTransaction());
+			$this->assertTrue($this->db->inTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->commit());
+			$this->assertFalse($this->db->inTransaction());
+
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 2))->execute();
+			$this->assertTrue($this->db->rollBack());
+
+			$this->assertSame(array(1), $this->transactionIds($table));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testANestedTransactionRollsBackToItsOwnSavepoint()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->db->beginTransaction();
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+
+			$this->assertTrue($this->db->beginTransaction(), 'a nested begin sets a savepoint');
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 2))->execute();
+			$this->assertTrue($this->db->rollBack());
+			$this->assertTrue($this->db->inTransaction(), 'rolling the savepoint back leaves the outer transaction open');
+
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 3))->execute();
+			$this->assertTrue($this->db->commit());
+
+			$this->assertSame(array(1, 3), $this->transactionIds($table));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testTransactionalCommitsOnReturnAndRollsBackOnThrow()
+	{
+		$table = $this->transactionTable();
+		$db = $this->db;
+
+		try
+		{
+			$result = $db->transactional(function($sql) use ($table)
+			{
+				$sql->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+				return 'done';
+			});
+			$this->assertSame('done', $result);
+
+			try
+			{
+				$db->transactional(function($sql) use ($table)
+				{
+					$sql->createQueryBuilder()->insert($table)->values(array('id' => 2))->execute();
+					throw new RuntimeException('abandon');
+				});
+				$this->fail('The callback\'s exception was swallowed.');
+			}
+			catch(RuntimeException $e)
+			{
+				$this->assertSame('abandon', $e->getMessage());
+			}
+
+			$this->assertFalse($db->inTransaction());
+			$this->assertSame(array(1), $this->transactionIds($table));
+		}
+		finally
+		{
+			$db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testARollbackKeepsTheErrorThatLedToIt()
+	{
+		$this->db->beginTransaction();
+		$this->assertFalse($this->db->execute('SELECT * FROM `#e107_tests_no_such_table`'));
+		$this->db->beginTransaction();
+		$this->assertFalse($this->db->execute('SELECT * FROM `#e107_tests_no_such_table_either`'));
+		$errorNumber = $this->db->getLastErrorNumber();
+		$this->assertNotSame(0, $errorNumber);
+
+		$this->assertTrue($this->db->rollBack());
+		$this->assertSame($errorNumber, $this->db->getLastErrorNumber(), 'a savepoint rolled back keeps the error');
+		$this->assertStringContainsString('e107_tests_no_such_table_either', $this->db->getLastErrorText());
+
+		$this->assertFalse($this->db->execute('SELECT * FROM `#e107_tests_no_such_table`'));
+		$this->assertTrue($this->db->rollBack());
+		$this->assertSame($errorNumber, $this->db->getLastErrorNumber(), 'so does a whole transaction');
+		$this->assertStringContainsString('e107_tests_no_such_table', $this->db->getLastErrorText());
+	}
+
+	public function testCommittingOrRollingBackNothingIsRefused()
+	{
+		$this->assertFalse($this->db->commit());
+		$this->assertSame(-1, $this->db->getLastErrorNumber());
+		$this->assertFalse($this->db->rollBack());
+		$this->assertSame(-1, $this->db->getLastErrorNumber());
+	}
+
+	public function testEndingATransactionASchemaChangeCommittedSucceeds()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->assertNotFalse($this->db->execute('ALTER TABLE `#'.$table.'` ADD c2 INT'));
+			$this->assertFalse($this->db->execute('SELECT nope FROM `#'.$table.'`'));
+			$errorNumber = $this->db->getLastErrorNumber();
+			$errorText = $this->db->getLastErrorText();
+
+			$this->assertTrue($this->db->rollBack());
+			$this->assertSame($errorNumber, $this->db->getLastErrorNumber(), 'the rollback keeps the error that led to it');
+			$this->assertSame($errorText, $this->db->getLastErrorText());
+
+			$this->assertTrue($this->db->beginTransaction());
+			$this->assertNotFalse($this->db->execute('ALTER TABLE `#'.$table.'` ADD c3 INT'));
+			$this->assertTrue($this->db->commit());
+			$this->assertFalse($this->db->inTransaction());
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testATransactionNestedAroundASchemaChangeEnds()
+	{
+		$table = $this->transactionTable();
+		$db = $this->db;
+		$open = null;
+
+		try
+		{
+			$db->transactional(function($outer) use ($table, &$open)
+			{
+				$outer->transactional(function($inner) use ($table, &$open)
+				{
+					$inner->execute('ALTER TABLE `#'.$table.'` ADD c2 INT');
+					$open = $inner->inTransaction();
+				});
+			});
+
+			$this->assertSame($db->getPlatform()->supportsTransactionalDdl(), $open,
+				'inTransaction() says whether the engine kept the transaction open across the schema change');
+			$this->assertFalse($db->inTransaction());
+			$this->assertNotFalse($db->execute('SELECT c2 FROM `#'.$table.'`'));
+
+			$this->assertTrue($db->beginTransaction());
+			$this->assertTrue($db->beginTransaction());
+			$this->assertNotFalse($db->execute('ALTER TABLE `#'.$table.'` ADD c3 INT'));
+			$this->assertFalse($db->execute('SELECT nope FROM `#'.$table.'`'));
+			$errorNumber = $db->getLastErrorNumber();
+
+			$this->assertTrue($db->rollBack());
+			$this->assertSame($errorNumber, $db->getLastErrorNumber(), 'the nested rollback keeps the error that led to it');
+			$this->assertTrue($db->rollBack());
+			$this->assertFalse($db->inTransaction());
+		}
+		finally
+		{
+			$db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testATransactionDoesNotOutliveAClosedConnection()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->close();
+			$this->assertFalse($this->db->inTransaction());
+
+			$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+			$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->rollBack());
+
+			$this->assertSame(array(), $this->transactionIds($table), 'the new session opened a transaction, not a savepoint');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testATransactionDoesNotOutliveAReconnection()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']));
+			$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+
+			$this->assertFalse($this->db->inTransaction());
+			$this->assertFalse($this->db->commit(), 'the work went with the session it was done in');
+			$this->assertSame(array(), $this->transactionIds($table));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testACommitAfterTheDatabaseIsSelectedAgainReportsWhatItDid()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+
+			$committed = $this->db->commit();
+			$this->assertSame($committed ? array(1) : array(), $this->transactionIds($table), 'commit() said '.var_export($committed, true));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testABeginInsideATransactionTheEngineEndedOpensOneOrIsRefused()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->assertNotFalse($this->db->execute('ALTER TABLE `#'.$table.'` ADD c2 INT'));
+
+			if(!$this->db->beginTransaction())
+			{
+				$this->assertSame(-1, $this->db->getLastErrorNumber());
+				$this->assertTrue($this->db->rollBack());
+
+				return;
+			}
+
+			$this->assertTrue($this->db->inTransaction(), 'a begin that succeeded left a transaction open');
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertTrue($this->db->rollBack());
+			$this->assertSame(array(), $this->transactionIds($table), 'and the rollBack() paired with it dropped what was done in it');
+			$this->db->rollBack();
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testABeginInsideATransactionEndedBehindTheConnectionIsRefused()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->createQueryBuilder()->insert($table)->values(array('id' => 1))->execute();
+			$this->assertNotFalse($this->db->execute('ROLLBACK'));
+
+			$this->assertFalse($this->db->inTransaction());
+			$this->assertFalse($this->db->beginTransaction(), 'a savepoint set now would open a transaction of its own');
+			$this->assertSame(-1, $this->db->getLastErrorNumber());
+			$this->db->rollBack();
+
+			$this->assertFalse($this->db->inTransaction());
+			$this->assertSame(array(), $this->transactionIds($table));
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testAskingWhetherATransactionIsOpenLeavesTheResultInHand()
+	{
+		$table = $this->transactionTable();
+
+		try
+		{
+			foreach(array(1, 2, 3) as $id)
+			{
+				$this->db->createQueryBuilder()->insert($table)->values(array('id' => $id))->execute();
+			}
+
+			$this->db->gen('SELECT SQL_CALC_FOUND_ROWS * FROM `#'.$table.'` LIMIT 1');
+			$found = $this->db->foundRows();
+
+			$this->assertTrue($this->db->beginTransaction());
+			$this->db->execute('SELECT id FROM `#'.$table.'` ORDER BY id');
+			$ids = array();
+
+			while($row = $this->db->fetch())
+			{
+				$this->assertTrue($this->db->inTransaction());
+				$ids[] = (int) $row['id'];
+			}
+
+			$this->assertSame(array(1, 2, 3), $ids);
+
+			$this->db->gen('SELECT SQL_CALC_FOUND_ROWS * FROM `#'.$table.'` LIMIT 1');
+			$this->assertTrue($this->db->inTransaction());
+			$this->assertSame($found, $this->db->foundRows());
+			$this->assertTrue($this->db->commit());
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testARolledBackSchemaChangeLeavesTheTableAsTheEngineHasIt()
+	{
+		$other = $this->makeDb();
+		$other->__construct();
+		$other->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		$other->database($this->dbConfig['mySQLdefaultdb'], MPREFIX);
+		$this->db->dropTable('e_db_txn_test');
+
+		try
+		{
+			$this->assertTrue($this->db->beginTransaction());
+			$this->createFixtureTable('e_db_txn_test', 'id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)', 'InnoDB');
+			$this->assertTrue($this->db->isTable('e_db_txn_test'));
+			$this->assertSame('id', $this->db->getAutoIncrementColumn('e_db_txn_test'));
+			$this->assertTrue($this->db->rollBack());
+
+			$this->assertSame($other->isTable('e_db_txn_test'), $this->db->isTable('e_db_txn_test'));
+			$this->assertSame($other->getAutoIncrementColumn('e_db_txn_test'), $this->db->getAutoIncrementColumn('e_db_txn_test'));
+		}
+		finally
+		{
+			$other->close();
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testSelectingTheDatabaseAgainReadsTheTableSchemasAfresh()
+	{
+		$table = $this->transactionTable();
+		$other = $this->makeDb();
+		$other->__construct();
+		$other->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		$other->database($this->dbConfig['mySQLdefaultdb'], MPREFIX);
+
+		try
+		{
+			$this->assertNull($this->db->getAutoIncrementColumn($table));
+			$this->assertNotFalse($other->dropTable($table));
+			$other->schema()->createDeclaredTable(new \e107\Database\Schema\Declared\DeclaredTable('core', $table, 'id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)', 'InnoDB', null));
+
+			$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb'], MPREFIX));
+			$this->assertSame('id', $this->db->getAutoIncrementColumn($table));
+		}
+		finally
+		{
+			$other->close();
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_txn_test`');
+		}
+	}
+
+	public function testAnUpsertThatUpdatesCostsTheSameStatementsEveryTime()
+	{
+		$this->db->dropTable('e_db_upsert_test');
+		$this->createFixtureTable('e_db_upsert_test', "id INT NOT NULL AUTO_INCREMENT, u VARCHAR(10) NOT NULL DEFAULT '', v VARCHAR(10) NOT NULL DEFAULT '', PRIMARY KEY (id), UNIQUE KEY u (u)", 'InnoDB');
+		$upsert = function($value)
+		{
+			return $this->db->insert('e_db_upsert_test', array('data' => array('u' => 'a', 'v' => $value), '_FIELD_TYPES' => array('u' => 'str', 'v' => 'str'), '_DUPLICATE_KEY_UPDATE' => true));
+		};
+		$statements = $this->db->getPlatform()->countsConflictingRows() ? 2 : 3;
+
+		try
+		{
+			$this->assertSame(1, (int) $upsert('first'));
+
+			foreach(array('second', 'third', 'fourth') as $value)
+			{
+				$before = $this->db->queryCount();
+				$this->assertTrue($upsert($value));
+				$this->assertSame($statements, $this->db->queryCount() - $before, 'the upsert and the counter reset, and nothing read again');
+			}
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_upsert_test`');
+		}
+	}
+
+	public function testAByteDefaultIsStoredAsMysqlStoresIt()
+	{
+		$this->db->dropTable('e_db_default_test');
+		$this->assertNotFalse($this->createFixtureTable('e_db_default_test', 'id INT NOT NULL, a varbinary(4) NOT NULL DEFAULT 0x41, PRIMARY KEY (id)', 'InnoDB'), $this->db->getLastErrorText());
+
+		try
+		{
+			$this->db->createQueryBuilder()->insert('e_db_default_test')->values(array('id' => 1))->execute();
+			$this->db->createQueryBuilder()->insert('e_db_default_test')->values(array('id' => 2, 'a' => 'A'))->execute();
+
+			$this->assertSame(array(1, 2), array_map('intval', $this->db->createQueryBuilder()->select('id')->from('e_db_default_test')->where('a', 'A')->orderBy('id')->fetchColumn()),
+				'the default equals the same bytes written through a bound parameter');
+			$default = $this->db->field('e_db_default_test', 'a', '', true)['Default'];
+			$this->assertSame('A', preg_match('/^0x([0-9a-f]+)$/i', $default, $hex) ? hex2bin($hex[1]) : $default,
+				'the column reports its default as those bytes, whether spelt as text or as a hexadecimal literal');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_default_test`');
+		}
+	}
+
+	public function testALoneIntegerPrimaryKeyIsNotNumberedForAnInsertThatLeavesItOut()
+	{
+		$this->db->dropTable('e_db_key_test');
+		$this->assertNotFalse($this->createFixtureTable('e_db_key_test', "id INT, v VARCHAR(10) NOT NULL DEFAULT '', PRIMARY KEY (id)", 'InnoDB'), $this->db->getLastErrorText());
+
+		try
+		{
+			$this->assertNotFalse($this->db->createQueryBuilder()->insert('e_db_key_test')->values(array('v' => 'a'))->execute());
+			$this->assertFalse($this->db->createQueryBuilder()->insert('e_db_key_test')->values(array('v' => 'b'))->execute(), 'the key both inserts left out is the same 0, a primary key being NOT NULL whatever it declares');
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_key_test`');
+		}
+	}
+
+	public function testACaseSensitiveCollationKeepsAUniqueKeyCaseSensitive()
+	{
+		$this->db->dropTable('e_db_collation_test');
+		$this->assertNotFalse($this->db->schema()->createDeclaredTable(new \e107\Database\Schema\Declared\DeclaredTable('core', 'e_db_collation_test', 'tok varchar(10) COLLATE latin1_general_cs NOT NULL, UNIQUE KEY tok (tok)', 'InnoDB', 'latin1')), $this->db->getLastErrorText());
+
+		try
+		{
+			$this->assertSame(1, $this->db->createQueryBuilder()->insert('e_db_collation_test')->values(array('tok' => 'abc'))->execute());
+			$this->assertSame(1, $this->db->createQueryBuilder()->insert('e_db_collation_test')->values(array('tok' => 'ABC'))->execute(), $this->db->getLastErrorText());
+		}
+		finally
+		{
+			$this->db->execute('DROP TABLE IF EXISTS `#e_db_collation_test`');
+		}
+	}
+
+	public function testAnAdvisoryLockShutsOutAnotherConnectionUntilReleased()
+	{
+		$name = 'e107_test_lock_'.md5(__METHOD__.uniqid('', true));
+		$other = $this->makeDb();
+		$other->__construct();
+		$other->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		$other->database($this->dbConfig['mySQLdefaultdb'], MPREFIX);
+
+		try
+		{
+			$this->assertTrue($this->db->acquireLock($name));
+			$this->assertFalse($other->acquireLock($name), 'a held lock is refused to another connection');
+			$this->assertTrue($this->db->releaseLock($name));
+			$this->assertFalse($this->db->releaseLock($name), 'a lock no longer held is not released twice');
+			$this->assertTrue($other->acquireLock($name), 'and is free once released');
+		}
+		finally
+		{
+			$other->releaseLock($name);
+			$other->close();
+		}
+	}
+
 	/**
 	 * Both backends answer with the MySQL error number. The PDO driver used to
 	 * store PDOException::getCode(), which is the SQLSTATE, so a caller
@@ -1942,13 +2656,13 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 		$this->db->dropTable($table);
 
-		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
-			.'`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,'
+		$this->assertNotFalse($this->createFixtureTable($table,
+			'`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,'
 			.'`with_default` VARCHAR(20) NOT NULL DEFAULT \'x\','
 			.'`spaced_default` VARCHAR(20) NOT NULL DEFAULT \'not assigned\','
 			.'`no_default` TEXT NOT NULL,'
 			.'`nullable_col` VARCHAR(20) NULL,'
-			.'PRIMARY KEY (`id`))'),
+			.'PRIMARY KEY (`id`)'),
 			'precondition: the fixture table has to exist');
 
 		$this->assertSame(
@@ -1973,18 +2687,20 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->db->dropTable($table);
 		@unlink(e_CACHE_DB.$table.'.php');
 
-		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
-			.'`id` INT(10) UNSIGNED NOT NULL,'
-			.'PRIMARY KEY (`id`))'),
+		$this->assertNotFalse($this->createFixtureTable($table,
+			'`id` INT(10) UNSIGNED NOT NULL,'
+			.'PRIMARY KEY (`id`)'),
 			'precondition: the fixture table has to exist');
 
 		$this->assertNotFalse($this->db->getFieldDefs($table),
 			'precondition: the definition has to be on record before the table changes');
 
-		$this->assertNotFalse($this->db->execute('ALTER TABLE `'.MPREFIX.$table.'` ADD `body` TEXT NOT NULL'),
+		$this->assertNotFalse($this->db->schema()->addColumn($table, 'body', \e107\Database\Schema\Column::define('TEXT')->notNull()),
 			'precondition: the column has to be added behind the definition\'s back');
 
-		$this->assertSame(array('id' => '', 'body' => ''), $this->db->getNotNullDefaults($table));
+		// SQLite declares the 0 that MySQL leaves implicit for an INT NOT NULL column.
+		$id = ($this->db->getDriver()->getName() === 'sqlite') ? '0' : '';
+		$this->assertSame(array('id' => $id, 'body' => ''), $this->db->getNotNullDefaults($table));
 
 		@unlink(e_CACHE_DB.$table.'.php');
 		$this->db->dropTable($table);
@@ -2008,11 +2724,11 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->db->dropTable($table);
 		@unlink(e_CACHE_DB.$table.'.php');
 
-		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
-			.'`id` INT(10) UNSIGNED NOT NULL,'
+		$this->assertNotFalse($this->createFixtureTable($table,
+			'`id` INT(10) UNSIGNED NOT NULL,'
 			.'`body` TEXT NOT NULL,'
 			.'`note` VARCHAR(20) NULL,'
-			.'PRIMARY KEY (`id`))'),
+			.'PRIMARY KEY (`id`)'),
 			'precondition: the fixture table has to exist');
 
 		$this->assertNotFalse(
@@ -2044,9 +2760,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->db->select('doesnt_exists');
 		$result = $this->db->getLastErrorText();
 
-		$actual = (strpos($result,"doesn't exist")!== false );
-
-		$this->assertTrue($actual);
+		$this->assertStringContainsString('doesnt_exists', $result, 'the error has to name the missing table');
 	}
 
 	public function testResetLastError()
@@ -2190,12 +2904,37 @@ abstract class e_db_abstractTest extends \Test\Unit
 				),
 		);
 
+		if($this->db->getDriver()->getName() === 'sqlite')
+		{
+			// A SQLite table declares the default MySQL leaves implicit for a NOT NULL TEXT column.
+			unset($expected['_NOTNULL']['plugin_addons']);
+		}
+
 		$this->assertEquals($expected, $actual);
 	}
 
 	public function testGetFieldDefsIsFalseForATableWithNoDefinition()
 	{
 		$this->assertFalse($this->db->getFieldDefs('e107_tests_no_such_table'));
+	}
+
+	public function testGetFieldDefsIsFalseForATableTheSchemaReaderCannotRead()
+	{
+		$failures = array(
+			'e107_tests_unreadable_query' => new \e107\Database\Exception\QueryException('the engine could not be asked'),
+			'e107_tests_unreadable_name'  => new InvalidArgumentException('not a table name'),
+		);
+
+		$reader = $this->makeEmpty(\e107\Database\Schema\Introspect\SchemaReaderInterface::class, array(
+			'read' => function($physical) use ($failures) { throw $failures[substr($physical, strlen(MPREFIX))]; },
+		));
+		$manager = $this->makeEmpty(\e107\Database\Schema\SchemaManagerInterface::class, array('getReader' => $reader));
+		$this->db->useDriver($this->make(get_class($this->db->getDriver()), array('createSchemaManager' => $manager)));
+
+		foreach(array_keys($failures) as $table)
+		{
+			$this->assertFalse($this->db->getFieldDefs($table), $table);
+		}
 	}
 
 	public function testGetFieldDefsRebuildsACacheFileThatWasReadHalfWritten()
@@ -2369,20 +3108,17 @@ abstract class e_db_abstractTest extends \Test\Unit
 			$this->fail("Failed to select new database");
 		}
 
-		$create = "CREATE TABLE `".$database."`.".$MPREFIX.$table." (
-					 `test_id` int(4) NOT NULL AUTO_INCREMENT,
-					 `test_var` varchar(255) NOT NULL,
-					 PRIMARY KEY (`test_id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-			";
+		// cleanup, then the table as a schema file would declare it, built in the secondary database
+		$xql->dropTable($table);
 
-		// cleanup
-		$xql->gen("DROP TABLE IF EXISTS `$database`.{$MPREFIX}{$table}");
+		$created = $xql->schema()->createDeclaredTable(new \e107\Database\Schema\Declared\DeclaredTable('core', $table,
+			"`test_id` int(4) NOT NULL AUTO_INCREMENT,
+			 `test_var` varchar(255) NOT NULL,
+			 PRIMARY KEY (`test_id`)", 'InnoDB', 'utf8'));
 
-		// create table
-		if(!$xql->gen($create))
+		if(!$created)
 		{
-			$this->fail("Failed to create table in secondary database");
+			$this->fail("Failed to create table in secondary database: ".$xql->getLastErrorText());
 		}
 
 		if(!$res = $xql->db_FieldList($table))

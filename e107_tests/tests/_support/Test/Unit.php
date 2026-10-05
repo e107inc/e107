@@ -26,6 +26,7 @@ namespace Test;
 class Unit extends \Codeception\Test\Unit
 {
 	use \Helper\PhpUnitCompat;
+	use \Helper\DatabaseDriverRequirement;
 
 	/** TEST-NET-2 (RFC 5737): the range the suite's subprocesses present themselves from. */
 	const VISITOR_ADDRESS_PREFIX = '198.51.100.';
@@ -56,6 +57,45 @@ class Unit extends \Codeception\Test\Unit
 	 */
 	private static $parserSettings = array('staticUrl', 'modRewriteMedia', 'fontawesome', 'bootstrap', 'multibyte',
 		'thumbWidth', 'thumbHeight', 'thumbCrop');
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function databaseDriverName()
+	{
+		return \e107::getDb()->getDriver()->getName();
+	}
+
+	/**
+	 * Skips the test unless pdo_sqlite is loaded and linked against an SQLite library e107 installs on.
+	 *
+	 * @return void
+	 */
+	protected function requireSqliteLibrary()
+	{
+		$driver = new \e107\Database\Driver\SqliteDriver();
+		$minimum = $driver->getMinimumServerVersion();
+
+		if(!$driver->isAvailable() || version_compare($driver->getServerVersion(null), $minimum, '<'))
+		{
+			$this->markTestSkipped('pdo_sqlite with SQLite '.$minimum.' or later is not available');
+		}
+	}
+
+	/**
+	 * Drops a temporary table if there is one, and never the permanent table of the same name it may be shadowing:
+	 * DROP TEMPORARY TABLE on MySQL, the temp schema on engines that keep temporary tables there.
+	 *
+	 * @param string $table physical table name, prefix included
+	 * @return void
+	 */
+	protected function dropTemporaryTable($table)
+	{
+		$db = \e107::getDb();
+		$quoted = $db->quoteIdentifier($table);
+
+		$db->execute(($db->getDriver()->getName() === 'mysql') ? 'DROP TEMPORARY TABLE IF EXISTS '.$quoted : 'DROP TABLE IF EXISTS temp.'.$quoted);
+	}
 
 	/**
 	 * Copies a fixture tree, e.g. a theme out of tests/_data into e_THEME, journaled so the run takes it back out.

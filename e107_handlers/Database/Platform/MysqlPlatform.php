@@ -12,25 +12,17 @@ namespace e107\Database\Platform;
 
 use InvalidArgumentException;
 
-require_once(__DIR__.'/PlatformInterface.php');
+require_once(__DIR__.'/AbstractPlatform.php');
 
 
 /**
- * MySQL/MariaDB dialect: the only platform e107 ships today. Both database
- * backends ({@see e_db_pdo} and {@see e_db_mysql}) speak it.
+ * MySQL/MariaDB dialect, spoken by both MySQL backends ({@see e_db_pdo} with the
+ * MySQL driver, and {@see e_db_mysql}).
  *
  * An SPI implementation, not an application API; see {@see PlatformInterface}.
  */
-class MysqlPlatform implements PlatformInterface
+class MysqlPlatform extends AbstractPlatform
 {
-	/**
-	 * @return string
-	 */
-	public function getIdentifierQuoteCharacter()
-	{
-		return '`';
-	}
-
 	/**
 	 * @param int|null $limit
 	 * @param int|null $offset
@@ -63,14 +55,6 @@ class MysqlPlatform implements PlatformInterface
 	/**
 	 * @return string
 	 */
-	public function getRegexpOperator()
-	{
-		return 'REGEXP';
-	}
-
-	/**
-	 * @return string
-	 */
 	public function quoteRegexpLiteral($value)
 	{
 		return addcslashes((string) $value, '.\\+*?[^]$(){}=!<>|:-#/');
@@ -85,36 +69,63 @@ class MysqlPlatform implements PlatformInterface
 	}
 
 	/**
-	 * @return string
+	 * MySQL limits an UPDATE with a trailing LIMIT.
+	 *
+	 * @inheritDoc
 	 */
-	public function compileReplace($quotedTable, array $columns, array $placeholders)
+	public function compileUpdate($quotedTable, array $assignments, $where, $limit = null)
 	{
-		return 'REPLACE INTO '.$quotedTable
-			.' ('.implode(', ', $columns).')'
-			.' VALUES ('.implode(', ', $placeholders).')';
+		return 'UPDATE '.$quotedTable
+			.' SET '.$this->assignmentList($assignments)
+			.$where
+			.$this->getLimitClause($limit);
+	}
+
+	/**
+	 * MySQL limits a DELETE with a trailing LIMIT.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileDelete($quotedTable, $where, $limit = null)
+	{
+		return 'DELETE FROM '.$quotedTable
+			.$where
+			.$this->getLimitClause($limit);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileFindInSet($needle, $quotedColumn)
+	{
+		return 'FIND_IN_SET('.$needle.', '.$quotedColumn.')';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileAutoIncrementReset($quotedTable)
+	{
+		return "ALTER TABLE ".$quotedTable."  AUTO_INCREMENT=1";
+	}
+
+	/**
+	 * MySQL's backslash already escapes LIKE metacharacters.
+	 *
+	 * @inheritDoc
+	 */
+	public function getLikeEscapeClause()
+	{
+		return '';
 	}
 
 	/**
 	 * @return string
 	 */
-	public function compileInsert($quotedTable, array $columns, array $tuples, $modifier = '')
+	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments, array $conflictColumns = array(), $modifier = '')
 	{
-		$verb = ($modifier === 'IGNORE') ? 'INSERT IGNORE INTO' : 'INSERT INTO';
-
-		return $verb.' '.$quotedTable
-			.' ('.implode(', ', $columns).')'
-			.' VALUES '.implode(', ', $tuples);
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments)
-	{
-		return 'INSERT INTO '.$quotedTable
-			.' ('.implode(', ', $columns).')'
-			.' VALUES '.implode(', ', $tuples)
-			.' ON DUPLICATE KEY UPDATE '.implode(', ', $updateAssignments);
+		return $this->compileInsert($quotedTable, $columns, $tuples, $modifier)
+			.' ON DUPLICATE KEY UPDATE '.$this->assignmentList($updateAssignments);
 	}
 
 	/**
@@ -128,28 +139,9 @@ class MysqlPlatform implements PlatformInterface
 	/**
 	 * @return string
 	 */
-	public function getForUpdateClause()
-	{
-		return ' FOR UPDATE';
-	}
-
-	/**
-	 * @return string
-	 */
 	public function getSharedLockClause()
 	{
 		return ' LOCK IN SHARE MODE';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileInsertSelect($quotedTable, array $columns, $selectSql, $modifier = '')
-	{
-		$verb = ($modifier === 'IGNORE') ? 'INSERT IGNORE INTO' : 'INSERT INTO';
-		$cols = (count($columns) > 0) ? ' ('.implode(', ', $columns).')' : '';
-
-		return $verb.' '.$quotedTable.$cols.' '.$selectSql;
 	}
 
 	/**
@@ -206,11 +198,56 @@ class MysqlPlatform implements PlatformInterface
 	}
 
 	/**
+	 * MySQL reads || as OR unless PIPES_AS_CONCAT is set; CONCAT() needs no mode.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileConcat(array $expressions)
+	{
+		return 'CONCAT('.implode(', ', $expressions).')';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileSubstringBefore($expression, $delimiter)
+	{
+		return 'SUBSTRING_INDEX('.$expression.', '.$delimiter.', 1)';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileCaseSensitiveLike($quotedColumn, $placeholder)
+	{
+		return $quotedColumn.' LIKE BINARY '.$placeholder;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function compileRemoveFromSet($quotedColumn, $placeholder)
+	{
+		return "TRIM(BOTH ',' FROM REPLACE(CONCAT(',', ".$quotedColumn.", ','), CONCAT(',', ".$placeholder.", ','), ','))";
+	}
+
+	/**
+	 * MySQL has no UPDATE ... FROM and, before 8.0, no ROW_NUMBER(); a user
+	 * variable counts the rows instead, in the order the server reads them.
+	 *
+	 * @inheritDoc
+	 */
+	public function compileRenumber($quotedTable, $quotedColumn, $quotedKey, $startPlaceholder, $stepPlaceholder, $thresholdPlaceholder)
+	{
+		return 'UPDATE '.$quotedTable.' e, (SELECT @n := '.$startPlaceholder.') m  SET e.'.$quotedColumn.' = @n := @n + '.$stepPlaceholder.' WHERE '.$quotedColumn.' > '.$thresholdPlaceholder;
+	}
+
+	/**
 	 * @return string
 	 */
-	public function compileFullText(array $quotedColumns, $placeholder)
+	public function compileFullText(array $quotedColumns, $placeholder, $booleanMode = false)
 	{
-		return 'MATCH ('.implode(', ', $quotedColumns).') AGAINST ('.$placeholder.')';
+		return 'MATCH ('.implode(', ', $quotedColumns).') AGAINST ('.$placeholder.($booleanMode ? ' IN BOOLEAN MODE' : '').')';
 	}
 
 	/**
@@ -226,22 +263,6 @@ class MysqlPlatform implements PlatformInterface
 		}
 
 		return $sql.' SEPARATOR '.$separatorLiteral.')';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileAlterTable($quotedTable, array $clauses)
-	{
-		return 'ALTER TABLE '.$quotedTable.' '.implode(', ', $clauses);
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileCreateTable($quotedTable, array $definitions, $options = '')
-	{
-		return 'CREATE TABLE '.$quotedTable.' ('.implode(', ', $definitions).')'.$options;
 	}
 
 	/**
@@ -289,5 +310,86 @@ class MysqlPlatform implements PlatformInterface
 	public function compileFlushPrivileges()
 	{
 		return 'FLUSH PRIVILEGES';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsStorageEngines()
+	{
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsCharsets()
+	{
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsFoundRows()
+	{
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsFullTextIndexes()
+	{
+		return true;
+	}
+
+	/**
+	 * MySQL commits implicitly at every DDL statement.
+	 *
+	 * @inheritDoc
+	 */
+	public function supportsTransactionalDdl()
+	{
+		return false;
+	}
+
+	/**
+	 * e107 never sets NO_AUTO_VALUE_ON_ZERO in its sessions.
+	 *
+	 * @inheritDoc
+	 */
+	public function assignsAutoIncrementOnZero()
+	{
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function countsConflictingRows()
+	{
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function resetsAutoIncrementOnAnyTable()
+	{
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function insertVerb($modifier)
+	{
+		if($modifier === 'IGNORE')
+		{
+			return 'INSERT IGNORE INTO';
+		}
+
+		return parent::insertVerb($modifier);
 	}
 }

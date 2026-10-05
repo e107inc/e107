@@ -240,6 +240,52 @@
 
 		}
 
+		/**
+		 * The country list of an extended field is declared in the schema DSL and filled with MySQL INSERT statements,
+		 * one name among them escaped with a backslash: built and read for whatever engine the site runs on.
+		 */
+		public function testTheCountryListTableIsCreatedAndFilled()
+		{
+			$sql = e107::getDb();
+			$sql->dropTable('user_extended_country');
+
+			$add = new \e107\Reflection\ReflectionMethod($this->ep, 'manage_extended_field_sql');
+			$add->setAccessible(true);
+
+			try
+			{
+				$this->assertFalse($add->invoke($this->ep, 'add', 'country'), 'the list has to load: '.$sql->getLastErrorText());
+				$this->assertSame(239, $sql->count('user_extended_country'));
+				$this->assertSame("Côte d'Ivoire", $sql->retrieve('user_extended_country', 'country_name', "country_code = 'CIV'"));
+			}
+			finally
+			{
+				$sql->dropTable('user_extended_country');
+			}
+		}
+
+		public function testAHexadecimalValueInAnExtendedFieldListIsReadForItsColumn()
+		{
+			$sql = e107::getDb();
+			$sql->dropTable('c2_hexprobe');
+			$this->writeAppFile('e107_core/sql/extended_c2hexprobe.php',
+				"CREATE TABLE c2_hexprobe (\n  probe_id int(10) NOT NULL,\n  probe_code varchar(5) NOT NULL default '',\n  PRIMARY KEY (probe_id)\n) ENGINE=MyISAM;\n\nINSERT INTO c2_hexprobe VALUES (0x41, 0x4142);\n");
+
+			$add = new \e107\Reflection\ReflectionMethod($this->ep, 'manage_extended_field_sql');
+			$add->setAccessible(true);
+
+			try
+			{
+				$this->assertFalse($add->invoke($this->ep, 'add', 'c2hexprobe'), 'the list has to load: '.$sql->getLastErrorText());
+				$this->assertSame('AB', $sql->retrieve('c2_hexprobe', 'probe_code', 'probe_id = 65'));
+			}
+			finally
+			{
+				$this->deleteAppFile('e107_core/sql/extended_c2hexprobe.php');
+				$sql->dropTable('c2_hexprobe');
+			}
+		}
+
 		public function testXmlSiteLinks()
 		{
 			$plugVars = array (
@@ -570,6 +616,50 @@
 			);
 		}
 
+		public function testATableAlreadyThereIsShownWithTheStatementThatMetIt()
+		{
+			$schema = e107::getDb()->schema();
+			$body = 'probe_id int(10) NOT NULL, probe_name varchar(20) NOT NULL, PRIMARY KEY (probe_id), KEY probe_name (probe_name)';
+
+			$schema->dropTable('c2_probe');
+			$this->assertNotFalse($schema->createDeclaredTable(new \e107\Database\Schema\Declared\DeclaredTable('tagcloud', 'c2_probe', $body)));
+			$this->writeAppFile('e107_plugins/tagcloud/tagcloud_sql.php', "CREATE TABLE c2_probe (\n".$body."\n) ENGINE=InnoDB;\n");
+			e107::getMessage()->reset(E_MESSAGE_DEBUG, 'default', false);
+
+			try
+			{
+				$this->assertNotFalse($this->ep->XmlTables('install', array('plugin_path' => 'tagcloud')));
+				$debug = implode("\n", (array) e107::getMessage()->get(E_MESSAGE_DEBUG, 'default', true, true));
+			}
+			finally
+			{
+				$this->deleteAppFile('e107_plugins/tagcloud/tagcloud_sql.php');
+				$schema->dropTable('c2_probe');
+			}
+
+			$this->assertStringContainsString('CREATE TABLE', $debug);
+		}
+
+		public function testADeclarationTheEngineCannotBuildAbortsTheInstall()
+		{
+			$this->writeAppFile('e107_plugins/tagcloud/tagcloud_sql.php',
+				"CREATE TABLE c2_probe (\nprobe_id int(10) NOT NULL auto_increment, probe_lang varchar(5) NOT NULL, KEY probe_lang (probe_lang)\n) ENGINE=InnoDB;\n");
+			e107::getMessage()->reset(E_MESSAGE_ERROR, 'default', false);
+
+			try
+			{
+				$this->assertFalse($this->ep->XmlTables('install', array('plugin_path' => 'tagcloud')));
+				$errors = implode("\n", (array) e107::getMessage()->get(E_MESSAGE_ERROR, 'default', true, true));
+			}
+			finally
+			{
+				$this->deleteAppFile('e107_plugins/tagcloud/tagcloud_sql.php');
+				e107::getDb()->schema()->dropTable('c2_probe');
+			}
+
+			$this->assertStringContainsString(MPREFIX.'c2_probe', $errors);
+		}
+
 		/**
 		 * Every dependency failure names what failed, and the language strings used to carry the space in front of it.
 		 *
@@ -592,15 +682,23 @@
 				'mysql'     => array(array('@attributes' => array('name' => 'mysql', 'min_version' => '99.0.0'))),
 			);
 
-			$this->assertFalse($this->ep->XmlDependencies($tags), 'Five unmeetable dependencies must stop the install');
+			$this->assertFalse($this->ep->XmlDependencies($tags), 'Unmeetable dependencies must stop the install');
 
 			$rendered = $mes->render();
 
 			$this->assertStringContainsString(EPL_ADLAN_70 . ' notaplugin', $rendered, $rendered);
 			$this->assertStringContainsString(EPL_ADLAN_73 . ' notanextension', $rendered, $rendered);
 			$this->assertStringContainsString(EPL_ADLAN_74 . ' 99.0.0', $rendered, $rendered);
-			$this->assertStringContainsString(EPL_ADLAN_75 . ' 99.0.0', $rendered, $rendered);
 			$this->assertStringContainsString(EPL_ADLAN_71 . ' json ' . EPL_ADLAN_72 . ' 99.0.0', $rendered, $rendered);
+
+			if(e107::getDb()->getDriver()->getName() === 'mysql')
+			{
+				$this->assertStringContainsString(EPL_ADLAN_75 . ' 99.0.0', $rendered, $rendered);
+			}
+			else
+			{
+				$this->assertStringNotContainsString(EPL_ADLAN_75, $rendered, $rendered);
+			}
 
 			$mes->reset();
 		}

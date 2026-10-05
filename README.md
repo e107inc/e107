@@ -14,6 +14,7 @@
       * [Requirements](#requirements)
          * [Minimum](#minimum)
          * [Recommended](#recommended)
+         * [Database Engines](#database-engines)
          * [Release Cycle Lifecycle](#release-cycle-lifecycle)
          * [PHP Compatibility](#php-compatibility)
       * [Installation](#installation)
@@ -30,9 +31,10 @@
    ### Minimum
 
    * A web server (Apache or Microsoft IIS) running PHP 7.4 or newer
-   * MySQL 4.x or newer, or MariaDB
+   * One of:
+     * MySQL 4.x or newer, or MariaDB, and the username and password to your database
+     * SQLite 3.35 or newer through PHP's `pdo_sqlite` extension, with a directory e107 may write its database file into
    * FTP access to your web server and an FTP client (such as FileZilla)
-   * Username and password to your MySQL database
 
    ### Recommended
 
@@ -41,6 +43,32 @@
    * MySQL 5.6 or newer, or MariaDB 10.3 or newer
    * A registered domain name
    * Access to a server control panel (such as cPanel)
+
+   ### Database Engines
+
+   e107 runs on **MySQL** and **MariaDB**, and on **SQLite**. The installer offers every engine your PHP can reach and
+   records the choice as `'driver'` in the `database` block of `e107_config.php` (`'mysql'` when absent):
+
+   * **MySQL / MariaDB** (`'driver' => 'mysql'`) suit busy sites, sites shared by several web servers, and anything
+     that relies on third-party plugins written with MySQL-only SQL.
+   * **SQLite** (`'driver' => 'sqlite'`) keeps the whole site in one file, with no database server and no
+     credentials. The `database` block names the file with `'db'`, as a path absolute or relative to the e107 root,
+     with no extension or any the web server would not run (the installer refuses `.php` and its kin). A file inside
+     the web root can be downloaded by anyone who knows its name unless the web server honours `.htaccess` or is set
+     to refuse it, so a folder outside the web root is the safe place; the installer suggests a random name under
+     `e107_system/` and, when your browser can download the file, says so at the end. The file
+     must sit on a local filesystem of the one host serving the site, in a folder the web server can write, because
+     SQLite keeps its `-wal`, `-shm` and lock files beside it. An unattended install (`install.php?create_tables=1`)
+     has no database password to check on SQLite, so it needs `'install_token'` in the `other` block, set to a secret
+     of your own and passed as `install_token=`. SQLite suits small and medium sites; writes are serialised, so many
+     simultaneous writers queue up.
+
+   Plugins that build their queries with e107's query builder (`e107::getDb()->createQueryBuilder()`) and their
+   tables with the schema builder (`e107::getDb()->schema()`) or a `*_sql.php` file run on every engine. Raw MySQL
+   SQL keeps working on SQLite as far as e107's MySQL compatibility functions cover it (`CONCAT`, `LPAD`,
+   `FROM_UNIXTIME`, `NOW` and others; on unless the `database` block sets `'mysql_compat' => false`); MySQL-only
+   syntax fails with a database error instead of being guessed at. `e107_handlers/Database/ConnectionInterface.php`
+   lists the portable spellings.
 
 
 ### Release Lifecycle

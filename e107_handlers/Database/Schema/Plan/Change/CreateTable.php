@@ -58,18 +58,20 @@ final class CreateTable extends AbstractChange
 
 	/**
 	 * @param SchemaBuilder $schema
-	 * @return string
-	 * @throws RuntimeException when the declared shape carries no captured create body or options.
+	 * @return string|string[]
+	 * @throws RuntimeException when the declared shape carries no captured create body, or no captured options
+	 *                          where the engine has table options.
 	 */
 	public function toSql(SchemaBuilder $schema)
 	{
 		$body = $this->captured($this->expected->getCreateBody(), 'the table body');
-		$options = $this->captured($this->expected->getCreateOptions(), 'the table options');
+		$options = $this->expected->getCreateOptions();
+		$options = ($options === '') ? array() : SqlFragment::raw(' '.trim($this->captured($options, 'the table options')->getSql()));
 
-		return $schema->buildCreateTablePhysicalRaw(
+		return self::rendered($schema->buildCreateTablePhysicalStatements(
 			$this->getTable(),
-			SqlFragment::raw("\n".$body->getSql()."\n"),
-			SqlFragment::raw(' '.trim($options->getSql()))
-		);
+			$body,
+			$options
+		));
 	}
 }
