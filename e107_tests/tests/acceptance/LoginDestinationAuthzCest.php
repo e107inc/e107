@@ -25,7 +25,7 @@ class LoginDestinationAuthzCest
 			'user_name'      => self::MEMBER,
 			'user_loginname' => self::MEMBER,
 			'user_login'     => self::MEMBER,
-			'user_password'  => md5(self::MEMBER_PASS),
+			'user_password'  => \Test\Password::hash(self::MEMBER_PASS),
 			'user_email'     => self::MEMBER . '@example.com',
 			'user_join'      => time(),
 			'user_ban'       => 0,

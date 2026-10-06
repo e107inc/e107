@@ -110,7 +110,7 @@ class PermEmulationCest
 			'user_name'      => $name,
 			'user_loginname' => $name,
 			'user_email'     => $name . '@example.com',
-			'user_password'  => md5($name),
+			'user_password'  => \Test\Password::hash($name),
 			'user_join'      => 1262304000,
 			'user_class'     => '',
 			'user_admin'     => 1,

@@ -34,7 +34,7 @@ class ForumFixture extends AppFixture
 	const CLASS_MOD_A = 200;
 	const CLASS_MOD_B = 201;
 
-	/** Members can log in with this; seeded as md5 so no hash is guessed at. */
+	/** Members can log in with this. */
 	const MEMBER_PASS = 'Password1234';
 
 	/** @var bool */
@@ -391,16 +391,7 @@ class ForumFixture extends AppFixture
 	}
 
 	/**
-	 * A member who can actually sign in.
-	 *
-	 * The password is stored as a plain md5. UserHandler::getHashType() reads any
-	 * 32 character hash as PASSWORD_E107_MD5 and CheckPassword() accepts it
-	 * whatever the site's configured encoding is, so the plaintext is known to
-	 * the test. 0021 seeds a bcrypt hash whose plaintext is recorded nowhere,
-	 * which is worth not repeating.
-	 *
-	 * The first successful login rehashes the row, so do not assert on
-	 * user_password afterwards.
+	 * A member who can actually sign in with {@see ForumFixture::MEMBER_PASS}.
 	 *
 	 * @param string $name login name, also the display name
 	 * @param string $classes comma separated userclass ids; 253 is e_UC_MEMBER
@@ -412,7 +403,7 @@ class ForumFixture extends AppFixture
 	{
 		return $this->db()->haveInDatabase('e107_user', array(
 			'user_name' => $name, 'user_loginname' => $name, 'user_login' => $name,
-			'user_password' => md5(self::MEMBER_PASS),
+			'user_password' => \Test\Password::hash(self::MEMBER_PASS),
 			'user_email' => $name.'@example.com',
 			'user_join' => $join === null ? time() : (int) $join,
 			'user_ban' => (int) $ban,

@@ -293,7 +293,7 @@ class ThemeHandlerFrontEndCest
 			'user_name'      => self::MEMBER,
 			'user_loginname' => self::MEMBER,
 			'user_email'     => self::MEMBER.'@example.com',
-			'user_password'  => md5(self::MEMBER),
+			'user_password'  => \Test\Password::hash(self::MEMBER),
 			'user_join'      => 1262304000,
 			'user_class'     => '',
 			'user_admin'     => 0,

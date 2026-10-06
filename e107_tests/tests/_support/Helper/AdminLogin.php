@@ -4,6 +4,7 @@ namespace Helper;
 use Codeception\Exception\ModuleException;
 use Codeception\Lib\Interfaces\Web;
 use Codeception\Module as CodeceptionModule;
+use Test\Password;
 use Test\Poll;
 
 /**
@@ -32,7 +33,7 @@ class AdminLogin extends CodeceptionModule
 	const TOKEN_FIELD_PATTERN = '/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/';
 
 	/**
-	 * Log into the admin area and assert the control-panel marker is shown.
+	 * Log into the admin area and assert the control-panel marker is shown, first storing a cheap hash of a matching password ({@see AdminLogin::cheapenStoredHash()}).
 	 *
 	 * @param string|null $user Defaults to {@see ADMIN_USER}.
 	 * @param string|null $pass Defaults to {@see ADMIN_PASS}.
@@ -40,11 +41,14 @@ class AdminLogin extends CodeceptionModule
 	 */
 	public function loginAsAdmin($user = null, $pass = null)
 	{
+		$user = $user === null ? self::ADMIN_USER : $user;
+		$pass = $pass === null ? self::ADMIN_PASS : $pass;
 		$browser = $this->resolveBrowserModule();
+		$this->cheapenStoredHash($user, $pass);
 
 		$browser->amOnPage(self::LOGIN_PATH);
-		$browser->fillField('authname', $user === null ? self::ADMIN_USER : $user);
-		$browser->fillField('authpass', $pass === null ? self::ADMIN_PASS : $pass);
+		$browser->fillField('authname', $user);
+		$browser->fillField('authpass', $pass);
 		$browser->click('authsubmit');
 
 		if (method_exists($browser, 'waitForText'))
@@ -55,6 +59,41 @@ class AdminLogin extends CodeceptionModule
 		{
 			$browser->see(self::CONTROL_PANEL_MARKER);
 		}
+	}
+
+	/**
+	 * Swaps the account's stored hash for a {@see Password::hash()} of the same password, once it is proven to match.
+	 *
+	 * @param string $user
+	 * @param string $pass
+	 * @return void
+	 */
+	private function cheapenStoredHash($user, $pass)
+	{
+		if (!$this->hasModule('\Helper\DelayedDb'))
+		{
+			return;
+		}
+
+		try
+		{
+			$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
+			$select = $dbh->prepare('SELECT `user_id`, `user_password` FROM `'.E107Base::E107_MYSQL_PREFIX.'user` WHERE `user_loginname` = ?');
+			$select->execute(array($user));
+			$row = $select->fetch(\PDO::FETCH_ASSOC);
+		}
+		catch (\PDOException $e)
+		{
+			return;
+		}
+
+		if (empty($row) || !Password::isCostly($row['user_password']) || !password_verify($pass, $row['user_password']))
+		{
+			return;
+		}
+
+		$update = $dbh->prepare('UPDATE `'.E107Base::E107_MYSQL_PREFIX.'user` SET `user_password` = ? WHERE `user_id` = ?');
+		$update->execute(array(Password::hash($pass), $row['user_id']));
 	}
 
 	/**
