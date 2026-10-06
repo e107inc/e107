@@ -7,7 +7,7 @@ class MemberFixture extends AppFixture
 {
 	/**
 	 * @param string $name login name, display name and the local part of the address
-	 * @param string $password stored as md5, which UserHandler reads as PASSWORD_E107_MD5
+	 * @param string $password stored as a cheap bcrypt hash, which UserHandler reads as PASSWORD_E107_PHP
 	 * @param array $row columns to set differently
 	 * @return int user_id
 	 */
@@ -17,7 +17,7 @@ class MemberFixture extends AppFixture
 			'user_name'         => $name,
 			'user_loginname'    => $name,
 			'user_login'        => $name,
-			'user_password'     => md5($password),
+			'user_password'     => \Test\Password::hash($password),
 			'user_email'        => $name.'@example.com',
 			'user_join'         => time(),
 			'user_ban'          => 0,

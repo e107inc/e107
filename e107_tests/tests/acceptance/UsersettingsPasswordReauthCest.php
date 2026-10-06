@@ -336,7 +336,6 @@ class UsersettingsPasswordReauthCest
 	{
 		return $I->haveMember($name, self::MEMBER_PASS, array(
 			'user_name'     => self::MEMBER,
-			'user_password' => password_hash(self::MEMBER_PASS, PASSWORD_DEFAULT),
 			'user_email'    => $name . '@example.test',
 			'user_class'    => '',
 		));
