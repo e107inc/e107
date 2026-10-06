@@ -15,6 +15,7 @@ class DatePickerWithoutBootstrapCest
 	public function calendarStaysFoldedUntilTheFieldIsClicked(WebDriverTester $I)
 	{
 		$I->amOnProbe();
+		$I->waitForElement('.datetimepicker.dropdown-menu', 5);
 		$I->seeElement('input.e-date');
 		$I->dontSeeElement('.datetimepicker.dropdown-menu');
 
