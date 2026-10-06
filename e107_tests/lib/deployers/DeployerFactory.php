@@ -33,9 +33,6 @@ class DeployerFactory
 			case "sftp":
 				$deployer = new SFTPDeployer($params);
 				break;
-			case "cpanel":
-				$deployer = new cPanelDeployer($params);
-				break;
 		}
 		return $deployer;
 	}

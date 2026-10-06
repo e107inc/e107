@@ -6,7 +6,7 @@ namespace Helper;
 
 class Unit extends E107Base
 {
-	protected $deployer_components = ['db'];
+	protected $deployer_components = [];
 
 	/**
 	 * e107_handlers/file_class.php arms a 600-second limit at include time, and the coverage report that follows the

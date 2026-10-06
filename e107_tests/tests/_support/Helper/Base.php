@@ -11,7 +11,7 @@ abstract class Base extends \Codeception\Module
 	 * @var \Deployer
 	 */
 	protected $deployer;
-	protected $deployer_components = ['db', 'fs'];
+	protected $deployer_components = ['fs'];
 
 	public function getDbModule()
 	{
@@ -29,7 +29,6 @@ abstract class Base extends \Codeception\Module
 		$this->deployer->setComponents($this->deployer_components);
 
 		$this->deployer->start();
-		$this->_callbackDeployerStarted();
 
 		foreach ($this->getModules() as $module)
 		{
@@ -43,25 +42,5 @@ abstract class Base extends \Codeception\Module
 	public function _afterSuite()
 	{
 		$this->deployer->stop();
-	}
-
-	protected function _callbackDeployerStarted()
-	{
-		foreach ($this->deployer_components as $component)
-		{
-			$method = "reconfigure_{$component}";
-			if (method_exists($this->deployer, $method))
-			{
-				$this->deployer->$method($this);
-			}
-		}
-	}
-
-	/**
-     * @param \Codeception\TestInterface|null $test
-     */
-    public function _before($test = null)
-	{
-	    $this->_callbackDeployerStarted();
 	}
 }

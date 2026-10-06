@@ -44,8 +44,6 @@ class Acceptance extends E107Base
 	const INSTALL_SITETHEME     = 'bootstrap5';
 	const INSTALL_SITE_PATH     = '000000test';
 
-	protected $deployer_components = ['db', 'fs'];
-
 	/** @var bool */
 	private $pluginProbeWritten = false;
 
@@ -59,9 +57,9 @@ class Acceptance extends E107Base
 	 * Show the run's probe secret on every request, so a fixture in the docroot
 	 * answers this suite and nobody else, and start with e107's counters clear.
 	 *
-     * @param \Codeception\TestInterface|null $test
+     * @param \Codeception\TestInterface $test
      */
-    public function _before($test = null)
+    public function _before(\Codeception\TestInterface $test)
 	{
 		parent::_before($test);
 		$this->getModule('PhpBrowser')->haveHttpHeader(ProbeGuard::HEADER, ProbeGuard::secret());

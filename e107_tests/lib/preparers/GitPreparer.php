@@ -174,9 +174,8 @@ class GitPreparer implements Preparer
 	 * the suite runs inside a container with the repository mounted at a
 	 * different path. Every worktree the developer keeps on the host is
 	 * therefore invisible from in here, so a bare prune unregisters the lot
-	 * of them: directories survive, but their administrative files do not,
-	 * and submodules make the damage awkward to undo. Only entries pointing
-	 * at our own temporary worktrees are considered here.
+	 * of them: directories survive, but their administrative files do not.
+	 * Only entries pointing at our own temporary worktrees are considered.
 	 */
 	private function pruneOwnOrphanEntries()
 	{

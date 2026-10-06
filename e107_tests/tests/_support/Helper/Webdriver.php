@@ -15,10 +15,10 @@ class Webdriver extends E107Base
     /**
      * Start every test with e107's request counters clear.
      *
-     * @param \Codeception\TestInterface|null $test
+     * @param \Codeception\TestInterface $test
      * @return void
      */
-    public function _before($test = null)
+    public function _before(\Codeception\TestInterface $test)
     {
         parent::_before($test);
         $this->resetFloodProtection();
