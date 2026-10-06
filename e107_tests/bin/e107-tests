@@ -606,7 +606,11 @@ deps_install_once() {
         fi
         META=vendor/.e107-meta
         mkdir -p "$META/locks"
-        exec 9> "$META/.lock"
+        # Composer 2.2, the line PHP 5.6 and 7.0 get, fails when another install
+        # makes a directory in the cache under it, so installs take turns on it.
+        LOCKFILE=/root/.composer/cache/.e107-install.lock
+        touch "$LOCKFILE" 2>/dev/null || LOCKFILE=$META/.lock
+        exec 9> "$LOCKFILE"
         flock -w 900 9
         cp -f composer.json "$META/composer.json"
         rm -f "$META"/locks/* "$META/composer.lock"
