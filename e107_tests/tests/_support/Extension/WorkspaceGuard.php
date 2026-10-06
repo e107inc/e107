@@ -145,13 +145,12 @@ class WorkspaceGuard extends Extension
 	/**
 	 * Whether the app under test is the tree the developer is working in.
 	 *
-	 * Only then is there anything to sweep. A deploying deployer (sftp,
-	 * cpanel) is handed an isolated, disposable git worktree by
-	 * PreparerFactory and serves the app from somewhere else entirely, so the
-	 * developer's tree is never written to. Sweeping anyway would be pointless
-	 * on a good day and fatal on a bad one: it turns housekeeping into ssh
-	 * calls, and the continuous integration image that runs the unit suite has
-	 * no sshpass.
+	 * Only then is there anything to sweep. A deploying deployer (sftp) is
+	 * handed an isolated, disposable git worktree by PreparerFactory and
+	 * serves the app from somewhere else entirely, so the developer's tree is
+	 * never written to. Sweeping anyway would be pointless on a good day and
+	 * fatal on a bad one: it turns housekeeping into ssh calls, and the
+	 * continuous integration image that runs the unit suite has no sshpass.
 	 *
 	 * @return bool
 	 */

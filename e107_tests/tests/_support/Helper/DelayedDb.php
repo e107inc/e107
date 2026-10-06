@@ -10,11 +10,6 @@ namespace Helper;
 // dump is still read and loaded by _beforeSuite().
 class DelayedDb extends \Codeception\Module\Db
 {
-	public function _delayedInitialize()
-	{
-		return parent::_initialize();
-	}
-
 	public function _getDbHostname()
 	{
 		return $this->dsnParameter('host');
