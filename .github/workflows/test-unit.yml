@@ -64,8 +64,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-        with:
-          submodules: recursive
 
       # No --install-site: the unit suite loads a dump and never runs the
       # installer. --no-selenium because the browser image is over a gigabyte
