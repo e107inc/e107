@@ -1003,6 +1003,7 @@ class AdminRoutePermsCest
 
 		$victimId = $this->seedVictim($I);
 		$adminId = $this->seedOtherAdmin($I);
+		$seededPassword = (string) $I->grabFromDatabase('e107_user', 'user_password', array('user_id' => $adminId));
 		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
 
 		$this->sendRowTrigger($I, self::ROUTE_LIST, 'ban', $victimId);
@@ -1040,7 +1041,7 @@ class AdminRoutePermsCest
 			'A row control rotated or blanked another administrator\'s session key, which signs them '
 			.'out of every device they are signed in on.');
 
-		$I->assertSame(md5(self::OTHER_ADMIN),
+		$I->assertSame($seededPassword,
 			(string) $I->grabFromDatabase('e107_user', 'user_password', array('user_id' => $adminId)),
 			'The row Resend control replaced another administrator\'s password: resendActivation() '
 			.'calls resetPassword() when signup_option_password is empty.');
@@ -1103,6 +1104,7 @@ class AdminRoutePermsCest
 		$I->wantTo('Keep the password hash and the session key out of the user export');
 
 		$victimId = $this->seedVictim($I);
+		$victimPassword = (string) $I->grabFromDatabase('e107_user', 'user_password', array('user_id' => $victimId));
 		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
 
 		$this->sendBatch($I, self::ROUTE_LIST, 'export', $victimId);
@@ -1112,7 +1114,7 @@ class AdminRoutePermsCest
 		$I->assertNotSame(false, strpos($export, self::VICTIM_USER),
 			'The export batch no longer returns the row it was given, so nothing below is evidence.');
 
-		$I->assertSame(false, strpos($export, md5(self::VICTIM_USER)),
+		$I->assertSame(false, strpos($export, $victimPassword),
 			'The user export streamed the password hash of the selected row.');
 
 		$I->assertSame(false, strpos($export, 'user_password'),
@@ -1914,7 +1916,7 @@ class AdminRoutePermsCest
 			'user_name'      => self::VICTIM_USER,
 			'user_loginname' => self::VICTIM_USER,
 			'user_email'     => self::VICTIM_USER.'@example.com',
-			'user_password'  => md5(self::VICTIM_USER),
+			'user_password'  => \Test\Password::hash(self::VICTIM_USER),
 			'user_join'      => 1262304000,
 			'user_class'     => (string) $class,
 			'user_admin'     => 0,
@@ -1939,7 +1941,7 @@ class AdminRoutePermsCest
 			'user_name'      => self::OTHER_ADMIN,
 			'user_loginname' => self::OTHER_ADMIN,
 			'user_email'     => self::OTHER_ADMIN.'@example.com',
-			'user_password'  => md5(self::OTHER_ADMIN),
+			'user_password'  => \Test\Password::hash(self::OTHER_ADMIN),
 			'user_sess'      => self::OTHER_ADMIN_SESS,
 			'user_join'      => 1262304000,
 			'user_class'     => '',
@@ -1983,7 +1985,7 @@ class AdminRoutePermsCest
 			'user_name'      => self::PENDING_USER,
 			'user_loginname' => self::PENDING_USER,
 			'user_email'     => self::PENDING_USER.'@example.com',
-			'user_password'  => md5(self::PENDING_USER),
+			'user_password'  => \Test\Password::hash(self::PENDING_USER),
 			'user_sess'      => 'p7rppendingsess',
 			'user_join'      => 1262304000,
 			'user_class'     => '',
@@ -2016,7 +2018,7 @@ class AdminRoutePermsCest
 			'user_name'      => $loginName,
 			'user_loginname' => $loginName,
 			'user_email'     => $loginName.'@example.com',
-			'user_password'  => md5($loginName),
+			'user_password'  => \Test\Password::hash($loginName),
 			'user_join'      => 1262304000,
 			'user_class'     => '',
 			'user_admin'     => 1,

@@ -1067,7 +1067,7 @@ class AdminPreAuthCest
 			'user_name'      => $loginName,
 			'user_loginname' => $loginName,
 			'user_email'     => $loginName.'@example.com',
-			'user_password'  => md5($loginName),
+			'user_password'  => \Test\Password::hash($loginName),
 			'user_join'      => 1262304000,
 			'user_class'     => '',
 			'user_admin'     => 1,

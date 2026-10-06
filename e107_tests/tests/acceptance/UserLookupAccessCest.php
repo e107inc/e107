@@ -186,7 +186,7 @@ class UserLookupAccessCest
 			'user_loginname' => $login,
 			'user_login'     => $login,
 			'user_email'     => $login . '@example.test',
-			'user_password'  => $password !== '' ? password_hash($password, PASSWORD_DEFAULT) : '',
+			'user_password'  => $password !== '' ? \Test\Password::hash($password) : '',
 			'user_join'      => time(),
 			'user_ban'       => $ban,
 			'user_admin'     => 0,
