@@ -1648,11 +1648,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			return null;
 		}
 
-		$res = e107::getSession()->get('addons-update-status');
+		$updates = (new e107\Admin\AddonUpdateStatus(e107::getCache(), e107::getSession()))->get();
 
-		if($res !== null) // cached version.
+		if($updates !== null)
 		{
-			return $res;
+			return $this->renderAddonUpdateNotice($updates);
 		}
 
 		return "<div id='e-admin-addons-update'><!-- --></div>";
@@ -1713,6 +1713,46 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		return $ret;
 
+	}
+
+
+
+	/**
+	 * The dashboard notice for the add-ons that have an update, with download links for this session; null when none has.
+	 *
+	 * @param array $updates rows per add-on type, as {@see admin_shortcodes::getUpdateable()} returns them
+	 * @return string|null
+	 */
+	public function renderAddonUpdateNotice(array $updates)
+	{
+		e107::coreLan('plugin', true);
+		require_once(e_HANDLER.'e_marketplace.php');
+		$mp = new e_marketplace();
+
+		$text = '';
+
+		foreach(array('plugin', 'theme') as $type)
+		{
+			$rows = varset($updates[$type], array());
+
+			foreach($rows as $k => $row)
+			{
+				$rows[$k]['modalDownload'] = $mp->getDownloadModal($type, $row);
+			}
+
+			$text .= $this->renderAddonUpdate($rows);
+		}
+
+		if(empty($text))
+		{
+			return null;
+		}
+
+		$ns = e107::getRender();
+		$ns->setUniqueId('e-addon-updates');
+		$ns->setStyle('warning');
+
+		return $ns->tablerender(e107::getParser()->toGlyph('fa-arrow-circle-o-down').defset('LAN_UPDATE_AVAILABLE'), $text, 'default', true);
 	}
 
 

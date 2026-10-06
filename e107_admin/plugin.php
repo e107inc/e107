@@ -732,8 +732,7 @@ class plugin_ui extends e_admin_ui
 
 			// clear infopanel in admin dashboard.
 			e107::getCache()->clear('Infopanel_plugin', true);
-			e107::getSession()->clear('addons-update-status');
-			e107::getSession()->set('addons-update-checked',false); // set to recheck it.
+			(new e107\Admin\AddonUpdateStatus(e107::getCache(), e107::getSession()))->clear();
 
 			$this->redirectAction('list');
 	   }

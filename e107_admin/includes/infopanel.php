@@ -85,7 +85,7 @@ class adminstyle_infopanel
 			$coreUpdateCheck = (e107::getSession()->get('core-update-status') === true) ? $coreUpdateFound : $coreUpdateNone;
 		}
 
-		if( e107::getSession()->get('addons-update-checked') !== true)
+		if((new e107\Admin\AddonUpdateStatus(e107::getCache(), e107::getSession()))->get() === null)
 		{
 			$addonUpdateCheck = "
 			$('#e-admin-addons-update').load('".e_ADMIN."admin.php?mode=addons&type=update&e-token=".defset('e_TOKEN')."');
