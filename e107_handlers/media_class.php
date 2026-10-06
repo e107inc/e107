@@ -1003,6 +1003,14 @@ class e_media
 		
 		if(is_string($type) && in_array($type, $precompiled))
 		{
+			static $built = array();
+
+			$key = (string) $addPrefix;
+
+			if(isset($built[$type][$key]))
+			{
+				return $built[$type][$key];
+			}
 
 			$matches = array();
 			
@@ -1099,15 +1107,17 @@ class e_media
 
 			if(strpos($type,'-shims') !==false)
 			{
-				return $matches[$type];
+				$icons = $matches[$type];
 			}
-
-			foreach($matches[$type] as $ic)
+			else
 			{
-			    $icons[$ic] = $addPrefix.$ic;
+				foreach($matches[$type] as $ic)
+				{
+				    $icons[$ic] = $addPrefix.$ic;
+				}
 			}
 
-			return $icons;
+			return $built[$type][$key] = $icons;
 		}
 					
 
