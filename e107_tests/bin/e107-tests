@@ -315,6 +315,11 @@ compose_p() {
     docker compose -p "$PROJECT" "$@"
 }
 
+# For commands that read no input: compose forwards stdin to every exec.
+compose_exec_nostdin() {
+    compose_p exec -T "$@" </dev/null
+}
+
 # Long-lived containers can lose their bind mounts under podman after heavy
 # git churn on the host ("chdir to cwd" / "container breakout detected" on
 # every exec). A restart remounts. Probe cheaply and self-heal before any
@@ -322,7 +327,7 @@ compose_p() {
 ensure_web_exec() {
     local tmp rc=0
     tmp=$(mktemp)
-    compose_p exec -T web true 2>"$tmp" || rc=$?
+    compose_exec_nostdin web true 2>"$tmp" || rc=$?
     if [ "$rc" -ne 0 ]; then
         if grep -qE 'chdir to cwd|container breakout detected' "$tmp"; then
             warn "stale container mounts detected; restarting env $PROJECT"
@@ -330,7 +335,7 @@ ensure_web_exec() {
             local i=0
             rc=1
             while [ "$i" -lt 30 ]; do
-                if compose_p exec -T web true 2>/dev/null; then
+                if compose_exec_nostdin web true 2>/dev/null; then
                     rc=0
                     break
                 fi
@@ -532,15 +537,15 @@ assert_stack_healthy() {
 heal_dns() {
     # 2>/dev/null on the probes: podman prints "Error: executing ..." for any
     # nonzero exec, and a failed probe is an expected outcome here.
-    if compose_p exec -T web sh -c 'getent hosts getcomposer.org >/dev/null 2>&1' 2>/dev/null; then
+    if compose_exec_nostdin web sh -c 'getent hosts getcomposer.org >/dev/null 2>&1' 2>/dev/null; then
         return 0
     fi
     warn "container DNS can't resolve external names; appending nameserver 1.1.1.1 in web"
-    compose_p exec -T web sh -c 'echo "nameserver 1.1.1.1" >> /etc/resolv.conf' || true
-    if compose_p exec -T web sh -c 'getent hosts getcomposer.org >/dev/null 2>&1' 2>/dev/null; then
+    compose_exec_nostdin web sh -c 'echo "nameserver 1.1.1.1" >> /etc/resolv.conf' || true
+    if compose_exec_nostdin web sh -c 'getent hosts getcomposer.org >/dev/null 2>&1' 2>/dev/null; then
         return 0
     fi
-    if compose_p exec -T web sh -c 'curl -sI --max-time 5 https://1.1.1.1 >/dev/null 2>&1' 2>/dev/null; then
+    if compose_exec_nostdin web sh -c 'curl -sI --max-time 5 https://1.1.1.1 >/dev/null 2>&1' 2>/dev/null; then
         warn "raw-IP egress works but DNS still fails; the compose network's aardvark-dns is stuck"
     else
         warn "containers have no external egress at all"
@@ -592,7 +597,7 @@ lock_floor() {
 tests_sh() {
     local candidates
     mapfile -t candidates < <(lock_candidates)
-    compose_p exec -T -w "$WEB_TESTS_DIR" web sh -euc "$1" sh "${candidates[@]}"
+    compose_exec_nostdin -w "$WEB_TESTS_DIR" web sh -euc "$1" sh "${candidates[@]}"
 }
 
 # Each env owns a named volume mounted over e107_tests/vendor, so different
@@ -693,12 +698,12 @@ deps_ensure() {
 
 install_site() {
     note ">> Installing e107 into the stack (acceptance installer)"
-    compose_p exec -T -w "$WEB_TESTS_DIR" web \
+    compose_exec_nostdin -w "$WEB_TESTS_DIR" web \
         "${CODECEPT[@]}" run acceptance tests/acceptance/0000_InstallCest.php:installDefault --steps
     # The install Cest cleans up its e107_config.php in _afterSuite (the DB
     # tables persist), so render a persistent config against the same DB.
     note ">> Writing persistent e107_config.php"
-    compose_p exec -T web sh -euc "
+    compose_exec_nostdin web sh -euc "
         SITE_PATH=\$(php -r 'echo substr(md5(\"$DEFAULT_DB_NAME.e107_\"), 0, 10);')
         sed -e 's/{{ mySQLserver }}/db/' \
             -e 's/{{ mySQLuser }}/$DEFAULT_DB_USER/' \
@@ -712,7 +717,7 @@ install_site() {
     # The admin credentials belong to the tree's own installer Cest: modern
     # trees define them in Helper\AdminLogin, older tags inline literals.
     local creds
-    creds=$(compose_p exec -T -w "$WEB_TESTS_DIR" web php -r '
+    creds=$(compose_exec_nostdin -w "$WEB_TESTS_DIR" web php -r '
         $u = "admin"; $p = null;
         if (($h = @file_get_contents("tests/_support/Helper/AdminLogin.php")) !== false) {
             if (preg_match("/ADMIN_USER = .([^\x27\"]+)./", $h, $m)) $u = $m[1];
@@ -865,7 +870,7 @@ cmd_relock() {
         had_env=no
         ! project_exists "$(project_name "$floor" "$DEFAULT_DB")" || had_env=yes
         cmd_up --php "$floor" --no-selenium >&2
-        compose_p exec -T -w "$WEB_TESTS_DIR" web sh -euc '
+        compose_exec_nostdin -w "$WEB_TESTS_DIR" web sh -euc '
             d=$(mktemp -d)
             cp composer.json "$d/"
             cd "$d"
@@ -987,7 +992,7 @@ set_coverage_exec_env() {
         case $arg in
             --coverage*)
                 # 2>/dev/null: podman prints "Error: executing ..." for any nonzero exec.
-                if ! compose_p exec -T web php -r 'exit(extension_loaded("xdebug") ? 0 : 1);' >/dev/null 2>&1; then
+                if ! compose_exec_nostdin web php -r 'exit(extension_loaded("xdebug") ? 0 : 1);' >/dev/null 2>&1; then
                     err "coverage needs the xdebug image, and PHP in $PROJECT has no xdebug loaded (env records xdebug=$(project_label "$PROJECT" xdebug)).
        Run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
                 fi
@@ -1063,7 +1068,7 @@ cmd_reset() {
     assert_env_is_ours reset "$force"
     ensure_web_exec
     note ">> Resetting database for $PROJECT"
-    compose_p exec -T db sh -c '
+    compose_exec_nostdin db sh -c '
         CLIENT=mariadb; command -v mariadb >/dev/null 2>&1 || CLIENT=mysql
         SKIP_SSL=--skip-ssl; [ "$CLIENT" = mysql ] && SKIP_SSL=
         "$CLIENT" $SKIP_SSL -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
@@ -1073,7 +1078,7 @@ cmd_reset() {
             FLUSH PRIVILEGES;"
     '
     note ">> Removing test-written app state (e107_config.php, hash dirs)"
-    compose_p exec -T -w "$WEB_APP_DIR" web sh -c '
+    compose_exec_nostdin -w "$WEB_APP_DIR" web sh -c '
         rm -f e107_config.php e107_config.php.bak
         rm -rf e107_system/000000test e107_media/000000test
         rm -rf e107_system/416f4602e3 e107_media/416f4602e3
@@ -1117,9 +1122,7 @@ cmd_clean() {
     _rm() {
         case $remover in
             container)
-                # stdin closed: docker forwards it to the container, which
-                # would swallow the rest of a pipe feeding a loop that calls this.
-                compose_p exec -T -w "$WEB_APP_DIR" web rm -rf -- "$@" </dev/null ;;
+                compose_exec_nostdin -w "$WEB_APP_DIR" web rm -rf -- "$@" ;;
             unshare)
                 podman unshare rm -rf -- "$@" ;;
             *)
