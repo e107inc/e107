@@ -420,7 +420,7 @@ class MailoutCsrfCest
 			'user_name'      => self::DELEGATED_ADMIN,
 			'user_loginname' => self::DELEGATED_ADMIN,
 			'user_email'     => self::DELEGATED_ADMIN . '@example.com',
-			'user_password'  => md5(self::DELEGATED_ADMIN),
+			'user_password'  => \Test\Password::hash(self::DELEGATED_ADMIN),
 			'user_join'      => 1262304000,
 			'user_class'     => '',
 			'user_admin'     => 1,
