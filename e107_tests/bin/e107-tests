@@ -571,9 +571,6 @@ tests_sh() {
 deps_install() {
     note ">> Installing test dependencies (composer)"
     retry "installing test dependencies" deps_install_once
-    if [ -e "$APP_PATH/.git" ]; then
-        ( cd "$APP_PATH" && git submodule update --init --recursive --remote >/dev/null 2>&1 ) || true
-    fi
 }
 
 deps_install_once() {

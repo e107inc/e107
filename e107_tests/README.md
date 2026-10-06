@@ -57,7 +57,7 @@ If you prefer to wire tests into your own LAMP stack — local, SFTP, cPanel, or
    ```
 5. Update all submodules:
    ```sh
-   git submodule update --init --recursive --remote
+   git submodule update --init --recursive
    ```
 6. Run tests:
 
