@@ -72,8 +72,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-        with:
-          submodules: recursive
 
       # An empty --base-path means a docroot install.
       - name: Bring up the stack

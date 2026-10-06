@@ -52,8 +52,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-        with:
-          submodules: recursive
 
       # No --install-site: the unit suite loads a dump and never runs the
       # installer. --no-selenium because this branch has no WebDriver suite and
