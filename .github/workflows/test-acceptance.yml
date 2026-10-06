@@ -80,8 +80,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-        with:
-          submodules: recursive
 
       # --no-selenium: the browser image is over a gigabyte and only the
       # WebDriver suite needs it. An empty --base-path means a docroot install.
