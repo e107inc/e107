@@ -83,8 +83,10 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 
 	if(!E107_DEBUG_LEVEL)
 	{
-		e107::getSession()->set('addons-update-checked',true);
+		e107::getSession()->set(e107\Admin\AddonUpdateStatus::CHECKED, true);
 	}
+
+	e107::getSession()->end();
 
 	/** @var admin_shortcodes $sc */
 	$sc = e107::getScBatch('admin');
@@ -92,27 +94,14 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 	$themes = $sc->getUpdateable('theme');
 	$plugins = $sc->getUpdateable('plugin');
 
-	$text = $sc->renderAddonUpdate($plugins);
-	$text .= $sc->renderAddonUpdate($themes);
-
-	if(empty($text))
-	{
-		exit;
-	}
-
-	$ns = e107::getRender();
-
-	$tp = e107::getParser();
-	$ns->setUniqueId('e-addon-updates');
-	$ns->setStyle('warning');
-	$ret = $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').defset('LAN_UPDATE_AVAILABLE'),$text,'default', true);
-
-	echo $ret;
+	$updates = array('plugin' => $plugins, 'theme' => $themes);
 
 	if(!E107_DEBUG_LEVEL)
 	{
-		e107::getSession()->set('addons-update-status',$ret);
+		(new e107\Admin\AddonUpdateStatus(e107::getCache(), e107::getSession()))->set($updates);
 	}
+
+	echo $sc->renderAddonUpdateNotice($updates);
 
 	exit;
 
@@ -127,6 +116,8 @@ if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type']
 		echo $bootTokenMessage;
 		exit;
 	}
+
+	e107::getSession()->end();
 
 	$limit = 3;
 
@@ -176,6 +167,8 @@ if(ADMIN && (e_AJAX_REQUEST || deftrue('e_DEBUG_FEEDS')) && varset($_GET['mode']
 		echo $bootTokenMessage;
 		exit;
 	}
+
+	e107::getSession()->end();
 
 	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
 	// Versioned: the composed HTML is what gets cached, so an install upgrading
