@@ -180,21 +180,8 @@ PHP;
 	 */
 	private static function significant(array $tokens, $i, $direction)
 	{
-		for($j = $i + $direction; isset($tokens[$j]); $j += $direction)
-		{
-			$token = $tokens[$j];
+		$token = \Test\Tokens::neighbour($tokens, $i, $direction);
 
-			if(!is_array($token))
-			{
-				return $token;
-			}
-
-			if(!in_array($token[0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true))
-			{
-				return $token[1];
-			}
-		}
-
-		return '';
+		return is_array($token) ? $token[1] : (string) $token;
 	}
 }
