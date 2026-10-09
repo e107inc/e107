@@ -73,8 +73,8 @@ jobs:
       # utf8mb4 gets utf8 instead.
       #
       # No --install-site: the unit suite loads a dump and never runs the
-      # installer. --no-selenium because the browser image is over a gigabyte
-      # and only the WebDriver suite needs it.
+      # installer. --no-selenium because only the WebDriver suite needs the
+      # browser.
       - name: Bring up one stack per database
         uses: ./.github/actions/harness-stack
         with:

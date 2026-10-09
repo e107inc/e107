@@ -112,13 +112,23 @@ hash8() {
     printf '%s' "$1" | sha1sum | cut -c1-8
 }
 
-# The web image `up` uses, tagged by a hash of what it is built from: every
-# file in docker/ but the compose file and the docs.
+# The images `up` uses, each tagged by a hash of what it is built from: the
+# browser's from browser.Dockerfile, the web image's from every other file in
+# docker/ but the compose files and the docs.
 web_image() {
-    local hash xdebug=
+    local xdebug=
     [ "$WITH_XDEBUG" != yes ] || xdebug=-xdebug
-    hash=$(cd "$DOCKER_DIR" && find . -type f ! -name 'compose*.yml' ! -name '*.md' -print0 | LC_ALL=C sort -z | xargs -0 sha1sum | sha1sum | cut -c1-8)
-    printf 'e107-web:%s%s-%s' "$E107_PHP_VERSION" "$xdebug" "$hash"
+    printf 'e107-web:%s%s-%s' "$E107_PHP_VERSION" "$xdebug" \
+        "$(build_hash ! -name 'compose*.yml' ! -name '*.md' ! -name 'browser.*')"
+}
+
+browser_image() {
+    printf 'e107-browser:%s' "$(build_hash -name 'browser.*')"
+}
+
+# Hash of the files in docker/ that match the find(1) tests given.
+build_hash() {
+    (cd "$DOCKER_DIR" && find . -type f "$@" -print0 | LC_ALL=C sort -z | xargs -0 sha1sum | sha1sum | cut -c1-8)
 }
 
 # Derive a compose project name from worktree path + PHP + DB.
@@ -309,6 +319,7 @@ compose_up_cmd() {
     E107_DB_ROOT_PASSWORD=$DEFAULT_DB_ROOT_PASSWORD \
     E107_WITH_XDEBUG=$WITH_XDEBUG \
     E107_WEB_IMAGE=$(web_image) \
+    E107_BROWSER_IMAGE=$(browser_image) \
     E107_DB_CHARSET=$E107_DB_CHARSET \
     E107_DB_COLLATION=$E107_DB_COLLATION \
     E107_DB_EXTRA_ARGS=$E107_DB_EXTRA_ARGS \
@@ -476,10 +487,10 @@ db:
   populate: true
   dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
 # WebDriver suite drives the dedicated 'selenium' service over the compose
-# network. The grid serves the W3C protocol at the root '/'.
+# network. Its chromedriver serves the W3C protocol at the root '/'.
 selenium:
   host: 'selenium'
-  port: '4444'
+  port: '9515'
   path: '/'
 EOF
 }
@@ -491,9 +502,6 @@ EOF
 # The images a registry has to supply for this `up`, as "service image" rows.
 registry_images() {
     printf 'db %s\n' "$E107_DB_IMAGE"
-    if [ "$WITH_SELENIUM" = yes ]; then
-        printf 'selenium %s\n' "${E107_SELENIUM_IMAGE:-docker.io/selenium/standalone-chrome:latest}"
-    fi
 }
 
 # `up` pulls only what is missing and gives up on the first refusal, so the
@@ -517,6 +525,7 @@ up_with_registry_fallback() {
     if [ "$rc" -ne 0 ] && grep -qiE 'denied|unauthorized|toomanyrequests|manifest unknown' "$tmp"; then
         local svc img missing=no
         docker image inspect "$(web_image)" >/dev/null 2>&1 || missing=yes
+        [ "$WITH_SELENIUM" != yes ] || docker image inspect "$(browser_image)" >/dev/null 2>&1 || missing=yes
         while read -r svc img; do
             docker image inspect "$img" >/dev/null 2>&1 || missing=yes
         done < <(registry_images)
@@ -784,6 +793,8 @@ cmd_up() {
             *) err "unknown flag: $1" ;;
         esac
     done
+    [ -z "${E107_SELENIUM_IMAGE:-}" ] \
+        || err "E107_SELENIUM_IMAGE no longer picks the browser, which is built from docker/browser.Dockerfile; unset it"
 
     require_docker
     E107_PHP_VERSION=$PHP
@@ -803,13 +814,15 @@ cmd_up() {
     # that cannot build looks healthy: exactly how an openssl flag that Debian
     # Stretch does not have sat unnoticed in the php:5.6 image for two days.
     if [ "$REBUILD" = yes ]; then
-        note ">> Rebuilding the web image for PHP $PHP"
-        compose_up_cmd build web \
-            || err "the web image failed to build; the stack was left alone (see output above)"
+        local images=(web)
+        [ "$WITH_SELENIUM" != yes ] || images+=(selenium)
+        note ">> Rebuilding images for PHP $PHP: ${images[*]}"
+        compose_up_cmd build "${images[@]}" \
+            || err "an image failed to build; the stack was left alone (see output above)"
     fi
 
-    # The WebDriver suite needs the browser; nothing else does, and the image
-    # is over a gigabyte, so CI legs that only run acceptance skip it.
+    # The WebDriver suite needs the browser; nothing else does, so CI legs
+    # that only run acceptance skip it.
     UP_SERVICES=()
     if [ "$WITH_SELENIUM" != yes ]; then
         UP_SERVICES=(db web)
@@ -916,17 +929,20 @@ cmd_relock() {
     git -C "$APP_PATH" --no-pager diff --stat -- 'e107_tests/composer*.lock' >&2 || true
 }
 
-# Print the web image `up` would use, so CI can cache it under the same name.
+# Print the web or browser image `up` would use, so CI can cache or build it
+# under the same name.
 cmd_image() {
+    local image=web_image
     E107_PHP_VERSION=$DEFAULT_PHP
     while [ $# -gt 0 ]; do
         case $1 in
             --php) E107_PHP_VERSION=$2; shift 2 ;;
             --xdebug) WITH_XDEBUG=yes; shift ;;
+            --browser) image=browser_image; shift ;;
             *) err "unknown flag: $1" ;;
         esac
     done
-    web_image
+    $image
     echo
 }
 
@@ -1361,7 +1377,8 @@ LIFECYCLE:
   up [--php X] [--db Y] [--xdebug] [--install-site]
      [--base-path DIR] [--no-selenium] [--rebuild]
                                      Start, install deps, mark active. Builds the
-                                     web image if missing, else reuses it.
+                                     web and browser images if missing, else
+                                     reuses them.
                                      Default: PHP 8.5 + MariaDB 10.11.
                                      --install-site also installs e107 itself
                                      (persistent config, admin/x107).
@@ -1373,8 +1390,9 @@ LIFECYCLE:
                                      --no-selenium skips the browser service
                                      (a >1GB image the WebDriver suite alone
                                      needs).
-                                     --rebuild rebuilds the web image; an edit
-                                     to a file it is built from needs none, as
+                                     --rebuild rebuilds the web image, and the
+                                     browser's unless --no-selenium; an edit to
+                                     a file either is built from needs none, as
                                      that changes the image's tag (see image).
   down [--volumes] [--force]         Stop and remove this env. Removing an env
                                      belonging to another worktree (reachable
@@ -1400,7 +1418,10 @@ LIFECYCLE:
                                      diff, run the suites, commit.
   image [--php X] [--xdebug]         Print the web image `up` uses, tagged by
                                      a hash of every file in docker/ but
-                                     the compose files and the docs.
+                                     the compose files, the docs and
+                                     browser.Dockerfile.
+  image --browser                    Print the browser image `up` uses, tagged
+                                     by a hash of browser.Dockerfile.
   gc [--dry-run] [--worktrees-gone]  Remove volumes of downed/orphaned envs;
                                      with --worktrees-gone, tear down stacks
                                      whose worktree was deleted.

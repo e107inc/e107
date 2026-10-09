@@ -5,9 +5,9 @@ description: >-
   its inputs and the month, and Composer's download cache is keyed on the
   lock files, so a warm run installs everything without a registry or
   package host answering. Registry images come through mirror.gcr.io with
-  Docker Hub behind it, pulled while the web image loads, and every step that
-  reaches the network retries with a pause. It brings up one env per cell,
-  all at once (see cells.sh).
+  Docker Hub behind it, pulled while the web image loads, as the browser image
+  is built, and every step that reaches the network retries with a pause. It
+  brings up one env per cell, all at once (see cells.sh).
 
 inputs:
   php:
@@ -31,7 +31,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Plan the envs and pull their registry images
+    - name: Plan the envs and fetch their images
       shell: bash
       env:
         CELLS: ${{ inputs.cells }}
@@ -41,22 +41,28 @@ runs:
           ${{ inputs.xdebug == 'yes' && '--xdebug' || '' }} ${{ inputs.up-args }} <<< "$CELLS"
         pulls=$RUNNER_TEMP/e107-pull
         mkdir -p "$pulls"
-        images=$("$GITHUB_ACTION_PATH/cells.sh" images)
-        case ' ${{ inputs.up-args }} ' in
-          *' --no-selenium '*) ;;
-          *) images="$images ${E107_SELENIUM_IMAGE:-}" ;;
-        esac
         n=0
-        for img in $images; do
+        bg() {
           n=$((n + 1))
-          f=$pulls/$n
-          printf '%s\t%s\n' "$f" "$img" >> "$pulls/list"
+          local f=$pulls/$n
+          printf '%s\t%s\n' "$f" "$1" >> "$pulls/list"
+          shift
           exec 9> "$f.lock"
           flock 9
-          setsid nohup bash -c '"$0" "$1" > "$2.log" 2>&1; echo $? > "$2.rc"' \
-            "$GITHUB_ACTION_PATH/pull.sh" "$img" "$f" < /dev/null > /dev/null 2>&1 &
+          setsid nohup bash -c '"${@:2}" > "$1.log" 2>&1; echo $? > "$1.rc"' bash "$f" "$@" \
+            < /dev/null > /dev/null 2>&1 &
           exec 9>&-
+        }
+        for img in $("$GITHUB_ACTION_PATH/cells.sh" images); do
+          bg "$img" "$GITHUB_ACTION_PATH/pull.sh" "$img"
         done
+        case ' ${{ inputs.up-args }} ' in
+          *' --no-selenium '*) ;;
+          *) dockerfile=e107_tests/docker/browser.Dockerfile
+             browser=$(e107_tests/bin/e107-tests image --browser)
+             bg "$browser" sh -c '"$0" "$1" && docker build -q -t "$3" -f "$2" e107_tests/docker' \
+               "$GITHUB_ACTION_PATH/pull.sh" "$(sed -n 's/^FROM //p' "$dockerfile")" "$dockerfile" "$browser" ;;
+        esac
 
     - name: Image cache key
       id: key
@@ -105,13 +111,13 @@ runs:
         key: composer-${{ inputs.php }}-${{ hashFiles('e107_tests/composer.lock', 'e107_tests/composer.php*.lock') }}
         restore-keys: composer-${{ inputs.php }}-
 
-    - name: Wait for the registry images
+    - name: Wait for the images
       shell: bash
       run: |
         while IFS=$'\t' read -r f img; do
           flock "$f.lock" true
           if [ "$(cat "$f.rc" 2>/dev/null)" != 0 ]; then
-            echo "::warning::$img: pull failed; e107-tests up will try again"
+            echo "::warning::$img: failed in the background; e107-tests up will try again"
             cat "$f.log" 2>/dev/null || true
           fi
         done < "$RUNNER_TEMP/e107-pull/list"

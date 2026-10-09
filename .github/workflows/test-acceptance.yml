@@ -75,8 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # --no-selenium: the browser image is over a gigabyte and only the
-      # WebDriver suite needs it.
+      # --no-selenium: only the WebDriver suite needs the browser.
       - name: Bring up one stack per layout
         uses: ./.github/actions/harness-stack
         with:
