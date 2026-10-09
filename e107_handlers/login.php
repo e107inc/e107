@@ -600,12 +600,14 @@ class userlogin
 
 
 	/**
-	 * Hand a password check made outside {@see userlogin::login()} to the failure arm a wrong login takes.
+	 * Hand a password check made outside {@see userlogin::login()} to the failure arm a wrong login takes, without the LOGINMESSAGE a login menu on the same page would show.
 	 * @param string $username - as entered
 	 * @return bool always false, so a caller can return it directly
 	 */
 	public function noteFailedPassword($username)
 	{
+		defined('LOGINMESSAGE') or define('LOGINMESSAGE', '');
+
 		return $this->invalidLogin($username, LOGIN_BAD_PW);
 	}
 

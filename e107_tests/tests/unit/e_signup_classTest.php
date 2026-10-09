@@ -119,8 +119,8 @@
 			$fromLogin = $this->evidenceAdded($start, $afterLogin);
 			$fromResend = $this->evidenceAdded($afterLogin, $afterResend);
 
-			$this->assertNotFalse(strpos($out, LAN_INCORRECT_PASSWORD),
-				'the resend form never reached its wrong-password branch: '.$out);
+			$this->assertStringNotContainsString(LAN_INCORRECT_PASSWORD, $out,
+				'the resend form told the visitor their password was wrong, which says the account exists');
 
 			$this->assertTrue(in_array(true, $fromLogin, true),
 				'the login form recorded nothing at all, so there is nothing to compare against');
@@ -130,6 +130,25 @@
 
 			$this->assertSame($email, $this->addressOf($name),
 				'the wrong password still moved the account to another address');
+		}
+
+
+		/**
+		 * A login menu rendered after the answer would otherwise say a login failed, which only an account that exists can cause.
+		 */
+		public function testAWrongResendPasswordLeavesTheLoginMenuNothingToSay()
+		{
+			$name = 'resendquiet';
+			$email = $name.'@example.com';
+
+			$this->haveUnactivatedUser($name, $email);
+			$this->havePrefs(array('user_reg_veri' => 1));
+
+			$out = $this->runResend($name, 'not-the-password', 'moved-'.$email,
+				'echo "LOGINMESSAGE=[".(defined("LOGINMESSAGE") ? LOGINMESSAGE : "")."]";');
+
+			$this->assertStringContainsString('LOGINMESSAGE=[]', $out,
+				'the wrong resend password left a login failure message for the rest of the page: '.$out);
 		}
 
 
@@ -290,15 +309,16 @@
 
 
 		/**
-		 * Posts the resend form in its own request, because its wrong-password
+		 * Posts the resend form in its own request, because its duplicate-address
 		 * branch ends in message_handler(), which exits.
 		 *
 		 * @param string $name what the visitor typed in the identifier field
 		 * @param string $password what the visitor typed in the password field
 		 * @param string $newEmail the address the visitor asks the account to be moved to
+		 * @param string $then PHP run in the same request once the form has answered
 		 * @return string everything the request wrote
 		 */
-		private function runResend($name, $password, $newEmail)
+		private function runResend($name, $password, $newEmail, $then = '')
 		{
 			$post = array(
 				'submit_resend'   => 1,
@@ -311,7 +331,7 @@
 			$php .= 'e107::coreLan("signup"); ';
 			$php .= '$_POST = '.var_export($post, true).'; ';
 			$php .= "require_once('".addslashes(APP_PATH.'/e107_handlers/e_signup_class.php')."'); ";
-			$php .= '$signup = new e_signup(); $signup->run("resend");';
+			$php .= '$signup = new e_signup(); $signup->run("resend"); '.$then;
 
 			list($output, ) = $this->runInBootedCli($php);
 
