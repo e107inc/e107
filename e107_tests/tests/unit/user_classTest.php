@@ -117,5 +117,44 @@
 			$this->assertEquals($expected, $actual, 'ucRemove returned a wrong result');
 		}
 
+		public function testReadTreeOnATableWithoutUserclassParentHoldsOnlyTheFixedClasses()
+		{
+			$db = e107::getDb();
+			$table = MPREFIX.'userclass_classes';
+			$pre08 = MPREFIX.'userclass_classes_pre08';
+			$kept = MPREFIX.'userclass_classes_kept';
+
+			foreach(array(
+				'DROP TABLE IF EXISTS `'.$pre08.'`',
+				'CREATE TABLE `'.$pre08.'` LIKE `'.$table.'`',
+				'INSERT INTO `'.$pre08.'` SELECT * FROM `'.$table.'`',
+				'ALTER TABLE `'.$pre08.'` DROP COLUMN `userclass_parent`',
+				'RENAME TABLE `'.$table.'` TO `'.$kept.'`, `'.$pre08.'` TO `'.$table.'`',
+			) as $statement)
+			{
+				$this->assertNotFalse($db->gen($statement), $statement.' :: '.$db->getLastErrorText());
+			}
+
+			try
+			{
+				e107::getCache()->clear_sys(UC_CACHE_TAG);
+				$this->expectOutputString('');
+
+				$userClass = new user_class();
+
+				$tree = array_keys($userClass->class_tree);
+				$fixed = array_keys($userClass->fixed_classes);
+				sort($tree);
+				sort($fixed);
+				$this->assertSame($fixed, $tree);
+			}
+			finally
+			{
+				$db->gen('RENAME TABLE `'.$table.'` TO `'.$pre08.'`, `'.$kept.'` TO `'.$table.'`');
+				$db->gen('DROP TABLE IF EXISTS `'.$pre08.'`');
+				e107::getCache()->clear_sys(UC_CACHE_TAG);
+			}
+		}
+
 
 	}

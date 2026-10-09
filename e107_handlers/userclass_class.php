@@ -165,7 +165,7 @@ class user_class
 		}
 		else
 		{
-			if($this->sql_r->field('userclass_classes','userclass_parent') &&  $this->sql_r->select('userclass_classes', '*', 'ORDER BY userclass_parent,userclass_name', 'nowhere')) // The order statement should give a consistent return
+			if($this->sql_r->select('userclass_classes', '*', 'ORDER BY userclass_parent,userclass_name', 'nowhere')) // The order statement should give a consistent return
 			{
 				while ($row = $this->sql_r->fetch())
 				{
