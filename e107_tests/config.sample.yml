@@ -14,22 +14,7 @@ app_path: '../'
 # 'sftp'
 #   Deploys the files in "app_path" to an SFTP account.
 #   Configure the "url", "db", and "fs" sections.
-# 'cpanel'
-#   Deploys the files in "app_path" to a cPanel account's main domain.
-#   Configure the "hosting" section.
 deployer: 'local'
-
-# Configure this section for fully automated test deployments to a hosting control panel
-hosting:
-
-  # Control panel domain without the port number
-  hostname: ''
-
-  # Control panel account username
-  username: ''
-
-  # Control panel account password
-  password: ''
 
 # URL (with trailing slash) at which the app can be reached for acceptance tests
 url: 'http://set-this-to-your-acceptance-test-url.local/'

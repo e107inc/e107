@@ -250,7 +250,7 @@ harness shipped in that tree, since the copies drift between branches.
 
 The local deployer (this harness) serves e107 from the app path itself, so it
 runs the tests in place via `E107Preparer`. Only deploy-based suites
-(sftp/cpanel) isolate the source in a disposable `git worktree`, and only when
+(sftp) isolate the source in a disposable `git worktree`, and only when
 git actually works in the app path. Each Docker stack is already isolated, so
 running in place is safe here.
 

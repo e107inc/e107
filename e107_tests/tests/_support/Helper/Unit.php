@@ -6,7 +6,7 @@ namespace Helper;
 
 class Unit extends E107Base
 {
-	protected $deployer_components = ['db'];
+	protected $deployer_components = [];
 
 	public function _beforeSuite($settings = array())
 	{
