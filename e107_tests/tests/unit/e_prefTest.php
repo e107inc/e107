@@ -136,6 +136,163 @@
 			$this->assertSame(array('kept' => 'base'), $this->openOwnedPref($class, $id)->getPref(), 'the base row reads its own preferences back after a save to another row');
 		}
 
+		/**
+		 * Rows of every kind of value a preference can hold, each with whether JSON carries it exactly.
+		 *
+		 * @return array
+		 */
+		public function cachedRowProvider()
+		{
+			return array(
+				'strings' => array(array('plain' => 'text', 'empty' => '', 'quoted' => "it's \"x\" \\ /", 'unicode' => "\xc3\x9cn\xc3\xafc\xc3\xb8d\xc3\xa9 \xe2\x9c\x93", 'markup' => '<a href="/x">x</a>', 'nul' => "a\0b"), true),
+				'integers and numeric strings' => array(array('int' => 7, 'negative' => -7, 'zero' => 0, 'numeric' => '7', 'padded' => '007', 'largest' => PHP_INT_MAX, 'decimal' => '1.50'), true),
+				'fractions' => array(array('half' => 1.5, 'negative' => -2.25, 'tiny' => 1.0E-300), true),
+				'a fraction JSON rounds below PHP 7.1' => array(array('inexact' => 0.1 + 0.2), PHP_VERSION_ID >= 70100),
+				'a whole float, an integer in var_export() before PHP 7' => array(array('whole' => 2.0), PHP_MAJOR_VERSION < 7),
+				'negative zero, an integer in var_export() before PHP 7' => array(array('negative_zero' => -0.0), PHP_MAJOR_VERSION < 7),
+				'an infinite float' => array(array('limit' => INF), false),
+				'booleans and null' => array(array('on' => true, 'off' => false, 'none' => null), true),
+				'nested arrays' => array(array('list' => array('a', 'b'), 'sparse' => array(3 => 'c', 1 => 'd'), 'map' => array('k' => array('deep' => array(1, '1', 1.5, true, null))), 'none' => array()), true),
+				'a whole float nested' => array(array('map' => array('k' => array('deep' => array(1, 1.0)))), PHP_MAJOR_VERSION < 7),
+				'keys' => array(array(0 => 'zero', -1 => 'negative', '' => 'empty', '01' => 'padded'), true),
+				'bytes that are not UTF-8' => array(array('plain' => 'text', 'latin1' => "caf\xe9"), false),
+				'no preferences' => array(array(), false),
+			);
+		}
+
+		/**
+		 * @dataProvider cachedRowProvider
+		 * @param array $row
+		 * @param bool $json
+		 */
+		public function testARowCachedByASaveReadsBackAsItsExportedStringDoes($row, $json)
+		{
+			$id = $this->expectRow('test_pref_cache_saved');
+			$exported = e107::serialize($row, false);
+
+			$this->defineProbe('e_pref_cache_probe', '
+					public function writeCache($cache_string)
+					{
+						return $this->setPrefCache($cache_string, true);
+					}
+			');
+
+			$writer = new e_pref_cache_probe($id);
+			$writer->writeCache($exported);
+
+			$this->assertCachedAs($id, $exported, $json);
+		}
+
+		/**
+		 * Rows as the database holds them, each with whether it is stored by serialize() and whether JSON carries it exactly.
+		 *
+		 * @return array
+		 */
+		public function storedRowProvider()
+		{
+			return array(
+				'a row JSON carries' => array(array('name' => 'value', 'count' => 3, 'ratio' => 1.5, 'list' => array('a', 'b'), 'off' => false, 'none' => null), false, true),
+				'a row JSON cannot carry' => array(array('name' => 'value', 'limit' => INF), false, false),
+				'a serialize() row holding text its exported form reads differently' => array(array('name' => 'a =&gt; b', 'count' => 3), true, true),
+			);
+		}
+
+		/**
+		 * @dataProvider storedRowProvider
+		 * @param array $row
+		 * @param bool $serialized
+		 * @param bool $json
+		 */
+		public function testARowCachedByALoadReadsBackAsItsExportedStringDoes($row, $serialized, $json)
+		{
+			$id = $this->expectRow('test_pref_cache_loaded');
+			e107::getDb()->insert('core', array('e107_name' => $id, 'e107_value' => $serialized ? serialize($row) : e107::serialize($row, false)));
+
+			$loader = $this->make('e_pref');
+			$loader->__construct($id);
+			$loader->setOptionSerialize($serialized);
+			$loader->load();
+
+			$this->assertCachedAs($id, e107::serialize($row, false), $json);
+		}
+
+		public function testARowJsonCarriesExactlyIsCachedAsJson()
+		{
+			$id = 'test_pref_cache_json';
+			$row = array('name' => 'value', 'count' => 3, 'list' => array('a', 'b'), 'off' => false);
+			$this->openPref($id)->loadData($row, false)->save(false, true, false);
+
+			$cached = e107::getCache()->retrieve_sys('Config_'.$id, false, true);
+
+			$this->assertSame($row, json_decode($cached, true), "the cache file should hold the row as JSON:\n".$cached);
+		}
+
+		public function testACacheFileInTheExportedFormIsStillRead()
+		{
+			$id = $this->expectRow('test_pref_cache_exported');
+			$row = array('name' => 'value', 'count' => 3, 'list' => array('a', 'b'), 'off' => false);
+			e107::getCache()->set_sys('Config_'.$id, e107::serialize($row, false), true);
+
+			$reader = $this->make('e_pref');
+			$reader->__construct($id);
+			$reader->load();
+
+			$this->assertSame($row, $reader->getPref());
+		}
+
+		/**
+		 * Asserts a row's cache file is JSON or the exported form, and that reading it loads what the exported string does, compared serialised because assertSame() takes -0.0 for 0.0.
+		 *
+		 * @param string $id
+		 * @param string $exported
+		 * @param bool $json
+		 * @return void
+		 */
+		private function assertCachedAs($id, $exported, $json)
+		{
+			$cached = e107::getCache()->retrieve_sys('Config_'.$id, false, true);
+
+			$this->assertIsString($cached, 'the row should have a cache file');
+			$this->assertSame($json ? 'JSON' : 'exported', in_array(substr($cached, 0, 1), array('{', '['), true) ? 'JSON' : 'exported', "the cache file:\n".$cached);
+			$this->assertSame(serialize(e107::unserialize($exported)), serialize($this->openPref($id)->getPref()));
+		}
+
+		/**
+		 * A preference object standing alone, on its own row, the way a second
+		 * request would hold one.
+		 *
+		 * @param string $prefid
+		 * @param string $class
+		 * @return e_pref
+		 */
+		private function openPref($prefid, $class = 'e_pref')
+		{
+			$this->expectRow($prefid);
+
+			$pref = $this->make($class);
+			$pref->__construct($prefid);
+			$pref->load();
+
+			return $pref;
+		}
+
+		/**
+		 * Declares an e_pref subclass, in a string because Codeception parses test files before e107 has defined e_pref.
+		 *
+		 * @param string $class
+		 * @param string $body
+		 * @return void
+		 */
+		private function defineProbe($class, $body)
+		{
+			if(class_exists($class, false))
+			{
+				return;
+			}
+
+			eval('class ' . $class . ' extends e_pref {' . $body . '}');
+		}
+
 
 		public function testGetPref()
 		{
