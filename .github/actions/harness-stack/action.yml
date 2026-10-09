@@ -6,8 +6,8 @@ description: >-
   lock files, so a warm run installs everything without a registry or
   package host answering. Registry images come through mirror.gcr.io with
   Docker Hub behind it, pulled while the web image loads, and every step that
-  reaches the network retries with a pause. Given cells, it brings up one env
-  per cell, all at once (see cells.sh).
+  reaches the network retries with a pause. It brings up one env per cell,
+  all at once (see cells.sh).
 
 inputs:
   php:
@@ -18,9 +18,9 @@ inputs:
     default: ''
   cells:
     description: >-
-      One env per line, `[name] [up flags...] [-- run flags...]`; none means
-      one env in the checkout. `cells.sh run` runs a command in every one.
-    default: ''
+      One env per line, `[name] [up flags...] [-- run flags...]`.
+      `cells.sh run` runs a command in every one.
+    required: true
   xdebug:
     description: "'yes' for the coverage-capable image"
     default: 'no'
