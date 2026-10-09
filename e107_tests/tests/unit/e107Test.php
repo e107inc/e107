@@ -901,6 +901,7 @@ class e107Test extends \Test\Unit
 		if(!is_dir($languageDir))
 		{
 			mkdir($languageDir, 0777, true);
+			$this->tempFiles[] = e_PLUGIN . $pluginName;
 		}
 
 		// Create mock language files with temporary constants clearly defined:
@@ -971,6 +972,7 @@ class e107Test extends \Test\Unit
 		if(!is_dir($languageDir))
 		{
 			mkdir($languageDir, 0777, true);
+			$this->tempFiles[] = e_PLUGIN . $pluginName;
 		}
 
 		file_put_contents($frontLangFile, "<?php return ['TESTPLUGIN_FRONT_ARR_LAN' => 'Front Language Loaded'];");
