@@ -253,7 +253,8 @@ if (!empty($_POST['pwsubmit']))
 		$resetPrefix = $row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR;
 
 		// Check if password reset was already requested
-		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE :account", array(
+		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_time` >= :now AND `tmp_info` LIKE :account", array(
+			'now'     => time(),
 			'account' => $resetPrefix.'%',
 		)))
 		{

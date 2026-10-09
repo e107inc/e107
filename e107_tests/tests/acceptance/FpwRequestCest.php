@@ -53,6 +53,20 @@ class FpwRequestCest
 			'one reset link per account per window, however often it is asked for');
 	}
 
+	public function aRequestAfterTheFirstCodeExpiredSendsANewLink(AcceptanceTester $I)
+	{
+		$I->wantTo('be sent a new reset link once the last one has expired');
+
+		$this->askForReset($I, self::MEMBER_EMAIL);
+		$I->updateInDatabase('e107_tmp', array('tmp_time' => time() - 1), array('tmp_ip' => 'pwreset'));
+		$this->askForReset($I, self::MEMBER_EMAIL);
+
+		$I->assertStringContainsString(self::SENT, $I->grabResponseBody(),
+			'an expired code must not count as the one outstanding');
+		$I->assertSame(2, $this->mailsSentTo($I, self::MEMBER_EMAIL),
+			'the account must be sent a second link once the first has expired');
+	}
+
 	public function aResetOutstandingForAnotherAccountDoesNotHoldThisOneBack(AcceptanceTester $I)
 	{
 		$I->wantTo('be sent my reset link when my login name is the id of somebody who asked for theirs');
