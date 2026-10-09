@@ -116,7 +116,7 @@ abstract class E107Base extends Base
             'e107_config.php' => file_get_contents(codecept_data_dir() . "/e107_config.php.sample")
         ]));
 
-        $db = $this->getModule('\Helper\DelayedDb');
+        $db = $this->getModule('\Helper\SiteDb');
 
         return $twig->render('e107_config.php', [
             'mySQLserver'    => $db->_getDbHostname(),

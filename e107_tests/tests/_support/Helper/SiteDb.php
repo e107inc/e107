@@ -9,7 +9,7 @@ namespace Helper;
 // against the 5.x parent. We sidestep both by NOT overriding those members. Required
 // field enforcement is redundant anyway because codeception.yml always supplies the
 // dsn/user/password keys; the previous debug log line on initialise is cosmetic.
-class DelayedDb extends \Codeception\Module\Db
+class SiteDb extends \Codeception\Module\Db
 {
     public function _getDbHostname()
     {
