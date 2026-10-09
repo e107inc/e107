@@ -613,14 +613,10 @@ class search_front extends e_shortcode
 		}
 		
 		 $e_searchList = e107::getConfig()->get('e_search_list');
+		 $plug_handlers = empty($this->search_prefs['plug_handlers']) ? array() : $this->search_prefs['plug_handlers'];
 
-		 if(empty($this->search_prefs['plug_handlers']))
-		 {
-		    return array();
-		 }
-		
 		//plugin search routines    // plugin folder is used as the search key. ie. $_GET['t'] = 'chatbox';
-		foreach ($this->search_prefs['plug_handlers'] as $plug_dir => $active) 
+		foreach ($plug_handlers as $plug_dir => $active)
 		{
 			if(isset($search_info[$plug_dir]))
 			{
@@ -752,6 +748,7 @@ class search_front extends e_shortcode
 
 	function array_sort($array, $column, $order = SORT_DESC) 
 	{
+		$sortarr = array();
 		$i = 0;
 		foreach($array as $info) {
 			$sortarr[] = $info[$column];

@@ -501,15 +501,6 @@
     'results' => '10',
     'order' => '2',
   ),
-  'users' => 
-  array (
-    'class' => '0',
-    'pre_title' => '1',
-    'pre_title_alt' => '',
-    'chars' => '150',
-    'results' => '10',
-    'order' => '3',
-  ),
 
 )]]></search>
 		<search name="google">0</search>
