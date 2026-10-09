@@ -40,10 +40,10 @@ abstract class AppFixture extends CodeceptionModule
 	}
 
 	/**
-	 * @return DelayedDb
+	 * @return SiteDb
 	 */
 	protected function db()
 	{
-		return $this->getModule('\Helper\DelayedDb');
+		return $this->getModule('\Helper\SiteDb');
 	}
 }

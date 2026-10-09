@@ -119,7 +119,7 @@ abstract class E107Base extends Base
 		]);
 		$twig = new Environment($twig_loader);
 
-		$db = $this->getModule('\Helper\DelayedDb');
+		$db = $this->getModule('\Helper\SiteDb');
 
 		$e107_config = [];
 		$e107_config['mySQLserver'] = $db->_getDbHostname();
