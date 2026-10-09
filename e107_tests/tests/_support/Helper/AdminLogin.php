@@ -1,20 +1,18 @@
 <?php
 namespace Helper;
 
-use Codeception\Exception\ModuleException;
 use Codeception\Lib\Interfaces\Web;
-use Codeception\Module as CodeceptionModule;
 use Test\Password;
 use Test\Poll;
 
 /**
- * Shared admin-login helper for the e107 Codeception suites.
+ * Shared sign-in helper for the e107 Codeception suites.
  *
- * Adds loginAsAdmin() and grabFreshAdminToken() to any actor that enables the
- * module, so acceptance (PhpBrowser) and webdriver (WebDriver) tests can
- * authenticate without repeating the form fields or the success marker. Enable
- * a browser module implementing {@see Web} (PhpBrowser or WebDriver) in the
- * same suite.
+ * Adds loginAsAdmin(), amSignedInAs() and grabFreshAdminToken() to any actor
+ * that enables the module, so acceptance (PhpBrowser) and webdriver (WebDriver)
+ * tests can authenticate without repeating the form fields or the success
+ * marker. Enable a browser module implementing {@see Web} (PhpBrowser or
+ * WebDriver) in the same suite.
  *
  * {@see ADMIN_USER} / {@see ADMIN_PASS} are the canonical test credentials. Both
  * fixtures resolve to them: the acceptance install creates this account and the
@@ -22,7 +20,7 @@ use Test\Poll;
  * constants instead of repeating the literals so the canary password lives in
  * exactly one place.
  */
-class AdminLogin extends CodeceptionModule
+class AdminLogin extends AppFixture
 {
 	const ADMIN_USER = 'admin';
 	const ADMIN_PASS = 'x107';
@@ -31,9 +29,11 @@ class AdminLogin extends CodeceptionModule
 	// the marker is independent of the logged-in account's display name.
 	const CONTROL_PANEL_MARKER = "'s Control Panel";
 	const TOKEN_FIELD_PATTERN = '/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/';
+	const SIGN_IN_PROBE = 'e107_tests_sign_in_probe.php';
+	const SIGNED_IN_ADMIN = 'SIGNED_IN_ADMIN';
 
 	/**
-	 * Log into the admin area and assert the control-panel marker is shown, first storing a cheap hash of a matching password ({@see AdminLogin::cheapenStoredHash()}); in a browser it declares e107.org, which the dashboard it lands on checks.
+	 * Log into the admin area and assert the control-panel marker is shown, first storing a cheap hash of a matching password ({@see AdminLogin::cheapenStoredHash()}); in a browser it declares e107.org ({@see AdminLogin::expectAdminPagesToAskE107Org()}).
 	 *
 	 * @param string|null $user Defaults to {@see ADMIN_USER}.
 	 * @param string|null $pass Defaults to {@see ADMIN_PASS}.
@@ -43,22 +43,53 @@ class AdminLogin extends CodeceptionModule
 	{
 		$user = $user === null ? self::ADMIN_USER : $user;
 		$pass = $pass === null ? self::ADMIN_PASS : $pass;
-		$browser = $this->resolveBrowserModule();
+		$browser = $this->browser();
 		$this->cheapenStoredHash($user, $pass);
 
 		$browser->amOnPage(self::LOGIN_PATH);
 		$browser->fillField('authname', $user);
 		$browser->fillField('authpass', $pass);
 		$browser->click('authsubmit');
+		$this->expectAdminPagesToAskE107Org();
 
 		if (method_exists($browser, 'waitForText'))
 		{
-			$this->getModule('\Helper\Outbound')->expectOutboundRequest('e107.org');
 			$this->waitForTextInSource($browser, self::CONTROL_PANEL_MARKER, 10);
 		}
 		else
 		{
 			$browser->see(self::CONTROL_PANEL_MARKER);
+		}
+	}
+
+	/**
+	 * Be signed in as $user without the form: a guarded probe sets the session through {@see \UserHandler::makeUserCookie()}, and nothing else a sign-in checks or does runs; for an administrator in a browser it declares e107.org ({@see AdminLogin::expectAdminPagesToAskE107Org()}).
+	 *
+	 * @param string|null $user login name; defaults to {@see ADMIN_USER}
+	 * @return void
+	 * @throws \RuntimeException when there is no such account
+	 */
+	public function amSignedInAs($user = null)
+	{
+		$this->app()->writeAppFile(self::SIGN_IN_PROBE, self::signInProbeSource());
+		$answer = $this->getModule('\Helper\Probe')->_probe(self::SIGN_IN_PROBE, 'user='.rawurlencode($user === null ? self::ADMIN_USER : $user));
+
+		if (strpos($answer, self::SIGNED_IN_ADMIN) !== false)
+		{
+			$this->expectAdminPagesToAskE107Org();
+		}
+	}
+
+	/**
+	 * In a browser an administrator's pages ask e107.org about updates, so signing one in there declares it.
+	 *
+	 * @return void
+	 */
+	private function expectAdminPagesToAskE107Org()
+	{
+		if (method_exists($this->browser(), 'waitForText'))
+		{
+			$this->getModule('\Helper\Outbound')->expectOutboundRequest('e107.org');
 		}
 	}
 
@@ -136,7 +167,7 @@ class AdminLogin extends CodeceptionModule
 	 */
 	public function grabFreshAdminToken($adminPagePath = self::LOGIN_PATH)
 	{
-		$this->resolveBrowserModule()->amOnPage($adminPagePath);
+		$this->browser()->amOnPage($adminPagePath);
 
 		return $this->grabToken();
 	}
@@ -150,7 +181,7 @@ class AdminLogin extends CodeceptionModule
 	public function grabToken()
 	{
 		$matches = array();
-		if (!preg_match(self::TOKEN_FIELD_PATTERN, $this->resolveBrowserModule()->grabPageSource(), $matches))
+		if (!preg_match(self::TOKEN_FIELD_PATTERN, $this->browser()->grabPageSource(), $matches))
 		{
 			throw new \RuntimeException('The current page rendered no e-token to post back.');
 		}
@@ -159,22 +190,29 @@ class AdminLogin extends CodeceptionModule
 	}
 
 	/**
-	 * @return \Codeception\Module|Web
-	 * @throws ModuleException When no supported browser module is enabled.
+	 * @return string
 	 */
-	private function resolveBrowserModule()
+	private static function signInProbeSource()
 	{
-		foreach (['PhpBrowser', 'WebDriver'] as $name)
-		{
-			if ($this->hasModule($name))
-			{
-				return $this->getModule($name);
-			}
-		}
+		return <<<'PHP'
+<?php
+$_E107['allow_guest'] = true;
+require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
+header('Content-Type: text/plain');
 
-		throw new ModuleException(
-			__CLASS__,
-			'Enable a browser module (PhpBrowser or WebDriver) in this suite.'
-		);
+$user = e107::getDb()->createQueryBuilder()->select('user_id', 'user_password', 'user_admin')->from('user')
+	->where('user_loginname', isset($_GET['user']) ? (string) $_GET['user'] : '')->fetchRow();
+
+if(!$user)
+{
+	echo "NO_SUCH_USER\n";
+	exit;
+}
+
+e107::getUserSession()->makeUserCookie($user);
+echo "PROBE_OK\n";
+echo $user['user_admin'] ? "SIGNED_IN_ADMIN\n" : '';
+PHP;
 	}
 }

@@ -573,18 +573,6 @@ class ForumFixture extends AppFixture
 		$browser->fillField('username', $name);
 		$browser->fillField('userpass', $pass === null ? self::MEMBER_PASS : $pass);
 		$browser->click('userlogin');
-
-		if (isset($browser->webDriver))
-		{
-			// A real browser returns from click() before the form's navigation
-			// has finished, so whatever the test asks for next races it and
-			// often loses: the next amOnPage() starts loading, the login
-			// response then arrives and wins, and the test finds itself back on
-			// /login.php looking for a forum. Waiting for the redirect to leave
-			// that page settles it, and times out with a useful message if the
-			// sign-in was refused.
-			$browser->waitForJS('return window.location.pathname.indexOf("/login.php") === -1;', 10);
-		}
 	}
 
 	/**

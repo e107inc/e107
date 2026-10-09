@@ -45,6 +45,7 @@ class E107SmokeCest
      * An administrator can log into the admin control panel, exercising a real
      * form submit + post-login redirect through the browser.
      *
+     * @group sign-in
      * @param \WebDriverTester $I
      * @return void
      */
