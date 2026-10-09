@@ -120,4 +120,31 @@ class e_db_mysqlTest extends e_db_abstractTest
 		$this->assertSame('', $db->db_Set_Charset('utf8mb4'),
 			'db_Set_Charset() must still accept a plain charset token');
 	}
+
+	public function testTheInsertIdIsTheInstancesOwnWhenAnotherInstanceQueriesInBetween()
+	{
+		global $db_ConnectionID;
+		$first = $db_ConnectionID;
+		$db_ConnectionID = $this->getDbImplementation();
+
+		try
+		{
+			$other = $this->makeDb();
+			$other->__construct();
+			$this->assertSame($this->db->retrieve('SELECT CONNECTION_ID()'), $other->retrieve('SELECT CONNECTION_ID()'),
+				'the two have to share a link for this to prove anything');
+
+			$this->assertNotFalse($this->db->execute('CREATE TEMPORARY TABLE `#e_db_share_test` (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, v INT)'));
+			$this->db->execute('INSERT INTO `#e_db_share_test` (v) VALUES (1), (2)');
+			$this->db->execute('INSERT INTO `#e_db_share_test` (v) VALUES (:v)', array('v' => 3));
+			$other->retrieve('SELECT 1');
+
+			$this->assertSame(3, $this->db->lastInsertId());
+		}
+		finally
+		{
+			$this->db->execute('DROP TEMPORARY TABLE IF EXISTS `#e_db_share_test`');
+			$db_ConnectionID = $first;
+		}
+	}
 }
