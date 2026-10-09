@@ -281,7 +281,7 @@ class userlogin
 		{
 			// logout any existing user of this account.
 			$mLog = '';
-			if($sql->createQueryBuilder()->delete('session')->where('session_user', $user_id)->execute())
+			if($sql->createQueryBuilder()->delete('session')->where('session_user', $user_id)->where('session_expires', '>', time())->execute())
 			{
 				$mLog = 'Dropped existing user session: #' . $user_id. " ".$username;
 			}

@@ -899,7 +899,7 @@ function update_core_database($type = '')
 		}
 
 
-		// Session rows still keyed by the raw session id.
+		// Live session rows still keyed by the raw session id.
 		require_once(e_HANDLER.'session_handler.php');
 
 		$sessionHashed = 0;
@@ -909,6 +909,7 @@ function update_core_database($type = '')
 		while($sessionLegacy = $sql->createQueryBuilder()
 			->select('session_id')->from('session')
 			->whereNotLike('session_id', e_session_db::KEY_ALGO.'$%')
+			->where('session_expires', '>', time())
 			->orderBy('session_id')
 			->setFirstResult($sessionSkipped)
 			->setMaxResults($just_check ? 1 : 200)
