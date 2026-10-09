@@ -41,6 +41,11 @@ trait StrftimeTrait
 		{
 			if (!is_string($date_format_key) && is_callable($date_format_key))
 			{
+				if (strpos($format, $strftime_key) === false)
+				{
+					continue;
+				}
+
 				$replacement = self::escapeDateTimePattern($date_format_key($datetime));
 			}
 			else
@@ -66,19 +71,34 @@ trait StrftimeTrait
 		}
 
 
+		static $formatters = array();
+
 		$timezone = 'GMT'.date('P');
-		$formatter = new \IntlDateFormatter(
-			self::getSensibleLocale(),
-			\IntlDateFormatter::NONE,
-			\IntlDateFormatter::NONE,
-			null, // More accurate timezone. @see https://stackoverflow.com/questions/31707395/why-php-intldateformatter-returns-wrong-date-1-hour
-			null,
-			$format
-		);
+		$locale = self::getSensibleLocale();
+		$key = $locale."\0".date_default_timezone_get()."\0".$timezone."\0".$format;
 
-		datefmt_set_timezone($formatter, $timezone);
+		if (!isset($formatters[$key]))
+		{
+			if (count($formatters) >= 64)
+			{
+				$formatters = array();
+			}
 
-		return $formatter->format($datetime);
+			$formatter = new \IntlDateFormatter(
+				$locale,
+				\IntlDateFormatter::NONE,
+				\IntlDateFormatter::NONE,
+				null, // More accurate timezone. @see https://stackoverflow.com/questions/31707395/why-php-intldateformatter-returns-wrong-date-1-hour
+				null,
+				$format
+			);
+
+			datefmt_set_timezone($formatter, $timezone);
+
+			$formatters[$key] = $formatter;
+		}
+
+		return $formatters[$key]->format($datetime);
 	}
 
 	/**
