@@ -42,9 +42,6 @@ e107_tests/bin/e107-tests up --install-site     # admin login: admin / x107
 # Serve the site from a subdirectory, the way most e107 installs are deployed
 e107_tests/bin/e107-tests up --base-path e107   # site at http://web/e107/
 
-# Editing anything under docker/? compose keeps the image it already has
-e107_tests/bin/e107-tests up --rebuild
-
 # When you're done
 e107_tests/bin/e107-tests down
 ```
@@ -225,7 +222,10 @@ PHPUnit 5.7), and `check-platform-reqs` is checked on the real interpreter.
   `web` service alias), so they exercise the same HTTP interface; e107 trusts
   the `web` host via the test dump's `trusted_hosts` pref.
 - `up` builds the web image only if it is missing and reuses it otherwise, so a
-  previously built or CI-cached image is picked up without a rebuild.
+  previously built or CI-cached image is picked up without a rebuild. Its tag
+  carries a hash of every file in `docker/` but the compose files and the docs
+  (`e107-tests image` prints it), so branches whose Dockerfile, entrypoint or
+  vhosts differ never share an image.
 - Database state lives on tmpfs. `down` is a true reset; no leftover state.
 - The suites, and a site from `up --install-site`, connect as the `e107`
   account, which holds ALL PRIVILEGES on the one database and no global
@@ -380,7 +380,7 @@ during validation, so we don't rely on it. Treat `clean` as the canonical
 ## Files
 
 - `Dockerfile`: PHP + Apache + extensions, built once per `(PHP, xdebug)`
-  combo.
+  combo and per state of the files here, the compose files and the docs aside.
 - `debian-archive.sh`: moves apt to `archive.debian.org` once the image's
   Debian release is served there; see "Legacy PHP".
 - `compose.yml`: the db + web + selenium services, parameterized by env,
