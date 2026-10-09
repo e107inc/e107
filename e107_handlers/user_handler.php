@@ -1127,7 +1127,7 @@ class e_user_provider
 	/**
 	 * Hybridauth object
 	 *
-	 * @var Hybridauth\Hybridauth
+	 * @var Hybridauth\Hybridauth|null null until {@see e_user_provider::getHybridauth()} first needs it
 	 */
 	protected $hybridauth;
 	protected $_config = array();
@@ -1168,26 +1168,15 @@ class e_user_provider
 		{
 			$this->_config = $config;
 		}
-		else
-		{
-			$this->_config = array(
-				"callback"   => $this->generateCallbackUrl($provider),
-				"providers"  => $this->social_login_config_manager->getSupportedConfiguredProviderConfigs(),
-				"debug_mode" => 'error',
-				"debug_file" => e_LOG . "hybridAuth.log"
-			);
-
-		}
 
 		try
 		{
-			$this->respawnHybridauth();
 			$this->setProvider($provider);
 
 			$providerId = $this->getProvider();
-			if ($providerId && $this->hybridauth->isConnectedWith($providerId))
+			if ($providerId && $this->getHybridauth()->isConnectedWith($providerId))
 			{
-				$this->adapter = $this->hybridauth->getAdapter($providerId);
+				$this->adapter = $this->getHybridauth()->getAdapter($providerId);
 			}
 		}
 		catch (\Hybridauth\Exception\InvalidArgumentException $e)
@@ -1205,7 +1194,21 @@ class e_user_provider
 	 */
 	private function respawnHybridauth()
 	{
-		$this->hybridauth = new Hybridauth\Hybridauth($this->_config);
+		$this->hybridauth = new Hybridauth\Hybridauth($this->getConfig());
+	}
+
+	/**
+	 * @return Hybridauth\Hybridauth built from {@see e_user_provider::getConfig()} on first use
+	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 */
+	private function getHybridauth()
+	{
+		if ($this->hybridauth === null)
+		{
+			$this->respawnHybridauth();
+		}
+
+		return $this->hybridauth;
 	}
 
 	/**
@@ -1225,7 +1228,7 @@ class e_user_provider
 	public function setBackUrl($url)
 	{
 		# system/xup/login by default
-		$this->_config['callback'] = $this->generateCallbackUrl($url);
+		$this->_config = array_merge($this->getConfig(), array('callback' => $this->generateCallbackUrl($url)));
 		$this->respawnHybridauth();
 	}
 
@@ -1243,6 +1246,16 @@ class e_user_provider
 	 */
 	public function getConfig()
 	{
+		if (empty($this->_config) && $this->social_login_config_manager !== null)
+		{
+			$this->_config = array(
+				"callback"   => $this->generateCallbackUrl(),
+				"providers"  => $this->social_login_config_manager->getSupportedConfiguredProviderConfigs(),
+				"debug_mode" => 'error',
+				"debug_file" => e_LOG . "hybridAuth.log"
+			);
+		}
+
 		return $this->_config;
 	}
 
@@ -1629,7 +1642,7 @@ class e_user_provider
 
 		$this->setBackUrl($redirectUrl);
 
-		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
+		$this->adapter = $this->getHybridauth()->authenticate($this->getProvider());
 		$profile = $this->adapter->getUserProfile();
 
 		// returned back, if success...
@@ -1794,7 +1807,7 @@ class e_user_provider
 	{
 		if (
 			!$this->adapter ||
-			!$this->hybridauth->isConnectedWith($this->getProvider())
+			!$this->getHybridauth()->isConnectedWith($this->getProvider())
 		) return true;
 		try
 		{
@@ -1869,7 +1882,7 @@ class e_user_provider
         try
         {
             // detect all currently connected providers
-            $connected = $this->hybridauth->getConnectedProviders();
+            $connected = $this->getHybridauth()->getConnectedProviders();
         }
         catch (Exception $e)
         {
@@ -1890,7 +1903,7 @@ class e_user_provider
         {
             try
             {
-                $adapter = $this->hybridauth->getAdapter($providerId);
+                $adapter = $this->getHybridauth()->getAdapter($providerId);
                 $profile = $adapter->getUserProfile();
             }
             catch (\Hybridauth\Exception\Exception $e)
