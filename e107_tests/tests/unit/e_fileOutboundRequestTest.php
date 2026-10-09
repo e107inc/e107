@@ -192,7 +192,9 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 
 			// 0.0.0.0 rather than 127.0.0.1: the cross-origin case reaches the
 			// same server on a second loopback literal.
-			$command = escapeshellarg($php) . ' -S 0.0.0.0:' . $port . ' -t ' . escapeshellarg(APP_PATH);
+			// exec, so the handle is the server itself and stopBuiltInServer()
+			// stops it rather than the shell that started it.
+			$command = 'exec ' . escapeshellarg($php) . ' -S 0.0.0.0:' . $port . ' -t ' . escapeshellarg(APP_PATH);
 			$quiet   = array(
 				0 => array('file', '/dev/null', 'r'),
 				1 => array('file', '/dev/null', 'w'),
