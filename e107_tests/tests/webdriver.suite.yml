@@ -23,6 +23,9 @@ modules:
             port: '%selenium.port%'
             path: '%selenium.path%'
             window_size: 1366x900
+            # WebDriverSession clears every cookie before each test; the module's
+            # own clear after each one would repeat it for the current host only.
+            clear_cookies: false
             capabilities:
                 # Leave native confirm() dialogs standing until a test answers
                 # them. Chrome's default is "dismiss and notify", which answers

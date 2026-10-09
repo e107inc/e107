@@ -3,13 +3,13 @@ namespace Helper;
 
 use Codeception\Module;
 use Codeception\TestInterface;
+use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
 
 /**
  * Clear the browser session before each WebDriver test.
  *
  * WebDriver keeps one browser for the whole run, so authentication and UI state
- * would otherwise leak between tests. Loading the app first puts the browser on
- * the app's domain so its cookies can be cleared.
+ * would otherwise leak between tests.
  */
 class WebDriverSession extends Module
 {
@@ -24,8 +24,8 @@ class WebDriverSession extends Module
 
 		$this->dismissAnyOpenDialog($webDriver);
 
-		$webDriver->amOnPage('/');
-		$webDriver->webDriver->manage()->deleteAllCookies();
+		$devTools = new ChromeDevToolsDriver($webDriver->webDriver);
+		$devTools->execute('Network.clearBrowserCookies');
 	}
 
 	/**

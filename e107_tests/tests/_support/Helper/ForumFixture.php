@@ -584,19 +584,7 @@ class ForumFixture extends AppFixture
 	 */
 	public function logoutFromForum()
 	{
-		$browser = $this->browser();
-
-		if (isset($browser->webDriver))
-		{
-			// The browser has to be on the app's domain before its cookies can
-			// be cleared, which is the same order WebDriverSession uses.
-			$browser->amOnPage('/');
-			$browser->webDriver->manage()->deleteAllCookies();
-
-			return;
-		}
-
-		$browser->client->getCookieJar()->clear();
+		$this->browser()->client->getCookieJar()->clear();
 	}
 
 	/**
