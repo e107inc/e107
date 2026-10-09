@@ -171,21 +171,15 @@ class e107HostValidationTest extends \Test\Unit
 	 */
 	public function testConfiguredTrustedHostsAdmitTheHostsTheyName($trustedHosts, $httpHost, $expected, $scenario)
 	{
-		$cfg = e107::getConfig();
-		$beforeSiteurl = $cfg->get('siteurl');
-		$beforeTrusted = $cfg->get('trusted_hosts');
+		$restore = $this->withCorePrefs(array('siteurl' => 'http://configured.example/', 'trusted_hosts' => $trustedHosts));
 
 		try
 		{
-			$cfg->set('siteurl', 'http://configured.example/');
-			$cfg->set('trusted_hosts', $trustedHosts);
-
 			self::assertSame($expected, $this->e107->isTrustedHost($httpHost), "Failed scenario: $scenario");
 		}
 		finally
 		{
-			$cfg->set('siteurl', $beforeSiteurl);
-			$cfg->set('trusted_hosts', $beforeTrusted);
+			$restore();
 		}
 	}
 
