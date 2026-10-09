@@ -67,7 +67,6 @@ JS;
 		$I->haveForumMember('wdmoda', '253,'.\Helper\ForumFixture::CLASS_MOD_A);
 
 		$I->purgeForumPermCache();
-		$I->logoutFromForum();
 	}
 
 	public function _after(WebDriverTester $I)

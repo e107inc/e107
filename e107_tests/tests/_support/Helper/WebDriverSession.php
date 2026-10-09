@@ -9,8 +9,7 @@ use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
  * Put the browser in a known state before each WebDriver test.
  *
  * WebDriver keeps one browser for the whole run, so authentication and UI state
- * would otherwise leak between tests. Loading the app first puts the browser on
- * the app's domain so its cookies can be cleared.
+ * would otherwise leak between tests.
  */
 class WebDriverSession extends Module
 {
@@ -27,9 +26,7 @@ class WebDriverSession extends Module
 
 		$devTools = new ChromeDevToolsDriver($webDriver->webDriver);
 		$this->keepThePageFocused($devTools);
-
-		$webDriver->amOnPage('/');
-		$webDriver->webDriver->manage()->deleteAllCookies();
+		$devTools->execute('Network.clearBrowserCookies');
 	}
 
 	/**
