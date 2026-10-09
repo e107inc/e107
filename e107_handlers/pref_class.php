@@ -471,7 +471,6 @@ class e_pref extends e_front_model
 
 		if(!empty($data))
 		{
-			$this->pref_cache = e107::getArrayStorage()->serialize($data, false); //runtime cache
 			$this->loadData((array) $data, false);
 			return $this;
 		}
