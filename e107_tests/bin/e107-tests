@@ -512,7 +512,7 @@ up_with_registry_fallback() {
         if [ "$missing" = no ]; then
             warn "registry refused the pull but all images exist locally; retrying with --pull never"
             rc=0
-            compose_up_cmd up -d --wait --pull never || rc=$?
+            compose_up_cmd up -d --wait --pull never "${UP_SERVICES[@]}" || rc=$?
         fi
     fi
     rm -f "$tmp"
