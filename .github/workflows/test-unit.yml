@@ -20,6 +20,12 @@ concurrency:
 # `ci-unit` exists to replay this job exactly, so base image drift such as a
 # changed default memory_limit reproduces on demand.
 #
+# One job per PHP version runs the suite against every database at once, one
+# env per database on the same runner, each in its own copy of the tree (see
+# .github/actions/harness-stack/cells.sh). A failed database is named, as
+# "PHP 8.0, mariadb:10.11", in an annotation and in the job summary, and its
+# output is the log group of that name in the step that failed.
+#
 # The harness image is also better equipped than the container it replaces,
 # which turns nine skipped tests back into running ones: it ships ImageMagick,
 # so the six resize_handler cases asserting that a shell metacharacter in a
@@ -36,7 +42,7 @@ concurrency:
 
 jobs:
   test-unit:
-    name: PHP ${{ matrix.php }}, ${{ matrix.db }}
+    name: PHP ${{ matrix.php }}
     strategy:
       fail-fast: false
       matrix:
@@ -46,7 +52,6 @@ jobs:
         # those two are where a version break tends to show. The 8.1 and 8.2
         # cells they replace now sit between two cells that do run.
         php: ['5.6', '7.0', '7.4', '8.0', '8.5']
-        db: ['mysql:5.5', 'mysql:8.0', 'mariadb:10.0', 'mariadb:10.6', 'mariadb:10.11']
 
     runs-on: ubuntu-latest
 
@@ -63,27 +68,26 @@ jobs:
       # neither of which those clients understand. The harness runs the database
       # through compose, where db_flavor_args sets utf8mb3 and
       # mysql_native_password for exactly this reason.
-      - name: Bring up the stack
+      - name: Bring up one stack per database
         uses: ./.github/actions/harness-stack
         with:
           php: ${{ matrix.php }}
-          db: ${{ matrix.db }}
           up-args: --no-selenium
+          cells: |
+            --db mysql:5.5
+            --db mysql:8.0
+            --db mariadb:10.0
+            --db mariadb:10.6
+            --db mariadb:10.11
 
-      - name: Run unit tests
-        run: ./e107_tests/bin/e107-tests ci-unit
+      # !cancelled(): a database whose env did not come up is reported as a
+      # failed cell, and the others still run.
+      - name: Run unit tests on every database
+        if: ${{ !cancelled() }}
+        run: .github/actions/harness-stack/cells.sh run ci-unit
 
-      - name: Collect container logs
+      - name: Keep the failed cells' output
         if: failure()
-        run: ./e107_tests/bin/e107-tests logs > /tmp/container.log 2>&1 || true
-
-      - name: Upload test output
-        if: failure()
-        uses: actions/upload-artifact@v7
+        uses: ./.github/actions/harness-stack/failed-cells
         with:
-          name: unit-php${{ matrix.php }}-${{ strategy.job-index }}
-          path: |
-            e107_tests/tests/_output/
-            /tmp/container.log
-          if-no-files-found: ignore
-          retention-days: 7
+          name: unit-php${{ matrix.php }}

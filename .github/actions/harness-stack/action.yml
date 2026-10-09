@@ -6,15 +6,21 @@ description: >-
   lock files, so a warm run installs everything without a registry or
   package host answering. Registry images come through mirror.gcr.io with
   Docker Hub behind it, pulled while the web image loads, and every step that
-  reaches the network retries with a pause.
+  reaches the network retries with a pause. Given cells, it brings up one env
+  per cell, all at once (see cells.sh).
 
 inputs:
   php:
     description: PHP version of the web image (the php:<version>-apache tag)
     required: true
   db:
-    description: Database image
-    required: true
+    description: Database image, for every cell that does not name its own
+    default: ''
+  cells:
+    description: >-
+      One env per line, `[name] [up flags...] [-- run flags...]`; none means
+      one env in the checkout. `cells.sh run` runs a command in every one.
+    default: ''
   xdebug:
     description: "'yes' for the coverage-capable image"
     default: 'no'
@@ -25,19 +31,26 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Pull the registry images
+    - name: Plan the envs and pull their registry images
       shell: bash
+      env:
+        CELLS: ${{ inputs.cells }}
+        DB: ${{ inputs.db }}
       run: |
+        "$GITHUB_ACTION_PATH/cells.sh" plan --php '${{ inputs.php }}' ${DB:+--db "$DB"} \
+          ${{ inputs.xdebug == 'yes' && '--xdebug' || '' }} ${{ inputs.up-args }} <<< "$CELLS"
         pulls=$RUNNER_TEMP/e107-pull
         mkdir -p "$pulls"
-        images='${{ inputs.db }}'
+        images=$("$GITHUB_ACTION_PATH/cells.sh" images)
         case ' ${{ inputs.up-args }} ' in
           *' --no-selenium '*) ;;
           *) images="$images ${E107_SELENIUM_IMAGE:-}" ;;
         esac
+        n=0
         for img in $images; do
-          f=$pulls/$(printf '%s' "$img" | tr -c 'A-Za-z0-9' '-')
-          echo "$f" >> "$pulls/list"
+          n=$((n + 1))
+          f=$pulls/$n
+          printf '%s\t%s\n' "$f" "$img" >> "$pulls/list"
           exec 9> "$f.lock"
           flock 9
           setsid nohup bash -c '"$0" "$1" > "$2.log" 2>&1; echo $? > "$2.rc"' \
@@ -55,7 +68,7 @@ runs:
 
     - name: Restore the web image
       id: web
-      uses: actions/cache@v5
+      uses: actions/cache/restore@v5
       with:
         path: /tmp/e107-web.tar
         key: web-image-${{ steps.key.outputs.tag }}-${{ steps.key.outputs.month }}
@@ -72,13 +85,21 @@ runs:
           -t '${{ steps.key.outputs.tag }}' e107_tests/docker
         docker save '${{ steps.key.outputs.tag }}' -o /tmp/e107-web.tar
 
+    - name: Save the web image
+      if: steps.web.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v5
+      with:
+        path: /tmp/e107-web.tar
+        key: ${{ steps.web.outputs.cache-primary-key }}
+
     - name: Load the web image
       if: steps.web.outputs.cache-hit == 'true'
       shell: bash
       run: docker load -i /tmp/e107-web.tar
 
     - name: Restore the composer cache
-      uses: actions/cache@v5
+      id: composer
+      uses: actions/cache/restore@v5
       with:
         path: /tmp/e107-composer-cache
         key: composer-${{ inputs.php }}-${{ hashFiles('e107_tests/composer.lock', 'e107_tests/composer.php*.lock') }}
@@ -87,10 +108,10 @@ runs:
     - name: Wait for the registry images
       shell: bash
       run: |
-        while read -r f; do
+        while IFS=$'\t' read -r f img; do
           flock "$f.lock" true
           if [ "$(cat "$f.rc" 2>/dev/null)" != 0 ]; then
-            echo "::warning::$(basename -- "$f"): pull failed; e107-tests up will try again"
+            echo "::warning::$img: pull failed; e107-tests up will try again"
             cat "$f.log" 2>/dev/null || true
           fi
         done < "$RUNNER_TEMP/e107-pull/list"
@@ -99,10 +120,11 @@ runs:
       shell: bash
       env:
         E107_COMPOSER_CACHE: /tmp/e107-composer-cache
-      run: |
-        . "$GITHUB_ACTION_PATH/retry.sh"
-        retry ./e107_tests/bin/e107-tests up \
-          --php '${{ inputs.php }}' \
-          --db '${{ inputs.db }}' \
-          ${{ inputs.xdebug == 'yes' && '--xdebug' || '' }} \
-          ${{ inputs.up-args }}
+      run: '"$GITHUB_ACTION_PATH/cells.sh" up'
+
+    - name: Save the composer cache
+      if: steps.composer.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v5
+      with:
+        path: /tmp/e107-composer-cache
+        key: ${{ steps.composer.outputs.cache-primary-key }}
