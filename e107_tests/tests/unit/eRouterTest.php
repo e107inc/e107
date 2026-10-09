@@ -205,4 +205,42 @@ class eRouterTest extends \Test\Unit
 		self::assertSame(array(), $unread);
 	}
 
+	/**
+	 * The front end compiles the URL config by one relative path and the admin area deletes it by another, as on a site; with opcache.enable_file_override, OPcache answers loadConfig()'s is_readable() for a script it holds.
+	 */
+	public function testClearCacheLeavesOpcacheNoCopyOfTheUrlConfig()
+	{
+		if(!function_exists('opcache_invalidate'))
+		{
+			self::markTestSkipped('OPcache is not loaded, so no compiled copy can outlive the file');
+		}
+
+		$dir = sys_get_temp_dir() . '/e107_url_' . uniqid('', true) . '/';
+		mkdir($dir . 'url', 0777, true);
+		mkdir($dir . 'admin');
+
+		$php = "define('e107_INIT', true); define('e_CACHE_URL', '../url/'); ";
+		$php .= "require '" . addslashes(e_HANDLER . 'core_functions.php') . "'; ";
+		$php .= "require '" . addslashes(e_HANDLER . 'e107_class.php') . "'; ";
+		$php .= "require '" . addslashes(e_HANDLER . 'application.php') . "'; ";
+		$php .= "chdir('" . addslashes($dir) . "'); file_put_contents('url/config.php', '<?php return array();'); include './url/config.php'; ";
+		$php .= "if(!opcache_is_script_cached('" . addslashes($dir) . "url/config.php')) { echo 'OPcache did not compile the config'; exit(1); } ";
+		$php .= "chdir('admin'); eRouter::clearCache(); chdir('..'); var_export(is_readable('./url/config.php'));";
+
+		try
+		{
+			list($output, $status) = $this->runInCli($php, '-d opcache.enable_cli=1 -d opcache.enable_file_override=1 -d opcache.validate_timestamps=0 -d opcache.file_update_protection=0');
+		}
+		finally
+		{
+			@unlink($dir . 'url/config.php');
+			rmdir($dir . 'url');
+			rmdir($dir . 'admin');
+			rmdir($dir);
+		}
+
+		self::assertSame(0, $status, implode("\n", $output));
+		self::assertSame(array('false'), $output, 'once clearCache() has deleted the URL config, nothing reports it readable, so the next request rebuilds it');
+	}
+
 }
