@@ -25,7 +25,7 @@ inputs:
     description: "'yes' for the coverage-capable image"
     default: 'no'
   up-args:
-    description: Further flags for `e107-tests up`, such as --no-selenium
+    description: Further flags for `e107-tests up`, such as --no-browser
     default: ''
 
 runs:
@@ -57,7 +57,7 @@ runs:
           bg "$img" "$GITHUB_ACTION_PATH/pull.sh" "$img"
         done
         case ' ${{ inputs.up-args }} ' in
-          *' --no-selenium '*) ;;
+          *' --no-browser '*) ;;
           *) dockerfile=e107_tests/docker/browser.Dockerfile
              browser=$(e107_tests/bin/e107-tests image --browser)
              bg "$browser" sh -c '"$0" "$1" && docker build -q -t "$3" -f "$2" e107_tests/docker' \

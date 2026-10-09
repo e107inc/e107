@@ -392,7 +392,7 @@ normalise_base_path() {
 }
 
 # The suite URL for the current base path. 'web' rather than 'localhost' so the
-# separate selenium browser can reach it (see write_managed_config).
+# separate browser container can reach it (see write_managed_config).
 base_url() {
     if [ -n "$BASE_PATH" ]; then
         printf 'http://web/%s/' "$BASE_PATH"
@@ -457,7 +457,7 @@ write_managed_config() {
 app_path: '../'
 deployer: 'local'
 # Shared by the acceptance and WebDriver suites. It's the 'web' alias (not
-# 'localhost') so the separate selenium browser can reach it; the test dump's
+# 'localhost') so the separate browser container can reach it; the test dump's
 # trusted_hosts pref lets e107 accept that host. See docker/README.md.
 #
 # Do not "simplify" this to localhost or 127.0.0.1. Secure Contexts count
@@ -486,10 +486,10 @@ db:
   password: '$DEFAULT_DB_PASSWORD'
   populate: true
   dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
-# WebDriver suite drives the dedicated 'selenium' service over the compose
+# WebDriver suite drives the dedicated 'browser' service over the compose
 # network. Its chromedriver serves the W3C protocol at the root '/'.
-selenium:
-  host: 'selenium'
+browser:
+  host: 'browser'
   port: '9515'
   path: '/'
 EOF
@@ -525,7 +525,7 @@ up_with_registry_fallback() {
     if [ "$rc" -ne 0 ] && grep -qiE 'denied|unauthorized|toomanyrequests|manifest unknown' "$tmp"; then
         local svc img missing=no
         docker image inspect "$(web_image)" >/dev/null 2>&1 || missing=yes
-        [ "$WITH_SELENIUM" != yes ] || docker image inspect "$(browser_image)" >/dev/null 2>&1 || missing=yes
+        [ "$WITH_BROWSER" != yes ] || docker image inspect "$(browser_image)" >/dev/null 2>&1 || missing=yes
         while read -r svc img; do
             docker image inspect "$img" >/dev/null 2>&1 || missing=yes
         done < <(registry_images)
@@ -787,7 +787,8 @@ cmd_up() {
             --xdebug) WITH_XDEBUG=yes; shift ;;
             --install-site) INSTALL_SITE=yes; shift ;;
             --base-path) base=$2; shift 2 ;;
-            --no-selenium) WITH_SELENIUM=no; shift ;;
+            --no-browser) WITH_BROWSER=no; shift ;;
+            --no-selenium) err "--no-selenium is now --no-browser" ;;
             --rebuild) REBUILD=yes; shift ;;
             -h|--help) cmd_help; exit 0 ;;
             *) err "unknown flag: $1" ;;
@@ -815,7 +816,7 @@ cmd_up() {
     # Stretch does not have sat unnoticed in the php:5.6 image for two days.
     if [ "$REBUILD" = yes ]; then
         local images=(web)
-        [ "$WITH_SELENIUM" != yes ] || images+=(selenium)
+        [ "$WITH_BROWSER" != yes ] || images+=(browser)
         note ">> Rebuilding images for PHP $PHP: ${images[*]}"
         compose_up_cmd build "${images[@]}" \
             || err "an image failed to build; the stack was left alone (see output above)"
@@ -824,7 +825,7 @@ cmd_up() {
     # The WebDriver suite needs the browser; nothing else does, so CI legs
     # that only run acceptance skip it.
     UP_SERVICES=()
-    if [ "$WITH_SELENIUM" != yes ]; then
+    if [ "$WITH_BROWSER" != yes ]; then
         UP_SERVICES=(db web)
     fi
 
@@ -908,7 +909,7 @@ cmd_relock() {
         note ">> relocking $lock on PHP $floor"
         had_env=no
         ! project_exists "$(project_name "$floor" "$DEFAULT_DB")" || had_env=yes
-        cmd_up --php "$floor" --no-selenium >&2
+        cmd_up --php "$floor" --no-browser >&2
         compose_exec_nostdin -w "$WEB_TESTS_DIR" web sh -euc '
             d=$(mktemp -d)
             cp composer.json "$d/"
@@ -1375,7 +1376,7 @@ USAGE:
 
 LIFECYCLE:
   up [--php X] [--db Y] [--xdebug] [--install-site]
-     [--base-path DIR] [--no-selenium] [--rebuild]
+     [--base-path DIR] [--no-browser] [--rebuild]
                                      Start, install deps, mark active. Builds the
                                      web and browser images if missing, else
                                      reuses them.
@@ -1387,11 +1388,10 @@ LIFECYCLE:
                                      points the suites at it: e107 derives
                                      e_HTTP from the request, so cookies,
                                      redirects and links all change shape.
-                                     --no-selenium skips the browser service
-                                     (a >1GB image the WebDriver suite alone
-                                     needs).
+                                     --no-browser skips the browser service,
+                                     which the WebDriver suite alone needs.
                                      --rebuild rebuilds the web image, and the
-                                     browser's unless --no-selenium; an edit to
+                                     browser's unless --no-browser; an edit to
                                      a file either is built from needs none, as
                                      that changes the image's tag (see image).
   down [--volumes] [--force]         Stop and remove this env. Removing an env
@@ -1502,7 +1502,7 @@ TARGET_WORKTREE=
 # Docroot install and the full stack unless `up` is told otherwise. Only `up`
 # reads these; every later command drives the containers it left behind.
 BASE_PATH=
-WITH_SELENIUM=yes
+WITH_BROWSER=yes
 UP_SERVICES=()
 REBUILD=no
 

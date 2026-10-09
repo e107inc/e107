@@ -1,4 +1,4 @@
-# e107 test harness compose stack: db + web + selenium. Driven by the
+# e107 test harness compose stack: db + web + browser. Driven by the
 # e107_tests/bin/e107-tests wrapper, which sets the project name, the matrix
 # env vars, and the bind mount; see e107_tests/docker/README.md. Don't run
 # `docker compose` against this file directly.
@@ -120,7 +120,7 @@ services:
       - "127.0.0.1:${E107_WEB_PORT:-0}:80"
 
   # Dedicated browser for the WebDriver suite (browser.Dockerfile).
-  selenium:
+  browser:
     build:
       context: .
       dockerfile: browser.Dockerfile

@@ -14,7 +14,7 @@ concurrency:
 # The unit suite runs on the same harness developers use locally
 # (e107_tests/bin/e107-tests), so a CI failure reproduces with two commands:
 #
-#   e107_tests/bin/e107-tests up --php 8.4 --db mariadb:10.11 --no-selenium
+#   e107_tests/bin/e107-tests up --php 8.4 --db mariadb:10.11 --no-browser
 #   e107_tests/bin/e107-tests ci-unit
 #
 # `ci-unit` exists to replay this job exactly, so base image drift such as a
@@ -24,7 +24,7 @@ concurrency:
 # repro of one of those has to hand it the same ones or it runs a different
 # suite from the one that failed:
 #
-#   e107_tests/bin/e107-tests up --php 5.6 --db mysql:5.5 --no-selenium
+#   e107_tests/bin/e107-tests up --php 5.6 --db mysql:5.5 --no-browser
 #   e107_tests/bin/e107-tests ci-unit --skip-group runs-in-separate-process --skip-group requires-modern-php
 #
 # One job per PHP version runs the suite against every database at once, one
@@ -73,13 +73,13 @@ jobs:
       # utf8mb4 gets utf8 instead.
       #
       # No --install-site: the unit suite loads a dump and never runs the
-      # installer. --no-selenium because only the WebDriver suite needs the
+      # installer. --no-browser because only the WebDriver suite needs the
       # browser.
       - name: Bring up one stack per database
         uses: ./.github/actions/harness-stack
         with:
           php: ${{ matrix.php }}
-          up-args: --no-selenium
+          up-args: --no-browser
           cells: |
             --db mysql:5.5
             --db mysql:8.0

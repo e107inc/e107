@@ -62,7 +62,7 @@ than the test asking the wrong question. CI runs both layouts for exactly this
 reason: the subdirectory legs have already caught assertions that were quietly
 passing for the wrong reason.
 
-`--no-selenium` brings up `db` and `web` only. Nothing but the WebDriver suite
+`--no-browser` brings up `db` and `web` only. Nothing but the WebDriver suite
 needs the browser, and its image is built on the first `up` that does.
 
 ### HTTP and HTTPS
@@ -260,7 +260,7 @@ a stack brought up without it recreates the containers on the xdebug image
 rather than erroring or quietly doing nothing, and says which way it is
 switching the env as it goes. The catch is that `up` only rewrites the labels
 of the services it brings up, so a partial-scope `up` leaves the others
-carrying the labels of the run that created them; `--no-selenium` is the
+carrying the labels of the run that created them; `--no-browser` is the
 reachable case, its browser container surviving the switch untouched. `up`
 fails if the labels it leaves behind disagree with the flags it was given, and
 the answer when that happens is `down` followed by `up` with the flags you
@@ -288,7 +288,7 @@ debug by hand:
 - **Package host flakes**: the composer install inside the container gets
   the same three tries, so a package host that answers 504 for a minute
   costs a minute, not the run.
-- **Honest exit codes**: `up` verifies db/web/selenium are actually running
+- **Honest exit codes**: `up` verifies db/web/browser are actually running
   and healthy and fails loudly (with `compose ps` output) if not.
 
 ## Composer's download cache
@@ -491,9 +491,9 @@ endpoint e107 contacts (#5687).
   combo and per state of the files here, the compose files and the docs aside.
 - `debian-archive.sh`: moves apt to `archive.debian.org` once the image's
   Debian release is served there; see "Legacy PHP".
-- `compose.yml`: the db + web + selenium services, parameterized by env,
+- `compose.yml`: the db + web + browser services, parameterised by env,
   plus the `e107.tests.*` labels that serve as the harness's state store.
-- `browser.Dockerfile`: the selenium service's browser and chromedriver.
+- `browser.Dockerfile`: the browser service's headless shell and chromedriver.
 - `compose.start-interval.yml`: probes a starting service every second;
   `e107-tests` adds it on Docker Engine 25 and later.
 - `../composer.lock`, `../composer.php<floor>.lock`: one dependency lock per

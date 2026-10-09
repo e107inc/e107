@@ -15,8 +15,15 @@ foreach ([
          ] as $config_filename)
 {
 	$absolute_config_path = codecept_root_dir() . '/' . $config_filename;
-	if (file_exists($absolute_config_path))
-		$params = array_replace_recursive($params, Yaml::parse(file_get_contents($absolute_config_path)));
+	if (!file_exists($absolute_config_path))
+		continue;
+	$config = Yaml::parse(file_get_contents($absolute_config_path));
+	if (isset($config['selenium']) && $config_filename !== 'config.sample.yml')
+	{
+		$fix = $config_filename === 'config.docker.yml' ? 'take the env down and up again to rewrite it' : 'rename it';
+		throw new RuntimeException("$config_filename has a 'selenium' section, which is now called 'browser'; $fix");
+	}
+	$params = array_replace_recursive($params, $config);
 }
 
 // Set by the suite runner (lib/sandbox) for each process it starts: the

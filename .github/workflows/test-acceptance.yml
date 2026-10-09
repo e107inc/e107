@@ -14,7 +14,7 @@ concurrency:
 # The acceptance suite runs on the same harness developers use locally
 # (e107_tests/bin/e107-tests), so a CI failure reproduces with two commands:
 #
-#   e107_tests/bin/e107-tests up --php 8.5 --db mariadb:12.3 --no-selenium
+#   e107_tests/bin/e107-tests up --php 8.5 --db mariadb:12.3 --no-browser
 #   e107_tests/bin/e107-tests run acceptance
 #
 # Add --base-path e107 for the subdirectory layout. That flag is not
@@ -75,13 +75,13 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # --no-selenium: only the WebDriver suite needs the browser.
+      # --no-browser: only the WebDriver suite needs the browser.
       - name: Bring up one stack per layout
         uses: ./.github/actions/harness-stack
         with:
           php: ${{ matrix.php }}
           db: ${{ matrix.db }}
-          up-args: --no-selenium
+          up-args: --no-browser
           cells: |
             docroot
             subdirectory --base-path e107
