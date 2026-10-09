@@ -250,8 +250,12 @@ if (!empty($_POST['pwsubmit']))
 				exit;
 		}
 
+		$resetPrefix = $row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR;
+
 		// Check if password reset was already requested
-		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'"))
+		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE :account", array(
+			'account' => $resetPrefix.'%',
+		)))
 		{
 			fpw_error(LAN_FPW4);
 			exit;
@@ -275,7 +279,7 @@ if (!empty($_POST['pwsubmit']))
 		$insertQry = array(
 			'tmp_ip'    => 'pwreset',
 			'tmp_time'  => $deltime,
-			'tmp_info'  => ($row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR.$rcode)
+			'tmp_info'  => $resetPrefix.$rcode
 		);
 
 		$sql->insert('tmp', $insertQry);
