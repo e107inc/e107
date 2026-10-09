@@ -165,17 +165,14 @@ class user_class
 		}
 		else
 		{
-			if($this->sql_r->field('userclass_classes','userclass_parent')) // The order statement should give a consistent return
+			$rows = $this->sql_r->createQueryBuilder()
+				->select('*')->from('userclass_classes')
+				->orderBy('userclass_parent')->addOrderBy('userclass_name')
+				->fetchAll();
+			foreach ($rows as $row)
 			{
-				$rows = $this->sql_r->createQueryBuilder()
-					->select('*')->from('userclass_classes')
-					->orderBy('userclass_parent')->addOrderBy('userclass_name')
-					->fetchAll();
-				foreach ($rows as $row)
-				{
-					$this->class_tree[$row['userclass_id']] = $row;
-					$this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
-				}
+				$this->class_tree[$row['userclass_id']] = $row;
+				$this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
 			}
 
 			// Add in any fixed classes that aren't already defined (they historically didn't have a DB entry, although now its facilitated (and necessary for tree structure)
