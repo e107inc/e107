@@ -266,15 +266,9 @@ class installStage7HashTest extends \Test\Unit
 				continue;
 			}
 
-			// Skip whitespace between "class" and the class name.
-			$j = $i + 1;
-			while ($j < $count && is_array($tokens[$j])
-				&& in_array($tokens[$j][0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true))
-			{
-				$j++;
-			}
+			$j = \Test\Tokens::neighbourIndex($tokens, $i, 1);
 
-			if ($j >= $count || !is_array($tokens[$j])
+			if ($j === null || !is_array($tokens[$j])
 				|| $tokens[$j][0] !== T_STRING
 				|| $tokens[$j][1] !== $className)
 			{
