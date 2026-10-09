@@ -6,12 +6,14 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Failure reporting for e_file::unzipArchive(), issue #6119.
+ * Failure reporting for e_file::unzipArchive(), issue #6119, and its moves
+ * between file systems.
  *
  * Several unrelated faults shared one message describing only one of them, and
  * an archive whose detected root turned out not to be a folder said nothing at
- * all. Only the failure paths are driven here: a successful unzip renames its
- * folder into e_PLUGIN or e_THEME, which is not a unit test's business.
+ * all. A successful unzip moves its folder into e_PLUGIN, so only the updates
+ * across file systems drive one, over a plugin written through the deployer,
+ * which takes the folder back out when the test ends.
  *
  * _before() clears what a refused archive must not leave behind, so the
  * "was never written" assertions below mean what they say.
@@ -38,6 +40,15 @@ class e_fileUnzipArchiveTest extends \Codeception\Test\Unit
 	/** @var string[] absolute paths of the fixtures this test wrote */
 	private $fixtures = array();
 
+	/** @var string[][] each folder linked to another file system, and where the real one was put aside */
+	private $relocated = array();
+
+	/** @var string[] the folders this test made on another file system */
+	private $elsewhere = array();
+
+	/** the plugin folder the update across file systems installs */
+	const CROSS_DEVICE_PLUGIN = 'e107xdevfixture';
+
 	protected function _before()
 	{
 		try
@@ -54,10 +65,32 @@ class e_fileUnzipArchiveTest extends \Codeception\Test\Unit
 		@unlink(e_TEMP . 'plugin.php');
 		@unlink(e_BACKUP . '.zip');
 		e107::getFile()->removeDir(e_TEMP . 'outer');
+		$this->removeCrossDevicePlugin();
 	}
 
 	protected function _after()
 	{
+		foreach($this->relocated as $relocation)
+		{
+			list($folder, $aside) = $relocation;
+
+			if(is_link($folder))
+			{
+				unlink($folder);
+			}
+
+			rename($aside, $folder);
+		}
+
+		foreach($this->elsewhere as $folder)
+		{
+			e107::getFile()->removeDir($folder);
+		}
+
+		$this->relocated = array();
+		$this->elsewhere = array();
+		$this->removeCrossDevicePlugin();
+
 		foreach($this->fixtures as $path)
 		{
 			@unlink($path);
@@ -151,6 +184,132 @@ class e_fileUnzipArchiveTest extends \Codeception\Test\Unit
 
 		self::assertFalse(file_exists(e_BACKUP . '.zip'),
 			'A failed unzip copied its download to e_BACKUP under an empty name.');
+	}
+
+	public function crossDeviceFolderProvider()
+	{
+		return array(
+			'unpacked on another file system'  => array('e_TEMP'),
+			'backed up to another file system' => array('e_BACKUP'),
+		);
+	}
+
+	/**
+	 * rename() cannot take a folder to another file system, as when e107_system
+	 * is a container volume of its own, and the update stopped at "Couldn't Move".
+	 *
+	 * @dataProvider crossDeviceFolderProvider
+	 */
+	public function testAnUpdateMovesItsFoldersBetweenFileSystems($constant)
+	{
+		$this->relocate(constant($constant));
+
+		$plugin = self::CROSS_DEVICE_PLUGIN;
+		$this->getModule('\Helper\Unit')->writeAppFile('e107_plugins/' . $plugin . '/plugin.php', '<?php // installed');
+		$localfile = $this->seedZip('xdev-update.zip', array($plugin . '/plugin.php' => '<?php // update'));
+
+		self::assertSame($plugin, $this->fl->unzipArchive($localfile, 'plugin', true), $this->reportedErrors());
+
+		self::assertStringEqualsFile(e_PLUGIN . $plugin . '/plugin.php', '<?php // update');
+		self::assertFalse(file_exists(e_TEMP . $plugin), 'The unpacked folder was left behind in e_TEMP.');
+
+		$backups = glob(e_BACKUP . $plugin . '_*/plugin.php');
+		self::assertCount(1, $backups, 'The installed plugin was not backed up.');
+		self::assertStringEqualsFile($backups[0], '<?php // installed');
+	}
+
+	/**
+	 * Copying a linked folder and then removing it would empty the folder the link points at, such as a plugin's working copy.
+	 */
+	public function testAMoveBetweenFileSystemsLeavesWhatALinkedFolderPointsAtAlone()
+	{
+		$elsewhere = $this->otherFileSystem();
+		$link = e_TEMP . self::CROSS_DEVICE_PLUGIN . '-link';
+		$target = realpath(e_TEMP) . '/' . self::CROSS_DEVICE_PLUGIN . '-target';
+		mkdir($target);
+		file_put_contents($target . '/plugin.php', '<?php // installed');
+		symlink($target, $link);
+
+		$moveDir = new \e107\Reflection\ReflectionMethod('e_file', 'moveDir');
+
+		self::assertFalse($moveDir->invoke($this->fl, $link, $elsewhere . '/' . self::CROSS_DEVICE_PLUGIN));
+		self::assertStringEqualsFile($target . '/plugin.php', '<?php // installed', 'The move emptied the folder the link points at.');
+	}
+
+	/**
+	 * A link to nothing, deep in the unpacked folder, stands in for any entry the copy cannot take, as on a full disk.
+	 */
+	public function testAnUpdateThatCannotMoveItsFolderPutsTheInstalledPluginBack()
+	{
+		$this->relocate(e_TEMP);
+
+		$plugin = self::CROSS_DEVICE_PLUGIN;
+		$this->getModule('\Helper\Unit')->writeAppFile('e107_plugins/' . $plugin . '/plugin.php', '<?php // installed');
+		mkdir(e_TEMP . $plugin . '/sub', 0755, true);
+		symlink(e_TEMP . $plugin . '/sub/missing', e_TEMP . $plugin . '/sub/broken');
+		$localfile = $this->seedZip('xdev-unmovable.zip', array($plugin . '/plugin.php' => '<?php // update'));
+
+		self::assertFalse($this->fl->unzipArchive($localfile, 'plugin', true));
+
+		self::assertStringEqualsFile(e_PLUGIN . $plugin . '/plugin.php', '<?php // installed',
+			'The installed plugin was left in e_BACKUP.');
+		self::assertSame(array(), glob(e_BACKUP . $plugin . '_*'), 'A copy of the installed plugin was left in e_BACKUP.');
+	}
+
+	/**
+	 * Puts $folder aside and links a folder on another file system in its place.
+	 *
+	 * @param string $folder
+	 * @return void
+	 */
+	private function relocate($folder)
+	{
+		$folder = rtrim($folder, '/');
+		$elsewhere = $this->otherFileSystem();
+		$aside = $folder . '-aside-' . uniqid();
+		rename($folder, $aside);
+		$this->relocated[] = array($folder, $aside);
+		symlink($elsewhere, $folder);
+	}
+
+	/**
+	 * Makes a folder on a file system other than e_PLUGIN's, or skips the test where the temporary folder offers none.
+	 *
+	 * @return string
+	 */
+	private function otherFileSystem()
+	{
+		$elsewhere = sys_get_temp_dir() . '/e107-xdev-' . uniqid();
+		mkdir($elsewhere, 0755, true);
+		$this->elsewhere[] = $elsewhere;
+
+		if(stat($elsewhere)['dev'] === stat(e_PLUGIN)['dev'])
+		{
+			self::markTestSkipped('The temporary folder shares a file system with e_PLUGIN, so no move here crosses one.');
+		}
+
+		return $elsewhere;
+	}
+
+	private function removeCrossDevicePlugin()
+	{
+		$fl = e107::getFile();
+		$link = e_TEMP . self::CROSS_DEVICE_PLUGIN . '-link';
+
+		if(is_link($link))
+		{
+			unlink($link);
+		}
+
+		$fl->removeDir(e_TEMP . self::CROSS_DEVICE_PLUGIN);
+		$fl->removeDir(e_TEMP . self::CROSS_DEVICE_PLUGIN . '-target');
+
+		foreach((array) glob(e_BACKUP . self::CROSS_DEVICE_PLUGIN . '_*') as $backup)
+		{
+			$fl->removeDir($backup);
+		}
+
+		@unlink(e_BACKUP . self::CROSS_DEVICE_PLUGIN . '.zip');
 	}
 
 	private function reportedErrors()
