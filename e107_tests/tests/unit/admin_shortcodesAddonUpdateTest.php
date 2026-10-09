@@ -17,9 +17,8 @@
  *   $row['icon'] / ['thumbnail']     an img src
  *   $row['name'], ['version'], ['date']   element text
  *
- * Its output is stored in the session as 'addons-update-status'
- * (e107_admin/boot.php:92), so it is rendered again on later requests without
- * the composition being re-run.
+ * The rows it renders are kept by e107\Admin\AddonUpdateStatus, so it runs
+ * again on every later dashboard request that shows the notice.
  *
  * All three sinks in that file take double-quoted attributes or element text,
  * so the payloads here carry a double quote and an angle bracket respectively.
