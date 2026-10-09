@@ -543,7 +543,7 @@ class e_pref extends e_front_model
 			}
 
 			$this->pref_cache = $row['e107_value']; //runtime cache
-			$this->setPrefCache($row['e107_value'], true);
+			$this->writePrefCache($this->alias, $row['e107_value'], $this->serial_bc ? e107::unserialize($row['e107_value']) : $data);
 		}
 
 		if(empty($data))
@@ -947,9 +947,24 @@ class e_pref extends e_front_model
 		}
 		if($save)
 		{
-			e107::getCache()->set_sys('Config_'.($save !== true ? $save : $this->alias), $cache_string, true);
+			$this->writePrefCache($save !== true ? $save : $this->alias, $cache_string, e107::unserialize($cache_string));
 		}
 		return $this;
+	}
+
+	/**
+	 * Writes a row's cache file as JSON wherever decoding the JSON gives back $data exactly, and as $cache_string otherwise.
+	 *
+	 * @param string $alias
+	 * @param string $cache_string
+	 * @param mixed $data what {@see e_array::unserialize()} reads $cache_string as
+	 * @return void
+	 */
+	private function writePrefCache($alias, $cache_string, $data)
+	{
+		$json = (!empty($data) && is_array($data)) ? json_encode($data) : false;
+
+		e107::getCache()->set_sys('Config_'.$alias, (is_string($json) && json_decode($json, true) === $data) ? $json : $cache_string, true);
 	}
 
 	/**
