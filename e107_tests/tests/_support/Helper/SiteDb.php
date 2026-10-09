@@ -8,7 +8,7 @@ namespace Helper;
 // neither of which PHP 5.6 can spell, so this overrides neither. codeception.yml
 // always supplies dsn, user and password, and _initialize() only connects; the
 // dump is still read and loaded by _beforeSuite().
-class DelayedDb extends \Codeception\Module\Db
+class SiteDb extends \Codeception\Module\Db
 {
 	public function _getDbHostname()
 	{

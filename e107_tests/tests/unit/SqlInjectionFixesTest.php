@@ -36,8 +36,8 @@ class SqlInjectionFixesTest extends \Codeception\Test\Unit
 		$this->db = $this->make('e_db_mysql');
 		$this->db->__construct();
 
-		/** @var \Helper\DelayedDb $dbHelper */
-		$dbHelper = $this->getModule('\Helper\DelayedDb');
+		/** @var \Helper\SiteDb $dbHelper */
+		$dbHelper = $this->getModule('\Helper\SiteDb');
 		$this->db->db_Connect(
 			$dbHelper->_getDbHostname(),
 			$dbHelper->_getDbUsername(),

@@ -33,7 +33,7 @@ extensions:
         - Codeception\Extension\RunFailed
 modules:
     enabled:
-        - \Helper\DelayedDb:
+        - \Helper\SiteDb:
             dsn: 'mysql:host=%db.host%;port=%db.port%;dbname=%db.dbname%'
             user: '%db.user%'
             password: '%db.password%'
