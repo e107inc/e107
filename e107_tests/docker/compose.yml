@@ -61,7 +61,7 @@ services:
       args:
         PHP_VERSION: ${E107_PHP_VERSION:-8.2}
         WITH_XDEBUG: ${E107_WITH_XDEBUG:-no}
-    image: e107-web:${E107_PHP_VERSION:-8.2}${E107_WITH_XDEBUG_TAG:-}
+    image: ${E107_WEB_IMAGE:?drive this file via e107_tests/bin/e107-tests}
     restart: unless-stopped
     labels: *e107-labels
     depends_on:

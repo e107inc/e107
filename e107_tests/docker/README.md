@@ -171,7 +171,10 @@ PHPUnit 5.7), and `check-platform-reqs` is checked on the real interpreter.
 - The acceptance suite browses the app at `http://localhost/` from inside
   the web container, the same filesystem Apache serves.
 - `up` builds the web image only if it is missing and reuses it otherwise, so a
-  previously built or CI-cached image is picked up without a rebuild.
+  previously built or CI-cached image is picked up without a rebuild. Its tag
+  carries a hash of every file in `docker/` but the compose files and the docs
+  (`e107-tests image` prints it), so branches whose Dockerfile, entrypoint or
+  vhosts differ never share an image.
 - Database state lives on tmpfs. `down` is a true reset; no leftover state.
 - The suites, and a site from `up --install-site`, connect as the `e107`
   account, which holds ALL PRIVILEGES on the one database and no global
@@ -326,7 +329,7 @@ during validation, so we don't rely on it. Treat `clean` as the canonical
 ## Files
 
 - `Dockerfile`: PHP + Apache + extensions, built once per `(PHP, xdebug)`
-  combo.
+  combo and per state of the files here, the compose files and the docs aside.
 - `debian-archive.sh`: moves apt to `archive.debian.org` once the image's
   Debian release is served there; see "Legacy PHP".
 - `compose.yml`: the db + web + selenium services, parameterized by env,
