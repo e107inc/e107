@@ -19,7 +19,7 @@ Pick a different matrix combo with `--php` and `--db`, e.g. `e107-tests up --php
 
 ## Quickstart (Manual / legacy deployers)
 
-If you prefer to wire tests into your own LAMP stack — local, SFTP, cPanel, or anything else — keep reading. This is the original flow described below.
+If you prefer to wire tests into your own LAMP stack — local, SFTP, or anything else — keep reading. This is the original flow described below.
 
 1. Check out this repository:
    ```sh
@@ -43,10 +43,6 @@ If you prefer to wire tests into your own LAMP stack — local, SFTP, cPanel, or
    
      *Use if:* You regularly upload the app over SFTP (perhaps in some setup with Vagrant) and have a remote LAMP stack that serves the app
      
-   * [**cPanel**](#cpanel)
-   
-     *Use if:* You have a cPanel account whose main domain is reachable and want to run tests without a staging environment
-     
    * [**Manual**](#manual)
    
      *Use if:* You are not able to set up any of the other options
@@ -55,11 +51,7 @@ If you prefer to wire tests into your own LAMP stack — local, SFTP, cPanel, or
    ```sh
    php -d allow_url_fopen=On $(which composer) update
    ```
-5. Update all submodules:
-   ```sh
-   git submodule update --init --recursive
-   ```
-6. Run tests:
+5. Run tests:
 
    * **All tests:**
      ```sh
@@ -71,9 +63,9 @@ If you prefer to wire tests into your own LAMP stack — local, SFTP, cPanel, or
      ```
    * **All tests with code coverage report:**
      ```sh
-     /opt/cpanel/ea-php72/root/usr/bin/php -d zend_extension=/opt/alt/php72/usr/lib64/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+     php -d zend_extension=xdebug.so -d xdebug.mode=coverage -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
      ```
-     > **Note:** This command is specific to cPanel EasyApache PHP 7.2 and CloudLinux PHP Selector.  See the "Code Coverage" section below for details.
+     > **Note:** This needs Xdebug.  See the "Code Coverage" section below for details.
    * **Unit tests:**
      ```sh
      ./vendor/bin/codecept run unit
@@ -96,7 +88,6 @@ In the config file, there are some base settings:
 
 Each deployer needs one or more of the following sections to be configured:
 
-* `hosting` – The credentials to log in to an all-in-one hosting control panel
 * `url` – The URL that acceptance tests will access
 * `db` – Database credentials and populator settings
 * `fs` – File transfer credentials if the app is hosted at a remote location
@@ -105,12 +96,11 @@ Details on how to configure these sections can be found in [`config.sample.yml`]
 
 Here is a table of which sections need to be configured for which deployers:
 
-| Deployer (`deployer`) | Hosting platform (`hosting`) required? | URL (`url`) required? | Database (`db`) required? | Files (`fs`) required? |
-| --- |:---:|:---:|:---:|:---:|
-| Local (`local`)   | no  | yes | yes | no  |
-| SFTP (`sftp`)     | no  | yes | yes | yes |
-| cPanel (`cpanel`) | yes | no  | no  | no  |
-| Manual (`none`)   | no  | no  | yes | no  |
+| Deployer (`deployer`) | URL (`url`) required? | Database (`db`) required? | Files (`fs`) required? |
+| --- |:---:|:---:|:---:|
+| Local (`local`)   | yes | yes | no  |
+| SFTP (`sftp`)     | yes | yes | yes |
+| Manual (`none`)   | no  | yes | no  |
 
 ### Local
 
@@ -220,49 +210,6 @@ fs:
   path: ''
 ```
 
-### cPanel
-
-#### Requirements
-
-* **cPanel user account** – It is recommended to use a cPanel account dedicated to testing for isolation, but the test suite runs on most typical accounts and tries not to interfere with existing data.
-* **Resolvable main domain** – The cPanel account's main domain must be resolvable to the machine running the test suite.  This usually means that the domain must resolve on the Internet.
-* **MariaDB database quota** – Each run of the test suite creates one new MariaDB database and deletes it after executing the suite.
-* **Enough free disk space** – The test suite archives a copy of the app and uploads it to the cPanel account for cPanel to extract.  The app, its archive form, and test resources may grow in the future, so the more free disk space, the better.
-* **Enough free inodes** – The app and test resources will take up at least a few thousand inodes and may need more in the future, so the more free inodes, the better.
-
-#### Limitations
-
-* **PHP version cannot be set** – The test suite currently does not have the ability to set custom versions of PHP for the target app directory.  If the cPanel host supports multiple versions of PHP (e.g. EasyApache 4 MultiPHP, CloudLinux alt-php), they will have to be configured manually to test different PHP versions.
-* **MariaDB username character limit** – cPanel MariaDB usernames are limited to 47 characters in length, and test runs are expected to use 18 plus the length of your cPanel username plus 1.
-* **MariaDB database character limit** – cPanel MariaDB databases are limited to 64 characters in length, and test runs are expected to use 18 plus the length of your cPanel username plus 4.  (cPanel double-counts underscores (`_`) and the deployer uses 2 underscores, so the visible character count is 2 less than what cPanel counts.)
-* **MariaDB remote access host `%` is preserved on crash** – The deployer adds a cPanel Remote MySQL® access host, `%`, but will forget to remove it if the test run is uncleanly aborted. Subsequent runs will not touch the `%` remote access host because the deployer would not be sure if it added `%`.
-* **cPanel max POST size** – The cPanel PHP maximum POST request size can be as low as 55MiB on some hosts.  If the app's archive form exceeds this size, the upload will fail.  This limit can be adjusted in the hosting provider's server-wide WHM settings.
-
-#### Configuration
-
-To set up the deployment of tests to a cPanel account, copy the file called [`config.sample.yml`](config.sample.yml) in the root folder of this repository to a new file called `config.yml` (or create a new file called `config.yml`), open `config.yml`, and input the following configuration information:
-
-```yaml
-# Path (absolute or relative) to the app intended to be tested
-# Absolute path begins with "/"; relative path does not begin with "/"
-app_path: '../'
-
-# Which deployer to use to set up tests
-deployer: 'cpanel'
-
-# Configure this section for fully automated test deployments to a hosting control panel
-hosting:
-
-  # Control panel domain without the port number
-  hostname: ''
-
-  # Control panel account username
-  username: ''
-
-  # Control panel account password
-  password: ''
-```
-
 ### Manual
 
 #### Requirements
@@ -327,18 +274,13 @@ The reports may take minutes to be generated.
 
 * **[Xdebug](https://xdebug.org/)** – You'll have to figure out the best way to [install Xdebug](https://xdebug.org/docs/install) in your environment.
 
-### Sample Commands
+### Sample Command
 
-These commands run all tests and generate a code coverage report in HTML format and [Clover](https://bitbucket.org/atlassian/clover) XML format:
+This command runs all tests and generates a code coverage report in HTML format and [Clover](https://bitbucket.org/atlassian/clover) XML format, using the Xdebug module that you installed with PECL:
 
-* Using [cPanel EasyApache 4](https://documentation.cpanel.net/display/EA4/PHP+Home) with PHP 7.2 and Xdebug from [CloudLinux PHP Selector](https://docs.cloudlinux.com/php_selector.html):
-  ```sh
-  /opt/cpanel/ea-php72/root/usr/bin/php -d zend_extension=/opt/alt/php72/usr/lib64/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
-  ```
-* Using the Xdebug module that you installed with PECL:
-  ```sh
-  php zend_extension=/usr/local/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
-  ```
+```sh
+php -d zend_extension=/usr/local/php/modules/xdebug.so -d xdebug.mode=coverage -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+```
 
 ### Output
 

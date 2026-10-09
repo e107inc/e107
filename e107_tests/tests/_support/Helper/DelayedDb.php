@@ -11,15 +11,6 @@ namespace Helper;
 // dsn/user/password keys; the previous debug log line on initialise is cosmetic.
 class DelayedDb extends \Codeception\Module\Db
 {
-    // Codeception still has the deferred-init plumbing we used historically.
-    // Kept as a no-arg wrapper so callers can opt back in if they need to
-    // postpone connection bring-up; new code should just rely on Codeception's
-    // own _initialize() lifecycle.
-    public function _delayedInitialize()
-    {
-        return parent::_initialize();
-    }
-
     public function _getDbHostname()
     {
         return $this->dsnParameter('host');

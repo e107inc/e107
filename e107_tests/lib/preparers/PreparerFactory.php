@@ -29,7 +29,7 @@ class PreparerFactory
 		}
 
 		// 'local' serves the app from $appPath itself, so it must run in place.
-		// Deploy-based suites (sftp/cpanel) copy elsewhere, so they can isolate
+		// Deploy-based suites (sftp) copy elsewhere, so they can isolate
 		// the source in a disposable git worktree where git is usable.
 		if ($deployer !== 'local' && !self::systemIsSlow() && self::pathHasUsableGit($appPath))
 		{
