@@ -52,6 +52,24 @@ class e_db_pdo implements e_db
 	/** @var e107_traffic */
 	private     $traffic;
 
+	/** @var \e107\Database\SharedHandles */
+	private     $sharedHandles;
+
+	/** @var array|null the connection parameters the handle is shared for; null for a handle of this instance's own */
+	private     $sharedParams = null;
+
+	/** @var array|null what is shared under them: the handle and the character set it was given */
+	private     $sharedConnection = null;
+
+	/** @var bool whether connect() was asked for a connection no other instance shares, kept across close() */
+	private     $newLink = false;
+
+	/** @var bool whether the connection connect() opened is shared at the next database(), if none is shared for those parameters */
+	private     $shareable = false;
+
+	/** @var string|int the insert id of this instance's last statement, read before another instance's statement can reset it */
+	private     $insertId = 0;
+
 	protected static $querycount = 0;
 
 
@@ -66,6 +84,7 @@ class e_db_pdo implements e_db
 
 		$this->traffic = e107::getSingleton('e107_traffic');
 		$this->traffic->BumpWho('Create db object', 1);
+		$this->sharedHandles = e107::getSingleton('e107\Database\SharedHandles');
 						// Set the default prefix - may be overridden
 
 		$config =  e107::getMySQLConfig();
@@ -106,7 +125,7 @@ class e_db_pdo implements e_db
 	 * @param string $mySQLserver IP Or hostname of the MySQL server
 	 * @param string $mySQLuser MySQL username
 	 * @param string $mySQLpassword MySQL Password
-	 * @param bool $newLink force a new link connection if TRUE. Default false
+	 * @param bool $newLink true for a connection no other instance shares
 	 * @return boolean true on success, false on error.
 	 */
 	public function connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink = false)
@@ -114,15 +133,10 @@ class e_db_pdo implements e_db
 
 		$this->traffic->BumpWho('db Connect', 1);
 
-		$this->mySQLserver 		= $mySQLserver;
+		list($this->mySQLserver, $this->mySQLport) = $this->_serverAndPort($mySQLserver, $this->mySQLport);
 		$this->mySQLuser 		= $mySQLuser;
 		$this->mySQLpassword 	= $mySQLpassword;
 		$this->mySQLerror 		= false;
-
-		if(strpos($mySQLserver,':')!==false && substr_count($mySQLserver, ':')===1)
-		{
-			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
-		}
 
 	//	if($this->mySQLserver === 'localhost') // problematic.
 		{
@@ -130,20 +144,14 @@ class e_db_pdo implements e_db
 		}
 
 
-		try
+		if(!($pdo = $this->_open()))
 		{
-			$this->mySQLaccess = new PDO("mysql:host={$this->mySQLserver};port={$this->mySQLport}", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-		}
-		catch(PDOException $ex)
-		{
-			$this->mySQLlastErrText = $ex->getMessage();
-			$this->mySQLlastErrNum = $this->_errorNumber($ex);
-			$this->dbg->log($this->mySQLlastErrText);
+			$this->shareable = false;
 			return false;
 		}
 
-		$this->setCharset();
-		$this->setSQLMode();
+		$this->newLink = (bool) $newLink;
+		$this->_adopt($pdo, !$this->newLink);
 
 		return true;
 	}
@@ -185,10 +193,17 @@ class e_db_pdo implements e_db
 			return true;
 		}
 
+		$link = $this->mySQLaccess;
+
+		if($this->sharedParams !== null && $this->sharedParams['database'] !== $database && !($link = $this->_open()))
+		{
+			return false;
+		}
+
 
 		try
 		{
-			$this->mySQLaccess->exec("use ".$quoted);
+			$link->exec("use ".$quoted);
        		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
 	    }
 		catch (PDOException $e)
@@ -197,6 +212,24 @@ class e_db_pdo implements e_db
 			$this->mySQLlastErrNum = $this->_errorNumber($e);
 			return false;
 	    }
+
+		if($link !== $this->mySQLaccess)
+		{
+			$this->_adopt($link, false);
+		}
+
+		if($this->shareable)
+		{
+			$this->shareable = false;
+			$params = $this->_connectionParams();
+			$connection = array('handle' => $this->mySQLaccess, 'charset' => $this->mySQLcharset);
+
+			if($this->sharedHandles->share($params, $connection))
+			{
+				$this->sharedParams = $params;
+				$this->sharedConnection = $connection;
+			}
+		}
 
 		return true;
 
@@ -373,8 +406,7 @@ class e_db_pdo implements e_db
 			}
 		}
 
-
-
+		$this->insertId = $this->mySQLaccess->lastInsertId();
 
 		$e = microtime();
 
@@ -533,7 +565,7 @@ class e_db_pdo implements e_db
 	 */
 	public function lastInsertId()
 	{
-		$tmp = (int) $this->mySQLaccess->lastInsertId();
+		$tmp = (int) $this->insertId;
 		return ($tmp) ? $tmp : true; // return true even if table doesn't have auto-increment.
 	}
 
@@ -681,6 +713,7 @@ class e_db_pdo implements e_db
 	{
 		$this->traffic->BumpWho('db Close', 1);
 		$this->mySQLresult = null;
+		$this->_releaseSharedHandle();
 		$this->mySQLaccess = null;
 		$this->dbError('dbClose');
 	}
@@ -1444,21 +1477,108 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	 * In case e_db_mysql::$mySQLaccess is not set, set it.
-	 *
-	 * Uses the global variable $db_ConnectionID if available.
-	 *
-	 * When the global variable has been unset like in https://github.com/e107inc/e107-test/issues/6 ,
-	 * use the "mySQLaccess" from the default e_db_mysql instance singleton.
+	 * Give an instance that has not connected the connection shared for its parameters, opening it when there is none.
 	 */
 	protected function _getMySQLaccess()
 	{
 		if (!$this->mySQLaccess)
 		{
-			$success = $this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
+			$params = $this->_connectionParams();
+
+			if (!$this->newLink && ($connection = $this->sharedHandles->hold($params)) !== null)
+			{
+				$this->mySQLaccess = $connection['handle'];
+				$this->mySQLcharset = $connection['charset'];
+				$this->sharedParams = $params;
+				$this->sharedConnection = $connection;
+				return;
+			}
+
+			$success = $this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $this->newLink);
 			if ($success) $success = $this->database($this->mySQLdefaultdb, $this->mySQLPrefix);
 			if (!$success) throw new PDOException($this->mySQLlastErrText);
 		}
+	}
+
+	/**
+	 * @return array the parameters a connection is opened with, the database included
+	 */
+	private function _connectionParams()
+	{
+		list($server, $port) = $this->_serverAndPort($this->mySQLserver, $this->mySQLport);
+
+		return array(
+			'server'   => $server,
+			'port'     => (int) $port,
+			'user'     => $this->mySQLuser,
+			'password' => $this->mySQLpassword,
+			'database' => $this->mySQLdefaultdb,
+		);
+	}
+
+	/**
+	 * @param string $server a host, or host:port
+	 * @param int|string $port the port when $server names none
+	 * @return array the host and the port
+	 */
+	private function _serverAndPort($server, $port)
+	{
+		if(strpos($server,':')!==false && substr_count($server, ':')===1)
+		{
+			return explode(':',$server,2);
+		}
+
+		return array($server, $port);
+	}
+
+	/**
+	 * Give up this instance's hold on a shared connection, if it has one.
+	 *
+	 * @return void
+	 */
+	private function _releaseSharedHandle()
+	{
+		if($this->sharedParams !== null)
+		{
+			$this->sharedHandles->release($this->sharedParams, $this->sharedConnection);
+			$this->sharedParams = null;
+			$this->sharedConnection = null;
+		}
+	}
+
+	/**
+	 * @return PDO|false a new connection on this instance's server and credentials, with no database selected
+	 */
+	private function _open()
+	{
+		try
+		{
+			return new PDO("mysql:host={$this->mySQLserver};port={$this->mySQLport}", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+		}
+		catch(PDOException $ex)
+		{
+			$this->mySQLlastErrText = $ex->getMessage();
+			$this->mySQLlastErrNum = $this->_errorNumber($ex);
+			$this->dbg->log($this->mySQLlastErrText);
+			return false;
+		}
+	}
+
+	/**
+	 * Make $pdo this instance's connection in place of any shared one, and set its character set and SQL mode.
+	 *
+	 * @param PDO $pdo
+	 * @param bool $shareable whether the next database() may share it
+	 * @return void
+	 */
+	private function _adopt(PDO $pdo, $shareable)
+	{
+		$this->_releaseSharedHandle();
+		$this->mySQLaccess = $pdo;
+		$this->shareable = $shareable;
+
+		$this->setCharset();
+		$this->setSQLMode();
 	}
 
 

@@ -38,6 +38,8 @@ class_alias(\e107\Database\ConnectionInterface::class, 'e_db');
 require_once(__DIR__.'/Database/ConnectionTrait.php');
 class_alias(\e107\Database\ConnectionTrait::class, 'e_db_common');
 
+require_once(__DIR__.'/Database/SharedHandles.php');
+
 require_once(__DIR__.'/Database/Exception/QueryException.php');
 class_alias(\e107\Database\Exception\QueryException::class, 'e_db_query_exception');
 
