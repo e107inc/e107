@@ -5,7 +5,7 @@ namespace Helper;
  * WebDriver-suite counterpart to \Helper\Acceptance.
  *
  * The acceptance suite installs e107 itself, so it no-ops the config write.
- * The WebDriver suite instead boots e107 from the dump loaded by \Helper\DelayedDb,
+ * The WebDriver suite instead boots e107 from the dump loaded by \Helper\SiteDb,
  * which supplies the schema and data but not e107_config.php (the install marker
  * and DB credentials). This helper writes that file so the served app connects to
  * the populated database instead of redirecting to the installer.

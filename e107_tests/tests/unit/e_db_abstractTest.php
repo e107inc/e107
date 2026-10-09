@@ -33,14 +33,14 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 	protected function loadConfig()
 	{
-		/** @var Helper\DelayedDb $db */
+		/** @var Helper\SiteDb $db */
 		try
 		{
-			$db = $this->getModule('\Helper\DelayedDb');
+			$db = $this->getModule('\Helper\SiteDb');
 		}
 		catch (Exception $e)
 		{
-			$this->fail("Couldn't load eHelper\DelayedDb object");
+			$this->fail("Couldn't load \Helper\SiteDb object");
 		}
 
 		$config = array();

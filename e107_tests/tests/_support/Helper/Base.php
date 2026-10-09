@@ -15,7 +15,7 @@ abstract class Base extends \Codeception\Module
 
 	public function getDbModule()
 	{
-		return $this->getModule('\Helper\DelayedDb');
+		return $this->getModule('\Helper\SiteDb');
 	}
 
 	public function getBrowserModule()

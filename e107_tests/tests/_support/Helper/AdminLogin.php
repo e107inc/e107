@@ -70,14 +70,14 @@ class AdminLogin extends CodeceptionModule
 	 */
 	private function cheapenStoredHash($user, $pass)
 	{
-		if (!$this->hasModule('\Helper\DelayedDb'))
+		if (!$this->hasModule('\Helper\SiteDb'))
 		{
 			return;
 		}
 
 		try
 		{
-			$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
+			$dbh = $this->getModule('\Helper\SiteDb')->_getDbh();
 			$select = $dbh->prepare('SELECT `user_id`, `user_password` FROM `'.E107Base::E107_MYSQL_PREFIX.'user` WHERE `user_loginname` = ?');
 			$select->execute(array($user));
 			$row = $select->fetch(\PDO::FETCH_ASSOC);

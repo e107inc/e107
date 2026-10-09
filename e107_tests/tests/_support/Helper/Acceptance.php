@@ -403,7 +403,7 @@ class Acceptance extends E107Base
 	 */
 	public function dontSeeTableInDatabase($table)
 	{
-		$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
+		$dbh = $this->getModule('\Helper\SiteDb')->_getDbh();
 
 		$statement = $dbh->prepare('SHOW TABLES LIKE ?');
 		$statement->execute([$table]);
@@ -436,7 +436,7 @@ class Acceptance extends E107Base
 			throw new \RuntimeException("No SQL file for plugin \"$plugin\" at $sqlFile");
 		}
 
-		$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
+		$dbh = $this->getModule('\Helper\SiteDb')->_getDbh();
 
 		$tables = self::parseCreateTableStatements(file_get_contents($sqlFile));
 
