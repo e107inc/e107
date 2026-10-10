@@ -382,7 +382,7 @@ class e_signup
 		$eml = $this->renderEmail($temp, TRUE); // It ignores the data, anyway
 		$mailer = e107::getEmail();
 
-		if(!$mailer->sendEmail(USEREMAIL, USERNAME, $eml, FALSE))
+		if($mailer->sendEmail(USEREMAIL, USERNAME, $eml, FALSE) !== true)
 		{
 			echo "<div class='alert alert-danger'>".LAN_SIGNUP_42."</div>"; // there was a problem.
 		}
