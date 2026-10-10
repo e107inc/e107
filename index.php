@@ -50,12 +50,66 @@
 
 	$_E107['single_entry'] = true; // TODO - notify class2.php
 
+	$_E107['route_table'] = true; // class2.php leaves a refused logout to the route table below
+
 	define('ROOT', __DIR__);
 	set_include_path(ROOT.PATH_SEPARATOR.get_include_path());
 
 
 //	define('e_TOKEN_DISABLE', true);  // TODO FIXME cause of "Unauthorized Access!" message. SEF URL of Error pages causes e-token refresh.
 	require_once("class2.php");
+
+// ----------------------------
+
+	$routedRequest = \e107\Http\Request::fromGlobals($_SERVER);
+
+	$routes = new \e107\Routing\RouteTable(array(
+		\e107\Routing\Route::flag('user/logout', \e107\User\LogoutConfirmation::FLAG, function ()
+		{
+			$redirect = e107::getRedirect();
+			$tp = e107::getParser();
+			$ns = e107::getRender();
+
+			return new \e107\User\LogoutConfirmation(
+				e107::getUser()->isUser(),
+				e107::getCoreTemplate('logout', 'confirm', true, true),
+				e_HTTP.'index.php',
+				e107::getSession()->getFormToken(),
+				SITEURL,
+				function ($url) use ($redirect) { return !$redirect->leavesThisSite($url); },
+				function ($markup, array $vars) use ($tp) { return $tp->parseTemplate($markup, true, null, new e_vars($vars)); },
+				function ($caption, $text, $mode) use ($ns) { return $ns->tablerender($caption, $text, $mode, true); }
+			);
+		}),
+	));
+
+	$routeMatch = $routes->match($routedRequest);
+
+	if($routeMatch !== null)
+	{
+		$routeResponse = $routeMatch->handler()->handle($routedRequest);
+
+		if($routeResponse->getLocation() !== null)
+		{
+			e107::getRedirect()->go($routeResponse->getLocation(), true, $routeResponse->getStatusCode());
+			exit;
+		}
+
+		$legacyRequest = new eRequest();
+		$legacyRequest->setLegacyQstring()->setLegacyPage();
+		e107::route($routeMatch->getName());
+
+		$routePage = $routeResponse->getPage();
+		http_response_code($routeResponse->getStatusCode());
+		e107::title($routePage->getTitle());
+
+		require_once(HEADERF);
+		echo $routePage->render();
+		require_once(FOOTERF);
+		exit;
+	}
+
+	unset($routedRequest, $routes, $routeMatch);
 
 // ----------------------------
 

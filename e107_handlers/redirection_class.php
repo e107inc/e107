@@ -63,7 +63,7 @@ class redirection
 	{
 		$this->self_exceptions = array(e_SIGNUP, SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
 		$this->page_exceptions = array('e_jslib.php', 'sitedown.php',e_LOGIN, 'secimg.php');
-		$this->query_exceptions = array('logout');
+		$this->query_exceptions = array(\e107\User\LogoutConfirmation::FLAG);
 		$this->staticDomains    = defset('e_HTTP_STATIC');
 		$this->domain           = defset('e_DOMAIN');
 		$this->subdomain        = defset('e_SUBDOMAIN');
@@ -87,9 +87,11 @@ class redirection
 	 */
 	protected function queryIsExcepted($query)
 	{
+		$request = new \e107\Http\Request('GET', $query);
+
 		foreach($this->query_exceptions as $exception)
 		{
-			if($query === $exception || strpos($query, $exception.'&') === 0)
+			if($request->hasFlag($exception))
 			{
 				return true;
 			}
@@ -357,6 +359,11 @@ class redirection
 	 */
 	private function saveMembersOnlyUrl($forceNoSef = false)
 	{
+		if($this->queryIsExcepted(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''))
+		{
+			return;
+		}
+
 		// remember the url for after-login.
 		//$afterlogin = e_COOKIE.'_afterlogin';
 		$this->setCookie('_afterlogin', $this->getSelf($forceNoSef), 300);

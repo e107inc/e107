@@ -90,7 +90,7 @@ define("LINKLAN_10", "Theme Shortcodes");
 define("LAN_LINKS_PRESET", "Predefined link");
 define("LAN_LINKS_PRESET_HELP", "Fills in the URL, name and user class for a link e107 knows how to build. Change any of them afterwards.");
 define("LAN_LINKS_PRESET_OVERWRITE", "This will replace the URL and name already entered.");
-define("LAN_LINKS_URL_HELP", "A path from the site root such as news.php, or a full address. {E_TOKEN} is replaced with each visitor's own security token; index.php?logout needs it.");
+define("LAN_LINKS_URL_HELP", "A path from the site root such as news.php, or a full address. {E_TOKEN} is replaced with each visitor's own security token; index.php?logout uses it to log out without asking first.");
 define("LAN_LINKS_URL_REQUIRED", "Type a URL or choose a predefined link.");
 
 
