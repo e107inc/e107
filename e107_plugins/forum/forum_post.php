@@ -461,6 +461,17 @@ class forum_post_handler
 
 
 	/**
+	 * Whether the visitor may attach a poll to a thread they start here.
+	 *
+	 * @return bool
+	 */
+	private function pollAllowed()
+	{
+		return e107::isInstalled('poll') && check_class($this->forumObj->prefs->get('poll'));
+	}
+
+
+	/**
 	 * @return array|string
 	 */
 	function getTemplate($type = 'post')
@@ -1131,7 +1142,7 @@ class forum_post_handler
 			$tsubject = $tp->attributeValue($this->data['thread_name']);
 		}
 
-		if ($_POST['poll_title'] != '' && check_class($this->forumObj->prefs->get('poll')))
+		if ($_POST['poll_title'] != '' && $this->pollAllowed())
 		{
 			require_once(e_PLUGIN."poll/poll_class.php");
 			$poll = new poll;
@@ -1225,7 +1236,7 @@ class forum_post_handler
 				exit;
 			}
 
-			$hasPoll = ($this->action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '');
+			$hasPoll = ($this->action == 'nt' && $this->pollAllowed() && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '');
 
 
 			if (USER)
@@ -1347,7 +1358,7 @@ class forum_post_handler
 
 
 			//If a poll was submitted, let's add it to the poll db
-			if ($this->action == 'nt' && varset($_POST['poll_title']) && $_POST['poll_option'][0] != '' && $_POST['poll_option'][1] != '')
+			if ($hasPoll)
 			{
 				require_once(e_PLUGIN.'poll/poll_class.php');
 				$_POST['iid'] = $threadId;

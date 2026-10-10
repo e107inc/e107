@@ -8,8 +8,9 @@
  * poll therefore rewrote it, whoever had made it and whatever thread or menu it
  * belonged to, while the thread went without one of its own.
  *
- * The member is put in the forum's poll class, so that the poll code runs and
- * the only thing between her and someone else's poll is the rule under test.
+ * The member is put in the forum's poll class for every test but the one about
+ * that class, so that the poll code runs and the only thing between her and
+ * someone else's poll is the rule under test.
  */
 class ForumPollCest
 {
@@ -115,6 +116,21 @@ class ForumPollCest
 			'poll_type' => 1, 'poll_vote_userclass' => 0,
 		));
 		$I->seeNumRecords($polls, 'e107_polls');
+	}
+
+	/**
+	 * The forum's poll setting decides who may attach a poll, and the form and
+	 * the preview have always asked it. Saving the thread has to ask it too. The
+	 * first test is the control: with the member in the class, the poll is made.
+	 */
+	public function aMemberOutsideTheForumsPollClassCannotAttachAPoll(AcceptanceTester $I)
+	{
+		$I->havePluginPref('forum', 'poll', self::CLASS_NOBODY);
+
+		$threadId = $this->startThread($I, 'A thread where polls are off', array());
+
+		$I->seeInDatabase('e107_forum_thread', array('thread_id' => $threadId));
+		$I->dontSeeInDatabase('e107_polls', array('poll_datestamp' => $threadId));
 	}
 
 	/**
