@@ -123,6 +123,9 @@ class e_db_mysql implements e_db
 
 	private     $stringifyFetch = false;	// Prepared-statement results carry native types; stringify on fetch for PDO parity.
 
+	/** @var string|int the insert id of this instance's last statement, read before another instance's statement can reset it */
+	private     $insertId = 0;
+
 	/**
 	* Constructor - gets language options from the cookie or session
 	* @access public
@@ -376,6 +379,8 @@ class e_db_mysql implements e_db
 			$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
 			$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
 		}
+
+		$this->insertId = $sQryRes === false ? 0 : mysqli_insert_id($this->mySQLaccess);
 
 		$e = microtime();
 
@@ -713,7 +718,7 @@ class e_db_mysql implements e_db
 	 */
 	public function lastInsertId()
 	{
-		$tmp = (int) mysqli_insert_id($this->mySQLaccess);
+		$tmp = (int) $this->insertId;
 		return ($tmp) ? $tmp : true; // return true even if table doesn't have auto-increment.
 	}
 

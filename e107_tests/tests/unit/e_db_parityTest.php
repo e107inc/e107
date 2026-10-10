@@ -57,6 +57,7 @@ class e_db_parityTest extends \Test\Unit
 	 */
 	private static $allowedPropsOnlyInMysql = array(
 		'stringifyFetch', // mysqli prepared results carry native types; PDO stringifies at the driver
+		'insertId',       // the insert id of this instance's own last statement; each e_db_pdo instance reads its own connection's
 	);
 
 	/**
