@@ -303,6 +303,6 @@ class DatabaseSessionHandler implements \SessionHandlerInterface
 	 */
 	protected static function _sanitize($id)
 	{
-		return preg_replace('#[^0-9a-zA-Z,-]#', '', $id);
+		return preg_replace('#[^'.SessionId::CHARACTERS.']#', '', $id);
 	}
 }
