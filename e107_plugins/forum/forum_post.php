@@ -1562,7 +1562,7 @@ class forum_post_handler
 			if($uploadResult = $this->processAttachments())
 			{
 				// $attachments = explode(',', $this->data['post_attachments']);
-				$newValues   = e107::unserialize($this->data['post_attachments']);
+				$newValues   = forum_attachments::asServed(e107::unserialize($this->data['post_attachments']));
 				foreach($uploadResult as $ur)
 				{
 				//	$_tmp = $ur['type'].'*'.$ur['file'];
@@ -1642,7 +1642,7 @@ class forum_post_handler
 
 		if($uploadResult = $this->processAttachments())
 		{
-			$newValues   = e107::unserialize($this->data['post_attachments']);
+			$newValues   = forum_attachments::asServed(e107::unserialize($this->data['post_attachments']));
 
 			foreach($uploadResult as $ur)
 			{
@@ -1794,7 +1794,7 @@ class forum_post_handler
 						$_thumb = '';
 						$_fname = '';
 						$fpath = '';
-						if(strpos($upload['type'], 'image') !== false)
+						if(strpos($upload['type'], 'image') !== false && !forum_attachments::isSvg($upload['name']))
 						{
 							$_type = 'img';
 
@@ -1999,7 +1999,9 @@ class forum_post_handler
 
 		        if($existingValues)
 		        {
-		          $existingValues = e107::unserialize($existingValues);
+		          require_once(e_PLUGIN.'forum/forum_attachments.php');
+
+		          $existingValues = forum_attachments::asServed(e107::unserialize($existingValues));
 		          return e107::serialize(array_merge_recursive($existingValues,$postedAttachments));
 		        }
 		        else

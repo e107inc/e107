@@ -189,6 +189,68 @@ class forum_attachments
 	}
 
 	/**
+	 * A stored post_attachments value with every svg moved from 'img' to the end of 'file', as the topic page and the download route both read it.
+	 *
+	 * @param mixed $attachments a stored post_attachments value, unserialised
+	 * @return array
+	 */
+	public static function asServed($attachments)
+	{
+		if(!is_array($attachments))
+		{
+			return array();
+		}
+
+		if(empty($attachments['img']) || !is_array($attachments['img']))
+		{
+			return $attachments;
+		}
+
+		$moved = array();
+
+		foreach($attachments['img'] as $key => $entry)
+		{
+			if(self::isSvg($entry))
+			{
+				$moved[] = $entry;
+				unset($attachments['img'][$key]);
+			}
+		}
+
+		if($moved !== array())
+		{
+			$files = (isset($attachments['file']) && is_array($attachments['file'])) ? $attachments['file'] : array();
+			$attachments['file'] = array_merge($files, $moved);
+		}
+
+		return $attachments;
+	}
+
+	/**
+	 * Whether a stored entry, or a stored file name, names an svg, whatever the case of its extension.
+	 *
+	 * @param array|string $entry
+	 * @return bool
+	 */
+	public static function isSvg($entry)
+	{
+		$file = self::fileName($entry);
+
+		return is_string($file) && strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'svg';
+	}
+
+	/**
+	 * The file a stored entry names, from either shape an entry is stored in.
+	 *
+	 * @param array|string $entry
+	 * @return mixed
+	 */
+	private static function fileName($entry)
+	{
+		return is_array($entry) ? varset($entry['file'], '') : $entry;
+	}
+
+	/**
 	 * Whether every caller may read the attachment, decided without working out
 	 * who is asking.
 	 *
@@ -415,7 +477,7 @@ class forum_attachments
 		{
 			foreach((array) $entries as $entry)
 			{
-				$file = is_array($entry) ? varset($entry['file'], '') : $entry;
+				$file = self::fileName($entry);
 
 				if((string) $file === $name)
 				{
