@@ -563,7 +563,7 @@ if (!function_exists('multiarray_sort'))
 class e_array {
 
     /**
-    * Returns an array from stored array data in php serialized, e107 var_export and json-encoded data. 
+    * Returns an array from stored array data in php serialized, e107 var_export (with or without the slashes serialize($ArrayData, true) adds) and json-encoded data.
     *
     * @param string $sourceArrayData
     * @return array|bool stored data
@@ -634,18 +634,6 @@ class e_array {
             return false;
         }
 
-		if(strpos($ArrayData,"0 => \'")!==false)
-		{
-             $ArrayData = stripslashes($ArrayData);
-		}
-		elseif(strpos($ArrayData,'array') === 0 && strpos($ArrayData,"\' => \'") !== false && strpos($ArrayData,"' => 'array") === false) // FIX for old corrupted link-words preference.
-		{
-			$ArrayData = stripslashes($ArrayData);
-		}
-
-	    $ArrayData = str_replace('=&gt;','=>',$ArrayData); //FIX for PDO encoding of strings. .
-
-
 	    if(trim($ArrayData) === 'Array') // Something went wrong with storage.
         {
             $debug = debug_backtrace(false);
@@ -654,20 +642,35 @@ class e_array {
             return array();
         }
 
-        $data = $this->parseVarExport($ArrayData);
+        $data = $this->parseStoredExport($ArrayData);
 
         if(!is_array($data))
         {
-            if(deftrue('e_DEBUG'))
-            {
-                file_put_contents(e_LOG.'unserializeError_'.time().'.log', $sourceArrayData);
-            }
+            $unslashed = stripslashes($ArrayData);
 
-            return array();
+            if(addslashes($unslashed) === $ArrayData)
+            {
+                $data = $this->parseStoredExport($unslashed);
+            }
         }
 
+        if(is_array($data))
+        {
+            return $data;
+        }
 
-        return $data;        
+        if(deftrue('e_DEBUG'))
+        {
+            file_put_contents(e_LOG.'unserializeError_'.time().'.log', $sourceArrayData);
+        }
+
+        return array();
+    }
+
+    /** Parses stored var_export() text, repairing the "=&gt;" that PDO encoding of strings left in older rows. */
+    private function parseStoredExport($text)
+    {
+        return $this->parseVarExport(str_replace('=&gt;', '=>', $text));
     }
 
 
@@ -803,6 +806,10 @@ class e_array {
                 }
 
                 $result[$key] = $this->parseVarExportValue($tokens, $pos);
+            }
+            elseif(array_key_exists(PHP_INT_MAX, $result))
+            {
+                throw new \RuntimeException('no index left to append at');
             }
             else
             {

@@ -303,4 +303,69 @@ $data = array (
 				$this->assertSame(array(), $this->arrObj->unserialize($payload), 'Payload should fail closed: '.$payload);
 			}
 		}
+
+		/**
+		 * Rows with a value holding the text that an exported row is made of.
+		 *
+		 * @return array
+		 */
+		public function exportedTextProvider()
+		{
+			return array(
+				'a list entry'                       => array(array('note' => "see 0 => 'x'", 'other' => 'kept')),
+				'a map entry'                        => array(array('note' => "a' => 'b", 'other' => 'kept')),
+				'a list entry after the largest key' => array(array(PHP_INT_MAX => 'last', 'note' => "0 => ', '")),
+			);
+		}
+
+		/**
+		 * @dataProvider exportedTextProvider
+		 * @param array $row
+		 */
+		public function testARowWhoseValueHoldsExportedTextReadsBackWhole($row)
+		{
+			$this->assertSame($row, $this->arrObj->unserialize($this->arrObj->serialize($row)), 'exported');
+			$this->assertSame($row, $this->arrObj->unserialize($this->arrObj->serialize($row, true)), 'exported with slashes');
+			$this->assertSame($row, $this->arrObj->unserialize(serialize($row)), 'serialize()d');
+		}
+
+		public function testASlashedRowReadsBackWhateverItsValuesAre()
+		{
+			$row = array(5, 'x', true);
+
+			$this->assertSame($row, $this->arrObj->unserialize($this->arrObj->serialize($row, true)));
+		}
+
+		/**
+		 * Below PHP 8 the append warns and drops the entry rather than throwing, so the warning is caught here rather than by the suite's handler, which would throw it into the parser's own catch.
+		 */
+		public function testAnEntryWithNoIndexLeftToTakeFailsClosed()
+		{
+			$warnings = array();
+			set_error_handler(function ($errno, $errstr) use (&$warnings)
+			{
+				$warnings[] = $errstr;
+
+				return true;
+			});
+
+			try
+			{
+				$result = $this->arrObj->unserialize('array('.PHP_INT_MAX." => 'last', 'one more')");
+			}
+			finally
+			{
+				restore_error_handler();
+			}
+
+			$this->assertSame(array(), $warnings);
+			$this->assertSame(array(), $result);
+		}
+
+		public function testACutShortRowIsNotReadWithItsSlashesStripped()
+		{
+			$row = var_export(array('a' => "x')"), true);
+
+			$this->assertSame(array(), $this->arrObj->unserialize((string) substr($row, 0, -4)));
+		}
 	}
