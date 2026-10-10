@@ -32,6 +32,54 @@
 		}
 
 
+		public function testIsRegistered()
+		{
+			$tests = array(
+				array('b', true),
+				array('youtube', true),
+				array('QUOTE', true),
+				array('size2', true),
+				array('_br', true),
+				array('youtube=600', true),
+				array('h=2|class=lead', true),
+				array('br', false), // the register holds it as _br
+				array('html', false),
+				array('php', false),
+				array('notabbcode', false),
+				array('/b', false),
+				array(' b', false),
+				array('', false),
+				array(null, false),
+				array(array('b'), false),
+			);
+
+			foreach($tests as $test)
+			{
+				list($code, $expected) = $test;
+				self::assertSame($expected, $this->bb->isRegistered($code), var_export($code, true));
+			}
+		}
+
+		public function testIsRegisteredAcceptsAPluginBbcode()
+		{
+			$config = e107::getConfig();
+			$saved = $config->get('bbcode_list');
+
+			try
+			{
+				$config->set('bbcode_list', array('myplugin' => array('mycode' => 0)));
+				$this->bb->__construct();
+
+				self::assertTrue($this->bb->isRegistered('mycode'));
+			}
+			finally
+			{
+				$config->set('bbcode_list', $saved);
+				$this->bb->__construct();
+			}
+		}
+
+
 		public function testHtmltoBBcode()
 		{
 			$text = '<h1 style="text-align: center;">Heading 1</h1>
