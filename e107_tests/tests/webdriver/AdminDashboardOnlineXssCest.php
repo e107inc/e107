@@ -40,7 +40,7 @@ class AdminDashboardOnlineXssCest
 
 		$this->seedOnlineRow($I, \Helper\OutputEncodingFixture::BREAKOUT_PAYLOAD, self::BENIGN_LOCATION);
 
-		$I->loginAsAdmin();
+		$I->amSignedInAs();
 		$I->amOnPage(self::DASHBOARD);
 		$I->waitForElement('body', 10);
 
@@ -57,7 +57,7 @@ class AdminDashboardOnlineXssCest
 		$this->seedOnlineRow($I, self::BENIGN_AGENT,
 			'/index.php?a='.\Helper\OutputEncodingFixture::BREAKOUT_PAYLOAD);
 
-		$I->loginAsAdmin();
+		$I->amSignedInAs();
 		$I->amOnPage(self::DASHBOARD);
 		$I->waitForElement('body', 10);
 
@@ -81,7 +81,7 @@ class AdminDashboardOnlineXssCest
 
 		$this->seedOnlineRow($I, self::BENIGN_AGENT, self::BENIGN_LOCATION);
 
-		$I->loginAsAdmin();
+		$I->amSignedInAs();
 		$I->amOnPage(self::DASHBOARD);
 		$I->waitForElement('body', 10);
 

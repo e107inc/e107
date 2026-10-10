@@ -67,7 +67,6 @@ JS;
 		$I->haveForumMember('wdmoda', '253,'.\Helper\ForumFixture::CLASS_MOD_A);
 
 		$I->purgeForumPermCache();
-		$I->logoutFromForum();
 	}
 
 	public function _after(WebDriverTester $I)
@@ -83,7 +82,7 @@ JS;
 	 */
 	public function confirmingADeleteStillDeletesTheThread(WebDriverTester $I)
 	{
-		$I->loginToForum('wdmoda');
+		$I->amSignedInAs('wdmoda');
 		$I->amOnPage('/e107_plugins/forum/forum_viewforum.php?id='.$this->ids['forumA']);
 
 		$this->clickDeleteLink($I, $this->ids['threadA']);
@@ -103,7 +102,7 @@ JS;
 	 */
 	public function cancellingADeleteLeavesTheThreadAlone(WebDriverTester $I)
 	{
-		$I->loginToForum('wdmoda');
+		$I->amSignedInAs('wdmoda');
 		$I->amOnPage('/e107_plugins/forum/forum_viewforum.php?id='.$this->ids['forumA']);
 
 		$I->executeJS(self::COUNT_AJAX);
@@ -127,7 +126,7 @@ JS;
 	 */
 	public function reattachingBehavioursDoesNotDoubleTheRequest(WebDriverTester $I)
 	{
-		$I->loginToForum('wdalice');
+		$I->amSignedInAs('wdalice');
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
 		$I->seeElement('#forum-track-button');
 
@@ -150,7 +149,7 @@ JS;
 	 */
 	public function anActionStillFiresWhenTinymceHasNoQuickReplyEditor(WebDriverTester $I)
 	{
-		$I->loginToForum('wdalice');
+		$I->amSignedInAs('wdalice');
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
 
 		$I->executeJS('window.tinymce = { get: function () { return null; } };');
@@ -168,7 +167,7 @@ JS;
 	 */
 	public function aFailedRequestLeavesATrace(WebDriverTester $I)
 	{
-		$I->loginToForum('wdalice');
+		$I->amSignedInAs('wdalice');
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
 
 		// The handler posts to whatever the element's src names, so pointing it
@@ -198,7 +197,7 @@ JS;
 
 		$I->haveForumCsrfMode('default');
 
-		$I->loginToForum('wdalice');
+		$I->amSignedInAs('wdalice');
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
 
 		$I->fillField('#forum-quickreply-text', $typed);
@@ -214,7 +213,7 @@ JS;
 	 */
 	public function postReplyWithAnEmptyQuickReplyIsPlainNavigation(WebDriverTester $I)
 	{
-		$I->loginToForum('wdalice');
+		$I->amSignedInAs('wdalice');
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
 
 		$this->clickPostReply($I);

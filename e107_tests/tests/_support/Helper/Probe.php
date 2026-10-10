@@ -33,7 +33,7 @@ class Probe extends AppFixture
 	 */
 	public function amOnProbe($query = '')
 	{
-		$this->browser()->amOnPage($this->url($query));
+		$this->load($this->current(), $query);
 	}
 
 	/**
@@ -42,9 +42,7 @@ class Probe extends AppFixture
 	 */
 	public function grabProbe($query = '')
 	{
-		$this->amOnProbe($query);
-
-		return trim($this->browser()->grabPageSource());
+		return $this->grab($this->current(), $query);
 	}
 
 	/**
@@ -56,11 +54,24 @@ class Probe extends AppFixture
 	 */
 	public function probe($query = '')
 	{
-		$body = $this->grabProbe($query);
+		return $this->_probe($this->current(), $query);
+	}
+
+	/**
+	 * {@see Probe::probe()} for a module's own probe, leaving the one {@see Probe::haveProbe()} wrote current.
+	 *
+	 * @param string $relative_path relative to the app root
+	 * @param string $query
+	 * @return string the answer, trimmed
+	 * @throws \RuntimeException when the answer lacks PROBE_OK
+	 */
+	public function _probe($relative_path, $query = '')
+	{
+		$body = $this->grab($relative_path, $query);
 
 		if (strpos($body, self::OK) === false)
 		{
-			throw new \RuntimeException($this->file.' failed for "'.$query.'": '.trim(strip_tags($body)));
+			throw new \RuntimeException($relative_path.' failed for "'.$query.'": '.trim(strip_tags($body)));
 		}
 
 		return $body;
@@ -77,15 +88,27 @@ class Probe extends AppFixture
 		return json_decode(trim((string) substr($body, strpos($body, "\n"))), true);
 	}
 
-	private function url($query)
+	private function load($relative_path, $query)
+	{
+		$url = '/'.$relative_path.'?'.ProbeGuard::query();
+
+		$this->browser()->amOnPage(($query === '') ? $url : $url.'&'.$query);
+	}
+
+	private function grab($relative_path, $query)
+	{
+		$this->load($relative_path, $query);
+
+		return trim($this->browser()->grabPageSource());
+	}
+
+	private function current()
 	{
 		if ($this->file === null)
 		{
 			throw new \RuntimeException('No probe has been written yet; call haveProbe() first');
 		}
 
-		$url = '/'.$this->file.'?'.ProbeGuard::query();
-
-		return ($query === '') ? $url : $url.'&'.$query;
+		return $this->file;
 	}
 }

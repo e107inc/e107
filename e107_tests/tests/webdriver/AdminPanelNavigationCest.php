@@ -27,7 +27,7 @@ class AdminPanelNavigationCest
 		$I->haveProbe(self::PROBE, $this->probeSource());
 		$I->amOnProbe('act=install');
 		$I->see('PROBE_OK');
-		$I->loginAsAdmin();
+		$I->amSignedInAs();
 	}
 
 	public function _after(\WebDriverTester $I)

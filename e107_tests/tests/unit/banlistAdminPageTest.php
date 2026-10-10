@@ -79,32 +79,6 @@ class banlistAdminPageTest extends \Test\Unit
 	}
 
 	/**
-	 * Name declared after a T_CLASS / T_FUNCTION token, or null for a closure.
-	 */
-	private function declaredName(array $tokens, $offset)
-	{
-		for($i = $offset + 1, $n = count($tokens); $i < $n; $i++)
-		{
-			if(is_array($tokens[$i]) && $tokens[$i][0] === T_STRING)
-			{
-				return $tokens[$i][1];
-			}
-			if(is_array($tokens[$i]) && in_array($tokens[$i][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true))
-			{
-				continue;
-			}
-			if($tokens[$i] === '&')
-			{
-				continue;
-			}
-
-			return null;
-		}
-
-		return null;
-	}
-
-	/**
 	 * Walk a file, reporting class name and brace depth to a callback.
 	 */
 	private function walk($file, $visit)
@@ -116,7 +90,7 @@ class banlistAdminPageTest extends \Test\Unit
 
 		foreach($tokens as $i => $token)
 		{
-			if($token === '{')
+			if(\Test\Tokens::opensBrace($token))
 			{
 				$depth++;
 				continue;
@@ -135,14 +109,9 @@ class banlistAdminPageTest extends \Test\Unit
 			{
 				continue;
 			}
-			if(in_array($token[0], array(T_CURLY_OPEN, T_DOLLAR_OPEN_CURLY_BRACES), true))
+			if($token[0] === T_CLASS && \Test\Tokens::id(\Test\Tokens::neighbour($tokens, $i, -1)) !== T_DOUBLE_COLON)
 			{
-				$depth++;
-				continue;
-			}
-			if($token[0] === T_CLASS && $this->previousCode($tokens, $i) !== T_DOUBLE_COLON)
-			{
-				$name = $this->declaredName($tokens, $i);
+				$name = \Test\Tokens::declaredName($tokens, $i);
 				if($name !== null)
 				{
 					$class = $name;
@@ -153,50 +122,20 @@ class banlistAdminPageTest extends \Test\Unit
 			}
 			if($token[0] === T_FUNCTION)
 			{
-				$name = $this->declaredName($tokens, $i);
+				$name = \Test\Tokens::declaredName($tokens, $i);
 				if($name !== null)
 				{
 					call_user_func($visit, 'function', $name, $class);
 				}
 				continue;
 			}
-			if($token[0] === T_STRING && $this->nextCode($tokens, $i) === '('
-				&& !in_array($this->previousCode($tokens, $i),
+			if($token[0] === T_STRING && \Test\Tokens::neighbour($tokens, $i, 1) === '('
+				&& !in_array(\Test\Tokens::id(\Test\Tokens::neighbour($tokens, $i, -1)),
 					array(T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_NEW, T_FUNCTION), true))
 			{
 				call_user_func($visit, 'call', $token[1], $class);
 			}
 		}
-	}
-
-	private function previousCode(array $tokens, $offset)
-	{
-		for($i = $offset - 1; $i >= 0; $i--)
-		{
-			if(is_array($tokens[$i]) && in_array($tokens[$i][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true))
-			{
-				continue;
-			}
-
-			return is_array($tokens[$i]) ? $tokens[$i][0] : $tokens[$i];
-		}
-
-		return null;
-	}
-
-	private function nextCode(array $tokens, $offset)
-	{
-		for($i = $offset + 1, $n = count($tokens); $i < $n; $i++)
-		{
-			if(is_array($tokens[$i]) && in_array($tokens[$i][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true))
-			{
-				continue;
-			}
-
-			return is_array($tokens[$i]) ? $tokens[$i][0] : $tokens[$i];
-		}
-
-		return null;
 	}
 
 	private function methodsByClass($file)
