@@ -87,7 +87,7 @@ class SitelinkFixture extends AppFixture
 	public function seeSignedOut()
 	{
 		$this->browser()->amOnPage(self::SETTINGS_PAGE);
-		$this->browser()->dontSeeCurrentUrlEquals(self::SETTINGS_PAGE);
+		$this->browser()->dontSeeInCurrentUrl(self::SETTINGS_PAGE);
 	}
 
 	/**

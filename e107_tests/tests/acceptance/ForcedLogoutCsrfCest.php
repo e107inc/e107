@@ -37,8 +37,29 @@ class ForcedLogoutCsrfCest
 	/** Rendered whenever a signed-in visitor reaches usersettings.php. */
 	const SETTINGS_PAGE = '/usersettings.php';
 
+	/** Fixture theme whose `route` layout is given to ":user/", whose boxes name their caption, layout and mode, and whose logout template reads e_PAGE and the route. */
+	const ROUTE_THEME = 'routelayout';
+
+	/** The question's form, inside one box drawn in the logout mode under the route's own layout, captioned by a template that read e_PAGE and the route. */
+	const LOGOUT_BOX_IN_ROUTE_LAYOUT = ".route-box[data-caption='Loaded on index.php for user/logout'][data-layout='route'][data-mode='logout'] #logout-confirm";
+
 	/** A distinctive fragment of LAN_LOGOUT_REFUSED_TOKEN_MISSING. */
 	const REFUSED = 'no security token';
+
+	/** Where a logout that carried no token is asked about; class2.php sends other scripts' there. */
+	const CONFIRM_PAGE = '/index.php?logout';
+
+	/** LAN_LOGOUT_CONFIRM_QUESTION, which only the confirmation page renders. */
+	const CONFIRM = 'Are you sure you want to log out?';
+
+	/** A public page an administrator can be on when they log out. */
+	const NEWS_PAGE = '/news.php';
+
+	/** The confirmation's Cancel link. */
+	const CANCEL_LINK = '#logout-confirm a';
+
+	/** A referrer from a host that is not this site's. */
+	const FOREIGN_REFERRER = 'http://elsewhere.invalid/page.php';
 
 	/** A distinctive fragment of LAN_USET_DELETE_LINK_INVALID. */
 	const DELETE_REFUSED = 'confirmation link is no longer valid';
@@ -82,11 +103,17 @@ class ForcedLogoutCsrfCest
 	/** Docroot fixture; see noTokenProbeSource(). */
 	const NO_TOKEN_PROBE = 'e107_tests_no_token_probe.php';
 
+	/** Docroot fixture; see staleIndexProbeSource(). */
+	const STALE_INDEX_PROBE = 'e107_tests_stale_index_probe.php';
+
 	/** @var bool whether this test switched the social plugin's test page on */
 	private $xupOpened = false;
 
 	/** @var bool whether this test wrote NO_TOKEN_PROBE into the docroot */
 	private $probeWritten = false;
+
+	/** @var array preference name => the value it held before this test changed it */
+	private $changedPrefs = array();
 
 	/**
 	 * The restore throws where it fails, so a lowered level never passes for the next test's.
@@ -113,34 +140,188 @@ class ForcedLogoutCsrfCest
 				$I->dropForumProbe();
 				$this->xupOpened = false;
 			}
+
+			if($this->changedPrefs)
+			{
+				$I->resetAllCookies();
+
+				foreach($this->changedPrefs as $name => $was)
+				{
+					$I->haveSitePref($name, $was);
+				}
+
+				$I->dropForumProbe();
+				$this->changedPrefs = array();
+			}
 		}
 	}
 
 	/**
-	 * `?logout` on the front page, cross-site, for any signed-in visitor.
+	 * `?logout` on the front page, cross-site, for any signed-in visitor, is answered with a question.
 	 */
-	public function aTokenlessLogoutOnTheFrontPageLeavesTheSessionStanding(AcceptanceTester $I)
+	public function aTokenlessLogoutOnTheFrontPageAsksFirst(AcceptanceTester $I)
 	{
 		$I->loginAsAdmin();
 
-		$I->amOnPage('/index.php?logout');
+		$I->amOnPage(self::CONFIRM_PAGE);
 
-		$I->seeInSource(self::REFUSED);
-		$this->seeStillSignedIn($I);
+		$I->seeResponseCodeIs(200);
+		$I->seeInSource(self::CONFIRM);
+		$I->seeStillSignedIn();
 	}
 
 	/**
-	 * The same query string works on every entry point in the product, admin
-	 * pages included, because class2.php is what reads it.
+	 * The same query string works on every entry point, admin pages included, because class2.php reads it; they send it to index.php to be asked.
 	 */
-	public function aTokenlessLogoutOnAnAdminPageLeavesTheSessionStanding(AcceptanceTester $I)
+	public function aTokenlessLogoutOnAnAdminPageAsksFirst(AcceptanceTester $I)
 	{
 		$I->loginAsAdmin();
 
 		$I->amOnPage(self::ADMIN_PANEL.'?logout');
 
+		$I->seeInCurrentUrl(self::CONFIRM_PAGE);
+		$I->seeInSource(self::CONFIRM);
+		$I->seeStillSignedIn();
+	}
+
+	/**
+	 * The confirmation page's own button ends the session, with whatever token the page published.
+	 */
+	public function theConfirmationPagesOwnButtonEndsTheSession(AcceptanceTester $I)
+	{
+		$I->loginAsAdmin();
+		$I->amOnPage(self::CONFIRM_PAGE);
+
+		$I->submitForm('#logout-confirm', array());
+
+		$I->seeSignedOut();
+	}
+
+	/**
+	 * Where a missing token is only logged, {@see e_core_session::attest()} lets a forged POST through, so the logout has to refuse it itself.
+	 */
+	public function aTokenlessPostLeavesTheSessionStandingWhereMissingTokensAreOnlyLogged(AcceptanceTester $I)
+	{
+		$this->changeSitePref($I, 'csrf_enforce', 1);
+		$I->loginAsAdmin();
+
+		$I->sendPostRequest(self::CONFIRM_PAGE, array());
+
+		$I->seeStillSignedIn();
+	}
+
+	/**
+	 * A member whose profile lacks a required field is asked as well, not sent to complete the profile first.
+	 */
+	public function aMemberWithAnIncompleteProfileIsStillAsked(AcceptanceTester $I)
+	{
+		$this->changeSitePref($I, 'signup_option_signature', 2);
+		$this->changeSitePref($I, 'force_userupdate', 1);
+		$I->loginAsAdmin();
+
+		$I->amOnPage(self::CONFIRM_PAGE);
+
+		$I->seeInSource(self::CONFIRM);
+		$I->dontSeeInCurrentUrl(self::SETTINGS_PAGE);
+	}
+
+	/**
+	 * The question is not a landing page, so the administrator goes back to where they were.
+	 */
+	public function confirmingReturnsAnAdministratorToThePageTheyWereOn(AcceptanceTester $I)
+	{
+		$I->loginAsAdmin();
+		$I->amOnPage(self::NEWS_PAGE);
+		$I->amOnPage(self::CONFIRM_PAGE);
+
+		$I->submitForm('#logout-confirm', array());
+
+		$I->seeInCurrentUrl(self::NEWS_PAGE);
+	}
+
+	/**
+	 * On a members-only site, a guest who comes back to the question is sent to log in without it being kept as the page to return to.
+	 */
+	public function aMembersOnlySiteDoesNotKeepTheQuestionForAfterLogin(AcceptanceTester $I)
+	{
+		$this->changeSitePref($I, 'membersonly_enabled', 1);
+
+		$I->amOnPage(self::CONFIRM_PAGE);
+		$I->amOnPage('/login.php');
+		$I->fillField('username', \Helper\AdminLogin::ADMIN_USER);
+		$I->fillField('userpass', \Helper\AdminLogin::ADMIN_PASS);
+		$I->click('userlogin');
+
+		$I->dontSeeInCurrentUrl(self::CONFIRM_PAGE);
+		$I->dontSeeInSource(self::CONFIRM);
+	}
+
+	/**
+	 * A layout a theme gives to the route's name by prefix is the one drawn, the question is drawn in one box in the logout mode, and a theme's template already sees e_PAGE and the route.
+	 */
+	public function theThemeDrawsTheQuestionInTheLayoutGivenToItsRoute(AcceptanceTester $I)
+	{
+		$I->haveThemeFixture(self::ROUTE_THEME);
+		$I->haveSiteTheme(self::ROUTE_THEME);
+		$I->loginAsAdmin();
+
+		$I->amOnPage(self::CONFIRM_PAGE);
+
+		$I->seeElement(self::LOGOUT_BOX_IN_ROUTE_LAYOUT);
+	}
+
+	/**
+	 * The footer logs e_PAGE and e_QUERY when page accesses are logged, so the route has to define both before the theme runs.
+	 */
+	public function theQuestionRendersWherePageAccessesAreLogged(AcceptanceTester $I)
+	{
+		$this->changeSitePref($I, 'log_page_accesses', 1);
+		$I->loginAsAdmin();
+
+		$I->amOnPage(self::CONFIRM_PAGE);
+
+		$I->seeResponseCodeIs(200);
+		$I->seeInSource(self::CONFIRM);
+		$I->seeInSource('</html>');
+	}
+
+	/**
+	 * Cancel returns to the page the member came from when that page is on one of this site's hosts, and to the front page otherwise.
+	 */
+	public function cancelReturnsToAReferrerOnThisSiteAndHomeFromAnyOther(AcceptanceTester $I)
+	{
+		$I->loginAsAdmin();
+
+		try
+		{
+			$I->haveHttpHeader('Referer', self::FOREIGN_REFERRER);
+			$I->amOnPage(self::CONFIRM_PAGE);
+			$home = $I->grabAttributeFrom(self::CANCEL_LINK, 'href');
+			$I->assertStringNotContainsString('elsewhere.invalid', $home);
+
+			$I->haveHttpHeader('Referer', $home.'news.php');
+			$I->amOnPage(self::CONFIRM_PAGE);
+			$I->assertSame($home.'news.php', $I->grabAttributeFrom(self::CANCEL_LINK, 'href'));
+		}
+		finally
+		{
+			$I->deleteHeader('Referer');
+		}
+	}
+
+	/**
+	 * An index.php customised before the route table existed still sets single_entry; it keeps the refusal rather than ignoring the logout or redirecting to itself.
+	 */
+	public function aStaleIndexScriptStillRefusesATokenlessLogout(AcceptanceTester $I)
+	{
+		$I->haveProbe(self::STALE_INDEX_PROBE, $this->staleIndexProbeSource());
+		$I->loginAsAdmin();
+
+		$I->amOnPage('/'.self::STALE_INDEX_PROBE.'?logout&'.\Helper\ProbeGuard::query());
+
+		$I->seeInSource('STALE_INDEX_RENDERED');
 		$I->seeInSource(self::REFUSED);
-		$I->seeInSource(\Helper\AdminLogin::CONTROL_PANEL_MARKER);
+		$I->seeStillSignedIn();
 	}
 
 	/**
@@ -154,7 +335,7 @@ class ForcedLogoutCsrfCest
 		$I->amOnPage('/index.php?logout&e-token=not-even-close');
 
 		$I->seeInSource(self::UNAUTHORIZED);
-		$this->seeStillSignedIn($I);
+		$I->seeStillSignedIn();
 	}
 
 	/**
@@ -169,7 +350,7 @@ class ForcedLogoutCsrfCest
 		$I->amOnPage(self::SETTINGS_PAGE.'?del=not-the-emailed-hash');
 
 		$I->seeInSource(self::DELETE_REFUSED);
-		$this->seeStillSignedIn($I);
+		$I->seeStillSignedIn();
 	}
 
 	/**
@@ -184,7 +365,7 @@ class ForcedLogoutCsrfCest
 		$I->amOnPage('/?route=system/xup/test&logout=true');
 
 		$I->seeInSource(self::REFUSED);
-		$this->seeStillSignedIn($I);
+		$I->seeStillSignedIn();
 	}
 
 	/**
@@ -199,8 +380,8 @@ class ForcedLogoutCsrfCest
 
 		$I->amOnPage($this->adminLogoutLink($I));
 
-		$I->dontSeeInSource(self::REFUSED);
-		$this->seeSignedOut($I);
+		$I->dontSeeInSource(self::CONFIRM);
+		$I->seeSignedOut();
 	}
 
 	/**
@@ -213,7 +394,7 @@ class ForcedLogoutCsrfCest
 
 		$I->amOnPage('/index.php?logout&e-token='.$I->grabFreshAdminToken(self::TOKEN_SOURCE));
 
-		$this->seeSignedOut($I);
+		$I->seeSignedOut();
 	}
 
 	/**
@@ -229,8 +410,8 @@ class ForcedLogoutCsrfCest
 
 		$I->amOnPage($this->frontEndLogoutLink($I));
 
-		$I->dontSeeInSource(self::REFUSED);
-		$this->seeSignedOut($I);
+		$I->dontSeeInSource(self::CONFIRM);
+		$I->seeSignedOut();
 	}
 
 	/**
@@ -244,14 +425,14 @@ class ForcedLogoutCsrfCest
 
 		$I->amOnPage('/index.php');
 
-		$I->dontSeeInSource(self::REFUSED);
+		$I->dontSeeInSource(self::CONFIRM);
 		$I->dontSeeInSource(self::UNAUTHORIZED);
-		$this->seeStillSignedIn($I);
+		$I->seeStillSignedIn();
 	}
 
 	/**
 	 * Nobody who is not signed in can be signed out, so a guest's `?logout` has
-	 * nothing to refuse and nothing to say about a security token.
+	 * nothing to confirm and nothing to say about a security token.
 	 */
 	public function aGuestIsToldNothingAboutATokenTheyWereNeverAskedFor(AcceptanceTester $I)
 	{
@@ -260,7 +441,7 @@ class ForcedLogoutCsrfCest
 		$I->amOnPage(self::FRONT_PAGE . '?logout');
 
 		$I->seeResponseCodeIs(200);
-		$I->dontSeeInSource(self::REFUSED);
+		$I->dontSeeInSource(self::CONFIRM);
 		$I->dontSeeInSource(self::UNAUTHORIZED);
 	}
 
@@ -302,32 +483,26 @@ class ForcedLogoutCsrfCest
 		$I->assertSame($before, $I->grabFromDatabase(self::ONLINE_TABLE, 'online_pagecount',
 			array('online_ip' => self::BYSTANDER_IP)),
 			'a logout nobody was signed in for must not touch another visitor\'s row');
-		$I->seeResponseCodeIs(200);
+		$I->seeResponseCodeIs(303);
 	}
 
 	/**
-	 * usersettings.php redirects a visitor who holds no session, so the page it
-	 * answers with says whether one is still standing. Asked of the application
-	 * rather than of a page marker, so the oracle reads the same for the main
-	 * administrator and for an ordinary member.
+	 * Signs the browser out first, as _after() does before it puts every preference back, so that force_userupdate cannot bounce the probe.
 	 *
 	 * @param AcceptanceTester $I
+	 * @param string $name
+	 * @param mixed $value
 	 * @return void
 	 */
-	private function seeStillSignedIn(AcceptanceTester $I)
+	private function changeSitePref(AcceptanceTester $I, $name, $value)
 	{
-		$I->amOnPage(self::SETTINGS_PAGE);
-		$I->seeInCurrentUrl(self::SETTINGS_PAGE);
-	}
+		$I->resetAllCookies();
+		$was = $I->haveSitePref($name, $value);
 
-	/**
-	 * @param AcceptanceTester $I
-	 * @return void
-	 */
-	private function seeSignedOut(AcceptanceTester $I)
-	{
-		$I->amOnPage(self::SETTINGS_PAGE);
-		$I->dontSeeCurrentUrlEquals(self::SETTINGS_PAGE);
+		if(!array_key_exists($name, $this->changedPrefs))
+		{
+			$this->changedPrefs[$name] = $was;
+		}
 	}
 
 	/**
@@ -347,7 +522,7 @@ class ForcedLogoutCsrfCest
 		$I->haveForumMember(self::MEMBER);
 		$I->loginToForum(self::MEMBER);
 
-		$this->seeStillSignedIn($I);
+		$I->seeStillSignedIn();
 	}
 
 	/**
@@ -428,7 +603,7 @@ class ForcedLogoutCsrfCest
 
 		$I->seeInSource(self::XUP_TESTER);
 		$I->dontSeeInSource(self::REFUSED);
-		$this->seeSignedOut($I);
+		$I->seeSignedOut();
 	}
 
 	/**
@@ -569,6 +744,22 @@ switch($act)
 		echo 'LEVEL='.e_SECURITY_LEVEL.' TOKEN='.(defined('e_TOKEN') ? 1 : 0);
 		break;
 }
+PHP;
+	}
+
+	/**
+	 * @return string an entry script shaped like an index.php that predates the route table
+	 */
+	private function staleIndexProbeSource()
+	{
+		return <<<'PHP'
+<?php
+$_E107['single_entry'] = true;
+require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
+
+echo e107::getMessage()->render();
+echo 'STALE_INDEX_RENDERED';
 PHP;
 	}
 }
