@@ -4,8 +4,9 @@ description: >-
   wherever it can: the web image travels between runs as a tarball keyed on
   its inputs and the month, and Composer's download cache is keyed on the
   lock files, so a warm run installs everything without a registry or
-  package host answering. Docker Hub gets a mirror for the pulls that remain,
-  and every step that reaches the network retries with a pause.
+  package host answering. Registry images come through mirror.gcr.io with
+  Docker Hub behind it, pulled while the web image loads, and every step that
+  reaches the network retries with a pause.
 
 inputs:
   php:
@@ -24,7 +25,25 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: ./.github/actions/docker-hub-mirror
+    - name: Pull the registry images
+      shell: bash
+      run: |
+        pulls=$RUNNER_TEMP/e107-pull
+        mkdir -p "$pulls"
+        images='${{ inputs.db }}'
+        case ' ${{ inputs.up-args }} ' in
+          *' --no-selenium '*) ;;
+          *) images="$images ${E107_SELENIUM_IMAGE:-}" ;;
+        esac
+        for img in $images; do
+          f=$pulls/$(printf '%s' "$img" | tr -c 'A-Za-z0-9' '-')
+          echo "$f" >> "$pulls/list"
+          exec 9> "$f.lock"
+          flock 9
+          setsid nohup bash -c '"$0" "$1" > "$2.log" 2>&1; echo $? > "$2.rc"' \
+            "$GITHUB_ACTION_PATH/pull.sh" "$img" "$f" < /dev/null > /dev/null 2>&1 &
+          exec 9>&-
+        done
 
     - name: Image cache key
       id: key
@@ -46,6 +65,7 @@ runs:
       shell: bash
       run: |
         . "$GITHUB_ACTION_PATH/retry.sh"
+        "$GITHUB_ACTION_PATH/pull.sh" 'docker.io/library/php:${{ inputs.php }}-apache'
         retry docker build \
           --build-arg 'PHP_VERSION=${{ inputs.php }}' \
           --build-arg 'WITH_XDEBUG=${{ inputs.xdebug }}' \
@@ -63,6 +83,17 @@ runs:
         path: /tmp/e107-composer-cache
         key: composer-${{ inputs.php }}-${{ hashFiles('e107_tests/composer.lock', 'e107_tests/composer.php*.lock') }}
         restore-keys: composer-${{ inputs.php }}-
+
+    - name: Wait for the registry images
+      shell: bash
+      run: |
+        while read -r f; do
+          flock "$f.lock" true
+          if [ "$(cat "$f.rc" 2>/dev/null)" != 0 ]; then
+            echo "::warning::$(basename -- "$f"): pull failed; e107-tests up will try again"
+            cat "$f.log" 2>/dev/null || true
+          fi
+        done < "$RUNNER_TEMP/e107-pull/list"
 
     - name: Bring up the stack
       shell: bash
