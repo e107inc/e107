@@ -215,22 +215,15 @@ class PluginNewsTest extends \Test\Unit
 	 */
 	private function testNewsFrontCategoryUrlSef($payload, $sefType, $expected)
 	{
-		$urlConfig         = $oldUrlConfig = e107::getConfig()->get('url_config', array());
-		$urlConfig["news"] = $sefType;
-		e107::getConfig()->set('url_config', $urlConfig);
-		$router = new eRouter();
-		$router->loadConfig(true);
-		$oldRouter = e107::getUrl()->front()->getRouter();
+		$restore = $this->withUrlConfig(array('news' => $sefType));
 		try
 		{
-			e107::getUrl()->front()->setRouter($router);
 			$output = e107::getUrl()->create('news/list/category', $payload);
 			$this->assertEquals($expected, $output);
 		}
 		finally
 		{
-			e107::getUrl()->front()->setRouter($oldRouter);
-			e107::getConfig()->set('url_config', $oldUrlConfig);
+			$restore();
 		}
 	}
 
