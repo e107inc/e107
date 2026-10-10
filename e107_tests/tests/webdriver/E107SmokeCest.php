@@ -5,7 +5,7 @@
  *
  * This is the canary that proves three things at once:
  *   1. the e107 install under test actually boots and serves pages;
- *   2. a real browser, running in the dedicated `selenium` container, can reach
+ *   2. a real browser, running in the dedicated `browser` container, can reach
  *      the app over HTTP at its cross-container host and is driven correctly by
  *      Codeception (the WebDriver endpoint, capabilities, and session all work);
  *   3. the host-header / pref-cache wiring that lets the browser's non-localhost

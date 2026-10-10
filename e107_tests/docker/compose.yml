@@ -1,4 +1,4 @@
-# e107 test harness compose stack: db + web + selenium. Driven by the
+# e107 test harness compose stack: db + web + browser. Driven by the
 # e107_tests/bin/e107-tests wrapper, which sets the project name, the matrix
 # env vars, and the bind mount; see e107_tests/docker/README.md. Don't run
 # `docker compose` against this file directly.
@@ -26,6 +26,9 @@ services:
       MYSQL_PASSWORD: ${E107_DB_PASSWORD}
       # MySQL 8+ accepts utf8mb4 fine; e107 sticks with utf8(mb3) historically.
       MYSQL_CHARACTER_SET: ${E107_DB_CHARSET:-utf8mb3}
+      # e107 never reads the time zone tables, and loading them is a second of
+      # every start.
+      MYSQL_INITDB_SKIP_TZINFO: "1"
     # String form so the wrapper can inject flavor-specific args (charset
     # naming and auth plugin differ across mysql/mariadb versions; see
     # db_flavor_args in bin/e107-tests).
@@ -85,8 +88,7 @@ services:
         # Two names per sandbox, which Apache serves from that sandbox's overlay:
         # the suite's, and a bare one for a test that needs the same site
         # under a host it was not told about. The runner counts these, up to
-        # the image's E107_SANDBOXES (Dockerfile); the browser grid is sized
-        # for as many.
+        # the image's E107_SANDBOXES (Dockerfile).
         aliases: [sb1.web, sb2.web, sb3.web, sb4.web, sb5.web, sb6.web, sb7.web, sb8.web,
                   sb9.web, sb10.web, sb11.web, sb12.web, sb13.web, sb14.web, sb15.web, sb16.web,
                   sb1, sb2, sb3, sb4, sb5, sb6, sb7, sb8, sb9, sb10, sb11, sb12, sb13, sb14, sb15, sb16]
@@ -117,30 +119,28 @@ services:
     ports:
       - "127.0.0.1:${E107_WEB_PORT:-0}:80"
 
-  # Dedicated browser for the WebDriver suite. The image floats on `latest` so an
-  # upstream Chromium change surfaces here; set E107_SELENIUM_IMAGE to pin it.
-  selenium:
-    image: ${E107_SELENIUM_IMAGE:-docker.io/selenium/standalone-chrome:latest}
+  # Dedicated browser for the WebDriver suite (browser.Dockerfile).
+  browser:
+    build:
+      context: .
+      dockerfile: browser.Dockerfile
+    image: ${E107_BROWSER_IMAGE:?drive this file via e107_tests/bin/e107-tests}
     restart: unless-stopped
     labels: *e107-labels
-    # Run as root to dodge a rootless-Podman supervisord EPERM crash-loop.
-    user: root
-    # A session per suite worker; the grid runs one at a time unless told.
-    environment:
-      SE_NODE_MAX_SESSIONS: 16
-      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
-    # Each session's Chrome runs about 170 tasks, and podman caps a container
-    # at 2048 (Docker sets no cap), past which tabs crash.
+    # chromedriver ignores SIGTERM as PID 1, and Chrome leaves children to reap.
+    init: true
+    # Sixteen sessions come near podman's cap of 2048 tasks a container (Docker
+    # sets no cap), past which tabs crash.
     pids_limit: -1
     depends_on:
       - web
     shm_size: 2gb
     healthcheck:
-      # check-grid.sh (ships in the image) passes only once the grid accepts
-      # sessions, so `up --wait` blocks until the browser is usable.
+      # Ready only once chromedriver accepts sessions, so `up --wait` blocks
+      # until the browser is usable.
       test:
         - CMD-SHELL
-        - /opt/bin/check-grid.sh --host 0.0.0.0 --port 4444 || exit 1
+        - curl -fsS http://127.0.0.1:9515/status | grep -q '"ready":true'
       interval: 5s
       timeout: 10s
       retries: 30

@@ -11,6 +11,20 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
+# Both schemes run at once, one env each on the same runner, each in its own
+# copy of the tree (see .github/actions/harness-stack/cells.sh). A browser
+# sends the Sec-Fetch-* headers only to a potentially trustworthy origin, so
+# e107's browser-only CSRF modes exist over HTTPS and soften to a token over
+# plain HTTP. Running one scheme would leave half of that untested, and it was
+# the untested half that locked every plain-HTTP site out. See
+# tests/webdriver.suite.yml. A failed scheme is named, as
+# "PHP 8.5, mariadb:10.11, tls", in an annotation and in the job summary, and
+# its output is the log group of that name in the step that failed. One of
+# them reproduces locally with:
+#
+#   e107_tests/bin/e107-tests up --php 8.5 --db mariadb:10.11
+#   e107_tests/bin/e107-tests run webdriver --env tls
+
 jobs:
   test-webdriver:
     strategy:
@@ -18,46 +32,35 @@ jobs:
       matrix:
         # One job for now. Add entries to fan out: each dimension is just a tag
         # the compose stack already parameterises (E107_PHP_VERSION /
-        # E107_DB_IMAGE / E107_SELENIUM_IMAGE), so a matrix of PHP, database,
-        # and Chromium versions is a matter of listing them here.
+        # E107_DB_IMAGE), so a matrix of PHP and database versions is a matter
+        # of listing them here. The browser follows Chrome's stable channel
+        # (e107_tests/docker/browser.Dockerfile).
         include:
           - php-version: '8.5'
             db-image: 'mariadb:10.11'
-            selenium-image: 'docker.io/selenium/standalone-chrome:latest'
 
     runs-on: ubuntu-latest
-
-    env:
-      E107_SELENIUM_IMAGE: ${{ matrix.selenium-image }}
 
     steps:
       - uses: actions/checkout@v6
 
-      - name: Bring up the stack
+      - name: Bring up one stack per scheme
         uses: ./.github/actions/harness-stack
         with:
           php: ${{ matrix.php-version }}
           db: ${{ matrix.db-image }}
+          cells: |
+            http -- --env http
+            tls -- --env tls
 
-      # Both schemes. A browser sends the Sec-Fetch-* headers only to a
-      # potentially trustworthy origin, so e107's browser-only CSRF modes exist
-      # over HTTPS and soften to a token over plain HTTP. Running one scheme
-      # would leave half of that untested, and it was the untested half that
-      # locked every plain-HTTP site out. See tests/webdriver.suite.yml.
-      - name: Run WebDriver tests over HTTP
-        run: e107_tests/bin/e107-tests run webdriver --env http
+      # !cancelled(): a scheme whose env did not come up is reported as a
+      # failed cell, and the other still runs.
+      - name: Run WebDriver tests over HTTP and HTTPS
+        if: ${{ !cancelled() }}
+        run: .github/actions/harness-stack/cells.sh run run webdriver
 
-      - name: Run WebDriver tests over HTTPS
-        run: e107_tests/bin/e107-tests run webdriver --env tls
-
-      - name: Upload Codeception output on failure
+      - name: Keep the failed cells' output
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/harness-stack/failed-cells
         with:
-          name: webdriver-output-${{ matrix.php-version }}
-          path: e107_tests/tests/_output/
-          if-no-files-found: ignore
-
-      - name: Container logs on failure
-        if: failure()
-        run: timeout 20 e107_tests/bin/e107-tests logs || true
+          name: webdriver-php${{ matrix.php-version }}
