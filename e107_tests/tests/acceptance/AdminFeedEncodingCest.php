@@ -35,11 +35,14 @@ class AdminFeedEncodingCest
 		$I->writeAppFile(\Helper\OutputEncodingFixture::ADDON_FEED_FILE, \Helper\OutputEncodingFixture::addonFeedXml());
 		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=feedreset');
+		$I->see('P8_OK feedreset');
 		$I->loginAsAdmin();
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=feedreset');
 		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
 		$I->deleteAppFile(\Helper\OutputEncodingFixture::ADMIN_FEED_FILE);
 		$I->deleteAppFile(\Helper\OutputEncodingFixture::ADDON_FEED_FILE);
