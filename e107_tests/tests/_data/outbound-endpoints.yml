@@ -1,0 +1,321 @@
+# Every Internet endpoint e107 contacts, or has a visitor's browser contact, found by
+# reading core and by the suites' network boundary ("The network boundary" in
+# e107_tests/docker/README.md), for the central outbound gate of #5687.
+#
+# One entry per host and purpose:
+#   host     what the request carries: the HTTP Host or the TLS server name
+#   url      the shape of the request
+#   purpose  what e107 wants from it
+#   side     server: PHP makes the request; browser: a page has the browser make it
+#   trigger  what sets it off, and the pref or constant that governs it
+#   where    the code that makes it
+#   seen     the suites in which the boundary recorded the host, as of this list
+#
+# Hosts that an administrator configures (a mail server, a feed, a login provider)
+# are listed by the pref that names them, under "configured".
+
+e107.org:
+  - url: https://e107.org/releases.php (?channel=preview on the preview channel)
+    purpose: core release check
+    side: server
+    trigger: the admin navigation's {ADMIN_UPDATE} on any admin page, cached a day; pref check_updates (on by default), pref update_channel; also a scheduled task, off by default
+    where: e107::coreUpdateAvailable(), admin_shortcodes::sc_admin_update(), _system_cron::checkCoreUpdate()
+    seen: [unit, acceptance, webdriver]
+  - url: https://e107.org/adminfeed
+    purpose: news on the admin dashboard
+    side: server
+    trigger: every dashboard load, by the dashboard's request to admin.php?mode=core&type=feed; no pref, not cached; constant ADMINFEED
+    where: e107_admin/boot.php
+    seen: [acceptance, webdriver]
+  - url: https://e107.org/feed/?limit=3&type=plugin, &type=theme
+    purpose: plugin and theme news on the admin dashboard
+    side: server
+    trigger: dashboard load, by its request to admin.php?mode=addons; no pref, cached 3 hours; constant ADDONFEED
+    where: e107_admin/boot.php
+    seen: [acceptance, webdriver]
+  - url: https://e107.org/service?wsdl, then the SOAP endpoint the WSDL names; without ext/soap https://e107.org/xservice?action=getList&type=...
+    purpose: add-on catalogue and version lists
+    side: server
+    trigger: the add-on update check on the dashboard (main administrators, once a session, kept 12 hours); opening Find plugins or Find themes
+    where: e_marketplace::getVersionList(), e_marketplace_adapter_wsdl, e_marketplace_adapter_xmlrpc, admin_shortcodes::getUpdateable(), plugin_online_ui (e107_admin/plugin.php), theme_admin_ui (e107_admin/theme.php)
+    seen: [acceptance, webdriver]
+  - url: https://e107.org/request/?auth=...&id=...&type=plugin|theme&mode=...
+    purpose: add-on download
+    side: server
+    trigger: an administrator's Download or Install
+    where: e_marketplace_adapter_abstract::download()
+  - url: https://e107.org/languagepacks.xml?ver=x.y.z
+    purpose: list of language packs
+    side: server
+    trigger: opening Language > Tools, and a download; no pref, not cached
+    where: lancheck::getOnlineLanguagePacks(), language_ui (e107_admin/language.php)
+    seen: [acceptance]
+  - url: https://e107.org/e-install/<base64 of site name, theme, language, URL, version, PHP version>
+    purpose: install and upgrade statistics, as an image
+    side: browser
+    trigger: the installer's last page and its table-creation error page; the footer of a core update; no pref
+    where: e_install::stats() (install.php), theme_foot() (e107_admin/update_routines.php)
+
+feed and catalogue images:
+  - url: thumbnail, icon and screenshot URLs from the add-on feed and the catalogue
+    purpose: pictures in the dashboard's add-on news, Find plugins, Find themes and the update notice
+    side: browser
+    trigger: those pages; the hosts come from e107.org's data
+    where: e107_admin/boot.php, plugin_online_ui, theme_admin_ui, admin_shortcodes::renderAddonUpdate()
+
+codeload.github.com:
+  - url: https://codeload.github.com/e107inc/e107/zip/master
+    purpose: replace core files with the development branch
+    side: server
+    trigger: Tools > Database > GitHub sync; pref developer
+    where: system_tools::githubSyncProcess() (e107_admin/db.php), e_file::unzipGithubArchive()
+
+github.com:
+  - url: https://github.com/e107translations/<language>/archive/v<version>.zip, named by languagepacks.xml
+    purpose: language pack download
+    side: server
+    trigger: an administrator's Download in Language > Tools
+    where: language_ui::DownloadPage(), e_file::unzipGithubArchive()
+  - url: the git remote of a checkout
+    purpose: git pull of a plugin, theme or core checkout
+    side: server
+    trigger: the pull buttons of the plugin and theme managers; scheduled tasks gitrepo and gitrepoTheme, off by default and only for a checkout
+    where: e_file::gitPull(), _system_cron::gitrepo(), _system_cron::gitrepoTheme()
+
+www.googleapis.com:
+  - url: https://www.googleapis.com/youtube/v3/channels?forUsername=...&key=..., /youtube/v3/search?...
+    purpose: the media manager's YouTube browser
+    side: server
+    trigger: opening the YouTube tab of the media manager; the channels request goes out even with pref youtube_apikey empty
+    where: media_admin_ui::youtubeTab() (e107_admin/image.php)
+
+i.ytimg.com:
+  - url: thumbnail URLs from the YouTube API's answer
+    purpose: cache a playlist thumbnail
+    side: server
+    trigger: a playlist search in the media manager, with an API key
+    where: e_media::saveThumb()
+  - url: https://i.ytimg.com/vi/<id>/mqdefault.jpg
+    purpose: previews in the media manager's YouTube tab
+    side: browser
+    trigger: the YouTube tab
+    where: media_admin_ui::youtubeTab()
+
+i1.ytimg.com:
+  - url: http://i1.ytimg.com/vi/<id>/maxresdefault.jpg
+    purpose: a video's picture in HTML mail
+    side: server
+    trigger: mail carrying a YouTube item
+    where: e_parse::toVideo() with thumb=email, from e107Email::processShortcodes()
+  - url: https://i1.ytimg.com/vi/<id>/mqdefault.jpg
+    purpose: a video's placeholder picture
+    side: browser
+    trigger: content with a YouTube video
+    where: e_parse::toVideo()
+
+www.youtube.com:
+  - url: https://www.youtube.com/embed/<id>, /embed/videoseries?list=<id>, /v/<id>
+    purpose: video embeds
+    side: browser
+    trigger: content with a YouTube video, the [video] and [youtube] bbcodes, media and custom fields
+    where: e_parse::toVideo(), bb_video, bb_youtube, e_customfields
+
+www.youtube-nocookie.com:
+  - url: https://www.youtube-nocookie.com/v/<id>
+    purpose: video embed of a [youtube] bbcode marked privacy
+    side: browser
+    trigger: content
+    where: e107_core/bbcodes/bb_youtube.php
+
+player.vimeo.com:
+  - url: http://player.vimeo.com/video/<id>
+    purpose: video in the prettyPhoto lightbox
+    side: browser
+    trigger: a gallery link to a Vimeo video
+    where: e107_web/lib/jquery.prettyPhoto/js/jquery.prettyPhoto.js
+
+cdnjs.cloudflare.com:
+  - url: /ajax/libs/jquery/3.7.1/, /ajax/libs/twitter-bootstrap/3.4.1/, /ajax/libs/jqueryui/1.13.2/, /ajax/libs/font-awesome/5.15.4/ and 6.7.2/, and with provider cdnjs the jQuery 2, Font Awesome 4, Bootstrap Switch and X-editable copies
+    purpose: front-end libraries
+    side: browser
+    trigger: front-end pages; pref e_jslib_cdn (on by default), pref e_jslib_cdn_provider
+    where: core_library::config(), core_library::config_alter() (e107_handlers/library_manager.php), e107::library()
+    seen: [webdriver, before the test dump turned e_jslib_cdn off]
+  - url: /ajax/libs/bootswatch/5.2.3/<style>/bootstrap.min.css
+    purpose: the bootstrap5 theme's styles; Quartz is the default, so an install sets it
+    side: browser
+    trigger: front-end pages; pref themecss, not e_jslib_cdn
+    where: e107_themes/bootstrap5/theme.xml, themeHandler::setTheme()
+  - url: /ajax/libs/bootswatch/3.4.0/<style>/bootstrap.min.css
+    purpose: the bootstrap3 theme's Bootswatch styles
+    side: browser
+    trigger: theme pref bootswatch
+    where: theme::init() (e107_themes/bootstrap3/theme.php)
+  - url: /ajax/libs/tinymce/4.9.11/tinymce.min.js
+    purpose: the TinyMCE editor
+    side: browser
+    trigger: any page with an editor area, for users in pref post_html, with the tinymce4 plugin; not e_jslib_cdn
+    where: e107_plugins/tinymce4/e_footer.php
+  - url: /ajax/libs/html5shiv/3.7.3/html5shiv.js
+    purpose: the installer's IE 8 fallback
+    side: browser
+    trigger: installer pages, in Internet Explorer before 9
+    where: template_data() (install.php)
+
+cdn.jsdelivr.net:
+  - url: /npm/jquery-once@2.2.3/, /npm/bootstrap@5.3.3/, /npm/bootstrap@4.3.1/, and with provider jsdelivr /jquery/2.2.4/, /fontawesome/4.7.0/, /bootstrap.switch/3.3.2/, /bootstrap.editable/1.5.1/
+    purpose: front-end libraries
+    side: browser
+    trigger: front-end pages; pref e_jslib_cdn, pref e_jslib_cdn_provider; Bootstrap from a theme's theme.xml library
+    where: core_library::config(), core_library::config_alter(), themeHandler::loadLibrary()
+    seen: [webdriver, before the test dump turned e_jslib_cdn off]
+
+maxcdn.bootstrapcdn.com:
+  - url: /bootswatch/3.3.7/{flatly,sandstone,superhero}/bootstrap.min.css
+    purpose: admin skins
+    side: browser
+    trigger: pref admincss set to one of them
+    where: e107_themes/bootstrap3/theme.xml
+  - url: /bootstrap/3.3.5/css/bootstrap.min.css, /font-awesome/4.4.0/css/font-awesome.min.css
+    purpose: the critical error page
+    side: browser
+    trigger: an error routed through message_handler(), such as a database failure
+    where: show_emessage() (e107_handlers/message_handler.php)
+
+netdna.bootstrapcdn.com:
+  - url: /bootstrap/3.3.5/js/bootstrap.min.js
+    purpose: the installer
+    side: browser
+    trigger: installer pages
+    where: template_data() (install.php)
+  - url: /bootstrap/3.3.5/css/bootstrap.min.css, /font-awesome/4.5.0/css/font-awesome.min.css
+    purpose: the maintenance page
+    side: browser
+    trigger: the site down page
+    where: e107_core/templates/sitedown_template.php
+
+ajax.googleapis.com:
+  - url: /ajax/libs/jquery/2.1.1/jquery.min.js
+    purpose: the installer
+    side: browser
+    trigger: installer pages
+    where: template_data() (install.php)
+
+www.google.com:
+  - url: https://www.google.com/jsapi
+    purpose: charts on the admin dashboard
+    side: browser
+    trigger: the user plugin's dashboard chart, when there are registrations this month
+    where: user_dashboard::registered() (e107_plugins/user/e_dashboard.php), e_chart::render()
+  - url: https://www.google.com/maps?q=<address>&output=embed
+    purpose: map on the contact page
+    side: browser
+    trigger: the {CONTACT_MAP} shortcode, with pref contact_info address or coordinates set
+    where: contact_shortcodes::sc_contact_map()
+  - url: http://www.google.com/search?q=<query>
+    purpose: hand a search to Google
+    side: browser
+    trigger: a visitor choosing Google on the search page
+    where: search.php
+
+fonts.googleapis.com:
+  - url: /css?family=...
+    purpose: web fonts of the voux theme
+    side: browser
+    trigger: voux as the site theme
+    where: e107_themes/voux/theme.php
+
+fonts.gstatic.com:
+  - url: /s/opensans/..., /s/oswald/...
+    purpose: web fonts of an admin skin, and those the voux theme's font CSS names
+    side: browser
+    trigger: pref admincss set to the K-Admin skin; voux as the site theme
+    where: e107_themes/bootstrap3/css/kadmin.css, e107_themes/voux/theme.php
+
+connect.facebook.net:
+  - url: //connect.facebook.net/<locale>/sdk.js
+    purpose: the Facebook SDK
+    side: browser
+    trigger: a Facebook app id in pref social_login, with the fb_like menu or the Facebook comment engine
+    where: e107_plugins/social/e_module.php, fb_like_menu.php, social_comment::facebook()
+
+www.facebook.com:
+  - url: //www.facebook.com/plugins/likebox.php?href=..., http://www.facebook.com/plugins/like.php?...
+    purpose: like box and like button
+    side: browser
+    trigger: the fb_like menu with XURL_FACEBOOK set and no app id; the bootstrap3 theme's gallery lightbox
+    where: e107_plugins/social/fb_like_menu.php, e107_themes/bootstrap3/templates/gallery/gallery_template.php
+
+platform.twitter.com:
+  - url: https://platform.twitter.com/widgets.js
+    purpose: the Twitter timeline and share widgets
+    side: browser
+    trigger: the twitter menu or the {TWITTER_TIMELINE} shortcode with XURL_TWITTER set; the bootstrap3 theme's gallery lightbox
+    where: e107_plugins/social/twitter_menu.php, social_shortcodes::sc_twitter_timeline(), e107_themes/bootstrap3/templates/gallery/gallery_template.php
+
+configured:
+  - pref: smtp_server, smtp_port (smtp_options, mailer, bulkmailer)
+    purpose: outgoing mail through SMTP, and POP before SMTP on port 110
+    side: server
+    trigger: any mail sent with the SMTP mailer, visitors' included (sign-up, contact form)
+    where: e107Email::__construct() (e107_handlers/mail.php)
+  - pref: mail_bounce_pop3, mail_bounce_port
+    purpose: bounced mail polling
+    side: server
+    trigger: scheduled task procEmailBounce, off by default
+    where: pop3BounceHandler::connect()
+  - pref: none; the recipient's mail exchanger
+    purpose: check an address by asking its mail server (DNS MX and A lookups, then SMTP)
+    side: server
+    trigger: an administrator's test of a user's address
+    where: users_admin_ui::testEmail(), email_validation_class (e107_handlers/mail_validation_class.php)
+  - pref: enable_rdns, enable_rdns_on_ban
+    purpose: reverse DNS of visitors for bans
+    side: server
+    trigger: every request while ban actions exist, or when a ban is added; both off by default
+    where: eIPHandler (e107_handlers/iphandler_class.php)
+  - pref: newsfeed_url (newsfeed plugin)
+    purpose: a remote feed
+    side: server
+    trigger: a visitor viewing the newsfeed menu or page once the cache is older than newsfeed_updateint
+    where: newsfeedClass::getFeed()
+  - pref: social_login (social plugin), the OpenID identifier a visitor gives
+    purpose: sign-in through a login provider
+    side: both
+    trigger: a visitor choosing a provider
+    where: e_user_provider (e107_handlers/user_handler.php), e107_core/controllers/system/xup.php
+  - pref: youtube_apikey, youtube_default_account
+    purpose: see www.googleapis.com
+    side: server
+    trigger: the media manager's YouTube tab
+    where: media_admin_ui::youtubeTab()
+  - pref: the alt_auth plugin's LDAP, RADIUS and database servers
+    purpose: external authentication
+    side: server
+    trigger: a login, with alt_auth installed and in use
+    where: e107_plugins/alt_auth/*_auth.php
+  - pref: the import plugin's database, RSS, Blogger, LiveJournal, HTML and Drupal sources
+    purpose: content migration
+    side: server
+    trigger: an administrator's import
+    where: e107_plugins/import/admin_import.php, base_import_class
+  - pref: none; the URL an administrator enters
+    purpose: fetch a file into the media manager
+    side: server
+    trigger: Import from URL in the media manager
+    where: media_admin_ui::processUploadUrl()
+  - pref: library-jquery-urls, e_HTTP_STATIC (e107_config.php)
+    purpose: front-end jQuery and static files from elsewhere
+    side: browser
+    trigger: every front-end page when set
+    where: e_jsmanager::_init(), e_parse::staticUrl()
+  - pref: download_url and mirrors (download plugin), banner_clickurl (banner plugin), a theme.xml's remote CSS and glyph sources, remote avatars of social logins, a newsfeed's channel image
+    purpose: links and files a site's content or configuration names
+    side: browser (glyph CSS on the server, by e_media::getGlyphs())
+    trigger: visitors and administrators using them
+    where: e107_plugins/download/request.php, e107_plugins/banner/banner.php, themeHandler, e_media::getGlyphs(), e_parse::toAvatar(), newsfeedClass::renderChannelImage()
+  - pref: third-party library definitions (e_library) with a remote path and no version
+    purpose: detect the library's version from its file
+    side: server
+    trigger: library detection, such as the library list in Preferences
+    where: e_library_manager::getVersion()

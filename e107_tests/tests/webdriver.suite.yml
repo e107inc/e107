@@ -34,6 +34,28 @@ modules:
                     args:
                         - '--no-sandbox'
                         - '--disable-dev-shm-usage'
+                        # The browser resolves its sandbox's name as usual and
+                        # every other one to the network boundary's recorder,
+                        # which refuses and records what a page loads from
+                        # elsewhere (lib/sandbox/Boundary.php). Chrome's own
+                        # downloads, spelling dictionaries and component
+                        # updates, which no switch or preference stops, go
+                        # nowhere: no e107 page uses these hosts.
+                        - '--host-resolver-rules=MAP redirector.gvt1.com ~NOTFOUND, MAP update.googleapis.com ~NOTFOUND, %boundary.host_rules%'
+                        # Chrome's other services, which are not e107's to
+                        # account for either: network time, autofill lookups,
+                        # optimisation hints and AI mode are switched off, and
+                        # the account and push messaging check-ins go to a
+                        # closed port on the browser's own loopback.
+                        - '--disable-features=NetworkTimeServiceQuerying,AutofillServerCommunication,OptimizationHints,AimEnabled'
+                        - '--gaia-url=http://localhost:1/'
+                        - '--gcm-checkin-url=http://localhost:1/'
+                    # And the password manager, whose leak check sends what a
+                    # test types into a sign-in form to Google.
+                    prefs:
+                        credentials_enable_service: false
+                        profile.password_manager_enabled: false
+                        profile.password_manager_leak_detection: false
         - \Helper\SiteDb:
             dsn: 'mysql:host=%db.host%;port=%db.port%;dbname=%db.dbname%'
             user: '%db.user%'

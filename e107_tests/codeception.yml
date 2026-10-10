@@ -32,9 +32,15 @@ params:
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
+        # Tells the suite runner when each test ran and which hosts outside
+        # the stack it declared (\Helper\Outbound), to hold against what the
+        # network boundary recorded (lib/sandbox/Boundary.php).
+        - Extension\OutboundLedger
 modules:
     enabled:
         - Asserts
+        # $I->expectOutboundRequest(), in every suite.
+        - \Helper\Outbound
         - \Helper\SiteDb:
             dsn: 'mysql:host=%db.host%;port=%db.port%;dbname=%db.dbname%'
             user: '%db.user%'

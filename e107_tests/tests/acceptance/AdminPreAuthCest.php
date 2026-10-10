@@ -774,6 +774,7 @@ class AdminPreAuthCest
 	public function theLanguageToolsPageIsStillReachableForALanguageAdministrator(AcceptanceTester $I)
 	{
 		$I->wantTo('Keep e107_admin/lancheck.php reachable for an administrator holding L and nothing else');
+		$I->expectOutboundRequest('e107.org');
 
 		$this->loginAsDelegatedAdmin($I, 'preauth_l_admin');
 

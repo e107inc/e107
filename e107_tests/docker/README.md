@@ -420,6 +420,56 @@ and mtime of the file it replaces.
 `up --install-site` still installs into the worktree itself, for browsing;
 `e107-tests clean` removes what that leaves.
 
+## The network boundary
+
+For as long as `run` lasts, nothing a suite does reaches the Internet over TCP
+or UDP. Rules in the web container (nftables) send every connection and
+datagram that would leave the stack to a recorder there (`lib/sandbox/Boundary.php`), which refuses it the
+quickest way its protocol allows (an HTTP 503, a TLS `handshake_failure`
+alert, an SMTP 554 greeting, a REFUSED answer to a name lookup, otherwise a
+closed connection) and writes down where it was going. The browser resolves
+its sandbox's name as usual and every other name to the same recorder, so a
+script, font or image a page loads from elsewhere is refused and recorded too.
+What stays inside: loopback, the networks the container reaches directly
+(the stack's own, which holds the database, the browser and every `sbN.web`),
+and name lookups at the stack's name servers. The rules go up when the run
+starts and down when it ends, however it ends, so `up`, composer and `graft`
+reach the Internet as before. They need `CAP_NET_ADMIN` in the web container,
+which `up` gives it, and an env from before them needs `up` again.
+
+An attempt fails the run unless the test running at the time declared it:
+
+```php
+$I->expectOutboundRequest('e107.org');           // a Cest
+$this->tester->expectOutboundRequest('e107.org'); // a unit test
+```
+
+The host is what the attempt carried: the HTTP `Host`, the TLS server name, the
+name a lookup asked for, or the address it went to when it carried none of
+these. A declared attempt is still refused, so the test sees what a site with
+no route to that host sees, and a declaration permits without demanding:
+whether a test makes an attempt can depend on what e107 cached before it. A
+test answers for what happens from its start until the next test on its worker
+starts, so a page it left open in the browser is still its own. With several
+workers, an attempt counts as declared if any test running at that moment
+declared its host; with one, only its own test's declaration counts.
+
+When a run fails on an attempt, its summary lists each one with its protocol,
+host, port where known, the request line of an HTTP request, and who made it:
+`www-data` is e107 serving a request, `root` the test process itself, and
+`the browser` a page. With one worker it also names the test. With more, the
+tests that were running at the time are put on the failed list, and
+
+```sh
+e107-tests run <suite> --jobs 1 -g failed
+```
+
+runs them again one at a time, which names the test behind each attempt. If
+e107 is meant to make that attempt there, declare it in the test; if not,
+find out what made it, and if it is e107 reaching a host nobody has listed,
+add the host to `tests/_data/outbound-endpoints.yml`, the inventory of every
+endpoint e107 contacts (#5687).
+
 ## Agent ergonomics
 
 - The project name is `e107-<8-char-hash-of-worktree-path>-php<ver>-<db>`,

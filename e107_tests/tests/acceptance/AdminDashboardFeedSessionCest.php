@@ -29,6 +29,7 @@ class AdminDashboardFeedSessionCest
 
 	public function theCoreFeedIsFetchedAfterTheSessionIsReleased(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$I->amOnProbe('act=handler&mode=core&type=feed');
 
 		$I->seeInSource(self::RELEASED);
@@ -37,6 +38,7 @@ class AdminDashboardFeedSessionCest
 
 	public function theAddonFeedIsFetchedAfterTheSessionIsReleased(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$I->amOnProbe('act=handler&mode=addons&type=plugin');
 
 		$I->seeInSource(self::RELEASED);
@@ -45,6 +47,7 @@ class AdminDashboardFeedSessionCest
 
 	public function theAddonVersionsAreLookedUpAfterTheSessionIsReleased(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$I->amOnProbe('act=handler&mode=addons&type=update');
 
 		$I->seeInSource(self::UPDATE_NAME.' '.self::RELEASED);
@@ -56,6 +59,7 @@ class AdminDashboardFeedSessionCest
 	 */
 	public function theDashboardShowsTheUpdateTheCheckFound(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$style = $I->haveSitePref('adminstyle', 'infopanel');
 
 		try
@@ -81,6 +85,7 @@ class AdminDashboardFeedSessionCest
 	 */
 	public function theDashboardRunsTheCheckAgainOnceTheAnswerIsGone(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$style = $I->haveSitePref('adminstyle', 'infopanel');
 
 		try
