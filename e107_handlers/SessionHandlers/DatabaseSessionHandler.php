@@ -298,6 +298,6 @@ class DatabaseSessionHandler
 	 */
 	protected static function _sanitize($session_id)
 	{
-		return preg_replace('#[^0-9a-zA-Z,-]#', '', $session_id);
+		return preg_replace('#[^'.SessionId::CHARACTERS.']#', '', $session_id);
 	}
 }

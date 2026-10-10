@@ -18,6 +18,8 @@ if (!defined('e107_INIT'))
 }
 
 use e107\SessionHandlers\FilesSessionHandler;
+use e107\SessionHandlers\NonblockingFilesSessionHandler;
+use e107\SessionHandlers\SessionId;
 use e107\SessionHandlers\SessionSignIn;
 
 /**
@@ -166,7 +168,7 @@ class e_session
 
 	/**
 	 * Session save method
-	 * @var string files|db
+	 * @var string db|files|nonblocking, or the name of another PHP session module
 	 */
 	protected $_sessionSaveMethod = 'files';//'files';
 
@@ -969,7 +971,11 @@ class e_session
 
 			case 'files':
 				session_module_name('files');
-				return new FilesSessionHandler();
+				return new FilesSessionHandler(session_save_path());
+
+			case 'nonblocking':
+				session_module_name('files');
+				return new NonblockingFilesSessionHandler(session_save_path());
 		}
 
 		return null;
@@ -983,7 +989,7 @@ class e_session
 	public function setSessionId($sid = null)
 	{
 		// comma and minus allowed since 5.0
-		if (!empty($sid) && preg_match('#^[0-9a-zA-Z,-]+$#', $sid))
+		if (!empty($sid) && is_scalar($sid) && SessionId::isWellFormed((string) $sid))
 		{
 			session_id($sid);
 		}
