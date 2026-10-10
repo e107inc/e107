@@ -10,9 +10,9 @@ coverage:
     enabled: false
 extensions:
     enabled:
-        # Sweeps the artifacts an acceptance run writes into the app root, on
-        # the way in and on the way out, pass or fail.
-        - Extension\WorkspaceGuard
+        # Takes back what each test wrote into its sandbox, and reports a test
+        # that left anything else there, which fails the run.
+        - Extension\SandboxGuard
 modules:
     enabled:
         - Asserts

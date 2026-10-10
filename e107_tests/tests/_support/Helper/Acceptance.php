@@ -571,10 +571,39 @@ PHP;
 		return $tables;
 	}
 
+	/**
+	 * Point the app at a database that was handed over already holding the site, as each sandbox's clone of the installed site is; any other run installs the app itself.
+	 */
 	protected function writeLocalE107Config()
 	{
-		// Noop
-		// Acceptance tests will install the app themselves
+		if (!$this->getDbModule()->_getConfig('populate') && $this->databaseHoldsSite())
+		{
+			$this->deployer->writeAppFile('e107_config.php', $this->renderLocalE107Config());
+		}
+	}
+
+	/**
+	 * Whether the suite's database holds an installed site's preferences.
+	 *
+	 * The table is missing on an empty database, which is a question and not a
+	 * fault, so the query is allowed to fail.
+	 *
+	 * @return bool
+	 */
+	private function databaseHoldsSite()
+	{
+		try
+		{
+			$found = $this->getDbModule()->_getDbh()
+				->query('SELECT 1 FROM `'.self::E107_MYSQL_PREFIX."core` WHERE `e107_name` = 'SitePrefs'")
+				->fetchColumn();
+		}
+		catch (\PDOException $e)
+		{
+			return false;
+		}
+
+		return !empty($found);
 	}
 
 	public function unlinkE107ConfigFromTestEnvironment()

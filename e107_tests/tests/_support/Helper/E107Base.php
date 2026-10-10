@@ -1,12 +1,9 @@
 <?php
 namespace Helper;
-include_once(codecept_root_dir() . "lib/preparers/PreparerFactory.php");
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-use Codeception\Lib\ModuleContainer;
-use PreparerFactory;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 
@@ -14,16 +11,9 @@ abstract class E107Base extends Base
 {
 	const APP_PATH_E107_CONFIG = APP_PATH."/e107_config.php";
 	const E107_MYSQL_PREFIX = 'e107_';
-	protected $preparer = null;
 
-	/** @var resource|null Open file handle for the deployment target lock */
-	private $deploymentLockHandle;
-
-	public function __construct(ModuleContainer $moduleContainer, $config = null)
-	{
-		parent::__construct($moduleContainer, $config);
-		$this->preparer = PreparerFactory::create();
-	}
+	/** The site folder tests/_data/e107_config.php.sample pins. */
+	const INSTALL_SITE_PATH = '000000test';
 
 	/**
 	 * Write an arbitrary file into the deployed docroot.
@@ -97,22 +87,11 @@ abstract class E107Base extends Base
 
 	public function _beforeSuite($settings = array())
 	{
-		$this->acquireDeploymentLock();
-		$this->backupLocalE107Config();
-		$this->preparer->snapshot();
 		parent::_beforeSuite($settings);
 		$this->writeLocalE107Config();
 	}
 
-	protected function backupLocalE107Config()
-	{
-		if(file_exists(self::APP_PATH_E107_CONFIG))
-		{
-			rename(self::APP_PATH_E107_CONFIG, APP_PATH.'/e107_config.php.bak');
-		}
-	}
-
-	protected function writeLocalE107Config()
+	protected function renderLocalE107Config()
 	{
 		$twig_loader = new ArrayLoader([
 			'e107_config.php' => file_get_contents(codecept_data_dir()."/e107_config.php.sample")
@@ -128,110 +107,18 @@ abstract class E107Base extends Base
 		$e107_config['mySQLdefaultdb'] = $db->_getDbName();
 		$e107_config['mySQLprefix'] = self::E107_MYSQL_PREFIX;
 
-		$e107_config_contents = $twig->render('e107_config.php', $e107_config);
-		file_put_contents(self::APP_PATH_E107_CONFIG, $e107_config_contents);
+		return $twig->render('e107_config.php', $e107_config);
+	}
+
+	protected function writeLocalE107Config()
+	{
+		file_put_contents(self::APP_PATH_E107_CONFIG, $this->renderLocalE107Config());
 	}
 
 	public function _afterSuite()
 	{
 		parent::_afterSuite();
-		$this->revokeLocalE107Config();
-		$this->preparer->rollback();
-		$this->restoreLocalE107Config();
-		$this->releaseDeploymentLock();
 		$this->workaroundOldPhpUnitPhpCodeCoverage();
-	}
-/*
-	public function _failed($test, $fail)
-	{
-		parent::_failed($test, $fail);
-		$this->revokeLocalE107Config();
-		$this->preparer->rollback();
-		$this->restoreLocalE107Config();
-		$this->workaroundOldPhpUnitPhpCodeCoverage();
-
-	}*/
-
-
-	protected function revokeLocalE107Config()
-	{
-		if (file_exists(self::APP_PATH_E107_CONFIG))
-			unlink(self::APP_PATH_E107_CONFIG);
-	}
-
-	protected function restoreLocalE107Config()
-	{
-		if(file_exists(APP_PATH."/e107_config.php.bak"))
-		{
-			rename(APP_PATH.'/e107_config.php.bak', self::APP_PATH_E107_CONFIG);
-		}
-	}
-
-	/**
-	 * Acquire a blocking exclusive lock on the deployment target so that
-	 * parallel acceptance/webdriver runs against the same URL are serialized.
-	 * No-op for unit/functional suites (no deployment target).
-	 */
-	private function acquireDeploymentLock()
-	{
-		$url = $this->getDeploymentTargetUrl();
-		if ($url === null)
-		{
-			return;
-		}
-
-		$lockPath = sys_get_temp_dir() . '/e107-acceptance-' . md5($url) . '.lock';
-		$this->deploymentLockHandle = fopen($lockPath, 'w');
-		if ($this->deploymentLockHandle === false)
-		{
-			return;
-		}
-
-		codecept_debug('E107Base: Acquiring deployment lock for ' . $url);
-		flock($this->deploymentLockHandle, LOCK_EX);
-		fwrite($this->deploymentLockHandle, json_encode(array(
-			'pid' => getmypid(),
-			'url' => $url,
-			'acquired' => time(),
-		)));
-		fflush($this->deploymentLockHandle);
-		codecept_debug('E107Base: Deployment lock acquired');
-	}
-
-	private function releaseDeploymentLock()
-	{
-		if ($this->deploymentLockHandle !== null)
-		{
-			flock($this->deploymentLockHandle, LOCK_UN);
-			fclose($this->deploymentLockHandle);
-			$this->deploymentLockHandle = null;
-			codecept_debug('E107Base: Deployment lock released');
-		}
-	}
-
-	/**
-	 * @return string|null The acceptance/webdriver target URL, or null for
-	 *                     suites that don't use a browser module.
-	 */
-	private function getDeploymentTargetUrl()
-	{
-		foreach (array('PhpBrowser', 'WebDriver') as $moduleName)
-		{
-			try
-			{
-				$module = $this->getModule($moduleName);
-				$url = $module->_getConfig('url');
-				if ($url !== null && $url !== '')
-				{
-					return $url;
-				}
-			}
-			catch (\Exception $e)
-			{
-				// Module not enabled for this suite
-			}
-		}
-		return null;
 	}
 
 	/**

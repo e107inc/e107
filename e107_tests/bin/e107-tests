@@ -43,8 +43,8 @@ WEB_TESTS_DIR=$WEB_APP_DIR/e107_tests
 # setting must stay Off for the Apache SAPI: PHP 8.5 deprecates deriving
 # $_SERVER['argv'] from the query string, and the notice is printed above
 # every response carrying one, failing any assertion on page content. A
-# conf.d entry cannot tell the two SAPIs apart, so it goes here, on the only
-# command that reads it.
+# conf.d entry cannot tell the two SAPIs apart, so it goes on the commands
+# that start Codeception: this one, and lib/sandbox/run.php's for the suites.
 CODECEPT=(php -d register_argc_argv=1 ./vendor/bin/codecept)
 
 # ---------------------------------------------------------------------------
@@ -313,7 +313,6 @@ compose_up_cmd() {
     E107_DB_COLLATION=$E107_DB_COLLATION \
     E107_DB_EXTRA_ARGS=$E107_DB_EXTRA_ARGS \
     E107_BASE_PATH=$BASE_PATH \
-    E107_INTERNAL_URL=$(base_url) \
     E107_COMPOSER_CACHE=${E107_COMPOSER_CACHE:-} \
     docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" "$@"
 }
@@ -438,9 +437,11 @@ deployer: 'local'
 # same docroot, so a subdirectory install needs no separate deployment.
 url: '$(base_url)'
 # The suites connect as the site's own account, which holds ALL PRIVILEGES on
-# this one database and nothing global: the grant a hosting control panel
-# issues, so what passes here passes on such a host. Only the harness's own
-# reset, sql and db-shell commands use root.
+# this database, the sandboxes' (e107_s*) and, while a run installs it, the
+# site template they are copied from (e107_t*), and nothing global: the grant
+# a hosting control panel issues, so what passes here passes on such a host.
+# Only the harness's own reset, sql and db-shell commands and the suite
+# runner's database copies use root.
 db:
   host: 'db'
   port: '3306'
@@ -665,48 +666,30 @@ deps_ensure() {
     }
 }
 
-# Generate tests/_support/_generated/*Actions.php in a process of its own.
-#
-# Codeception writes those files on demand at the start of a `run` when they are
-# missing, which they always are on a fresh checkout: .gitignore excludes them.
-# On PHP 8.2 the Codeception 4 generator assigns undeclared properties, so PHP
-# emits "Creation of dynamic property Codeception\Lib\Generator\Actions::$di is
-# deprecated" and display_errors puts it on stdout. That output lands before
-# class2.php is loaded, so e107::prepare_request()'s ini_set() on the session
-# settings warns "headers already sent", and Codeception's error handler turns
-# that warning into an exception that kills the suite before a single test runs.
-#
-# Building first costs one short process and leaves the run with a clean output
-# buffer, which is what the hand-rolled workflow this replaced did with its own
-# `codecept build` step. Nothing here is version-specific: a build that has
-# already happened is a no-op everywhere.
-build_actions() {
-    local out
-    if ! out=$(compose_exec_nostdin -w "$WEB_TESTS_DIR" web "${CODECEPT[@]}" build 2>&1); then
-        printf '%s\n' "$out" >&2
-        err "codecept build failed"
-    fi
-}
-
 # ---------------------------------------------------------------------------
 # Site install (up --install-site)
 # ---------------------------------------------------------------------------
+
+# The site folder of the install `up --install-site` leaves, which its
+# persistent config pins: e107's own hash of the database name and table prefix.
+persistent_site_path() {
+    printf '%s' "$DEFAULT_DB_NAME.e107_" | md5sum | cut -c1-10
+}
 
 install_site() {
     note ">> Installing e107 into the stack (acceptance installer)"
     compose_exec_nostdin -w "$WEB_TESTS_DIR" web \
         "${CODECEPT[@]}" run acceptance tests/acceptance/0000_InstallCest.php:installDefault --steps
-    # The install Cest cleans up its e107_config.php in _afterSuite (the DB
-    # tables persist), so render a persistent config against the same DB.
+    # The install Cest leaves the installer's own e107_config.php; render the
+    # harness's persistent config over it, against the same DB and site folder.
     note ">> Writing persistent e107_config.php"
     compose_exec_nostdin web sh -euc "
-        SITE_PATH=\$(php -r 'echo substr(md5(\"$DEFAULT_DB_NAME.e107_\"), 0, 10);')
         sed -e 's/{{ mySQLserver }}/db/' \
             -e 's/{{ mySQLuser }}/$DEFAULT_DB_USER/' \
             -e 's/{{ mySQLpassword }}/$DEFAULT_DB_PASSWORD/' \
             -e 's/{{ mySQLdefaultdb }}/$DEFAULT_DB_NAME/' \
             -e 's/{{ mySQLprefix }}/e107_/' \
-            -e \"s/000000test/\$SITE_PATH/\" \
+            -e 's/000000test/$(persistent_site_path)/' \
             $WEB_TESTS_DIR/tests/_data/e107_config.php.sample \
             > $WEB_APP_DIR/e107_config.php
     "
@@ -1012,24 +995,28 @@ set_coverage_exec_env() {
     done
 }
 
+# Run a suite across sandboxes in the web container (lib/sandbox/run.php): each
+# test file, or for the unit suite each batch of files, gets an overlay of the
+# worktree and a database of its own, so the worktree is never written to.
 cmd_run() {
     resolve_env
     ensure_web_exec
     deps_ensure
-    build_actions
-    # Build: codecept run [<suite>] --steps [user args...]
+    # Build: run.php <suite> [--jobs N] --steps [user args...], once per suite.
     # --steps goes before user args so a trailing `--` separator (which
     # codecept uses to mark positionals) still works as intended.
-    local cc_args=(run)
-    local suite=${1:-}
+    local suites=() suite=${1:-} rc=0
     case $suite in
-        ''|all) ;;
-        *)
-            cc_args+=("$suite"); shift ;;
+        all) suites=(unit acceptance); shift ;;
+        ''|-*) suites=(unit acceptance) ;;
+        *) suites=("$suite"); shift ;;
     esac
-    cc_args+=(--steps "$@")
+    local cc_args=(--steps "$@")
     set_coverage_exec_env "$@"
-    compose_p exec "${COVERAGE_EXEC_ENV[@]}" -w "$WEB_TESTS_DIR" web "${CODECEPT[@]}" "${cc_args[@]}"
+    for suite in "${suites[@]}"; do
+        compose_p exec "${COVERAGE_EXEC_ENV[@]}" -w "$WEB_TESTS_DIR" web php lib/sandbox/run.php "$suite" "${cc_args[@]}" || rc=$?
+    done
+    return "$rc"
 }
 
 # Replay CI's unit run exactly (test-unit.yml), so base-image drift like a
@@ -1038,10 +1025,8 @@ cmd_ci_unit() {
     resolve_env
     ensure_web_exec
     deps_ensure
-    build_actions
     compose_p exec -w "$WEB_TESTS_DIR" web \
-        php -d memory_limit=-1 -d register_argc_argv=1 \
-        ./vendor/bin/codecept run unit --steps --debug
+        php lib/sandbox/run.php -d memory_limit=-1 unit --jobs 1 --steps --debug
 }
 
 cmd_reset() {
@@ -1065,17 +1050,16 @@ cmd_reset() {
             GRANT ALL PRIVILEGES ON \`$MYSQL_DATABASE\`.* TO \`$MYSQL_USER\`@\`%\`;
             FLUSH PRIVILEGES;"
     '
-    note ">> Removing test-written app state (e107_config.php, hash dirs)"
+    note ">> Removing the installed site's app state (e107_config.php, site folders)"
     compose_exec_nostdin -w "$WEB_APP_DIR" web sh -c '
-        rm -f e107_config.php e107_config.php.bak
-        rm -rf e107_system/000000test e107_media/000000test
-        rm -rf e107_system/416f4602e3 e107_media/416f4602e3
-    '
+        rm -f e107_config.php
+        rm -rf e107_system/000000test e107_media/000000test "e107_system/$1" "e107_media/$1"
+    ' sh "$(persistent_site_path)"
 }
 
-# Wipe acceptance-test artifacts that the e107 installer creates in the
-# bind-mounted worktree. Only touches well-known untracked paths —
-# never anything tracked by git.
+# Wipe what an install leaves in the bind-mounted worktree: `up --install-site`,
+# or a run that drove Codeception by hand rather than through `run`. Only
+# touches well-known untracked paths, never anything tracked by git.
 #
 # Files written by container-side www-data end up on the host with a
 # subuid the host user can't directly chown/unlink. We handle that three
@@ -1089,10 +1073,10 @@ cmd_reset() {
 cmd_clean() {
     note ">> Cleaning acceptance-test artifacts from $APP_PATH"
 
-    local docroot_files='e107_config.php e107_config.php.bak e107Install.log e107_system/e107Install.log e107_media/.htaccess'
-    local hash_dirs='e107_system/000000test e107_media/000000test'
-    local journal="$TESTS_DIR/tests/_output/app-writes.jsonl"
-    local backups="$TESTS_DIR/tests/_output/app-backup"
+    local docroot_files='e107_config.php e107Install.log e107_system/e107Install.log e107_media/.htaccess'
+    local site_path
+    site_path=$(persistent_site_path)
+    local hash_dirs="e107_system/000000test e107_media/000000test e107_system/$site_path e107_media/$site_path"
 
     cd -- "$APP_PATH" || err "cannot cd to $APP_PATH"
 
@@ -1129,27 +1113,6 @@ cmd_clean() {
             _rm "$d" && removed=$((removed + 1))
         fi
     done
-    # Helper\AppFileRegistry's journal, replayed innermost first as the
-    # registry itself would on the next run: a backed-up path is put back,
-    # anything else is removed unless git tracks it.
-    if [ -r "$journal" ]; then
-        local line p r
-        while IFS= read -r line; do
-            p=$(printf '%s\n' "$line" | sed -n 's/.*"p":"\([^"]*\)".*/\1/p')
-            r=$(printf '%s\n' "$line" | sed -n 's/.*"r":"\([^"]*\)".*/\1/p')
-            case $p in ''|/*|*..*) continue ;; esac
-            if [ -n "$r" ]; then
-                if [ -f "$backups/$r" ]; then
-                    _rm "$p" && cp -- "$backups/$r" "$p" && rm -f -- "$backups/$r" \
-                        && removed=$((removed + 1)) && note "restored $p"
-                fi
-            elif [ -e "$p" ] && [ -z "$(git ls-files -- "$p" 2>/dev/null)" ]; then
-                _rm "$p" && removed=$((removed + 1))
-            fi
-        done < <(tac -- "$journal")
-        rm -f -- "$journal"
-    fi
-
     # Restore tracked files modified by acceptance installs.
     # `git restore` is a no-op on files that aren't modified.
     if [ -e .git ]; then
@@ -1288,20 +1251,24 @@ cmd_graft() {
     [ -d "$target/e107_admin" ] || err "target does not look like an e107 checkout: $target"
     [ "$target" != "$APP_PATH" ] || err "refusing to graft a worktree onto itself"
 
+    if [ -e "$target/e107_tests/bin" ] && [ "$force" != yes ]; then
+        err "$target/e107_tests/bin already exists (use --force to overwrite)"
+    fi
     # lib/config.php rides along because old trees' copies predate the
-    # config.docker.yml cascade entry the managed config relies on.
+    # config.docker.yml cascade entry the managed config relies on; the
+    # preparer factory, because the oldest trees' picks GitPreparer wherever
+    # .git exists, and a worktree's .git names a repository the container
+    # does not mount.
     local item
-    for item in bin docker lib/preparers lib/config.php; do
-        if [ -e "$target/e107_tests/$item" ] && [ "$force" != yes ]; then
-            err "$target/e107_tests/$item already exists (use --force to overwrite)"
-        fi
-    done
     mkdir -p "$target/e107_tests/lib"
-    for item in bin docker lib/preparers lib/config.php; do
+    for item in bin docker lib/sandbox lib/config.php; do
         rm -rf -- "${target:?}/e107_tests/$item"
         cp -R -- "$TESTS_DIR/$item" "$target/e107_tests/$item"
     done
-    note ">> grafted harness (bin/, docker/, lib/preparers/, lib/config.php) into $target/e107_tests"
+    if [ -d "$target/e107_tests/lib/preparers" ]; then
+        cp -- "$TESTS_DIR/lib/graft/PreparerFactory.php" "$target/e107_tests/lib/preparers/PreparerFactory.php"
+    fi
+    note ">> grafted harness (bin/, docker/, lib/sandbox/, lib/config.php, the preparer factory) into $target/e107_tests"
     note "   next: $target/e107_tests/bin/e107-tests up [--php X] [--db Y] [--install-site]"
 }
 
@@ -1334,15 +1301,14 @@ LIFECYCLE:
                                      with --env) needs --force.
                                      Prefer --worktree, which drives that
                                      worktree's own harness.
-  reset [--force]                    Drop+recreate DB, clear written app state.
-                                     --force as for down.
+  reset [--force]                    Drop+recreate DB, clear the installed
+                                     site's app state. --force as for down.
   clean                              Full reset of a dev tree. Not needed after
-                                     a test run: the suites now sweep their own
-                                     artifacts, pass or fail. Reach for it to
-                                     drop a persistent install left by
-                                     --install-site, to clear up host-side after
-                                     a run that could not finish, or when
-                                     Codeception itself will not start.
+                                     a test run: the suites run in sandboxes
+                                     and never write to the worktree. Reach for
+                                     it to drop a persistent install left by
+                                     --install-site, or after driving
+                                     Codeception by hand in the worktree.
   install                            Re-run composer inside the web container:
                                      installs the newest committed lock the
                                      env's PHP can take (composer.lock, then
@@ -1376,13 +1342,22 @@ INTERACT:
   exec <cmd>...                      Run a one-shot command in the web container.
 
 TEST:
-  run [suite] [args...]              Run Codeception inside the web container.
+  run [suite] [--jobs N] [args...]   Run a suite in sandboxes: each test file
+                                     (a batch of files for unit) gets its own
+                                     overlay of the worktree and its own
+                                     database, on N workers at once (default:
+                                     the CPU count, at most the stack's 16
+                                     sandboxes). A test that leaves a file
+                                     outside its site folder fails the run.
+                                     Results and failures' output land in
+                                     tests/_output/<suite>/.
                                      Extra args are passed through to `codecept`.
   ci-unit                            Replay CI's exact unit run.
 
   Examples:
     e107-tests run unit
     e107-tests run unit --filter ConstantsTest
+    e107-tests run acceptance --jobs 4
     e107-tests run acceptance tests/acceptance/0000_InstallCest.php
     e107-tests sql "SELECT * FROM e107_user"
 

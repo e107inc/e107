@@ -21,7 +21,7 @@ class GitPreparer implements Preparer
 		$this->appPath = $appPath;
 	}
 
-	public function snapshot()
+	private function createWorktree()
 	{
 		if ($this->worktreePath !== null)
 		{
@@ -68,13 +68,6 @@ class GitPreparer implements Preparer
 		$this->debug('Worktree ready');
 	}
 
-	public function rollback()
-	{
-		// No-op when called from _afterSuite(). The worktree must
-		// persist through all shutdown handlers; actual removal is
-		// deferred via the late shutdown function registered above.
-	}
-
 	private function cleanup()
 	{
 		if ($this->worktreePath === null)
@@ -96,9 +89,10 @@ class GitPreparer implements Preparer
 
 	public function getAppPath()
 	{
-		// Isolated copy: ensure the worktree exists (snapshot is idempotent),
-		// then run from it so the source tree stays pristine.
-		$this->snapshot();
+		// Isolated copy: ensure the worktree exists (creation is idempotent),
+		// then run from it so the source tree stays pristine. It is removed
+		// by the late shutdown function registered on creation.
+		$this->createWorktree();
 		return $this->worktreePath;
 	}
 

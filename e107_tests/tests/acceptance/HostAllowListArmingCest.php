@@ -18,9 +18,11 @@
  * they are why the arming condition asks whether the allow-list holds anything
  * usable rather than whether siteurl looks absolute.
  *
- * The second hostname is the app server's own address rather than an invented
- * one: the request has to reach this site carrying a Host it was not told
- * about, and a name nothing resolves never arrives at all.
+ * The second hostname is the sandbox's bare name, which the harness serves the
+ * same sandbox on (docker/apache-vhost.conf) rather than an invented one: the
+ * request has to reach this site carrying a Host it was not told about, and a
+ * name nothing resolves never arrives at all. The bare name is neither the
+ * suite's host nor a subdomain of it.
  *
  * GHSA-w24r-4r8j-vqgc.
  */
@@ -32,10 +34,10 @@ class HostAllowListArmingCest
 
 	const REFUSAL = 'Site Configuration Issue Detected';
 
-	/** @var string|null scheme://host of the site as the suite reaches it */
+	/** @var string|null scheme://host/path of the site as the suite reaches it */
 	private $ownBase;
 
-	/** @var string|null scheme://address of the same site under a host it was not told about */
+	/** @var string|null scheme://host/path of the same site under a host it was not told about */
 	private $otherBase;
 
 	/** @var string the host the suite reaches this site on, without a port */
@@ -218,28 +220,20 @@ class HostAllowListArmingCest
 	{
 		$scheme = $this->grab($I, 'SCHEME');
 		$hostPort = $this->grab($I, 'HOST');
+		$path = $this->grab($I, 'PATH');
 
 		$parts = explode(':', $hostPort, 2);
 		$this->ownHost = $parts[0];
 		$port = isset($parts[1]) ? ':' . $parts[1] : '';
 
-		$address = gethostbyname($this->ownHost);
-		if($address === $this->ownHost || strpos($address, ':') !== false)
-		{
-			// No IPv4 answer to work with, so fall back to the loopback name the
-			// server also answers on. Both suite configurations reach the app on
-			// the same machine as the runner.
-			$address = '127.0.0.1';
-		}
-
-		$this->ownBase = $scheme . '://' . $hostPort;
-		$this->otherBase = $scheme . '://' . $address . $port;
+		$this->ownBase = $scheme . '://' . $hostPort . $path;
+		$this->otherBase = $scheme . '://' . strtok($this->ownHost, '.') . $port . $path;
 
 		if($this->otherBase === $this->ownBase)
 		{
 			throw new \RuntimeException(
 				'Every case below needs a second hostname for this site, and ' . $hostPort
-				. ' resolves to itself. Point the suite at a name rather than an address.');
+				. ' has no bare name of its own. Run the suite through e107-tests, which serves each sandbox on both.');
 		}
 	}
 
@@ -373,7 +367,8 @@ if(isset($_GET['host_arming_set']))
 $scheme = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') ? 'https' : 'http';
 echo 'PROBE_REACHED'
 	.' [SCHEME:'.$scheme.']'
-	.' [HOST:'.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES, 'UTF-8').']';
+	.' [HOST:'.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES, 'UTF-8').']'
+	.' [PATH:'.htmlspecialchars(rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'), ENT_QUOTES, 'UTF-8').']';
 
 /**
  * The stored SitePrefs row, read or written straight over the database.
@@ -427,10 +422,13 @@ function host_arming_prefs($value = null)
 		$statement->bind_param('ss', $value, $name);
 		$result = $statement->execute();
 
-		// e_pref serves this row out of the system cache for a day, so a row put
-		// back while the cache stands is a row the next request does not read.
+		// e_pref serves this row out of the site's system cache for a day, so a
+		// row put back while the cache stands is a row the next request does not
+		// read. Only this site's folder: another install's is not the probe's.
 		$system = isset($config['paths']['system']) ? $config['paths']['system'] : 'e107_system/';
-		foreach(glob(__DIR__.'/'.$system.'*/cache/content/S_Config_*.cache.php') ?: array() as $cached)
+		$override = is_array($config) && isset($config['other']) ? $config['other'] : (isset($E107_CONFIG) ? $E107_CONFIG : array());
+		$site = !empty($override['site_path']) ? $override['site_path'] : substr(md5($database['db'].'.'.$database['prefix']), 0, 10);
+		foreach(glob(__DIR__.'/'.$system.$site.'/cache/content/S_Config_*.cache.php') ?: array() as $cached)
 		{
 			@unlink($cached);
 		}

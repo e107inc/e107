@@ -24,9 +24,7 @@ class InstallCest
 	}
 
 	// Phase 2 regression coverage (GHSA-c8h6-wpj3-4cr8 follow-up): the signed
-	// wizard state, resume gate, and the schema-gated unattended entry. These
-	// run before installDefault/installVoux so a clean successful install is
-	// still the last thing InstallCest leaves behind for the downstream Cests.
+	// wizard state, resume gate, and the schema-gated unattended entry.
 
 	public function installedSiteBlocksTheInstaller(AcceptanceTester $I)
 	{
@@ -169,6 +167,13 @@ class InstallCest
 
 	}*/
 
+	/**
+	 * The site every other Cest starts from: the suite runner installs it with this test once per run and clones it into each Cest's sandbox.
+	 *
+	 * Signing in leaves the admin's password stored as the suites' cheap hash for every Cest to inherit.
+	 *
+	 * @group site-template
+	 */
 	public function installVoux(AcceptanceTester $I)
 	{
 		$I->wantTo("Install e107 with Voux theme");
@@ -279,19 +284,10 @@ class InstallCest
 
 	}
 
-	private function loginToAdmin(AcceptanceTester $I)
-	{
-		$I->amOnPage('/e107_admin/admin.php');
-		$I->fillField('authname', 'admin');
-		$I->fillField('authpass', 'admin');
-		$I->click('authsubmit');
-		$I->dontSeeInSource('Unauthorized access!');
-	}
-
 	private function testNoUpdatesRequired(AcceptanceTester $I)
 	{
 		// first Login
-		$this->loginToAdmin($I);
+		$I->loginAsAdmin();
 
 		$I->amOnPage('/e107_admin/e107_update.php?[debug=basic+]');
 		$I->wantTo("Check there are no updates required after install");

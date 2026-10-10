@@ -89,7 +89,7 @@ class ForcedLogoutCsrfCest
 	private $probeWritten = false;
 
 	/**
-	 * The restore throws where it fails, and the parked copy heals the security level whichever way that goes.
+	 * The restore throws where it fails, so a lowered level never passes for the next test's.
 	 *
 	 * @param AcceptanceTester $I
 	 * @return void
@@ -432,24 +432,6 @@ class ForcedLogoutCsrfCest
 	}
 
 	/**
-	 * The lowering outlives the process that made it, so whatever heals it has
-	 * to be on disk before the level goes down rather than in an _after that a
-	 * killed run never reaches. Extension\WorkspaceGuard puts e107_config.php
-	 * back from the copy beside it on its way into a run, and Helper\E107Base
-	 * puts it back at the end of a suite, so what both need is that a lowered
-	 * config always has that copy and that the copy carries no lowering.
-	 */
-	public function loweringTheLevelParksAConfigWithNoLoweringInIt(AcceptanceTester $I)
-	{
-		$this->noTokenProbeIsInPlace($I);
-
-		$I->probe('act=lower');
-
-		$I->assertSame('PARKED=1 LOWERED=0', $I->grabProbe('act=parked'),
-			'a killed run must find a config beside the lowered one to heal from');
-	}
-
-	/**
 	 * users.php?mode=main&action=logoutas ends the impersonated session, and
 	 * e_admin_controller::dispatchObserver() calls LogoutasObserver() on
 	 * method_exists alone. The token check inside the class covers the posted
@@ -552,17 +534,6 @@ class ForcedLogoutCsrfCest
 	 * 0 is e_session::SECURITY_LEVEL_NONE, named "Looking for trouble (none)"
 	 * in the admin preferences.
 	 *
-	 * Lowering the level first parks a copy of the config at
-	 * e107_config.php.bak with any lowering taken out of it, preferring
-	 * whatever is parked there already to the live file. That is the one name
-	 * Extension\WorkspaceGuard puts back on its way into a run, and it is
-	 * also what Helper\E107Base hands back at the end of a suite, so a run
-	 * killed between the lowering and the restore no longer leaves the site
-	 * below SECURITY_LEVEL_LOW: whichever of the two gets there first finds a
-	 * config with no lowering in it and puts that back. A tree an earlier run
-	 * already left lowered is put right the same way, because the lowering
-	 * comes out of the parked copy too.
-	 *
 	 * @return string
 	 */
 	private function noTokenProbeSource()
@@ -576,7 +547,6 @@ header('Content-Type: text/plain');
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';
 $config = __DIR__.'/e107_config.php';
-$backup = $config.'.bak';
 $line = "define('e_SECURITY_LEVEL', 0);\n";
 
 switch($act)
@@ -587,22 +557,12 @@ switch($act)
 
 		if($act === 'lower')
 		{
-			$parked = file_exists($backup) ? file_get_contents($backup) : $src;
-			file_put_contents($backup, str_replace("\n".$line, '', $parked));
-
 			$at = strpos($src, '<?php') + 5;
 			$src = substr($src, 0, $at)."\n".$line.substr($src, $at);
 		}
 
 		file_put_contents($config, $src);
 		echo 'PROBE_OK';
-		break;
-
-	case 'parked':
-		clearstatcache();
-		$parked = file_exists($backup);
-		echo 'PARKED='.($parked ? 1 : 0)
-			.' LOWERED='.(($parked && strpos(file_get_contents($backup), $line) !== false) ? 1 : 0);
 		break;
 
 	default:
