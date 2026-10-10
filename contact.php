@@ -319,7 +319,8 @@ class contact_front
 			);
 
 
-			$message = e107::getEmail()->sendEmail($send_to, $send_to_name, $eml) ? LAN_CONTACT_09 : LAN_CONTACT_10;
+			$sent = (e107::getEmail()->sendEmail($send_to, $send_to_name, $eml) === true);
+			$message = $sent ? LAN_CONTACT_09 : LAN_CONTACT_10;
 
 			//	$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
 
@@ -330,7 +331,7 @@ class contact_front
 			}
 
 
-			$ns->tablerender('', "<div class='alert alert-success'>" . $message . "</div>");
+			$ns->tablerender('', "<div class='alert " . ($sent ? 'alert-success' : 'alert-danger') . "'>" . $message . "</div>");
 		}
 		else
 		{

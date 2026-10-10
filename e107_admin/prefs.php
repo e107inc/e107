@@ -341,7 +341,7 @@ function sendTest()
 		$eml['template']			= 'default';
 		$eml['e107_header']			= USERID;
 
-		if (!e107::getEmail()->sendEmail($sendto, LAN_MAILOUT_189, $eml)) 
+		if (e107::getEmail()->sendEmail($sendto, LAN_MAILOUT_189, $eml) !== true)
 		{
 			$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 		} 
