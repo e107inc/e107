@@ -15,6 +15,9 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
+
+$ns = e107::getRender();
+
 // echo "parm=".$parm; //FIXME - just for testing only.
 
 if(strpos(SITEBUTTON, "://") !== false) // external url.

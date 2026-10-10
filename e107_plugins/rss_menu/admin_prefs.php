@@ -262,18 +262,15 @@ class rss_form_ui extends e_admin_form_ui
 				$link = e107::url('rss_menu', 'rss', array('rss_type' => $type, 'rss_url' => $curVal, 'rss_topicid' => $topic));
 
 				return "<a href='" . $link . "'>" . $curVal . "</a>";
-				break;
 
 			case 'write': // Edit Page
 				$link = SITEURL . "feed/"; // e107::url('rss_menu','index').'/';
 
 				return "<div class='form-inline'>" . $link . e107::getForm()->text('rss_url', $curVal, 255, 'size=small') . "/rss/{Topic id}</div>";
-				break;
 
 			case 'filter':
 			case 'batch':
 				return null;
-				break;
 		}
 	}
 

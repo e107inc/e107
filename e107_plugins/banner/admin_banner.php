@@ -556,16 +556,13 @@ class banner_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $curVal;
-			break;
 
 			case 'write': // Edit Page
 				return $frm->text('banner_clientlogin',$curVal);		
-			break;
 
 			case 'filter':
 			case 'batch':
 				return null;
-			break;
 		}
 
 		return null;
@@ -583,16 +580,13 @@ class banner_form_ui extends e_admin_form_ui
 			//	$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BANNERLAN_30);
 				$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
 				return $curVal .' / '.$impressions_purchased;
-			break;
 
 			case 'write': // Edit Page
 				return $frm->text('banner_impressions',$curVal);		
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 
 		return null;
@@ -607,7 +601,6 @@ class banner_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $curVal;
-			break;
 
 			case 'write': // Edit Page
 				if (count($this->campaigns)) 
@@ -620,12 +613,10 @@ class banner_form_ui extends e_admin_form_ui
 					$text = $frm->text('banner_campaign',$curVal, '', array('size'=>'xlarge', 'placeholder'=>BNRLAN_PLACEHOLDER_ENTER_CAMPAIGN));
 				}
 				return $text; // $frm->text('banner_campaign',$curVal);		
-			break;
 
 			case 'filter':
 			case 'batch':
 				return  $this->campaigns; 
-			break;
 		}
 
 		return null;

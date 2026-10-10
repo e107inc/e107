@@ -2,6 +2,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 e107::plugLan('siteinfo', null);
 
 $text = "<div style='text-align:center'>

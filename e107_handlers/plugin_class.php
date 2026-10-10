@@ -492,7 +492,7 @@ class e_plugin
 
 	/**
 	 * Check if the currently loaded plugin's addon has errors.
-	 * @param string e_xxxx addon
+	 * @param string $e_xxx e_xxxx addon
 	 * @return int|array
 	 */
 	public function getAddonErrors($e_xxx)

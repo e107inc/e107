@@ -11,6 +11,9 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
+
+$ns = e107::getRender();
+
 if (!e107::isInstalled('pm')) { return ''; }
 
 $pm_prefs = e107::getPlugPref('pm');

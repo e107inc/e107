@@ -48,8 +48,8 @@ class e107_traffic
 	
 	/**
 	 * @return float         Time difference
-	 * @param string time $tStart   Start time - unexploded microtime result
-	 * @param string time $tStop    Finish time - unexploded microtime result
+	 * @param string $tStart   Start time - unexploded microtime result
+	 * @param string $tFinish  Finish time - unexploded microtime result
 	 * @desc Calculate time difference between to microtimes
 	 * @access public
 	 */

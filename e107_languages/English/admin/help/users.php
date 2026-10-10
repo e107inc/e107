@@ -16,6 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $caption = "User Management";
 if (e_QUERY) list($action) = explode('.',e_QUERY); else $action = 'list';
 

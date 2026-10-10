@@ -471,7 +471,6 @@ class admin_log_form_ui extends e_admin_form_ui
 		{
 			case 'write': // Edit Page
 				return $frm->text('sys_log_perpage',$curVal);		
-			break;	
 		}
 	}
 	
@@ -555,11 +554,9 @@ class admin_log_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return date("H:i:s", intval($curVal) % 86400).'.'.str_pad(100000 * round($curVal - floor($curVal), 6), 6, '0');
-			break;
 			
 			case 'write': // Edit Page
 				return $frm->text('dblog_microtime',$curVal);		
-			break;
 			
 			case 'filter':
 			case 'batch':
@@ -597,12 +594,10 @@ class admin_log_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return varset($array[$curVal], $curVal);
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return array(RL_LAN_132,RL_LAN_133,RL_LAN_134,RL_LAN_135);
-			break;
 		}
 	}
 
@@ -647,12 +642,10 @@ class admin_log_form_ui extends e_admin_form_ui
 				}
 
 				return $val;
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return  null;
-			break;
 		}
 	}
 
@@ -665,12 +658,10 @@ class admin_log_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $curVal;
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return  $array; 
-			break;
 		}
 	}
 
@@ -713,7 +704,6 @@ class admin_log_form_ui extends e_admin_form_ui
 				}		
 		 	
 				return $text;
-			break;
 
 			
 			case 'filter':
@@ -738,7 +728,6 @@ class admin_log_form_ui extends e_admin_form_ui
 					$val = $file.'<br />Function: '.$routine.'<br />Line: '.$rest;
 				}
 				return $val;
-			break;
 
 			
 			case 'filter':

@@ -14,6 +14,9 @@ use e107\Database\SqlFragment;
 
 require_once(__DIR__.'/../../class2.php');
 
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 if (!e107::isInstalled('chatbox_menu') || !getperms("P"))
 {
 	e107::redirect('admin');

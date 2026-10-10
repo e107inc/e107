@@ -339,7 +339,6 @@ class comments_admin_form_ui extends e_admin_form_ui
 		{
 			case "read":
 				return $this->getController()->getFieldVar('comment_author_name');
-				break;
 
 			case "write":
 
@@ -350,7 +349,6 @@ class comments_admin_form_ui extends e_admin_form_ui
 				}
 				
 				return $this->userpicker('comment_author_id', $curVal);
-				break;
 
 			default:
 				// code to be executed if n is different from all labels;

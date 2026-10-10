@@ -239,11 +239,9 @@ class UserHandler
 
 			case PASSWORD_E107_SALT :
 		        return PASSWORD_E107_ID.md5(md5($password).$login_name);
-		        break;
 
 			case PASSWORD_E107_PHP :
 	            return password_hash($password, PASSWORD_DEFAULT);
-		        break;
 		}
 
 		return false;
@@ -280,7 +278,6 @@ class UserHandler
 				if (md5($password) !== $stored_hash) return PASSWORD_INVALID;
 				if ($this->preferred == PASSWORD_E107_MD5 && ($this->passwordOpts <= 1)) return PASSWORD_VALID;
 				return $this->HashPassword($password);		// Valid password, but non-preferred encoding; return the new hash
-				break;
 
 			case PASSWORD_E107_SALT:
 				$hash = $this->HashPassword($password, $login_name, PASSWORD_E107_SALT);
@@ -1743,7 +1740,7 @@ class e_user_provider
 			$userdata['user_realm'] = '';
 			$userdata['user_pwchange'] = $now;
 
-			/** @var e_system_user' $user */
+			/** @var e_system_user $user */
 			$user = e107::getSystemUser(0, false);
 			$user->setData($userdata);
 			$user->getExtendedModel(); // init

@@ -10,6 +10,9 @@
 
 $eplug_admin = TRUE;
 require_once(__DIR__.'/../../class2.php');
+
+$ns = e107::getRender();
+
 e107::includeLan(e_PLUGIN."user/languages/".e_LANGUAGE.".php");
 
 require_once(e_HANDLER.'userclass_class.php');

@@ -97,7 +97,6 @@ class livejournal_import extends rss_import
 
 			default:
 				return $source[$type][0];
-			break;
 		}		
 
 

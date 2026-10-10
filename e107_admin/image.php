@@ -23,6 +23,9 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../class2.php');
 }
 
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 // e_form::mediaUrl() points every image and file picker in the admin area at
 // action=dialog, so the dialog answers to any administrator; the upload tab
 // inside it is what asks for A or A1.

@@ -2619,7 +2619,7 @@ class e_mm_layout
 	 * @param $row (array of data from $pref['menu_layouts']
 	 * @param $layout . eg. 'default' or 'home'
 	 * @param number $area as in {MENU=x}
-	 * @param incrementor number.
+	 * @param $c incrementor number.
 	 */
 	public function renderMenuOptions($row, $layout, $area, $c , $uniqueId='xxx')
 	{

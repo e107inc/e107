@@ -1139,16 +1139,12 @@ class BounceHandler
 			{
 				case(2):
 					return 'success';
-					break;
 				case(4):
 					return 'transient';
-					break;
 				case(5):
 					return 'failed';
-					break;
 				default:
 					return '';
-					break;
 			}
 		}
 

@@ -24,6 +24,9 @@
 
 //include and require several classes
 require_once(__DIR__.'/../../class2.php');
+
+$tp = e107::getParser();
+
 if(!getperms("1") || !e107::isInstalled('list_new'))
 {
 	e107::redirect('admin');
