@@ -582,7 +582,7 @@ class mailout_main_ui extends e_admin_ui
 		
 		$eml = array('subject'=>'Test Bounce',	'body'	=> 'Test Bounce Email address','e107_header'=>99999999, 'extra_header' => 'X-Bounce-Test: true');
 		
-		if(e107::getEmail()->sendEmail($sendto, 'Bounce handler', $eml))
+		if(e107::getEmail()->sendEmail($sendto, 'Bounce handler', $eml) === true)
 		{
 			$mes->addSuccess('Test Bounce sent to '.$sendto);
 		}

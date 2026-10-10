@@ -222,9 +222,9 @@ class _system_cron
 					'body'			=> $message
 				);
 
-		if(!e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml))
+		if(e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml) !== true)
 		{
-			error_log('e107: Cron _system_cron::sendEmail() failed to send email.', E_ERROR);
+			error_log('e107: Cron _system_cron::sendEmail() failed to send email.');
 		}
 
 	   // sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],SITEEMAIL, $pref['siteadmin']);

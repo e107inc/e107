@@ -2140,6 +2140,8 @@ class e107MailManager
 		}
 
 
+		$forceQueue = false;
+
 		if (is_array($options) && isset($options['mail_force_queue']))
 		{
 			$forceQueue = $options['mail_force_queue'];
@@ -2183,7 +2185,7 @@ class e107MailManager
 								continue;
 
 						*/
-				if (false == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, true))
+				if ($this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, true) !== true)
 				{
 					$tempResult = false;
 					if ($this->debugMode)

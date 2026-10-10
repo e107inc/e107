@@ -806,7 +806,7 @@ class private_message
 		$eml['template']			= 'default';
 		$eml['e107_header']			= $pmInfo['to_info']['user_id'];
 
-		if(e107::getEmail()->sendEmail($pmInfo['to_info']['user_email'], $pmInfo['to_info']['user_name'], $eml))
+		if(e107::getEmail()->sendEmail($pmInfo['to_info']['user_email'], $pmInfo['to_info']['user_name'], $eml) === true)
 		{
 			return true;
 		}

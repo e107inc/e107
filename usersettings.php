@@ -179,7 +179,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			'body'			=> $text,
 		);
 
-		if(e107::getEmail()->sendEmail(USEREMAIL,USERNAME, $eml))
+		if(e107::getEmail()->sendEmail(USEREMAIL,USERNAME, $eml) === true)
 		{
 			e107::getDb()->createQueryBuilder()->update('user')
 				->set('user_sess', $hash)
@@ -191,8 +191,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		}
 
-		//todo Email Failure message.
-		return null;
+		return e107::getMessage()->addError(defset('LAN_USET_DELETE_EMAIL_UNSENT', "Your account has not been deleted, because the confirmation email could not be sent. Try again later, or contact the site administrator."))->render();
 
 
 

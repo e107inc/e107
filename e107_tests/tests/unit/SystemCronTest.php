@@ -1,13 +1,15 @@
 <?php
 
 /**
- * What the Test Email is allowed to say about the site it is describing.
+ * What the Test Email is allowed to say about the site it is describing, and what it leaves behind when it cannot be sent.
  *
  * @see _system_cron::withoutSecrets()
  */
 class SystemCronTest extends \Test\Unit
 {
 	const TOKEN = 'd8f1a0b3c5e7290146a8b2d4f60c9e13a7b5d029';
+
+	const MAILER = 'core/e107/singleton/e107Email';
 
 	/** @var _system_cron */
 	private $cron;
@@ -121,5 +123,31 @@ class SystemCronTest extends \Test\Unit
 		$vars = array('e_QUERY' => 'token=', 'e_HTTP' => '/', 'e_BASE' => '/var/www/html/');
 
 		self::assertSame($vars, $this->filter($vars));
+	}
+
+	/**
+	 * e107Email::sendEmail() answers a failed send with the mailer's error message, never with false.
+	 */
+	public function testATestEmailThatCouldNotBeSentIsWrittenToTheErrorLog()
+	{
+		$log = tempnam(sys_get_temp_dir(), 'e107cron');
+		$previousLog = ini_set('error_log', $log);
+		$previousMailer = e107::getRegistry(self::MAILER);
+		e107::setRegistry(self::MAILER, $this->make('e107Email', array('sendEmail' => 'Could not execute: /bin/false')));
+
+		try
+		{
+			$this->cron->sendEmail();
+			$logged = file_get_contents($log);
+		}
+		finally
+		{
+			e107::setRegistry(self::MAILER, $previousMailer);
+			ini_set('error_log', $previousLog);
+			unlink($log);
+		}
+
+		self::assertStringContainsString('_system_cron::sendEmail() failed to send email', $logged,
+			'A Test Email that could not be sent must say so in the error log.');
 	}
 }
