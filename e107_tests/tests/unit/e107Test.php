@@ -1328,22 +1328,29 @@ class e107Test extends \Test\Unit
 	 */
 	public function testUrlLegacy()
 	{
-
-		// set eURL config to 'Friendly'
-		$oldConfig = e107::getPref('url_config');
-
-		$newConfig = array(
+		$restore = $this->withUrlConfig(array(
 			'news'   => 'core/sef_full',
 			'page'   => 'core/sef_chapters',
 			'search' => 'core/rewrite',
 			'system' => 'core/rewrite',
 			'user'   => 'core/rewrite',
-			//		'gallery' => 'plugin/rewrite'
-		);
+		));
 
+		try
+		{
+			$this->assertLegacyUrls();
+		}
+		finally
+		{
+			$restore();
+		}
+	}
 
-		$this->setUrlConfig($newConfig);
-
+	/**
+	 * Builds each legacy route both ways under the 'Friendly' configuration {@see e107Test::testUrlLegacy()} sets.
+	 */
+	private function assertLegacyUrls()
+	{
 		$legacyTests = array(
 
 			0 => array(
@@ -1429,44 +1436,6 @@ class e107Test extends \Test\Unit
 
 
 		}
-
-
-		$this->setUrlConfig($oldConfig);  // return config to previous state.
-
-
-	}
-
-
-	/**
-	 * Save the url_config preference
-	 *
-	 * @param array $newConfig
-	 */
-	private function setUrlConfig($newConfig = array())
-	{
-
-		if(empty($newConfig))
-		{
-			return;
-		}
-
-		$cfg = e107::getConfig();
-
-		foreach($newConfig as $k => $v)
-		{
-			$cfg->setPref('url_config/' . $k, $v);
-		}
-
-		$cfg->save(false, true);
-
-		$router = e107::getUrl()->router(); // e107::getSingleton('eRouter');
-		$rules = $router->getRuleSets();
-
-		if(empty($rules['news']) || empty($rules['page']))
-		{
-			$router->loadConfig(true);
-		}
-
 	}
 
 	/**
