@@ -102,21 +102,15 @@ if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount']
 			$campaignPlaceholders[] = 'banner_campaign = :'.$key;
 		}
 
-		// banner_active class set, bound value by value.
-		$classPlaceholders = array();
-		foreach(explode(',', USERCLASS_LIST) as $i => $class)
-		{
-			$key = 'class'.$i;
-			$params[$key] = $class;
-			$classPlaceholders[] = ':'.$key;
-		}
+		$rule = \e107\Userclass\Membership::current()->predicate('banner_active');
+		$params += $rule->getParameters();
 
 		$query = "SELECT banner_id, banner_image, banner_clickurl, banner_campaign, banner_description FROM `#banner`";
 		$query .= " WHERE (banner_startdate=0 OR banner_startdate <= :time) AND (banner_enddate=0 OR banner_enddate > :time) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)";
 		$query .= (count($campaignPlaceholders)) ? " AND (".implode(" OR ", $campaignPlaceholders)." ) " : "";
 	//	$query .= ($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '');
 
-		$query .= " AND banner_active IN (".implode(', ', $classPlaceholders).") ";
+		$query .= " AND ".$rule->getSql()." ";
 
 		$query .= " ORDER BY ";
 

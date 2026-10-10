@@ -122,7 +122,7 @@ class news_sitelink // include plugin-folder in the name.
 
 		$qb = $sql->createQueryBuilder();
 		$rows = $qb->select('*')->from('news')
-			->where($qb->expr()->regexp('news_class', e_CLASS_REGEXP))
+			->where(\e107\Userclass\Membership::current()->predicate('news_class'))
 			->whereNot(function($q) use ($nobody_regexp) {
 				$q->where($q->expr()->regexp('news_class', $nobody_regexp));
 			})

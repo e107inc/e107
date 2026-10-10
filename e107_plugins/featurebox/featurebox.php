@@ -19,7 +19,7 @@ if (!e107::isInstalled('featurebox'))
 $fbRows = e107::getDb()->createQueryBuilder()
 	->select('*')->from('featurebox')
 	->where('fb_mode', 1)
-	->whereIn('fb_class', explode(',', USERCLASS_LIST))
+	->where(\e107\Userclass\Membership::current()->predicate('fb_class'))
 	->orderBy('fb_class', 'ASC')
 	->fetchAll();
 
@@ -47,7 +47,7 @@ else
 	$nfArray = e107::getDb()->createQueryBuilder()
 		->select('*')->from('featurebox')
 		->where('fb_mode', '!=', 1)
-		->whereIn('fb_class', explode(',', USERCLASS_LIST))
+		->where(\e107\Userclass\Membership::current()->predicate('fb_class'))
 		->fetchAll();
 
 	if($nfArray)
