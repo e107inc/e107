@@ -314,7 +314,8 @@ compose_up_cmd() {
     E107_DB_EXTRA_ARGS=$E107_DB_EXTRA_ARGS \
     E107_BASE_PATH=$BASE_PATH \
     E107_COMPOSER_CACHE=${E107_COMPOSER_CACHE:-} \
-    docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" "$@"
+    docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" \
+        ${START_INTERVAL_FILE:+-f "$START_INTERVAL_FILE"} "$@"
 }
 
 compose_p() {
@@ -415,6 +416,16 @@ db_flavor_args() {
             E107_DB_EXTRA_ARGS=--mysql-native-password=ON
             ;;
     esac
+}
+
+# compose.start-interval.yml, on the engine that takes it: Docker's own, from 25.
+start_interval_file() {
+    local engine
+    engine=$(docker version --format '{{range .Server.Components}}{{if eq .Name "Engine"}}{{.Version}}{{end}}{{end}}' 2>/dev/null) || true
+    START_INTERVAL_FILE=
+    if [ "${engine%%.*}" -ge 25 ] 2>/dev/null; then
+        START_INTERVAL_FILE=$DOCKER_DIR/compose.start-interval.yml
+    fi
 }
 
 # ---------------------------------------------------------------------------
@@ -627,7 +638,11 @@ deps_install_once() {
         fi
         META=vendor/.e107-meta
         mkdir -p "$META/locks"
-        exec 9> "$META/.lock"
+        # Composer 2.2, the line PHP 5.6 and 7.0 get, fails when another install
+        # makes a directory in the cache under it, so installs take turns on it.
+        LOCKFILE=/root/.composer/cache/.e107-install.lock
+        touch "$LOCKFILE" 2>/dev/null || LOCKFILE=$META/.lock
+        exec 9> "$LOCKFILE"
         flock -w 900 9
         cp -f composer.json "$META/composer.json"
         rm -f "$META"/locks/* "$META/composer.lock"
@@ -776,6 +791,7 @@ cmd_up() {
     PROJECT=$(project_name "$PHP" "$DB")
     normalise_base_path "$base"
     db_flavor_args
+    start_interval_file
     if [ -n "${E107_COMPOSER_CACHE:-}" ]; then
         mkdir -p -- "$E107_COMPOSER_CACHE"
         E107_COMPOSER_CACHE=$(readlink -f -- "$E107_COMPOSER_CACHE")
