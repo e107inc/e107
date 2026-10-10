@@ -20,6 +20,8 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 
 	const ID = 'nonblockingtest0123456789abcdef';
 
+	const SITE = 'nonblockingsite';
+
 	/** @var string */
 	private $dir;
 
@@ -67,7 +69,7 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 	 */
 	private function handler($savePath = null)
 	{
-		return new NonblockingFilesSessionHandler(null === $savePath ? $this->dir : $savePath);
+		return new NonblockingFilesSessionHandler(null === $savePath ? $this->dir : $savePath, self::SITE);
 	}
 
 	public function testAWriteLeavesTheDataWholeAndReadableOnlyByItsOwner()
@@ -132,6 +134,78 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 		$this->assertTrue(file_exists($this->dir.'/unrelated'));
 	}
 
+	public function testTheCollectorRemovesAnAccountFileOnlyOnceItsSessionIsGoneAndItIsStale()
+	{
+		$handler = $this->handler();
+		$handler->write('alive', 'x|i:1;');
+		file_put_contents($this->dir.'/e107_'.self::SITE.'_1', 'gone');
+		file_put_contents($this->dir.'/e107_'.self::SITE.'_2', 'alive');
+		file_put_contents($this->dir.'/e107_'.self::SITE.'_3', 'gone');
+		file_put_contents($this->dir.'/e107_othersite_4', 'gone');
+		touch($this->dir.'/e107_'.self::SITE.'_1', time() - 7200);
+		touch($this->dir.'/e107_'.self::SITE.'_2', time() - 7200);
+		touch($this->dir.'/e107_othersite_4', time() - 7200);
+
+		$handler->gc(3600);
+
+		$this->assertFalse(file_exists($this->dir.'/e107_'.self::SITE.'_1'), 'stale, and its session is gone');
+		$this->assertTrue(file_exists($this->dir.'/e107_'.self::SITE.'_2'), 'its session is still there');
+		$this->assertTrue(file_exists($this->dir.'/e107_'.self::SITE.'_3'), 'claimed too recently to be stale');
+		$this->assertTrue(file_exists($this->dir.'/e107_othersite_4'), 'another site sharing the directory owns it');
+	}
+
+	public function testAClaimEndsTheSessionTheAccountClaimedBefore()
+	{
+		$handler = $this->handler();
+		$handler->write('earlier', 'x|i:1;');
+		file_put_contents($this->dir.'/e107_'.self::SITE.'_77', 'earlier');
+
+		$this->assertTrue($handler->claim(77, self::ID));
+		$this->assertFalse(file_exists($this->dir.'/sess_earlier'));
+		$this->assertSame(self::ID, file_get_contents($this->dir.'/e107_'.self::SITE.'_77'));
+		$this->assertSame(0600, fileperms($this->dir.'/e107_'.self::SITE.'_77') & 0777, 'it names a live session, so only its owner may read it');
+	}
+
+	public function testAClaimEndsNothingOfAnotherAccountOrSite()
+	{
+		$handler = $this->handler();
+		$handler->write('theirs', 'x|i:1;');
+		file_put_contents($this->dir.'/e107_'.self::SITE.'_78', 'theirs');
+		file_put_contents($this->dir.'/e107_othersite_77', 'theirs');
+
+		$this->assertFalse($handler->claim(77, self::ID));
+		$this->assertTrue(file_exists($this->dir.'/sess_theirs'));
+	}
+
+	public function testAClaimByTheSessionTheAccountFileAlreadyNamesEndsNothing()
+	{
+		$handler = $this->handler();
+		$handler->write(self::ID, 'x|i:1;');
+		file_put_contents($this->dir.'/e107_'.self::SITE.'_77', self::ID);
+
+		$this->assertFalse($handler->claim(77, self::ID));
+		$this->assertTrue(file_exists($this->dir.'/sess_'.self::ID));
+	}
+
+	public function testAnAccountFileNamingSomethingThatIsNotASessionIdEndsNothing()
+	{
+		$handler = $this->handler();
+		file_put_contents($this->dir.'/escape', 'x');
+		file_put_contents($this->dir.'/e107_'.self::SITE.'_77', '../escape');
+
+		$this->assertFalse($handler->claim(77, self::ID));
+		$this->assertTrue(file_exists($this->dir.'/escape'));
+	}
+
+	public function testAClaimForNoAccountOrAMalformedIdIsRefused()
+	{
+		$handler = $this->handler();
+
+		$this->assertFalse($handler->claim(0, self::ID));
+		$this->assertFalse($handler->claim(77, '../escape'));
+		$this->assertSame(array(), glob($this->dir.'/e107_*'));
+	}
+
 	/**
 	 * A request still running when another signs the session out, or ends it for a newer sign-in, must not put it back.
 	 */
@@ -180,7 +254,7 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 		$running = $this->handler();
 		$running->read(self::ID);
 
-		$this->runInBootedCli("\$store = new \\e107\\SessionHandlers\\NonblockingFilesSessionHandler(".var_export($this->dir, true)."); \$store->destroy('".self::ID."');");
+		$this->runInBootedCli("\$store = new \\e107\\SessionHandlers\\NonblockingFilesSessionHandler(".var_export($this->dir, true).", '".self::SITE."'); \$store->destroy('".self::ID."');");
 
 		$this->assertTrue($running->write(self::ID, 'token|s:3:"7.x";page|s:5:"later";'));
 		$this->assertFalse(file_exists($this->dir.'/sess_'.self::ID));
@@ -215,6 +289,29 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 		$this->assertSame('', $this->handler()->read(self::ID));
 	}
 
+	public function testAnAccountFileAnotherAccountOwnsIsNotTrusted()
+	{
+		$handler = $this->handler();
+		$handler->write('earlier', 'x|i:1;');
+		file_put_contents($this->dir.'/e107_'.self::SITE.'_77', 'earlier');
+		$this->ownedByAnotherAccount($this->dir.'/e107_'.self::SITE.'_77');
+
+		$this->assertFalse($handler->claim(77, self::ID));
+		$this->assertTrue(file_exists($this->dir.'/sess_earlier'));
+	}
+
+	public function testAnAccountFileThatIsALinkIsNeitherTrustedNorWrittenThrough()
+	{
+		$handler = $this->handler();
+		$handler->write('earlier', 'x|i:1;');
+		file_put_contents($this->dir.'/target', 'earlier');
+		symlink($this->dir.'/target', $this->dir.'/e107_'.self::SITE.'_77');
+
+		$this->assertFalse($handler->claim(77, self::ID));
+		$this->assertTrue(file_exists($this->dir.'/sess_earlier'));
+		$this->assertSame('earlier', file_get_contents($this->dir.'/target'));
+	}
+
 	/**
 	 * @param string $file
 	 * @return void
@@ -241,6 +338,36 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 	public function testOpeningADirectoryThatCannotBeWrittenFails()
 	{
 		$this->assertFalse($this->handler($this->dir.'/missing')->open($this->dir.'/missing', 'PHPSESSID'));
+	}
+
+	/**
+	 * Where open_basedir leaves the session directory out, PHP's own module still reaches it and this store cannot, so the site keeps working sessions through plain files.
+	 */
+	public function testTheNonblockingSaveMethodFallsBackToFilesItCannotReach()
+	{
+		$config = \e107::getConfig();
+		$this->methodWas = $config->get('session_save_method');
+		$this->methodChanged = true;
+		$config->set('session_save_method', 'nonblocking')->save(false, true, false);
+
+		$outside = '/var/tmp/e107-nonblocking-basedir-'.getmypid().'-'.mt_rand();
+		mkdir($outside, 0700);
+
+		try
+		{
+			$php = "fwrite(STDERR, '@@'.ini_get('session.save_handler').':'.session_status().':'.(e107::getRegistry('core/e107/sole_session') ? 'claims' : 'cannot claim').'@@');";
+			list($output) = $this->runInBootedCli($php, self::BUFFERED
+				.' -d open_basedir='.escapeshellarg(implode(PATH_SEPARATOR, array(APP_PATH, sys_get_temp_dir(), '/dev/urandom')))
+				.' -d session.save_path='.escapeshellarg($outside));
+		}
+		finally
+		{
+			$this->removeTree($outside);
+		}
+
+		$printed = implode("\n", $output);
+		$this->assertStringContainsString('@@user:'.PHP_SESSION_ACTIVE.':cannot claim@@', $printed);
+		$this->assertStringNotContainsString('open_basedir restriction', $printed);
 	}
 
 	/**

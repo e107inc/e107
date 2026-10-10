@@ -21,6 +21,8 @@ use e107\SessionHandlers\FilesSessionHandler;
 use e107\SessionHandlers\NonblockingFilesSessionHandler;
 use e107\SessionHandlers\SessionId;
 use e107\SessionHandlers\SessionSignIn;
+use e107\SessionHandlers\SoleSession;
+use e107\SessionHandlers\SoleSessionStoreInterface;
 
 // Include CSRF handler classes
 require_once(e_HANDLER . 'csrf_handler.php');
@@ -1028,6 +1030,8 @@ public function getData($key = null, $clear = false)
     /**
      * Hand PHP the storage the save method names: core's own handler where it has one, otherwise PHP's module of that name.
      *
+     * A handler that can end an account's other sessions is published as a {@see SoleSession} under core/e107/sole_session.
+     *
      * @return void
      */
     private function installSaveHandler()
@@ -1040,11 +1044,19 @@ public function getData($key = null, $clear = false)
             return;
         }
 
-        session_set_save_handler($handler, true);
+        if (session_set_save_handler($handler, true) && $handler instanceof SoleSessionStoreInterface && $handler->canClaim())
+        {
+            $isEnabled = static function ()
+            {
+                return (bool) e107::getPref('disallowMultiLogin');
+            };
+
+            e107::setRegistry('core/e107/sole_session', new SoleSession($handler, new SessionSignIn(defset('e_COOKIE', 'e107cookie')), $isEnabled));
+        }
     }
 
     /**
-     * Core's handler for a save method, with PHP's module set to the one that handler builds on.
+     * Core's handler for a save method, with PHP's module set to the one that handler builds on; "nonblocking" falls back to "files" where it cannot reach its directory.
      *
      * @param string $method
      * @return SessionHandlerInterface|null null for a method core has no handler for
@@ -1058,11 +1070,13 @@ public function getData($key = null, $clear = false)
 
             case 'files':
                 session_module_name('files');
-                return new FilesSessionHandler(session_save_path());
+                return new FilesSessionHandler(session_save_path(), e107::getInstance()->site_path);
 
             case 'nonblocking':
                 session_module_name('files');
-                return new NonblockingFilesSessionHandler(session_save_path());
+                $store = new NonblockingFilesSessionHandler(session_save_path(), e107::getInstance()->site_path);
+
+                return $store->canClaim() ? $store : $this->coreSaveHandler('files');
         }
 
         return null;

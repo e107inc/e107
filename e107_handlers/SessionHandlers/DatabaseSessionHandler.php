@@ -13,7 +13,7 @@ namespace e107\SessionHandlers;
 /**
  * Session storage in the session table, one row per session keyed by a digest of the session id.
  */
-class DatabaseSessionHandler implements \SessionHandlerInterface
+class DatabaseSessionHandler implements \SessionHandlerInterface, SoleSessionStoreInterface
 {
 	/**
 	 * Digest the session id is stored under, and the prefix that marks a row as
@@ -272,6 +272,36 @@ class DatabaseSessionHandler implements \SessionHandlerInterface
 			->whereIn('session_id', self::storageKeys($id))
 			->execute();
 		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function canClaim()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Rows past their expiry are left to the collector, and are not reported as ended.
+	 */
+	public function claim($userId, $sessionId)
+	{
+		$userId = (int) $userId;
+
+		if($userId < 1 || !SessionId::isWellFormed($sessionId))
+		{
+			return false;
+		}
+
+		return 0 < (int) $this->_db->createQueryBuilder()
+			->delete($this->getTable())
+			->where('session_user', $userId)
+			->where('session_expires', '>', time())
+			->whereNotIn('session_id', self::storageKeys($sessionId))
+			->execute();
 	}
 
 	/**

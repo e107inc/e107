@@ -19,6 +19,10 @@ class e_session_dbTest extends \Test\Unit
 
 	const PROBE_ID = 'sessdbtestgcprobe0123456789';
 
+	const OTHER = 'sessdbtestotherbrowser0123456789';
+
+	const THEIRS = 'sessdbtesttheirbrowser0123456789';
+
 	/** A child's php arguments that hold its output back, so the notices its boot prints send no headers and its session settings stay changeable. */
 	const BUFFERED = '-d output_buffering=On';
 
@@ -48,7 +52,7 @@ class e_session_dbTest extends \Test\Unit
 	private function forget()
 	{
 		$this->db()->createQueryBuilder()->delete('session')
-			->whereIn('session_id', array(e_session_db::storageKey(self::ID), self::ID, strtoupper(self::ID), self::EXPIRED, e_session_db::storageKey(self::PROBE_ID)))
+			->whereIn('session_id', array(e_session_db::storageKey(self::ID), self::ID, strtoupper(self::ID), self::EXPIRED, e_session_db::storageKey(self::PROBE_ID), e_session_db::storageKey(self::OTHER), e_session_db::storageKey(self::THEIRS)))
 			->execute();
 	}
 
@@ -200,6 +204,59 @@ class e_session_dbTest extends \Test\Unit
 
 		$this->assertStringContainsString('@@started@@', implode("\n", $output));
 		$this->assertFalse($this->rowExists(self::EXPIRED), 'the session start ran the collector');
+	}
+
+	public function testAClaimEndsTheAccountsOtherLiveSessionsAndNoOneElses()
+	{
+		$this->haveOwnedRow(e_session_db::storageKey(self::ID), 77, time() + 600);
+		$this->haveOwnedRow(e_session_db::storageKey(self::OTHER), 77, time() + 600);
+		$this->haveOwnedRow(e_session_db::storageKey(self::THEIRS), 78, time() + 600);
+
+		$this->assertTrue($this->handler->claim(77, self::ID));
+		$this->assertTrue($this->rowExists(e_session_db::storageKey(self::ID)), 'the claiming session stays');
+		$this->assertFalse($this->rowExists(e_session_db::storageKey(self::OTHER)));
+		$this->assertTrue($this->rowExists(e_session_db::storageKey(self::THEIRS)));
+	}
+
+	public function testAClaimLeavesAnExpiredRowToTheCollectorAndReportsNothingEnded()
+	{
+		$this->haveOwnedRow(e_session_db::storageKey(self::OTHER), 77, time() - 10);
+
+		$this->assertFalse($this->handler->claim(77, self::ID));
+		$this->assertTrue($this->rowExists(e_session_db::storageKey(self::OTHER)));
+	}
+
+	public function testAClaimKeepsTheClaimingSessionsOwnRowWrittenBeforeHashing()
+	{
+		$this->haveOwnedRow(self::ID, 77, time() + 600);
+
+		$this->assertFalse($this->handler->claim(77, self::ID));
+		$this->assertTrue($this->rowExists(self::ID));
+	}
+
+	public function testAClaimForNoAccountOrAMalformedIdEndsNothing()
+	{
+		$this->haveOwnedRow(e_session_db::storageKey(self::OTHER), 77, time() + 600);
+
+		$this->assertFalse($this->handler->claim(0, self::ID));
+		$this->assertFalse($this->handler->claim(77, ''));
+		$this->assertFalse($this->handler->claim(77, 'not a session id'));
+		$this->assertTrue($this->rowExists(e_session_db::storageKey(self::OTHER)));
+	}
+
+	/**
+	 * @param string $key
+	 * @param int $owner
+	 * @param int $expires
+	 */
+	private function haveOwnedRow($key, $owner, $expires)
+	{
+		$this->db()->createQueryBuilder()->insert('session')->values(array(
+			'session_id'      => $key,
+			'session_expires' => $expires,
+			'session_user'    => $owner,
+			'session_data'    => base64_encode('owned'),
+		))->execute();
 	}
 
 	public function testAWriteStampsTheRowWithTheAccountTheSessionIsSignedInAs()
