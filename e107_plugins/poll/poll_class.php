@@ -121,7 +121,7 @@ class poll
 		$sql = e107::getDb();
 		$admin_log = e107::getLog();
 
-		$pollID         = (int) varset($_POST['poll_id']);
+		$pollID         = ($mode == 1) ? (int) varset($_POST['poll_id']) : 0;
 		$poll_title		= $tp->toDB($_POST['poll_title']);
 		$poll_comment	= $tp->toDB($_POST['poll_comment']);
 		$multipleChoice	= intval($_POST['multipleChoice']);

@@ -197,7 +197,22 @@ class ForumFixture extends AppFixture
 	 */
 	public function haveSitePref($name, $value = null)
 	{
-		$body = $this->probe('act=pref&name='.urlencode($name)
+		return $this->havePluginPref('', $name, $value);
+	}
+
+	/**
+	 * Write one setting of a plugin's config, or remove it when $value is null,
+	 * leaving the rest of the config as it was, and hand back the value it
+	 * replaced. {@see ForumFixture::havePluginPrefs()} replaces all of them.
+	 *
+	 * @param string $plugin plugin folder name; empty for the core preferences
+	 * @param string $name
+	 * @param string|int|null $value
+	 * @return string the replaced value, empty when the setting was unset
+	 */
+	public function havePluginPref($plugin, $name, $value = null)
+	{
+		$body = $this->probe('act=pref&plugin='.urlencode($plugin).'&name='.urlencode($name)
 			.'&value='.urlencode($value === null ? '' : (string) $value));
 
 		return preg_match('/^PROBE_PREF_WAS (.*)$/m', $body, $matches) ? $matches[1] : '';
@@ -784,7 +799,7 @@ switch($act)
 		break;
 
 	case 'pref':
-		$config = e107::getConfig();
+		$config = empty($_GET['plugin']) ? e107::getConfig() : e107::getPlugConfig($_GET['plugin']);
 		echo "PROBE_PREF_WAS ".(string) $config->getPref($_GET['name'])."\n";
 		if($_GET['value'] === '') { $config->removePref($_GET['name']); }
 		else { $config->setPref($_GET['name'], $_GET['value']); }
