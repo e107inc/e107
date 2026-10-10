@@ -4443,7 +4443,7 @@ var_dump($select_options);*/
 				case 'tabindex':
 					if($optval)
 					{
-						$ret .= " tabindex='{$optval}'";
+						$ret .= $this->attributes([$option => intval($optval)]);
 					}
 					elseif($optval === false || !$this->_tabindex_enabled)
 					{

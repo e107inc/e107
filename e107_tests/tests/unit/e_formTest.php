@@ -1353,6 +1353,19 @@ class e_formTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * {@see e_form::get_attributes()} writes tabindex inside single quotes, so a value it does not coerce closes the attribute.
+	 */
+	public function testTabindexCannotEscapeItsOwnAttribute()
+	{
+		$result = $this->_frm->text('author_name', '', 100, "tabindex=1' autofocus onfocus=alert(1)");
+
+		self::assertStringContainsString("tabindex='1'", $result,
+			'a numeric tabindex still renders unchanged');
+		self::assertStringNotContainsString('onfocus', $result,
+			'the value broke out of tabindex and added an event handler: ' . $result);
+	}
+
+	/**
 	 * Loads snipper from e107_themes/bootstrap/snippets/form_checkbox.html
 	 */
 
