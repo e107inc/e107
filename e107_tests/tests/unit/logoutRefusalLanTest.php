@@ -24,12 +24,13 @@
 class logoutRefusalLanTest extends \Test\Unit
 {
 	/**
-	 * The refusal strings this branch introduces, each defined in exactly one
+	 * The strings the logout guards answer with, each defined in exactly one
 	 * English language file.
 	 *
 	 * @var array
 	 */
 	private static $refusalStrings = array(
+		'LAN_LOGOUT_CONFIRM_QUESTION',
 		'LAN_LOGOUT_REFUSED_TOKEN_MISSING',
 		'LAN_USET_DELETE_LINK_INVALID',
 	);
