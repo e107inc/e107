@@ -717,4 +717,16 @@
 				'a preference saved outside the admin area must not pull the admin language pack in');
 		}
 
+		public function testARowWhoseValueHoldsExportedTextLoadsWhole()
+		{
+			$id = $this->expectRow('test_pref_exported_text');
+			$row = array('note' => "see 0 => 'x'", 'other' => 'kept');
+			e107::getDb()->createQueryBuilder()->insert('core')
+				->values(array('e107_name' => $id, 'e107_value' => e107::serialize($row, false)))
+				->execute();
+
+			$this->assertSame($row, $this->openPref($id)->getPref(), 'read from the database');
+			$this->assertSame($row, $this->openPref($id)->getPref(), 'read from the cache file that load wrote');
+		}
+
 	}
