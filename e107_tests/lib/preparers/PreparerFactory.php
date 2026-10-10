@@ -44,18 +44,6 @@ class PreparerFactory
 		return self::$instance;
 	}
 
-	/**
-	 * @return Preparer
-	 */
-	public static function create()
-	{
-		if (self::$instance !== null)
-		{
-			return self::$instance;
-		}
-		return self::createForPath(APP_PATH);
-	}
-
 	private static function systemIsSlow()
 	{
 		return self::systemIsWindows();

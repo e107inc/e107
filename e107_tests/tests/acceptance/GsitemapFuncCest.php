@@ -41,6 +41,7 @@ class GsitemapFuncCest
 		$I->seeInSource('RESET_DONE');
 
 		$I->havePluginInstalled('gsitemap');
+		$I->haveForumPluginInstalled();
 
 		$suffix = uniqid('', false);
 		$this->restrictedForum = 'P6 Restricted Forum '.$suffix;

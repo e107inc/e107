@@ -395,7 +395,7 @@ class AdminPreAuthCest
 	 *
 	 * The canary is read inside the web process, through the probe, because
 	 * that is the only place it would land. APP_PATH is the runner's own tree
-	 * and Extension\WorkspaceGuard::appRunsInPlace() documents that under a
+	 * and Extension\SandboxGuard::appRunsInPlace() documents that under a
 	 * deploying deployer the app is served from somewhere else entirely, where
 	 * a filesystem assertion on APP_PATH would be true against a fully
 	 * exploitable site.
