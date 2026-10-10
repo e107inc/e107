@@ -866,7 +866,7 @@ class users_admin_ui extends e_admin_ui
 
 			//	$options['debug'] = 1;
 
-				if($ret =$sysuser->email('email', $options))
+				if($sysuser->email('email', $options) === true)
 				{
 					$mes->addSuccess(USRLAN_224." ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
 				}
@@ -1729,7 +1729,7 @@ class users_admin_ui extends e_admin_ui
 			'user_password' => $newPwd
 		), $userInfo);
 		
-		if ($check)
+		if ($check === true)
 		{
 			$vars = array('x'=> $sysuser->getId(), 'y'=>$sysuser->getName(), 'z'=> $sysuser->getValue('email'));
 			$message = e107::getParser()->lanVars(USRLAN_167,$vars);
@@ -2100,11 +2100,11 @@ class users_admin_ui extends e_admin_ui
 					break;
 				}
 
-				if($check && $check !== -1)
+				if($check === true)
 				{
 					$mes->addSuccess(USRLAN_188);
 				}
-				elseif(!$check)
+				elseif($check !== -1)
 				{
 					$mes->addError(USRLAN_189);
 				}
