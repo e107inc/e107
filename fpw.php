@@ -149,6 +149,21 @@ function fpw_answered()
 	exit;
 }
 
+/**
+ * Deletes one reset code, so that it is neither redeemable nor the account's outstanding request.
+ *
+ * @param string $info
+ *   The code's row as written, uid#loginname#code.
+ * @return void
+ */
+function fpw_delete_code($info)
+{
+	e107::getDb()->createQueryBuilder()->delete('tmp')
+		->where('tmp_ip', 'pwreset')
+		->where('tmp_info', $info)
+		->execute();
+}
+
 $fpw_siteurl = e107::getPref('siteurl');
 if (empty($fpw_siteurl))
 {
@@ -191,10 +206,7 @@ if(e_QUERY)
 		// prune in class2.php stretched the real window to 900 seconds.
 		if(time() > (int) $row['tmp_time'])
 		{
-			$sql->createQueryBuilder()->delete('tmp')
-				->where('tmp_time', (int) $row['tmp_time'])
-				->where('tmp_info', $row['tmp_info'])
-				->execute();
+			fpw_delete_code($row['tmp_info']);
 			e107::getMessage()->addDebug("Tmp Password Reset Entry Deleted");
 			fpw_error(LAN_FPW7);
 		}
@@ -218,10 +230,7 @@ if(e_QUERY)
 		// Spend the code before it is acted on. It used to survive redemption, so
 		// anyone holding the emailed link, a mail scanner or a shared mailbox
 		// included, could reset the account again and again until it expired.
-		$sql->createQueryBuilder()->delete('tmp')
-			->where('tmp_ip', 'pwreset')
-			->where('tmp_info', $row['tmp_info'])
-			->execute();
+		fpw_delete_code($row['tmp_info']);
 
 		// Generate new temporary password
 		$pwdArray = e107::getUserSession()->resetPassword($uid,$loginName, array('return'=>'array'));
@@ -424,6 +433,7 @@ if (!empty($_POST['pwsubmit']))
 
 		if(!$sent)
 		{
+			fpw_delete_code($insertQry['tmp_info']);
 			error_log('fpw.php: A password reset link could not be sent to user #'.$row['user_id'].'. Check the mail settings in Admin → Preferences.');
 		}
 	}
