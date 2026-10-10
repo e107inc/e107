@@ -224,6 +224,63 @@ class e_session_dbTest extends \Codeception\Test\Unit
 		$this->assertFalse($this->rowExists(self::EXPIRED), 'the session start ran the collector');
 	}
 
+	public function testAWriteStampsTheRowWithTheAccountTheSessionIsSignedInAs()
+	{
+		$this->assertSame(42, $this->ownerAfterWriting('42.'.md5('stamp')));
+	}
+
+	public function testAWriteWithoutASignInStampsNoAccount()
+	{
+		$this->assertSame(0, $this->ownerAfterWriting(null));
+	}
+
+	public function testATokenWhoseAccountIsNotAWholeNumberStampsNoAccount()
+	{
+		$this->assertSame(0, $this->ownerAfterWriting('7e1.'.md5('stamp')), 'read as a number, "7e1" would be account 70');
+	}
+
+	/**
+	 * Writes self::ID while the session carries $token as its sign-in, then reads back whom the row was stamped with.
+	 *
+	 * @param string|null $token null for a session nobody has signed in to
+	 * @return int|null
+	 */
+	private function ownerAfterWriting($token)
+	{
+		$authKey = defset('e_COOKIE', 'e107cookie');
+		$had = isset($_SESSION) && array_key_exists($authKey, $_SESSION);
+		$was = $had ? $_SESSION[$authKey] : null;
+
+		if(null === $token)
+		{
+			unset($_SESSION[$authKey]);
+		}
+		else
+		{
+			$_SESSION[$authKey] = $token;
+		}
+
+		try
+		{
+			$this->handler->write(self::ID, 'stamped');
+		}
+		finally
+		{
+			if($had)
+			{
+				$_SESSION[$authKey] = $was;
+			}
+			else
+			{
+				unset($_SESSION[$authKey]);
+			}
+		}
+
+		$owner = $this->db()->retrieve('session', 'session_user', "session_id='".e_session_db::storageKey(self::ID)."'");
+
+		return false === $owner || null === $owner ? null : (int) $owner;
+	}
+
 	/**
 	 * Closes a handler in a child whose session.gc_probability is $probability, the generator seeded so that close()'s mt_rand(1, 100) draws 1 or does not.
 	 *

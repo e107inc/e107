@@ -39,11 +39,18 @@ class DatabaseSessionHandler
 	protected $_lifetime = null;
 
 	/**
-	 * @param \e_db $db connection the session table is read and written through
+	 * @var SessionSignIn|null
 	 */
-	public function __construct(\e_db $db)
+	private $signIn;
+
+	/**
+	 * @param \e_db $db connection the session table is read and written through
+	 * @param SessionSignIn $signIn whose session each row is
+	 */
+	public function __construct(\e_db $db, SessionSignIn $signIn)
 	{
 		$this->_db = $db;
+		$this->signIn = $signIn;
 	}
 
 	/**
@@ -216,7 +223,7 @@ class DatabaseSessionHandler
 			'data' => array(
 				'session_expires' => time() + $this->getLifetime(),
 				'session_data'    => base64_encode($session_data),
-				'session_user'    => defset('USERID'),
+				'session_user'    => $this->owner(),
 			),
 			'_FIELD_TYPES' => array(
 				'session_id'      => 'str',
@@ -274,6 +281,14 @@ class DatabaseSessionHandler
 	{
 		$this->_db->delete($this->getTable(), '`session_expires`<'.time());
 		return true;
+	}
+
+	/**
+	 * @return int the account the running session is signed in as, 0 for a guest or where a subclass skipped this constructor
+	 */
+	private function owner()
+	{
+		return null === $this->signIn ? 0 : $this->signIn->accountId();
 	}
 
 	/**

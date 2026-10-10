@@ -17,6 +17,8 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+use e107\SessionHandlers\SessionSignIn;
+
 /**
  * @package e107
  * @subpackage	e107_handlers
@@ -1868,7 +1870,7 @@ class e_session_db extends \e107\SessionHandlers\DatabaseSessionHandler
 {
 	public function __construct()
 	{
-		parent::__construct(e107::getDb('session'));
+		parent::__construct(e107::getDb('session'), new SessionSignIn(defset('e_COOKIE', 'e107cookie')));
 	}
 
 	/**
