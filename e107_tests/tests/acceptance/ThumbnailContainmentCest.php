@@ -481,7 +481,7 @@ class ThumbnailContainmentCest
 
 		$payloads = array(
 			'file://'.$outside,
-			'http://127.0.0.1/'.$this->publicImage(),
+			$this->ssrfTarget(),
 			'php://filter/resource='.$outside,
 			'phar://'.$outside,
 			'zip://'.$outside,
@@ -511,7 +511,7 @@ class ThumbnailContainmentCest
 		// getimagesize() and readfile() both speak http when allow_url_fopen is
 		// on, so the http shape is a request the server makes on the caller's
 		// behalf as well as a read.
-		$http = 'http://127.0.0.1/'.$this->publicImage();
+		$http = $this->ssrfTarget();
 
 		$this->seeTheSsrfTargetIsReachable($I);
 
@@ -526,7 +526,8 @@ class ThumbnailContainmentCest
 
 		foreach($payloads as $payload)
 		{
-			$I->amOnPage('/e107_images/thumb.php?'.$payload[0]);
+			// Relative: PhpBrowser drops the site's subdirectory from a page whose query holds "://".
+			$I->amOnPage('e107_images/thumb.php?'.$payload[0]);
 			$failures = self::collect($failures,
 				$this->containmentFailure($I, 'legacy ?'.$payload[0], $payload[1]));
 		}
@@ -1177,21 +1178,28 @@ class ThumbnailContainmentCest
 	}
 
 	/**
-	 * The http:// payloads say nothing unless the server could have fetched
-	 * them. If the application is served on another port or under a path
-	 * prefix, the fetch fails for a reason that has nothing to do with the
-	 * fix and the case passes against a fully vulnerable tree.
+	 * Fails the case unless the server itself fetches the media fixture from the URL the http:// payloads name.
 	 *
 	 * @param AcceptanceTester $I
 	 * @return void
 	 */
 	private function seeTheSsrfTargetIsReachable(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.$this->publicImage());
+		$fetched = $this->probe($I, 'fetch', array('url' => $this->ssrfTarget()));
 
-		$I->assertSame(self::PUBLIC_MEDIA, self::readSentinel($I->grabResponseBody()),
-			'http://127.0.0.1/'.$this->publicImage().' is not the media fixture, so the scheme cases '
+		$I->assertSame(self::PUBLIC_MEDIA, self::readSentinel(base64_decode(self::env($fetched, 'FETCHED'))),
+			$this->ssrfTarget().' is not the media fixture when the server fetches it, so the scheme cases '
 			.'that ask the server to fetch it prove nothing.');
+	}
+
+	/**
+	 * The public media fixture at the address the server reaches this site on, which the http:// payloads ask it to fetch.
+	 *
+	 * @return string
+	 */
+	private function ssrfTarget()
+	{
+		return self::env($this->env, 'BASE').$this->publicImage();
 	}
 
 	/**
@@ -1615,6 +1623,12 @@ echo 'PLUGIN='.e_PLUGIN."\n";
 echo 'FILE='.e_FILE."\n";
 echo 'CACHEIMG='.e_CACHE_IMAGE."\n";
 echo 'OUTSIDE='.\$outside."\n";
+echo 'BASE='.SITEURL."\n";
+
+if(\$act === 'fetch')
+{
+	echo 'FETCHED='.base64_encode((string) @file_get_contents(\$_GET['url']))."\n";
+}
 
 if(\$act === 'move')
 {

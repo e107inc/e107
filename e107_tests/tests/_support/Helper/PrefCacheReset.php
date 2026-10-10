@@ -7,7 +7,7 @@ use Codeception\Module;
  * Utility for clearing e107's on-disk SitePrefs cache.
  *
  * A raw dump load (SiteDb) bypasses e107, so its cached SitePrefs
- * (e107_system/<hash>/cache/content/S_Config_*.cache.php) keep the install-time
+ * (e107_system/<site>/cache/content/S_Config_*.cache.php) keep the install-time
  * values and mask the dump's prefs, notably the `trusted_hosts` the host-header
  * check needs. Purging the cache forces e107 to reload prefs from the
  * freshly-populated database.
@@ -26,9 +26,7 @@ class PrefCacheReset extends Module
 
 	public function purge()
 	{
-		// Helper/ -> _support/ -> tests/ -> e107_tests/ -> app docroot.
-		$docroot = dirname(dirname(dirname(dirname(__DIR__))));
-		$caches = glob($docroot . '/e107_system/*/cache/content/S_Config_*.cache.php');
+		$caches = glob(APP_PATH . '/e107_system/' . Acceptance::INSTALL_SITE_PATH . '/cache/content/S_Config_*.cache.php');
 		foreach ($caches ?: array() as $cacheFile)
 		{
 			@unlink($cacheFile);

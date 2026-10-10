@@ -22,7 +22,7 @@
  *
  * That language file is tracked by git, so the fixture parks a copy through
  * {@see \Helper\AppFileRegistry::park()}, which puts it back when the test
- * ends and on the way into the next run if this one dies first.
+ * ends.
  *
  * e107_web/js/plupload/upload.php already read its own string through
  * defset(). This holds the other two refusals to the same standard.

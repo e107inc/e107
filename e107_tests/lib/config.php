@@ -19,6 +19,19 @@ foreach ([
 		$params = array_replace_recursive($params, Yaml::parse(file_get_contents($absolute_config_path)));
 }
 
+// Set by the suite runner (lib/sandbox) for each process it starts: the
+// sandbox's URL, app path and database. The last layer, so it wins.
+$sandbox = getenv('E107_TEST_PARAMS');
+if ($sandbox !== false && $sandbox !== '')
+{
+	$params = array_replace_recursive($params, json_decode($sandbox, true));
+}
+
+if (!empty($params['url']))
+{
+	$params['tls_url'] = preg_replace('#^http:#', 'https:', $params['url']);
+}
+
 if (!empty($params['app_path']))
 {
 	$params['app_path'] = rtrim($params['app_path'], '/\\') . '/';

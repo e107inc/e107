@@ -90,8 +90,8 @@ class e_fileOutboundRequestTest extends \Test\Unit
 	/** @var string|false authority the fixture answers on, or false for none */
 	private static $authority;
 
-	/** @var bool whether the harness's HTTPS vhost answers for the fixture */
-	private static $tls = false;
+	/** @var string|false host the harness's HTTPS vhost answers the fixture on, or false for none */
+	private static $tlsHost = false;
 
 	/** @var resource|null the `php -S` child, when this class had to start one */
 	private static $server;
@@ -122,11 +122,10 @@ class e_fileOutboundRequestTest extends \Test\Unit
 	/**
 	 * Find something that serves the prepared tree over HTTP, once per process.
 	 *
-	 * The docker harness has its own Apache on port 80 across the tree, plus
-	 * the HTTPS vhost the TLS cases need. Nothing else does: the unit suite in
-	 * CI runs in a bare PHP container, and the tree it runs against is a git
-	 * worktree under /tmp that no web server was ever told about. So where
-	 * Apache is absent, PHP serves the tree itself.
+	 * Apache on 127.0.0.1 serves the tree where it is the tree under test.
+	 * Where it is not, as in the harness's sandboxes, PHP serves the tree
+	 * itself. Only the harness's Apache speaks TLS, by the host the suite's URL
+	 * names, whose certificate is the CA bundle.
 	 *
 	 * @return void
 	 */
@@ -137,17 +136,11 @@ class e_fileOutboundRequestTest extends \Test\Unit
 			return;
 		}
 
-		self::$authority = false;
+		$params = unserialize(PARAMS_SERIALIZED);
+		$host = empty($params['url']) ? '' : (string) parse_url($params['url'], PHP_URL_HOST);
+		self::$tlsHost = ($host !== '' && is_file(self::CA_BUNDLE) && $this->fixtureAnswers($host, 'https')) ? $host : false;
 
-		if($this->fixtureAnswers('127.0.0.1', 'http'))
-		{
-			self::$authority = '127.0.0.1';
-			self::$tls = is_file(self::CA_BUNDLE) && $this->fixtureAnswers('127.0.0.1', 'https');
-
-			return;
-		}
-
-		self::$authority = $this->startBuiltInServer();
+		self::$authority = $this->fixtureAnswers('127.0.0.1', 'http') ? '127.0.0.1' : $this->startBuiltInServer();
 	}
 
 	/**
@@ -181,53 +174,61 @@ class e_fileOutboundRequestTest extends \Test\Unit
 
 		$php = (defined('PHP_BINARY') && is_executable(PHP_BINARY)) ? PHP_BINARY : 'php';
 
-		for($attempt = 0; $attempt < 2; $attempt++)
+		// Every address rather than 127.0.0.1: the cross-origin case reaches the
+		// same server on a second loopback literal, and the address literal
+		// case on ::1. [::] takes both families where the host has IPv6.
+		foreach(array('[::]', '0.0.0.0') as $listen)
 		{
-			$port = $this->freePort();
-			if($port === false)
+			// Twice on each, every time on a fresh port: something else can take the
+			// one freePort() found before the server binds it.
+			for($attempt = 0; $attempt < 2; $attempt++)
 			{
-				return false;
-			}
-
-			// 0.0.0.0 rather than 127.0.0.1: the cross-origin case reaches the
-			// same server on a second loopback literal.
-			$command = escapeshellarg($php) . ' -S 0.0.0.0:' . $port . ' -t ' . escapeshellarg(APP_PATH);
-			$quiet   = array(
-				0 => array('file', '/dev/null', 'r'),
-				1 => array('file', '/dev/null', 'w'),
-				2 => array('file', '/dev/null', 'w'),
-			);
-
-			$pipes  = array();
-			$server = @proc_open($command, $quiet, $pipes);
-
-			if(!is_resource($server))
-			{
-				return false;
-			}
-
-			self::$server = $server;
-			register_shutdown_function(array(__CLASS__, 'stopBuiltInServer'));
-
-			$authority = '127.0.0.1:' . $port;
-			$outcome = \Test\Poll::until(function () use ($authority, $server)
-			{
-				if($this->fixtureAnswers($authority, 'http'))
+				$port = $this->freePort();
+				if($port === false)
 				{
-					return 'answering';
+					return false;
 				}
 
-				$status = proc_get_status($server);
+				// exec, so the handle is the server itself and stopBuiltInServer()
+				// stops it rather than the shell that started it.
+				$command = 'exec ' . escapeshellarg($php) . ' -S ' . $listen . ':' . $port . ' -t ' . escapeshellarg(APP_PATH);
+				$quiet   = array(
+					0 => array('file', '/dev/null', 'r'),
+					1 => array('file', '/dev/null', 'w'),
+					2 => array('file', '/dev/null', 'w'),
+				);
 
-				return $status['running'] ? false : 'exited';
-			}, 30);
+				$pipes  = array();
+				$server = @proc_open($command, $quiet, $pipes);
 
-			if($outcome === 'answering')
-			{
-				return $authority;
+				if(!is_resource($server))
+				{
+					return false;
+				}
+
+				self::$server = $server;
+				register_shutdown_function(array(__CLASS__, 'stopBuiltInServer'));
+
+				$authority = '127.0.0.1:' . $port;
+				$outcome = \Test\Poll::until(function () use ($authority, $server)
+				{
+					if($this->fixtureAnswers($authority, 'http'))
+					{
+						return 'answering';
+					}
+
+					$status = proc_get_status($server);
+
+					return $status['running'] ? false : 'exited';
+				}, 30);
+
+				if($outcome === 'answering')
+				{
+					return $authority;
+				}
+
+				self::stopBuiltInServer();
 			}
-
-			self::stopBuiltInServer();
 		}
 
 		return false;
@@ -321,7 +322,7 @@ class e_fileOutboundRequestTest extends \Test\Unit
 	{
 		$this->requireFixtureServer();
 
-		if(!self::$tls)
+		if(!self::$tlsHost)
 		{
 			self::markTestSkipped(
 				'The TLS cases need the harness\'s own HTTPS vhost and its certificate at ' . self::CA_BUNDLE
@@ -405,7 +406,7 @@ class e_fileOutboundRequestTest extends \Test\Unit
 	private function fixtureUrl($scheme = 'http')
 	{
 		// TLS is only ever the harness's vhost, which is on the default port.
-		$authority = ($scheme === 'https' || !self::$authority) ? '127.0.0.1' : self::$authority;
+		$authority = ($scheme === 'https') ? self::$tlsHost : (self::$authority ?: '127.0.0.1');
 
 		return $scheme . '://' . $authority . '/' . self::HOP_FIXTURE;
 	}
@@ -1383,8 +1384,12 @@ class e_fileOutboundRequestTest extends \Test\Unit
 		$body .= "\$r = \$fl->isValidURL('" . addslashes($this->hopUrl(0, 0, 'https')) . "'); ";
 		$body .= $this->reportResult();
 
-		self::assertSame('true', $this->resultOf($this->runPhp($body, '-d openssl.cafile=' . self::CA_BUNDLE)),
-			'A peer the probe can verify has to be reported reachable.');
+		$reachable = \Test\Poll::until(function () use ($body)
+		{
+			return $this->resultOf($this->runPhp($body, '-d openssl.cafile=' . self::CA_BUNDLE)) === 'true';
+		}, 10);
+
+		self::assertTrue($reachable, 'A peer the probe can verify has to be reported reachable.');
 
 		self::assertSame('false', $this->resultOf($this->runPhp($body)),
 			'... and one it cannot verify must not be.');

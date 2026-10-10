@@ -585,20 +585,12 @@ $act = isset($_GET['act']) ? $_GET['act'] : '';
 $feed = isset($_GET['feed']) ? preg_replace('/[^a-z]/', '', $_GET['feed']) : '';
 $fixture = isset($_GET['fixture']) ? preg_replace('/[^\w.]/', '', $_GET['fixture']) : '';
 
-// E107_INTERNAL_URL is set by the docker harness's compose file and by
-// nothing else, and the http://web/ fallback behind it is that same harness's
-// service name, so on CI this resolved to a host that does not exist. The
-// probe runs inside the application, so it can just answer from the request it
-// is serving.
-$host = getenv('E107_INTERNAL_URL');
-if($host === false || $host === '')
-{
-	$e107_test_https = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off');
-	$host = ($e107_test_https ? 'https' : 'http').'://'
-		.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost')
-		.rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/').'/';
-}
-$host = rtrim($host, '/');
+// The probe runs inside the application, so it answers from the request it is
+// serving: that is the site the suite is driving, whichever sandbox it is.
+$e107_test_https = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off');
+$host = ($e107_test_https ? 'https' : 'http').'://'
+	.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost')
+	.rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 
 echo 'MEDIA_DIR='.e_MEDIA."\n";
 echo 'MEDIA_URL=/'.e107_test_url(e_MEDIA)."\n";

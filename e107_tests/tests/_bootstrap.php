@@ -75,7 +75,7 @@ class E107TestSuiteBootstrap
         $original_app_path = realpath($app_path);
 
         // Load PriorityCallbacks early so a GitPreparer worktree can register
-        // its deferred cleanup during snapshot().
+        // its deferred cleanup when it is created.
         include(codecept_root_dir() . "/lib/PriorityCallbacks.php");
 
         // Ask the preparer where the app runs: in place, or in an isolated

@@ -25,7 +25,8 @@ class DownloadOpenRedirectCest
 		// .invalid keeps a regression from emitting real outbound traffic; stop
 		// following redirects so the 302 itself is inspected rather than chased.
 		$I->stopFollowingRedirects();
-		$I->amOnPage('/e107_plugins/download/request.php?https://open-redirect-canary.invalid/phish');
+		// Relative: PhpBrowser drops the site's subdirectory from a page whose query holds "://".
+		$I->amOnPage('e107_plugins/download/request.php?https://open-redirect-canary.invalid/phish');
 		$I->seeNoRedirectTo('open-redirect-canary.invalid');
 	}
 }

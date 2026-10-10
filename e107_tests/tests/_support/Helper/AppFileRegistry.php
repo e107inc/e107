@@ -3,14 +3,13 @@
 namespace Helper;
 
 /**
- * Journal of what this run wrote into the app root, kept on disk under tests/_output so a run that dies is healed on the next start.
+ * Journal of what this run wrote into the app root, so each test takes back its own writes and the sandbox audit knows which paths a fixture made.
  *
- * Inert until {@see AppFileRegistry::enable()} is called, which Extension\WorkspaceGuard does when the app runs in place.
+ * Inert until {@see AppFileRegistry::enable()} is called, which Extension\SandboxGuard does when the app runs in place.
  * Keep this class in PHP 5.6 syntax: release/v2.3.x runs the same file.
  */
 class AppFileRegistry
 {
-	const JOURNAL = 'app-writes.jsonl';
 	const BACKUPS = 'app-backup';
 
 	const SCOPE_SUITE = 'suite';
@@ -21,6 +20,9 @@ class AppFileRegistry
 
 	/** @var string what a write is filed under until the scope is changed */
 	private static $scope = self::SCOPE_SUITE;
+
+	/** @var array[] what this run wrote, oldest first */
+	private static $journal = array();
 
 	/** @var array<string,true> paths already journaled by this run */
 	private static $seen = array();
@@ -125,7 +127,7 @@ class AppFileRegistry
 		$keep = array();
 		$undo = array();
 
-		foreach (self::read() as $entry)
+		foreach (self::$journal as $entry)
 		{
 			if ($entry['s'] === $scope)
 			{
@@ -136,8 +138,8 @@ class AppFileRegistry
 			$keep[] = $entry;
 		}
 
+		self::$journal = $keep;
 		self::undo(array_reverse($undo), $deployer);
-		self::write($keep);
 
 		if ($scope === self::SCOPE_TEST)
 		{
@@ -145,22 +147,21 @@ class AppFileRegistry
 		}
 	}
 
-	/** Replay a journal an earlier run died holding, then start a clean one. */
-	public static function recover(\Deployer $deployer)
+	/**
+	 * Every path this run wrote and has not taken back yet, directories included.
+	 *
+	 * @return string[] paths relative to the app root
+	 */
+	public static function written()
 	{
-		$stale = self::read();
+		$paths = array();
 
-		if (empty($stale))
+		foreach (self::$journal as $entry)
 		{
-			return;
+			$paths[] = $entry['p'];
 		}
 
-		codecept_debug(sprintf('AppFileRegistry: replaying %d path(s) from a run that did not finish',
-			count($stale)));
-
-		self::$seen = array();
-		self::undo(array_reverse($stale), $deployer);
-		self::write(array());
+		return $paths;
 	}
 
 	/** @param array[] $entries */
@@ -210,57 +211,7 @@ class AppFileRegistry
 	private static function append(array $entry)
 	{
 		$entry['s'] = self::$scope;
-		@file_put_contents(self::journal(), self::line($entry), FILE_APPEND | LOCK_EX);
-	}
-
-	/** @return array[] */
-	private static function read()
-	{
-		$journal = self::journal();
-
-		if (!is_file($journal))
-		{
-			return array();
-		}
-
-		$entries = array();
-
-		foreach (file($journal, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line)
-		{
-			$entry = json_decode($line, true);
-
-			if (is_array($entry) && isset($entry['p'], $entry['s']))
-			{
-				$entries[] = $entry;
-			}
-		}
-
-		return $entries;
-	}
-
-	/** @param array[] $entries */
-	private static function write(array $entries)
-	{
-		if (empty($entries))
-		{
-			@unlink(self::journal());
-			return;
-		}
-
-		$lines = '';
-
-		foreach ($entries as $entry)
-		{
-			$lines .= self::line($entry);
-		}
-
-		@file_put_contents(self::journal(), $lines, LOCK_EX);
-	}
-
-	/** One journal line; slashes and non-ASCII bytes stay literal so bin/e107-tests can read the paths back with sed. */
-	private static function line(array $entry)
-	{
-		return json_encode($entry, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n";
+		self::$journal[] = $entry;
 	}
 
 	/**
@@ -277,11 +228,6 @@ class AppFileRegistry
 		}
 
 		return (string) substr($absolute, strlen($root));
-	}
-
-	private static function journal()
-	{
-		return codecept_output_dir().self::JOURNAL;
 	}
 
 	private static function backupDir()

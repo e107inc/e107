@@ -68,18 +68,12 @@ class Acceptance extends E107Base
 	}
 
 	/**
-	 * Stand a site up once per run, so a Cest can be named on its own.
+	 * Stand a site up once per run when the run was not handed one, so a Cest can be named on its own.
 	 *
-	 * A run starts from an uninstalled app every time: E107Preparer removes
-	 * e107_system/000000test and e107_media/000000test on the way in, and
-	 * E107Base parks e107_config.php beside it. Only the two install Cests put a
-	 * site back, so naming any later Cest on its own answered with the installer's
-	 * language page for every one of its tests, and the whole suite had to be run
-	 * to check one file.
-	 *
-	 * Both install Cests drop the tables again in their own _before, so they still
-	 * begin from the empty database they are written against. A full run pays for
-	 * one install it then throws away.
+	 * The suite runner hands every Cest a sandbox cloned from an installed site, so
+	 * this installs only for a run the runner did not prepare. Both install Cests
+	 * drop the tables again in their own _before, so they still begin from the
+	 * empty database they are written against.
 	 *
 	 * @return bool whether this call was the one that installed
 	 */
@@ -102,8 +96,14 @@ class Acceptance extends E107Base
 		return true;
 	}
 
+	/** @return bool whether the app the suite points at is already installed */
+	private function hasInstalledSite()
+	{
+		return file_exists(self::APP_PATH_E107_CONFIG) && $this->databaseHoldsSite();
+	}
+
 	/**
-	 * Whether the app the suite points at is already installed.
+	 * Whether the suite's database holds an installed site's preferences.
 	 *
 	 * Asked of the database rather than of the application, because a request is
 	 * what this answer decides the worth of. The table is missing on an empty
@@ -112,13 +112,8 @@ class Acceptance extends E107Base
 	 *
 	 * @return bool
 	 */
-	private function hasInstalledSite()
+	private function databaseHoldsSite()
 	{
-		if (!file_exists(self::APP_PATH_E107_CONFIG))
-		{
-			return false;
-		}
-
 		try
 		{
 			$found = $this->getDbModule()->_getDbh()
@@ -1071,10 +1066,15 @@ PHP;
 		}
 	}
 
+	/**
+	 * Point the app at a database that was handed over already holding the site, as each sandbox's clone of the installed site is; any other run installs the app itself.
+	 */
 	protected function writeLocalE107Config()
 	{
-		// Noop
-		// Acceptance tests will install the app themselves
+		if (!$this->getDbModule()->_getConfig('populate') && $this->databaseHoldsSite())
+		{
+			$this->haveE107ArrayConfig();
+		}
 	}
 
 	public function unlinkE107ConfigFromTestEnvironment()

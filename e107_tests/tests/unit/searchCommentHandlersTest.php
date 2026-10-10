@@ -69,7 +69,7 @@ class searchCommentHandlersTest extends \Test\Unit
 					"\$qb = e107::getDb()->createQueryBuilder(); " .
 					"if(\$stored === '') { \$qb->delete('core')->where('e107_name', 'search_prefs')->execute(); } " .
 					"else { \$qb->replace('core')->values(array('e107_name' => 'search_prefs', 'e107_value' => \$stored))->execute(); } " .
-					"foreach(glob(e_BASE . 'e107_system/*/cache/content/S_Config_*.cache.php') ?: array() as \$cacheFile) { @unlink(\$cacheFile); } "
+					"foreach(glob(e_CACHE_CONTENT . 'S_Config_*.cache.php') ?: array() as \$cacheFile) { @unlink(\$cacheFile); } "
 				);
 			}
 		}
@@ -278,7 +278,7 @@ class searchCommentHandlersTest extends \Test\Unit
 		$result = $this->renderAdminSearchPage(
 			"e107::getDb()->createQueryBuilder()->delete('core')->where('e107_name', 'search_prefs')->execute(); " .
 			"e107::getConfig()->removePref('plug_installed'); " .
-			"foreach(glob(e_BASE . 'e107_system/*/cache/content/S_Config_*.cache.php') ?: array() as \$cacheFile) { @unlink(\$cacheFile); } "
+			"foreach(glob(e_CACHE_CONTENT . 'S_Config_*.cache.php') ?: array() as \$cacheFile) { @unlink(\$cacheFile); } "
 		);
 
 		$this->assertBooted($result);

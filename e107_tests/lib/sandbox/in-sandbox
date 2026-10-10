@@ -1,0 +1,17 @@
+#!/bin/sh
+# Runs a command with a sandbox mounted over the worktree in a mount namespace
+# of its own, so a suite that loads the app in-process sees its sandbox at the
+# worktree's own path: in-sandbox <sandbox state dir> <sandbox> <worktree> <command>...
+set -eu
+if [ "$1" != --inside ]; then
+    exec unshare -m --propagation private "$0" --inside "$@"
+fi
+state=$2 sandbox=$3 app=$4
+shift 4
+vendor=$app/e107_tests/vendor
+mkdir -p "$state/vendor"
+mount --bind "$vendor" "$state/vendor"
+mount --bind "$sandbox" "$app"
+mount --move "$state/vendor" "$vendor"
+cd "$PWD"
+exec "$@"

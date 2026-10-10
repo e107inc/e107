@@ -214,13 +214,14 @@ PHPUnit 5.7), and `check-platform-reqs` is checked on the real interpreter.
   - `config.local.yml` always wins for personal tweaks.
 - The worktree's app root is bind-mounted at `/var/www/html`, so file edits
   on the host show up in Apache immediately; no rebuild for application changes.
+  `http://web/` serves it as it is, for `up --install-site` and for poking at
+  by hand; the suites run in sandboxes over it (see below).
 - The web container also has PHP CLI, Composer, and git, so `e107-tests run`
   invokes Codeception inside the container against the same filesystem
   Apache is serving.
 - The WebDriver suite drives a dedicated `selenium/standalone-chrome` browser
-  container. Both the acceptance and WebDriver suites use one app URL (the
-  `web` service alias), so they exercise the same HTTP interface; e107 trusts
-  the `web` host via the test dump's `trusted_hosts` pref.
+  container. Both the acceptance and WebDriver suites reach their sandbox the
+  same way (`http://sbN.web/`), so they exercise the same HTTP interface.
 - `up` builds the web image only if it is missing and reuses it otherwise, so a
   previously built or CI-cached image is picked up without a rebuild. Its tag
   carries a hash of every file in `docker/` but the compose files and the docs
@@ -228,9 +229,11 @@ PHPUnit 5.7), and `check-platform-reqs` is checked on the real interpreter.
   vhosts differ never share an image.
 - Database state lives on tmpfs. `down` is a true reset; no leftover state.
 - The suites, and a site from `up --install-site`, connect as the `e107`
-  account, which holds ALL PRIVILEGES on the one database and no global
-  privilege: what a hosting control panel issues, so a pass here is a pass
-  there. Root exists for `reset`, `sql` and `db-shell` only.
+  account, which holds ALL PRIVILEGES on its own databases (`e107`, the
+  sandboxes' `e107_s*` and, while a run installs it, the site template they
+  are copied from, `e107_t*`) and no global privilege: what a hosting control
+  panel issues, so a pass here is a pass there. Root exists for `reset`, `sql`,
+  `db-shell` and the suite runner's database copies only.
 
 ## State lives in Docker, not in files
 
@@ -302,11 +305,10 @@ a caller with no stable working directory needs nothing else. To reach a
 different tree, name it: `e107-tests --worktree <path> <cmd>` hands over to the
 harness shipped in that tree, since the copies drift between branches.
 
-The local deployer (this harness) serves e107 from the app path itself, so it
-runs the tests in place via `E107Preparer`. Only deploy-based suites
-(sftp) isolate the source in a disposable `git worktree`, and only when
-git actually works in the app path. Each Docker stack is already isolated, so
-running in place is safe here.
+The local deployer (this harness) serves e107 from the app path itself; each
+`run` gives every test file a sandbox over it (below). Only deploy-based suites
+(sftp) isolate the source in a disposable `git worktree`, and only when git
+actually works in the app path.
 
 For worktrees that predate the harness (old release tags), graft it in:
 
@@ -339,10 +341,10 @@ e107-tests ci-unit                 # CI's exact unit command
 e107-tests up --xdebug             # coverage-capable image
 e107-tests run unit --coverage --coverage-html
 
-# Reset only the DB and test-written app state, keep the stack
+# Reset only the DB and the installed site's app state, keep the stack
 e107-tests reset
 
-# Wipe acceptance-test artifacts from the host worktree (see note below)
+# Wipe what an install left in the host worktree (see note below)
 e107-tests clean
 
 # Tear down everything for this combo
@@ -353,18 +355,70 @@ e107-tests gc --dry-run
 e107-tests gc --worktrees-gone
 ```
 
-## Worktree dirtying during acceptance tests
+## Sandboxes: how `run` isolates the suites
 
-The acceptance suite runs a real e107 install against the bind-mounted
-worktree, so it leaves real files behind: `e107_config.php`, an install
-log, hash directories under `e107_system/` and `e107_media/`, and any
-themes the install copied into place. `e107-tests clean` wipes those
-well-known artifacts (and never touches anything tracked by git).
+`e107-tests run <suite> [--jobs N]` runs the suite inside the web container
+through `lib/sandbox/run.php`, on N workers at once. N defaults to the
+container's CPU count, at most the 16 sandboxes the stack names (`sb1.web` to
+`sb16.web`), and at most 4 for the WebDriver suite: beyond that its browser
+sessions finish no sooner, and now and then one fails to start. Each test file
+(for the unit suite, each batch of files) gets:
 
-Podman supports ephemeral overlay bind mounts (`:O`) that would isolate
-these writes from the host, but Docker Compose silently strips the flag
-during validation, so we don't rely on it. Treat `clean` as the canonical
-"return the worktree to its pre-acceptance state" command.
+- a **sandbox**: a kernel overlay of the worktree with an empty tmpfs upper
+  layer, mounted where Apache serves `sbN.web` (`docker/apache-vhost.conf`).
+  The acceptance and WebDriver suites point at that URL and write their
+  fixtures into the overlay; the unit suite runs in a mount namespace with the
+  overlay at `/var/www/html`, so paths are the worktree's own. The tests never
+  write to the worktree; the runner itself writes only Codeception's generated
+  actor classes, once per run, and its results under `tests/_output/`.
+- a **database** of its own on the env's server, copied ahead of need from a
+  template built once per run: the site the `@group site-template` test
+  installs, for acceptance (whose sandboxes also start from the files that
+  install wrote), and the dump, for the others. Used ones are dropped in the
+  background.
+
+After every test the sandbox's upper layer is listed. Anything there other
+than the site folder the harness's configs pin (`000000test` under
+`e107_system/` and `e107_media/`, or the folder e107 names after the
+sandbox's database for an install that pins none), `e107_config.php`, the
+installer's files and what the test's fixtures wrote is reported against the
+test and fails the run, with new paths, modified worktree files and deleted
+worktree files listed separately. A leak the app makes into the tree is
+therefore a failure to fix in the app, not something to sweep up after.
+
+Workers take files from a queue ordered by how long each took last time
+(`tests/_output/timings/<suite>.json`; file size until then). Each finished
+file prints its output as one block. Its process's output directory (report,
+screenshots, `--html`, coverage) is kept under `tests/_output/<suite>/<file>/`
+(`batch-N` for the unit suite) when it failed or holds anything the runner does
+not read itself, and is `tests/_output/<suite>/` itself when one process ran
+the whole selection, as `--coverage` makes it. The run's merged JUnit report is
+`tests/_output/<suite>/report.xml`, and the tests that failed or left their
+sandbox changed are listed in `tests/_output/<suite>/failed` for
+`run <suite> -g failed`, which runs only the tests that list names; as on
+Codeception's own, a test that only ended on a warning is not on it. A tree
+older than the sandboxes (see `graft`), whose suites do not enable
+`Extension\SandboxGuard`, has each suite run whole, in one process and one
+sandbox, as Codeception orders it. One run per env at a time; a second waits.
+Two envs of one worktree share `tests/_output/<suite>/`, so run one suite at a
+time per worktree still. `--jobs 1` gives the single-process output Codeception
+prints for the unit suite, and `ci-unit` uses it.
+
+The web container needs `CAP_SYS_ADMIN` to mount, and on Docker
+`apparmor=unconfined`, whose default profile denies mount. The host needs
+Linux 6.6 or later, the first to keep the user extended attributes an
+overlay mounted with `userxattr` writes to its tmpfs upper layer, or a
+distribution's kernel that has them backported. `run` first mounts an overlay
+and removes a directory of its lower layer through it, which takes them, and
+refuses to run if either fails, naming the kernel. Inside an overlay a PHP
+`rename()` of a directory that comes from the worktree fails with `EXDEV`, as
+it does on any host where the two paths sit on different file systems. OPcache
+keeps each sandbox's copy of a script apart (scripts are cached by path), and
+checks timestamps on every request, so a fixture must not carry over the size
+and mtime of the file it replaces.
+
+`up --install-site` still installs into the worktree itself, for browsing;
+`e107-tests clean` removes what that leaves.
 
 ## Agent ergonomics
 
