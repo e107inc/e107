@@ -1976,12 +1976,16 @@ class e_session_db #implements SessionHandlerInterface
     }
     
 	/**
-	 * Close session
+	 * Close session, collecting on one close in a hundred where the host keeps PHP's own collector off
 	 * @return boolean
 	 */
     public function close()
     {
-    	$this->gc($this->getLifetime());
+    	if(ini_get('session.gc_probability') <= 0 && mt_rand(1, 100) === 1)
+    	{
+    		$this->gc($this->getLifetime());
+    	}
+
         return true;
     }
     
@@ -1992,19 +1996,26 @@ class e_session_db #implements SessionHandlerInterface
      */
     public function read($session_id)
     {
-    	$data = $this->readKey(self::storageKey($session_id));
+    	$keys = self::storageKeys($session_id);
+    	$rows = $this->readKeys($keys);
+    	list($key, $legacyKey) = $keys;
 
-    	if('' === $data)
+    	if(false === $rows)
     	{
-    		$legacy = $this->readKey(self::_sanitize($session_id));
-
-    		if('' !== $legacy && false !== $legacy && $this->rekey(self::_sanitize($session_id), self::storageKey($session_id)))
-    		{
-    			$data = $legacy;
-    		}
+    		return false;
     	}
 
-    	return $data;
+    	if(isset($rows[$key]) && '' !== $rows[$key])
+    	{
+    		return $rows[$key];
+    	}
+
+    	if(isset($rows[$legacyKey]) && '' !== $rows[$legacyKey] && $this->rekey($legacyKey, $key))
+    	{
+    		return $rows[$legacyKey];
+    	}
+
+    	return '';
     }
 
     /**
@@ -2025,23 +2036,66 @@ class e_session_db #implements SessionHandlerInterface
     }
 
     /**
+     * @param string $session_id
+     * @return string[] the id's storage key, then the raw id that rows written before v2.3.12 are keyed by
+     */
+    private static function storageKeys($session_id)
+    {
+    	return array(self::storageKey($session_id), self::_sanitize($session_id));
+    }
+
+    /**
+     * @param string[] $keys
+     * @return string a WHERE clause matching the rows stored under any of $keys
+     */
+    private static function whereKeyIn(array $keys)
+    {
+    	return "`session_id` IN ('".implode("', '", $keys)."')";
+    }
+
+    /**
      * @param string $key
      * @return string|false session data, '' when no live row holds that key
      */
     protected function readKey($key)
     {
-    	$data = false;
-    	$check = $this->_db->select($this->getTable(), 'session_data', "session_id='".$key."' AND session_expires>".time());
-    	if($check)
+    	$rows = $this->readKeys(array($key));
+
+    	if(false === $rows)
     	{
-    		$tmp = $this->_db->fetch();
-    		$data = base64_decode($tmp['session_data']);
+    		return false;
     	}
-    	elseif(false !== $check)
+
+    	return isset($rows[$key]) ? $rows[$key] : '';
+    }
+
+    /**
+     * @param string[] $keys
+     * @return array|false session data of each live row under the key that found it, false when the table cannot be read
+     */
+    private function readKeys(array $keys)
+    {
+    	$check = $this->_db->select($this->getTable(), 'session_id, session_data', self::whereKeyIn($keys)." AND session_expires>".time());
+
+    	if(false === $check)
     	{
-    		$data = '';
+    		return false;
     	}
-    	return $data;
+
+    	$rows = array();
+
+    	while($row = $this->_db->fetch())
+    	{
+    		foreach($keys as $key)
+    		{
+    			if(0 === strcasecmp($row['session_id'], $key))
+    			{
+    				$rows[$key] = base64_decode($row['session_data']);
+    			}
+    		}
+    	}
+
+    	return $rows;
     }
 
     /**
@@ -2117,10 +2171,7 @@ class e_session_db #implements SessionHandlerInterface
      */
     public function destroy($session_id)
     {
-    	foreach (array(self::storageKey($session_id), self::_sanitize($session_id)) as $key)
-    	{
-    		$this->_db->delete($this->getTable(), "`session_id`='".$key."'");
-    	}
+    	$this->_db->delete($this->getTable(), self::whereKeyIn(self::storageKeys($session_id)));
     	return true;
     }
     

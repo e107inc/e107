@@ -418,9 +418,6 @@ abstract class e_file_inspector implements e_file_inspector_interface
 
 /**
  * Percentage a running File Inspector scan has reported, for the admin page to poll.
- *
- * Held in the core `tmp` table, which class2.php clears of anything older than five
- * minutes, so a figure that is not refreshed within that window is gone.
  */
 class e_file_inspector_progress
 {

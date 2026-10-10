@@ -627,12 +627,12 @@ function update_core_database($type = '')
 		$pref = e107::getPref();
 
 
-		// Session rows still keyed by the raw session id.
+		// Live session rows still keyed by the raw session id.
 		require_once(e_HANDLER.'session_handler.php');
 		$sessionHashed = 0;
 		$sessionSeen = 0;
 		$sessionSkipped = 0;
-		$sessionPending = "`session_id` NOT LIKE '".e_session_db::KEY_ALGO."$%' ORDER BY `session_id` LIMIT ";
+		$sessionPending = "`session_id` NOT LIKE '".e_session_db::KEY_ALGO."$%' AND `session_expires` > ".time()." ORDER BY `session_id` LIMIT ";
 
 		while($sql->select('session', 'session_id', $sessionPending.$sessionSkipped.', '.($just_check ? 1 : 200)))
 		{
