@@ -159,6 +159,7 @@ class DbUtilitiesCsrfCest
 	 */
 	public function theMenusOwnLinkStillStartsACoreUpdate(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$I->amOnPage($this->menuLink($I, 'db_update'));
 
 		$I->seeInSource(self::UPDATE_LISTED);
@@ -185,6 +186,7 @@ class DbUtilitiesCsrfCest
 	 */
 	public function theTokenisedUpdateLinkStillListsTheCoreUpdate(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$token = $I->grabFreshAdminToken(self::MENU . '?mode=importForm');
 
 		$I->amOnPage(self::UPDATE_PAGE . '?e-token=' . $token);
@@ -200,6 +202,7 @@ class DbUtilitiesCsrfCest
 	 */
 	public function theUpdatePagesOwnPostStillReachesTheUpdateList(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$token = $I->grabFreshAdminToken(self::MENU . '?mode=importForm');
 
 		$I->sendPostRequest(self::UPDATE_PAGE, array('e-token' => $token));

@@ -167,6 +167,7 @@ class SmtpPasswordFieldCest
 	 */
 	public function theCorePreferencesPageMasksTheSmtpPasswordAndKeepsItOnSave(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$was = $this->haveSmtpPassword($I, self::SMTP_PASSWORD);
 		$source = '';
 		$value = '';

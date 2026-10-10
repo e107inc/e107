@@ -33,7 +33,7 @@ class AdminLogin extends CodeceptionModule
 	const TOKEN_FIELD_PATTERN = '/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/';
 
 	/**
-	 * Log into the admin area and assert the control-panel marker is shown, first storing a cheap hash of a matching password ({@see AdminLogin::cheapenStoredHash()}).
+	 * Log into the admin area and assert the control-panel marker is shown, first storing a cheap hash of a matching password ({@see AdminLogin::cheapenStoredHash()}); in a browser it declares e107.org, which the dashboard it lands on checks.
 	 *
 	 * @param string|null $user Defaults to {@see ADMIN_USER}.
 	 * @param string|null $pass Defaults to {@see ADMIN_PASS}.
@@ -53,6 +53,7 @@ class AdminLogin extends CodeceptionModule
 
 		if (method_exists($browser, 'waitForText'))
 		{
+			$this->getModule('\Helper\Outbound')->expectOutboundRequest('e107.org');
 			$this->waitForTextInSource($browser, self::CONTROL_PANEL_MARKER, 10);
 		}
 		else

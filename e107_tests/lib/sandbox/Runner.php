@@ -25,7 +25,7 @@ class Runner
 	const FAILED = 'failed';
 
 	/** What a batch's process writes for the runner; anything else in its output (coverage, --html, RunFailed's list) is the user's and is kept. */
-	const OWN_FILES = array('console.log', 'report.xml', 'files.txt', UpperLayer::VIOLATIONS, self::FAILED);
+	const OWN_FILES = array('console.log', 'report.xml', 'files.txt', UpperLayer::VIOLATIONS, Boundary::TESTS, self::FAILED);
 
 	/** @var Shell */
 	private $shell;
@@ -39,7 +39,7 @@ class Runner
 	/** @var Timings */
 	private $timings;
 
-	/** @var array{codecept: string, pool: string, dump: string, base_path: string, output: string, value_options: string[]} */
+	/** @var array{codecept: string, loops: string, dump: string, base_path: string, output: string, value_options: string[]} */
 	private $settings;
 
 	/** @var array<string,int> */
@@ -60,12 +60,27 @@ class Runner
 	/** @var \DOMElement[] */
 	private $reports = array();
 
+	/** @var Boundary|null */
+	private $boundary;
+
+	/** @var array[] attempts to reach past the stack that no test running at the time declared, as {@see Boundary::account()} gives them */
+	private $undeclared = array();
+
+	/** @var bool whether the boundary's recorder stopped before the run did */
+	private $unrecorded = false;
+
+	/** @var string[] the run's codecept options, which running its failed tests again keeps */
+	private $options = array();
+
+	/** @var array<string,int> the worker of each batch that has run, by its output directory */
+	private $workers = array();
+
 	/**
 	 * @param Shell $shell
 	 * @param Databases $databases
 	 * @param Suite $suite
 	 * @param Timings $timings
-	 * @param array $settings codecept and pool: command prefixes; dump: the suite's dump file; base_path: the site's subdirectory or ''; output: where results land; value_options: codecept run's options that take the argument after them as their value
+	 * @param array $settings codecept: the command prefix of a suite process; loops: of this script's loops; dump: the suite's dump file; base_path: the site's subdirectory or ''; output: where results land; value_options: codecept run's options that take the argument after them as their value
 	 */
 	public function __construct(Shell $shell, Databases $databases, Suite $suite, Timings $timings, array $settings)
 	{
@@ -97,12 +112,14 @@ class Runner
 
 		$this->databases->grantPrefix('e107_s');
 		$pool = new Pool("$scratch/pool-$run");
+		$this->boundary = new Boundary("$scratch/boundary", $this->shell, new ProcNet());
 		try
 		{
-			return $this->runWith($pool, $run, $scratch, $jobs, $args, $started);
+			return $this->boundary->raise($this->settings['loops']) ? $this->runWith($pool, $run, $scratch, $jobs, $args, $started) : 2;
 		}
 		finally
 		{
+			$this->boundary->lower();
 			$pool->stop();
 			$this->sandbox(0)->unmount();
 		}
@@ -119,7 +136,7 @@ class Runner
 	 */
 	private function runWith(Pool $pool, $run, $scratch, $jobs, array $args, $started)
 	{
-		$pool->startDropper($this->settings['pool']);
+		$pool->startDropper($this->settings['loops']);
 		foreach (array_merge($this->databases->named('e107_s'), $this->databases->named('e107_t')) as $stale)
 		{
 			$pool->release($stale);
@@ -141,6 +158,7 @@ class Runner
 			return 2;
 		}
 		$args = array_values(array_diff($args, $only));
+		$this->options = self::withoutGroups($args);
 		if (!$files)
 		{
 			$this->summarise(0, microtime(true) - $started);
@@ -155,10 +173,16 @@ class Runner
 		if ($layers === null)
 		{
 			$pool->release($template);
+			$this->account(1);
+			if ($this->undeclared)
+			{
+				echo "!! while it was built, e107 tried to reach past the stack, which the run refused:\n";
+				$this->listUndeclared(1);
+			}
 
 			return 1;
 		}
-		$pool->startCloners($this->settings['pool'], $template, "e107_s{$run}_", $jobs + 1, 2);
+		$pool->startCloners($this->settings['loops'], $template, "e107_s{$run}_", $jobs + 1, 2);
 
 		$batched = !$this->suite->servesHttp() || !$this->suite->isolatesFiles();
 		$queue = new Queue($this->timings->estimate($this->suite->root(), $files), $jobs, $batched);
@@ -179,6 +203,7 @@ class Runner
 					continue;
 				}
 				unset($running[$worker]);
+				$this->workers[$batch->dir] = $worker;
 				$idle[] = $worker;
 				$pool->release($batch->database);
 				if (!$this->sandbox($worker)->unmount())
@@ -214,6 +239,7 @@ class Runner
 
 		$pool->release($template);
 		$this->timings->save();
+		$this->account($jobs);
 		if ($this->failed)
 		{
 			file_put_contents($this->settings['output'].'/'.self::FAILED, implode("\n", array_unique($this->failed))."\n");
@@ -225,7 +251,28 @@ class Runner
 		$this->writeReport();
 		$this->summarise($jobs, microtime(true) - $started);
 
-		return empty($this->problems) ? 0 : 1;
+		return $this->passed() ? 0 : 1;
+	}
+
+	/** @return bool */
+	private function passed()
+	{
+		return empty($this->problems) && !$this->unrecorded && (empty($this->undeclared) || !$this->suite->declaresOutbound());
+	}
+
+	/**
+	 * Hold the attempts the boundary recorded against what every test of the run, the site template's included, declared; the tests running at the time of one nobody declared join the failed list.
+	 *
+	 * @param int $jobs the workers the run had: with one, an attempt is told apart by the test that made it
+	 */
+	private function account($jobs)
+	{
+		$this->unrecorded = !$this->boundary->isRecording();
+		$this->undeclared = $this->boundary->account($this->workers, $this->suite->root(), $jobs === 1);
+		foreach ($this->suite->declaresOutbound() ? $this->undeclared : array() as $attempt)
+		{
+			$this->failed = array_merge($this->failed, $attempt['during']);
+		}
 	}
 
 	/** Mount what every sandbox is made of, and clear what a run that never finished left mounted. */
@@ -276,6 +323,28 @@ class Runner
 		})) : array();
 
 		return array($this->failedOnly ? array_values(array_intersect($files, array_map(array(__CLASS__, 'fileOf'), $this->failedBefore))) : $files, $only);
+	}
+
+	/**
+	 * @param string[] $args
+	 * @return string[] $args without the options that pick groups or colours
+	 */
+	private static function withoutGroups(array $args)
+	{
+		$kept = array();
+		for ($i = 0; $i < count($args); $i++)
+		{
+			if (in_array($args[$i], array('-g', '--group'), true))
+			{
+				$i++;
+			}
+			elseif (!preg_match('/^(-g.|--group=|--(no-)?colors$)/', $args[$i]))
+			{
+				$kept[] = $args[$i];
+			}
+		}
+
+		return $kept;
 	}
 
 	/** @return string[] the groups `-g` selects */
@@ -334,6 +403,7 @@ class Runner
 			{
 				usleep(5000);
 			}
+			$this->workers[$batch->dir] = $batch->worker;
 			$outcome = new Outcome($batch, $this->suite->root());
 			if (!$outcome->passed() || $outcome->counts['tests'] === 0)
 			{
@@ -402,10 +472,12 @@ class Runner
 	private function command(Batch $batch, Overlay $overlay, array $layers, array $targets, array $args)
 	{
 		$base = $this->suite->servesHttp() && $this->settings['base_path'] !== '' ? $this->settings['base_path'].'/' : '';
+		$host = 'sb'.$batch->worker.'.web';
 		$params = array(
-			'url' => 'http://sb'.$batch->worker.".web/$base",
+			'url' => "http://$host/$base",
 			'db' => array('dbname' => $batch->database, 'populate' => false),
 			'sandbox' => array('upper' => $overlay->upper(), 'start' => $layers['start']),
+			'boundary' => array('host_rules' => Boundary::browserRules($host)),
 		);
 		$wrapper = '';
 		if ($this->suite->servesHttp())
@@ -504,6 +576,15 @@ class Runner
 			}
 		}
 		$root->appendChild($leaks);
+		$outbound = $dom->createElement('testsuite');
+		$outbound->setAttribute('name', 'network boundary');
+		foreach ($this->suite->declaresOutbound() ? $this->undeclared : array() as $attempt)
+		{
+			$case = $outbound->appendChild($dom->createElement('testcase'));
+			$case->setAttribute('name', Boundary::describe($attempt));
+			$case->appendChild($dom->createElement('failure', htmlspecialchars(self::during($attempt))));
+		}
+		$root->appendChild($outbound);
 		$dom->save($this->settings['output'].'/report.xml');
 	}
 
@@ -526,11 +607,16 @@ class Runner
 		$t = $this->totals;
 		printf("\n%s: %d tests, %d assertions, %d failures, %d errors, %d skipped; %d worker%s, %.1fs\n",
 			$this->suite->name(), $t['tests'], $t['assertions'], $t['failures'], $t['errors'], $t['skipped'], $jobs, $jobs === 1 ? '' : 's', $seconds);
-		if (empty($this->problems))
+		if ($this->passed())
 		{
 			echo $t['skipped'] === 0
 				? "OK ({$t['tests']} tests, {$t['assertions']} assertions)\n"
 				: "OK, but incomplete, skipped, or useless tests!\nTests: {$t['tests']}, Assertions: {$t['assertions']}, Skipped: {$t['skipped']}.\n";
+			if ($this->undeclared)
+			{
+				echo "!! e107 tried to reach past the stack, which the run refused; this tree's suites predate declaring it, so it fails nothing:\n";
+				$this->listUndeclared($jobs);
+			}
 
 			return;
 		}
@@ -548,5 +634,42 @@ class Runner
 				echo '    left its sandbox changed: '.$leak['test'].': '.self::describe($leak)."\n";
 			}
 		}
+		if ($this->unrecorded)
+		{
+			echo "  the network boundary's recorder stopped before the run did, so what came after went unrecorded; see ".$this->boundary->log()."\n";
+		}
+		if ($this->undeclared)
+		{
+			echo "  e107 tried to reach past the stack, which a run refuses, and no test running at the time declared it:\n";
+			$this->listUndeclared($jobs);
+			echo "  If e107 should try, the test that makes it declares the host with \$I->expectOutboundRequest('<host>'); if not, find what made it try.\n";
+			if ($jobs > 1)
+			{
+				echo "  The tests running at the time are on the failed list; to see which of them made each attempt, run them on one worker:\n"
+					.'    e107-tests run '.self::words(array_merge(array($this->suite->name(), '--jobs', '1', '-g', self::FAILED), $this->options))."\n";
+			}
+		}
+	}
+
+	private function listUndeclared($jobs)
+	{
+		foreach ($this->undeclared as $attempt)
+		{
+			echo '    '.Boundary::describe($attempt).($jobs === 1 ? ', '.self::during($attempt) : '')."\n";
+		}
+	}
+
+	/** @return string $words as a shell reads them back */
+	private static function words(array $words)
+	{
+		return implode(' ', array_map(function ($word)
+		{
+			return preg_match('/^[\w.,:\/=@+-]+$/', $word) ? $word : escapeshellarg($word);
+		}, $words));
+	}
+
+	private static function during(array $attempt)
+	{
+		return $attempt['during'] ? 'during '.implode(', ', $attempt['during']) : 'outside any test';
 	}
 }

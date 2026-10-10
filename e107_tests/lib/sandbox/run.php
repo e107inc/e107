@@ -4,7 +4,7 @@
  *
  *   php lib/sandbox/run.php [-d key=value]... <suite> [--jobs N] [codecept arguments]
  *
- * -d settings are passed on to every suite process. --clone and --drop are the database pool's own loops, which the runner starts.
+ * -d settings are passed on to every suite process. --clone and --drop are the database pool's own loops, and --record the network boundary's recorder, which the runner starts.
  * Keep this file in PHP 5.6 syntax: the unit suite runs on 5.6.
  */
 
@@ -34,6 +34,20 @@ if ($argv && $argv[0] === '--clone')
 if ($argv && $argv[0] === '--drop')
 {
 	Pool::dropLoop($databases, $argv[1]);
+	exit(0);
+}
+if ($argv && $argv[0] === '--record')
+{
+	$boundary = new Boundary($argv[1], new Shell(), new ProcNet());
+	try
+	{
+		$boundary->record();
+	}
+	catch (\RuntimeException $e)
+	{
+		fwrite(STDERR, $e->getMessage()."\n");
+		exit(1);
+	}
 	exit(0);
 }
 
@@ -88,10 +102,15 @@ for ($i = 0; $i < count($argv); $i++)
 	$args[] = $argv[$i];
 }
 
-// The stack names its sandboxes as aliases of this container; a name past the
-// last one is answered by DNS outside the stack, if at all.
+// The stack names its sandboxes as aliases of this container, as many as the
+// image serves; a name past the last is asked of the Internet's DNS, so none is.
+if (getenv('E107_SANDBOXES') === false)
+{
+	fwrite(STDERR, "error: this env's web image is older than the harness in this tree; bring the env up again with `e107-tests up`\n");
+	exit(2);
+}
 $sandboxes = 0;
-while (gethostbyname('sb'.($sandboxes + 1).'.web') === gethostbyname('web'))
+while ($sandboxes < (int) getenv('E107_SANDBOXES') && gethostbyname('sb'.($sandboxes + 1).'.web') === gethostbyname('web'))
 {
 	$sandboxes++;
 }
@@ -144,7 +163,7 @@ foreach ($command->getDefinition()->getOptions() as $option)
 $output = \Codeception\Configuration::outputDir();
 $runner = new Runner($shell, $databases, $suite, new Timings($output."timings/$name.json"), array(
 	'codecept'      => 'php '.implode(' ', array_map('escapeshellarg', $php)).' vendor/bin/codecept',
-	'pool'          => 'php '.escapeshellarg(__FILE__),
+	'loops'         => 'php '.escapeshellarg(__FILE__),
 	'dump'          => "$root/".$params['db']['dump_path'],
 	'base_path'     => (string) getenv('E107_BASE_PATH'),
 	'output'        => $output.$name,

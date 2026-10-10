@@ -18,6 +18,14 @@ class Unit extends E107Base
 		parent::_afterSuite();
 	}
 
+	/**
+	 * The suite shuffles its tests, and whichever is first in its process to render the admin navigation makes e107 ask e107.org for a new release (pref check_updates), so every test declares that it may.
+	 */
+	public function _before(\Codeception\TestInterface $test)
+	{
+		$this->getModule('\Helper\Outbound')->expectOutboundRequest('e107.org');
+	}
+
 	public function _beforeSuite($settings = array())
 	{
 		parent::_beforeSuite($settings);

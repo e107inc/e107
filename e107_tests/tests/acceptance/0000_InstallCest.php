@@ -28,6 +28,7 @@ class InstallCest
 
 	public function installDefault(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$I->wantTo("Install e107 with default settings"); // bootstrap5.
 		$this->installe107($I);
 		$this->checkAdminButtonWelcomeMessage($I);

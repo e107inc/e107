@@ -146,6 +146,7 @@ class AdminMiscCsrfCest
 	 */
 	public function aTokenlessGetDoesNotWriteLanguageStubs(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$I->amOnPage(self::LANGUAGE.'?mode=main&action=tools&sub=verify&lan='.self::SCRATCH_LAN);
 
 		$I->seeInSource(self::REFUSED);
@@ -309,6 +310,7 @@ class AdminMiscCsrfCest
 	 */
 	public function aTokenedVerifyStillRunsTheLanguageCheck(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$token = $I->grabFreshAdminToken(self::USERS.'?mode=main&action=list');
 
 		$I->amOnPage(self::LANGUAGE.'?mode=main&action=tools&sub=verify&lan='
@@ -324,6 +326,7 @@ class AdminMiscCsrfCest
 	 */
 	public function theDashboardsOwnPanelsStillLoad(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$core = $this->publishedLink($I, self::DASHBOARD,
 			'#admin\.php\?mode=core&type=update(&e-token=[^\'"]*)?#');
 		$addons = $this->publishedLink($I, self::DASHBOARD,
@@ -356,6 +359,7 @@ class AdminMiscCsrfCest
 	 */
 	public function theReadOnlyAdminPagesStillOpenWithoutAToken(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$pages = array(
 			self::DASHBOARD,
 			self::USERS.'?mode=main&action=list',

@@ -73,6 +73,7 @@ class AdminLoginCest
 
 	public function testAdminURLS(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 
 		$this->e107Login($I);
 

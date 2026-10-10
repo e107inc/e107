@@ -168,6 +168,7 @@ class InstallPrefDuplicatesCest
 	public function savingPreferencesUntouchedKeepsTheContactRecipient(AcceptanceTester $I)
 	{
 		$I->wantTo('save the preferences form untouched and still have a contact recipient');
+		$I->expectOutboundRequest('e107.org');
 
 		$I->loginAsAdmin();
 		$I->amOnPage('/e107_admin/prefs.php');
@@ -194,6 +195,7 @@ class InstallPrefDuplicatesCest
 	public function anAlreadyPoisonedContactRecipientIsRepaired(AcceptanceTester $I)
 	{
 		$I->wantTo('see the core update repair a contact recipient stored as a string');
+		$I->expectOutboundRequest('e107.org');
 
 		$I->probe('act=sitecontacts&value='.self::POISON);
 

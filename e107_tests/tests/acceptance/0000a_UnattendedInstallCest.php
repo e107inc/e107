@@ -82,6 +82,7 @@ class UnattendedInstallCest
 	public function unattendedInstallWithV24ArrayConfig(AcceptanceTester $I)
 	{
 		$I->wantTo("Install e107 unattended with a v2.4 array-format e107_config.php");
+		$I->expectOutboundRequest('e107.org');
 
 		$I->haveE107ArrayConfig();
 		$I->visitUnattendedInstall();
