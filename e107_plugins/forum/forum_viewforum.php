@@ -230,11 +230,9 @@ function init()
 // SEO - meta description (auto)
 	if(!empty($forumInfo['forum_description']))
 	{
-		define("META_DESCRIPTION", $tp->text_truncate(
-			str_replace(
-			//array('"', "'"), '', strip_tags($tp->toHTML($forumInfo['forum_description']))
-				array('"', "'"), '', $tp->toText($forumInfo['forum_description'])
-			), 250, '...'));
+		define("META_DESCRIPTION", str_replace(array('"', "'"), '',
+			$tp->text_truncate($tp->toText($forumInfo['forum_description']), 250, '...')
+		));
 	}
 
 	$moderatorUserIds = $forum->getModeratorUserIdsByForumId($forumId);
