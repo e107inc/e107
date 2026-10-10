@@ -36,6 +36,7 @@ class e_bbcode
 	private $core_bb = array();
 	private $class = false;
 	private $resizePrefs = array();
+	private static $bbPattern = '#^\[(/?)([A-Za-z_]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
 
 	function __construct()
 	{
@@ -75,6 +76,24 @@ class e_bbcode
 		// Eliminate duplicates
 		$this->bbLocation = array_diff($this->bbLocation, array(''));
 		krsort($this->bbLocation);
+	}
+
+
+	/**
+	 * Whether the body of an opening bbcode tag, digits and parameter and all as in size2 or youtube=600, names a code in the register. {@see e_parse::isBBcode()}
+	 *
+	 * @param string $code
+	 * @return bool
+	 */
+	public function isRegistered($code)
+	{
+
+		if (!is_string($code) || !preg_match(self::$bbPattern, '['.$code.']', $matches) || $matches[1] !== '')
+		{
+			return false;
+		}
+
+		return array_key_exists(strtolower($matches[2]), $this->bbLocation);
 	}
 
 
@@ -135,7 +154,7 @@ class e_bbcode
 		
 
 		
-		$pattern = '#^\[(/?)([A-Za-z_]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
+		$pattern = self::$bbPattern;
 		// $matches[0] - same as the input text
 		// $matches[1] - '/' for a closing tag. Otherwise empty string
 		// $matches[2] - the bbcode word
