@@ -15,7 +15,7 @@ namespace e107\SessionHandlers;
  *
  * @todo PHP 8.1 support with {@see \SessionHandlerInterface}
  */
-class DatabaseSessionHandler
+class DatabaseSessionHandler implements SoleSessionStoreInterface
 {
 	/**
 	 * Digest the session id is stored under, and the prefix that marks a row as
@@ -270,6 +270,32 @@ class DatabaseSessionHandler
 	{
 		$this->_db->delete($this->getTable(), self::whereKeyIn(self::storageKeys($session_id)));
 		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function canClaim()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Rows past their expiry are left to the collector, and are not reported as ended.
+	 */
+	public function claim($userId, $sessionId)
+	{
+		$userId = (int) $userId;
+
+		if($userId < 1 || !SessionId::isWellFormed($sessionId))
+		{
+			return false;
+		}
+
+		return 0 < (int) $this->_db->delete($this->getTable(),
+			"`session_user` = ".$userId." AND `session_expires` > ".time()." AND NOT ".self::whereKeyIn(self::storageKeys($sessionId)));
 	}
 
 	/**

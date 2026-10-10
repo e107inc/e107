@@ -109,7 +109,7 @@ class NonblockingFilesSessionHandler extends FilesSessionHandler
 	}
 
 	/**
-	 * Removes the session files and end marks nobody has written for $max_lifetime seconds; below a depth directory it removes nothing, as PHP's files module does.
+	 * Removes the session files and end marks nobody has written for $max_lifetime seconds, then the account files that name none; below a depth directory it removes nothing, as PHP's files module does.
 	 *
 	 * @param int $max_lifetime
 	 * @return int how many were removed
@@ -127,6 +127,8 @@ class NonblockingFilesSessionHandler extends FilesSessionHandler
 				$removed++;
 			}
 		}
+
+		$this->collectAccountFiles($max_lifetime);
 
 		return $removed;
 	}

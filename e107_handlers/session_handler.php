@@ -21,6 +21,8 @@ use e107\SessionHandlers\FilesSessionHandler;
 use e107\SessionHandlers\NonblockingFilesSessionHandler;
 use e107\SessionHandlers\SessionId;
 use e107\SessionHandlers\SessionSignIn;
+use e107\SessionHandlers\SoleSession;
+use e107\SessionHandlers\SoleSessionStoreInterface;
 
 /**
  * @package e107
@@ -928,6 +930,8 @@ class e_session
 	/**
 	 * Hand PHP the storage the save method names: core's own handler where it has one, otherwise PHP's module of that name.
 	 *
+	 * A handler that can end an account's other sessions is published as a {@see SoleSession} under core/e107/sole_session.
+	 *
 	 * @return void
 	 */
 	private function installSaveHandler()
@@ -940,24 +944,30 @@ class e_session
 			return;
 		}
 
-		if ($handler instanceof SessionHandlerInterface)
-		{
-			session_set_save_handler($handler, true);
-			return;
-		}
+		$registered = $handler instanceof SessionHandlerInterface
+			? session_set_save_handler($handler, true)
+			: session_set_save_handler(
+				array($handler, 'open'),
+				array($handler, 'close'),
+				array($handler, 'read'),
+				array($handler, 'write'),
+				array($handler, 'destroy'),
+				array($handler, 'gc')
+			);
 
-		session_set_save_handler(
-			array($handler, 'open'),
-			array($handler, 'close'),
-			array($handler, 'read'),
-			array($handler, 'write'),
-			array($handler, 'destroy'),
-			array($handler, 'gc')
-		);
+		if ($registered && $handler instanceof SoleSessionStoreInterface && $handler->canClaim())
+		{
+			$isEnabled = static function ()
+			{
+				return (bool) e107::getPref('disallowMultiLogin');
+			};
+
+			e107::setRegistry('core/e107/sole_session', new SoleSession($handler, new SessionSignIn(defset('e_COOKIE', 'e107cookie')), $isEnabled));
+		}
 	}
 
 	/**
-	 * Core's handler for a save method, with PHP's module set to the one that handler builds on.
+	 * Core's handler for a save method, with PHP's module set to the one that handler builds on; "nonblocking" falls back to "files" where it cannot reach its directory.
 	 *
 	 * @param string $method
 	 * @return object|null null for a method core has no handler for
@@ -971,11 +981,13 @@ class e_session
 
 			case 'files':
 				session_module_name('files');
-				return new FilesSessionHandler(session_save_path());
+				return new FilesSessionHandler(session_save_path(), e107::getInstance()->site_path);
 
 			case 'nonblocking':
 				session_module_name('files');
-				return new NonblockingFilesSessionHandler(session_save_path());
+				$store = new NonblockingFilesSessionHandler(session_save_path(), e107::getInstance()->site_path);
+
+				return $store->canClaim() ? $store : $this->coreSaveHandler('files');
 		}
 
 		return null;
