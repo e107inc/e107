@@ -17,6 +17,7 @@ class SignupResendCest
 	const ACTIVE = 'resendcestactive';
 	const UNKNOWN = 'resendcestnobody';
 	const NEW_EMAIL = 'resendcestmoved@e107-signup-probe.invalid';
+	const CORRECTED_EMAIL = 'resendcestcorrected@e107-signup-probe.invalid';
 	const WIDE_EMAIL = 'resendcestwide@e107-signup-probe.invalid';
 
 	public function _before(AcceptanceTester $I)
@@ -64,10 +65,7 @@ class SignupResendCest
 		{
 			list($who, $identifier, $password, $unasked) = $outcome;
 
-			if($unasked)
-			{
-				$I->probe('act=cleargate');
-			}
+			$I->probe($unasked ? 'act=cleargate' : 'act=havegate');
 
 			$this->askForResend($I, $identifier, $password);
 
@@ -115,7 +113,7 @@ class SignupResendCest
 
 		$this->askForResend($I, $name);
 
-		$I->assertSame(1, substr_count($I->grabProbe('act=maillog'), ' at '.self::WIDE_EMAIL.' Mail-ID='),
+		$I->assertSame(1, $this->mailsSent($I, self::WIDE_EMAIL),
 			'a name as long as the account columns hold must be looked up whole, however many bytes its alphabet takes');
 	}
 
@@ -147,7 +145,7 @@ class SignupResendCest
 		$this->askForResend($I, self::WAITING_DISPLAY);
 		$this->askForResend($I, self::WAITING, self::PASSWORD);
 
-		$I->assertSame(1, substr_count($I->grabProbe('act=maillog'), ' at '.self::NEW_EMAIL.' Mail-ID='),
+		$I->assertSame(1, $this->mailsSent($I, self::NEW_EMAIL),
 			'the account holder\'s own correction must be sent to the new address');
 	}
 
@@ -190,30 +188,93 @@ class SignupResendCest
 		$I->assertSame(1, $this->mailsSent($I), 'a request refused for its password must not hold back the next one');
 	}
 
+	public function aFailedSendDoesNotUseUpTheWindow(AcceptanceTester $I)
+	{
+		$I->wantTo('ask again straight away when my activation email could not be sent');
+
+		$I->probe('act=clearmaillog');
+		$I->probe('act=cleargate');
+
+		$I->haveSitePref('mail_log_options', '2,0');
+		$this->askForResend($I, self::WAITING);
+		$I->haveSitePref('mail_log_options', '1,1');
+		$this->askForResend($I, self::WAITING);
+
+		$I->assertSame(1, $this->mailsSent($I, '', 'Fail'), 'the first email must have been tried and not sent');
+		$I->assertSame(1, $this->mailsSent($I, '', 'Success'),
+			'an email that could not be sent must not hold back the next one');
+	}
+
+	public function aFailedSendToAMovedAddressKeepsTheMoveWindowButNotTheResend(AcceptanceTester $I)
+	{
+		$I->wantTo('be sent my activation email at the address I moved to when the first email there could not be sent');
+
+		$I->probe('act=clearmaillog');
+		$I->probe('act=cleargate');
+
+		$I->haveSitePref('mail_log_options', '2,0');
+		$this->askForResend($I, self::WAITING, self::PASSWORD);
+		$I->haveSitePref('mail_log_options', '1,1');
+		$this->askForResend($I, self::WAITING, self::PASSWORD, self::CORRECTED_EMAIL);
+		$this->askForResend($I, self::WAITING);
+
+		$I->assertSame(1, $this->mailsSent($I, self::NEW_EMAIL, 'Fail'),
+			'the email to the new address must have been tried and not sent');
+		$I->assertSame(0, $this->mailsSent($I, self::CORRECTED_EMAIL),
+			'a second address move inside the window must not be sent, even after the first one failed');
+		$I->assertSame(1, $this->mailsSent($I, self::NEW_EMAIL, 'Success'),
+			'a resend by name must be sent to the moved address at once');
+	}
+
+	public function aFailedSendToAMovedAddressDoesNotReopenTheResendWindow(AcceptanceTester $I)
+	{
+		$I->wantTo('not have an address move whose email failed undo the window of a resend that was sent');
+
+		$I->probe('act=clearmaillog');
+		$I->probe('act=cleargate');
+
+		$this->askForResend($I, self::WAITING);
+		$I->haveSitePref('mail_log_options', '2,0');
+		$this->askForResend($I, self::WAITING, self::PASSWORD);
+		$I->haveSitePref('mail_log_options', '1,1');
+		$this->askForResend($I, self::WAITING);
+
+		$I->assertSame(1, $this->mailsSent($I, self::WAITING_EMAIL, 'Success'), 'the first resend must have been sent');
+		$I->assertSame(1, $this->mailsSent($I, self::NEW_EMAIL, 'Fail'),
+			'the email to the new address must have been tried and not sent');
+		$I->assertSame(0, $this->mailsSent($I, self::NEW_EMAIL, 'Success'),
+			'a resend by name inside the window of one that was sent must not be sent, even after a failed move');
+	}
+
 	/**
 	 * @param AcceptanceTester $I
 	 * @param string $identifier what the visitor typed as their user name or email
 	 * @param string|array $password when set, sent with a new address, as the form's second half asks
+	 * @param string $newEmail the address the form's second half moves the account to
 	 * @return void
 	 */
-	private function askForResend(AcceptanceTester $I, $identifier, $password = '')
+	private function askForResend(AcceptanceTester $I, $identifier, $password = '', $newEmail = self::NEW_EMAIL)
 	{
 		$I->resetAllCookies();
 		$I->sendPostRequest('/signup.php?resend', array(
 			'submit_resend'   => 1,
 			'resend_email'    => $identifier,
-			'resend_newemail' => $password === '' ? '' : self::NEW_EMAIL,
+			'resend_newemail' => $password === '' ? '' : $newEmail,
 			'resend_password' => $password,
 		));
 	}
 
 	/**
 	 * @param AcceptanceTester $I
+	 * @param string $address only sends to this address, when set
+	 * @param string $result only sends the mail log records with this result, 'Success' or 'Fail', when set
 	 * @return int
 	 */
-	private function mailsSent(AcceptanceTester $I)
+	private function mailsSent(AcceptanceTester $I, $address = '', $result = '')
 	{
-		return substr_count($I->grabProbe('act=maillog'), 'Mail-ID=');
+		$to = $address === '' ? '\S+' : preg_quote($address, '/');
+
+		return preg_match_all('/ at '.$to.' Mail-ID=\S* - '.$result.'/', $I->grabProbe('act=maillog'));
 	}
 
 	/**
@@ -236,7 +297,7 @@ header('Content-Type: text/plain');
 \$config = e107::getConfig('core');
 \$logFile = e_LOG.'mailoutlog.log';
 \$act = isset(\$_GET['act']) ? \$_GET['act'] : '';
-\$prefs = array('user_reg' => 1, 'user_reg_veri' => 1, 'auth_method' => 'e107', 'mail_log_options' => '1,1');
+\$prefs = array('user_reg' => 1, 'user_reg_veri' => 1, 'auth_method' => 'e107', 'mail_log_options' => '1,1', 'mailer' => 'sendmail', 'sendmail' => '/bin/false');
 
 switch(\$act)
 {
@@ -283,6 +344,14 @@ switch(\$act)
 	case 'cleargate':
 		\$sql->delete('tmp', "tmp_ip IN ('signupresend','signupresendmove')");
 		echo "PROBE_OK\\n";
+		break;
+
+	case 'havegate':
+		require_once(e_HANDLER.'e_signup_class.php');
+		\$gate = new \\e107\\Flood\\SourceGate(\$sql, true, e_signup::RESEND_WINDOW);
+		\$waitingId = \$sql->retrieve('user', 'user_id', "user_loginname='$waiting'");
+		\$gate->record(e_signup::RESEND_FLOOD_KIND, \$waitingId);
+		echo \$gate->isClosedTo(e_signup::RESEND_FLOOD_KIND, \$waitingId) ? "PROBE_OK\\n" : "the window did not close\\n";
 		break;
 
 	case 'failedlogins':
