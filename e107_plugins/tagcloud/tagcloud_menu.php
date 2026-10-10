@@ -157,7 +157,7 @@ if(!class_exists('tagcloud_menu'))
 
 			$text = $cloud->render();
 
-			e107::getCache()->set('tagcloud', $text, true);
+			e107::getCache()->set('tagcloud', $text);
 
 			//$text .= "<div style='clear:both'></div>";   moved to $template['default']['end']
 
