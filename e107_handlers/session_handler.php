@@ -17,6 +17,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+use e107\SessionHandlers\FilesSessionHandler;
 use e107\SessionHandlers\SessionSignIn;
 
 /**
@@ -874,29 +875,9 @@ class e_session
 			session_save_path($this->_sessionSavePath);
 		}
 
-		switch ($this->_sessionSaveMethod)
+		if (!isset($_SESSION))
 		{
-			case 'db':
-			//	ini_set('session.save_handler', 'user');
-
-				$session = new e_session_db;
-				session_set_save_handler(
-					[$session, 'open'],
-					[$session, 'close'],
-					[$session, 'read'],
-					[$session, 'write'],
-					[$session, 'destroy'],
-					[$session, 'gc']
-				);
-				$session->setSaveHandler();
-			break;
-
-			default:
-				if(!isset($_SESSION))
-				{
-					session_module_name($this->_sessionSaveMethod);
-				}
-			break;
+			$this->installSaveHandler();
 		}
 
 		if (empty($this->_options['domain']))
@@ -940,6 +921,58 @@ class e_session
 		session_start();
 		self::$_sessionStarted = true;
 		return $this;
+	}
+
+	/**
+	 * Hand PHP the storage the save method names: core's own handler where it has one, otherwise PHP's module of that name.
+	 *
+	 * @return void
+	 */
+	private function installSaveHandler()
+	{
+		$handler = $this->coreSaveHandler($this->_sessionSaveMethod);
+
+		if (null === $handler)
+		{
+			session_module_name($this->_sessionSaveMethod);
+			return;
+		}
+
+		if ($handler instanceof SessionHandlerInterface)
+		{
+			session_set_save_handler($handler, true);
+			return;
+		}
+
+		session_set_save_handler(
+			array($handler, 'open'),
+			array($handler, 'close'),
+			array($handler, 'read'),
+			array($handler, 'write'),
+			array($handler, 'destroy'),
+			array($handler, 'gc')
+		);
+	}
+
+	/**
+	 * Core's handler for a save method, with PHP's module set to the one that handler builds on.
+	 *
+	 * @param string $method
+	 * @return object|null null for a method core has no handler for
+	 */
+	private function coreSaveHandler($method)
+	{
+		switch ($method)
+		{
+			case 'db':
+				return new e_session_db();
+
+			case 'files':
+				session_module_name('files');
+				return new FilesSessionHandler();
+		}
+
+		return null;
 	}
 
 	/**
