@@ -112,6 +112,15 @@ hash8() {
     printf '%s' "$1" | sha1sum | cut -c1-8
 }
 
+# The web image `up` uses, tagged by a hash of what it is built from: every
+# file in docker/ but the compose file and the docs.
+web_image() {
+    local hash xdebug=
+    [ "$WITH_XDEBUG" != yes ] || xdebug=-xdebug
+    hash=$(cd "$DOCKER_DIR" && find . -type f ! -name 'compose*.yml' ! -name '*.md' -print0 | LC_ALL=C sort -z | xargs -0 sha1sum | sha1sum | cut -c1-8)
+    printf 'e107-web:%s%s-%s' "$E107_PHP_VERSION" "$xdebug" "$hash"
+}
+
 # Derive a compose project name from worktree path + PHP + DB.
 project_name() {
     local php=$1 db=$2
@@ -212,7 +221,6 @@ load_env_from_labels() {
     E107_PHP_VERSION=$(project_label "$PROJECT" php)
     E107_DB_IMAGE=$(project_label "$PROJECT" db)
     WITH_XDEBUG=$(project_label "$PROJECT" xdebug)
-    XDEBUG_TAG=$([ "$WITH_XDEBUG" = yes ] && echo '-xdebug' || true)
 }
 
 # The project this worktree's managed Codeception config points at. Written
@@ -300,7 +308,7 @@ compose_up_cmd() {
     E107_DB_PASSWORD=$DEFAULT_DB_PASSWORD \
     E107_DB_ROOT_PASSWORD=$DEFAULT_DB_ROOT_PASSWORD \
     E107_WITH_XDEBUG=$WITH_XDEBUG \
-    E107_WITH_XDEBUG_TAG=$XDEBUG_TAG \
+    E107_WEB_IMAGE=$(web_image) \
     E107_DB_CHARSET=$E107_DB_CHARSET \
     E107_DB_COLLATION=$E107_DB_COLLATION \
     E107_DB_EXTRA_ARGS=$E107_DB_EXTRA_ARGS \
@@ -464,7 +472,7 @@ up_with_registry_fallback() {
     compose_up_cmd up -d --wait "${UP_SERVICES[@]}" 2>&1 | tee "$tmp" || rc=${PIPESTATUS[0]}
     if [ "$rc" -ne 0 ] && grep -qiE 'denied|unauthorized|toomanyrequests|manifest unknown' "$tmp"; then
         local img missing=no
-        for img in "e107-web:${E107_PHP_VERSION}${XDEBUG_TAG}" \
+        for img in "$(web_image)" \
                    "$E107_DB_IMAGE"; do
             docker image inspect "$img" >/dev/null 2>&1 || missing=yes
         done
@@ -750,7 +758,6 @@ cmd_up() {
     require_docker
     E107_PHP_VERSION=$PHP
     E107_DB_IMAGE=$DB
-    XDEBUG_TAG=$([ "$WITH_XDEBUG" = yes ] && echo '-xdebug' || true)
     PROJECT=$(project_name "$PHP" "$DB")
     normalise_base_path "$base"
     db_flavor_args
@@ -803,7 +810,7 @@ cmd_up() {
         err "env $PROJECT still records xdebug=$recorded_xdebug after an up asking for xdebug=$WITH_XDEBUG.
        A container from an earlier up is holding stale labels. Recreate the stack:
          e107-tests --env $PROJECT down
-         e107-tests up --php $PHP --db $DB${XDEBUG_TAG:+ --xdebug}"
+         e107-tests up --php $PHP --db $DB$([ "$WITH_XDEBUG" = no ] || echo ' --xdebug')"
     fi
     heal_dns
     ensure_web_exec
@@ -876,6 +883,20 @@ cmd_relock() {
         rm -f "$MANAGED_CONFIG"
     fi
     git -C "$APP_PATH" --no-pager diff --stat -- 'e107_tests/composer*.lock' >&2 || true
+}
+
+# Print the web image `up` would use, so CI can cache it under the same name.
+cmd_image() {
+    E107_PHP_VERSION=$DEFAULT_PHP
+    while [ $# -gt 0 ]; do
+        case $1 in
+            --php) E107_PHP_VERSION=$2; shift 2 ;;
+            --xdebug) WITH_XDEBUG=yes; shift ;;
+            *) err "unknown flag: $1" ;;
+        esac
+    done
+    web_image
+    echo
 }
 
 cmd_urls() {
@@ -1305,10 +1326,9 @@ LIFECYCLE:
                                      Default: PHP 8.2 + MariaDB 10.11.
                                      --install-site also installs e107 itself
                                      (persistent config, admin/x107).
-                                     --rebuild rebuilds the web image; needed
-                                     after editing anything under docker/,
-                                     which compose otherwise ignores while an
-                                     image with that tag exists.
+                                     --rebuild rebuilds the web image; an edit
+                                     to a file it is built from needs none, as
+                                     that changes the image's tag (see image).
   down [--volumes] [--force]         Stop and remove this env. Removing an env
                                      belonging to another worktree (reachable
                                      with --env) needs --force.
@@ -1332,6 +1352,9 @@ LIFECYCLE:
                                      inside an env on the PHP it is resolved
                                      for (all of them by default). Review the
                                      diff, run the suites, commit.
+  image [--php X] [--xdebug]         Print the web image `up` uses, tagged by
+                                     a hash of every file in docker/ but
+                                     the compose files and the docs.
   gc [--dry-run] [--worktrees-gone]  Remove volumes of downed/orphaned envs;
                                      with --worktrees-gone, tear down stacks
                                      whose worktree was deleted.
@@ -1391,17 +1414,12 @@ EOF
 
 EXPLICIT_PROJECT=
 WITH_XDEBUG=no
-XDEBUG_TAG=
 TARGET_WORKTREE=
 # Docroot install and the full stack unless `up` is told otherwise. Only `up`
 # reads these; every later command drives the containers it left behind.
 BASE_PATH=
 WITH_SELENIUM=yes
 UP_SERVICES=()
-# compose builds the web image only when it is missing, so a change under
-# docker/ is invisible to a worktree that already has one -- and the image is
-# shared by every env on the same PHP version, so deleting it is not enough
-# while another stack still holds the tag.
 REBUILD=no
 
 # Pre-parse global flags that can appear before the subcommand. Kept as they
@@ -1453,6 +1471,7 @@ case $CMD in
     install)    cmd_install "$@" ;;
     relock)     cmd_relock "$@" ;;
     urls)       cmd_urls "$@" ;;
+    image)      cmd_image "$@" ;;
     status|ps)  cmd_status "$@" ;;
     logs)       cmd_logs "$@" ;;
     exec)       cmd_exec "$@" ;;

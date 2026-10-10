@@ -7,7 +7,7 @@
 #
 # Example:
 #   docker build --build-arg PHP_VERSION=8.4 --build-arg WITH_XDEBUG=yes \
-#       -t e107-web:8.4-xdebug e107_tests/docker
+#       -t "$(e107_tests/bin/e107-tests image --php 8.4 --xdebug)" e107_tests/docker
 #
 # Notes:
 #   * The image installs every PHP extension e107 needs to install and run.
