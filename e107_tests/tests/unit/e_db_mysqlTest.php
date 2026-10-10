@@ -90,4 +90,32 @@ class e_db_mysqlTest extends e_db_abstractTest
 		$db_property = new \e107\Reflection\ReflectionProperty($this->db, 'mySQLaccess');
 		return $db_property->getValue($this->db);
 	}
+
+	public function testTheInsertIdIsTheInstancesOwnWhenAnotherInstanceQueriesInBetween()
+	{
+		global $db_ConnectionID;
+		$first = $db_ConnectionID;
+		$db_ConnectionID = $this->getDbImplementation();
+		$table = '`'.MPREFIX.'e_db_share_test`';
+
+		try
+		{
+			$other = $this->makeDb();
+			$other->__construct();
+			$this->assertSame($this->db->retrieve('SELECT CONNECTION_ID()'), $other->retrieve('SELECT CONNECTION_ID()'),
+				'the two have to share a link for this to prove anything');
+
+			$this->assertNotFalse($this->db->gen("CREATE TEMPORARY TABLE $table (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, v INT)"));
+			$this->db->gen("INSERT INTO $table (v) VALUES (1), (2)");
+			$this->db->gen("INSERT INTO $table (v) VALUES (3)");
+			$other->retrieve('SELECT 1');
+
+			$this->assertSame(3, $this->db->lastInsertId());
+		}
+		finally
+		{
+			$this->db->gen("DROP TEMPORARY TABLE IF EXISTS $table");
+			$db_ConnectionID = $first;
+		}
+	}
 }
