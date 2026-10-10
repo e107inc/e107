@@ -2399,14 +2399,24 @@ class e_file
 			return copy($source, $dest);
 		}
 
-		// Make destination directory
-		if(!is_dir($dest))
+		if(!is_dir($source))
 		{
-			mkdir($dest, $perm);
+			return false;
+		}
+
+		// Make destination directory
+		if(!is_dir($dest) && !mkdir($dest, $perm))
+		{
+			return false;
 		}
 
 		// Directory - so copy it.
 		$dir = scandir($source);
+		if($dir === false)
+		{
+			return false;
+		}
+
 		foreach($dir as $folder)
 		{
 			// Skip pointers
@@ -2415,7 +2425,10 @@ class e_file
 				continue;
 			}
 
-			$this->copy("$source/$folder", "$dest/$folder", $perm);
+			if(!$this->copy("$source/$folder", "$dest/$folder", $options))
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -3274,6 +3287,7 @@ class e_file
 		chmod(e_TEMP . $dir, 0755);
 
 		$destpath = ($type == 'theme') ? e_THEME : e_PLUGIN;
+		$backup = false;
 
 		if(is_dir($destpath . $dir))
 		{
@@ -3282,7 +3296,9 @@ class e_file
 				return $this->unzipFailed($localfile, "(" . ucfirst($type) . ") Already Downloaded - " . basename($destpath) . '/' . $dir, $dir);
 			}
 
-			if(file_exists(e_TEMP . $localfile) && rename($destpath . $dir, e_BACKUP . $dir . "_" . date("YmdHi")))
+			$backup = e_BACKUP . $dir . "_" . date("YmdHi");
+
+			if(file_exists(e_TEMP . $localfile) && $this->moveDir($destpath . $dir, $backup))
 			{
 				e107::getMessage()->addSuccess(ADLAN_195);
 			}
@@ -3290,14 +3306,103 @@ class e_file
 
 		@copy(e_TEMP . $localfile, e_BACKUP . $dir . ".zip"); // Make a Backup in the system folder.
 
-		if(rename(e_TEMP . $dir, $destpath . $dir) === false)
+		if($this->moveDir(e_TEMP . $dir, $destpath . $dir) === false)
 		{
+			if($backup !== false && !file_exists($destpath . $dir))
+			{
+				$this->moveDir($backup, $destpath . $dir);
+			}
+
 			return $this->unzipFailed($localfile, "Couldn't Move " . e_TEMP . $dir . " to " . $destpath . $dir . " Folder", $dir);
 		}
 
 		@unlink(e_TEMP . $localfile);
 
 		return $dir;
+	}
+
+
+	/**
+	 * Renames a folder, copying it and removing the original where rename() cannot take a folder to another file system.
+	 *
+	 * @param string $source
+	 * @param string $dest
+	 * @return bool
+	 */
+	private function moveDir($source, $dest)
+	{
+		$crossDevice = false;
+
+		$previous = set_error_handler(function($severity, $message, $file = '', $line = 0) use (&$crossDevice, &$previous)
+		{
+			if($crossDevice || strpos($message, 'The first argument to copy() function cannot be a directory') !== false)
+			{
+				$crossDevice = true;
+
+				return true;
+			}
+
+			return $previous === null ? false : call_user_func($previous, $severity, $message, $file, $line);
+		});
+
+		try
+		{
+			$moved = rename($source, $dest);
+		}
+		finally
+		{
+			restore_error_handler();
+		}
+
+		if($moved || !$crossDevice || is_link($source) || file_exists($dest) || !$this->canRemoveDir($source))
+		{
+			return $moved;
+		}
+
+		if(!$this->copy($source, $dest, array('git' => true)))
+		{
+			$this->removeDir($dest);
+
+			return false;
+		}
+
+		$this->removeDir($source);
+
+		return !file_exists($source);
+	}
+
+
+	/**
+	 * Says whether removeDir() can take away $dir whole: its parent and every folder in it are writable.
+	 *
+	 * @param string $dir
+	 * @return bool
+	 */
+	private function canRemoveDir($dir)
+	{
+		if(!is_writable(dirname($dir)) || !is_writable($dir))
+		{
+			return false;
+		}
+
+		try
+		{
+			$entries = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST);
+
+			foreach($entries as $entry)
+			{
+				if($entry->isDir() && !$entry->isLink() && !$entry->isWritable())
+				{
+					return false;
+				}
+			}
+		}
+		catch(UnexpectedValueException $e)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 
