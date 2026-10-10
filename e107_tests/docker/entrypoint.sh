@@ -61,13 +61,16 @@ fi
 # live under one, and e107 derives e_HTTP from the request, so cookies,
 # redirects and generated links all take a different shape there. An alias
 # rather than a second copy of the tree: one docroot, reachable both ways, so
-# the only variable is the request path.
-BASE_CONF=/etc/apache2/conf-enabled/e107-base-path.conf
+# the only variable is the request path. Included by the worktree's vhosts
+# alone; a sandbox mounts its overlay at the subdirectory itself. Written empty
+# for a docroot install: Apache 2.4.25 (PHP 5.6 and 7.0 images) refuses to
+# start on an IncludeOptional of a file that is not there.
+BASE_CONF=/etc/apache2/e107-base-path.conf
 if [ -n "${E107_BASE_PATH:-}" ]; then
     printf 'Alias /%s /var/www/html\n' "$E107_BASE_PATH" > "$BASE_CONF"
     echo "[entrypoint] Serving /var/www/html at /${E107_BASE_PATH}/ as well as /."
 else
-    rm -f "$BASE_CONF"
+    : > "$BASE_CONF"
 fi
 
 if [ -d /var/www/html ]; then

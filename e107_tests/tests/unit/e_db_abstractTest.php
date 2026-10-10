@@ -95,7 +95,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
 		$this->assertTrue($result);
 
-		$result = $this->db->connect($this->dbConfig['mySQLserver'].":3306", $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+		$result = $this->db->connect($this->dbConfig['mySQLserver'].":".$this->dbConfig['mySQLport'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
 		$this->assertTrue($result);
 	}
 

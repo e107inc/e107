@@ -21,10 +21,7 @@ class UnattendedInstallCest
 	{
 	}
 
-	// Test order matters: the "rejects" cases leave the database empty,
-	// so they run first. The successful-install cases run last so that
-	// subsequent Cests (AdminLoginCest, UserSignupCest, ...) can rely on
-	// a fully installed app with admin/admin credentials.
+	// The "rejects" cases leave the database empty, so they run first.
 
 	public function unattendedInstallRejectsMissingConfig(AcceptanceTester $I)
 	{
@@ -75,6 +72,13 @@ class UnattendedInstallCest
 		$this->assertInstallSucceeded($I);
 	}
 
+	/**
+	 * The site every other Cest starts from: the suite runner installs it with this test once per run and clones it into each Cest's sandbox.
+	 *
+	 * Signing in last proves the installed admin can, and leaves its password stored as the suites' cheap hash for every Cest to inherit.
+	 *
+	 * @group site-template
+	 */
 	public function unattendedInstallWithV24ArrayConfig(AcceptanceTester $I)
 	{
 		$I->wantTo("Install e107 unattended with a v2.4 array-format e107_config.php");
@@ -82,6 +86,7 @@ class UnattendedInstallCest
 		$I->haveE107ArrayConfig();
 		$I->visitUnattendedInstall();
 		$this->assertInstallSucceeded($I);
+		$I->loginAsAdmin();
 	}
 
 	private function writeLegacyConfig(AcceptanceTester $I)

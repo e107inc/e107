@@ -154,14 +154,16 @@ RUN set -eux; \
 # Self-signed and generated at build time. mod_ssl's ports.conf adds Listen 443
 # on its own once the module is enabled.
 RUN set -eux; \
-    a2enmod rewrite headers expires ssl; \
+    a2enmod rewrite headers expires ssl vhost_alias; \
     mkdir -p /etc/ssl/e107; \
     # The SAN goes through a config file rather than -addext, which needs
     # OpenSSL 1.1.1. The php:5.6 and php:7.0 images are Debian Stretch with
     # 1.1.0, where -addext is parsed as a digest name and the build dies with
     # "req: Unknown digest addext". The unit matrix starts at 5.6 and `graft`
     # builds old release tags from this Dockerfile too, so both reach this
-    # line. A config file works on every version.
+    # line. A config file works on every version. The sandboxes' names
+    # (compose.yml's sbN.web aliases) are listed one by one: TLS clients take
+    # no wildcard over a single label, so *.web would match none of them.
     printf '%s\n' \
         '[req]' \
         'distinguished_name = dn' \
@@ -170,7 +172,7 @@ RUN set -eux; \
         '[dn]' \
         'CN = web' \
         '[v3]' \
-        'subjectAltName = DNS:web,DNS:localhost,IP:127.0.0.1' \
+        "subjectAltName = DNS:web,$(seq -s, -f 'DNS:sb%g.web' 16),DNS:localhost,IP:127.0.0.1" \
         > /tmp/e107-ssl.cnf; \
     openssl req -x509 -nodes -newkey rsa:2048 -days 3650 \
         -config /tmp/e107-ssl.cnf \
@@ -178,6 +180,13 @@ RUN set -eux; \
         -out    /etc/ssl/e107/web.crt; \
     rm -f /tmp/e107-ssl.cnf; \
     chmod 640 /etc/ssl/e107/web.key
+
+# Each sandbox keeps its PHP sessions apart, in a directory the runner empties
+# with the sandbox (lib/sandbox/Overlay.php), so a test counting session files
+# sees only its own site's: one block per sandbox compose.yml names.
+RUN for n in $(seq 16); do \
+        printf '<Directory /srv/sb/sb%s>\n    php_admin_value session.save_path /srv/sbstate/sessions/sb%s\n</Directory>\n' "$n" "$n"; \
+    done > /etc/apache2/e107-sandbox-sessions.conf
 
 COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY php-overrides.ini /usr/local/etc/php/conf.d/zz-e107-overrides.ini

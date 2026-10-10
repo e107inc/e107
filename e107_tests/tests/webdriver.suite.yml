@@ -4,8 +4,9 @@
 actor: WebDriverTester
 extensions:
     enabled:
-        # Takes back what a run writes into the app root, pass, fail or killed.
-        - Extension\WorkspaceGuard
+        # Takes back what each test wrote into its sandbox, and reports a test
+        # that left anything else there, which fails the run.
+        - Extension\SandboxGuard
 shuffle: false
 coverage:
     enabled: false
@@ -69,9 +70,8 @@ step_decorators: ~
 #   e107-tests run webdriver --env http
 #   e107-tests run webdriver --env tls
 #
-# The TLS URL is spelled out rather than parameterised because that vhost and
-# its certificate belong to this harness's own image (see docker/Dockerfile), so
-# there is nothing a user's config.local.yml could usefully say about it.
+# The TLS URL is the suite URL over https (lib/config.php derives it), because
+# the image serves every site it serves over both schemes (see docker/Dockerfile).
 #
 # acceptInsecureCerts is enough. The certificate is self-signed, and the worry
 # would be that a certificate error costs the page its secure-context status and
@@ -88,6 +88,6 @@ env:
         modules:
             config:
                 WebDriver:
-                    url: 'https://web/'
+                    url: '%tls_url%'
                     capabilities:
                         acceptInsecureCerts: true

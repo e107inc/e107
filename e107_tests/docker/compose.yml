@@ -33,6 +33,7 @@ services:
       --character-set-server=${E107_DB_CHARSET:-utf8mb3}
       --collation-server=${E107_DB_COLLATION:-utf8mb3_general_ci}
       --max-allowed-packet=64M
+      --max-connections=1000
       ${E107_DB_EXTRA_ARGS:-}
     healthcheck:
       # mariadb-admin ships with both mariadb and recent mysql images;
@@ -67,23 +68,41 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # The suite runner mounts a kernel overlay per worker over the worktree
+    # (lib/sandbox). Mounting needs CAP_SYS_ADMIN, and Docker's default AppArmor
+    # profile denies mount outright; rootless podman has no AppArmor to lift.
+    cap_add: [SYS_ADMIN]
+    security_opt: [apparmor=unconfined]
+    # Each request opens its own database connections, and sixteen sandboxes
+    # close them faster than TIME_WAIT gives their ports back; a new connection
+    # may take over a port still in TIME_WAIT.
+    sysctls:
+      net.ipv4.tcp_tw_reuse: 1
+    networks:
+      default:
+        # Two names per sandbox, which Apache serves from that sandbox's overlay:
+        # the suite's, and a bare one for a test that needs the same site
+        # under a host it was not told about. The runner counts these; the
+        # certificate (Dockerfile) and the browser grid are sized for sixteen.
+        aliases: [sb1.web, sb2.web, sb3.web, sb4.web, sb5.web, sb6.web, sb7.web, sb8.web,
+                  sb9.web, sb10.web, sb11.web, sb12.web, sb13.web, sb14.web, sb15.web, sb16.web,
+                  sb1, sb2, sb3, sb4, sb5, sb6, sb7, sb8, sb9, sb10, sb11, sb12, sb13, sb14, sb15, sb16]
     environment:
       E107_DB_HOST: db
       E107_DB_PORT: "3306"
       E107_DB_USER: ${E107_DB_USER}
       E107_DB_PASSWORD: ${E107_DB_PASSWORD}
       E107_DB_NAME: ${E107_DB_NAME}
+      # For the suite runner, which clones each sandbox's database as root.
+      E107_DB_ROOT_PASSWORD: ${E107_DB_ROOT_PASSWORD}
       # Empty for a docroot install; a bare directory name (no slashes) to
       # also serve the site from a subdirectory. The entrypoint turns this
       # into an Apache alias. See bin/e107-tests --base-path.
       E107_BASE_PATH: ${E107_BASE_PATH:-}
-      # The URL Apache is reachable at, for in-container self-tests. Follows
-      # E107_BASE_PATH, so a fixture that fetches the site reaches the same
-      # site the suite is driving.
-      E107_INTERNAL_URL: ${E107_INTERNAL_URL:-http://web/}
     volumes:
-      # Bind-mount the app root so host edits are live. Acceptance installs
-      # write artifacts here; `e107-tests clean` removes them.
+      # Bind-mount the app root so host edits are live. The suites never write
+      # to it: each run's sandboxes overlay it. `up --install-site` does, and
+      # `e107-tests clean` removes what that leaves.
       - ${E107_APP_PATH}:/var/www/html
       # Per-env vendor tree, shadowing the (untouched) worktree vendor dir so
       # every env resolves its own dependencies for its own PHP version.
@@ -103,6 +122,13 @@ services:
     labels: *e107-labels
     # Run as root to dodge a rootless-Podman supervisord EPERM crash-loop.
     user: root
+    # A session per suite worker; the grid runs one at a time unless told.
+    environment:
+      SE_NODE_MAX_SESSIONS: 16
+      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
+    # Each session's Chrome runs about 170 tasks, and podman caps a container
+    # at 2048 (Docker sets no cap), past which tabs crash.
+    pids_limit: -1
     depends_on:
       - web
     shm_size: 2gb
