@@ -120,7 +120,7 @@
 		    $text .= '
 		    	<span class="sr-only">Toggle Dropdown</span>
 			</button>
-		    	<ul class="dropdown-menu pull-right float-right dropdown-menu-end">
+		    	<ul class="dropdown-menu dropdown-menu-right dropdown-menu-end">
 		    	';
 			
 			//--	foreach($jumpList as $key => $val)
@@ -1040,7 +1040,7 @@
 		$text = '<div class="btn-group"><button class="btn btn-default btn-secondary btn-sm btn-mini dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
     <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu pull-right dropdown-menu-end float-right">	
+    <ul class="dropdown-menu dropdown-menu-right dropdown-menu-end">	
    ';
 
 		//FIXME - not fully working.

@@ -49,7 +49,7 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_right'] = '
 							{SETIMAGE: w=600&h=450&crop=1}
  							<div class="{FEATUREBOX_ACTIVE} carousel-item item slide{FEATUREBOX_COUNTER}">
                                 <div class="container">
-                                 <div class="featurebox-item-image pull-right float-right col-xs-12 col-sm-6 col-md-6 span6">
+                                 <div class="featurebox-item-image pull-right float-right float-end col-xs-12 col-sm-6 col-md-6 span6">
                                          {FEATUREBOX_IMAGE=placeholder}
                                     </div>
                                     <div class="featurebox-item-text col-xs-12 col-md-6 col-sm-6">
