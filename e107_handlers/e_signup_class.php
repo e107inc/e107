@@ -266,8 +266,12 @@ class e_signup
 
 		$result = e107::getEmail()->sendEmail($row['user_email'], $row['user_name'], $eml);
 
-		if(!$result)
+		if($result !== true)
 		{
+			if(!$movesAddress)
+			{
+				$resendGate->forget(self::RESEND_FLOOD_KIND, $row['user_id']);
+			}
 			error_log('signup.php: The activation email could not be re-sent to user #'.$row['user_id'].'. Check the mail settings in Admin → Preferences.');
 			$do_log['signup_result'] = LAN_SIGNUP_62;
 		}
