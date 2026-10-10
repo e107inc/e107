@@ -1182,6 +1182,8 @@ public function getData($key = null, $clear = false)
      *
      * Call this where the identity the session speaks for changes. Silently
      * does nothing when no session is running or output has already started.
+     * While multiple logins are disallowed, a session claimed for its account
+     * stays claimed under the new id. {@see SoleSession::renew()}
      *
      * @return e_session
      */
@@ -1195,6 +1197,13 @@ public function getData($key = null, $clear = false)
         }
 
         session_regenerate_id(true);
+
+        $sole = e107::getRegistry('core/e107/sole_session');
+
+        if ($sole instanceof SoleSession)
+        {
+            $sole->renew();
+        }
 
         return $this;
     }

@@ -11,6 +11,7 @@
 */
 
 use e107\Database\QueryBuilder;
+use e107\SessionHandlers\SoleSession;
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -276,40 +277,6 @@ class userlogin
 		$user_admin = $this->userData['user_admin'];
 		$user_email = $this->userData['user_email'];
 
-		/* restrict more than one person logging in using same us/pw */
-		if(!empty($pref['session_save_method']) && ($pref['session_save_method'] === 'db') && !empty($pref['disallowMultiLogin']) && !empty($user_id))
-		{
-			// logout any existing user of this account.
-			$mLog = '';
-			if($sql->createQueryBuilder()->delete('session')->where('session_user', $user_id)->where('session_expires', '>', time())->execute())
-			{
-				$mLog = 'Dropped existing user session: #' . $user_id. " ".$username;
-			}
-
-			$onlineUserId = $user_id.".".$user_name;
-			if(($onlineIP = $sql->createQueryBuilder()->select('online_ip')->from('online')->where('online_user_id', $onlineUserId)->fetchOne()))
-			{
-				$mLog .= ' ('. e107::getIpHandler()->ipDecode($onlineIP).')';
-				$sql->createQueryBuilder()->delete('online')->where('online_user_id', $onlineUserId)->execute();
-			}
-
-			if(!empty($mLog))
-			{
-				$this->logNote('LAN_ROLL_LOG_07', $mLog );
-			}
-
-		}
-		elseif(!empty($pref['track_online']) && !empty($pref['disallowMultiLogin']) && !empty($user_id))
-		{
-			if($sql->createQueryBuilder()->select('online_ip')->from('online')->where('online_user_id', $user_id.".".$user_name)->execute())
-			{
-				return $this->invalidLogin($username, LOGIN_MULTIPLE, $user_id);
-			}
-		}
-
-
-
-
 		// User login definitely accepted here
 
 		if($ret = $e_event->trigger("user_validlogin", $user_id))
@@ -318,6 +285,11 @@ class userlogin
 		}
 
 		$cookieval = $this->validLogin($this->userData, $autologin);
+
+		if(!empty($user_id) && !empty($_SESSION[e_COOKIE]))
+		{
+			$this->endOtherSessions($user_id, $user_name, $username);
+		}
 
 		if(!empty($_E107['cli']))
 		{
@@ -902,6 +874,35 @@ class userlogin
 	}
 
 
+
+	/**
+	 * Ends the account's other sessions where "Disallow multiple logins" asks it, then takes the account off the online list until its next page view.
+	 *
+	 * @param int $user_id
+	 * @param string $user_name
+	 * @param string $username the name signed in with, for the log
+	 * @return void
+	 */
+	private function endOtherSessions($user_id, $user_name, $username)
+	{
+		$sole = e107::getRegistry('core/e107/sole_session');
+
+		if(!$sole instanceof SoleSession || !$sole->claim($user_id))
+		{
+			return;
+		}
+
+		$sql = e107::getDb();
+		$mLog = 'Dropped existing user session: #' . $user_id. " ".$username;
+		$onlineUserId = $user_id.".".$user_name;
+		if(($onlineIP = $sql->createQueryBuilder()->select('online_ip')->from('online')->where('online_user_id', $onlineUserId)->fetchOne()))
+		{
+			$mLog .= ' ('. e107::getIpHandler()->ipDecode($onlineIP).')';
+			$sql->createQueryBuilder()->delete('online')->where('online_user_id', $onlineUserId)->execute();
+		}
+
+		$this->logNote('LAN_ROLL_LOG_07', $mLog );
+	}
 
 	/**
 	 * Assumes the user is valid and logs them in.

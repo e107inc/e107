@@ -71,6 +71,22 @@ class FilesSessionHandlerTest extends \Test\Unit
 	}
 
 	/**
+	 * The Insane security level regenerates the id on every page, and a password change regenerates it too; the account file has to follow.
+	 */
+	public function testAClaimedSessionStaysClaimedWhenItsIdIsRegenerated()
+	{
+		$php = "session_write_close(); ini_set('session.use_cookies', '0'); e107::getConfig()->set('disallowMultiLogin', 1); ";
+		$php .= "session_id('".self::ID."'); session_start(); \$_SESSION[e_COOKIE] = '77.".md5('signed-in')."'; ";
+		$php .= "e107::getRegistry('core/e107/sole_session')->claim(77); e107::getSession()->regenerateId(); ";
+		$php .= "fwrite(STDERR, '@@'.session_id().'@@'); session_destroy();";
+		list($output) = $this->runInBootedCli($php, self::BUFFERED.' -d session.save_path='.escapeshellarg($this->dir));
+
+		$this->assertSame(1, preg_match('/@@([0-9a-zA-Z,-]+)@@/', implode("\n", $output), $matches), implode("\n", $output));
+		$this->assertNotSame(self::ID, $matches[1]);
+		$this->assertSame($matches[1], $this->accountFileOf(77));
+	}
+
+	/**
 	 * Sign-in regenerates the id before it claims; on PHP 5.6 the module then reports another session removed without removing it.
 	 */
 	public function testAClaimAfterTheIdIsRegeneratedStillEndsTheEarlierSession()
