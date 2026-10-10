@@ -45,6 +45,30 @@ trait CorePrefs
 	}
 
 	/**
+	 * Routes URLs through the given url_config locations for one test; call what it returns in a finally block.
+	 *
+	 * @param array $locations module => config location, e.g. 'user' => 'core/rewrite'
+	 * @return callable puts the preference and the router back, and drops the router cache file built from the locations
+	 */
+	protected function withUrlConfig(array $locations)
+	{
+		$front = \e107::getUrl()->front();
+		$saved = $front->getRouter();
+		$restorePrefs = $this->withCorePrefs(array('url_config' => array_merge((array) \e107::getPref('url_config'), $locations)));
+
+		$router = new \eRouter();
+		$router->loadConfig(true);
+		$front->setRouter($router);
+
+		return static function () use ($restorePrefs, $front, $saved)
+		{
+			$front->setRouter($saved);
+			$restorePrefs();
+			\eRouter::clearCache();
+		};
+	}
+
+	/**
 	 * Sets one core preference, or removes it when $value is null.
 	 *
 	 * @param \e_pref $config
