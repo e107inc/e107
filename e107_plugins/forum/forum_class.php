@@ -325,7 +325,9 @@ class e107forum
             ->select('post_user', 'post_attachments')->from('forum_post')
             ->where('post_id', $post_id)
             ->fetchRow();
-        $attach = e107::unserialize($array['post_attachments']);
+        require_once(e_PLUGIN.'forum/forum_attachments.php');
+
+        $attach = forum_attachments::asServed(e107::unserialize($array['post_attachments']));
         $entry  = isset($attach['file'][$file_id]) ? $attach['file'][$file_id] : '';
 
         $filename = is_array($entry) ? varset($entry['file'], '') : $entry;
