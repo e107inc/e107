@@ -410,12 +410,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		if(!empty($this->postInfo['post_attachments']))
 		{
+			require_once(e_PLUGIN . 'forum/forum_attachments.php');
+
 			$baseDir = $this->forum->getAttachmentPath($this->postInfo['post_user']);
 
 			$images = array();
 			$txt = '';
 
-			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
+			$attachArray = forum_attachments::asServed(e107::unserialize($this->postInfo['post_attachments']));
 
 			$thumbAtt = (!empty($this->defaultImgAttachSize)) ? array('w' => $this->defaultImgAttachSize, 'x' => 1) : null;
 
