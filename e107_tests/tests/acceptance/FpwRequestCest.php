@@ -73,7 +73,6 @@ class FpwRequestCest
 
 		$answers = array();
 
-		// 'a member' leaves the reset outstanding that the entry after it needs.
 		foreach(array(
 			array('an address nobody here uses', self::UNKNOWN_EMAIL, true),
 			array('a member', self::MEMBER_EMAIL, true),
@@ -86,11 +85,7 @@ class FpwRequestCest
 			list($who, $address, $unasked) = $outcome;
 
 			$I->probe('act=cleargate');
-
-			if($unasked)
-			{
-				$I->probe('act=clearpending');
-			}
+			$I->probe($unasked ? 'act=clearpending' : 'act=havepending');
 
 			$I->resetAllCookies();
 			$I->sendPostRequest('/fpw.php', array('pwsubmit' => 1, 'email' => $address));
@@ -152,6 +147,32 @@ class FpwRequestCest
 
 		$I->assertSame(1, substr_count($I->grabProbe('act=maillog'), 'Mail-ID='),
 			'the account that asked must still be sent its link');
+	}
+
+	/**
+	 * The source gate is cleared between the two, as a member who waits out the flood timeout finds it.
+	 */
+	public function aRequestRightAfterAFailedSendSendsTheLink(AcceptanceTester $I)
+	{
+		$I->wantTo('ask again straight away when my reset link could not be sent');
+
+		$I->probe('act=clearmaillog');
+		$I->probe('act=cleargate');
+		$I->probe('act=clearpending');
+
+		$I->haveSitePref('mail_log_options', '2,0');
+		$I->resetAllCookies();
+		$I->sendPostRequest('/fpw.php', array('pwsubmit' => 1, 'email' => self::MEMBER_EMAIL));
+		$I->haveSitePref('mail_log_options', '1,1');
+		$I->probe('act=cleargate');
+		$I->resetAllCookies();
+		$I->sendPostRequest('/fpw.php', array('pwsubmit' => 1, 'email' => self::MEMBER_EMAIL));
+
+		$log = $I->grabProbe('act=maillog');
+		$I->assertSame(1, preg_match_all('/Mail-ID=\S* - Fail/', $log),
+			'the first link must have been tried and not sent');
+		$I->assertSame(1, preg_match_all('/Mail-ID=\S* - Success/', $log),
+			'a link that could not be sent must not hold back the next one');
 	}
 
 	public function aSecondRequestFromOneSourceIsRationed(AcceptanceTester $I)
@@ -321,6 +342,15 @@ switch(\$act)
 
 	case 'cleargate':
 		\$sql->delete('tmp', "tmp_ip='fpwsource'");
+		echo "PROBE_OK\\n";
+		break;
+
+	case 'havepending':
+		\$sql->insert('tmp', array(
+			'tmp_ip'   => 'pwreset',
+			'tmp_time' => time() + 600,
+			'tmp_info' => \$sql->retrieve('user', 'user_id', "user_loginname='$member'").'#$member#fpwrequestpending',
+		));
 		echo "PROBE_OK\\n";
 		break;
 
