@@ -12,6 +12,7 @@ use e107\Reflection\ReflectionProperty;
 
 class e107Test extends \Codeception\Test\Unit
 {
+	use \Test\BootedCli;
 	use \Test\CorePrefs;
 
 	/** @var e107 */
@@ -1468,6 +1469,46 @@ class e107Test extends \Codeception\Test\Unit
 		$this->assertSame(array(), array_values(array_diff(scandir($locked), array('.', '..'))), 'nothing was left in the directory, and nothing went to the system temp dir under a name we would not know');
 
 		chmod($locked, 0755);
+	}
+
+	public function opcacheSettingsThatKeepAStaleCopyProvider()
+	{
+		return array(
+			'timestamps never checked'               => array('-d opcache.validate_timestamps=0'),
+			'timestamps checked once a minute'       => array('-d opcache.validate_timestamps=1 -d opcache.revalidate_freq=60'),
+			'replaced in the second it was compiled' => array('-d opcache.validate_timestamps=1 -d opcache.revalidate_freq=0'),
+		);
+	}
+
+	/**
+	 * Each try writes, compiles and replaces a script within one second, which a check of its modification time cannot tell apart.
+	 *
+	 * @dataProvider opcacheSettingsThatKeepAStaleCopyProvider
+	 */
+	public function testWriteFileAtomicReplacesAScriptOpcacheHasCompiled($ini)
+	{
+		if(!function_exists('opcache_invalidate'))
+		{
+			$this->markTestSkipped('OPcache is not loaded, so no compiled copy can go stale');
+		}
+
+		$dir = $this->makeScratchDir('atomic');
+
+		$php = "define('e107_INIT', true); ";
+		$php .= "require '" . addslashes(e_HANDLER . 'core_functions.php') . "'; ";
+		$php .= "require '" . addslashes(e_HANDLER . 'e107_class.php') . "'; ";
+		$php .= "for(\$try = 0; \$try < 10; \$try++) { ";
+		$php .= "\$file = '" . addslashes($dir) . "config' . \$try . '.php'; \$second = time(); ";
+		$php .= "file_put_contents(\$file, '<?php return \"old\";'); include \$file; ";
+		$php .= "if(!opcache_is_script_cached(\$file)) { echo 'OPcache did not compile the first version'; exit(1); } ";
+		$php .= "e107::writeFileAtomic(\$file, '<?php return \"new\";'); \$read = include \$file; ";
+		$php .= "if(time() === \$second) { echo \$read; exit(0); } } ";
+		$php .= "echo 'every try crossed into the next second'; exit(1);";
+
+		list($output, $status) = $this->runInCli($php, '-d opcache.enable_cli=1 -d opcache.file_update_protection=0 ' . $ini);
+
+		$this->assertSame(0, $status, implode("\n", $output));
+		$this->assertSame(array('new'), $output, 'the include after the write runs the file as it is now, not the copy OPcache compiled before');
 	}
 
 }

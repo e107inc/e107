@@ -1175,6 +1175,7 @@ class eRouter
 	{
 		if(file_exists(e_CACHE_URL.'config.php'))
 		{
+			e107::invalidateOpcache(e_CACHE_URL.'config.php');
 			@unlink(e_CACHE_URL.'config.php');	
 		}
 	}
