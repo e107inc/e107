@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A logout link that core does not render in PHP has been refused since v2.3.12,
+ * A logout link that core does not render in PHP cannot end a session on its own,
  * and a URL saved in Admin Area » Settings » Navigation is exactly that. {E_TOKEN}
  * is the opt-in that gives it back: the administrator writes
  * index.php?logout&e-token={E_TOKEN}, and every renderer of a stored link URL
@@ -25,8 +25,8 @@ class TokenPlaceholderCest
 	/** Where a bundled theme publishes {NAVIGATION=main}. */
 	const FRONT_PAGE = '/index.php';
 
-	/** A distinctive fragment of the refusal core answers a tokenless logout with. */
-	const REFUSED = 'no security token';
+	/** LAN_LOGOUT_CONFIRM_QUESTION, the question core answers a tokenless logout with. */
+	const CONFIRM = 'Are you sure you want to log out?';
 
 	/** The replacement an administrator is told to write into a stored logout link. */
 	const PLACEHOLDER_URL = 'index.php?logout&e-token={E_TOKEN}';
@@ -94,15 +94,15 @@ class TokenPlaceholderCest
 
 		$I->amOnPage($link);
 
-		$I->dontSeeInSource(self::REFUSED);
+		$I->dontSeeInSource(self::CONFIRM);
 		$I->seeSignedOut();
 	}
 
 	/**
-	 * The other half of an opt-in: a link that was never edited is still refused,
+	 * The other half of an opt-in: a link that was never edited still asks first,
 	 * so the fix cannot be read as having quietly reopened the forgery.
 	 */
-	public function aStoredSitelinkWithNoPlaceholderIsStillRefused(AcceptanceTester $I)
+	public function aStoredSitelinkWithNoPlaceholderStillAsksFirst(AcceptanceTester $I)
 	{
 		$I->haveInDatabase('e107_links', $this->linkRow('TokenPlaceholderPlainNav', self::PLAIN_URL));
 
@@ -114,7 +114,7 @@ class TokenPlaceholderCest
 
 		$I->amOnPage($link);
 
-		$I->seeInSource(self::REFUSED);
+		$I->seeInSource(self::CONFIRM);
 		$I->seeStillSignedIn();
 	}
 
@@ -141,7 +141,7 @@ class TokenPlaceholderCest
 
 		$I->amOnPage($second);
 
-		$I->dontSeeInSource(self::REFUSED);
+		$I->dontSeeInSource(self::CONFIRM);
 		$I->seeSignedOut();
 	}
 

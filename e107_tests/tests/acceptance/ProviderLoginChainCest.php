@@ -54,7 +54,7 @@ class ProviderLoginChainCest
 			'autologin' => 'provider',
 		));
 
-		$this->seeSignedOut($I);
+		$I->seeSignedOut();
 	}
 
 	/**
@@ -72,7 +72,7 @@ class ProviderLoginChainCest
 			'autologin' => 'signup',
 		));
 
-		$this->seeSignedOut($I);
+		$I->seeSignedOut();
 	}
 
 	/**
@@ -204,14 +204,5 @@ class ProviderLoginChainCest
 		$I->amOnPage('/usersettings.php');
 		$I->seeInCurrentUrl('/usersettings.php');
 		$I->seeInField('loginname', $name);
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 */
-	private function seeSignedOut(AcceptanceTester $I)
-	{
-		$I->amOnPage('/usersettings.php');
-		$I->dontSeeInCurrentUrl('/usersettings.php');
 	}
 }

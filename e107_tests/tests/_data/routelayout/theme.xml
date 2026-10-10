@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="Route Layout" version="1.0" date="2026-10-19" compatibility="2.0">
+	<author name="e107 Inc" email="nospam@e107.org" url="https://e107.org" />
+	<summary>Fixture theme that gives the user/ routes a layout of their own and overrides the logout template</summary>
+	<description>Fixture theme that gives the user/ routes a layout of their own and overrides the logout template</description>
+	<category>generic</category>
+	<layouts>
+		<layout name='default' title='Default' default='true' />
+		<layout name='route' title='Route'>
+			<custompages>:user/</custompages>
+		</layout>
+	</layouts>
+</e107Theme>
