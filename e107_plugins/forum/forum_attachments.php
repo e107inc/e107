@@ -471,6 +471,28 @@ class forum_attachments
 	}
 
 	/**
+	 * An attachment's display name as HTML text, from either shape a stored entry takes.
+	 *
+	 * @param array|string $entry one entry of a stored post_attachments value
+	 * @param e_parse $tp
+	 * @return string
+	 */
+	public static function label($entry, e_parse $tp)
+	{
+		if(is_array($entry))
+		{
+			$name = !empty($entry['name']) ? $entry['name'] : varset($entry['file'], '');
+		}
+		else
+		{
+			$parts = explode('_', (string) $entry, 3);
+			$name = isset($parts[2]) ? $parts[2] : $entry;
+		}
+
+		return is_scalar($name) ? $tp->attributeValue($name) : '';
+	}
+
+	/**
 	 * Whether a stored post_attachments value names $name.
 	 *
 	 * @param string $stored serialised post_attachments
