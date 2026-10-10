@@ -441,23 +441,18 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			{
 				foreach($vals as $key => $file)
 				{
+					$name = forum_attachments::label($file, $tp);
+
 					if(is_array($file))
 					{
-
-						$name = !empty($file['name']) ? $file['name'] : $file['file'];
-
-						$file = $file['file'];
-					}
-					else
-					{
-						list($date, $user, $name) = explode("_", $file, 3);
+						$file = varset($file['file'], '');
 					}
 
 					switch($type)
 					{
 						case "file":
 
-							$url = e_REQUEST_SELF . "?id=" . $this->postInfo['post_id'] . "&amp;dl=" . $key;
+							$url = e_REQUEST_SELF . "?id=" . $this->postInfo['post_id'] . "&amp;dl=" . rawurlencode((string) $key);
 
 							$saveicon = (deftrue('FONTAWESOME')) ? 'fa-save' : 'icon-save.glyph';
 							$saveicon = e107::getParser()->toGlyph($saveicon, false);
@@ -484,14 +479,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 								//TODO Use jQuery zoom instead.
 
-								$caption = $name;
+								$caption = $tp->toAttribute($name, true);
 
 								$inc = (vartrue($parm['modal'])) ? "data-modal-caption=\"" . $caption . "\" data-target='#uiModal' data-bs-target='#uiModal' " : "";
 								$images[] = "<a  {$inc} rel='external' href='{$full}' data-bs-toggle='modal' class='forum-attachment-image e-modal' ><img class='thumbnail' src='{$thumb}' alt='' /></a>";
 							}
 							elseif(ADMIN)
 							{
-								$images[] = "Missing File: " . $baseDir . $file;
+								$images[] = "Missing File: " . $tp->toAttribute($baseDir . $file, true);
 							}
 
 

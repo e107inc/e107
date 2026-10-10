@@ -1501,6 +1501,14 @@ EXPECTED;
 		self::assertEquals($expected, $actual);
 	}
 
+	public function testAttributeValueEncodesMarkupAndLeavesAnEntityAlreadyThereAlone()
+	{
+		self::assertSame('&lt;b&gt; &amp; &quot;q&quot; &#039;s&#039;', $this->tp->attributeValue('<b> & "q" \'s\''));
+		self::assertSame('O&#039;Brien &amp; Co', $this->tp->attributeValue('O&#039;Brien &amp; Co'));
+		self::assertSame("\xEF\xBF\xBD", $this->tp->attributeValue("\xC3"));
+		self::assertSame('12', $this->tp->attributeValue(12));
+	}
+
 	public function testToAttributesEmpty()
 	{
 		$input = [];

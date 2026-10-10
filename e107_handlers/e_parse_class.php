@@ -5403,12 +5403,12 @@ class e_parse
 
 
 	/**
-	 * Encode a value for a quoted HTML attribute, leaving an entity the caller already wrote alone.
+	 * Encode a value for markup the browser parses once, as a quoted attribute or element text, leaving an entity already in it alone.
 	 *
 	 * @param mixed $value
 	 * @return string
 	 */
-	private function attributeValue($value)
+	public function attributeValue($value)
 	{
 		return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
 	}

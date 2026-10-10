@@ -1190,29 +1190,26 @@ e107::css('inline',"
 			switch($mode)
 			{
 				case 'read': // List Page
+					require_once(e_PLUGIN.'forum/forum_attachments.php');
+
 					$data = e107::unserialize($curVal);
 					$tp = e107::getParser();
 					$fl = e107::getFile();
 
 					$text = '';
 
-					if(!empty($data['img']))
+					foreach(array('img' => 'fa-file-image-o', 'file' => 'fa-file-text-o') as $type => $glyph)
 					{
-						$text .= "<ul class='list-unstyled'>";
-						foreach($data['img'] as $v)
+						if(empty($data[$type]) || !is_array($data[$type]))
 						{
-							$text .= "<li><span class='label label-primary'>".$tp->toGlyph('fa-file-image-o').$v['name']."</span> <small>".$fl->file_size_encode($v['size'])."</small></li>";
+							continue;
 						}
 
-						$text .= "</ul>";
-					}
-
-					if(!empty($data['file']))
-					{
 						$text .= "<ul class='list-unstyled'>";
-						foreach($data['file'] as $v)
+						foreach($data[$type] as $v)
 						{
-							$text .= "<li><span class='label label-primary'>".$tp->toGlyph('fa-file-text-o').$v['name']."</span> <small>".$fl->file_size_encode($v['size'])."</small></li>";
+							$size = is_array($v) ? (int) varset($v['size'], 0) : 0;
+							$text .= "<li><span class='label label-primary'>".$tp->toGlyph($glyph).forum_attachments::label($v, $tp)."</span> <small>".$fl->file_size_encode($size)."</small></li>";
 						}
 
 						$text .= "</ul>";
