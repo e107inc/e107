@@ -26,6 +26,9 @@ services:
       MYSQL_PASSWORD: ${E107_DB_PASSWORD}
       # MySQL 8+ accepts utf8mb4 fine; e107 sticks with utf8(mb3) historically.
       MYSQL_CHARACTER_SET: ${E107_DB_CHARSET:-utf8mb3}
+      # e107 never reads the time zone tables, and loading them is a second of
+      # every start.
+      MYSQL_INITDB_SKIP_TZINFO: "1"
     # String form so the wrapper can inject flavor-specific args (charset
     # naming and auth plugin differ across mysql/mariadb versions; see
     # db_flavor_args in bin/e107-tests).
