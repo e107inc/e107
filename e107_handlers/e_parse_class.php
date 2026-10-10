@@ -468,9 +468,6 @@ class e_parse
 	 * Returns the portion of string specified by the start and length parameters.
 	 * Unicode (UTF-8) analogue of standard @link http://php.net/substr substr PHP function.
 	 *
-	 * NOTE: May be subtle differences in return values dependent on which routine is used.
-	 *  Native substr() routine can return FALSE. mb_substr() and utf8_substr() just return an empty string.
-	 *
 	 * @param string  $str    The UTF-8 encoded string.
 	 * @param int     $start  Start of portion to be returned. Position is counted in amount of UTF-8 characters from the beginning of str.
 	 *                        First character's position is 0. Second character position is 1, and so on.
@@ -483,7 +480,12 @@ class e_parse
 
 		if ($this->multibyte)
 		{
-			return ($length === null) ? mb_substr($str, $start) : mb_substr($str, $start, $length);
+			return mb_substr($str, $start, $length);
+		}
+
+		if ($length === null)
+		{
+			$length = strlen($str);
 		}
 
 		return (string) substr($str, $start, $length);
