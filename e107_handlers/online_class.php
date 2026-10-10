@@ -352,15 +352,20 @@ class e_online
 			//	if ($total_online = $sql->gen('SELECT o  FROM `#online`  WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
 				{
 					$dbg->logTime('Go online (db fetch) Line:'.__LINE__);
+					$bots = array();
 					while ($row = $sql->fetch())
 					{
+						$bot = isset($bots[$row['online_agent']]) ? $bots[$row['online_agent']] : $this->isBot($row['online_agent']);
 
-						$row['online_bot'] = $this->isBot($row['online_agent']);
+						if(count($bots) < 64)
+						{
+							$bots[$row['online_agent']] = $bot;
+						}
 
 						// Sort into usable format and add bot field. 
 						$user = array(
 							'user_location'		=> $row['online_location'],
-							'user_bot'			=> $this->isBot($row['online_agent']),
+							'user_bot'			=> $bot,
 							'user_agent'		=> $row['online_agent'],
 							'user_ip'			=> $row['online_ip'],
 							'user_currentvisit'	=> $row['online_timestamp'],
