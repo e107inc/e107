@@ -67,6 +67,14 @@ class ForumAttachmentServingCest
 	/** In the directory every guest shares, named by a guest's restricted post. */
 	const ANON_IMAGE_FILE = 'p18_anon.png';
 
+	/** An svg, which the forum offers as a download whatever key it is filed under. */
+	const SVG_FILE = 'p18_vector.svg';
+	const SVG_SENTINEL = 'P18OKAY-SVG-BODY';
+
+	/** The file an edit adds to a post. */
+	const ADDED_TEXT_FILE = 'p18_added.txt';
+	const ADDED_FILE = 'P18OKAY-ADDED-FILE-BODY';
+
 	/**
 	 * The second spelling of the attachment tree. forum_update::moveAttachment()
 	 * writes the reduced-resolution copy of a 0.7/0.8 attachment here, and
@@ -555,24 +563,11 @@ class ForumAttachmentServingCest
 		$page = '/e107_plugins/forum/forum_post.php?f=rp&id='.$this->ids['threadA'];
 		$token = $I->grabForumToken($page);
 
-		$upload = tempnam(sys_get_temp_dir(), 'p18');
-		file_put_contents($upload, self::sentinelPng(self::ORPHAN_IMAGE));
-
-		$I->sendPostRequestWithFiles($page, array(
+		$this->sendWithAFile($I, $page, array(
 			'post'    => 'a reply the site never asked for',
 			'reply'   => 'Submit',
 			'e-token' => $token,
-		), array(
-			'file_userfile' => array(array(
-				'name'     => 'refused.png',
-				'type'     => 'image/png',
-				'error'    => 0,
-				'size'     => filesize($upload),
-				'tmp_name' => $upload,
-			)),
-		));
-
-		@unlink($upload);
+		), 'refused.png', 'image/png', self::sentinelPng(self::ORPHAN_IMAGE));
 
 		$stored = $this->probe($I, 'attachments', array('entry' => 'a reply the site never asked for'));
 
@@ -601,24 +596,11 @@ class ForumAttachmentServingCest
 		$page = '/e107_plugins/forum/forum_post.php?f=rp&id='.$this->ids['threadA'];
 		$token = $I->grabForumToken($page);
 
-		$upload = tempnam(sys_get_temp_dir(), 'p18');
-		file_put_contents($upload, self::sentinelPng(self::ORPHAN_IMAGE));
-
-		$I->sendPostRequestWithFiles($page, array(
+		$this->sendWithAFile($I, $page, array(
 			'post'      => 'a preview carrying an attachment',
 			'fpreview'  => 'Preview',
 			'e-token'   => $token,
-		), array(
-			'file_userfile' => array(array(
-				'name'     => 'preview.png',
-				'type'     => 'image/png',
-				'error'    => 0,
-				'size'     => filesize($upload),
-				'tmp_name' => $upload,
-			)),
-		));
-
-		@unlink($upload);
+		), 'preview.png', 'image/png', self::sentinelPng(self::ORPHAN_IMAGE));
 
 		$left = $this->probe($I, 'attachments', array('entry' => 'a preview carrying an attachment'));
 		$onDisk = self::env($left, 'ONDISK');
@@ -754,6 +736,117 @@ class ForumAttachmentServingCest
 		$I->assertSame(self::PUBLIC_IMAGE, self::readSentinel($I->grabResponseBody()),
 			'The attachment that was just uploaded to a public forum does not come back through '
 			.'the route the thread links it by.');
+	}
+
+	/** An uploaded svg is filed as a file whatever type the browser sends for it. */
+	public function anUploadedSvgIsFiledAsAFile(AcceptanceTester $I)
+	{
+		$I->wantTo('file an uploaded svg as a file rather than as an image');
+
+		$this->haveTheUploadList($I);
+
+		$stored = $this->postAnAttachment($I, 'a reply carrying an svg', 'vector.svg', 'image/svg+xml', self::svg());
+
+		$I->assertSame(1, preg_match('/_vector\.svg$/', self::env($stored, 'STORED')),
+			'The stored attachment is not the svg that was uploaded: '.self::env($stored, 'STORED'));
+		$I->assertSame('file', self::env($stored, 'KIND'),
+			'The svg was filed as an image on the type the browser sent.');
+	}
+
+	/** An svg a stored record files as an image is offered through the download route, numbered after the post's files, and sent as a download. */
+	public function anSvgFiledAsAnImageIsOfferedAsADownload(AcceptanceTester $I)
+	{
+		$I->wantTo('offer an svg filed as an image through the download route');
+
+		$I->writeAppFile($this->dir.self::SVG_FILE, self::svg());
+
+		$thread = $I->haveForumThread('Fixture Thread V', $this->ids['forumA'], 1);
+		$post = $I->haveForumPostWithAttachments('svg carrier', $thread, $this->ids['forumA'], $this->poster, array(
+			'file' => array(array('file' => self::PUBLIC_TEXT_FILE, 'name' => 'public.txt', 'size' => 1)),
+			'img'  => array(array('file' => self::SVG_FILE, 'name' => 'vector.svg', 'size' => 1)),
+		));
+
+		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$thread);
+
+		$body = $I->grabResponseBody();
+
+		$I->assertStringContainsString('svg carrier', $body,
+			'The thread did not render, so its attachment markup proves nothing.');
+		$I->assertStringNotContainsString(self::SVG_FILE, $body,
+			'The rendered post links the svg by its own path.');
+		$I->assertStringContainsString('id='.$post.'&amp;dl=1', $body,
+			'The rendered post does not offer the svg through the download route.');
+
+		$I->amOnPage($this->downloadUrl($post));
+
+		$I->assertStringContainsString(self::PUBLIC_FILE, $I->grabResponseBody(),
+			'The download route no longer gives the post\'s own file the number it had.');
+
+		$I->amOnPage($this->downloadUrl($post, 1));
+
+		$I->assertSame(200, $I->grabResponseCode(),
+			'The download route did not answer for the svg. Body: '.self::excerpt($I->grabResponseBody()));
+		$I->assertStringContainsString(self::SVG_SENTINEL, $I->grabResponseBody(),
+			'The download route did not hand back the svg under the number the page links.');
+		$I->assertStringStartsWith('attachment', (string) $I->grabHttpHeader('Content-Disposition'),
+			'The download route did not send the svg as a download.');
+	}
+
+	/** An edit that adds a file to a post whose record files an svg as an image leaves every number the page linked naming what it named. */
+	public function anEditKeepsTheNumberOfAnSvgFiledAsAnImage(AcceptanceTester $I)
+	{
+		$I->wantTo('keep the download number of an svg filed as an image across an edit');
+
+		$this->haveTheUploadList($I);
+
+		$I->loginToForum('admin', \Helper\AdminLogin::ADMIN_PASS);
+
+		$dir = $I->haveForumAttachmentDir(1);
+		$I->writeAppFile($dir.self::SVG_FILE, self::svg());
+		$I->writeAppFile($dir.self::PUBLIC_TEXT_FILE, self::PUBLIC_FILE);
+		$I->writeAppFile($dir.self::ADDED_TEXT_FILE, self::ADDED_FILE);
+
+		$edits = array(
+			'a reply edit with an upload'          => array('update_reply', true),
+			'a thread edit with an upload'         => array('update_thread', true),
+			'a reply edit naming one of its files' => array('update_reply', false),
+		);
+
+		$failures = array();
+
+		foreach($edits as $label => $edit)
+		{
+			$thread = $I->haveForumThread('Fixture Thread E', $this->ids['forumA'], 1);
+			$post = $I->haveForumPostWithAttachments('svg carrier before the edit', $thread, $this->ids['forumA'], 1, array(
+				'file' => array(array('file' => self::PUBLIC_TEXT_FILE, 'name' => 'public.txt', 'size' => 1)),
+				'img'  => array(array('file' => self::SVG_FILE, 'name' => 'vector.svg', 'size' => 1)),
+			));
+
+			$answer = $this->editAddingAFile($I, $thread, $post, $edit[0], $edit[1]);
+
+			$I->amOnPage($this->downloadUrl($post));
+
+			if(strpos($I->grabResponseBody(), self::PUBLIC_FILE) === false)
+			{
+				$failures[] = $label.': dl=0 no longer names the post\'s own file';
+			}
+
+			$I->amOnPage($this->downloadUrl($post, 1));
+
+			if(strpos($I->grabResponseBody(), self::SVG_SENTINEL) === false)
+			{
+				$failures[] = $label.': dl=1 no longer names the svg';
+			}
+
+			$I->amOnPage($this->downloadUrl($post, 2));
+
+			if(strpos($I->grabResponseBody(), self::ADDED_FILE) === false)
+			{
+				$failures[] = $label.': the added file is not dl=2. The edit answered: '.$answer;
+			}
+		}
+
+		$I->assertEmpty($failures, "An edit moved a number the page had linked:\n  ".implode("\n  ", $failures));
 	}
 
 	/**
@@ -974,31 +1067,71 @@ class ForumAttachmentServingCest
 	// ------------------------------------------------------------------
 
 	/**
-	 * Post a reply carrying a real attachment, and answer with what the plugin
-	 * stored for it.
+	 * Replace the site's upload list with the installer's, taking an svg from the main administrator too; act=cleanup puts back the list it replaced.
 	 *
 	 * @param AcceptanceTester $I
-	 * @param string $entry body of the reply, which is how the probe finds it again
-	 * @return array probe environment: STORED, WHY, ONDISK, POST
+	 * @return void
 	 */
-	private function postAnAttachment(AcceptanceTester $I, $entry)
+	private function haveTheUploadList(AcceptanceTester $I)
 	{
-		$I->loginToForum('admin', \Helper\AdminLogin::ADMIN_PASS);
+		$I->assertSame('1', self::env($this->probe($I, 'filetypes'), 'FILETYPES'),
+			'The site\'s upload list could not be written, so no upload below proves anything.');
+	}
 
-		$page = '/e107_plugins/forum/forum_post.php?f=rp&id='.$this->ids['threadA'];
-		$token = $I->grabForumToken($page);
+	/**
+	 * Edit a post as the signed-in author, adding ADDED_FILE either as an upload or by naming ADDED_TEXT_FILE in post_attachments_json.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param int $thread
+	 * @param int $post
+	 * @param string $button update_reply or update_thread
+	 * @param bool $upload
+	 * @return string the messages the edit answered with
+	 */
+	private function editAddingAFile(AcceptanceTester $I, $thread, $post, $button, $upload)
+	{
+		$page = '/e107_plugins/forum/forum_post.php?f=edit&id='.$thread.'&post='.$post;
+		$fields = array(
+			'post'       => 'svg carrier after the edit',
+			'threadtype' => 0,
+			$button      => 'Submit',
+			'e-token'    => $I->grabForumToken($page),
+		);
 
+		if($upload)
+		{
+			return self::messages($this->sendWithAFile($I, $page, $fields, 'addendum.pdf', 'application/pdf', self::ADDED_FILE));
+		}
+
+		$fields['post_attachments_json'] = json_encode(array(
+			'file' => array(array('file' => self::ADDED_TEXT_FILE, 'name' => 'added.txt', 'size' => 1)),
+		));
+
+		$I->sendPostRequest($page, $fields);
+
+		return self::messages($I->grabResponseBody());
+	}
+
+	/**
+	 * Send $fields to $page with one file uploaded beside them, and answer with the response body.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $page
+	 * @param array $fields
+	 * @param string $name the name the file is uploaded under
+	 * @param string $type the type the browser sends for it
+	 * @param string $contents the file's bytes
+	 * @return string
+	 */
+	private function sendWithAFile(AcceptanceTester $I, $page, array $fields, $name, $type, $contents)
+	{
 		$upload = tempnam(sys_get_temp_dir(), 'p18');
-		file_put_contents($upload, self::sentinelPng(self::PUBLIC_IMAGE));
+		file_put_contents($upload, $contents);
 
-		$I->sendPostRequestWithFiles($page, array(
-			'post'    => $entry,
-			'reply'   => 'Submit',
-			'e-token' => $token,
-		), array(
+		$I->sendPostRequestWithFiles($page, $fields, array(
 			'file_userfile' => array(array(
-				'name'     => 'holiday.png',
-				'type'     => 'image/png',
+				'name'     => $name,
+				'type'     => $type,
 				'error'    => 0,
 				'size'     => filesize($upload),
 				'tmp_name' => $upload,
@@ -1007,7 +1140,32 @@ class ForumAttachmentServingCest
 
 		@unlink($upload);
 
-		$answer = self::messages($I->grabResponseBody());
+		return $I->grabResponseBody();
+	}
+
+	/**
+	 * Post a reply carrying a real attachment, and answer with what the plugin
+	 * stored for it.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $entry body of the reply, which is how the probe finds it again
+	 * @param string $name the name the file is uploaded under
+	 * @param string $type the type the browser sends for it
+	 * @param string|null $contents the file's bytes, a sentinel PNG when null
+	 * @return array probe environment: STORED, KIND, WHY, ONDISK, POST
+	 */
+	private function postAnAttachment(AcceptanceTester $I, $entry, $name = 'holiday.png', $type = 'image/png', $contents = null)
+	{
+		$I->loginToForum('admin', \Helper\AdminLogin::ADMIN_PASS);
+
+		$page = '/e107_plugins/forum/forum_post.php?f=rp&id='.$this->ids['threadA'];
+		$token = $I->grabForumToken($page);
+
+		$answer = self::messages($this->sendWithAFile($I, $page, array(
+			'post'    => $entry,
+			'reply'   => 'Submit',
+			'e-token' => $token,
+		), $name, $type, $contents === null ? self::sentinelPng(self::PUBLIC_IMAGE) : $contents));
 		$stored = $this->probe($I, 'attachments', array('entry' => $entry));
 
 		// Without this every caller's assertions are satisfied by there being
@@ -1057,11 +1215,12 @@ class ForumAttachmentServingCest
 
 	/**
 	 * @param int $postId
+	 * @param int $key
 	 * @return string
 	 */
-	private function downloadUrl($postId)
+	private function downloadUrl($postId, $key = 0)
 	{
-		return '/e107_plugins/forum/forum_viewtopic.php?id='.$postId.'&dl=0';
+		return '/e107_plugins/forum/forum_viewtopic.php?id='.$postId.'&dl='.(int) $key;
 	}
 
 	// ------------------------------------------------------------------
@@ -1135,6 +1294,13 @@ if($act === 'reset' || $act === 'cleanup')
 	}
 }
 
+$installerTypes = '<?xml version="1.0" encoding="utf-8"?>
+<e107Filetypes>
+	<class name="member" type="zip,gz,jpg,jpeg,png,gif,webp,xml,pdf" maxupload="2M" />
+	<class name="admin" type="zip,gz,jpg,jpeg,png,gif,webp,xml,pdf" maxupload="10M" />
+	<class name="main" type="zip,gz,rar,jpg,jpeg,png,gif,webp,xml,pdf,ppt,pptx,mov,mp4,mp3,doc,docx,xls,xlsm,mp3,mp4,wav,ogg,webm,mid,midi,torrent,txt,dmg,msi" maxupload="50M" />
+</e107Filetypes>';
+
 if($act === 'reset')
 {
 	// What install.php::saveFileTypes() writes, verbatim. Without it
@@ -1151,12 +1317,7 @@ if($act === 'reset')
 	// business configuring the site the next Cest runs against.
 	if(!is_readable(e_SYSTEM.'filetypes.xml'))
 	{
-		file_put_contents(e_SYSTEM.'filetypes.xml', '<?xml version="1.0" encoding="utf-8"?>
-<e107Filetypes>
-	<class name="member" type="zip,gz,jpg,jpeg,png,gif,webp,xml,pdf" maxupload="2M" />
-	<class name="admin" type="zip,gz,jpg,jpeg,png,gif,webp,xml,pdf" maxupload="10M" />
-	<class name="main" type="zip,gz,rar,jpg,jpeg,png,gif,webp,xml,pdf,ppt,pptx,mov,mp4,mp3,doc,docx,xls,xlsm,mp3,mp4,wav,ogg,webm,mid,midi,torrent,txt,dmg,msi" maxupload="50M" />
-</e107Filetypes>');
+		file_put_contents(e_SYSTEM.'filetypes.xml', $installerTypes);
 		file_put_contents(e_SYSTEM.'p18_filetypes.marker', '1');
 	}
 
@@ -1170,7 +1331,7 @@ if($act === 'cleanup')
 {
 	foreach(glob(e_MEDIA.'plugins/forum/attachments/*/*') ?: array() as $file)
 	{
-		if(preg_match('/(^p18_|_(preview|holiday|refused)\.png$)/', basename($file)))
+		if(preg_match('/(^p18_|_(preview|holiday|refused)\.png$|_vector\.svg$|_addendum\.pdf$)/', basename($file)))
 		{
 			@unlink($file);
 		}
@@ -1183,7 +1344,8 @@ if($act === 'cleanup')
 	e107::getPlugConfig('forum')->remove('attach')->save(false, true, false);
 
 	foreach(array('a reply carrying an attachment', 'a reply that covers one directory',
-		'a preview carrying an attachment', 'a guest reply naming somebody elses file') as $entry)
+		'a preview carrying an attachment', 'a guest reply naming somebody elses file',
+		'a reply carrying an svg') as $entry)
 	{
 		e107::getDb()->delete('forum_post', "post_entry = '".addslashes($entry)."'");
 	}
@@ -1193,11 +1355,34 @@ if($act === 'cleanup')
 		@unlink(e_SYSTEM.'filetypes.xml');
 		@unlink(e_SYSTEM.'p18_filetypes.marker');
 	}
+
+	if(is_readable(e_SYSTEM.'p18_filetypes.saved'))
+	{
+		file_put_contents(e_SYSTEM.'filetypes.xml', file_get_contents(e_SYSTEM.'p18_filetypes.saved'));
+		@unlink(e_SYSTEM.'p18_filetypes.saved');
+	}
 }
 
 if($act === 'whoami')
 {
 	echo "USERID=".USERID."\n";
+}
+
+if($act === 'filetypes')
+{
+	if(!is_readable(e_SYSTEM.'filetypes.xml'))
+	{
+		file_put_contents(e_SYSTEM.'p18_filetypes.marker', '1');
+	}
+	elseif(!is_readable(e_SYSTEM.'p18_filetypes.marker') && !is_readable(e_SYSTEM.'p18_filetypes.saved'))
+	{
+		copy(e_SYSTEM.'filetypes.xml', e_SYSTEM.'p18_filetypes.saved');
+	}
+
+	$types = str_replace('<class name="main" type="', '<class name="main" type="svg,', $installerTypes);
+	file_put_contents(e_SYSTEM.'filetypes.xml', $types);
+
+	echo "FILETYPES=".((string) file_get_contents(e_SYSTEM.'filetypes.xml') === $types ? '1' : '0')."\n";
 }
 
 if($act === 'noattach')
@@ -1257,6 +1442,7 @@ if($act === 'attachments')
 	}
 
 	$stored = '';
+	$kind = '';
 	$why = 'no post with that body';
 	$postId = '';
 
@@ -1268,7 +1454,7 @@ if($act === 'attachments')
 
 		if(is_array($attachments))
 		{
-			foreach($attachments as $entries)
+			foreach($attachments as $key => $entries)
 			{
 				foreach((array) $entries as $entry)
 				{
@@ -1277,6 +1463,7 @@ if($act === 'attachments')
 					if($name !== '' && $stored === '')
 					{
 						$stored = $name;
+						$kind = $key;
 					}
 				}
 			}
@@ -1292,6 +1479,7 @@ if($act === 'attachments')
 
 	echo "POST=".$postId."\n";
 	echo "STORED=".$stored."\n";
+	echo "KIND=".$kind."\n";
 	echo "WHY=".str_replace(array("\r", "\n"), ' ', $why)."\n";
 	echo "ONDISK=".implode(' ', $onDisk)."\n";
 }
@@ -1303,6 +1491,16 @@ PHP;
 	// ------------------------------------------------------------------
 	// Fixtures
 	// ------------------------------------------------------------------
+
+	/**
+	 * An svg carrying SVG_SENTINEL, opening on its root element because the upload refuses a file that opens on "<?".
+	 *
+	 * @return string
+	 */
+	private static function svg()
+	{
+		return '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"><title>'.self::SVG_SENTINEL.'</title></svg>';
+	}
 
 	/**
 	 * A PNG whose pixel row spells $text, with $text repeated after IEND.
