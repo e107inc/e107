@@ -35,6 +35,218 @@ class e_db_pdoTest extends e_db_abstractTest
 
 	}
 
+	/**
+	 * @return e_db_pdo an instance built from the site's configuration that has not connected yet
+	 */
+	private function unconnectedDb()
+	{
+		$db = $this->makeDb();
+		$db->__construct();
+
+		return $db;
+	}
+
+	/**
+	 * @return e_db_pdo a second instance on $this->db's connection
+	 */
+	private function sharingDb()
+	{
+		$other = e107::getDb('e_db_pdoTestSharing');
+		$this->assertSame($this->sessionOf($this->db), $this->sessionOf($other), 'the two have to share a connection for this to prove anything');
+
+		return $other;
+	}
+
+	public function testInstancesThatHaveNotConnectedShareTheSitesConnection()
+	{
+		$sessions = array_unique(array(
+			$this->sessionOf(e107::getDb()),
+			$this->sessionOf(e107::getDb('e_db_pdoTestNamed')),
+			$this->sessionOf($this->unconnectedDb()),
+		));
+
+		$this->assertCount(1, $sessions);
+		$this->assertGreaterThan(0, reset($sessions));
+	}
+
+	public function testAnInstanceOnTheSharedConnectionTakesItsCharacterSet()
+	{
+		$db = $this->unconnectedDb();
+		$this->assertGreaterThan(0, $this->sessionOf($db));
+
+		$this->assertNotNull(e107::getDb()->getCharset());
+		$this->assertSame(e107::getDb()->getCharset(), $db->getCharset());
+	}
+
+	public function testAnInstanceConfiguredWithThePortInTheServerNameSharesTheSitesConnection()
+	{
+		$configured = $this->makeDbConfiguredWith(array('mySQLserver' => $this->dbConfig['mySQLserver'].':'.$this->dbConfig['mySQLport']));
+
+		$this->assertSame($this->sessionOf(e107::getDb()), $this->sessionOf($configured));
+	}
+
+	public function testAnInstanceSelectingAnotherDatabaseMovesToAConnectionOfItsOwn()
+	{
+		$site = $this->sessionOf(e107::getDb());
+		$this->assertSame($site, $this->sessionOf($this->db));
+
+		$this->assertTrue($this->db->database('information_schema', ''));
+
+		$this->assertNotSame($site, $this->sessionOf($this->db));
+		$this->assertSame('information_schema', $this->db->retrieve('SELECT DATABASE()'));
+		$this->assertSame($this->dbConfig['mySQLdefaultdb'], e107::getDb()->retrieve('SELECT DATABASE()'));
+	}
+
+	public function testAConnectionAskedForAsANewLinkIsNotShared()
+	{
+		$this->assertTrue($this->connectOwnSession($this->db, 'information_schema', ''));
+		$other = $this->makeDbConfiguredWith(array('mySQLdefaultdb' => 'information_schema'));
+
+		try
+		{
+			$this->assertNotSame($this->sessionOf($this->db), $this->sessionOf($other));
+		}
+		finally
+		{
+			$other->close();
+		}
+	}
+
+	public function testAConnectionAskedForAsANewLinkStaysUnsharedAfterClose()
+	{
+		$this->assertTrue($this->connectOwnSession($this->db, $this->dbConfig['mySQLdefaultdb']));
+		$this->db->close();
+
+		$this->assertNotSame($this->sessionOf(e107::getDb()), $this->sessionOf($this->db));
+	}
+
+	public function testAnInstanceThatFailsToSelectAnotherDatabaseStaysOnTheSharedConnection()
+	{
+		$other = $this->sharingDb();
+
+		$this->assertFalse($this->db->database('e_db_pdoTest_no_such_database'));
+
+		$this->assertSame($this->dbConfig['mySQLdefaultdb'], $this->db->retrieve('SELECT DATABASE()'));
+		$this->assertSame($this->sessionOf($other), $this->sessionOf($this->db));
+	}
+
+	public function testARefusedConnectLeavesTheInstanceAbleToSelectItsDatabase()
+	{
+		$this->sharingDb();
+
+		$this->assertFalse($this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], 'wrong password'));
+
+		$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb']));
+	}
+
+	public function testTheLastInstanceToCloseEndsTheConnection()
+	{
+		$first = $this->makeDbConfiguredWith(array('mySQLdefaultdb' => 'information_schema'));
+		$second = $this->makeDbConfiguredWith(array('mySQLdefaultdb' => 'information_schema'));
+		$session = $this->sessionOf($first);
+		$this->assertSame($session, $this->sessionOf($second));
+		$this->assertNotSame($session, $this->sessionOf(e107::getDb()));
+
+		$first->close();
+		$second->close();
+
+		$this->assertTrue($this->sessionEnds($session), "server connection $session survived the last close()");
+	}
+
+	public function testARefusedConnectKeepsTheConnectionItLeavesOutOfSharing()
+	{
+		$this->assertTrue($this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']));
+		$this->assertFalse($this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], 'wrong password'));
+		$this->assertTrue($this->db->database('information_schema', ''));
+		$other = $this->makeDbConfiguredWith(array('mySQLpassword' => 'wrong password', 'mySQLdefaultdb' => 'information_schema'));
+		$refused = false;
+
+		try
+		{
+			$other->retrieve('SELECT 1');
+		}
+		catch(PDOException $e)
+		{
+			$refused = true;
+		}
+
+		$this->assertTrue($refused, 'an instance with the wrong password was handed a connection');
+	}
+
+	public function testAnInstanceSwitchingBackAndForthStaysOnTheConnectionItMovedTo()
+	{
+		$this->sharingDb();
+		$this->assertTrue($this->db->database('information_schema', ''));
+		$moved = $this->sessionOf($this->db);
+
+		$this->assertTrue($this->db->database($this->dbConfig['mySQLdefaultdb']));
+		$this->assertTrue($this->db->database('information_schema', ''));
+
+		$this->assertSame($moved, $this->sessionOf($this->db));
+	}
+
+	public function testClosingOneInstanceLeavesTheConnectionToTheOthers()
+	{
+		$other = $this->sharingDb();
+		$session = $this->sessionOf($other);
+
+		$this->db->close();
+
+		$this->assertSame($session, $this->sessionOf($other));
+	}
+
+	public function testTheInsertIdIsTheInstancesOwnWhenAnotherInstanceQueriesInBetween()
+	{
+		$other = $this->sharingDb();
+		$this->assertNotFalse($this->db->gen('CREATE TEMPORARY TABLE `#e_db_share_test` (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, v INT)'));
+
+		try
+		{
+			$this->db->gen('INSERT INTO `#e_db_share_test` (v) VALUES (1), (2)');
+			$this->db->gen('INSERT INTO `#e_db_share_test` (v) VALUES (3)');
+			$other->retrieve('SELECT 1');
+
+			$this->assertSame(3, $this->db->lastInsertId());
+		}
+		finally
+		{
+			$this->db->gen('DROP TEMPORARY TABLE IF EXISTS `#e_db_share_test`');
+		}
+	}
+
+	public function testTheRowsFoundAreTheInstancesOwnWhenAnotherInstanceQueriesInBetween()
+	{
+		$other = $this->sharingDb();
+		$this->assertNotFalse($this->db->gen('SELECT SQL_CALC_FOUND_ROWS e107_name FROM `#core` LIMIT 1'));
+		$expected = (int) $other->count('core');
+		$this->assertNotFalse($other->gen('SELECT SQL_CALC_FOUND_ROWS user_id FROM `#user` LIMIT 1'));
+
+		$this->assertGreaterThan(1, $expected);
+		$this->assertSame($expected, $this->db->foundRows());
+	}
+
+	public function testAResultInHandSurvivesAnotherInstanceReadingTheConnection()
+	{
+		$other = $this->sharingDb();
+		$names = array();
+		$this->assertGreaterThan(1, $this->db->gen('SELECT e107_name FROM `#core` ORDER BY e107_name'));
+		$first = $this->db->fetch();
+
+		$this->assertNotFalse($other->gen('SELECT e107_name FROM `#core` ORDER BY e107_name'));
+		while($row = $other->fetch())
+		{
+			$names[] = $row['e107_name'];
+		}
+
+		$read = array($first['e107_name']);
+		while($row = $this->db->fetch())
+		{
+			$read[] = $row['e107_name'];
+		}
+
+		$this->assertSame($names, $read);
+	}
+
 	public function testGetCharSet()
 	{
 		$this->db->setCharset();
