@@ -13,6 +13,8 @@
 #   * The image installs every PHP extension e107 needs to install and run.
 #   * Composer, git, rsync, and unzip are baked in so tests can be driven
 #     end-to-end inside the container.
+#   * nftables fences the container off the Internet while a suite runs
+#     (lib/sandbox/Boundary.php).
 #   * No source code is COPY'd in. The worktree is bind-mounted at runtime,
 #     which is what makes the image reusable across worktrees.
 #   * An image whose Debian release has moved to archive.debian.org gets its
@@ -53,6 +55,7 @@ RUN set -eux; \
             libxml2-dev \
             libzip-dev \
             mariadb-client \
+            nftables \
             rsync \
             unzip \
             wget \
@@ -74,6 +77,7 @@ RUN set -eux; \
             libwebp-dev \
             libzip-dev \
             mysql-client \
+            nftables \
             rsync \
             unzip \
             wget \
@@ -142,6 +146,10 @@ RUN set -eux; \
     curl -sSLf https://getcomposer.org/installer | \
         php -- --install-dir=/usr/local/bin --filename=composer
 
+# How many sandboxes (sbN.web) the image serves: compose.yml names that many
+# aliases of the web container, and the suite runner asks for no more of them.
+ENV E107_SANDBOXES=16
+
 # TLS as well as plain HTTP, because some behaviour only exists over one of them.
 #
 # The outbound request policy verifies the TLS peer unconditionally, so a test
@@ -169,7 +177,7 @@ RUN set -eux; \
         '[dn]' \
         'CN = web' \
         '[v3]' \
-        "subjectAltName = DNS:web,$(seq -s, -f 'DNS:sb%g.web' 16),DNS:localhost,IP:127.0.0.1" \
+        "subjectAltName = DNS:web,$(seq -s, -f 'DNS:sb%g.web' "$E107_SANDBOXES"),DNS:localhost,IP:127.0.0.1" \
         > /tmp/e107-ssl.cnf; \
     openssl req -x509 -nodes -newkey rsa:2048 -days 3650 \
         -config /tmp/e107-ssl.cnf \
@@ -181,7 +189,7 @@ RUN set -eux; \
 # Each sandbox keeps its PHP sessions apart, in a directory the runner empties
 # with the sandbox (lib/sandbox/Overlay.php), so a test counting session files
 # sees only its own site's: one block per sandbox compose.yml names.
-RUN for n in $(seq 16); do \
+RUN for n in $(seq "$E107_SANDBOXES"); do \
         printf '<Directory /srv/sb/sb%s>\n    php_admin_value session.save_path /srv/sbstate/sessions/sb%s\n</Directory>\n' "$n" "$n"; \
     done > /etc/apache2/e107-sandbox-sessions.conf
 

@@ -53,12 +53,17 @@ class Unit extends E107Base
 	 * the plugin's include_lan(), and a language file that has already defined
 	 * its constants cannot define them twice.
 	 *
+	 * Every test also declares e107.org: whichever is first in its process to
+	 * render the admin navigation makes e107 ask it for a new release (pref
+	 * check_updates), and the shuffle decides which test that is.
+	 *
 	 * @param \Codeception\TestInterface $test
 	 * @return void
 	 */
 	public function _before(\Codeception\TestInterface $test)
 	{
 		parent::_before($test);
+		$this->getModule('\Helper\Outbound')->expectOutboundRequest('e107.org');
 
 		$scClasses = new \e107\Reflection\ReflectionProperty('e_parse_shortcode', 'scClasses');
 

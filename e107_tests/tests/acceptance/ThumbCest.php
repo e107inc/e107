@@ -40,6 +40,7 @@ class ThumbCest
 	public function testRenderedThumbUrlCanBeFetched(AcceptanceTester $I)
 	{
 		$I->wantTo('Fetch the thumbnail URL the admin area actually renders');
+		$I->expectOutboundRequest('e107.org');
 
 		$I->amOnPage('/e107_admin/admin.php');
 		$I->fillField('authname', \Helper\AdminLogin::ADMIN_USER);

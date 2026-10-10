@@ -344,6 +344,7 @@ class AdminAjaxWriteCest
 
 	private function loginAsAdmin(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$I->amOnPage('/e107_admin/admin.php');
 		$I->fillField('authname', 'admin');
 		$I->fillField('authpass', 'admin');
