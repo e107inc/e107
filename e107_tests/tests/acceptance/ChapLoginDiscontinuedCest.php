@@ -45,6 +45,7 @@ class ChapLoginDiscontinuedCest
 
 	public function theAdminLogsInWithThePasswordAsTyped(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$I->amOnPage('/e107_admin/admin.php');
 		$I->fillField('authname', \Helper\AdminLogin::ADMIN_USER);
 		$I->fillField('authpass', \Helper\AdminLogin::ADMIN_PASS);

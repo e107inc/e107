@@ -41,6 +41,7 @@ class AdminLoginCest
 
 	private function e107Login(AcceptanceTester $I)
 	{
+		$I->expectOutboundRequest('e107.org');
 		$I->amOnPage('/e107_admin/admin.php');
 		$I->see("Admin Area");
 		$I->see("login");

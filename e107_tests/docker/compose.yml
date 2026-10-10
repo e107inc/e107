@@ -71,7 +71,9 @@ services:
     # The suite runner mounts a kernel overlay per worker over the worktree
     # (lib/sandbox). Mounting needs CAP_SYS_ADMIN, and Docker's default AppArmor
     # profile denies mount outright; rootless podman has no AppArmor to lift.
-    cap_add: [SYS_ADMIN]
+    # For as long as a run lasts, it also sends every connection that leaves
+    # the stack to a recorder (nftables), which needs CAP_NET_ADMIN.
+    cap_add: [SYS_ADMIN, NET_ADMIN]
     security_opt: [apparmor=unconfined]
     # Each request opens its own database connections, and sixteen sandboxes
     # close them faster than TIME_WAIT gives their ports back; a new connection
@@ -82,9 +84,9 @@ services:
       default:
         # Two names per sandbox, which Apache serves from that sandbox's overlay:
         # the suite's, and a bare one for a test that needs the same site
-        # under a host it was not told about. The runner counts these; the
-        # certificate and the session directories (Dockerfile) are sized for
-        # sixteen.
+        # under a host it was not told about. The runner counts these, up to
+        # the image's E107_SANDBOXES (Dockerfile), which also sizes the
+        # certificate and the session directories.
         aliases: [sb1.web, sb2.web, sb3.web, sb4.web, sb5.web, sb6.web, sb7.web, sb8.web,
                   sb9.web, sb10.web, sb11.web, sb12.web, sb13.web, sb14.web, sb15.web, sb16.web,
                   sb1, sb2, sb3, sb4, sb5, sb6, sb7, sb8, sb9, sb10, sb11, sb12, sb13, sb14, sb15, sb16]

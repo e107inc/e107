@@ -55,6 +55,12 @@ class Suite
 		return $this->enables('extensions', array('Extension\SandboxGuard'));
 	}
 
+	/** @return bool whether the suite's tests can declare what they make e107 reach outside the stack; an older tree's attempts are refused and listed, but fail nothing */
+	public function declaresOutbound()
+	{
+		return $this->enables('extensions', array('Extension\OutboundLedger'));
+	}
+
 	/** @return string[] the suite's test files, relative to the project directory */
 	public function files()
 	{

@@ -31,7 +31,7 @@ class AdminLogin extends CodeceptionModule
 	const TOKEN_FIELD_PATTERN = '/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/';
 
 	/**
-	 * Log into the admin area and assert the control-panel marker is shown, first storing a cheap hash of a matching password ({@see AdminLogin::cheapenStoredHash()}).
+	 * Log into the admin area and assert the control-panel marker is shown, first storing a cheap hash of a matching password ({@see AdminLogin::cheapenStoredHash()}); it declares e107.org, which the dashboard it lands on asks for a new release.
 	 *
 	 * @param string|null $user Defaults to {@see ADMIN_USER}.
 	 * @param string|null $pass Defaults to {@see ADMIN_PASS}.
@@ -43,6 +43,7 @@ class AdminLogin extends CodeceptionModule
 		$pass = $pass === null ? self::ADMIN_PASS : $pass;
 		$browser = $this->resolveBrowserModule();
 		$this->cheapenStoredHash($user, $pass);
+		$this->getModule('\Helper\Outbound')->expectOutboundRequest('e107.org');
 
 		$browser->amOnPage(self::LOGIN_PATH);
 		$browser->fillField('authname', $user);

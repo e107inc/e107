@@ -113,7 +113,7 @@ class Pool
 		$alive = fopen("$dir/cloner-$prefix.lock", 'c');
 		flock($alive, LOCK_EX);
 		$runner = posix_getppid();
-		for ($k = 1; is_dir($dir) && !self::ended($dir, $runner); )
+		for ($k = 1; is_dir($dir) && !Loop::ended($dir, $runner); )
 		{
 			if (count(glob("$dir/ready/*") ?: array()) >= $ready)
 			{
@@ -121,7 +121,7 @@ class Pool
 				continue;
 			}
 			$databases->copy($template, $prefix.$k);
-			if (self::ended($dir, $runner))
+			if (Loop::ended($dir, $runner))
 			{
 				touch("$dir/used/$prefix$k");
 				break;
@@ -140,7 +140,7 @@ class Pool
 		$runner = posix_getppid();
 		while (is_dir($dir))
 		{
-			$ended = self::ended($dir, $runner);
+			$ended = Loop::ended($dir, $runner);
 			$used = array_merge(glob("$dir/used/*") ?: array(), $ended ? (glob("$dir/ready/*") ?: array()) : array());
 			if (empty($used) && $ended && !self::cloning($dir))
 			{
@@ -153,18 +153,6 @@ class Pool
 			}
 			usleep(20000);
 		}
-	}
-
-	/**
-	 * Whether the run has stopped the pool, or the runner is gone without stopping it.
-	 *
-	 * @param string $dir
-	 * @param int $runner the process that started this loop
-	 * @return bool
-	 */
-	private static function ended($dir, $runner)
-	{
-		return file_exists("$dir/stop") || posix_getppid() !== $runner;
 	}
 
 	/** Whether a cloner is still alive, and may yet hand over the copy it is making: each holds a lock on its own file until it exits. */
@@ -184,11 +172,8 @@ class Pool
 		return false;
 	}
 
-	/** In a session of its own, so the hangup that ends an interactive run does not end the dropper with it; the loops watch for the runner instead. */
 	private function spawn($command)
 	{
-		$log = $this->dir.'/pool.log';
-
-		return proc_open('exec setsid '.$command, array(array('file', '/dev/null', 'r'), array('file', $log, 'a'), array('file', $log, 'a')), $pipes);
+		return Loop::start($command, $this->dir.'/pool.log');
 	}
 }
