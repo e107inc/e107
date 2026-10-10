@@ -3,24 +3,19 @@
 
 class page_sitelinkTest extends \Codeception\Test\Unit
 {
+	use \Test\CorePrefs;
 
 	/** @var page_sitelink */
 	protected $nav;
+
+	/** @var callable puts the URL configuration back */
+	private $restoreUrlConfig;
 
 	protected function _before()
 	{
 
 		// Enable SEF Urls. book/chapter/page
-		e107::getConfig()->setPref('url_config/page', 'core/sef_chapters')->save(false, true, false);
-
-		/** @var eRouter $router */
-		$router = e107::getUrl()->router(); // e107::getSingleton('eRouter');
-		$rules = $router->getRuleSets();
-
-		if(empty($rules['page']))
-		{
-			$router->loadConfig(true);
-		}
+		$this->restoreUrlConfig = $this->withUrlConfig(array('page' => 'core/sef_chapters'));
 
 		require_once(e_PLUGIN . "page/e_sitelink.php");
 		//	e107::getConfig()->set
@@ -39,7 +34,7 @@ class page_sitelinkTest extends \Codeception\Test\Unit
 
 	protected function _after()
 	{
-		e107::getConfig()->setPref('url_config/page', 'core')->save(false, true, false); // disable SEF Urls.
+		call_user_func($this->restoreUrlConfig);
 	}
 
 	public function testBookNav()
