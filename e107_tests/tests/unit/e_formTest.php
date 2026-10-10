@@ -1438,4 +1438,17 @@ class e_formTest extends \Test\Unit
 			'the array form has to tick the same boxes as the string form');
 	}
 
+	/**
+	 * {@see e_form::get_attributes()} writes tabindex inside single quotes, so a value it does not coerce closes the attribute.
+	 */
+	public function testTabindexCannotEscapeItsOwnAttribute()
+	{
+		$result = $this->_frm->text('author_name', '', 100, "tabindex=1' autofocus onfocus=alert(1)");
+
+		self::assertStringContainsString("tabindex='1'", $result,
+			'a numeric tabindex still renders unchanged');
+		self::assertStringNotContainsString('onfocus', $result,
+			'the value broke out of tabindex and added an event handler: ' . $result);
+	}
+
 }

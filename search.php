@@ -480,7 +480,7 @@ class search_front extends e_shortcode
 						$fieldName = $adv_key."_name";
 						$vars['SEARCH_ADV_A'] = $adv_value['text'];
 						$vars['SEARCH_ADV_ID'] = $frm->name2id($fieldName);
-						$vars['SEARCH_ADV_B'] = $frm->userpicker($fieldName,$adv_key,$_GET[$adv_key]);
+						$vars['SEARCH_ADV_B'] = $frm->userpicker($fieldName,$adv_key);
 					} 
 					else if ($adv_value['type'] == 'dual') 
 					{
