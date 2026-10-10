@@ -77,6 +77,19 @@ function fpw_error($txt)
 	exit;
 }
 
+/**
+ * Deletes one reset code, so that it is neither redeemable nor the account's outstanding request.
+ *
+ * @param string $info
+ *   The code's row as written, uid#loginname#code.
+ * @return void
+ */
+function fpw_delete_code($info)
+{
+	$sql = e107::getDb();
+	$sql->delete('tmp', "`tmp_ip` = 'pwreset' AND `tmp_info` = '".$sql->escape($info, false)."' ");
+}
+
 $fpw_siteurl = e107::getPref('siteurl');
 if (empty($fpw_siteurl))
 {
@@ -113,7 +126,7 @@ if(e_QUERY)
 
 		if(time() > (int) $row['tmp_time'])
 		{
-			$sql->delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
+			fpw_delete_code($row['tmp_info']);
 			e107::getMessage()->addDebug("Tmp Password Reset Entry Deleted");
 			fpw_error(LAN_FPW7);
 		}
@@ -132,7 +145,7 @@ if(e_QUERY)
 		// Spend the code before it is acted on. It used to survive redemption, so
 		// anyone holding the emailed link, a mail scanner or a shared mailbox
 		// included, could reset the account again and again until it expired.
-		$sql->delete('tmp', "`tmp_ip` = 'pwreset' AND `tmp_info` = '".$sql->escape($row['tmp_info'], false)."' ");
+		fpw_delete_code($row['tmp_info']);
 
 		// Generate new temporary password
 		$pwdArray = e107::getUserSession()->resetPassword($uid,$loginName, array('return'=>'array'));
@@ -250,8 +263,13 @@ if (!empty($_POST['pwsubmit']))
 				exit;
 		}
 
+		$resetPrefix = $row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR;
+
 		// Check if password reset was already requested
-		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'"))
+		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_time` >= :now AND `tmp_info` LIKE :account", array(
+			'now'     => time(),
+			'account' => $resetPrefix.'%',
+		)))
 		{
 			fpw_error(LAN_FPW4);
 			exit;
@@ -275,7 +293,7 @@ if (!empty($_POST['pwsubmit']))
 		$insertQry = array(
 			'tmp_ip'    => 'pwreset',
 			'tmp_time'  => $deltime,
-			'tmp_info'  => ($row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR.$rcode)
+			'tmp_info'  => $resetPrefix.$rcode
 		);
 
 		$sql->insert('tmp', $insertQry);
@@ -306,6 +324,7 @@ if (!empty($_POST['pwsubmit']))
 		{
 			//$text = "<div style='text-align:center'>".LAN_02."</div>";
 			$do_log['password_result'] = LAN_FPW19;
+			fpw_delete_code($insertQry['tmp_info']);
 		  	fpw_error(LAN_02); 
 		}
 
