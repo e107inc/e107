@@ -49,6 +49,12 @@ class e_db_parityTest extends \Test\Unit
 		'pdo',        // driver marker consulted by getPDO()
 		'traffic',    // e107_traffic bookkeeping specific to the PDO backend
 		'querycount', // static query counter; e_db_mysql counts via a global
+		'sharedHandles', // connections shared per parameters; e_db_mysql shares its first link through $db_ConnectionID
+		'sharedParams',  // the parameters this instance's connection is shared for, part of the same mechanism
+		'sharedConnection', // the handle and character set shared under those parameters, part of the same mechanism
+		'newLink',       // whether connect() was asked for a connection of the instance's own, part of the same mechanism
+		'shareable',     // whether connect()'s connection may become the shared one, part of the same mechanism
+		'insertId',      // the insert id of this instance's own last statement; e_db_mysql reads its shared link's
 	);
 
 	/**
