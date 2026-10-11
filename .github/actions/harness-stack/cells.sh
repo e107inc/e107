@@ -8,13 +8,13 @@
 #   cells.sh collect <dir>
 #
 # A cell is one line, `[name] [up flags...] [-- run flags...]`, split on
-# whitespace; a line that starts with a flag has no name. No lines means one
-# cell in the checkout itself. Every other cell runs in its own copy of the
-# checkout under $RUNNER_TEMP/e107-cells, because the suites write into the
-# app root and two runs sharing a tree delete each other's state; a separate
-# path is all the harness needs to give a cell its own compose project,
-# config and vendor volume. A cell is named "PHP X, <db>[, <name>]" in its log
-# group, its annotation and its row of the job summary.
+# whitespace; a line that starts with a flag has no name. Every cell runs in
+# its own copy of the checkout under $RUNNER_TEMP/e107-cells, because the
+# suites write into the app root and two runs sharing a tree delete each
+# other's state; a separate path is all the harness needs to give a cell its
+# own compose project, config and vendor volume. A cell is named
+# "PHP X, <db>[, <name>]" in its log group, its annotation and its row of the
+# job summary.
 #
 # A cell reproduces locally with the usual two commands, its up flags on the
 # first and its run flags on the second:
@@ -59,7 +59,7 @@ plan() {
     while IFS= read -r line; do
         [ -n "${line//[[:space:]]/}" ] && lines+=("$line")
     done
-    [ ${#lines[@]} -gt 0 ] || lines=('')
+    [ ${#lines[@]} -gt 0 ] || { echo "cells.sh plan: no cells" >&2; exit 2; }
     for line in "${lines[@]}"; do
         read -ra words <<< "$line"
         name='' up=() run=()
@@ -80,7 +80,6 @@ plan() {
         [ -n "$cell_db" ] || { echo "cells.sh plan: cell '$line' has no database" >&2; exit 2; }
         id=$(slug "${name:-$cell_db}")
         tree=$root/$id
-        [ ${#lines[@]} -gt 1 ] || [ -n "$line" ] || tree=$src
         up=(--php "$php" ${dbflag[@]+"${dbflag[@]}"} ${common[@]+"${common[@]}"} ${up[@]+"${up[@]}"})
         printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$id" "PHP $php, $cell_db${name:+, $name}" "$tree" "$cell_db" \
             "$(printf '%q ' "${up[@]}")" \
@@ -139,10 +138,8 @@ $failed}")"
 }
 
 up_cell() {
-    if [ "$tree" != "$src" ]; then
-        mkdir -p "$tree"
-        tar -C "$src" --exclude=./.git --exclude=./e107_tests/config.docker.yml -cf - . | tar -C "$tree" -xf - || return
-    fi
+    mkdir -p "$tree"
+    tar -C "$src" --exclude=./.git --exclude=./e107_tests/config.docker.yml -cf - . | tar -C "$tree" -xf - || return
     eval "set -- $upf"
     retry "$tree/e107_tests/bin/e107-tests" up "$@"
 }
@@ -176,7 +173,7 @@ collect)
         mkdir -p "$d"
         cp -a "$tree/e107_tests/tests/_output" "$d/" 2>/dev/null || true
         cp -a "$log".*.log "$d/" 2>/dev/null || true
-        "$tree/e107_tests/bin/e107-tests" logs > "$d/container.log" 2>&1 || true
+        timeout 60 "$tree/e107_tests/bin/e107-tests" logs > "$d/container.log" 2>&1 || true
     done < "$list"
     ;;
 *)
