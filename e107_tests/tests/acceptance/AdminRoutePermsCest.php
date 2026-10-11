@@ -72,6 +72,9 @@ class AdminRoutePermsCest
 	/** User ranks. users.php:37-40 says this route needs '4|U3'. */
 	const ROUTE_RANKS = '/e107_admin/users.php?mode=ranks&action=list';
 
+	/** The superseded ranks editor on the main mode, carrying the same writes. */
+	const ROUTE_RANKS_LEGACY = '/e107_admin/users.php?mode=main&action=ranks';
+
 	const ROUTE_EDIT = '/e107_admin/users.php?mode=main&action=edit&id=';
 
 	/** The dedicated Set user class page. The row id goes on the end. */
@@ -705,6 +708,61 @@ class AdminRoutePermsCest
 		$I->seeResponseCodeIs(200);
 
 		$I->seeInDatabase('e107_generic', array('gen_type' => 'user_rank_data'));
+	}
+
+	/** The superseded ranks editor's update replaces every rank, so it needs the ranks permission. */
+	public function aDelegatedAdministratorCannotUpdateRanksInTheSupersededEditor(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the superseded ranks update to an administrator holding only Quick Add User');
+
+		$rank = $this->seedGenericRow($I, 'user_rank_data', 'p7rp rank', 0);
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpU1admin');
+
+		$I->sendPostRequest(self::ROUTE_RANKS_LEGACY, array(
+			'e-token'         => $this->grabTokenFrom($I, self::ROUTE_ADD),
+			'etrigger_update' => 'update',
+			'op'              => array('comments' => '*'),
+			'val'             => array('comments' => '5'),
+			'calc_name'       => array('main_admin' => 'p7rp', 'admin' => 'p7rp'),
+			'calc_pfx'        => array('main_admin' => 1, 'admin' => 1),
+			'calc_img'        => array('main_admin' => '', 'admin' => ''),
+		));
+
+		$I->seeInDatabase('e107_generic', array('gen_id' => $rank));
+	}
+
+	/** The superseded ranks editor's delete needs the ranks permission too. */
+	public function aDelegatedAdministratorCannotDeleteRanksInTheSupersededEditor(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the superseded ranks delete to an administrator holding only Quick Add User');
+
+		$rank = $this->seedGenericRow($I, 'user_rank_data', 'p7rp rank', 0);
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpU1admin');
+
+		$I->sendPostRequest(self::ROUTE_RANKS_LEGACY, array(
+			'e-token'         => $this->grabTokenFrom($I, self::ROUTE_ADD),
+			'etrigger_delete' => array($rank => $rank),
+		));
+
+		$I->seeInDatabase('e107_generic', array('gen_id' => $rank));
+	}
+
+	/** Positive control: the ranks permission still reaches the superseded editor. */
+	public function theSupersededRanksEditorIsStillOpenToItsOwnPermission(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the superseded ranks editor open to an administrator holding U3');
+
+		$rank = $this->seedGenericRow($I, 'user_rank_data', 'p7rp rank', 0);
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpU3admin');
+
+		$this->postWithToken($I, self::ROUTE_RANKS_LEGACY, array(
+			'etrigger_delete' => array($rank => $rank),
+		));
+
+		$I->dontSeeInDatabase('e107_generic', array('gen_id' => $rank));
 	}
 
 	/**
@@ -1487,8 +1545,8 @@ class AdminRoutePermsCest
 	{
 		$I->wantTo('Test userclass_editclass in the shared userclass batch guard');
 
-		$managed = $this->seedWelcomeMessage($I, 'p7rp-managed');
-		$barred = $this->seedWelcomeMessage($I, 'p7rp-barred');
+		$managed = $this->seedGenericRow($I, 'wmessage', 'p7rp-managed');
+		$barred = $this->seedGenericRow($I, 'wmessage', 'p7rp-barred');
 		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
 
 		$this->sendBatch($I, self::ROUTE_WMESSAGE, 'ucadd__gen_intdata__'.self::MANAGED_CLASS,
@@ -1956,16 +2014,18 @@ class AdminRoutePermsCest
 	}
 
 	/**
-	 * Seed a welcome message, a record on another table whose visibility is a userclass batch.
+	 * Seed an e107_generic row of one type.
 	 *
+	 * @param string $type gen_type
 	 * @param string $title
+	 * @param int $datestamp 0 marks a custom rank
 	 * @return int gen_id
 	 */
-	private function seedWelcomeMessage(AcceptanceTester $I, $title)
+	private function seedGenericRow(AcceptanceTester $I, $type, $title, $datestamp = 1262304000)
 	{
 		return (int) $I->haveInDatabase('e107_generic', array(
-			'gen_type'      => 'wmessage',
-			'gen_datestamp' => 1262304000,
+			'gen_type'      => $type,
+			'gen_datestamp' => $datestamp,
 			'gen_user_id'   => 1,
 			'gen_ip'        => $title,
 			'gen_intdata'   => 0,

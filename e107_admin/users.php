@@ -70,6 +70,7 @@ class users_admin extends e_admin_dispatcher
 		'main/add'          => '4|U1|U0',
 		'main/prefs'        => '4|U2',
 		'main/maintenance'  => '4',
+		'main/ranks'        => '4|U3',
 	);
 
 
