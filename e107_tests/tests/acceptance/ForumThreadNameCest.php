@@ -1,0 +1,271 @@
+<?php
+
+/**
+ * A thread's name is stored one way, whichever form wrote it.
+ */
+class ForumThreadNameCest
+{
+	/** A subject carrying markup, a quote and an ampersand. */
+	const SUBJECT = 'Notes <b class="x">bold</b> & "more"';
+
+	/** A name none of these forms stored: an '&' raw and encoded, and sequences the split and move forms decode. */
+	const LEGACY_NAME = 'Tom & Jerry, AT&amp;T, 100%25 %3Cb%3Esure%3C/b%3E';
+
+	/** @var array ids from Helper\ForumFixture::haveForumStructure() */
+	private $ids;
+
+	/** @var string the site's flood switch before this Cest changed it */
+	private $antifloodWas;
+
+	/** @var int a thread the member started */
+	private $thread;
+
+	/** @var int the member's opening post in it */
+	private $openingPost;
+
+	/** @var int the administrator's reply in it, so a topic split from it is theirs */
+	private $reply;
+
+	public function _before(AcceptanceTester $I)
+	{
+		$I->haveForumPluginInstalled();
+		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_A, 'fixture_mod_a');
+
+		$this->ids = $I->haveForumStructure();
+		$this->antifloodWas = $I->haveSitePref('antiflood1', 0);
+
+		$member = $I->haveForumMember('namemember');
+		$this->thread = $I->haveForumThread('Fixture Named Thread', $this->ids['forumA'], $member);
+		$this->openingPost = $I->haveForumPost('Opening post of the named thread', $this->thread, $this->ids['forumA'], $member);
+		$this->reply = $I->haveForumPost('A reply in the named thread', $this->thread, $this->ids['forumA'], 1);
+
+		$I->purgeForumPermCache();
+		$I->logoutFromForum();
+	}
+
+	public function _after(AcceptanceTester $I)
+	{
+		$I->haveSitePref('antiflood1', $this->antifloodWas === '' ? null : $this->antifloodWas);
+		$I->dropForumProbe();
+	}
+
+	/**
+	 * Editing a thread's opening post stores its subject as starting the thread would have.
+	 */
+	public function anEditedSubjectIsStoredAsANewThreadsSubjectIs(AcceptanceTester $I)
+	{
+		$I->loginToForum('namemember');
+		$this->renameThroughTheEditForm($I);
+
+		$I->seeInDatabase('e107_forum_thread', array('thread_id' => $this->thread, 'thread_name' => $this->startThread($I)));
+	}
+
+	/**
+	 * Saving an opening post with its subject left as the edit form offers it keeps the name as it was stored.
+	 */
+	public function anUntouchedSubjectKeepsTheStoredName(AcceptanceTester $I)
+	{
+		$I->loginToForum('namemember');
+
+		$this->seeABodyEditKeepTheName($I);
+	}
+
+	public function aModeratorsUntouchedSubjectKeepsTheStoredName(AcceptanceTester $I)
+	{
+		$this->loginAsModerator($I);
+
+		$this->seeABodyEditKeepTheName($I);
+	}
+
+	/**
+	 * A topic split away under the title the split form offers is named as the thread it left.
+	 */
+	public function aTopicSplitUnderTheOfferedTitleKeepsTheName(AcceptanceTester $I)
+	{
+		$this->haveStoredName($I, self::LEGACY_NAME);
+		$this->loginAsModerator($I);
+
+		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=split&id='.$this->thread.'&post='.$this->reply);
+		$I->submitForm('form.forum-horizontal', array(), 'split_thread');
+
+		$splitOff = $I->grabFromDatabase('e107_forum_post', 'post_thread', array('post_id' => $this->reply));
+		$I->assertNotEquals($this->thread, $splitOff);
+		$this->seeLegacyNameOn($I, $splitOff);
+	}
+
+	/**
+	 * A thread moved and renamed to the title the move form offers keeps its name.
+	 */
+	public function aThreadMovedUnderTheOfferedTitleKeepsTheName(AcceptanceTester $I)
+	{
+		$this->loginAsModeratorOfBothForums($I);
+		$this->haveStoredName($I, self::LEGACY_NAME);
+
+		$this->moveThroughTheMoveForm($I, array());
+
+		$this->seeLegacyNameOn($I, $this->thread);
+	}
+
+	/**
+	 * A thread moved under a title the moderator typed is named as starting a thread would have named it.
+	 */
+	public function aThreadMovedUnderANewTitleIsNamedAsANewThreadIs(AcceptanceTester $I)
+	{
+		$this->loginAsModeratorOfBothForums($I);
+
+		$this->moveThroughTheMoveForm($I, array('newtitle' => self::SUBJECT));
+
+		$I->seeInDatabase('e107_forum_thread', array('thread_id' => $this->thread, 'thread_name' => $this->startThread($I)));
+	}
+
+	/**
+	 * A move posted to another form's address moves nothing, so no thread takes the name that form offered.
+	 */
+	public function aMovePostedToAnotherFormMovesNothing(AcceptanceTester $I)
+	{
+		$this->loginAsModeratorOfBothForums($I);
+
+		$I->sendPostRequest('/e107_plugins/forum/forum_post.php?f=split&id='.$this->ids['threadA'].'&post='.$this->reply, array(
+			'e-token'       => $I->grabForumToken('/e107_plugins/forum/forum_post.php?f=rp&id='.$this->thread),
+			'move_thread'   => 1,
+			'forum_move'    => $this->ids['forumB'],
+			'rename_thread' => 'rename',
+			'newtitle'      => 'Fixture Named Thread',
+		));
+
+		$I->seeInDatabase('e107_forum_thread', array(
+			'thread_id' => $this->ids['threadA'], 'thread_forum_id' => $this->ids['forumA'], 'thread_name' => 'Fixture Thread A',
+		));
+	}
+
+	/**
+	 * A topic split away by a moderator is named as starting a thread would have named it.
+	 */
+	public function aSplitTopicIsNamedAsANewThreadIs(AcceptanceTester $I)
+	{
+		$this->loginAsModerator($I);
+
+		$I->sendPostRequest('/e107_plugins/forum/forum_post.php?f=split&id='.$this->thread.'&post='.$this->reply, array(
+			'e-token'          => $I->grabForumToken('/e107_plugins/forum/forum_post.php?f=rp&id='.$this->thread),
+			'split_thread'     => 1,
+			'forum_split'      => '',
+			'new_thread_title' => self::SUBJECT,
+		));
+
+		$I->seeInDatabase('e107_forum_thread', array('thread_user' => 1, 'thread_name' => $this->startThread($I)));
+	}
+
+	/**
+	 * Start a thread named {@see ForumThreadNameCest::SUBJECT} through the new-thread form.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return string the name it was stored under
+	 */
+	private function startThread(AcceptanceTester $I)
+	{
+		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=nt&id='.$this->ids['forumA']);
+		$I->submitForm('#dataform', array('subject' => self::SUBJECT, 'post' => 'A thread started with the same subject'), 'newthread');
+
+		$name = $I->grabFromDatabase('e107_forum_thread', 'thread_name', array(
+			'thread_name like' => 'Notes%', 'thread_user !=' => 1, 'thread_datestamp >' => time() - 600,
+		));
+		$I->assertSame(0, substr_count($name, '<b'), $name);
+
+		return $name;
+	}
+
+	/**
+	 * Rename the member's thread to {@see ForumThreadNameCest::SUBJECT} through the edit form.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return string the name it was stored under
+	 */
+	private function renameThroughTheEditForm(AcceptanceTester $I)
+	{
+		$I->amOnPage($this->editForm());
+		$I->submitForm('#dataform', array('subject' => self::SUBJECT, 'post' => 'Opening post, edited'), 'update_thread');
+		$I->seeInDatabase('e107_forum_post', array('post_id' => $this->openingPost, 'post_entry' => 'Opening post, edited'));
+
+		return $I->grabFromDatabase('e107_forum_thread', 'thread_name', array('thread_id' => $this->thread));
+	}
+
+	/**
+	 * Save the member's opening post with only its body changed, and see the thread keep its stored name.
+	 *
+	 * @param AcceptanceTester $I
+	 */
+	private function seeABodyEditKeepTheName(AcceptanceTester $I)
+	{
+		$this->haveStoredName($I, self::LEGACY_NAME);
+
+		$I->amOnPage($this->editForm());
+		$I->submitForm('#dataform', array('post' => 'Opening post, body edited'), 'update_thread');
+		$I->seeInDatabase('e107_forum_post', array('post_id' => $this->openingPost, 'post_entry' => 'Opening post, body edited'));
+
+		$this->seeLegacyNameOn($I, $this->thread);
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $name stored as it is, as no form of this version would store it
+	 */
+	private function haveStoredName(AcceptanceTester $I, $name)
+	{
+		$I->updateInDatabase('e107_forum_thread', array('thread_name' => $name), array('thread_id' => $this->thread));
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param int $thread
+	 */
+	private function seeLegacyNameOn(AcceptanceTester $I, $thread)
+	{
+		$I->assertSame(self::LEGACY_NAME, $I->grabFromDatabase('e107_forum_thread', 'thread_name', array('thread_id' => $thread)));
+	}
+
+	/**
+	 * Sign in as a moderator of the member's forum who may not post HTML.
+	 *
+	 * @param AcceptanceTester $I
+	 */
+	private function loginAsModerator(AcceptanceTester $I)
+	{
+		$I->haveForumMember('namemoderator', '253,'.\Helper\ForumFixture::CLASS_MOD_A);
+		$I->loginToForum('namemoderator');
+	}
+
+	/**
+	 * Sign in as a moderator of both fixture forums, so a thread can be moved from one to the other.
+	 *
+	 * @param AcceptanceTester $I
+	 */
+	private function loginAsModeratorOfBothForums(AcceptanceTester $I)
+	{
+		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_B, 'fixture_mod_b');
+		$I->haveForumMember('namemoderator', '253,'.\Helper\ForumFixture::CLASS_MOD_A.','.\Helper\ForumFixture::CLASS_MOD_B);
+		$I->purgeForumPermCache();
+		$I->loginToForum('namemoderator');
+	}
+
+	/**
+	 * Move the member's thread into the second forum through the move form, renaming it.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param array $fields filled in beyond the destination and the rename choice
+	 */
+	private function moveThroughTheMoveForm(AcceptanceTester $I, array $fields)
+	{
+		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=move&id='.$this->thread.'&post='.$this->openingPost);
+		$I->submitForm('form.forum-horizontal', array_merge(array('forum_move' => $this->ids['forumB'], 'rename_thread' => 'rename'), $fields), 'move_thread');
+
+		$I->seeInDatabase('e107_forum_thread', array('thread_id' => $this->thread, 'thread_forum_id' => $this->ids['forumB']));
+	}
+
+	/**
+	 * @return string the edit form of the member's opening post
+	 */
+	private function editForm()
+	{
+		return '/e107_plugins/forum/forum_post.php?f=edit&id='.$this->thread.'&post='.$this->openingPost;
+	}
+}
