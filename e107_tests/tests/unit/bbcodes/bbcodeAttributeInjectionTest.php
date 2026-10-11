@@ -23,15 +23,28 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	/** @var mixed */
 	private $originalMakeClickable;
 
+	/** @var array */
+	private $originalHideGlobals;
+
 	protected function _before()
 	{
+		global $e_hide_allowed, $e_hide_query, $sql;
+
 		$this->tp = e107::getParser();
 		$this->originalMakeClickable = e107::getConfig()->get('make_clickable');
+
+		$this->originalHideGlobals = array($e_hide_allowed, $e_hide_query, $sql);
+		$e_hide_allowed = true;
+		$e_hide_query = 'SELECT 1';
+		$sql = e107::getDb();
 	}
 
 	protected function _after()
 	{
+		global $e_hide_allowed, $e_hide_query, $sql;
+
 		e107::getConfig()->set('make_clickable', $this->originalMakeClickable);
+		list($e_hide_allowed, $e_hide_query, $sql) = $this->originalHideGlobals;
 	}
 
 	/**
@@ -39,13 +52,14 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	 *
 	 * @param string $bbcode
 	 * @param e_parse $parser
+	 * @param string $modifiers
 	 * @return string
 	 */
-	private function renderStored($bbcode, $parser = null)
+	private function renderStored($bbcode, $parser = null, $modifiers = '')
 	{
 		$parser = $parser ? $parser : $this->tp;
 
-		return $parser->toHTML($parser->toDB($bbcode), true);
+		return $parser->toHTML($parser->toDB($bbcode), true, $modifiers);
 	}
 
 	/**
@@ -98,12 +112,22 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	 */
 	private function tableIn($html)
 	{
+		return $this->elementIn($html, 'table');
+	}
+
+	/**
+	 * @param string $html
+	 * @param string $tagName
+	 * @return DOMElement
+	 */
+	private function elementIn($html, $tagName)
+	{
 		foreach($this->elementsOf($html) as $element)
 		{
-			if($element->tagName === 'table') return $element;
+			if($element->tagName === $tagName) return $element;
 		}
 
-		self::fail('No table was rendered from: '.$html);
+		self::fail('No '.$tagName.' was rendered from: '.$html);
 	}
 
 	/**
@@ -236,6 +260,15 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 		$html = $this->renderStored('[quote=" onmouseover="alert(1)]hello[/quote]');
 
 		$this->assertNoEventHandler($html, 'A [quote] author name escaped the title attribute.');
+	}
+
+	/** A quote a bbcode handler encoded inside a [hide] block stays encoded for a reader the block is shown to. */
+	public function testAHandlerQuoteInsideAHiddenBlockStaysEncoded()
+	{
+		$html = $this->renderStored("[hide][img]x.png' tabindex='0' autofocus onfocus='window.vanny=1[/img][/hide]", null, 'USER_BODY');
+
+		$this->elementIn($html, 'img');
+		$this->assertNoEventHandler($html, 'A quote a handler encoded inside a [hide] block was decoded.');
 	}
 
 	/**

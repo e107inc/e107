@@ -569,6 +569,89 @@ EXPECTED;
 
 	}
 
+	/**
+	 * A quote a bbcode handler encodes inside a [table] block must not be decoded back into the markup the handler built.
+	 */
+	public function testToHTMLDoesNotDecodeHandlerQuotesInsideTable()
+	{
+		$stored = $this->tp->toDB("[table][img]x.png' tabindex='0' autofocus onfocus='window.vanny=1[/img][/table]");
+
+		foreach (array('', 'USER_BODY', 'USER_TITLE', 'BODY', 'TITLE', 'WYSIWYG') as $modifiers)
+		{
+			$result = $this->tp->toHTML($stored, true, $modifiers);
+			$context = "modifiers '$modifiers'";
+
+			self::assertStringNotContainsString("onfocus='window.vanny=1", $result, "the handler quote must stay encoded with $context");
+			self::assertStringContainsString("x.png&#039;", $result, "the encoded quote must survive rendering with $context");
+		}
+	}
+
+	/**
+	 * An [html] block whose tags differ from the exact lowercase pair toDB() strips must keep a handler's quote encoded.
+	 */
+	public function testToHTMLDoesNotDecodeHandlerQuotesInsideHtmlBlock()
+	{
+		$stored = '[html ][img]x.png&#039; tabindex=&#039;0&#039; autofocus onfocus=&#039;window.vanny=1[/img][/HTML]';
+
+		foreach (array('', 'USER_BODY') as $modifiers)
+		{
+			$result = $this->tp->toHTML($stored, true, $modifiers);
+			$context = "modifiers '$modifiers'";
+
+			self::assertStringNotContainsString("onfocus='window.vanny=1", $result, "the handler quote must stay encoded with $context");
+			self::assertStringContainsString("x.png&#039;", $result, "the encoded quote must survive rendering with $context");
+		}
+	}
+
+	/**
+	 * A [code] block shows its source as typed, alone or inside a [table], so the entity table must not run over it.
+	 */
+	public function testToHTMLLeavesCodeBlockSourceUnrestored()
+	{
+		$standalone = $this->tp->toHTML($this->tp->toDB('[code]img.onerror = handler;[/code]'), true, 'USER_BODY');
+		$nested = $this->tp->toHTML($this->tp->toDB('[table][tr][td][code]img.onerror = handler;[/code][/td][/tr][/table]'), true, 'USER_BODY');
+		$mixed = $this->tp->toHTML($this->tp->toDB('[table][tr][td][code]write [scode]x[/scode] for img.onerror[/code][/td][/tr][/table]'), true, 'USER_BODY');
+
+		self::assertStringContainsString('img.onerror = handler;', $standalone);
+		self::assertStringNotContainsString('one&lt;i&gt;', $nested);
+		self::assertStringNotContainsString('one&lt;i&gt;', $mixed);
+	}
+
+	/**
+	 * An author's <script> inside an [html] or [table] block keeps its source, as it does outside one.
+	 */
+	public function testToHTMLLeavesScriptBlocksInsideBlocksUnrestored()
+	{
+		$script = '<script type=&quot;text/javascript&quot;>i.onerror = f;</script>';
+
+		foreach (array('[html]<p>s</p>' . $script . '[/html]', '[table][tr][td]x[/td][/tr]' . $script . '[/table]') as $stored)
+		{
+			self::assertStringContainsString('i.onerror = f;', $this->tp->toHTML($stored, true, 'BODY'), $stored);
+		}
+
+		$bare = '[html]<script>var x = 1;</script><p><a href=&quot;/page.php&quot;>link</a></p>[/html]';
+
+		self::assertStringContainsString('<a href="/page.php">', $this->tp->toHTML($bare, true, 'BODY'));
+
+		$adjacent = '[html]<script type=&quot;a&quot;>var a = 1;</script><script>i.onerror = f;</script><p>t</p>[/html]';
+		$upper = '[html]<SCRIPT LANGUAGE=&quot;JavaScript&quot;>var s = &quot;x&quot;;</SCRIPT>[/html]';
+
+		self::assertStringContainsString('i.onerror = f;', $this->tp->toHTML($adjacent, true, 'BODY'));
+		self::assertStringContainsString('var s = "x";', $this->tp->toHTML($upper, true, 'BODY'));
+	}
+
+	/**
+	 * The same reorder must leave legible quotes in table cell text decoded for display.
+	 */
+	public function testToHTMLKeepsDecodedQuotesInTableCellText()
+	{
+		$stored = $this->tp->toDB('[table][tr][td]Tom\'s "weekly" notes[/td][/tr][/table]');
+
+		$result = $this->tp->toHTML($stored, true);
+
+		self::assertStringContainsString('<td>Tom\'s "weekly" notes</td>', $result);
+	}
+
 	public function testParseTemplateWithEnabledCoreShortcodes()
 	{
 		$needle = '<ul class="nav navbar-nav nav-main ml-auto">';

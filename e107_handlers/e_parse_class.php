@@ -1963,6 +1963,7 @@ class e_parse
 		{
 			$proc_funcs = true;
 			$convertNL = true;
+			$entitiesRestored = false;
 
 			// We may have 'captured' a bbcode word - strip it if so
 			if ($last_bbcode == $full_text)
@@ -2008,12 +2009,13 @@ class e_parse
 							$html_end = '<!-- bbcode-html-end -->';
 							$full_text = str_replace(array('[html]', '[/html]'), '', $code_text); // quick fix.. security issue?
 
-							$full_text = $this->parseBBCodes($full_text, $postID); // parse any embedded bbcodes eg. [img]
+							$full_text = $this->parseBBCodes($this->restoreEntitiesOutsideCode($full_text, $opts['value']), $postID); // parse any embedded bbcodes eg. [img]
 							$full_text = $this->replaceConstants($full_text, 'abs'); // parse any other paths using {e_....
 							$full_text = $html_start . $full_text . $html_end;
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							$opts['nobreak'] = true;
 							$parseBB = false; // prevent further bbcode processing.
+							$entitiesRestored = true;
 
 
 							break;
@@ -2024,6 +2026,9 @@ class e_parse
 
 						case 'hide' :
 							$proc_funcs = true;
+							$full_text = $this->parseBBCodes($this->restoreEntitiesOutsideCode($matches[0], $opts['value']), $postID);
+							$entitiesRestored = true;
+							break;
 
 						case 'scode':
 						case 'code' :
@@ -2062,7 +2067,7 @@ class e_parse
 
 						//	Link substitution
 						// Convert URL's to clickable links, unless modifiers or prefs override
-						$sub_blk = $this->processModifiers($opts, $sub_blk, $convertNL, $parseBB, $modifiers, $postID);
+						$sub_blk = $this->processModifiers($opts, $sub_blk, $convertNL, $parseBB, $modifiers, $postID, !$entitiesRestored);
 
 						$ret_parser .= $sub_blk;
 					}    // End of 'normal' processing for a block of text
@@ -6472,15 +6477,61 @@ class e_parse
 	}
 
 	/**
+	 * Apply the entity table {@see e_parse::$search} toHTML() runs over body text, or its reverse for attribute values.
+	 *
+	 * @param string $text
+	 * @param bool   $forAttributeValue
+	 * @return string
+	 */
+	private function restoreEntities($text, $forAttributeValue = false)
+	{
+		return $forAttributeValue
+			? str_replace($this->replace, $this->search, $text)
+			: str_replace($this->search, $this->replace, $text);
+	}
+
+	/**
+	 * Apply {@see e_parse::restoreEntities()} to body text only, skipping the [code], [scode], <script> and <style> blocks toHTML() never runs it over.
+	 *
+	 * @param string $text
+	 * @param bool   $forAttributeValue
+	 * @return string
+	 */
+	private function restoreEntitiesOutsideCode($text, $forAttributeValue)
+	{
+		$parts = preg_split('#(\[(code|scode)\b.*?\[/\2\])#is', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+		$result = '';
+
+		foreach ($parts as $index => $part)
+		{
+			if ($index % 3 === 1)
+			{
+				$result .= $part;
+			}
+			elseif ($index % 3 === 0)
+			{
+				foreach ($this->splitScriptStyle($part) as $block)
+				{
+					list($type, $chunk) = $block;
+					$result .= ($type === 'text') ? $this->restoreEntities($chunk, $forAttributeValue) : $chunk;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @param array       $opts
 	 * @param string      $text
 	 * @param bool        $convertNL
 	 * @param bool|string $parseBB
 	 * @param             $modifiers
 	 * @param int         $postID
+	 * @param bool        $restoreEntities restore entity-encoded quotes; false when the caller restored them before rendering bbcode
 	 * @return array|bool|mixed|string|null
 	 */
-	private function processModifiers($opts, $text, $convertNL, $parseBB, $modifiers, $postID)
+	private function processModifiers($opts, $text, $convertNL, $parseBB, $modifiers, $postID, $restoreEntities = true)
 	{
 
 		// Convert emoticons to graphical icons, if enabled
@@ -6508,15 +6559,9 @@ class e_parse
 
 		//	Entity conversion
 		// Restore entity form of quotes and such to single characters, except for text destined for tag attributes or JS.
-		if ($opts['value'])
+		if ($restoreEntities)
 		{
-			// output used for attribute values.
-			$text = str_replace($this->replace, $this->search, $text);
-		}
-		else
-		{
-			// output not used for attribute values.
-			$text = str_replace($this->search, $this->replace, $text);
+			$text = $this->restoreEntities($text, $opts['value']);
 		}
 
 
