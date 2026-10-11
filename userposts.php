@@ -254,7 +254,7 @@ elseif ($action == 'forums')
 
 			$vars->USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
 			$vars->USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".$postUrl."'>"; //$e107->url->getUrl('forum', 'thread', "func=post&id={$row['post_id']}")
-			$vars->USERPOSTS_FORUM_TOPIC = $tp->toHTML($row['thread_name'], true, 'USER_BODY', $id); 
+			$vars->USERPOSTS_FORUM_TOPIC = e107forum::threadNameHtml($row['thread_name'], $tp);
 			$vars->USERPOSTS_FORUM_NAME_HREF_PRE = "<a href='".$forumUrl."'>"; //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['post_forum']}")
 			$vars->USERPOSTS_FORUM_NAME = $tp->toHTML($row['forum_name'], true, 'USER_BODY', $id);
 			$vars->USERPOSTS_FORUM_THREAD = $tp->toHTML($row['post_entry'], true, 'USER_BODY', $id);

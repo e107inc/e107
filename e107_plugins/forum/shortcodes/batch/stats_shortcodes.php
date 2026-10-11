@@ -98,7 +98,7 @@ class plugin_forum_stats_shortcodes extends e_shortcode
 
 	public function sc_thread_name()
 	{
-		return varset($this->var['thread_name']);
+		return e107::getParser()->attributeValue(varset($this->var['thread_name']));
 	}
 
 	public function sc_thread_total_replies()

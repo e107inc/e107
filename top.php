@@ -111,7 +111,7 @@ if ($action == 'active')
 
 			$text .= "<tr>
 					<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_PLUGIN_ABS."forum/images/".IMODE."/new_small.png' alt='' /></td>
-					<td style='width:45%' class='forumheader3'><b><a href='{$LINKTOTHREAD}'>{$row['thread_name']}</a></b> <span class='smalltext'>(<a href='{$LINKTOFORUM}'>{$row['forum_name']}</a>)</span></td>
+					<td style='width:45%' class='forumheader3'><b><a href='{$LINKTOTHREAD}'>{$tp->attributeValue($row['thread_name'])}</a></b> <span class='smalltext'>(<a href='{$LINKTOFORUM}'>{$row['forum_name']}</a>)</span></td>
 					<td style='width:15%; text-align:center' class='forumheader3'>{$POSTER}</td>
 					<td style='width:5%; text-align:center' class='forumheader3'>{$row['thread_views']}</td>
 					<td style='width:5%; text-align:center' class='forumheader3'>{$row['thread_total_replies']}</td>
