@@ -32,6 +32,12 @@ class ForumPostAuthorisationCest
 	/** @var int the member's opening post in it */
 	private $memberOpener;
 
+	/** @var int a forum where members (253) reply and only administrators (254) start threads */
+	private $adminStarted;
+
+	/** @var int a thread in it */
+	private $adminStartedThread;
+
 	/** @var string the site's flood switch before this Cest changed it */
 	private $antifloodWas;
 
@@ -63,6 +69,15 @@ class ForumPostAuthorisationCest
 		$this->memberOpener = $I->haveForumPost('Opening post of the member thread', $this->memberThread, $this->ids['forumA'], $member);
 		$I->updateInDatabase('e107_forum_thread', array('thread_sticky' => 1), array('thread_id' => $this->pinned));
 		$I->updateInDatabase('e107_forum_thread', array('thread_sticky' => 1), array('thread_id' => $this->memberThread));
+
+		$this->adminStarted = $I->haveInDatabase('e107_forum', array(
+			'forum_name' => 'Fixture Admin-Started Forum', 'forum_description' => 'fixture',
+			'forum_parent' => $this->ids['category'], 'forum_sub' => 0, 'forum_moderators' => \Helper\ForumFixture::CLASS_MOD_B,
+			'forum_class' => 0, 'forum_postclass' => 253, 'forum_threadclass' => 254,
+			'forum_order' => 4, 'forum_sef' => 'fixture-admin-started-forum', 'forum_datestamp' => time(),
+		));
+		$this->adminStartedThread = $I->haveForumThread('Fixture Admin-Started Thread', $this->adminStarted, 1);
+		$I->haveForumPost('Opening post in the admin-started thread', $this->adminStartedThread, $this->adminStarted, 1);
 
 		$I->purgeForumPermCache();
 		$I->logoutFromForum();
@@ -200,6 +215,27 @@ class ForumPostAuthorisationCest
 		));
 
 		$I->seeInDatabase('e107_forum_thread', array('thread_id' => $this->memberThread, 'thread_sticky' => 0));
+	}
+
+	public function aMemberRepliesWhereOnlyAdministratorsStartThreads(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		$this->submit($I, '?f=rp&id='.$this->adminStartedThread, array('post' => 'A member reply where admins start threads', 'reply' => 'Post reply'));
+
+		$I->seeInDatabase('e107_forum_post', array('post_thread' => $this->adminStartedThread, 'post_entry' => 'A member reply where admins start threads'));
+	}
+
+	public function aMemberCannotStartAThreadWhereOnlyAdministratorsMay(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+		$page = '?f=nt&id='.$this->adminStarted;
+
+		$this->submit($I, $page, array('subject' => 'Started by a member', 'post' => 'A new thread', 'newthread' => 'Post thread'));
+
+		$I->dontSeeInDatabase('e107_forum_thread', array('thread_name' => 'Started by a member'));
+		$I->amOnPage('/e107_plugins/forum/forum_post.php'.$page);
+		$I->seeInSource('forum-post-unauthorized');
 	}
 
 	public function aModeratorSplitsPostsIntoAnotherForumTheyModerate(AcceptanceTester $I)
