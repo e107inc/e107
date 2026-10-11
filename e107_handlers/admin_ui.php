@@ -3321,7 +3321,7 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
-	 * The route a batch command writes through: create for a copy, none for the delete, the export and the commands that write other tables, and edit for a field write or any other handler.
+	 * The route a batch command writes through: delete for a delete, create for a copy, none for the export and the commands that write other tables, and edit for a field write or any other handler.
 	 *
 	 * @param string $command leading segment of the posted batch trigger, in its declared spelling
 	 * @param string $actionName
@@ -3329,12 +3329,17 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	private function batchRoute($command, $actionName)
 	{
+		if($command === 'delete')
+		{
+			return 'delete';
+		}
+
 		if($command === 'copy')
 		{
 			return 'create';
 		}
 
-		if($command === 'delete' || $command === 'export' || $command === 'url' || $command === 'featurebox')
+		if($command === 'export' || $command === 'url' || $command === 'featurebox')
 		{
 			return null;
 		}
@@ -6638,6 +6643,13 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$this->setPosted(array());
 			return; // always break on cancel!
+		}
+
+		if(!$this->hasModeRouteAccess('delete'))
+		{
+			e107::getMessage()->addError(LAN_NO_PERMISSIONS);
+
+			return;
 		}
 
 		$id = (int) key($posted);
