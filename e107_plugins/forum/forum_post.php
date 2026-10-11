@@ -166,7 +166,9 @@ class forum_post_handler
 			case "report":
 			case 'split':
 				$postInfo               = $this->forumObj->postGet($this->post, 'post');
-				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
+				$this->id               = (int) varset($postInfo['post_thread'], 0);
+				$thread                 = $this->forumObj->threadGet($this->id, false);
+				$forumInfo              = $this->forumObj->forumGet(varset($thread['thread_forum_id'], 0));
 				$data                   = array_merge($postInfo ,$forumInfo);
 				$data['action']         = $this->action;
 				$data['initial_post']   = $this->forumObj->threadDetermineInitialPost($this->post);
@@ -1461,7 +1463,7 @@ class forum_post_handler
 		$threadInfo = array();
 		$threadInfo['thread_sticky']    = 0;
 		$threadInfo['thread_name']      = $post['new_thread_title'];
-		$threadInfo['thread_forum_id']  = (!empty($post['forum_split'])) ? intval($post['forum_split']) : $this->data['post_forum'];
+		$threadInfo['thread_forum_id']  = (!empty($post['forum_split'])) ? intval($post['forum_split']) : $this->data['forum_id'];
 		$threadInfo['thread_active']    = 1;
 		$threadInfo['thread_datestamp'] = $this->data['post_datestamp'];
 		$threadInfo['thread_views']      = 0;
