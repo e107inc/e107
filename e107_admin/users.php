@@ -2359,7 +2359,7 @@ class users_admin_ui extends e_admin_ui
 		$rankId = (int) key($posted);
 		
 		e107::getCache()->clear_sys('nomd5_user_ranks');
-		if (e107::getDb()->delete('generic',"gen_id='{$rankId}'"))
+		if (e107::getDb()->delete('generic',"gen_id='{$rankId}' AND gen_type='user_rank_data'"))
 		{
 			e107::getMessage()->addSuccess(LAN_DELETED);
 		}
