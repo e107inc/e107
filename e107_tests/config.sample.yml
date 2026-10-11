@@ -51,17 +51,17 @@ db:
   # Absolute path begins with "/"; relative path does not begin with "/"
   dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
 
-# Selenium endpoint for the WebDriver suite. The e107-tests docker harness wires
-# this up automatically; set it by hand only for a custom Selenium server.
-selenium:
+# WebDriver endpoint for the WebDriver suite. The e107-tests docker harness wires
+# this up automatically; set it by hand only for a WebDriver server of your own.
+browser:
 
-  # Hostname of the Selenium server (no http:// prefix), reachable from codecept
+  # Hostname of the WebDriver server (no http:// prefix), reachable from codecept
   host: 'localhost'
 
-  # Port number of the Selenium server
-  port: '4444'
+  # Port number of the WebDriver server; chromedriver listens on 9515 by default
+  port: '9515'
 
-  # Base path. A Selenium 4 grid serves the W3C protocol at the root '/'.
+  # Base path. chromedriver serves the W3C protocol at the root '/'.
   path: '/'
 
 # Configure this section for deployers that need file upload configuration

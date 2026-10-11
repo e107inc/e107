@@ -32,17 +32,14 @@ jobs:
       matrix:
         # One job for now. Add entries to fan out: each dimension is just a tag
         # the compose stack already parameterises (E107_PHP_VERSION /
-        # E107_DB_IMAGE / E107_SELENIUM_IMAGE), so a matrix of PHP, database,
-        # and Chromium versions is a matter of listing them here.
+        # E107_DB_IMAGE), so a matrix of PHP and database versions is a matter
+        # of listing them here. The browser follows Chrome's stable channel
+        # (e107_tests/docker/browser.Dockerfile).
         include:
           - php-version: '8.5'
             db-image: 'mariadb:10.11'
-            selenium-image: 'docker.io/selenium/standalone-chrome:latest'
 
     runs-on: ubuntu-latest
-
-    env:
-      E107_SELENIUM_IMAGE: ${{ matrix.selenium-image }}
 
     steps:
       - uses: actions/checkout@v6

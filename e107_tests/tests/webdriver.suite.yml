@@ -15,13 +15,13 @@ modules:
         - WebDriver:
             # The shared app URL, so this suite hits the same HTTP interface as
             # acceptance. It must be browser-reachable (e.g. http://web/), never
-            # localhost: the browser runs in the selenium container, where
+            # localhost: the browser runs in the browser container, where
             # localhost is the browser itself.
             url: '%url%'
             browser: chrome
-            host: '%selenium.host%'
-            port: '%selenium.port%'
-            path: '%selenium.path%'
+            host: '%browser.host%'
+            port: '%browser.port%'
+            path: '%browser.path%'
             window_size: 1366x900
             capabilities:
                 # Leave native confirm() dialogs standing until a test answers
