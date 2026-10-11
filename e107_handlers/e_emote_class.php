@@ -129,6 +129,12 @@ class e_emote
 	 */
 	public function filterEmotesRev($text)
 	{
+		$single = array_search($text, $this->singleReplace, true);
+
+		if($single !== false)
+		{
+			return $this->singleSearch[$single];
+		}
 
 		return str_replace($this->replace, $this->search, $text);
 	}

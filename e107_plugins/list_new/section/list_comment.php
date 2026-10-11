@@ -63,18 +63,20 @@ class list_comment
 		else
 		{
 			$list_data = array();
+			$emotes = e107::getPref('smiley_activate') ? e107::getEmote() : null;
 			foreach($data as $row)
 			{
 				$record = array();
-				$rowheading = $this->parent->parse_heading($row['comment_title']);
+				$title = $emotes ? $emotes->filterEmotesRev($row['comment_title']) : $row['comment_title'];
+				$rowheading = e107::getParser()->attributeValue($this->parent->parse_heading(strip_tags($title)));
 				$record['icon'] = $bullet;
 				if($row['comment_url'])
 				{
-					$record['heading'] = "<a href='".$row['comment_url']."'>".$this->parent->e107->tp->toHTML($rowheading, true)."</a>";
+					$record['heading'] = "<a href='".$row['comment_url']."'>".$rowheading."</a>";
 				}
 				else
 				{
-					$record['heading'] = $this->parent->e107->tp->toHTML($rowheading, true);
+					$record['heading'] = $rowheading;
 				}
 				$category = '';
 				if(vartrue($this->parent->settings['category']))

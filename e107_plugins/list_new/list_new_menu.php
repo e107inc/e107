@@ -46,7 +46,6 @@ $text = $rc->displayMenu();
 
 $caption = vartrue($rc->list_pref[$rc->mode."_caption"], LIST_MENU_1);
 $caption = e107::getParser()->toHTML($caption, FALSE, 'USER_TITLE');
-$text = e107::getParser()->toHTML($text, TRUE, 'USER_BODY');
 e107::getRender()->tablerender($caption, $text, 'list_new');
 
 unset($caption);

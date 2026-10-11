@@ -57,6 +57,9 @@ class list_shortcodes extends e_shortcode
 		return e107::getParser()->toHTML($this->row['icon'], true, "");
 	}
 
+	/**
+	 * The item's heading, printed as the section built it.
+	 */
 	function sc_list_heading()
 	{
 		if(empty($this->row['heading']))
@@ -64,7 +67,7 @@ class list_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return e107::getParser()->toHTML($this->row['heading'], true, "TITLE");
+		return $this->row['heading'];
 	}
 
 	function sc_list_author()
