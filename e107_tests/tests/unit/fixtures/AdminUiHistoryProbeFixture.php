@@ -26,6 +26,7 @@ class AdminUiHistoryProbeFixture extends e_admin_controller_ui
 		$this->table = $table;
 		$this->pid = $pid;
 		$this->spyModel = $spyModel;
+		$this->setRequest(new e_admin_request('mode=main&action=edit'));
 	}
 
 	public function getModel()

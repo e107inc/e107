@@ -92,6 +92,9 @@ class AdminRoutePermsCest
 	/** Welcome messages: a userclass batch on another table, behind another permission. */
 	const ROUTE_WMESSAGE = '/e107_admin/wmessage.php?mode=main&action=list';
 
+	/** The welcome-message edit form. The row id goes on the end. */
+	const ROUTE_WMESSAGE_EDIT = '/e107_admin/wmessage.php?mode=main&action=edit&id=';
+
 	/** wmessage.php pages its list at ten rows. */
 	const WMESSAGE_PER_PAGE = 10;
 
@@ -440,6 +443,35 @@ class AdminRoutePermsCest
 			(string) $I->grabFromDatabase('e107_user', 'user_email', array('user_id' => $targetId)),
 			'A delegated administrator holding U0 rewrote another administrator\'s e-mail address, '
 			.'which is password recovery for that account.');
+	}
+
+	/** The edit route writes the row it loaded, so a member's edit form cannot be turned onto an administrator. */
+	public function aDelegatedAdministratorCannotTurnAMembersEditOntoAnAdministrator(AcceptanceTester $I)
+	{
+		$I->wantTo('Hold a delegated administrator\'s edit of a member to that member');
+
+		$targetId = $this->seedOtherAdmin($I);
+		$victimId = $this->seedVictim($I);
+		$before = (string) $I->grabFromDatabase('e107_user', 'user_password', array('user_id' => $targetId));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpU0admin');
+
+		$I->amOnPage(self::ROUTE_EDIT.$victimId);
+
+		$payload = $this->editPayload($I, $victimId, self::OTHER_ADMIN);
+		$payload['user_id'] = $targetId;
+		$payload['user_email'] = 'p7rp-taken-over@example.com';
+		$payload['user_password_'.$victimId] = 'p7rp-Tak30ver-Pass';
+
+		$I->sendPostRequest(self::ROUTE_EDIT.$victimId, $payload);
+
+		$I->assertSame($before,
+			(string) $I->grabFromDatabase('e107_user', 'user_password', array('user_id' => $targetId)));
+		$I->seeInDatabase('e107_user', array(
+			'user_id'    => $targetId,
+			'user_email' => self::OTHER_ADMIN.'@example.com',
+			'user_admin' => 1,
+		));
 	}
 
 	/**
@@ -866,6 +898,29 @@ class AdminRoutePermsCest
 		$this->sendConfirmedRowDelete($I, $action, $target);
 
 		$I->dontSeeInDatabase('e107_generic', array('gen_id' => $target));
+	}
+
+	/** A list's edit form writes the row it loaded, whatever primary key the request carries. */
+	public function aWelcomeMessageEditCannotBeTurnedOnAnotherListsRow(AcceptanceTester $I)
+	{
+		$I->wantTo('Hold a welcome-message edit to the welcome message it loaded');
+
+		$message = $this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		$this->postWithToken($I, self::ROUTE_WMESSAGE_EDIT.$message, array(
+			'etrigger_submit' => 'update',
+			'gen_id'          => $counter,
+			'gen_type'        => 'wmessage',
+			'gen_ip'          => 'p7rp edited',
+			'gen_intdata'     => '0',
+			'gen_chardata'    => 'p7rp welcome',
+		));
+
+		$I->seeInDatabase('e107_generic', array('gen_id' => $counter, 'gen_type' => 'failed_login', 'gen_ip' => '203.0.113.7'));
+		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_ip' => 'p7rp edited'));
 	}
 
 	/**
