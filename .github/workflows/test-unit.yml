@@ -27,6 +27,12 @@ concurrency:
 #   e107_tests/bin/e107-tests up --php 5.6 --db mysql:5.5 --no-selenium
 #   e107_tests/bin/e107-tests ci-unit --skip-group runs-in-separate-process --skip-group requires-modern-php
 #
+# One job per PHP version runs the suite against every database at once, one
+# env per database on the same runner, each in its own copy of the tree (see
+# .github/actions/harness-stack/cells.sh). A failed database is named, as
+# "PHP 8.4, mariadb:10.11", in an annotation and in the job summary, and its
+# output is the log group of that name in the step that failed.
+#
 # The harness image carries what this suite needs to stop skipping tests: it
 # ships ImageMagick, so the resize_handler cases that assert a shell
 # metacharacter in a destination filename is not executed actually run, and it
@@ -42,7 +48,7 @@ concurrency:
 
 jobs:
   test-unit:
-    name: PHP ${{ matrix.php }}, ${{ matrix.db }}
+    name: PHP ${{ matrix.php }}
     strategy:
       fail-fast: false
       matrix:
@@ -53,27 +59,33 @@ jobs:
         # the one cell where composer resolves Codeception 4 with PHPUnit 9,
         # a generation the 5.7 and 10 cells on either side never exercise.
         php: ['5.6', '7.0', '7.4', '8.1', '8.2', '8.3', '8.4', '8.5']
-        # mysql:5.5 and mariadb:10.0 are here because e107 can be installed on
-        # them again: db_verify now settles a table's storage engine and
-        # character set against what the server can actually do, so the tables
-        # declaring a FULLTEXT index land on an engine that has one, and an
-        # index too wide for a 767-byte limit at utf8mb4 gets utf8 instead.
-        db: ['mysql:5.5', 'mysql:8.0', 'mariadb:10.0', 'mariadb:10.6', 'mariadb:10.11']
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
 
+      # The database axis, one env each. mysql:5.5 and mariadb:10.0 are here
+      # because e107 can be installed on them again: db_verify now settles a
+      # table's storage engine and character set against what the server can
+      # actually do, so the tables declaring a FULLTEXT index land on an
+      # engine that has one, and an index too wide for a 767-byte limit at
+      # utf8mb4 gets utf8 instead.
+      #
       # No --install-site: the unit suite loads a dump and never runs the
       # installer. --no-selenium because the browser image is over a gigabyte
       # and only the WebDriver suite needs it.
-      - name: Bring up the stack
+      - name: Bring up one stack per database
         uses: ./.github/actions/harness-stack
         with:
           php: ${{ matrix.php }}
-          db: ${{ matrix.db }}
           up-args: --no-selenium
+          cells: |
+            --db mysql:5.5
+            --db mysql:8.0
+            --db mariadb:10.0
+            --db mariadb:10.6
+            --db mariadb:10.11
 
       # Two groups come off on 5.6, 7.0 and 7.4. Neither is a hole in e107's
       # support for those runtimes; both are the test tooling failing to reach
@@ -86,29 +98,24 @@ jobs:
       #
       # requires-modern-php: cases that load dev tooling requiring PHP 8.1, which
       # an older runtime cannot even parse.
-      - name: Run unit tests
+      #
+      # !cancelled(): a database whose env did not come up is reported as a
+      # failed cell, and the others still run.
+      - name: Run unit tests on every database
+        if: ${{ !cancelled() }}
         run: |
           set --
           case '${{ matrix.php }}' in
             5.6|7.0|7.1|7.2|7.3|7.4) set -- --skip-group runs-in-separate-process \
                                             --skip-group requires-modern-php ;;
           esac
-          ./e107_tests/bin/e107-tests ci-unit "$@"
+          .github/actions/harness-stack/cells.sh run ci-unit "$@"
 
-      - name: Collect container logs
+      - name: Keep the failed cells' output
         if: failure()
-        run: ./e107_tests/bin/e107-tests logs > /tmp/container.log 2>&1 || true
-
-      - name: Upload test output
-        if: failure()
-        uses: actions/upload-artifact@v7
+        uses: ./.github/actions/harness-stack/failed-cells
         with:
-          name: unit-php${{ matrix.php }}-${{ strategy.job-index }}
-          path: |
-            e107_tests/tests/_output/
-            /tmp/container.log
-          if-no-files-found: ignore
-          retention-days: 7
+          name: unit-php${{ matrix.php }}
 
   sqli-gate:
     name: SQL-injection static gate
