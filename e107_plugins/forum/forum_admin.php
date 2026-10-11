@@ -1033,7 +1033,7 @@ e107::css('inline',"
             'gen_id' 				=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			//	  'gen_type' 			=> array ( 'title' => LAN_BAN, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'gen_datestamp' 		=> array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '10%', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-			'gen_ip' 				=> array ( 'title' => FORLAN_209, 'type' => 'text', 'data' => 'str', 'width' => '20%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			'gen_ip' 				=> array ( 'title' => FORLAN_209, 'type' => 'method', 'data' => 'str', 'width' => '20%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'gen_chardata' 		=> array ( 'title' => FORLAN_210, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'gen_user_id' 		=> array ( 'title' => FORLAN_211, 'type' => 'user', 'batch'=>true, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left nowrap',  ),
 	      	'gen_intdata' 		=> array ( 'title' =>  FORLAN_209, 'type' => 'number', 'nolist'=>true, 'batch'=>false, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -1089,6 +1089,27 @@ e107::css('inline',"
 			}
 		}
 
+		/**
+		 * The reported thread's name, as text.
+		 *
+		 * @param string $curVal
+		 * @param string $mode
+		 * @return string|null
+		 */
+		function gen_ip($curVal, $mode)
+		{
+			switch($mode)
+			{
+				case 'read':
+					return e107::getParser()->attributeValue($curVal);
+
+				case 'write':
+					return e107::getForm()->text('gen_ip', $curVal);
+			}
+
+			return null;
+		}
+
 		// Custom Method/Function
 		function gen_chardata($curVal,$mode)
 		{
@@ -1117,10 +1138,12 @@ e107::css('inline',"
 			if($attributes['mode'] == 'read')
 			{
 
+				$tp = e107::getParser();
 				$topic = $this->getController()->getListModel()->get('gen_ip');
 				$topidId = $this->getController()->getListModel()->get('gen_intdata');
+				$caption = $tp->toAttribute('Topic: '.$this->gen_ip($topic, 'read'), true);
 				$text = "<div class='btn-group'>";
-				$text .= "<a class='e-modal btn btn-default'  data-modal-caption='Topic: ".$topic."'  href='".e_SELF."?mode=post&action=list&id=". $topidId."' rel='external'>".defset('ADMIN_VIEW_ICON')."</a>";
+				$text .= "<a class='e-modal btn btn-default'  data-modal-caption='".$caption."'  href='".e_SELF."?mode=post&action=list&id=". $topidId."' rel='external'>".defset('ADMIN_VIEW_ICON')."</a>";
 
 				$text .= $this->renderValue('options',$value,array('readParms'=>'edit=0'), $id);
 				$text .= "</div>";
