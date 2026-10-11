@@ -728,7 +728,7 @@ class UserHandler
 		$previous = \e107\User\SignInToken::parse(isset($_SESSION[$key]) ? $_SESSION[$key] : '');
 		$token = new \e107\User\SignInToken($lode['user_id'], md5($lode['user_password']));
 
-		$_SESSION[$key] = (string) $token->withHandle($this->recordSignIn($previous, $token));
+		$_SESSION[$key] = (string) $token->withHandle($this->recordSignIn($previous, $token, isset($lode['user_name']) ? $lode['user_name'] : ''));
 	}
 
 	/**
@@ -736,9 +736,10 @@ class UserHandler
 	 *
 	 * @param \e107\User\SignInToken $previous what the session held, empty for a guest
 	 * @param \e107\User\SignInToken $token the sign-in
+	 * @param string $userName for the rolling log
 	 * @return string the handle of the session's record, '' when none could be stored
 	 */
-	private function recordSignIn(\e107\User\SignInToken $previous, \e107\User\SignInToken $token)
+	private function recordSignIn(\e107\User\SignInToken $previous, \e107\User\SignInToken $token, $userName)
 	{
 		$sessions = e107::getSession()->getAccountSessions();
 		$accountId = $token->accountId();
@@ -761,7 +762,30 @@ class UserHandler
 			$sessions->collect();
 		}
 
+		if(e107::getPref('disallowMultiLogin'))
+		{
+			$this->noteEndedSessions($accountId, $userName, $sessions->endOthers($accountId, $handle));
+		}
+
 		return '' === $handle ? $sessions->begin($accountId) : $handle;
+	}
+
+	/**
+	 * @param int $accountId
+	 * @param string $userName
+	 * @param \e107\User\AccountSession[] $ended
+	 * @return void
+	 */
+	private function noteEndedSessions($accountId, $userName, array $ended)
+	{
+		if(array() === $ended)
+		{
+			return;
+		}
+
+		$addresses = array_map(function (\e107\User\AccountSession $session) { return e107::getIPHandler()->ipDecode($session->ip()); }, $ended);
+
+		e107::getLog()->addEvent(4, __METHOD__, 'LOGIN', 'LAN_ROLL_LOG_07', 'Dropped existing user session: #'.$accountId.' '.$userName.' ('.implode(', ', $addresses).')', false, LOG_TO_ROLLING);
 	}
 
 

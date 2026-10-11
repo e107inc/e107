@@ -2,6 +2,7 @@
 
 /**
  * Each signed-in session is one of its account's sessions: recorded when it signs in, forgotten when it signs out, and signed out once its record is ended from elsewhere.
+ * With "Disallow multiple logins" on, a sign-in ends the account's other sessions, whichever store keeps them.
  */
 class AccountSessionsCest
 {
@@ -11,9 +12,25 @@ class AccountSessionsCest
 
 	const TABLE = 'e107_user_session';
 
+	/** Rolling log title of a sign-in that ended the account's other sessions. */
+	const DROPPED = 'LAN_ROLL_LOG_07';
+
+	/** @var string[] site preferences a test changed, and what they were */
+	private $prefsWere = array();
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
+	}
+
+	public function _after(AcceptanceTester $I)
+	{
+		foreach($this->prefsWere as $name => $was)
+		{
+			$I->haveSitePref($name, $was === '' ? null : $was);
+		}
+
+		$this->prefsWere = array();
 	}
 
 	public function aSignInIsRecordedUntilItSignsOut(AcceptanceTester $I)
@@ -111,6 +128,181 @@ class AccountSessionsCest
 		{
 			$I->probe('act=unhide');
 		}
+	}
+
+	/**
+	 * Guards the database store, which signed the first browser out before as well.
+	 */
+	public function theSecondSignInSignsTheFirstBrowserOutOnDatabaseSessions(AcceptanceTester $I)
+	{
+		$this->signInFromTwoBrowsers($I, 'db');
+	}
+
+	public function theSecondSignInSignsTheFirstBrowserOutOnFileSessions(AcceptanceTester $I)
+	{
+		$this->signInFromTwoBrowsers($I, 'files');
+	}
+
+	/**
+	 * Guards the mode as the only thing that ends other sessions.
+	 */
+	public function withoutDisallowMultipleLoginsBothBrowsersStaySignedIn(AcceptanceTester $I)
+	{
+		$this->havePref($I, 'disallowMultiLogin', 0);
+		$userId = $I->haveMember('sessionsboth', self::PASSWORD);
+
+		$I->loginAsMember('sessionsboth', self::PASSWORD);
+		$first = $this->probe($I);
+		$I->loginAsMember('sessionsboth', self::PASSWORD);
+
+		$this->returnAs($I, $first);
+		$I->assertSame((string) $userId, $this->probe($I)['USER_ID']);
+	}
+
+	public function aLiveSessionOfTheAccountIsEndedAndNoted(AcceptanceTester $I)
+	{
+		$this->havePref($I, 'disallowMultiLogin', 1);
+		$this->havePref($I, 'roll_log_active', 1);
+		$userId = $I->haveMember('sessionslive', self::PASSWORD);
+		$other = $this->haveSessionOf($I, $userId, 'a', time());
+		$lastLog = $this->lastLogId($I);
+
+		$I->loginAsMember('sessionslive', self::PASSWORD);
+
+		$I->dontSeeInDatabase(self::TABLE, array('user_session_handle' => $other));
+		$I->assertSame(1, $I->grabNumRecords('e107_dblog', array('dblog_id >' => $lastLog, 'dblog_title' => self::DROPPED)));
+	}
+
+	/**
+	 * Guards the note, which never reported an idle session.
+	 */
+	public function anIdleSessionOfTheAccountIsNotNotedAsEnded(AcceptanceTester $I)
+	{
+		$this->havePref($I, 'disallowMultiLogin', 1);
+		$this->havePref($I, 'roll_log_active', 1);
+		$userId = $I->haveMember('sessionsidle', self::PASSWORD);
+		$this->haveSessionOf($I, $userId, 'b', 1);
+		$lastLog = $this->lastLogId($I);
+
+		$I->loginAsMember('sessionsidle', self::PASSWORD);
+
+		$I->assertSame(0, $I->grabNumRecords('e107_dblog', array('dblog_id >' => $lastLog, 'dblog_title' => self::DROPPED)),
+			'a session idle for longer than a session lives is collected, not reported as one the sign-in ended');
+	}
+
+	public function aSessionFromBeforeRecordsWereKeptIsSignedOutByANewerSignIn(AcceptanceTester $I)
+	{
+		$this->havePref($I, 'disallowMultiLogin', 1);
+		$this->havePref($I, 'session_save_method', 'files');
+		$I->haveMember('sessionsolder', self::PASSWORD);
+
+		$I->loginAsMember('sessionsolder', self::PASSWORD);
+		$older = $this->probe($I);
+		$I->probe('act=unrecord');
+
+		$I->loginAsMember('sessionsolder', self::PASSWORD);
+
+		$this->returnAs($I, $older);
+		$I->assertSame('0', $this->probe($I)['USER_ID']);
+	}
+
+	/**
+	 * A sibling request of the same session may have recorded it already, without its handle reaching the session yet.
+	 */
+	public function aSessionFromBeforeRecordsWereKeptIsNotSignedOutByAnotherOneBeingRecorded(AcceptanceTester $I)
+	{
+		$this->havePref($I, 'disallowMultiLogin', 1);
+		$userId = $I->haveMember('sessionssibling', self::PASSWORD);
+		$I->loginAsMember('sessionssibling', self::PASSWORD);
+		$I->probe('act=unrecord');
+		$I->haveInDatabase(self::TABLE, array(
+			'user_session_handle'  => str_repeat('c', 32),
+			'user_session_user'    => $userId,
+			'user_session_started' => 0,
+			'user_session_seen'    => time(),
+			'user_session_ip'      => '',
+			'user_session_agent'   => '',
+		));
+
+		$I->assertSame((string) $userId, $this->probe($I)['USER_ID']);
+	}
+
+	/**
+	 * Two browsers sign in as one member with "Disallow multiple logins" on: the first is signed out, the second stays.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $method session_save_method for the run
+	 */
+	private function signInFromTwoBrowsers(AcceptanceTester $I, $method)
+	{
+		$this->havePref($I, 'disallowMultiLogin', 1);
+		$this->havePref($I, 'session_save_method', $method);
+		$name = 'sessions'.$method;
+		$userId = $I->haveMember($name, self::PASSWORD);
+
+		$I->loginAsMember($name, self::PASSWORD);
+		$first = $this->probe($I);
+		$I->assertSame((string) $userId, $first['USER_ID'], 'the first browser is signed in');
+		$I->assertSame($method, $first['SAVE_METHOD']);
+
+		$I->loginAsMember($name, self::PASSWORD);
+		$second = $this->probe($I);
+		$I->assertNotSame($first['SESSION_ID'], $second['SESSION_ID']);
+
+		$this->returnAs($I, $first);
+		$I->assertSame('0', $this->probe($I)['USER_ID'], 'the first browser was signed out by the second sign-in');
+
+		$this->returnAs($I, $second);
+		$I->assertSame((string) $userId, $this->probe($I)['USER_ID'], 'the second browser stays signed in');
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $name
+	 * @param string|int $value
+	 */
+	private function havePref(AcceptanceTester $I, $name, $value)
+	{
+		$was = $I->haveSitePref($name, $value);
+
+		if(!array_key_exists($name, $this->prefsWere))
+		{
+			$this->prefsWere[$name] = $was;
+		}
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param int $userId
+	 * @param string $fill the character the handle repeats
+	 * @param int $seen
+	 * @return string the handle
+	 */
+	private function haveSessionOf(AcceptanceTester $I, $userId, $fill, $seen)
+	{
+		$handle = str_repeat($fill, 32);
+
+		$I->haveInDatabase(self::TABLE, array(
+			'user_session_handle'  => $handle,
+			'user_session_user'    => $userId,
+			'user_session_started' => $seen,
+			'user_session_seen'    => $seen,
+			'user_session_ip'      => '',
+			'user_session_agent'   => '',
+		));
+
+		return $handle;
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @return int
+	 */
+	private function lastLogId(AcceptanceTester $I)
+	{
+		$ids = $I->grabColumnFromDatabase('e107_dblog', 'dblog_id');
+
+		return $ids ? (int) max($ids) : 0;
 	}
 
 	/**

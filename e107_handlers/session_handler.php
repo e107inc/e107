@@ -1269,6 +1269,10 @@ public function getData($key = null, $clear = false)
 		{
 			$signedIn = $sessions->confirm($token->accountId(), $token->handle());
 		}
+		elseif (e107::getPref('disallowMultiLogin') && array() !== array_filter($sessions->sessionsOf($token->accountId()), function ($session) { return $session->startedAt() > 0; }))
+		{
+			$signedIn = false;
+		}
 		else
 		{
 			$signedIn = true;
