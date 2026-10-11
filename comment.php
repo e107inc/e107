@@ -383,6 +383,12 @@ if ($action == "reply")
 elseif ($action == 'comment')
 {  //  Default code if not reply
 
+		if (!$cobj->canReadComments($table, $id))
+		{
+			e107::redirect();
+			exit;
+		}
+
 		switch ($table)
 		{
 			case 'news' :
@@ -392,17 +398,9 @@ elseif ($action == 'comment')
 					LEFT JOIN #user AS u ON n.news_author = u.user_id
 					LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 					WHERE ".$rule->getSql()."
-					AND n.news_class NOT REGEXP :news_nobody
-					AND n.news_start < :news_now
-					AND (n.news_end = 0 OR n.news_end > :news_until)
 					AND n.news_id = :news_id
 					AND n.news_allow_comments = 0",
-					$rule->getParameters() + array(
-						'news_nobody' => e_NOBODY_REGEXP,
-						'news_now'    => time(),
-						'news_until'  => time(),
-						'news_id'     => (int) $id,
-					)
+					$rule->getParameters() + array('news_id' => (int) $id)
 				))
 				{
 					e107::redirect();
@@ -430,7 +428,7 @@ elseif ($action == 'comment')
 				break;
 			case 'poll' :
 				$row = $sql->createQueryBuilder()->select('*')->from('polls')
-					->where('poll_id', $id)->where('poll_type', 1)->fetchRow();
+					->where('poll_id', $id)->fetchRow();
 				if (!$row)
 				{
 					e107::redirect();
@@ -453,16 +451,8 @@ elseif ($action == 'comment')
 				}
 				break;
 			case 'download' :
-				$visitor = \e107\Userclass\Membership::current();
-				$qb = $sql->createQueryBuilder();
-				$row = $qb->select('d.download_name')->from('download', 'd')
-					->innerJoin('download_category', 'dc', $qb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
-					->where('d.download_id', $id)
-					->where($visitor->predicate('dc.download_category_class'))
-					->where($visitor->predicate('d.download_visible'))
-					->where('d.download_active', '>', 0)
-					->where('d.download_comment', '>', 0)
-					->fetchRow();
+				$row = $sql->createQueryBuilder()->select('download_name')->from('download')
+					->where('download_id', $id)->fetchRow();
 				if ($row)
 				{
 					$subject = $row['download_name'];
