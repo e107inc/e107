@@ -1725,7 +1725,7 @@ class comment
 							}
 							break;
 						case 'page': //	Custom Page
-							if ($sql2->select("page", "*", "page_id='".$row['comment_item_id']."' AND page_class REGEXP '".e_CLASS_REGEXP."' "))
+							if ($sql2->select("page", "*", "page_id='".$row['comment_item_id']."' AND page_class REGEXP '".e_CLASS_REGEXP."' AND page_password = '' AND page_comment_flag > 0 "))
 							{
 								$row2 = $sql2->fetch();
 

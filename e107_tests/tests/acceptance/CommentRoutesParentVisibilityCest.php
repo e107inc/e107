@@ -37,6 +37,10 @@ class CommentRoutesParentVisibilityCest
 		$this->havePollComment($I, 'CMTPOLL', 'Fixture Site Poll', 1);
 		$this->havePollComment($I, 'CMTFORUMPOLL', 'Fixture Forum Poll', 2);
 
+		$this->havePageComment($I, 'CMTPAGEPUBLIC', '', 1);
+		$this->havePageComment($I, 'CMTPAGEPASSWORD', 'fixture-secret', 1);
+		$this->havePageComment($I, 'CMTPAGENOCOMMENTS', '', 0);
+
 		$I->resetAllCookies();
 	}
 
@@ -120,6 +124,80 @@ class CommentRoutesParentVisibilityCest
 		$I->updateInDatabase('e107_news', array('news_end' => time() - 60), array('news_id' => $this->items['CMTPUBLIC']));
 
 		$this->dontSeeCommentPage($I, 'news', 'CMTPUBLIC', 'Fixture Public News');
+	}
+
+	/**
+	 * The latest-comments menu skips a comment the page itself does not show: on a password-protected page until it is unlocked, and on a page whose comments are switched off.
+	 */
+	public function theLatestCommentsMenuSkipsCommentsThePageWithholds(AcceptanceTester $I)
+	{
+		$this->amOnCustomPage($I, 'CMTPAGEPUBLIC');
+		$I->seeInSource('Text of CMTPAGEPUBLIC');
+		$this->amOnCustomPage($I, 'CMTPAGEPASSWORD');
+		$I->dontSeeInSource('Text of CMTPAGEPASSWORD');
+		$this->amOnCustomPage($I, 'CMTPAGENOCOMMENTS');
+		$I->seeInSource('Body of CMTPAGENOCOMMENTS');
+		$I->dontSeeInSource('Text of CMTPAGENOCOMMENTS');
+
+		$this->haveCommentMenu($I);
+
+		$I->amOnPage('/news.php');
+		$I->seeInSource('Text of CMTPAGEPUBLIC');
+		$I->dontSeeInSource('Text of CMTPAGEPASSWORD');
+		$I->dontSeeInSource('Text of CMTPAGENOCOMMENTS');
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @return void
+	 */
+	private function haveCommentMenu(AcceptanceTester $I)
+	{
+		$I->haveInDatabase('e107_menus', array(
+			'menu_name'     => 'comment_menu',
+			'menu_location' => 1,
+			'menu_order'    => 9,
+			'menu_class'    => '0',
+			'menu_pages'    => '',
+			'menu_path'     => 'comment_menu/',
+			'menu_layout'   => '',
+			'menu_parms'    => '',
+		));
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $marker
+	 * @param string $password page_password, empty when the page is not locked
+	 * @param int $comments page_comment_flag
+	 * @return void
+	 */
+	private function havePageComment(AcceptanceTester $I, $marker, $password, $comments)
+	{
+		$this->items[$marker] = $I->haveInDatabase('e107_page', array(
+			'page_title'        => 'Fixture Page '.$marker,
+			'page_sef'          => strtolower($marker),
+			'page_text'         => 'Body of '.$marker,
+			'page_author'       => 1,
+			'page_datestamp'    => time() - 3600,
+			'page_comment_flag' => $comments,
+			'page_password'     => $password,
+			'page_class'        => 0,
+			'page_template'     => '',
+			'page_order'        => 1,
+		));
+
+		$this->haveComment($I, $marker, 'page');
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $marker
+	 * @return void
+	 */
+	private function amOnCustomPage(AcceptanceTester $I, $marker)
+	{
+		$I->amOnPage('/page.php?id='.$this->items[$marker]);
 	}
 
 	/**
