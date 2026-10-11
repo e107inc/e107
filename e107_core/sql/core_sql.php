@@ -682,3 +682,20 @@ CREATE TABLE user_extended_struct (
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
+#
+# Table structure for table `user_session`
+#
+
+CREATE TABLE user_session (
+  user_session_handle char(32) NOT NULL default '',
+  user_session_user int(10) unsigned NOT NULL default '0',
+  user_session_started int(10) unsigned NOT NULL default '0',
+  user_session_seen int(10) unsigned NOT NULL default '0',
+  user_session_ip varchar(45) NOT NULL default '',
+  user_session_agent varchar(255) NOT NULL default '',
+  PRIMARY KEY  (user_session_handle),
+  KEY user_session_user (user_session_user),
+  KEY user_session_seen (user_session_seen)
+) ENGINE=InnoDB;
+# --------------------------------------------------------
+
