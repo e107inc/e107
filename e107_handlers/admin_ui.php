@@ -2597,15 +2597,15 @@ class e_admin_controller
 			$action = $this->getRequest()->getActionName();
 		}
 		$method = $this->toMethodName($action);
-		if(!method_exists($this, $method))
+		if(!method_exists($this, $method) || $this->endsInTheAjaxInfix($action))
 		{
-			$this->_log('Skipping ' .$method. '() (not found)');
+			$this->_log('Skipping ' .$method. '() (no page of its own)');
 			$default = $this->getDefaultAction();
 			$this->getRequest()->setAction($default);
 
-			if(!$this->hasModeRouteAccess($default))
+			if(!$this->hasModeRouteAccess($default) || $this->endsInTheAjaxInfix($default))
 			{
-				$this->refuseAccess('Default action route restriction triggered: '.$this->getRequest()->getMode().'/'.$default);
+				$this->refuseAccess('Default action restriction triggered: '.$this->getRequest()->getMode().'/'.$default);
 			}
 			else
 			{
@@ -2622,6 +2622,21 @@ class e_admin_controller
 			$message = e107::getParser()->lanVars(LAN_UI_404_METHOD_ERROR, $method, true);
 			e107::getMessage()->add($message, E_MESSAGE_ERROR);
 		}
+	}
+
+	/**
+	 * Whether the action's page name ends in the ajax page suffix of {@see e_admin_controller::toMethodName()}, so its page would be another action's ajax page.
+	 *
+	 * @param string $action
+	 * @return bool
+	 */
+	private function endsInTheAjaxInfix($action)
+	{
+		$request = $this->getRequest();
+		$ajaxSuffix = $request->canonicalizeAction($this->toMethodName('', 'page', true));
+		$page = $request->canonicalizeAction($this->toMethodName($action, 'page', false));
+
+		return (string) substr($page, -strlen($ajaxSuffix)) === $ajaxSuffix;
 	}
 
 	/**

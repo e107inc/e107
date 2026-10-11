@@ -7,7 +7,7 @@
  * @see e107_web/js/inline.php  the front-end save endpoint
  * @see e107_handlers/admin_ui.php  e_admin_ui::InlineAjaxPage(), SortAjaxPage()
  * @see e107_handlers/admin_ui.php  e_admin_controller_ui::_manageSubmit(), which the create and edit forms save through
- * @see e107_handlers/admin_ui.php  e_admin_controller::_preDispatch(), which runs the default action for an action that names no page
+ * @see e107_handlers/admin_ui.php  e_admin_controller::_preDispatch(), which runs the default action for an action that names no page of its own
  * @see e107_admin/newspost.php  news_admin::$perm
  * @see e107_plugins/faqs/admin_config.php  faq_admin::init(), which keys its routes to user classes
  */
@@ -56,6 +56,21 @@ class InlineEditPermsCest
 
 	/** An action no FAQ category page answers to. */
 	const ROUTE_FAQ_CATEGORY_NO_PAGE = '/e107_plugins/faqs/admin_config.php?mode=cat&action=p7ienopage';
+
+	/** The news item list over ajax. */
+	const ROUTE_ITEM_LIST_AJAX = '/e107_admin/newspost.php?mode=main&action=list&ajax_used=1';
+
+	/** The news item list's ajax page, named by an action on a request that is not ajax. */
+	const ROUTE_ITEM_LIST_AJAX_PAGE = '/e107_admin/newspost.php?mode=main&action=listajax';
+
+	/** The submitted news list's ajax page, named by an action on a request that is not ajax. */
+	const ROUTE_SUBMITTED_LIST_AJAX_PAGE = '/e107_admin/newspost.php?mode=sub&action=listajax';
+
+	/** The news category list's ajax page, named by an action on a request that is not ajax. */
+	const ROUTE_CATEGORY_LIST_AJAX_PAGE = '/e107_admin/newspost.php?mode=cat&action=listajax';
+
+	/** The FAQ category list's ajax page, named by an action on a request that is not ajax. */
+	const ROUTE_FAQ_CATEGORY_LIST_AJAX_PAGE = '/e107_plugins/faqs/admin_config.php?mode=cat&action=listajax';
 
 	/**
 	 * Administrators seeded per test, login name => user_perms with the trailing dot e_userperms::updatePerms() writes.
@@ -632,26 +647,15 @@ class InlineEditPermsCest
 	{
 		$I->wantTo('Refuse the news list to an administrator who may only edit categories when it stands in for an action with no page');
 
-		$categoryId = $this->seedCategory($I);
-		$this->seedNewsItem($I, $categoryId);
-
-		$this->loginAsAdminHolding($I, 'p7iecategory');
-
-		$I->amOnPage(self::ROUTE_ITEM_NO_PAGE);
-		$I->dontSee(self::ITEM_TITLE);
-		$I->see(self::REFUSED);
+		$this->requestWithANewsItemAs($I, 'p7iecategory', self::ROUTE_ITEM_NO_PAGE);
+		$this->seeRefusedWithout($I, self::ITEM_TITLE);
 	}
 
 	public function aCategoryAdministratorCannotLoadTheNewsListOverAjaxThroughAnActionWithNoPage(AcceptanceTester $I)
 	{
 		$I->wantTo('Refuse the ajax news list to an administrator who may only edit categories when it stands in for an action with no page');
 
-		$categoryId = $this->seedCategory($I);
-		$this->seedNewsItem($I, $categoryId);
-
-		$this->loginAsAdminHolding($I, 'p7iecategory');
-
-		$I->amOnPage(self::ROUTE_ITEM_NO_PAGE.'&ajax_used=1');
+		$this->requestWithANewsItemAs($I, 'p7iecategory', self::ROUTE_ITEM_NO_PAGE.'&ajax_used=1');
 		$I->dontSee(self::ITEM_TITLE);
 	}
 
@@ -659,12 +663,7 @@ class InlineEditPermsCest
 	{
 		$I->wantTo('Keep the news list standing in for an action with no page for an administrator who may list items');
 
-		$categoryId = $this->seedCategory($I);
-		$this->seedNewsItem($I, $categoryId);
-
-		$this->loginAsAdminHolding($I, 'p7ieitem');
-
-		$I->amOnPage(self::ROUTE_ITEM_NO_PAGE);
+		$this->requestWithANewsItemAs($I, 'p7ieitem', self::ROUTE_ITEM_NO_PAGE);
 		$I->see(self::ITEM_TITLE);
 	}
 
@@ -672,24 +671,15 @@ class InlineEditPermsCest
 	{
 		$I->wantTo('Refuse the submitted news list to an administrator who may only edit categories when it stands in for an action with no page');
 
-		$this->seedSubmission($I, $this->seedCategory($I));
-
-		$this->loginAsAdminHolding($I, 'p7iecategory');
-
-		$I->amOnPage(self::ROUTE_SUBMITTED_NO_PAGE);
-		$I->dontSee(self::SUBMISSION_TITLE);
-		$I->see(self::REFUSED);
+		$this->requestWithASubmissionAs($I, 'p7iecategory', self::ROUTE_SUBMITTED_NO_PAGE);
+		$this->seeRefusedWithout($I, self::SUBMISSION_TITLE);
 	}
 
 	public function aSubmittedNewsAdministratorStillOpensTheSubmittedNewsThroughAnActionWithNoPage(AcceptanceTester $I)
 	{
 		$I->wantTo('Keep the submitted news list standing in for an action with no page for an administrator who may moderate submissions');
 
-		$this->seedSubmission($I, $this->seedCategory($I));
-
-		$this->loginAsAdminHolding($I, 'p7iesubmitted');
-
-		$I->amOnPage(self::ROUTE_SUBMITTED_NO_PAGE);
+		$this->requestWithASubmissionAs($I, 'p7iesubmitted', self::ROUTE_SUBMITTED_NO_PAGE);
 		$I->see(self::SUBMISSION_TITLE);
 	}
 
@@ -697,13 +687,112 @@ class InlineEditPermsCest
 	{
 		$I->wantTo('Refuse the FAQ category list to an administrator its user classes leave out when it stands in for an action with no page');
 
+		$this->requestWithAFaqCategoryAsAFaqsAdministrator($I, self::ROUTE_FAQ_CATEGORY_NO_PAGE);
+		$this->seeRefusedWithout($I, self::FAQ_CATEGORY_TITLE);
+	}
+
+	public function aCategoryAdministratorCannotOpenTheNewsListThroughItsAjaxPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the news list to an administrator who may only edit categories when a plain request names its ajax page');
+
+		$this->requestWithANewsItemAs($I, 'p7iecategory', self::ROUTE_ITEM_LIST_AJAX_PAGE);
+		$this->seeRefusedWithout($I, self::ITEM_TITLE);
+	}
+
+	public function aCategoryAdministratorCannotOpenTheSubmittedNewsThroughItsAjaxPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the submitted news list to an administrator who may only edit categories when a plain request names its ajax page');
+
+		$this->requestWithASubmissionAs($I, 'p7iecategory', self::ROUTE_SUBMITTED_LIST_AJAX_PAGE);
+		$this->seeRefusedWithout($I, self::SUBMISSION_TITLE);
+	}
+
+	public function aNewsCreatorCannotOpenTheCategoryListThroughItsAjaxPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the news category list to an administrator who may only create news items when a plain request names its ajax page');
+
+		$this->requestWithANewsItemAs($I, 'p7iecreate', self::ROUTE_CATEGORY_LIST_AJAX_PAGE);
+		$this->seeRefusedWithout($I, self::CATEGORY_NAME);
+	}
+
+	public function aFaqsAdministratorOutsideTheCategoryClassesCannotOpenTheCategoryListThroughItsAjaxPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the FAQ category list to an administrator its user classes leave out when a plain request names its ajax page');
+
+		$this->requestWithAFaqCategoryAsAFaqsAdministrator($I, self::ROUTE_FAQ_CATEGORY_LIST_AJAX_PAGE);
+		$this->seeRefusedWithout($I, self::FAQ_CATEGORY_TITLE);
+	}
+
+	public function aNewsItemAdministratorStillLoadsTheNewsListOverAjax(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the ajax news list working for an administrator who may list items');
+
+		$this->requestWithANewsItemAs($I, 'p7ieitem', self::ROUTE_ITEM_LIST_AJAX);
+		$I->seeInSource(self::ITEM_TITLE);
+	}
+
+	public function aNewsItemAdministratorStillOpensTheNewsListWhenAPlainRequestNamesItsAjaxPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Give an administrator who may list items the news list when a plain request names its ajax page');
+
+		$this->requestWithANewsItemAs($I, 'p7ieitem', self::ROUTE_ITEM_LIST_AJAX_PAGE);
+		$I->see(self::ITEM_TITLE);
+	}
+
+	/**
+	 * Seed a news item, log in as one of the seeded administrators and request a route.
+	 *
+	 * @param string $loginName a key of {@see InlineEditPermsCest::ADMINS}
+	 * @param string $route
+	 * @return void
+	 */
+	private function requestWithANewsItemAs(AcceptanceTester $I, $loginName, $route)
+	{
+		$this->seedNewsItem($I, $this->seedCategory($I));
+		$this->loginAsAdminHolding($I, $loginName);
+
+		$I->amOnPage($route);
+	}
+
+	/**
+	 * Seed a submitted news item, log in as one of the seeded administrators and request a route.
+	 *
+	 * @param string $loginName a key of {@see InlineEditPermsCest::ADMINS}
+	 * @param string $route
+	 * @return void
+	 */
+	private function requestWithASubmissionAs(AcceptanceTester $I, $loginName, $route)
+	{
+		$this->seedSubmission($I, $this->seedCategory($I));
+		$this->loginAsAdminHolding($I, $loginName);
+
+		$I->amOnPage($route);
+	}
+
+	/**
+	 * Install the FAQs plugin, seed a FAQ category, log in as an administrator holding the plugin's permission alone and request a route.
+	 *
+	 * @param string $route
+	 * @return void
+	 */
+	private function requestWithAFaqCategoryAsAFaqsAdministrator(AcceptanceTester $I, $route)
+	{
 		$I->havePluginInstalled('faqs');
 		$this->seedFaqCategory($I);
-
 		$this->loginAsFaqsAdministrator($I);
 
-		$I->amOnPage(self::ROUTE_FAQ_CATEGORY_NO_PAGE);
-		$I->dontSee(self::FAQ_CATEGORY_TITLE);
+		$I->amOnPage($route);
+	}
+
+	/**
+	 * See the 403 page, and not the text the refused route would have shown.
+	 *
+	 * @param string $hidden
+	 * @return void
+	 */
+	private function seeRefusedWithout(AcceptanceTester $I, $hidden)
+	{
+		$I->dontSee($hidden);
 		$I->see(self::REFUSED);
 	}
 
