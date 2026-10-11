@@ -27,6 +27,9 @@ class adminstyle_infopanel
 
 	private $iconlist = array();
 
+	/** @var array the e107.org feeds by panel id, each with the request that renews it */
+	private $feeds = array();
+
 	function __construct()
 	{
 
@@ -95,12 +98,29 @@ class adminstyle_infopanel
 
 
 
+		$cache = e107::getCache();
+		$xml = e107::getXml();
+		$tp = e107::getParser();
+
+		$this->feeds = array(
+			'e-adminfeed'        => array('query' => 'mode=core&type=feed', 'feed' => new e107\Admin\DashboardFeed('core', $cache, $xml, $tp)),
+			'e-adminfeed-plugin' => array('query' => 'mode=addons&type=plugin', 'feed' => new e107\Admin\DashboardFeed('plugin', $cache, $xml, $tp)),
+			'e-adminfeed-theme'  => array('query' => 'mode=addons&type=theme', 'feed' => new e107\Admin\DashboardFeed('theme', $cache, $xml, $tp)),
+		);
+
+		$feedRenewals = '';
+
+		foreach($this->feeds as $id => $panel)
+		{
+			if($panel['feed']->isDue())
+			{
+				$feedRenewals .= "$('#".$id."').load('".e_ADMIN."admin.php?".$panel['query']."&e-token=".defset('e_TOKEN')."');\n";
+			}
+		}
+
 		$code = "
 		jQuery(function($){
-  			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed&e-token=".defset('e_TOKEN')."');
-  		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin&e-token=".defset('e_TOKEN')."');
-  		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme&e-token=".defset('e_TOKEN')."');
-
+  			".$feedRenewals."
   		    ".$coreUpdateCheck."
   		    ".$addonUpdateCheck."
 
@@ -177,6 +197,20 @@ class adminstyle_infopanel
 		}
 
 		return $user_pref;
+	}
+
+	/**
+	 * @return string the e107.org news tabs, each holding its feed's kept copy
+	 */
+	protected function renderFeedTabs()
+	{
+		$tabs = array(
+			'coreFeed'   => array('caption' => LAN_GENERAL, 'text' => "<div id='e-adminfeed' style='min-height:300px'>".$this->feeds['e-adminfeed']['feed']->copy()."</div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>"),
+			'pluginFeed' => array('caption' => LAN_PLUGIN, 'text' => "<div id='e-adminfeed-plugin'>".$this->feeds['e-adminfeed-plugin']['feed']->copy()."</div>"),
+			'themeFeed'  => array('caption' => LAN_THEMES, 'text' => "<div id='e-adminfeed-theme'>".$this->feeds['e-adminfeed-theme']['feed']->copy()."</div>"),
+		);
+
+		return e107::getForm()->tabs($tabs, array('active' => 'coreFeed'));
 	}
 
 	/**
@@ -295,12 +329,7 @@ class adminstyle_infopanel
 
 	//  ------------------------------- e107 News --------------------------------
 
-		$newsTabs = array();
-		$newsTabs['coreFeed'] = array('caption'=>LAN_GENERAL,'text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
-		$newsTabs['pluginFeed'] = array('caption'=>LAN_PLUGIN,'text'=>"<div id='e-adminfeed-plugin'></div>");
-		$newsTabs['themeFeed'] = array('caption'=>LAN_THEMES,'text'=>"<div id='e-adminfeed-theme'></div>");
-
-		$text2 = $ns->tablerender(LAN_LATEST_e107_NEWS,e107::getForm()->tabs($newsTabs, array('active'=>'coreFeed')),"core-infopanel_news",true);
+		$text2 = $ns->tablerender(LAN_LATEST_e107_NEWS, $this->renderFeedTabs(), "core-infopanel_news", true);
 
 
 
