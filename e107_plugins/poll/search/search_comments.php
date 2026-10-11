@@ -18,6 +18,8 @@ $comments_title = defset('LAN_PLUGIN_POLL_NAME', 'Poll');
 $comments_type_id = 4;
 $comments_return['poll'] = "po.poll_id, po.poll_title";
 $comments_table['poll'] = "LEFT JOIN #polls AS po ON c.comment_type=4 AND po.poll_id = c.comment_item_id";
+$comments_class['poll'] = array();
+$comments_where['poll'] = "po.poll_type = 1";
 
 function com_search_4($row) {
 	global $con;

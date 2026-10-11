@@ -16,6 +16,11 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+if (!defined('USERCLASS_LIST'))
+{
+	throw new RuntimeException('The comments search cannot be built without the visitor\'s userclass list.');
+}
+
 // TODO Rework all of this to v2 standards while maintaining BC.
 
 // advanced 
@@ -35,8 +40,11 @@ if (isset($_GET['author']) && $_GET['author'] != '') {
 //basic
 $return_fields = 'c.comment_item_id, c.comment_author_id, comment_author_name, c.comment_datestamp, c.comment_comment, c.comment_type';
 
+$visitor = \e107\Userclass\Membership::current();
 $in = array();
 $join = array();
+$readable = array();
+$params = array();
 
 foreach($search_prefs['comments_handlers'] as $h_key => $value)
 {
@@ -52,9 +60,30 @@ foreach($search_prefs['comments_handlers'] as $h_key => $value)
 		if(is_readable($path)) // TODO Rework this to use e_search.php
 		{
 			require_once($path);
+
+			if(empty($comments_class[$h_key]) && empty($comments_where[$h_key]))
+			{
+				continue;
+			}
+
+			$parent = array();
+
+			foreach(varset($comments_class[$h_key], array()) as $column)
+			{
+				$rule = $visitor->predicate($column);
+				$parent[] = $rule->getSql();
+				$params += $rule->getParameters();
+			}
+
+			if(!empty($comments_where[$h_key]))
+			{
+				$parent[] = '('.$comments_where[$h_key].')';
+			}
+
 			$in[] = "'" . $value['id'] . "'";
 			$join[] = $comments_table[$h_key];
 			$return_fields .= ', ' . $comments_return[$h_key];
+			$readable[] = "(c.comment_type='".$value['id']."' AND ".implode(' AND ', $parent).")";
 		}
 
 	}
@@ -71,7 +100,8 @@ if(empty($in)) // nothing left to search: every handler is unavailable or out of
 }
 else
 {
-	$where = "comment_type IN (".implode(',', $in).") AND".$advanced_where;
+	$where = \e107\Database\SqlFragment::raw("c.comment_blocked = 0 AND comment_type IN (".implode(',', $in).")"
+		." AND (".implode(' OR ', $readable).") AND".$advanced_where, $params);
 	$order = array('comment_datestamp' => 'DESC');
 	$table = "comments AS c ".implode(' ', $join);
 

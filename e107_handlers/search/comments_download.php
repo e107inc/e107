@@ -18,7 +18,10 @@ if(!defined('e107_INIT'))
 $comments_title = defset('LAN_PLUGIN_DOWNLOAD_NAME');
 $comments_type_id = '2';
 $comments_return['download'] = "d.download_id, d.download_name";
-$comments_table['download'] = "LEFT JOIN #download AS d ON c.comment_type=2 AND d.download_id = c.comment_item_id";
+$comments_table['download'] = "LEFT JOIN #download AS d ON c.comment_type=2 AND d.download_id = c.comment_item_id"
+	." LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_category";
+$comments_class['download'] = array('d.download_visible', 'dc.download_category_class');
+$comments_where['download'] = "d.download_active != 0";
 
 /**
  * @param $row
