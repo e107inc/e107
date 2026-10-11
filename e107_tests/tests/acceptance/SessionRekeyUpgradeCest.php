@@ -80,6 +80,20 @@ class SessionRekeyUpgradeCest
 		);
 	}
 
+	public function anExpiredSessionKeyedByItsRawIdLeavesNothingToUpgrade(AcceptanceTester $I)
+	{
+		$I->wantTo('see no update pending for a stored session that has already expired');
+
+		$I->probe('act=upgrade');
+		$I->probe('act=seedexpired');
+
+		$I->assertSame(
+			array('raw' => 0, 'hashed' => self::SEEDED_ROWS, 'intact' => self::SEEDED_ROWS, 'needed' => 0),
+			$this->state($I, self::SEEDED_ROWS),
+			'No request reads an expired row again, so it is the collector\'s to delete and no update of the site.'
+		);
+	}
+
 	/**
 	 * @param AcceptanceTester $I
 	 * @param int $rows how many seeded ids to look for
@@ -139,6 +153,19 @@ if($act === 'seed' || $act === 'teardown')
 			$sql->insert('session', $fixtureRow);
 		}
 	}
+
+	echo "PROBE_OK ".json_encode(array('act' => $act))."\n";
+	exit;
+}
+
+if($act === 'seedexpired')
+{
+	$sql->insert('session', array(
+		'session_id'      => $fixturePrefix.'expired',
+		'session_expires' => time() - 60,
+		'session_user'    => $fixtureUser,
+		'session_data'    => base64_encode('e107 tests expired session row'),
+	));
 
 	echo "PROBE_OK ".json_encode(array('act' => $act))."\n";
 	exit;

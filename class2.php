@@ -830,7 +830,7 @@ if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || ($pref['ma
 
 // ------------------------------------------------------------------------
 
-if(!isset($_E107['no_prunetmp']))
+if(!isset($_E107['no_prunetmp']) && mt_rand(1, 100) === 1)
 {
 	$sql->createQueryBuilder()->delete('tmp')
 		->where('tmp_time', '<', time() - 300)
