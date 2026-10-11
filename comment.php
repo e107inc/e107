@@ -50,6 +50,11 @@ if(e_AJAX_REQUEST) // TODO improve security
 	{
 		$clean_type = preg_replace("/[^\w\d]/","",$_GET['type']);
 
+		if(!e107::getComment()->canReadComments($clean_type, intval($_GET['id'])))
+		{
+			exit;
+		}
+
 		$tmp = e107::getComment()->getComments($clean_type,intval($_GET['id']),intval($_GET['from']));
 		echo $tmp['comments'];
 		exit;
