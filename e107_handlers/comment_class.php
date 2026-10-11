@@ -1806,6 +1806,8 @@ class comment
 							$row2 = $pqb->select('*')->from('page')
 								->where('page_id', $row['comment_item_id'])
 								->where(\e107\Userclass\Membership::current()->predicate('page_class'))
+								->where('page_password', '')
+								->where('page_comment_flag', '>', 0)
 								->fetchRow();
 							if ($row2)
 							{
