@@ -208,6 +208,38 @@ class PluginNewsTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * A scalar row of {@see news_front::debug()} is printed as text, and an entity already in it is not encoded again.
+	 */
+	public function testTheDebugBlockPrintsAScalarRowAsTextOnce()
+	{
+		include_once e_PLUGIN . "news/news.php";
+
+		$obLevel = ob_get_level();
+
+		try
+		{
+			ob_start();
+			$news = new news_front();
+			ob_clean();
+
+			$property = new \e107\Reflection\ReflectionProperty($news, "debugInfo");
+			$property->setValue($news, array('probe' => '<b>AT&amp;T</b>'));
+
+			$news->debug();
+			$output = ob_get_contents();
+		}
+		finally
+		{
+			while(ob_get_level() > $obLevel)
+			{
+				ob_end_clean();
+			}
+		}
+
+		$this->assertStringContainsString('<b>probe:</b></td><td>&lt;b&gt;AT&amp;T&lt;/b&gt;</td>', $output);
+	}
+
+	/**
 	 * @param $payload  array
 	 * @param $sefType  string
 	 * @param $expected string
