@@ -489,6 +489,8 @@ endpoint e107 contacts (#5687).
   Debian release is served there; see "Legacy PHP".
 - `compose.yml`: the db + web + selenium services, parameterized by env,
   plus the `e107.tests.*` labels that serve as the harness's state store.
+- `compose.start-interval.yml`: probes a starting service every second;
+  `e107-tests` adds it on Docker Engine 25 and later.
 - `../composer.lock`, `../composer.php<floor>.lock`: one dependency lock per
   PHP range; see "One lock per PHP range".
 - `entrypoint.sh`: waits for DB, fixes ownership on the bind mount.
