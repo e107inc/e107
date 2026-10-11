@@ -74,7 +74,8 @@ modules:
         - \Helper\Probe
         # After SiteDb: the dump load leaves e107's pref cache stale.
         - \Helper\PrefCacheReset
-        # After PrefCacheReset: starts each test logged out.
+        # After PrefCacheReset: starts each test logged out, on a page that
+        # keeps its focus while other sessions' windows come and go.
         - \Helper\WebDriverSession
         # After WebDriver: its wait() replaces the blind sleep with a refusal.
         - \Helper\NoBlindWaits
