@@ -1,12 +1,13 @@
 <?php
 
 /**
- * Who may write a news or FAQ row, and which row, through each route that writes one.
+ * Who may write a news or FAQ row, and which row, through each route that writes one, and who may read the lists they are written from.
  *
  * @see e107_handlers/news_class.php  the front-end editable map
  * @see e107_web/js/inline.php  the front-end save endpoint
  * @see e107_handlers/admin_ui.php  e_admin_ui::InlineAjaxPage(), SortAjaxPage()
  * @see e107_handlers/admin_ui.php  e_admin_controller_ui::_manageSubmit(), which the create and edit forms save through
+ * @see e107_handlers/admin_ui.php  e_admin_controller::_preDispatch(), which runs the default action for an action that names no page
  * @see e107_admin/newspost.php  news_admin::$perm
  * @see e107_plugins/faqs/admin_config.php  faq_admin::init(), which keys its routes to user classes
  */
@@ -47,6 +48,15 @@ class InlineEditPermsCest
 	/** The administrator-side inline editor for FAQ questions. */
 	const ROUTE_FAQ_INLINE = '/e107_plugins/faqs/admin_config.php?mode=main&action=inline&ajax_used=1&id=';
 
+	/** An action no news item page answers to, so the default action, the list, runs in its place. */
+	const ROUTE_ITEM_NO_PAGE = '/e107_admin/newspost.php?mode=main&action=p7ienopage';
+
+	/** An action no submitted news page answers to. */
+	const ROUTE_SUBMITTED_NO_PAGE = '/e107_admin/newspost.php?mode=sub&action=p7ienopage';
+
+	/** An action no FAQ category page answers to. */
+	const ROUTE_FAQ_CATEGORY_NO_PAGE = '/e107_plugins/faqs/admin_config.php?mode=cat&action=p7ienopage';
+
 	/**
 	 * Administrators seeded per test, login name => user_perms with the trailing dot e_userperms::updatePerms() writes.
 	 *
@@ -74,6 +84,15 @@ class InlineEditPermsCest
 
 	/** The seeded category's name. */
 	const CATEGORY_NAME = 'p7ie category';
+
+	/** The seeded submitted news item's title. */
+	const SUBMISSION_TITLE = 'p7ie submission';
+
+	/** The seeded FAQ category's title. */
+	const FAQ_CATEGORY_TITLE = 'p7ie faq category';
+
+	/** What the 403 page says. */
+	const REFUSED = 'Access to the requested page is denied.';
 
 	/** The seeded category's order, which the sort route rewrites. */
 	const CATEGORY_ORDER = 7;
@@ -530,6 +549,85 @@ class InlineEditPermsCest
 		$I->dontSeeInDatabase('e107_news', array('news_id' => $itemId));
 	}
 
+	public function aCategoryAdministratorCannotOpenTheNewsListThroughAnActionWithNoPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the news list to an administrator who may only edit categories when it stands in for an action with no page');
+
+		$categoryId = $this->seedCategory($I);
+		$this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iecategory');
+
+		$I->amOnPage(self::ROUTE_ITEM_NO_PAGE);
+		$I->dontSee(self::ITEM_TITLE);
+		$I->see(self::REFUSED);
+	}
+
+	public function aCategoryAdministratorCannotLoadTheNewsListOverAjaxThroughAnActionWithNoPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the ajax news list to an administrator who may only edit categories when it stands in for an action with no page');
+
+		$categoryId = $this->seedCategory($I);
+		$this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iecategory');
+
+		$I->amOnPage(self::ROUTE_ITEM_NO_PAGE.'&ajax_used=1');
+		$I->dontSee(self::ITEM_TITLE);
+	}
+
+	public function aNewsItemAdministratorStillOpensTheNewsListThroughAnActionWithNoPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the news list standing in for an action with no page for an administrator who may list items');
+
+		$categoryId = $this->seedCategory($I);
+		$this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7ieitem');
+
+		$I->amOnPage(self::ROUTE_ITEM_NO_PAGE);
+		$I->see(self::ITEM_TITLE);
+	}
+
+	public function aCategoryAdministratorCannotOpenTheSubmittedNewsThroughAnActionWithNoPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the submitted news list to an administrator who may only edit categories when it stands in for an action with no page');
+
+		$this->seedSubmission($I, $this->seedCategory($I));
+
+		$this->loginAsAdminHolding($I, 'p7iecategory');
+
+		$I->amOnPage(self::ROUTE_SUBMITTED_NO_PAGE);
+		$I->dontSee(self::SUBMISSION_TITLE);
+		$I->see(self::REFUSED);
+	}
+
+	public function aSubmittedNewsAdministratorStillOpensTheSubmittedNewsThroughAnActionWithNoPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the submitted news list standing in for an action with no page for an administrator who may moderate submissions');
+
+		$this->seedSubmission($I, $this->seedCategory($I));
+
+		$this->loginAsAdminHolding($I, 'p7iesubmitted');
+
+		$I->amOnPage(self::ROUTE_SUBMITTED_NO_PAGE);
+		$I->see(self::SUBMISSION_TITLE);
+	}
+
+	public function aFaqsAdministratorOutsideTheCategoryClassesCannotOpenTheCategoryListThroughAnActionWithNoPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the FAQ category list to an administrator its user classes leave out when it stands in for an action with no page');
+
+		$I->havePluginInstalled('faqs');
+		$this->seedFaqCategory($I);
+
+		$this->loginAsFaqsAdministrator($I);
+
+		$I->amOnPage(self::ROUTE_FAQ_CATEGORY_NO_PAGE);
+		$I->dontSee(self::FAQ_CATEGORY_TITLE);
+		$I->see(self::REFUSED);
+	}
+
 	/**
 	 * Render the item, which files the editable map in the session, then save through the front-end editor.
 	 *
@@ -752,6 +850,41 @@ class InlineEditPermsCest
 			'news_render_type'      => '0',
 			'news_summary'          => '',
 			'news_thumbnail'        => '',
+		));
+	}
+
+	/**
+	 * Seed a news item a visitor submitted and nobody has approved.
+	 *
+	 * @param int $categoryId
+	 * @return int submitnews id
+	 */
+	private function seedSubmission(AcceptanceTester $I, $categoryId)
+	{
+		return (int) $I->haveInDatabase('e107_submitnews', array(
+			'submitnews_name'        => 'p7ie submitter',
+			'submitnews_email'       => 'p7iesubmitter@example.com',
+			'submitnews_title'       => self::SUBMISSION_TITLE,
+			'submitnews_category'    => $categoryId,
+			'submitnews_item'        => 'Submitted to InlineEditPermsCest.',
+			'submitnews_datestamp'   => self::PWCHANGE,
+			'submitnews_ip'          => '',
+			'submitnews_file'        => '',
+			'submitnews_keywords'    => '',
+			'submitnews_description' => '',
+			'submitnews_summary'     => '',
+			'submitnews_media'       => '',
+		));
+	}
+
+	/**
+	 * @return int faq_info id
+	 */
+	private function seedFaqCategory(AcceptanceTester $I)
+	{
+		return (int) $I->haveInDatabase('e107_faqs_info', array(
+			'faq_info_title' => self::FAQ_CATEGORY_TITLE,
+			'faq_info_about' => '',
 		));
 	}
 
