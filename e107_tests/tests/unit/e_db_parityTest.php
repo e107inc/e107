@@ -54,7 +54,6 @@ class e_db_parityTest extends \Test\Unit
 		'sharedConnection', // the handle and character set shared under those parameters, part of the same mechanism
 		'newLink',       // whether connect() was asked for a connection of the instance's own, part of the same mechanism
 		'shareable',     // whether connect()'s connection may become the shared one, part of the same mechanism
-		'insertId',      // the insert id of this instance's own last statement; e_db_mysql reads its shared link's
 	);
 
 	/**
@@ -63,7 +62,6 @@ class e_db_parityTest extends \Test\Unit
 	 */
 	private static $allowedPropsOnlyInMysql = array(
 		'stringifyFetch', // mysqli prepared results carry native types; PDO stringifies at the driver
-		'insertId',       // the insert id of this instance's own last statement; each e_db_pdo instance reads its own connection's
 	);
 
 	/**
@@ -118,6 +116,19 @@ class e_db_parityTest extends \Test\Unit
 		}
 
 		$this->assertSame(array(), $mismatches, 'Shared public methods with diverging parameter lists');
+	}
+
+	public function testOneSidedWhitelistsNameOnlyOneSidedMembers()
+	{
+		$pdoMethods = $this->getPublicMethods('e_db_pdo');
+		$mysqlMethods = $this->getPublicMethods('e_db_mysql');
+		$pdoProps = array_keys($this->describeProperties('e_db_pdo'));
+		$mysqlProps = array_keys($this->describeProperties('e_db_mysql'));
+
+		$this->assertSame(array(), $this->staleEntries(self::$allowedOnlyInPdo, $pdoMethods, $mysqlMethods), 'Methods whitelisted as e_db_pdo only that are not');
+		$this->assertSame(array(), $this->staleEntries(self::$allowedOnlyInMysql, $mysqlMethods, $pdoMethods), 'Methods whitelisted as e_db_mysql only that are not');
+		$this->assertSame(array(), $this->staleEntries(self::$allowedPropsOnlyInPdo, $pdoProps, $mysqlProps), 'Properties whitelisted as e_db_pdo only that are not');
+		$this->assertSame(array(), $this->staleEntries(self::$allowedPropsOnlyInMysql, $mysqlProps, $pdoProps), 'Properties whitelisted as e_db_mysql only that are not');
 	}
 
 	public function testPropertyParity()
@@ -182,6 +193,17 @@ class e_db_parityTest extends \Test\Unit
 		}
 
 		$this->assertSame(array(), $mismatches, 'Interface declarations with parameter lists diverging from e_db_pdo');
+	}
+
+	/**
+	 * @param string[] $whitelist names allowed on one class only
+	 * @param string[] $own the members of that class
+	 * @param string[] $other the members of the other class
+	 * @return string[] the names in $whitelist that are not on that class alone
+	 */
+	private function staleEntries(array $whitelist, array $own, array $other)
+	{
+		return array_values(array_diff($whitelist, array_diff($own, $other)));
 	}
 
 	/**
