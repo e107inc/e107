@@ -1781,6 +1781,7 @@ class comment
 							$row2 = $sql2->createQueryBuilder()
 								->select('*')->from('polls')
 								->where('poll_id', $row['comment_item_id'])
+								->where('poll_type', 1)
 								->fetchRow();
 							if ($row2)
 							{

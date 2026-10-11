@@ -205,7 +205,8 @@ class rss_menu_rss
 				break;
 
 			case 'poll':
-				$qb->where('p.poll_start_datestamp', '<=', $now)
+				$qb->where('p.poll_type', 1)
+					->where('p.poll_start_datestamp', '<=', $now)
 					->where($qb->expr()->anyOf(
 						$qb->expr()->eq('p.poll_end_datestamp', 0),
 						$qb->expr()->gt('p.poll_end_datestamp', $now)
