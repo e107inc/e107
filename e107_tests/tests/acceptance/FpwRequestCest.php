@@ -19,6 +19,9 @@ class FpwRequestCest
 	/** What a request is answered with while the account has a reset outstanding. */
 	const OUTSTANDING = 'A request has already been sent to reset this password';
 
+	/** What a request is answered with when its link could not be sent. */
+	const UNSENT = 'unable to send email';
+
 	/** @var int */
 	private $memberId;
 
@@ -65,6 +68,23 @@ class FpwRequestCest
 			'an expired code must not count as the one outstanding');
 		$I->assertSame(2, $this->mailsSentTo($I, self::MEMBER_EMAIL),
 			'the account must be sent a second link once the first has expired');
+	}
+
+	public function aRequestRightAfterAFailedSendSendsTheLink(AcceptanceTester $I)
+	{
+		$I->wantTo('ask again straight away when my reset link could not be sent');
+
+		$I->haveSitePref('mail_log_options', '0,0');
+		$this->askForReset($I, self::MEMBER_EMAIL);
+		$I->assertStringContainsString(self::UNSENT, $I->grabResponseBody(),
+			'the first link must have been tried and not sent');
+		$I->haveSitePref('mail_log_options', '1,1');
+		$this->askForReset($I, self::MEMBER_EMAIL);
+
+		$I->assertStringContainsString(self::SENT, $I->grabResponseBody(),
+			'a link that could not be sent must not count as the one outstanding');
+		$I->assertSame(1, $this->mailsSentTo($I, self::MEMBER_EMAIL),
+			'the account must be sent the link it asked for again');
 	}
 
 	public function aResetOutstandingForAnotherAccountDoesNotHoldThisOneBack(AcceptanceTester $I)
