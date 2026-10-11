@@ -7092,18 +7092,18 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$this->setTriggersEnabled(false);
 		$data = array();
-		$model = $this->getTreeModel()->getNode($id); //FIXME - this has issues with being on a page other than the 1st. 
-
-		if(!$this->archiveBeforeDelete($id))
-		{
-			$this->getTreeModel()->setMessages();
-
-			return null;
-		}
+		$model = $this->getTreeModel()->getNode($id);
 
 		if($model)
 		{
 			$data = $model->getData();
+
+			if(!$this->archiveBeforeDelete($id))
+			{
+				$this->getTreeModel()->setMessages();
+
+				return null;
+			}
 
 			if($this->beforeDelete($data, $id))
 			{
@@ -7135,13 +7135,9 @@ class e_admin_ui extends e_admin_controller_ui
 				$this->getTreeModel()->setMessages();// errors
 			}
 		}
-		else  //FIXME - this is a fall-back for the BUG which causes model to fail on all list pages other than the 1st
-		{ 
-			//echo "Couldn't get Node for ID: ".$id;
-			// exit; 
-			e107::getMessage()->addDebug('Model Failure Fallback in use!! ID: '.$id.' file: '.__FILE__. ' line: ' .__LINE__ ,'default',true);
-			$check = $this->getTreeModel()->delete($id);
-			return;			
+		else
+		{
+			e107::getMessage()->addError(LAN_DELETED_FAILED);
 		}
 	}
 

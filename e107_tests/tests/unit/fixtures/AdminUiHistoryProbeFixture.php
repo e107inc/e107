@@ -237,7 +237,7 @@ class AdminUiHistoryDeleteProbeFixture extends e_admin_ui
 }
 
 /**
- * A tree model that has no node for the id, as it has none on any list page but the first.
+ * A tree model that answers every id with the node it was given, or with none.
  */
 class AdminUiHistoryTreeStub
 {

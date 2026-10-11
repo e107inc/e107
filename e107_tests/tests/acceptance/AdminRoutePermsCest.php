@@ -92,6 +92,9 @@ class AdminRoutePermsCest
 	/** Welcome messages: a userclass batch on another table, behind another permission. */
 	const ROUTE_WMESSAGE = '/e107_admin/wmessage.php?mode=main&action=list';
 
+	/** wmessage.php pages its list at ten rows. */
+	const WMESSAGE_PER_PAGE = 10;
+
 	/** Admin History: the delete archive, listed and exported whole. history.php:7 wants a main administrator. */
 	const ROUTE_HISTORY = '/e107_admin/history.php?mode=main&action=list';
 
@@ -785,6 +788,86 @@ class AdminRoutePermsCest
 		}
 	}
 
+	/** A list's row delete reaches only the rows its own query selects. */
+	public function aWelcomeMessageAdministratorCannotDeleteRowsAnotherListOwns(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a welcome-message administrator the shared-table rows another permission owns');
+
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+		$rank = $this->seedGenericRow($I, 'user_rank_data', 'p7rp rank', 0);
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		foreach(array($counter, $rank) as $id)
+		{
+			$this->sendConfirmedRowDelete($I, self::ROUTE_WMESSAGE, $id);
+
+			$I->seeInDatabase('e107_generic', array('gen_id' => $id));
+			$I->dontSeeInDatabase('e107_admin_history', array(
+				'history_table'     => 'generic',
+				'history_record_id' => $id,
+			));
+		}
+	}
+
+	/** The User Ranks list's row delete reaches only rank rows. */
+	public function aRanksAdministratorCannotDeleteRowsAnotherListOwns(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a user-ranks administrator the shared-table rows another permission owns');
+
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+		$message = $this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpU3admin');
+
+		foreach(array($counter, $message) as $id)
+		{
+			$this->sendConfirmedRowDelete($I, self::ROUTE_RANKS, $id);
+
+			$I->seeInDatabase('e107_generic', array('gen_id' => $id));
+		}
+	}
+
+	/** Positive control: the welcome-message delete still removes a welcome message. */
+	public function aWelcomeMessageAdministratorStillDeletesAWelcomeMessage(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the welcome-message delete working on a welcome message');
+
+		$message = $this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		$this->sendConfirmedRowDelete($I, self::ROUTE_WMESSAGE, $message);
+
+		$I->dontSeeInDatabase('e107_generic', array('gen_id' => $message));
+	}
+
+	/** Positive control: a row on a list page after the first still deletes, through the list form's own action. */
+	public function aRowOnASecondListPageIsStillDeleted(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the row delete working on a list page after the first');
+
+		for($i = 0; $i <= self::WMESSAGE_PER_PAGE * 2; $i++)
+		{
+			$this->seedGenericRow($I, 'wmessage', 'p7rp paged '.$i);
+		}
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		$I->amOnPage(self::ROUTE_WMESSAGE.'&from='.self::WMESSAGE_PER_PAGE);
+
+		$action = $I->grabAttributeFrom(array('css' => "form[id$='-list-form']"), 'action');
+		$I->assertStringContainsString('from='.self::WMESSAGE_PER_PAGE, $action,
+			'The list form on page two posts without that page\'s offset, so the delete below is not the paged one.');
+
+		$target = (int) $I->grabAttributeFrom(array('css' => 'button.delete'), 'value');
+		$I->assertGreaterThan(0, $target, 'The second page offered no row delete button to exercise.');
+
+		$this->sendConfirmedRowDelete($I, $action, $target);
+
+		$I->dontSeeInDatabase('e107_generic', array('gen_id' => $target));
+	}
+
 	/**
 	 * A route permission is only a permission if it cannot be spelled around.
 	 *
@@ -1128,10 +1211,6 @@ class AdminRoutePermsCest
 	/**
 	 * The single-row Delete control: the destructive end of the rule the batch delete already
 	 * answers to, reached under a different trigger and with no rule of its own.
-	 *
-	 * The rule cannot live in beforeDelete(). e_admin_ui::ListDeleteTrigger() falls through to
-	 * the tree model's delete() with beforeDelete() never called whenever getNode() comes back
-	 * empty, which is every row that is not on the list page the request loaded.
 	 *
 	 * The ordinary member is deleted first, so a route that removed nothing cannot pass for a
 	 * guard.

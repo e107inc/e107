@@ -1601,9 +1601,7 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * The single-row delete route, which carries no rule of its own and reaches
-	 * {@see e_front_tree_model::delete()} without {@see e_admin_ui::beforeDelete()} whenever the
-	 * row is not on the loaded list page, so the rule cannot live in that callback.
+	 * The single-row delete route, which carries no rule of its own.
 	 *
 	 * @param array $posted rows the delete acts on, keyed by id
 	 * @return void

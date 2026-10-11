@@ -150,28 +150,21 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 		$this->assertFalse($probe->backups[0]['posted']);
 	}
 
-	/**
-	 * The tree model has no node for a row on any list page but the first, and the delete goes
-	 * ahead regardless. Reading the row by table and id is what lets the archive go ahead too.
-	 */
-	public function testDeleteWithoutATreeNodeStillArchivesTheStoredRow()
+	/** A row the list did not select is neither deleted nor archived. */
+	public function testDeleteWithoutATreeNodeDeletesAndArchivesNothing()
 	{
 		$probe = new AdminUiHistoryDeleteProbeFixture('admin_ui_history_probe', 'probe_id');
 
 		$probe->ListDeleteTrigger(array(1 => 'delete'));
 
-		$this->assertSame(array(1), $probe->treeStub->deleted, 'the row is deleted either way');
-		$this->assertCount(1, $probe->backups);
-		$this->assertSame('delete', $probe->backups[0]['action']);
-		$this->assertEquals(
-			array('probe_id' => 1, 'probe_fields' => '{"colour":"red"}', 'probe_menu' => 'left'),
-			$probe->backups[0]['data']
-		);
+		$this->assertSame(array(), $probe->treeStub->deleted);
+		$this->assertSame(array(), $probe->backups);
 	}
 
 	public function testDeleteOfARowThatIsNotThereArchivesNothing()
 	{
-		$probe = new AdminUiHistoryDeleteProbeFixture('admin_ui_history_probe', 'probe_id');
+		$node = new AdminUiHistoryNodeStub(array('probe_id' => 99));
+		$probe = new AdminUiHistoryDeleteProbeFixture('admin_ui_history_probe', 'probe_id', $node);
 
 		$probe->ListDeleteTrigger(array(99 => 'delete'));
 
@@ -179,9 +172,9 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 	}
 
 	/**
-	 * The ordinary delete, with the node the fall-back above does without. What is archived is
-	 * still the stored row: the node carries the observer's null, and a column the field
-	 * definitions do not declare survives only because the filter is off.
+	 * What is archived is the stored row rather than the node's: the node carries the observer's
+	 * null, and a column the field definitions do not declare survives only because the filter
+	 * is off.
 	 */
 	public function testDeleteArchivesTheStoredRowRatherThanTheTreeNodesData()
 	{
@@ -247,22 +240,6 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 		$this->assertSame(array(), $probe->treeStub->deleted, 'the row stays until it can be archived');
 		$this->assertStringContainsString('Record 1 was not deleted', $this->reportedErrors(),
 			'the administrator is told which record was kept');
-	}
-
-	/**
-	 * The fall-back for the missing node is a second delete of its own, and it is behind the same
-	 * gate because the archive is written before the two paths part.
-	 */
-	public function testAFailedArchiveRefusesTheDeleteFallBackThatHasNoTreeNode()
-	{
-		$probe = new AdminUiHistoryDeleteProbeFixture('admin_ui_history_probe', 'probe_id');
-		$probe->archiveFailsFor = array(1);
-		e107::getMessage()->reset();
-
-		$probe->ListDeleteTrigger(array(1 => 'delete'));
-
-		$this->assertSame(array(), $probe->treeStub->deleted);
-		$this->assertStringContainsString('Record 1 was not deleted', $this->reportedErrors());
 	}
 
 	/**
