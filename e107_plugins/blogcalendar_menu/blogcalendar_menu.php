@@ -113,7 +113,7 @@ if(false === $cached)
 	
 	$newsRows = $sql->createQueryBuilder()
 		->select('news_id', 'news_datestamp')->from('news')
-		->whereIn('news_class', explode(',', USERCLASS_LIST))
+		->where(\e107\Userclass\Membership::current()->predicate('news_class'))
 		->where(function($q)
 		{
 			$q->where($q->expr()->findInSet('news_render_type', '0'))

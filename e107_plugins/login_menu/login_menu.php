@@ -115,7 +115,7 @@ if (USER == TRUE || ADMIN == TRUE)
 			$newsQb = $sql->createQueryBuilder();
             $menu_data['new_news'] = $newsQb->from('news')
 				->where('news_datestamp', '>', $time)
-				->where($newsQb->expr()->regexp('news_class', e_CLASS_REGEXP))
+				->where(\e107\Userclass\Membership::current()->predicate('news_class'))
 				->whereNot(function($q) use ($nobody_regexp) {
 					$q->where($q->expr()->regexp('news_class', $nobody_regexp));
 				})

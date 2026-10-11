@@ -670,14 +670,15 @@ class e_thumbnail
 	}
 
 	/**
-	 * Whether the caller holds one of the classes $userclass names.
+	 * Whether $userclass admits the caller.
 	 *
 	 * This is the rule request.php and e_media::getImages() apply to the same
-	 * column: a numeric comparison against the caller's class list, in which
-	 * any one member is enough. It is deliberately not check_class(): a class
-	 * name and a leading '-' are refused here rather than resolved, so that the
-	 * thumbnailer can never answer a request the listing that produced it would
-	 * have hidden.
+	 * column through {@see \e107\Userclass\Membership}: a numeric comparison
+	 * against the caller's class list, in which one held class admits, one
+	 * held class named as "all but" refuses, and a lone "all but" admits every
+	 * caller outside it. It is deliberately not check_class(): a class name is
+	 * refused here rather than resolved, so that the thumbnailer can never
+	 * answer a request the listing that produced it would have hidden.
 	 *
 	 * @param string $userclass trimmed value of core_media.media_userclass
 	 * @return bool
@@ -685,18 +686,32 @@ class e_thumbnail
 	private function callerHolds($userclass)
 	{
 		$held = $this->userClasses();
+		$entries = array_map('trim', explode(',', $userclass));
+		$admitted = false;
 
-		foreach(explode(',', $userclass) as $class)
+		foreach($entries as $class)
 		{
-			$class = trim($class);
-
-			if(is_numeric($class) && in_array((int) $class, $held, true))
+			if(!is_numeric($class))
 			{
-				return true;
+				continue;
+			}
+
+			$class = (int) $class;
+			if($class < 0)
+			{
+				if(in_array(-$class, $held, true))
+				{
+					return false;
+				}
+				$admitted = $admitted || count($entries) === 1;
+			}
+			elseif(in_array($class, $held, true))
+			{
+				$admitted = true;
 			}
 		}
 
-		return false;
+		return $admitted;
 	}
 
 	/**

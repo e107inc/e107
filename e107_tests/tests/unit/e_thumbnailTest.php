@@ -237,7 +237,10 @@
 				array('255',     array(e_UC_MAINADMIN, e_UC_ADMIN, e_UC_MEMBER), false, 'e_UC_NOBODY refuses even a main admin'),
 				array('abc',     array(e_UC_MEMBER), false, 'a value naming no class admits nobody'),
 				array('253,abc', array(e_UC_MEMBER), true,  'an unreadable entry does not cost the holder the item'),
-				array('-253',    array(e_UC_MEMBER), false, 'an inverted class is refused, not resolved'),
+				array('-253',    array(e_UC_MEMBER), false, 'a member of the class an inverted value names is refused'),
+				array('-253',    array(e_UC_GUEST),  true,  'everybody outside the class an inverted value names is admitted'),
+				array(e_UC_MEMBER.',-'.e_UC_GUEST, array(e_UC_MEMBER, e_UC_GUEST), false, 'holding the class an inverted entry names refuses even a listed class'),
+				array('-'.e_UC_MEMBER.',-'.e_UC_GUEST, array(e_UC_ADMIN), false, 'two inverted entries admit nobody on their own, as check_class() reads them'),
 			);
 
 			foreach($cases as $case)

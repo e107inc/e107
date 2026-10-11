@@ -25,7 +25,7 @@ $template = e107::getCoreTemplate('chapter','panel');
 //TODO Limits and cache etc.
 $qb = $sql->createQueryBuilder();
 $qb->select('*')->from('page_chapters')
-	->whereIn('chapter_visibility', array_map('intval', explode(',', USERCLASS_LIST)))
+	->where(\e107\Userclass\Membership::current()->predicate('chapter_visibility'))
 	->where('chapter_template', 'panel');
 
 if(vartrue($parm['book']))

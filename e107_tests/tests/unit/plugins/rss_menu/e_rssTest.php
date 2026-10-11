@@ -49,7 +49,7 @@ class e_rssTest extends \Test\Unit
 	{
 		$_SERVER['HTTP_HOST'] = 'rogue.example.net';
 
-		$item = $this->seededItem($this->addon->data(array('url' => 'comments', 'id' => '', 'limit' => 9)));
+		$item = $this->seededItem($this->feed());
 
 		$this::assertSame(SITEURL . 'comment.php?comment.news.' . $this->newsId, $item['link']);
 		$this::assertStringNotContainsString('rogue.example.net', $item['link']);
@@ -62,7 +62,7 @@ class e_rssTest extends \Test\Unit
 	 */
 	public function testItemsCarryTheCommentDateUnderTheKeyTheFeedReads()
 	{
-		$item = $this->seededItem($this->addon->data(array('url' => 'comments', 'id' => '', 'limit' => 9)));
+		$item = $this->seededItem($this->feed());
 
 		$this::assertArrayHasKey('datestamp', $item);
 		$this::assertNotEmpty($item['datestamp']);
@@ -75,7 +75,7 @@ class e_rssTest extends \Test\Unit
 	 */
 	public function testItemsNameTheCommentAuthor()
 	{
-		$item = $this->seededItem($this->addon->data(array('url' => 'comments', 'id' => '', 'limit' => 9)));
+		$item = $this->seededItem($this->feed());
 
 		$this::assertSame('admin', $item['author']);
 	}
@@ -83,6 +83,37 @@ class e_rssTest extends \Test\Unit
 	public function testTheLegacyKeyIsDeclaredHereRatherThanHeldByTheResolver()
 	{
 		$this::assertSame(array(5 => 'comments'), $this->addon->legacy());
+	}
+
+	/**
+	 * An item set to "all but <class>" stores the negative class id. See issue #6282.
+	 */
+	public function testCommentsOnAnItemHiddenFromAnotherClassAreListed()
+	{
+		$absentClass = 42;
+		$this::assertNotContains((string) $absentClass, explode(',', USERCLASS_LIST), 'This test needs a userclass the runtime user is outside of.');
+
+		$this->setNewsClass($absentClass);
+		$this::assertNotContains($this->marker, array_column($this->feed(), 'title'), 'A comment on an item limited to a class the visitor is outside of stays out of the feed.');
+
+		$this->setNewsClass(-$absentClass);
+		$this::assertContains($this->marker, array_column($this->feed(), 'title'), 'A comment on an item hidden from another class is listed for everybody else.');
+	}
+
+	/**
+	 * @return array the items the comments feed lists
+	 */
+	private function feed()
+	{
+		return $this->addon->data(array('url' => 'comments', 'id' => '', 'limit' => 9));
+	}
+
+	/**
+	 * @param int $class
+	 */
+	private function setNewsClass($class)
+	{
+		e107::getDb()->createQueryBuilder()->update('news')->set('news_class', (string) $class)->where('news_id', $this->newsId)->execute();
 	}
 
 	/**

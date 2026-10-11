@@ -8,7 +8,7 @@ CREATE TABLE banner (
   banner_impurchased int(10) unsigned NOT NULL default '0',
   banner_startdate int(10) unsigned NOT NULL default '0',
   banner_enddate int(10) unsigned NOT NULL default '0',
-  banner_active tinyint(3) unsigned NOT NULL default '0',
+  banner_active smallint(5) NOT NULL default '0',
   banner_clicks int(10) unsigned NOT NULL default '0',
   banner_impressions int(10) unsigned NOT NULL default '0',
   banner_ip text NOT NULL,

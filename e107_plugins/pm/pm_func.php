@@ -108,7 +108,7 @@ class pmbox_manager
 				}
 				$limitQb->from('generic')
 					->where('gen_type', 'pm_limit')
-					->whereIn('gen_datestamp', explode(',', USERCLASS_LIST));
+					->where(\e107\Userclass\Membership::current()->predicate('gen_datestamp'));
 				if($row = $limitQb->fetchRow())
 				{
 					$pm_info['inbox']['limit'] =  $row['inbox_limit'];

@@ -101,7 +101,7 @@ class e_search
 	 * @param $weights
 	 * @param $handler
 	 * @param $no_results
-	 * @param $where
+	 * @param string|\e107\Database\SqlFragment $where developer SQL ending in AND, its values bound when it is a fragment
 	 * @param $order
 	 * @return array
 	 */
@@ -454,16 +454,17 @@ class e_search
 	 * Add a handler's own where() fragment, which ends in the AND that joined it to the keyword clause it is now a predicate beside.
 	 *
 	 * @param \e107\Database\QueryBuilder $qb
-	 * @param string $where
+	 * @param string|\e107\Database\SqlFragment $where
 	 * @return void
 	 */
 	private function applyHandlerWhere($qb, $where)
 	{
 		$where_clause = preg_replace('/\s+AND$/i', '', trim((string) $where));
+		$params = ($where instanceof \e107\Database\SqlFragment) ? $where->getParameters() : array();
 
 		if ($where_clause !== '')
 		{
-			$qb->where($qb->raw($where_clause));
+			$qb->where($qb->raw($where_clause, $params));
 		}
 	}
 

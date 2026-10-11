@@ -30,7 +30,7 @@ class news_related // include plugin-folder in the name.
 			->from('news', 'n')
 			->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
 			->where('n.news_id', '!=', (int) $parm['current'])
-			->where($qb->expr()->regexp('n.news_class', e_CLASS_REGEXP))
+			->where(\e107\Userclass\Membership::current()->predicate('n.news_class'))
 			->where($qb->expr()->regexp('n.news_meta_keywords', $tag_regexp))
 			->orderBy('n.news_datestamp', 'DESC')
 			->setMaxResults((int) $parm['limit'])

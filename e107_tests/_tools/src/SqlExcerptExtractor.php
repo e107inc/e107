@@ -60,20 +60,17 @@ final class SqlExcerptExtractor
             foreach ($expr->parts as $segment) {
                 if ($segment instanceof Node\InterpolatedStringPart) {
                     $out .= $segment->value;
-                } elseif ($segment instanceof Expr\Variable && is_string($segment->name)) {
-                    $out .= '{$' . $segment->name . '}';
-                } else {
-                    $out .= '{expr}';
+                    continue;
                 }
+                $name = Ast::variableName($segment);
+                $out .= $name === null ? '{expr}' : '{$' . $name . '}';
             }
             return $out;
         }
         if ($expr instanceof Expr\Array_) {
             return '[array]';
         }
-        if ($expr instanceof Expr\Variable && is_string($expr->name)) {
-            return '{$' . $expr->name . '}';
-        }
-        return '{expr}';
+        $name = Ast::variableName($expr);
+        return $name === null ? '{expr}' : '{$' . $name . '}';
     }
 }

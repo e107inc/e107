@@ -23,8 +23,7 @@ class download_gsitemap
 	{
 		$import = array();
 		$sql = e107::getDb();
-		/* public, quests */
-		$userclass_list = "0,252";
+		$guest = \e107\Userclass\Membership::fromList('0,252');
 		$_t = time();
 		$data = $sql->createQueryBuilder()
 			->select('*')->from('download_category')
@@ -45,7 +44,7 @@ class download_gsitemap
 
 		$data = $sql->createQueryBuilder()
 			->select('*')->from('download')
-			->whereIn('download_class', explode(',', $userclass_list))
+			->where($guest->predicate('download_class'))
 			->where('download_active', '!=', '0')
 			->orderBy('download_datestamp', 'ASC')
 			->fetchAll();
