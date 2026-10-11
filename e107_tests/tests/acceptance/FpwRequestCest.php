@@ -198,6 +198,29 @@ class FpwRequestCest
 			'one reset link per account per window, however often it is asked for');
 	}
 
+	/**
+	 * An expired code is waiting to be pruned, which may not happen on the next request, and it must not stand in for one the account can still use.
+	 */
+	public function aRequestAfterTheFirstCodeExpiredSendsANewLink(AcceptanceTester $I)
+	{
+		$I->wantTo('be sent a new reset link once the last one has expired');
+
+		$I->probe('act=clearmaillog');
+		$I->probe('act=cleargate');
+		$I->probe('act=clearpending');
+
+		$I->resetAllCookies();
+		$I->sendPostRequest('/fpw.php', array('pwsubmit' => 1, 'email' => self::MEMBER_EMAIL));
+		$I->probe('act=expirepending');
+		$I->probe('act=cleargate');
+		$I->resetAllCookies();
+		$I->sendPostRequest('/fpw.php', array('pwsubmit' => 1, 'email' => self::MEMBER_EMAIL));
+
+		$I->assertStringContainsString(self::ANSWER, $I->grabResponseBody());
+		$I->assertSame(2, substr_count($I->grabProbe('act=maillog'), 'Mail-ID='),
+			'an expired code must not count as the one outstanding');
+	}
+
 	public function theAdministratorIsToldInTheAdminAreaAndCanDismissIt(AcceptanceTester $I)
 	{
 		$I->wantTo('hear about attempts on my own account where I work, and stop hearing about them');
@@ -326,6 +349,11 @@ switch(\$act)
 
 	case 'clearpending':
 		\$sql->delete('tmp', "tmp_ip='pwreset'");
+		echo "PROBE_OK\\n";
+		break;
+
+	case 'expirepending':
+		\$sql->update('tmp', "tmp_time = ".(time() - 1)." WHERE tmp_ip='pwreset'");
 		echo "PROBE_OK\\n";
 		break;
 
