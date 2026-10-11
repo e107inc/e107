@@ -1579,7 +1579,7 @@ class forum_post_handler
 		}
 		else
 		{
-			if (!$this->isAuthor())
+			if (!$this->isAuthor() || empty($this->data['initial_post']))
 			{
 				$mes->addError(LAN_FORUM_3009);
 				return;
@@ -1621,9 +1621,16 @@ class forum_post_handler
 				$threadVals['thread_name'] 	 = $this->threadName($_POST['subject'], e107::getParser()->post_toForm($this->data['thread_name']));
 			}
 
-			$threadVals['thread_sticky'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);
+			if(MODERATOR && isset($_POST['threadtype']))
+			{
+				$threadVals['thread_sticky'] = (int) $_POST['threadtype'];
+			}
 
-			$this->forumObj->threadUpdate($this->data['post_thread'], $threadVals);
+			if($threadVals)
+			{
+				$this->forumObj->threadUpdate($this->data['post_thread'], $threadVals);
+			}
+
 			$this->forumObj->postUpdate($this->data['post_id'], $postVals);
 
 			e107::getCache()->clear('newforumposts');
