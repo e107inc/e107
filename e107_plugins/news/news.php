@@ -477,40 +477,42 @@ class news_front
 	{
 		$title = e107::getSingleton('eResponse')->getMetaTitle();
 
+		$rows = array(
+			array('action', $this->action),
+			array('subaction', $this->subAction),
+			array('route', $this->route),
+			array('e_QUERY', e_QUERY),
+			array('e_PAGETITLE', vartrue($title, '(unassigned)')),
+			array('PAGE_NAME', defset('PAGE_NAME', '(unassigned)')),
+			array('CacheTimeout', $this->cacheRefreshTime),
+			array('_GET', $_GET),
+		);
+
+		foreach($this->debugInfo as $key => $val)
+		{
+			$rows[] = array($key, $val);
+		}
+
+		$tp = e107::getParser();
+
 		echo "<div class='alert alert-info'>";
 		echo "<h4>News Debug Info</h4>";
 		echo "<table class='table table-striped table-bordered'>";
-		echo "<tr><td><b>action:</b></td><td>".$this->action."</td></tr>";
-		echo "<tr><td><b>subaction:</b></td><td>".$this->subAction."</td></tr>";
-		echo "<tr><td><b>route:</b></td><td>".$this->route."</td></tr>";
-		echo "<tr><td><b>e_QUERY:</b></td><td>".e_QUERY."</td></tr>";
-		echo "<tr><td><b>e_PAGETITLE:</b></td><td>".vartrue($title,'(unassigned)')."</td></tr>";
-		echo "<tr><td><b>PAGE_NAME:</b></td><td>".defset('PAGE_NAME','(unassigned)')."</td></tr>";
-		echo "<tr><td><b>CacheTimeout:</b></td><td>".$this->cacheRefreshTime."</td></tr>";
-		echo "<tr><td><b>_GET:</b></td><td>".print_r($_GET,true)."</td></tr>";
 
-		foreach($this->debugInfo as $key=>$val)
+		foreach($rows as $row)
 		{
-			echo "<tr><td><b>".$key.":</b></td><td>".$val."</tr>";
+			list($key, $val) = $row;
+			$val = is_array($val) ? print_a($val, true) : $tp->attributeValue($val);
+			echo "<tr><td><b>".$tp->attributeValue($key).":</b></td><td>".$val."</td></tr>";
 		}
 
 		echo "</table></div>";
-
-
 	}
 
 
 	private function addDebug($key,$message)
 	{
-		if(is_array($message))
-		{
-			$this->debugInfo[$key] = print_a($message,true);
-		}
-		else
-		{
-			$this->debugInfo[$key] = $message;
-		}
-
+		$this->debugInfo[$key] = $message;
 	}
 
 	// ----------- old functions ------------------------
