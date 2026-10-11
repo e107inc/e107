@@ -54,6 +54,7 @@ RUN set -eux; \
             libwebp-dev \
             libxml2-dev \
             libzip-dev \
+            locales \
             mariadb-client \
             nftables \
             rsync \
@@ -76,6 +77,7 @@ RUN set -eux; \
             libvpx-dev \
             libwebp-dev \
             libzip-dev \
+            locales \
             mysql-client \
             nftables \
             rsync \
@@ -83,6 +85,7 @@ RUN set -eux; \
             wget \
             zip; \
     fi; \
+    localedef -i tr_TR -f UTF-8 tr_TR.UTF-8; \
     rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \
