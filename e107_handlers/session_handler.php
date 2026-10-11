@@ -17,6 +17,13 @@ if (!defined('e107_INIT'))
     exit;
 }
 
+use e107\SessionHandlers\FilesSessionHandler;
+use e107\SessionHandlers\NonblockingFilesSessionHandler;
+use e107\SessionHandlers\SessionId;
+use e107\SessionHandlers\SessionSignIn;
+use e107\SessionHandlers\SoleSession;
+use e107\SessionHandlers\SoleSessionStoreInterface;
+
 // Include CSRF handler classes
 require_once(e_HANDLER . 'csrf_handler.php');
 
@@ -169,7 +176,7 @@ class e_session
 
     /**
      * Session save method
-     * @var string files|db
+     * @var string db|files|nonblocking, or the name of another PHP session module
      */
     protected $_sessionSaveMethod = 'files';
 
@@ -977,19 +984,9 @@ public function getData($key = null, $clear = false)
             session_save_path($this->_sessionSavePath);
         }
 
-        switch ($this->_sessionSaveMethod)
+        if (!isset($_SESSION))
         {
-            case 'db':
-                $session = new e_session_db;
-                session_set_save_handler($session);
-                break;
-
-            default:
-                if(!isset($_SESSION))
-                {
-                    session_module_name($this->_sessionSaveMethod);
-                }
-                break;
+            $this->installSaveHandler();
         }
 
         if (empty($this->_options['domain']))
@@ -1028,6 +1025,61 @@ public function getData($key = null, $clear = false)
         session_start();
         self::$_sessionStarted = true;
         return $this;
+    }
+
+    /**
+     * Hand PHP the storage the save method names: core's own handler where it has one, otherwise PHP's module of that name.
+     *
+     * A handler that can end an account's other sessions is published as a {@see SoleSession} under core/e107/sole_session.
+     *
+     * @return void
+     */
+    private function installSaveHandler()
+    {
+        $handler = $this->coreSaveHandler($this->_sessionSaveMethod);
+
+        if (null === $handler)
+        {
+            session_module_name($this->_sessionSaveMethod);
+            return;
+        }
+
+        if (session_set_save_handler($handler, true) && $handler instanceof SoleSessionStoreInterface && $handler->canClaim())
+        {
+            $isEnabled = static function ()
+            {
+                return (bool) e107::getPref('disallowMultiLogin');
+            };
+
+            e107::setRegistry('core/e107/sole_session', new SoleSession($handler, new SessionSignIn(defset('e_COOKIE', 'e107cookie')), $isEnabled));
+        }
+    }
+
+    /**
+     * Core's handler for a save method, with PHP's module set to the one that handler builds on; "nonblocking" falls back to "files" where it cannot reach its directory.
+     *
+     * @param string $method
+     * @return SessionHandlerInterface|null null for a method core has no handler for
+     */
+    private function coreSaveHandler($method)
+    {
+        switch ($method)
+        {
+            case 'db':
+                return new e_session_db();
+
+            case 'files':
+                session_module_name('files');
+                return new FilesSessionHandler(session_save_path(), e107::getInstance()->site_path);
+
+            case 'nonblocking':
+                session_module_name('files');
+                $store = new NonblockingFilesSessionHandler(session_save_path(), e107::getInstance()->site_path);
+
+                return $store->canClaim() ? $store : $this->coreSaveHandler('files');
+        }
+
+        return null;
     }
 
     /**
@@ -1109,7 +1161,7 @@ public function getData($key = null, $clear = false)
     public function setSessionId($sid = null)
     {
         // comma and minus allowed since 5.0
-        if (!empty($sid) && preg_match('#^[0-9a-zA-Z,-]+$#', $sid))
+        if (!empty($sid) && is_scalar($sid) && SessionId::isWellFormed((string) $sid))
         {
             session_id($sid);
         }
@@ -1130,6 +1182,8 @@ public function getData($key = null, $clear = false)
      *
      * Call this where the identity the session speaks for changes. Silently
      * does nothing when no session is running or output has already started.
+     * While multiple logins are disallowed, a session claimed for its account
+     * stays claimed under the new id. {@see SoleSession::renew()}
      *
      * @return e_session
      */
@@ -1143,6 +1197,13 @@ public function getData($key = null, $clear = false)
         }
 
         session_regenerate_id(true);
+
+        $sole = e107::getRegistry('core/e107/sole_session');
+
+        if ($sole instanceof SoleSession)
+        {
+            $sole->renew();
+        }
 
         return $this;
     }
@@ -2015,35 +2076,29 @@ class e_core_session extends e_session
 }
 
 /**
- * Database session handler
+ * {@see \e107\SessionHandlers\DatabaseSessionHandler} on the core database connection, with the accessors v2 callers have always had.
  */
-class e_session_db implements SessionHandlerInterface
+class e_session_db extends \e107\SessionHandlers\DatabaseSessionHandler
 {
-    /**
-     * Digest the session id is stored under, and the prefix that marks a row as
-     * carrying one. Must be a {@see hash_algos()} name.
-     */
-    const KEY_ALGO = 'sha256';
-
-    /**
-     * @var e_db
-     */
-    protected $_db = null;
-
-    /**
-     * Table name
-     * @var string
-     */
-    protected $_table = 'session';
-
-    /**
-     * @var int|null
-     */
-    protected $_lifetime = null;
-
     public function __construct()
     {
-        $this->_db = e107::getDb('session');
+        parent::__construct(e107::getDb('session'), new SessionSignIn(defset('e_COOKIE', 'e107cookie')));
+    }
+
+    /**
+     * @param string $key
+     * @return string|false session data, '' when no live row holds that key
+     */
+    protected function readKey($key)
+    {
+        $rows = $this->readKeys(array($key));
+
+        if (false === $rows)
+        {
+            return false;
+        }
+
+        return isset($rows[$key]) ? $rows[$key] : '';
     }
 
     /**
@@ -2059,7 +2114,7 @@ class e_session_db implements SessionHandlerInterface
      */
     public function getTable()
     {
-        return $this->_table;
+        return parent::getTable();
     }
 
     /**
@@ -2077,15 +2132,7 @@ class e_session_db implements SessionHandlerInterface
      */
     public function getLifetime()
     {
-        if(null === $this->_lifetime)
-        {
-            $this->_lifetime = ini_get('session.gc_maxlifetime');
-            if(!$this->_lifetime)
-            {
-                $this->_lifetime = 3600;
-            }
-        }
-        return (int) $this->_lifetime;
+        return parent::getLifetime();
     }
 
     /**
@@ -2108,241 +2155,10 @@ class e_session_db implements SessionHandlerInterface
     }
 
     /**
-     * Open session, parameters are ignored (see e_session handler)
-     *
-     * @param string $path
-     * @param string $name
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function open($path, $name)
-    {
-        return true;
-    }
-
-    /**
-     * Close session, collecting on one close in a hundred where the host keeps PHP's own collector off
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function close()
-    {
-        if(ini_get('session.gc_probability') <= 0 && mt_rand(1, 100) === 1)
-        {
-            $this->gc($this->getLifetime());
-        }
-
-        return true;
-    }
-
-    /**
-     * Get session data
-     * @param string $id
-     * @return string|false
-     */
-    #[\ReturnTypeWillChange]
-    public function read($id)
-    {
-        $keys = self::storageKeys($id);
-        $rows = $this->readKeys($keys);
-        list($key, $legacyKey) = $keys;
-
-        if(false === $rows)
-        {
-            return false;
-        }
-
-        if(isset($rows[$key]) && '' !== $rows[$key])
-        {
-            return $rows[$key];
-        }
-
-        if(isset($rows[$legacyKey]) && '' !== $rows[$legacyKey] && $this->rekey($legacyKey, $key))
-        {
-            return $rows[$legacyKey];
-        }
-
-        return '';
-    }
-
-    /**
-     * Storage key for a session id.
-     *
-     * The id is the value of the visitor's session cookie, so a row keyed by it
-     * verbatim turns any read of this table into a set of live credentials.
-     * The algorithm is named in the value so {@see e_session_db::read()} can
-     * recognise a row written before this was introduced, and so the digest can
-     * be changed later without a second migration.
-     *
-     * @param string $id
-     * @return string
+     * {@inheritDoc}
      */
     public static function storageKey($id)
     {
-        return self::KEY_ALGO.'$'.hash(self::KEY_ALGO, self::_sanitize($id));
-    }
-
-    /**
-     * @param string $id
-     * @return string[] the id's storage key, then the raw id that rows written before v2.3.12 are keyed by
-     */
-    private static function storageKeys($id)
-    {
-        return array(self::storageKey($id), self::_sanitize($id));
-    }
-
-    /**
-     * @param string $key
-     * @return string|false session data, '' when no live row holds that key
-     */
-    protected function readKey($key)
-    {
-        $rows = $this->readKeys(array($key));
-
-        if(false === $rows)
-        {
-            return false;
-        }
-
-        return isset($rows[$key]) ? $rows[$key] : '';
-    }
-
-    /**
-     * @param string[] $keys
-     * @return array|false session data of each live row under the key that found it, false when the table cannot be read
-     */
-    private function readKeys(array $keys)
-    {
-        $check = $this->_db->createQueryBuilder()
-            ->select('session_id', 'session_data')->from($this->getTable())
-            ->whereIn('session_id', $keys)
-            ->where('session_expires', '>', time())
-            ->execute();
-
-        if(false === $check)
-        {
-            return false;
-        }
-
-        $rows = array();
-
-        while($row = $this->_db->fetch())
-        {
-            foreach($keys as $key)
-            {
-                if(0 === strcasecmp($row['session_id'], $key))
-                {
-                    $rows[$key] = base64_decode($row['session_data']);
-                }
-            }
-        }
-
-        return $rows;
-    }
-
-    /**
-     * @param string $from
-     * @param string $to
-     * @return bool
-     */
-    protected function rekey($from, $to)
-    {
-        return false !== $this->_db->createQueryBuilder()
-            ->update($this->getTable())
-            ->set('session_id', $to)
-            ->where('session_id', $from)
-            ->execute();
-    }
-
-    /**
-     * Write session data
-     * @param string $id
-     * @param string $data
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function write($id, $data)
-    {
-        $values = array(
-            'session_expires' => (int) (time() + $this->getLifetime()),
-            'session_data'    => base64_encode($data),
-            'session_user'    => (int) defset('USERID'),
-        );
-        if(!self::_sanitize($id))
-        {
-            return false;
-        }
-
-        $id = self::storageKey($id);
-
-        $check = $this->_db->createQueryBuilder()
-            ->select('session_id')->from($this->getTable())
-            ->where('session_id', $id)
-            ->count();
-
-        if($check)
-        {
-            if(false !== $this->_db->createQueryBuilder()
-                ->update($this->getTable())
-                ->set('session_expires', $values['session_expires'])
-                ->set('session_data', $values['session_data'])
-                ->set('session_user', $values['session_user'])
-                ->where('session_id', $id)
-                ->execute())
-            {
-                return true;
-            }
-        }
-        else
-        {
-            $values['session_id'] = $id;
-            if($this->_db->createQueryBuilder()
-                ->insert($this->getTable())
-                ->values($values)
-                ->execute())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Destroy session
-     * @param string $id
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function destroy($id)
-    {
-        $this->_db->createQueryBuilder()
-            ->delete($this->getTable())
-            ->whereIn('session_id', self::storageKeys($id))
-            ->execute();
-        return true;
-    }
-
-    /**
-     * Garbage collection
-     * @param int $max_lifetime
-     * @return int|false
-     */
-    #[\ReturnTypeWillChange]
-    public function gc($max_lifetime)
-    {
-        return $this->_db->createQueryBuilder()
-            ->delete($this->getTable())
-            ->where('session_expires', '<', time())
-            ->execute();
-    }
-
-    /**
-     * Allow only well formed session id string
-     * @param string $id
-     * @return string
-     */
-    protected static function _sanitize($id)
-    {
-        return preg_replace('#[^0-9a-zA-Z,-]#', '', $id);
+        return parent::storageKey($id);
     }
 }

@@ -10,8 +10,60 @@
 		/** user_join that makes the signup token an md5 of the form 0e[0-9]{30}. */
 		const MAGIC_JOIN = 18194810;
 
+		/** A child's php arguments that hold its output back, so the notices its boot prints send no headers and its session settings stay changeable. */
+		const BUFFERED = '-d output_buffering=On';
+
+		/** The session a sign-in in a child runs as. */
+		const SESSION_ID = 'userlogintestsession0123456789ab';
+
+		/** A session the same account signed in with before. */
+		const EARLIER_ID = 'userlogintestearlier0123456789ab';
+
 		/** @var userlogin */
 		protected $lg;
+
+		/** @var string|null online_user_id seeded by a test */
+		private $onlineUserId;
+
+		/** @var string|null session directory a test made */
+		private $sessionDirectory;
+
+		/** @var mixed */
+		private $saveMethodWas;
+
+		/** @var bool */
+		private $saveMethodChanged = false;
+
+		protected function _after()
+		{
+			$db = e107::getDb();
+
+			if(null !== $this->onlineUserId)
+			{
+				$db->createQueryBuilder()->delete('online')->where('online_user_id', $this->onlineUserId)->execute();
+			}
+
+			if($this->saveMethodChanged)
+			{
+				$config = e107::getConfig();
+				null === $this->saveMethodWas ? $config->remove('session_save_method') : $config->set('session_save_method', $this->saveMethodWas);
+				$config->save(false, true, false);
+			}
+
+			$db->createQueryBuilder()->delete('session')
+				->whereIn('session_id', array(e_session_db::storageKey(self::SESSION_ID), e_session_db::storageKey(self::EARLIER_ID)))
+				->execute();
+
+			if(null !== $this->sessionDirectory)
+			{
+				foreach((array) glob($this->sessionDirectory.'/*') as $file)
+				{
+					unlink($file);
+				}
+
+				rmdir($this->sessionDirectory);
+			}
+		}
 
 		protected function _before()
 		{
@@ -188,6 +240,113 @@
 				$this->assertNotEmpty($var);
 			}
 
+		}
+
+		/**
+		 * #6302: with file sessions and Track Online on, an online row used to refuse the sign-in outright, and every refusal fed the failed-login autoban counter.
+		 */
+		public function testDisallowMultiLoginAdmitsAnAccountAlreadyOnline()
+		{
+			$admin = $this->fixtureAdmin();
+			$this->onlineUserId = $admin['user_id'].'.'.$admin['user_name'];
+
+			e107::getDb()->createQueryBuilder()->insert('online')->values(array(
+				'online_timestamp' => time(),
+				'online_user_id'   => $this->onlineUserId,
+				'online_ip'        => e107::getIpHandler()->ipEncode('203.0.113.9'),
+				'online_location'  => '',
+			))->execute();
+
+			$restore = $this->withCorePrefs(array('disallowMultiLogin' => 1, 'session_save_method' => 'files', 'track_online' => 1));
+
+			try
+			{
+				$this->assertTrue($this->lg->login(\Helper\AdminLogin::ADMIN_USER, \Helper\AdminLogin::ADMIN_PASS, 0, '', true));
+			}
+			finally
+			{
+				$restore();
+			}
+		}
+
+		/**
+		 * #6302: on file sessions the preference did nothing, or refused the sign-in; now the sign-in ends the session the account signed in with before.
+		 */
+		public function testDisallowMultiLoginEndsTheAccountsEarlierFileSession()
+		{
+			$dir = $this->sessionDirectory = sys_get_temp_dir().'/e107-multilogin-'.getmypid().'-'.mt_rand();
+			mkdir($dir, 0700);
+
+			$php = "session_write_close(); ini_set('session.use_cookies', '0'); ";
+			$php .= $this->signInInChild(self::EARLIER_ID)."session_write_close(); ";
+			$php .= $this->signInInChild(self::SESSION_ID);
+			$php .= "fwrite(STDERR, '@@'.var_export(\$signedIn, true).'@@'); session_destroy();";
+			list($output) = $this->runInBootedCli($php, self::BUFFERED.' -d session.save_path='.escapeshellarg($dir));
+
+			$this->assertStringContainsString('@@true@@', implode("\n", $output));
+			$this->assertFalse(file_exists($dir.'/sess_'.self::EARLIER_ID), 'the earlier sign-in is signed out');
+		}
+
+		/**
+		 * Guards the database store, which ended the earlier session before this change as well.
+		 */
+		public function testDisallowMultiLoginEndsTheAccountsEarlierDatabaseSession()
+		{
+			$config = e107::getConfig();
+			$this->saveMethodWas = $config->get('session_save_method');
+			$this->saveMethodChanged = true;
+			$config->set('session_save_method', 'db')->save(false, true, false);
+
+			e107::getDb()->createQueryBuilder()->insert('session')->values(array(
+				'session_id'      => e_session_db::storageKey(self::EARLIER_ID),
+				'session_expires' => time() + 600,
+				'session_user'    => 1,
+				'session_data'    => '',
+			))->execute();
+
+			$php = "session_write_close(); ini_set('session.use_cookies', '0'); ";
+			$php .= $this->signInInChild(self::SESSION_ID);
+			$php .= "fwrite(STDERR, '@@'.var_export(\$signedIn, true).'@@'); ";
+			list($output) = $this->runInBootedCli($php, self::BUFFERED);
+
+			$this->assertStringContainsString('@@true@@', implode("\n", $output));
+			$this->assertSame(0, (int) e107::getDb()->createQueryBuilder()->from('session')
+				->where('session_id', e_session_db::storageKey(self::EARLIER_ID))->count());
+			$this->assertSame(1, (int) e107::getDb()->createQueryBuilder()->select('session_user')->from('session')
+				->where('session_id', e_session_db::storageKey(self::SESSION_ID))->fetchOne(), 'the session that signed in is stamped with its account');
+		}
+
+		/**
+		 * PHP for a booted child: start the session as $sessionId, mark it signed in as the admin the way a web sign-in leaves it, and sign in with "Disallow multiple logins" on; leaves the result in $signedIn.
+		 *
+		 * @param string $sessionId
+		 * @return string
+		 */
+		private function signInInChild($sessionId)
+		{
+			$php = "session_id('".$sessionId."'); session_start(); ";
+			$php .= "e107::getConfig()->set('disallowMultiLogin', 1)->set('track_online', 0); ";
+			$php .= "\$_SESSION[e_COOKIE] = '1.".md5('signed-in')."'; ";
+			$php .= "require_once(e_HANDLER.'login.php'); \$lg = new userlogin(); ";
+			$php .= "\$signedIn = \$lg->login(".var_export(\Helper\AdminLogin::ADMIN_USER, true).", ".var_export(\Helper\AdminLogin::ADMIN_PASS, true).", 0, '', true); ";
+
+			return $php;
+		}
+
+		/**
+		 * @return array user_id and user_name of the installed admin
+		 */
+		private function fixtureAdmin()
+		{
+			$user = e107::getDb()->createQueryBuilder()
+				->select('user_id', 'user_name')
+				->from('user')
+				->where('user_loginname', \Helper\AdminLogin::ADMIN_USER)
+				->fetchRow();
+
+			$this->assertNotEmpty($user);
+
+			return $user;
 		}
 
 

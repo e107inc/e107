@@ -706,8 +706,8 @@ class UserHandler
 	/**
 	 *	Create user cookie
 	 *
-	 *	Regenerates the session id first, so anything holding the old one has to
-	 *	read it again. {@see e_session::regenerateId()}
+	 *	Signs the session in, then regenerates its id, so anything holding the old
+	 *	one has to read it again. {@see e_session::regenerateId()}
 	 *
 	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
 	 *	@param bool $autologin - ignored since v2.3.12; 'Remember Me' is discontinued
@@ -721,9 +721,9 @@ class UserHandler
 			return true;
 		}
 
-		e107::getSession()->regenerateId();
-
 		$_SESSION[e107::getPref('cookie_name')] = $lode['user_id'].'.'.md5($lode['user_password']);
+
+		e107::getSession()->regenerateId();
 	}
 
 
