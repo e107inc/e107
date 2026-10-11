@@ -477,7 +477,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_forum_post_poll($parm=null)
 	{
 
-		if(!e107::isInstalled('poll'))
+		if(!is_object($this->forum) || !$this->forum->canAttachPoll())
 		{
 			return null;
 		}
@@ -488,7 +488,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			
 		$poll_form = $pollo -> renderPollForm($type);
 
-		if ($this->var['action'] == 'nt' && check_class($this->forum->prefs->get('poll')) && strpos(e_QUERY, 'edit') === false)
+		if ($this->var['action'] == 'nt' && strpos(e_QUERY, 'edit') === false)
 		{
 			if($parm == 'front')
 			{
