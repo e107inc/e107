@@ -5330,6 +5330,12 @@ class e_admin_controller_ui extends e_admin_controller
 		$old_data = $model->getData();
 
 		$_posted = $this->getPosted();
+
+		if(!$this->holdSubmitToRoute($model, $_posted))
+		{
+			return false;
+		}
+
 		$this->convertToData($_posted);
 
 		if($callbackBefore && method_exists($this, $callbackBefore))
@@ -5453,6 +5459,42 @@ class e_admin_controller_ui extends e_admin_controller
 		return false;
 	}
 
+
+	/**
+	 * Hold a submit to what its route writes: the create route inserts, and the edit and inline routes update the row they loaded.
+	 *
+	 * @param e_admin_model $model
+	 * @param array $posted
+	 * @return bool false when an update has no loaded row to write
+	 */
+	private function holdSubmitToRoute($model, &$posted)
+	{
+		$action = $this->getRequest()->canonicalizeAction($this->getAction());
+
+		if($action === 'create')
+		{
+			$posted['etrigger_submit'] = 'create';
+
+			return true;
+		}
+
+		if($action !== 'edit' && $action !== 'inline')
+		{
+			return true;
+		}
+
+		if(!$model->getId())
+		{
+			$model->addMessageError(LAN_UPDATED_FAILED)->setMessages();
+
+			return false;
+		}
+
+		$posted[$this->getPrimaryName()] = $model->getId();
+		$posted['etrigger_submit'] = 'update';
+
+		return true;
+	}
 
 	/**
 	 * Trigger 2 events. The $triggerName event, and a matching generic admin_ui_xxxxx event.

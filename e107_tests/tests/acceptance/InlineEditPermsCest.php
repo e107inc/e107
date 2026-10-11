@@ -1,11 +1,12 @@
 <?php
 
 /**
- * Who may write a row through the front-end news editor and the administrator-side inline and sort editors.
+ * Who may write a news or FAQ row, and which row, through each route that writes one.
  *
  * @see e107_handlers/news_class.php  the front-end editable map
  * @see e107_web/js/inline.php  the front-end save endpoint
  * @see e107_handlers/admin_ui.php  e_admin_ui::InlineAjaxPage(), SortAjaxPage()
+ * @see e107_handlers/admin_ui.php  e_admin_controller_ui::_manageSubmit(), which the create and edit forms save through
  * @see e107_admin/newspost.php  news_admin::$perm
  * @see e107_plugins/faqs/admin_config.php  faq_admin::init(), which keys its routes to user classes
  */
@@ -18,6 +19,12 @@ class InlineEditPermsCest
 
 	/** A news item on the public site. */
 	const ROUTE_NEWS_ITEM = '/news.php?extend.';
+
+	/** The news item create form. */
+	const ROUTE_ITEM_CREATE = '/e107_admin/newspost.php?mode=main&action=create';
+
+	/** The news item edit form. The row id goes on the end. */
+	const ROUTE_ITEM_EDIT = '/e107_admin/newspost.php?mode=main&action=edit&id=';
 
 	/** The administrator-side inline editor for news items. */
 	const ROUTE_ITEM_INLINE = '/e107_admin/newspost.php?mode=main&action=inline&ajax_used=1&id=';
@@ -38,6 +45,7 @@ class InlineEditPermsCest
 	 */
 	const ADMINS = array(
 		'p7iecategory'  => 'H4.',
+		'p7iecreate'    => 'H0.',
 		'p7ieitem'      => 'H1.',
 		'p7iesubmitted' => 'N.',
 	);
@@ -59,6 +67,9 @@ class InlineEditPermsCest
 
 	/** The seeded category's order, which the sort route rewrites. */
 	const CATEGORY_ORDER = 7;
+
+	/** A news id no row has. */
+	const MISSING_ID = 987654;
 
 	public function _before(AcceptanceTester $I)
 	{
@@ -228,6 +239,56 @@ class InlineEditPermsCest
 		$I->seeInDatabase('e107_faqs', array('faq_id' => $faqId, 'faq_question' => self::SAVED_VALUE));
 	}
 
+	public function aNewsCreatorCannotRewriteANewsItemThroughTheCreateRoute(AcceptanceTester $I)
+	{
+		$I->wantTo('Insert, and never update, through the news item create form');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iecreate');
+		$this->submitNewsForm($I, self::ROUTE_ITEM_CREATE, 'update', $categoryId, self::ATTACK_VALUE, array('news_id' => $itemId));
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::ITEM_TITLE));
+	}
+
+	public function aNewsCreatorStillCreatesANewsItem(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the news item create form working for an administrator who may create items');
+
+		$categoryId = $this->seedCategory($I);
+
+		$this->loginAsAdminHolding($I, 'p7iecreate');
+		$this->submitNewsForm($I, self::ROUTE_ITEM_CREATE, 'create', $categoryId, self::SAVED_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_title' => self::SAVED_VALUE));
+	}
+
+	public function aNewsItemAdministratorCannotCreateANewsItemThroughTheEditRoute(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse an insert through the news item edit form when it has no row to update');
+
+		$categoryId = $this->seedCategory($I);
+
+		$this->loginAsAdminHolding($I, 'p7ieitem');
+		$this->submitNewsForm($I, self::ROUTE_ITEM_EDIT.self::MISSING_ID, 'update', $categoryId, self::ATTACK_VALUE);
+
+		$I->dontSeeInDatabase('e107_news', array('news_title' => self::ATTACK_VALUE));
+	}
+
+	public function aNewsItemAdministratorStillSavesTheEditForm(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the news item edit form working for an administrator who may edit items');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7ieitem');
+		$this->submitNewsForm($I, self::ROUTE_ITEM_EDIT.$itemId, 'update', $categoryId, self::SAVED_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::SAVED_VALUE));
+	}
+
 	/**
 	 * Render the item, which files the editable map in the session, then save through the front-end editor.
 	 *
@@ -279,6 +340,43 @@ class InlineEditPermsCest
 			'token'   => $this->inlineToken($I),
 			'e-token' => $this->sessionToken($I),
 		));
+	}
+
+	/**
+	 * Post what the news item form posts.
+	 *
+	 * @param string $route
+	 * @param string $submit the value of the form's submit trigger
+	 * @param int $categoryId
+	 * @param string $title
+	 * @param array $extra further fields
+	 * @return void
+	 */
+	private function submitNewsForm(AcceptanceTester $I, $route, $submit, $categoryId, $title, $extra = array())
+	{
+		$I->sendPostRequest($route, array_merge(array(
+			'news_title'            => $title,
+			'news_category'         => $categoryId,
+			'news_body'             => array('Posted by InlineEditPermsCest.'),
+			'news_summary'          => '',
+			'news_thumbnail'        => '',
+			'news_meta_title'       => '',
+			'news_meta_keywords'    => '',
+			'news_meta_description' => '',
+			'news_sef'              => '',
+			'news_class'            => '0',
+			'news_render_type'      => '0',
+			'news_template'         => 'default',
+			'news_author'           => '1',
+			'news_datestamp'        => '',
+			'news_start'            => '',
+			'news_end'              => '',
+			'news_sticky'           => '0',
+			'news_allow_comments'   => '0',
+			'news_meta_robots'      => '',
+			'etrigger_submit'       => $submit,
+			'e-token'               => $this->sessionToken($I),
+		), $extra));
 	}
 
 	/**
