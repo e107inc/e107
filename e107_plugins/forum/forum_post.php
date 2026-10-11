@@ -1428,10 +1428,7 @@ class forum_post_handler
 		$threadId = intval($_GET['id']);
 		$toForum = intval($posted['forum_move']);
 
-		/* MODERATOR is worked out once for the page and answers for neither end
-		 * of a move. Both have to be checked: without the second, a moderator can
-		 * push a thread into a forum they have no rights over at all. */
-		if(!$this->forumObj->canModerateThread($threadId) || !$this->forumObj->canModerateForum($toForum))
+		if(!$this->moderatesBothEnds($threadId, $toForum))
 		{
 			e107::getDebug()->log("Move Thread attempted without moderator rights over both ends");
 
@@ -1463,10 +1460,19 @@ class forum_post_handler
 			return false;
 		}
 
+		$toForum = (!empty($post['forum_split'])) ? intval($post['forum_split']) : (int) $this->data['forum_id'];
+
+		if(!$this->moderatesBothEnds($this->data['post_thread'], $toForum))
+		{
+			e107::getDebug()->log("Split Thread attempted without moderator rights over both ends");
+
+			return false;
+		}
+
 		$threadInfo = array();
 		$threadInfo['thread_sticky']    = 0;
 		$threadInfo['thread_name']      = $this->threadName($post['new_thread_title'], $this->offeredThreadName());
-		$threadInfo['thread_forum_id']  = (!empty($post['forum_split'])) ? intval($post['forum_split']) : $this->data['forum_id'];
+		$threadInfo['thread_forum_id']  = $toForum;
 		$threadInfo['thread_active']    = 1;
 		$threadInfo['thread_datestamp'] = $this->data['post_datestamp'];
 		$threadInfo['thread_views']      = 0;
@@ -1537,6 +1543,18 @@ class forum_post_handler
 		e107::getRender()->tablerender(LAN_FORUM_3052, $text, 'forum-post-split');
 	}
 
+
+	/**
+	 * Whether the caller moderates both the forum a thread is in and the forum its posts are being sent to.
+	 *
+	 * @param int $threadId
+	 * @param int $toForum
+	 * @return bool
+	 */
+	private function moderatesBothEnds($threadId, $toForum)
+	{
+		return $this->forumObj->canModerateThread($threadId) && $this->forumObj->canModerateForum($toForum);
+	}
 
 	/**
 	 * The name to store for a title posted from a box that offered the thread's name as $offered.
