@@ -2020,6 +2020,7 @@ class e107
 
 				if(@rename($tmp, $file))
 				{
+					self::invalidateOpcache($file);
 					return true;
 				}
 			}
@@ -2040,7 +2041,22 @@ class e107
 			@chmod($file, $mode);
 		}
 
+		self::invalidateOpcache($file);
 		return true;
+	}
+
+	/**
+	 * Make OPcache forget its compiled copy of $file; to delete a file, call this before the delete, as OPcache may not find the file once it is gone.
+	 *
+	 * @param string $file
+	 * @return void
+	 */
+	public static function invalidateOpcache($file)
+	{
+		if(function_exists('opcache_invalidate'))
+		{
+			@opcache_invalidate($file, true);
+		}
 	}
 
 	/**
