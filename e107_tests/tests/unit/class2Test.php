@@ -662,6 +662,74 @@
 		}
 
 
+		public function testARejectedLanguageNameIsPrintedAsTextInTheErrorPanel()
+		{
+			$level = error_reporting();
+			$handler = new error_handler();
+			set_error_handler(array($handler, 'handle_error'));
+
+			e107::getLanguage()->isValid('<img src=x onerror=alert(1)>');
+
+			restore_error_handler();
+			error_reporting($level);
+
+			$panel = $handler->return_errors();
+			self::assertStringNotContainsString('<img', $panel);
+			self::assertStringContainsString('&lt;img src=x onerror=alert(1)&gt;', $panel);
+		}
+
+
+		public function testAWarningQuotingMarkupIsPrintedAsTextInTheErrorPanel()
+		{
+			$level = error_reporting();
+			$handler = new error_handler();
+
+			$handler->handle_error(E_WARNING, 'Undefined array key "<svg onload=alert(1)>"', __FILE__, __LINE__);
+
+			error_reporting($level);
+
+			$panel = $handler->return_errors();
+			self::assertStringNotContainsString('<svg', $panel);
+			self::assertStringContainsString('&lt;svg onload=alert(1)&gt;', $panel);
+		}
+
+
+		public function testABackTraceStartsAtTheFunctionThatRaisedTheError()
+		{
+			$level = error_reporting();
+			$handler = new error_handler();
+			(new \e107\Reflection\ReflectionProperty('error_handler', 'xdebug'))->setValue($handler, false);
+			set_error_handler(array($handler, 'handle_error'));
+
+			e107::getLanguage()->isValid('qqzz');
+
+			restore_error_handler();
+			error_reporting($level);
+
+			self::assertCount(1, $handler->errors);
+			self::assertSame(array('trigger_error', 'isValid'), array_column($handler->errors[0]['trace'], 'function'));
+		}
+
+
+		public function testAnXdebugBackTraceIsPrintedAsText()
+		{
+			$handler = new error_handler();
+			(new \e107\Reflection\ReflectionProperty('error_handler', 'xdebug'))->setValue($handler, true);
+
+			$trace = $handler->render_trace(array(
+				array('class' => '<b id=class>', 'function' => '<b id=function>', 'params' => array('<b id=param>'), 'file' => '<b id=file>', 'line' => 1),
+				array('function' => 'include', 'include_filename' => '<b id=include>', 'file' => 'index.php', 'line' => 2),
+				array('function' => 'handle_error', 'file' => 'class2.php', 'line' => 3),
+			));
+
+			self::assertStringNotContainsString('<b id=', $trace);
+			foreach(array('class', 'function', 'param', 'file', 'include') as $id)
+			{
+				self::assertStringContainsString('&lt;b id='.$id.'&gt;', $trace);
+			}
+		}
+
+
 		/**
 		 * The refusal of a command line entry point in a web-shaped environment
 		 * has to reach whatever piped the message in.
