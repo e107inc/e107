@@ -707,7 +707,8 @@ class UserHandler
 	 *	Create user cookie
 	 *
 	 *	Regenerates the session id first, so anything holding the old one has to
-	 *	read it again. {@see e_session::regenerateId()}
+	 *	read it again. {@see e_session::regenerateId()} The token ends with the
+	 *	handle of the session's record among the account's sessions, {@see \e107\User\AccountSessions}.
 	 *
 	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
 	 *	@param bool $autologin - ignored since v2.3.12; 'Remember Me' is discontinued
@@ -723,7 +724,44 @@ class UserHandler
 
 		e107::getSession()->regenerateId();
 
-		$_SESSION[e107::getPref('cookie_name')] = $lode['user_id'].'.'.md5($lode['user_password']);
+		$key = e107::getPref('cookie_name');
+		$previous = \e107\User\SignInToken::parse(isset($_SESSION[$key]) ? $_SESSION[$key] : '');
+		$token = new \e107\User\SignInToken($lode['user_id'], md5($lode['user_password']));
+
+		$_SESSION[$key] = (string) $token->withHandle($this->recordSignIn($previous, $token));
+	}
+
+	/**
+	 * Keeps the record of a session that signs in again or changes its password, and begins one for any other sign-in.
+	 *
+	 * @param \e107\User\SignInToken $previous what the session held, empty for a guest
+	 * @param \e107\User\SignInToken $token the sign-in
+	 * @return string the handle of the session's record, '' when none could be stored
+	 */
+	private function recordSignIn(\e107\User\SignInToken $previous, \e107\User\SignInToken $token)
+	{
+		$sessions = e107::getSession()->getAccountSessions();
+		$accountId = $token->accountId();
+		$handle = $previous->accountId() === $accountId ? $previous->handle() : '';
+
+		if('' === $handle && '' !== $previous->handle())
+		{
+			$sessions->end($previous->accountId(), $previous->handle());
+		}
+
+		if('' !== $handle && $previous->passwordDigest() !== $token->passwordDigest())
+		{
+			$sessions->endOthers($accountId, $handle);
+
+			return $handle;
+		}
+
+		if('' === $handle)
+		{
+			$sessions->collect();
+		}
+
+		return '' === $handle ? $sessions->begin($accountId) : $handle;
 	}
 
 

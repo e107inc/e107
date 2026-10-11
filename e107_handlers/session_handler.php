@@ -184,6 +184,9 @@ class e_session
     protected $_name;
     protected static $_sessionStarted = false; // Fixes lost $_SESSION value problem.
 
+    /** @var bool whether this request's sign-in has been checked against its record, {@see e_session::confirmSignIn()} */
+    private static $_signInConfirmed = false;
+
     /**
      * Validation options
      * @var boolean
@@ -1239,6 +1242,55 @@ public function getData($key = null, $clear = false)
 		return empty($_SESSION[e_COOKIE]);
 	}
 
+	/**
+	 * @return \e107\User\AccountSessions the sessions accounts are signed in with, as this request sees them
+	 */
+	public function getAccountSessions()
+	{
+		return new \e107\User\AccountSessions(
+			e107::getDb(),
+			max(3600, (int) ini_get('session.gc_maxlifetime')),
+			e107::getIPHandler()->getIP(),
+			isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
+		);
+	}
+
+	/**
+	 * Notes that the signed-in session was seen among its account's sessions, records one from before records were kept, and signs it out when its record has been ended.
+	 *
+	 * @return bool FALSE when the session was signed out
+	 */
+	private function confirmSignIn()
+	{
+		$token = \e107\User\SignInToken::parse($_SESSION[e_COOKIE]);
+		$sessions = $this->getAccountSessions();
+
+		if ('' !== $token->handle())
+		{
+			$signedIn = $sessions->confirm($token->accountId(), $token->handle());
+		}
+		else
+		{
+			$signedIn = true;
+			$handle = $sessions->adopt($token->accountId());
+
+			if ('' !== $handle)
+			{
+				$_SESSION[e_COOKIE] = (string) $token->withHandle($handle);
+			}
+		}
+
+		if ($signedIn)
+		{
+			return true;
+		}
+
+		unset($_SESSION[e_COOKIE], $_SESSION[e_COOKIE.'_as']);
+		$this->regenerateId();
+
+		return false;
+	}
+
     /**
      * Validate current session
      * @return e_session
@@ -1246,6 +1298,13 @@ public function getData($key = null, $clear = false)
     public function validate()
     {
 		if ($this->isGuest()) return $this;
+
+		if (!self::$_signInConfirmed)
+		{
+			self::$_signInConfirmed = true;
+
+			if (!$this->confirmSignIn()) return $this;
+		}
 
         if (!isset($this->_data['_session_validate_data']))
         {

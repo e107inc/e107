@@ -768,5 +768,32 @@
 			$this::assertSame([], $this->sess->getData());
 		}
 
+		/**
+		 * A session lifetime of 0 leaves the database store keeping an idle session for an hour, so its record has to last as long.
+		 */
+		public function testAnAccountSessionRecordOutlivesASessionLifetimeOfZero()
+		{
+			\Test\CoreTable::create('user_session');
+			$config = e107::getConfig();
+			$lifetimeWas = $config->get('session_lifetime');
+			$config->set('session_lifetime', 0)->save(false, true, false);
+
+			try
+			{
+				$php = "\$sessions = e107::getSession()->getAccountSessions(); \$handle = \$sessions->begin(9001); ";
+				$php .= "e107::getDb()->createQueryBuilder()->update('user_session')->set('user_session_seen', time() - 600)->where('user_session_handle', \$handle)->execute(); ";
+				$php .= "fwrite(STDERR, '@@'.count(\$sessions->sessionsOf(9001)).'@@');";
+				list($output) = $this->runInBootedCli($php);
+			}
+			finally
+			{
+				null === $lifetimeWas ? $config->remove('session_lifetime') : $config->set('session_lifetime', $lifetimeWas);
+				$config->save(false, true, false);
+				\Test\CoreTable::drop('user_session');
+			}
+
+			$this->assertStringContainsString('@@1@@', implode("\n", $output));
+		}
+
 		/* Commented tests remain unchanged */
 	}

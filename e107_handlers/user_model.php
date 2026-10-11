@@ -2238,6 +2238,14 @@ class e_user extends e_user_model
 		{
 			$this->getProvider()->logout();
 		}
+
+		$token = \e107\User\SignInToken::parse($this->_session_data);
+
+		if('' !== $token->handle())
+		{
+			e107::getSession()->getAccountSessions()->end($token->accountId(), $token->handle());
+		}
+
 		$this->logoutAs()
 			->_destroySession();
 
@@ -2293,16 +2301,16 @@ class e_user extends e_user_model
 		// We have active session
 		if(null !== $this->_session_data)
 		{
-			list($uid, $upw) = explode('.', $this->_session_data);
+			$token = \e107\User\SignInToken::parse($this->_session_data);
 			// Bad cookie - destroy session
-			if(empty($uid) || !is_numeric($uid) || empty($upw))
+			if($token->accountId() < 1 || '' === $token->passwordDigest())
 			{
 				$this->_destroyBadSession();
 				$this->_initConstants();
 				return $this;
 			}
 
-			$udata = $this->_load($uid, $force);
+			$udata = $this->_load($token->accountId(), $force);
 			// Bad cookie - destroy session
 			if(empty($udata))
 			{
@@ -2312,7 +2320,7 @@ class e_user extends e_user_model
 			}
 
 			// we have a match
-			if(hash_equals(md5($udata['user_password']), (string) $upw))
+			if(hash_equals(md5($udata['user_password']), $token->passwordDigest()))
 			{
 				// set current user data
 				$this->setData($udata);
@@ -2333,6 +2341,11 @@ class e_user extends e_user_model
 				if(e107::getUserProvider()->isSocialLoginEnabled()) $this->initProvider();
 				
 				return $this;
+			}
+
+			if('' !== $token->handle())
+			{
+				e107::getSession()->getAccountSessions()->end($token->accountId(), $token->handle());
 			}
 
 			$this->_destroyBadSession();
