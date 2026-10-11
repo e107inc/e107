@@ -49,6 +49,7 @@ class CsrfPlainHttpCest
 	 * precisely what the CSRF rule governs, so a mode asking for a proof this
 	 * connection cannot supply locks the administrator out of their own site.
 	 *
+	 * @group sign-in
 	 * @param \WebDriverTester $I
 	 * @return void
 	 */

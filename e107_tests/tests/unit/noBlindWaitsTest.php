@@ -108,7 +108,7 @@ class noBlindWaitsTest extends \Test\Unit
 			return null;
 		}
 
-		$open = $this->neighbourIndex($tokens, $i, 1);
+		$open = \Test\Tokens::neighbourIndex($tokens, $i, 1);
 
 		if ($open === null || $tokens[$open] !== '(')
 		{
@@ -117,7 +117,7 @@ class noBlindWaitsTest extends \Test\Unit
 
 		$parts = explode('\\', $tokens[$i][1]);
 		$name = strtolower(end($parts));
-		$before = $this->neighbour($tokens, $i, -1);
+		$before = \Test\Tokens::neighbour($tokens, $i, -1);
 		$beforeId = is_array($before) ? $before[0] : $before;
 
 		if (in_array($beforeId, array(T_OBJECT_OPERATOR, T_DOUBLE_COLON), true))
@@ -150,8 +150,8 @@ class noBlindWaitsTest extends \Test\Unit
 			}
 			elseif ($tokens[$j] === ')' && --$depth === 0)
 			{
-				$arrow = $this->neighbour($tokens, $j, 1);
-				$method = $this->neighbour($tokens, $j + 1, 1);
+				$arrow = \Test\Tokens::neighbour($tokens, $j, 1);
+				$method = \Test\Tokens::neighbour($tokens, $j + 1, 1);
 
 				return is_array($arrow) && $arrow[0] === T_OBJECT_OPERATOR
 					&& is_array($method) && $method[0] === T_STRING && strtolower($method[1]) === 'until';
@@ -173,14 +173,14 @@ class noBlindWaitsTest extends \Test\Unit
 			return true;
 		}
 
-		$separator = $this->neighbourIndex($tokens, $i, -1);
+		$separator = \Test\Tokens::neighbourIndex($tokens, $i, -1);
 
 		if ($separator === null || $tokens[$separator][0] !== T_NS_SEPARATOR)
 		{
 			return false;
 		}
 
-		$qualifier = $this->neighbour($tokens, $separator, -1);
+		$qualifier = \Test\Tokens::neighbour($tokens, $separator, -1);
 
 		return is_array($qualifier) && $qualifier[0] === T_STRING;
 	}
@@ -200,37 +200,5 @@ class noBlindWaitsTest extends \Test\Unit
 		}
 
 		return $ids;
-	}
-
-	/**
-	 * @param array $tokens
-	 * @param int $i
-	 * @param int $direction 1 for the next token, -1 for the previous
-	 * @return array|string|null the nearest token that is not whitespace or a comment
-	 */
-	private function neighbour(array $tokens, $i, $direction)
-	{
-		$index = $this->neighbourIndex($tokens, $i, $direction);
-
-		return $index === null ? null : $tokens[$index];
-	}
-
-	/**
-	 * @param array $tokens
-	 * @param int $i
-	 * @param int $direction
-	 * @return int|null
-	 */
-	private function neighbourIndex(array $tokens, $i, $direction)
-	{
-		for ($j = $i + $direction; isset($tokens[$j]); $j += $direction)
-		{
-			if (!is_array($tokens[$j]) || !in_array($tokens[$j][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true))
-			{
-				return $j;
-			}
-		}
-
-		return null;
 	}
 }

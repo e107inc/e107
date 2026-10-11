@@ -44,6 +44,7 @@ class CsrfOverTlsCest
 	 * satisfies either half, so a browser that cannot sign in here means the
 	 * mode is refusing something no attacker could have produced.
 	 *
+	 * @group sign-in
 	 * @param \WebDriverTester $I
 	 * @return void
 	 */

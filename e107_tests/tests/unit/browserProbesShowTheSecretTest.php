@@ -84,7 +84,7 @@ class browserProbesShowTheSecretTest extends \Test\Unit
 				$shown = true;
 			}
 
-			if ($tokens[$i][0] === T_STRING && in_array($tokens[$i][1], self::$fetchers, true) && $this->isCalledOnAnActor($tokens, $i))
+			if ($tokens[$i][0] === T_STRING && in_array($tokens[$i][1], self::$fetchers, true) && \Test\Tokens::isCalledOnAnActor($tokens, $i))
 			{
 				$shown = true;
 			}
@@ -96,37 +96,18 @@ class browserProbesShowTheSecretTest extends \Test\Unit
 	/**
 	 * @param array $tokens
 	 * @param int $i index of a name token
-	 * @return bool whether $tokens[$i] is a method called on a variable other than $this, which is how a Cest reaches a module
-	 */
-	private function isCalledOnAnActor(array $tokens, $i)
-	{
-		$arrow = $this->neighbourIndex($tokens, $i, -1);
-
-		if ($arrow === null || !is_array($tokens[$arrow]) || $tokens[$arrow][0] !== T_OBJECT_OPERATOR)
-		{
-			return false;
-		}
-
-		$object = $this->neighbour($tokens, $arrow, -1);
-
-		return is_array($object) && $object[0] === T_VARIABLE && $object[1] !== '$this';
-	}
-
-	/**
-	 * @param array $tokens
-	 * @param int $i index of a name token
 	 * @return bool whether $tokens[$i] is the static member of ProbeGuard
 	 */
 	private function isCalledOnProbeGuard(array $tokens, $i)
 	{
-		$separator = $this->neighbourIndex($tokens, $i, -1);
+		$separator = \Test\Tokens::neighbourIndex($tokens, $i, -1);
 
 		if ($separator === null || !is_array($tokens[$separator]) || $tokens[$separator][0] !== T_DOUBLE_COLON)
 		{
 			return false;
 		}
 
-		$class = $this->neighbour($tokens, $separator, -1);
+		$class = \Test\Tokens::neighbour($tokens, $separator, -1);
 
 		if (!is_array($class))
 		{
@@ -136,37 +117,5 @@ class browserProbesShowTheSecretTest extends \Test\Unit
 		$parts = explode('\\', $class[1]);
 
 		return end($parts) === 'ProbeGuard';
-	}
-
-	/**
-	 * @param array $tokens
-	 * @param int $i
-	 * @param int $direction 1 for the next token, -1 for the previous
-	 * @return array|string|null the nearest token that is not whitespace or a comment
-	 */
-	private function neighbour(array $tokens, $i, $direction)
-	{
-		$index = $this->neighbourIndex($tokens, $i, $direction);
-
-		return $index === null ? null : $tokens[$index];
-	}
-
-	/**
-	 * @param array $tokens
-	 * @param int $i
-	 * @param int $direction
-	 * @return int|null
-	 */
-	private function neighbourIndex(array $tokens, $i, $direction)
-	{
-		for ($j = $i + $direction; isset($tokens[$j]); $j += $direction)
-		{
-			if (!is_array($tokens[$j]) || !in_array($tokens[$j][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true))
-			{
-				return $j;
-			}
-		}
-
-		return null;
 	}
 }

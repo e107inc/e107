@@ -120,7 +120,7 @@ class usersAdminUserClassTest extends \Test\Unit
 				continue;
 			}
 
-			$arguments = $this->arguments($this->nextCode($i));
+			$arguments = $this->arguments(\Test\Tokens::neighbourIndex($this->tokens, $i, 1));
 
 			$this->assertArrayHasKey(3, $arguments,
 				'A vetted_tree() call in ' . $this->page . ' passes no option list.');
@@ -150,18 +150,18 @@ class usersAdminUserClassTest extends \Test\Unit
 				continue;
 			}
 
-			$arrow = $this->nextCode($i);
+			$arrow = \Test\Tokens::neighbourIndex($this->tokens, $i, 1);
 
 			if($arrow === null || !is_array($this->tokens[$arrow]) || $this->tokens[$arrow][0] !== T_DOUBLE_ARROW)
 			{
 				continue;
 			}
 
-			$array = $this->nextCode($arrow);
+			$array = \Test\Tokens::neighbourIndex($this->tokens, $arrow, 1);
 
 			if($array !== null && is_array($this->tokens[$array]) && $this->tokens[$array][0] === T_ARRAY)
 			{
-				$found = $this->nextCode($array);
+				$found = \Test\Tokens::neighbourIndex($this->tokens, $array, 1);
 				break;
 			}
 		}
@@ -187,7 +187,7 @@ class usersAdminUserClassTest extends \Test\Unit
 		{
 			$token = $this->tokens[$i];
 
-			if(!$this->isCode($token))
+			if(!\Test\Tokens::isCode($token))
 			{
 				continue;
 			}
@@ -289,9 +289,9 @@ class usersAdminUserClassTest extends \Test\Unit
 				continue;
 			}
 
-			$name = $this->nextCode($i);
-			$assign = $name === null ? null : $this->nextCode($name);
-			$value = $assign === null ? null : $this->nextCode($assign);
+			$name = \Test\Tokens::neighbourIndex($this->tokens, $i, 1);
+			$assign = $name === null ? null : \Test\Tokens::neighbourIndex($this->tokens, $name, 1);
+			$value = $assign === null ? null : \Test\Tokens::neighbourIndex($this->tokens, $assign, 1);
 
 			if($value === null || $this->tokens[$assign] !== '='
 				|| !is_array($this->tokens[$value]) || $this->tokens[$value][0] !== T_CONSTANT_ENCAPSED_STRING)
@@ -311,24 +311,5 @@ class usersAdminUserClassTest extends \Test\Unit
 	private function value(array $token)
 	{
 		return (string) substr($token[1], 1, -1);
-	}
-
-	private function isCode($token)
-	{
-		return !is_array($token)
-			|| ($token[0] !== T_WHITESPACE && $token[0] !== T_COMMENT && $token[0] !== T_DOC_COMMENT);
-	}
-
-	private function nextCode($offset)
-	{
-		for($i = $offset + 1, $n = count($this->tokens); $i < $n; $i++)
-		{
-			if($this->isCode($this->tokens[$i]))
-			{
-				return $i;
-			}
-		}
-
-		return null;
 	}
 }

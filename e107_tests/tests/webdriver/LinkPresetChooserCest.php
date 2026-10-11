@@ -40,7 +40,7 @@ class LinkPresetChooserCest
 
 	public function _before(\WebDriverTester $I)
 	{
-		$I->loginAsAdmin();
+		$I->amSignedInAs();
 	}
 
 	public function pickingAPresetFillsTheFieldsInFrontOfTheAdministrator(\WebDriverTester $I)
