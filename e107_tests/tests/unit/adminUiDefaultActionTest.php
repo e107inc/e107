@@ -8,8 +8,8 @@
  */
 
 /**
- * An action that names no page runs the controller's default action in its place, so the
- * default action has to pass the checks the requested action passed, or nothing runs.
+ * An action that names no page of its own runs the controller's default action in its place, so
+ * the default action has to pass the checks the requested action passed, or nothing runs.
  */
 class adminUiDefaultActionTest extends \Codeception\Test\Unit
 {
@@ -54,16 +54,49 @@ class adminUiDefaultActionTest extends \Codeception\Test\Unit
 		$this->assertSame('e403', $this->landOn(array('main/list'), array('list')));
 	}
 
+	public function testTheListAjaxPageIsRefusedOutsideAjaxToAnAdministratorWhoLacksTheListRoute()
+	{
+		foreach(array('listajax', 'list_ajax', 'LISTAJAX') as $action)
+		{
+			$this->assertSame('e403', $this->landOn(array(), array(), $action), $action);
+		}
+	}
+
+	public function testTheListAjaxPageGivesWayToTheListOutsideAjaxForAnAdministratorWhoHoldsTheListRoute()
+	{
+		$this->assertSame('list', $this->landOn(array('main/list'), array(), 'listajax'));
+	}
+
+	public function testTheListAjaxPageIsRefusedOutsideAjaxWhenTheControllerReadsAnEmptyMethodTypeAsAPage()
+	{
+		$this->assertSame('e403', $this->landOn(array(), array(), 'listajax', 'AdminUiDefaultActionTypedProbeFixture'));
+	}
+
+	public function testTheListAjaxPageIsRefusedOutsideAjaxWhenTheControllerIgnoresTheForcedAjaxFlag()
+	{
+		$this->assertSame('e403', $this->landOn(array(), array(), 'listajax', 'AdminUiDefaultActionAutoAjaxProbeFixture'));
+	}
+
+	public function testEveryActionIsRefusedToAHolderOfTheDefaultRouteWhenTheControllerIgnoresTheForcedAjaxFlag()
+	{
+		foreach(array('list', 'listajax', 'e403') as $action)
+		{
+			$this->assertSame('e403', $this->landOn(array('main/list'), array(), $action, 'AdminUiDefaultActionAutoAjaxProbeFixture'), $action);
+		}
+	}
+
 	/**
 	 * @param array|null $granted routes the registered dispatcher grants, or null to register none
 	 * @param array $disallow actions the controller refuses
-	 * @return string the action a request for a page the controller lacks is left on
+	 * @param string $action the action requested
+	 * @param string $controllerClass {@see AdminUiDefaultActionProbeFixture} or a subclass
+	 * @return string the action the request is left on
 	 */
-	private function landOn($granted, $disallow = array())
+	private function landOn($granted, $disallow = array(), $action = 'nopage', $controllerClass = 'AdminUiDefaultActionProbeFixture')
 	{
 		e107::setRegistry('admin/ui/dispatcher', $granted === null ? null : new AdminUiDefaultActionDispatcherFixture($granted));
 
-		$controller = new AdminUiDefaultActionProbeFixture(new e_admin_request('mode=main&action=nopage'), $disallow);
+		$controller = new $controllerClass(new e_admin_request('mode=main&action='.$action), $disallow);
 
 		return $controller->probe();
 	}
