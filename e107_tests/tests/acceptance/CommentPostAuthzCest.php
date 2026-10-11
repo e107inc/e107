@@ -73,11 +73,11 @@ class CommentPostAuthzCest
 		// What a fresh install ships. One test turns it on.
 		$I->probe('act=pref&k=profile_comments&v=0');
 
-		// The tables, not the plugin. comment.php asks neither plugin whether it
-		// is installed, and installing and uninstalling around every test would
-		// drop the tables under the Db module's own row cleanup.
-		$I->havePluginTables('download');
-		$I->havePluginTables('poll');
+		// Installed, not merely their tables: a comment is taken only on an item
+		// its own page would show, and the download and poll pages show nothing
+		// while their plugin is not installed.
+		$I->havePluginInstalled('download');
+		$I->havePluginInstalled('poll');
 
 		$this->newsOn = $this->haveNews($I, 'vhf5 news on', 'vhf5-news-on', 0);
 		$this->newsOff = $this->haveNews($I, 'vhf5 news off', 'vhf5-news-off', 1);
@@ -520,14 +520,21 @@ class CommentPostAuthzCest
 	 */
 	private function haveDownload(AcceptanceTester $I, $name, $comment)
 	{
+		$category = $I->haveInDatabase('e107_download_category', array(
+			'download_category_name' => $name, 'download_category_description' => '',
+			'download_category_icon' => '', 'download_category_parent' => 0,
+			'download_category_class' => 0, 'download_category_order' => 0,
+			'download_category_sef' => '',
+		));
+
 		return $I->haveInDatabase('e107_download', array(
 			'download_name' => $name, 'download_url' => '', 'download_sef' => '',
 			'download_author' => '', 'download_description' => '', 'download_keywords' => '',
-			'download_filesize' => 0, 'download_requested' => 0, 'download_category' => 0,
+			'download_filesize' => 0, 'download_requested' => 0, 'download_category' => $category,
 			'download_active' => 1, 'download_datestamp' => time() - 3600,
 			'download_thumb' => '', 'download_image' => '',
 			'download_comment' => $comment, 'download_class' => 0,
-			'download_mirror' => '', 'download_mirror_type' => 0,
+			'download_mirror' => '', 'download_mirror_type' => 0, 'download_visible' => 0,
 		));
 	}
 
@@ -543,7 +550,7 @@ class CommentPostAuthzCest
 			'poll_title' => $title, 'poll_datestamp' => time() - 3600,
 			'poll_start_datestamp' => 0, 'poll_end_datestamp' => 0, 'poll_admin_id' => 1,
 			'poll_options' => '', 'poll_votes' => '', 'poll_ip' => '',
-			'poll_type' => 0, 'poll_comment' => $comment, 'poll_allow_multiple' => 0,
+			'poll_type' => 1, 'poll_comment' => $comment, 'poll_allow_multiple' => 0,
 			'poll_result_type' => 0, 'poll_vote_userclass' => 0, 'poll_storage_method' => 0,
 		));
 	}
