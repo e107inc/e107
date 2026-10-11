@@ -893,8 +893,8 @@ class e107_db_debug
 
 				$text .= "<tr>
 				<td  style='width: 10%;'><span class='label " . $style[$type] . "'>" . ($description[$type]) . "</span></td>
-				<td  style='width: auto;'>" . (isset($codes['code']) ? $codes['code'] : "&nbsp;") . "</td>
-				<td  style='width: auto;'>" . ($codes['parm'] ? $codes['parm'] : "&nbsp;") . "</td>
+				<td  style='width: auto;'>" . (isset($codes['code']) ? htmlspecialchars($codes['code']) : "&nbsp;") . "</td>
+				<td  style='width: auto;'>" . ($codes['parm'] ? htmlspecialchars($codes['parm']) : "&nbsp;") . "</td>
 				<td  style='width: 40%;'>" . ($codes['details'] ? $codes['details'] : "&nbsp;") . "</td>
 				</tr>\n";
 			}

@@ -108,4 +108,20 @@
             $this::assertEmpty($result);
 		}
 
+		public function testShow_SC_BBPrintsTheCodeAndParameterAsText()
+		{
+			$this->dbg->scbbcodes = array(
+				array('type' => 1, 'code' => 'b', 'parm' => '<img src=x onerror=alert(1)>', 'details' => '<pre>bb_b.php</pre>'),
+				array('type' => -2, 'code' => '<svg onload=alert(2)>', 'parm' => '', 'details' => ''),
+			);
+
+			$result = $this->dbg->Show_SC_BB(true);
+
+			$this::assertStringNotContainsString('<img', $result);
+			$this::assertStringNotContainsString('<svg', $result);
+			$this::assertStringContainsString('&lt;img src=x onerror=alert(1)&gt;', $result);
+			$this::assertStringContainsString('&lt;svg onload=alert(2)&gt;', $result);
+			$this::assertStringContainsString('<pre>bb_b.php</pre>', $result);
+		}
+
 	}
