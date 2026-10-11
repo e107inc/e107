@@ -280,7 +280,7 @@ class userlogin
 		{
 			// logout any existing user of this account.
 			$mLog = '';
-			if($sql->delete('session', "session_user = ".$user_id))
+			if($sql->delete('session', "session_user = ".$user_id." AND session_expires > ".time()))
 			{
 				$mLog = 'Dropped existing user session: #' . $user_id. " ".$username;
 			}
