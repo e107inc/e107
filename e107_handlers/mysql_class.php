@@ -105,6 +105,9 @@ class e_db_mysql implements e_db
 
 	private     $debugMode      = false;
 
+	/** @var string|int the insert id of this instance's last statement, read before another instance's statement can reset it */
+	private     $insertId = 0;
+
 	/**
 	* Constructor - gets language options from the cookie or session
 	* @access public
@@ -434,6 +437,7 @@ class e_db_mysql implements e_db
 		$sQryRes = is_null($rli) ? @mysqli_query($this->mySQLaccess, $query) : @mysqli_query($rli, $query);
 		$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
 		$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
+		$this->insertId = $sQryRes === false ? 0 : mysqli_insert_id($this->mySQLaccess);
 
 		$e = microtime();
 
@@ -891,7 +895,7 @@ class e_db_mysql implements e_db
 	 */
 	public function lastInsertId()
 	{
-		$tmp = mysqli_insert_id($this->mySQLaccess);
+		$tmp = $this->insertId;
 		return ($tmp) ? $tmp : true; // return true even if table doesn't have auto-increment.
 	}
 
