@@ -461,6 +461,86 @@ PHP;
 	}
 
 	/**
+	 * Whether a visitor is a crawler depends on the user agent alone, so a table of many visitors on a few agents asks about each agent once and still flags every row.
+	 */
+	public function testGoOnlineClassifiesEachDistinctUserAgentOnce()
+	{
+		$chrome = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36';
+		$googlebot = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
+		$firefox = 'Mozilla/5.0 (X11; Linux x86_64; rv:131.0) Gecko/20100101 Firefox/131.0';
+		$agents = array($chrome, $googlebot, $chrome, $chrome, $googlebot, $firefox, '');
+
+		$sql = e107::getDb();
+		$sql->truncate('online');
+
+		foreach($agents as $i => $agent)
+		{
+			$sql->insert('online', array(
+				'online_timestamp' => time(),
+				'online_flag'      => 0,
+				'online_user_id'   => '0',
+				'online_ip'        => 'agent-test-'.$i,
+				'online_location'  => 'news.php',
+				'online_pagecount' => 1,
+				'online_active'    => 0,
+				'online_agent'     => $agent,
+				'online_language'  => 'en',
+			));
+		}
+
+		$php = <<<'PHP'
+class e_online_agent_counter extends e_online
+{
+	public $asked = array();
+
+	function isBot($userAgent = '')
+	{
+		$this->asked[] = $userAgent;
+		return parent::isBot($userAgent);
+	}
+}
+$online = new e_online_agent_counter();
+$online->goOnline(1, 1);
+$bots = array();
+foreach($online->guests as $guest)
+{
+	if(strpos($guest['user_ip'], 'agent-test-') === 0)
+	{
+		$bots[$guest['user_ip']] = $guest['user_bot'];
+	}
+}
+ksort($bots);
+echo "\n@@ASKED=", json_encode($online->asked), "@@";
+echo "\n@@BOTS=", json_encode($bots), "@@\n";
+PHP;
+
+		list($output, $status) = $this->runInBootedCli($php, '', array('cli' => true, 'no_online' => true));
+
+		$sql->truncate('online');
+
+		$printed = implode("\n", $output);
+
+		self::assertSame(0, $status, "the online count never returned:\n".$printed);
+		self::assertSame(1, preg_match('/@@ASKED=(.*)@@/', $printed, $asked), "the child printed no agents:\n".$printed);
+		self::assertSame(1, preg_match('/@@BOTS=(.*)@@/', $printed, $bots), "the child printed no rows:\n".$printed);
+
+		self::assertSame(array(
+			'agent-test-0' => false,
+			'agent-test-1' => true,
+			'agent-test-2' => false,
+			'agent-test-3' => false,
+			'agent-test-4' => true,
+			'agent-test-5' => false,
+			'agent-test-6' => false,
+		), json_decode($bots[1], true));
+
+		$asked = json_decode($asked[1], true);
+
+		self::assertSame(array_values(array_unique($asked)), $asked, "each user agent should be classified once, whatever the number of visitors on it");
+		self::assertSame(array(), array_values(array_diff($agents, $asked)), "every visitor's user agent should have been classified");
+	}
+
+	/**
 	 * Who's Online has to render on a request that never sampled the table: it reads GUESTS_ONLINE and MEMBERS_ONLINE bare and counts the name list, and every AJAX request is put into minimal mode, which is what sets no_online.
 	 */
 	public function testTheOnlinePageRendersWhereGoOnlineWasSkipped()
