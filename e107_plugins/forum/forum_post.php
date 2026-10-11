@@ -422,7 +422,8 @@ class forum_post_handler
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 
-		if (!$this->forumObj->checkPerm($forumId, 'post')) // check user has permission to post to this thread.
+		if (!$this->forumObj->checkPerm($forumId, 'post') // check user has permission to post to this thread.
+			|| ($this->action === 'nt' && !$this->forumObj->checkPerm($forumId, 'thread')))
 		{
 			require_once(HEADERF);
 			$mes->addError(LAN_FORUM_3001);
