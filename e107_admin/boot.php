@@ -126,41 +126,8 @@ if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type']
 
 	e107::getSession()->end();
 
-	$limit = 3;
+	echo (new e107\Admin\DashboardFeed('core', e107::getCache(), e107::getXml(), e107::getParser()))->renew();
 
-	if($data = e107::getXml()->getRemoteFile(ADMINFEED,3))
-	{
-	//	print_a($data);
-		$rows = e107::getXml()->parseXml($data, 'advanced');
-		$defaultImg = $rows['channel']['image']['url'];
-
-		$text = '<div style="margin-left:10px;margin-top:10px">';
-		$count = 1;
-		$tp = e107::getParser();
-		foreach($rows['channel']['item'] as $row)
-		{
-			if($count > $limit){ break; }
-
-			$description = $tp->text_truncate($tp->toText($row['description']), 150);
-			$text .= '
-			<div class="media">
-			  <div class="media-body">
-			    <h4 class="media-heading"><a target="_blank" href="'.$tp->toUrlAttribute($row['link']).'">'.htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8').'</a> <small>— '.htmlspecialchars($row['pubDate'], ENT_QUOTES, 'UTF-8').'</small></h4>
-			   '.htmlspecialchars($description, ENT_QUOTES, 'UTF-8', false).'
-			  </div></div>';
-			  $count++;
-		}
-		$text .= '</div>';
-		echo $text;
-
-	}
-	/*else
-	{
-		if(e_DEBUG)
-		{
-			echo "Feed failed: ".ADMINFEED;
-		}
-	}*/
 	exit;
 }
 
@@ -178,64 +145,9 @@ if(ADMIN && (e_AJAX_REQUEST || deftrue('e_DEBUG_FEEDS')) && varset($_GET['mode']
 	e107::getSession()->end();
 
 	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
-	// Versioned: the composed HTML is what gets cached, so an install upgrading
-	// into the encoding below must not be handed three more hours of the bytes
-	// it composed before it.
-	$tag = 'Infopanel_'.$type.'_v2';
 
-	$cache = e107::getCache();
+	echo (new e107\Admin\DashboardFeed($type, e107::getCache(), e107::getXml(), e107::getParser()))->renew();
 
-	$feed = ADDONFEED.'?limit=3&type='.$type;
-
-	if($text = $cache->retrieve($tag,180,true, true)) // check every 3 hours.
-	{
-		echo $text;
-
-		if(e_DEBUG === true)
-		{
-			echo "<span class='label label-warning' title='".$feed."'>Cached</span>";
-		}
-		exit;
-	}
-
-
-	if($data = e107::getXml()->getRemoteFile($feed,3))
-	{
-		$rows = e107::getXml()->parseXml($data, 'advanced');
-//	print_a($rows);
-//  exit;
-		$link = ($type == 'plugin') ? e_ADMIN."plugin.php?mode=online" : e_ADMIN."theme.php?mode=main&action=online";
-
-		$text = "<div style='margin-top:10px'>";
-
-		$tp = e107::getParser();
-
-		foreach($rows[$type] as $val)
-		{
-			$meta = $val['@attributes'];
-			$img = ($type == 'theme') ? $meta['thumbnail'] : $meta['icon'];
-			$description = $tp->text_truncate($tp->toText(varset($val['description'], '')), 150);
-			$text .= '<div class="media">';
-			$text .= '<div class="media-left">
-		    <a href="'.$link.'">
-		      <img class="media-object img-rounded rounded" src="'.$tp->toUrlAttribute($img).'" style="width:100px" alt="" />
-		    </a>
-		  </div>
-		  <div class="media-body">
-		    <h4 class="media-heading"><a href="'.$link.'">'.htmlspecialchars(varset($meta['name'], ''), ENT_QUOTES, 'UTF-8').' v'.htmlspecialchars(varset($meta['version'], ''), ENT_QUOTES, 'UTF-8').'</a> <small>&mdash; '.htmlspecialchars(varset($meta['author'], ''), ENT_QUOTES, 'UTF-8').'</small></h4>
-		    '.htmlspecialchars($description, ENT_QUOTES, 'UTF-8', false).'
-		  </div>';
-			$text .= '</div>';
-		}
-
-		$text .= "</div>";
-		$text .= "<div class='right'><a href='".$link."'>".LAN_MORE."</a></div>";
-
-		echo $text;
-
-		$cache->set($tag, $text, true, null, true);
-
-	}
 	exit;
 
 }

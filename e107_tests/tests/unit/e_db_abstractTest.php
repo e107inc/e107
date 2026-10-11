@@ -132,9 +132,9 @@ abstract class e_db_abstractTest extends \Test\Unit
 			$this->markTestSkipped("'localhost' is reached through the socket, where no port applies");
 		}
 
-		$this->assertFalse($this->makeDbWithConfiguredPort($closedPort)->connect($server, $user, $password),
+		$this->assertFalse($this->makeDbConfiguredWith(array('mySQLport' => $closedPort))->connect($server, $user, $password),
 			'a configured port that nothing listens on has to refuse the connection');
-		$this->assertTrue($this->makeDbWithConfiguredPort($port)->connect($server, $user, $password),
+		$this->assertTrue($this->makeDbConfiguredWith(array('mySQLport' => $port))->connect($server, $user, $password),
 			'the configured port has to connect');
 
 		$this->assertFalse($this->db->connect($server.':'.$closedPort, $user, $password),
@@ -152,17 +152,17 @@ abstract class e_db_abstractTest extends \Test\Unit
 	}
 
 	/**
-	 * @param int|string $port
-	 * @return e_db built while e107_config.php names $port.
+	 * @param array $settings the e107_config.php database settings to override
+	 * @return e_db built while e107_config.php names $settings.
 	 */
-	private function makeDbWithConfiguredPort($port)
+	protected function makeDbConfiguredWith(array $settings)
 	{
 		$e107 = e107::getInstance();
 		$config = new ReflectionProperty($e107, 'e107_config_mysql_info');
 		$original = $config->getValue($e107);
 
 		$db = $this->makeDb();
-		$config->setValue($e107, array('mySQLport' => $port) + $original);
+		$config->setValue($e107, $settings + $original);
 
 		try
 		{
@@ -1533,21 +1533,50 @@ abstract class e_db_abstractTest extends \Test\Unit
 	}
 	public function testCloseEndsTheServerConnectionWithAResultOutstanding()
 	{
-		$id = (int) $this->db->retrieve('SELECT CONNECTION_ID()');
+		$this->assertTrue($this->connectOwnSession($this->db, $this->dbConfig['mySQLdefaultdb']));
+		$id = $this->sessionOf($this->db);
 		$this->assertGreaterThan(0, $id);
 		$this->assertNotFalse($this->db->select('user', 'user_id', 'user_id > 0'));
 
 		$this->db->close();
 
+		$this->assertNotSame($id, $this->sessionOf(e107::getDb()), 'the probe must not be the connection under test');
+		$this->assertTrue($this->sessionEnds($id), "server connection $id survived close()");
+	}
+
+	/**
+	 * @param e_db $db
+	 * @return int the server's id for the session $db runs in
+	 */
+	protected function sessionOf($db)
+	{
+		return (int) $db->retrieve('SELECT CONNECTION_ID()');
+	}
+
+	/**
+	 * @param e_db $db
+	 * @param string $database
+	 * @param string $prefix
+	 * @return bool whether $db now runs in a session no other instance shares, with $database selected
+	 */
+	protected function connectOwnSession($db, $database, $prefix = MPREFIX)
+	{
+		return $db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword'], true)
+			&& $db->database($database, $prefix);
+	}
+
+	/**
+	 * @param int $session
+	 * @return bool whether the server ended $session within two seconds
+	 */
+	protected function sessionEnds($session)
+	{
 		$probe = e107::getDb();
-		$this->assertNotSame($id, (int) $probe->retrieve('SELECT CONNECTION_ID()'), 'the probe must not be the connection under test');
 
-		$gone = \Test\Poll::until(function () use ($probe, $id)
+		return \Test\Poll::until(function () use ($probe, $session)
 		{
-			return !$probe->retrieve('SELECT ID FROM information_schema.PROCESSLIST WHERE ID = ' . $id, false);
+			return !$probe->retrieve('SELECT ID FROM information_schema.PROCESSLIST WHERE ID = ' . $session, false);
 		}, 2);
-
-		$this->assertTrue($gone, "server connection $id survived close()");
 	}
 
 	public function testDelete()

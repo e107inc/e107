@@ -41,9 +41,8 @@ class news_gsitemap
 
 	private function getNewsPosts()
 	{
-		/* public, guests */
-		$userclass_list = array(0, 252);
-		$_t = time();		/* public, quests */
+		$guest = \e107\Userclass\Membership::fromList('0,252');
+		$_t = time();
 
 		$now = time();
 
@@ -53,7 +52,7 @@ class news_gsitemap
 			->select('n.*', 'nc.category_name', 'nc.category_sef')
 			->from('news', 'n')
 			->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
-			->whereIn('n.news_class', $userclass_list)
+			->where($guest->predicate('n.news_class'))
 			->where('n.news_start', '<', $_t)
 			->where(function (QueryBuilder $q) use ($now) {
 				$q->where('n.news_end', 0)->orWhere('n.news_end', '>', $now);
@@ -69,8 +68,6 @@ class news_gsitemap
 	{
 		$import = array();
 		$sql = e107::getDb();
-		/* public, quests */
-		$userclass_list = "0,252";
 		$_t = time();
 		$data = $sql->createQueryBuilder()
 			->select('*')->from('news_category')

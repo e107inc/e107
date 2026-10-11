@@ -250,6 +250,13 @@ switch($p8act)
 		echo "P8_OK reset\n";
 		break;
 
+	case 'feedreset':
+		// The dashboard feeds keep what they fetched for three hours.
+		e107::getCache()->clear('Infopanel_', true);
+		header('Content-Type: text/plain');
+		echo "P8_OK feedreset\n";
+		break;
+
 	case 'constants':
 		header('Content-Type: text/plain');
 		echo "P8_OK constants\n";

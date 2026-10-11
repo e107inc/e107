@@ -24,7 +24,7 @@
  *  - admin.php?mode=addons&type=update asks the marketplace for the plugin and
  *    theme version lists and caches both for twelve hours;
  *  - admin.php?mode=core&type=feed opens an outbound HTTPS request to ADMINFEED
- *    on every request, with nothing cached, so the cost is paid again each time.
+ *    whenever the copy it keeps for three hours is missing or expired.
  *
  * The last four are AJAX branches that a hostile page reaches without setting a
  * header, because e107_class.php falls back to isset($_REQUEST['ajax_used'])
@@ -191,8 +191,8 @@ class AdminMiscCsrfCest
 	}
 
 	/**
-	 * The general news panel fetches ADMINFEED on every request and caches
-	 * nothing, so each forged request buys the attacker another outbound HTTPS
+	 * The general news panel fetches ADMINFEED whenever its kept copy is missing
+	 * or expired, so a forged request buys the attacker an outbound HTTPS
 	 * connection from the server, to a host the administrator never named.
 	 */
 	public function aTokenlessGetDoesNotFetchTheAdminFeed(AcceptanceTester $I)
@@ -322,7 +322,7 @@ class AdminMiscCsrfCest
 	}
 
 	/**
-	 * The dashboard's own scripts still reach all four AJAX branches.
+	 * The dashboard's own scripts still reach all four AJAX branches. The feeds answer from copies the probe keeps once their links are published, so neither asks e107.org.
 	 */
 	public function theDashboardsOwnPanelsStillLoad(AcceptanceTester $I)
 	{
@@ -336,6 +336,9 @@ class AdminMiscCsrfCest
 		$feed = $this->publishedLink($I, self::DASHBOARD,
 			'#admin\.php\?mode=core&type=feed(&e-token=[^\'"]*)?#');
 
+		$I->amOnProbe('act=keepfeeds');
+		$I->seeInSource('P9_OK keepfeeds');
+
 		$I->amOnPage($core.'&ajax_used=1');
 		$I->assertSame(200, $I->grabResponseCode(), 'the dashboard update check must still run');
 		$I->dontSeeInSource(self::REFUSED);
@@ -343,6 +346,7 @@ class AdminMiscCsrfCest
 		$I->amOnPage($addons.'&ajax_used=1');
 		$I->assertSame(200, $I->grabResponseCode(), 'the dashboard addons panel must still load');
 		$I->dontSeeInSource(self::REFUSED);
+		$I->seeInSource('P9 kept feed');
 
 		$I->amOnPage($addonsUpdate.'&ajax_used=1');
 		$I->assertSame(200, $I->grabResponseCode(), 'the dashboard addons update check must still run');
@@ -351,6 +355,7 @@ class AdminMiscCsrfCest
 		$I->amOnPage($feed.'&ajax_used=1');
 		$I->assertSame(200, $I->grabResponseCode(), 'the dashboard news panel must still load');
 		$I->dontSeeInSource(self::REFUSED);
+		$I->seeInSource('P9 kept feed');
 	}
 
 	/**
@@ -518,6 +523,7 @@ switch(\$p9act)
 		e107::getConfig()->set('install_date', \$beforeE107v2)->save(false, true, false);
 		e107::getSession()->set('core-update-checked', false);
 		e107::getSession()->set('addons-update-checked', false);
+		e107::getCache()->clear('Infopanel_', true);
 
 		if(is_file(\$flag))
 		{
@@ -543,6 +549,17 @@ switch(\$p9act)
 		echo "P9_OK plant\\n";
 		break;
 
+	case 'keepfeeds':
+		\$now = time();
+
+		foreach(array('core', 'plugin', 'theme') as \$type)
+		{
+			e107::getCache()->set('Infopanel_'.\$type, json_encode(array('html' => '<p>P9 kept feed</p>', 'fetched' => \$now, 'checked' => \$now)), true, false, true);
+		}
+
+		echo "P9_OK keepfeeds\\n";
+		break;
+
 	case 'loginas':
 		\$done = e107::getUser()->loginAs((int) \$_GET['id']);
 		echo (\$done ? "P9_OK loginas" : "P9_FAIL loginas")."\\n";
@@ -564,6 +581,7 @@ switch(\$p9act)
 		p9_suppression()->release(e107\\Admin\\Notices::UPGRADE_ALERT);
 		p9_clearScratch();
 		e107::getUser()->logoutAs();
+		e107::getCache()->clear('Infopanel_', true);
 		\$sql->delete('user', "user_loginname='$name'");
 
 		echo "P9_OK cleanup\\n";

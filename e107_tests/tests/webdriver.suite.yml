@@ -15,13 +15,13 @@ modules:
         - WebDriver:
             # The shared app URL, so this suite hits the same HTTP interface as
             # acceptance. It must be browser-reachable (e.g. http://web/), never
-            # localhost: the browser runs in the selenium container, where
+            # localhost: the browser runs in the browser container, where
             # localhost is the browser itself.
             url: '%url%'
             browser: chrome
-            host: '%selenium.host%'
-            port: '%selenium.port%'
-            path: '%selenium.path%'
+            host: '%browser.host%'
+            port: '%browser.port%'
+            path: '%browser.path%'
             window_size: 1366x900
             capabilities:
                 # Leave native confirm() dialogs standing until a test answers
@@ -74,7 +74,8 @@ modules:
         - \Helper\Probe
         # After SiteDb: the dump load leaves e107's pref cache stale.
         - \Helper\PrefCacheReset
-        # After PrefCacheReset: starts each test logged out.
+        # After PrefCacheReset: starts each test logged out, on a page that
+        # keeps its focus while other sessions' windows come and go.
         - \Helper\WebDriverSession
         # After WebDriver: its wait() replaces the blind sleep with a refusal.
         - \Helper\NoBlindWaits

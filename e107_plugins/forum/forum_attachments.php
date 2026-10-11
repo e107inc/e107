@@ -263,7 +263,16 @@ class forum_attachments
 	 */
 	public function admitsEveryone()
 	{
-		return $this->mayRead(array(e_UC_PUBLIC));
+		$forums = $this->postForums();
+
+		if($forums === array())
+		{
+			return false;
+		}
+
+		return self::forumRows(function ($qb, $column) {
+			return $qb->expr()->eq($column, e_UC_PUBLIC);
+		}, 'forum_class', $forums) !== array();
 	}
 
 	/**
@@ -326,20 +335,27 @@ class forum_attachments
 			return array();
 		}
 
+		$membership = \e107\Userclass\Membership::fromList($classes);
+
+		return self::forumRows(function ($qb, $column) use ($membership) {
+			return $membership->predicate($column);
+		}, $column, $forumIds);
+	}
+
+	/**
+	 * The forums, among $forumIds or all of them, whose $column and whose parent's $column both satisfy $rule.
+	 *
+	 * @param callable $rule function(\e107\Database\QueryBuilder $qb, string $column): \e107\Database\SqlFragment
+	 * @param string $column one of the three forum class columns
+	 * @param array $forumIds forum ids to consider, empty for all of them
+	 * @return array rows of forum_id and forum_parent
+	 */
+	private static function forumRows($rule, $column, array $forumIds)
+	{
 		$qb = e107::getDb()->createQueryBuilder();
-
-		$placeholders = array();
-
-		foreach($classes as $class)
-		{
-			$placeholders[] = $qb->createNamedParameter($class);
-		}
-
-		$placeholders = implode(', ', $placeholders);
-
 		$qb->select('f.forum_id', 'f.forum_parent')->from('forum', 'f')
-			->leftJoin('forum', 'fp', $qb->raw('f.forum_parent = fp.forum_id AND fp.' . $column . ' IN (' . $placeholders . ')'))
-			->where($qb->raw('f.' . $column . ' IN (' . $placeholders . ')'))
+			->leftJoin('forum', 'fp', $qb->expr()->allOf($qb->expr()->compareColumns('f.forum_parent', 'fp.forum_id'), $rule($qb, 'fp.'.$column)))
+			->where($rule($qb, 'f.'.$column))
 			->where('f.forum_parent', '!=', 0)
 			->where($qb->expr()->isNotNull('fp.forum_id'));
 

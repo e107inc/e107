@@ -34,7 +34,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: ./.github/actions/docker-hub-mirror
+      - name: Pull the floor PHP image
+        run: .github/actions/harness-stack/pull.sh php:5.6-cli
 
       - name: Parse the shipping tree on the floor PHP
         run: ./e107_tests/_tools/rector/bin/php-floor-lint

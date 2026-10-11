@@ -364,6 +364,7 @@ if (!empty($_POST['pwsubmit']))
 		$existsQb = $sql->createQueryBuilder();
 		if ($existsQb->from('tmp')
 			->where('tmp_ip', 'pwreset')
+			->where('tmp_time', '>=', time())
 			->where($existsQb->expr()->like('tmp_info', $row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR.'%'))
 			->count())
 		{

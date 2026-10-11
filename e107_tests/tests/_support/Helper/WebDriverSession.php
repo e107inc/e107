@@ -3,9 +3,10 @@ namespace Helper;
 
 use Codeception\Module;
 use Codeception\TestInterface;
+use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
 
 /**
- * Clear the browser session before each WebDriver test.
+ * Put the browser in a known state before each WebDriver test.
  *
  * WebDriver keeps one browser for the whole run, so authentication and UI state
  * would otherwise leak between tests. Loading the app first puts the browser on
@@ -24,8 +25,22 @@ class WebDriverSession extends Module
 
 		$this->dismissAnyOpenDialog($webDriver);
 
+		$devTools = new ChromeDevToolsDriver($webDriver->webDriver);
+		$this->keepThePageFocused($devTools);
+
 		$webDriver->amOnPage('/');
 		$webDriver->webDriver->manage()->deleteAllCookies();
+	}
+
+	/**
+	 * Have Chrome treat the page as focused and active whatever its window is doing, so another session's window cannot blur the test's field.
+	 *
+	 * @param ChromeDevToolsDriver $devTools
+	 * @return void
+	 */
+	private function keepThePageFocused(ChromeDevToolsDriver $devTools)
+	{
+		$devTools->execute('Emulation.setFocusEmulationEnabled', array('enabled' => true));
 	}
 
 	/**

@@ -62,8 +62,8 @@ than the test asking the wrong question. CI runs both layouts for exactly this
 reason: the subdirectory legs have already caught assertions that were quietly
 passing for the wrong reason.
 
-`--no-selenium` brings up `db` and `web` only. The browser image is over a
-gigabyte and nothing but the WebDriver suite needs it.
+`--no-browser` brings up `db` and `web` only. Nothing but the WebDriver suite
+needs the browser, and its image is built on the first `up` that does.
 
 ### HTTP and HTTPS
 
@@ -219,14 +219,18 @@ PHPUnit 5.7), and `check-platform-reqs` is checked on the real interpreter.
 - The web container also has PHP CLI, Composer, and git, so `e107-tests run`
   invokes Codeception inside the container against the same filesystem
   Apache is serving.
-- The WebDriver suite drives a dedicated `selenium/standalone-chrome` browser
-  container. Both the acceptance and WebDriver suites reach their sandbox the
-  same way (`http://sbN.web/`), so they exercise the same HTTP interface.
-- `up` builds the web image only if it is missing and reuses it otherwise, so a
-  previously built or CI-cached image is picked up without a rebuild. Its tag
-  carries a hash of every file in `docker/` but the compose files and the docs
-  (`e107-tests image` prints it), so branches whose Dockerfile, entrypoint or
-  vhosts differ never share an image.
+- The WebDriver suite drives a dedicated browser container: Chrome's headless
+  shell on the stable channel (`chromedp/headless-shell:stable`) with the
+  chromedriver of the same version (`browser.Dockerfile`). Both the acceptance
+  and WebDriver suites reach their sandbox the same way (`http://sbN.web/`), so
+  they exercise the same HTTP interface.
+- `up` builds the web and browser images only if they are missing and reuses
+  them otherwise, so an image built earlier or restored from CI's cache is
+  picked up without a rebuild. Each tag carries a hash of what its image is
+  built from (`e107-tests image` prints them): `browser.Dockerfile` for the
+  browser, and every other file in `docker/` but the compose files and the
+  docs for the web image. So branches whose Dockerfiles, entrypoint or vhosts
+  differ never share an image.
 - Database state lives on tmpfs. `down` is a true reset; no leftover state.
 - The suites, and a site from `up --install-site`, connect as the `e107`
   account, which holds ALL PRIVILEGES on its own databases (`e107`, the
@@ -256,7 +260,7 @@ a stack brought up without it recreates the containers on the xdebug image
 rather than erroring or quietly doing nothing, and says which way it is
 switching the env as it goes. The catch is that `up` only rewrites the labels
 of the services it brings up, so a partial-scope `up` leaves the others
-carrying the labels of the run that created them; `--no-selenium` is the
+carrying the labels of the run that created them; `--no-browser` is the
 reachable case, its browser container surviving the switch untouched. `up`
 fails if the labels it leaves behind disagree with the flags it was given, and
 the answer when that happens is `down` followed by `up` with the flags you
@@ -284,7 +288,7 @@ debug by hand:
 - **Package host flakes**: the composer install inside the container gets
   the same three tries, so a package host that answers 504 for a minute
   costs a minute, not the run.
-- **Honest exit codes**: `up` verifies db/web/selenium are actually running
+- **Honest exit codes**: `up` verifies db/web/browser are actually running
   and healthy and fails loudly (with `compose ps` output) if not.
 
 ## Composer's download cache
@@ -487,8 +491,11 @@ endpoint e107 contacts (#5687).
   combo and per state of the files here, the compose files and the docs aside.
 - `debian-archive.sh`: moves apt to `archive.debian.org` once the image's
   Debian release is served there; see "Legacy PHP".
-- `compose.yml`: the db + web + selenium services, parameterized by env,
+- `compose.yml`: the db + web + browser services, parameterised by env,
   plus the `e107.tests.*` labels that serve as the harness's state store.
+- `browser.Dockerfile`: the browser service's headless shell and chromedriver.
+- `compose.start-interval.yml`: probes a starting service every second;
+  `e107-tests` adds it on Docker Engine 25 and later.
 - `../composer.lock`, `../composer.php<floor>.lock`: one dependency lock per
   PHP range; see "One lock per PHP range".
 - `entrypoint.sh`: waits for DB, fixes ownership on the bind mount.

@@ -204,10 +204,10 @@ CREATE TABLE dblog (
 CREATE TABLE generic (
   gen_id int(10) unsigned NOT NULL auto_increment,
   gen_type varchar(80) NOT NULL default '',
-  gen_datestamp int(10) unsigned NOT NULL default '0',
+  gen_datestamp bigint(20) NOT NULL default '0',
   gen_user_id int(10) unsigned NOT NULL default '0',
   gen_ip varchar(80) NOT NULL default '',
-  gen_intdata int(10) unsigned NOT NULL default '0',
+  gen_intdata int(10) NOT NULL default '0',
   gen_chardata text NOT NULL,
   PRIMARY KEY  (gen_id),
   KEY gen_type (gen_type),
@@ -468,7 +468,7 @@ CREATE TABLE page_chapters (
   chapter_image varchar(250) NOT NULL default '',
   chapter_order int(6) unsigned NOT NULL default '0',
   chapter_template varchar(50) NOT NULL default '',
-  chapter_visibility tinyint(3) unsigned NOT NULL default '0',
+  chapter_visibility smallint(5) NOT NULL default '0',
   chapter_fields mediumtext,
   PRIMARY KEY  (chapter_id),
   KEY chapter_order (chapter_order)

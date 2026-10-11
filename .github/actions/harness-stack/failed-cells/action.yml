@@ -1,0 +1,26 @@
+name: Keep the failed cells' output
+description: >-
+  Gathers the test output, logs and container log of every cell that failed
+  (see ../cells.sh) and uploads them as one artifact, a directory per cell.
+
+inputs:
+  name:
+    description: Artifact name
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Collect the failed cells' output
+      if: ${{ !cancelled() }}
+      shell: bash
+      run: '"$GITHUB_ACTION_PATH/../cells.sh" collect "$RUNNER_TEMP/e107-cells-failed"'
+
+    - name: Upload the failed cells' output
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ runner.temp }}/e107-cells-failed/
+        if-no-files-found: ignore
+        retention-days: 7

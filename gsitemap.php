@@ -110,7 +110,7 @@ class gsitemap_xml
 		{
 			$smArray = e107::getDb()->createQueryBuilder()
 				->select('*')->from('gsitemap')
-				->whereIn('gsitemap_active', array_map('intval', explode(',', USERCLASS_LIST)))
+				->where(\e107\Userclass\Membership::current()->predicate('gsitemap_active'))
 				->orderBy('gsitemap_order')
 				->fetchAll();
 			$xml .= $this->renderXMLItems($smArray,  'gsitemap_');
@@ -266,7 +266,7 @@ if(e_QUERY == "show" || !empty($_GET['show']))
 
 	$nfArray = e107::getDb()->createQueryBuilder()
 		->select('*')->from('gsitemap')
-		->whereIn('gsitemap_active', array_map('intval', explode(',', USERCLASS_LIST)))
+		->where(\e107\Userclass\Membership::current()->predicate('gsitemap_active'))
 		->orderBy('gsitemap_order')
 		->fetchAll();
 

@@ -42,7 +42,7 @@ class news_featurebox // include plugin-folder in the name.
 
 		$qb = e107::getDb()->createQueryBuilder();
 		$rows = $qb->select('*')->from('news')
-			->where($qb->expr()->regexp('news_class', e_CLASS_REGEXP))
+			->where(\e107\Userclass\Membership::current()->predicate('news_class'))
 			->where($qb->expr()->not($qb->expr()->regexp('news_class', $nobody_regexp)))
 			->where($qb->expr()->findInSet('news_render_type', 5))
 			->orderBy('news_datestamp', 'DESC')

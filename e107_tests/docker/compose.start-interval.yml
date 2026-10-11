@@ -1,0 +1,10 @@
+# Probes a starting service every second; see start_interval_file in bin/e107-tests.
+services:
+  db:
+    healthcheck:
+      start_period: 60s
+      start_interval: 1s
+  browser:
+    healthcheck:
+      start_period: 60s
+      start_interval: 1s
