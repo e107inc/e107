@@ -140,11 +140,9 @@ $security_risks = array(
         }   
     }
 
-	$sessionSaveMethod = ini_get('session.save_handler');
-
 	if($sessionSavePath = ini_get('session.save_path'))
 	{
-		if(!is_writable($sessionSavePath) && $sessionSaveMethod === 'files')
+		if(!is_writable($sessionSavePath) && in_array(e107::getSession()->getSaveMethod(), array('files', 'nonblocking'), true))
 		{
 			$mes->addError(e107::getParser()->toHTML(PHP_LAN_6, true));	
 		}

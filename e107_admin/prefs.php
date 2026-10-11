@@ -1546,9 +1546,7 @@ $text .= "
 
 					<tr>
 						<td><label for='disallowmultilogin'>".PRFLAN_129."</label>".$frm->help(PRFLAN_130)."</td>
-						<td>
-							".$frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO)."
-						</td>
+						".prefs_disallow_multi_login_cell($frm, $pref)."
 					</tr>
 
 					<tr>
@@ -1565,21 +1563,14 @@ $text .= "
 					</tr>
 					";
 
-//	if(e_DEVELOPER) // Experimental (translate terms after this check is removed)
-    {
-           //  $systemSaveMethod = ini_get('session.save_handler');
-           //  $saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
-            // $systemSaveMethod => PRFLAN_276,
-                $text .= "
-	                <tr>
-						<td><label for='session-save-method'>".PRFLAN_282."</label></td>
+    $text .= "
+					<tr>
+						<td><label for='session-save-method'>".PRFLAN_282."</label>".$frm->help(defset('PRFLAN_SESSION_SAVE_METHOD_HELP', "Where visitors' sessions are kept. With files, one visitor's pages load one after another; without locking, they load side by side and the page that finishes last saves the session."))."</td>
 						<td class='form-inline'>
-							".$frm->select('session_save_method', [ 'db'=>'Database', 'files'=>'Files'], varset($pref['session_save_method']))."
-							
+							".$frm->select('session_save_method', prefs_session_save_methods(), vartrue($pref['session_save_method'], e107::getSession()->getSaveMethod()))."
 						</td>
 					</tr>
-                    ";
-    }
+					";
 
     $text .= "
 					<tr>
@@ -2187,6 +2178,51 @@ $text .= "
 $ns->tablerender(null, $mes->render().$text);
 
 require_once(e_ADMIN."footer.php");
+
+/**
+ * The cell holding the Disallow multiple logins switch, with a warning while it is on and the session storage running cannot sign an earlier session out.
+ *
+ * @param e_form $frm
+ * @param array $pref
+ * @return string
+ */
+function prefs_disallow_multi_login_cell($frm, $pref)
+{
+	$switch = $frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO);
+
+	if(empty($pref['disallowMultiLogin']) || e107::getRegistry('core/e107/sole_session') instanceof \e107\SessionHandlers\SoleSession)
+	{
+		return "<td>".$switch."</td>";
+	}
+
+	$storage = (string) ini_get('session.save_handler');
+	$warning = 'user' === $storage
+		? defset('PRFLAN_MULTI_LOGIN_STORAGE_UNREACHABLE', "The session directory is outside PHP's open_basedir, so e107 cannot sign an earlier session out there and this setting has no effect.")
+		: e107::getParser()->lanVars(defset('PRFLAN_MULTI_LOGIN_STORAGE_UNSUPPORTED', "PHP's \"[x]\" session storage is in use without e107's handler, so an earlier session cannot be signed out and this setting has no effect."), htmlspecialchars($storage, ENT_QUOTES, 'UTF-8'));
+
+	return "<td class='has-warning'>".$switch."<div class='text-warning'>".$warning."</div></td>";
+}
+
+/**
+ * @return array save method => label: core's three, and the storage running now when it is none of them, so that saving the page never changes it unasked
+ */
+function prefs_session_save_methods()
+{
+	$methods = array(
+		'db'          => defset('PRFLAN_SESSION_SAVE_METHOD_DATABASE', 'Database'),
+		'files'       => defset('PRFLAN_SESSION_SAVE_METHOD_FILES', 'Files'),
+		'nonblocking' => defset('PRFLAN_SESSION_SAVE_METHOD_NONBLOCKING', 'Files, without locking'),
+	);
+
+	$running = (string) e107::getSession()->getSaveMethod();
+
+	if(!isset($methods[$running]))
+	{
+		$methods[$running] = htmlspecialchars($running, ENT_QUOTES, 'UTF-8');
+	}
+
+	return $methods;
+}
 
 function pref_submit($post_id = '')
 {
