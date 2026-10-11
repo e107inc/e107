@@ -2220,21 +2220,29 @@ class e_admin_controller
 		// access based on mode setting - general controller access
 		if(!empty($disallow) && in_array($currentAction, $disallow, true))
 		{
-			$request->setAction('e403');
-			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
-				->addDebug('Controller action disallowed restriction triggered.');
-			return false;
+			return $this->refuseAccess('Controller action disallowed restriction triggered.');
 		}
 
 		// access based on $access settings - access per action
 		if(!empty($allow) && !in_array($currentAction, $allow, true))
 		{
-			$request->setAction('e403');
-			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
-				->addDebug('Controller action not in allowed list restriction triggered.');
-			return false;
+			return $this->refuseAccess('Controller action not in allowed list restriction triggered.');
 		}
 		return true;
+	}
+
+	/**
+	 * Send the request to the 403 page, naming in the debug log the check that refused it.
+	 *
+	 * @param string $debug
+	 * @return bool false
+	 */
+	private function refuseAccess($debug)
+	{
+		$this->getRequest()->setAction('e403');
+		e107::getMessage()->addError(LAN_NO_PERMISSIONS)->addDebug($debug);
+
+		return false;
 	}
 
 	/**
@@ -2352,6 +2360,20 @@ class e_admin_controller
 	public function getDispatcher()
 	{
 		return e107::getRegistry('admin/ui/dispatcher');
+	}
+
+	/**
+	 * Whether this administrator holds the named action's route in the current mode.
+	 *
+	 * @param string $action
+	 * @return bool
+	 */
+	protected function hasModeRouteAccess($action)
+	{
+		$dispatcher = $this->getDispatcher();
+
+		return ($dispatcher instanceof e_admin_dispatcher)
+			&& $dispatcher->hasRouteAccess($this->getRequest()->getMode().'/'.$action);
 	}
 
 	/**
@@ -2578,7 +2600,17 @@ class e_admin_controller
 		if(!method_exists($this, $method))
 		{
 			$this->_log('Skipping ' .$method. '() (not found)');
-			$this->getRequest()->setAction($this->getDefaultAction());
+			$default = $this->getDefaultAction();
+			$this->getRequest()->setAction($default);
+
+			if(!$this->hasModeRouteAccess($default))
+			{
+				$this->refuseAccess('Default action route restriction triggered: '.$this->getRequest()->getMode().'/'.$default);
+			}
+			else
+			{
+				$this->checkAccess();
+			}
 		}
 
 		// switch to 404 if needed
@@ -4180,20 +4212,6 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach',
 			'attach_all', 'deattach_all', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall');
-	}
-
-	/**
-	 * Whether this administrator holds the named action's route in the current mode.
-	 *
-	 * @param string $action
-	 * @return bool
-	 */
-	protected function hasModeRouteAccess($action)
-	{
-		$dispatcher = $this->getDispatcher();
-
-		return ($dispatcher instanceof e_admin_dispatcher)
-			&& $dispatcher->hasRouteAccess($this->getRequest()->getMode().'/'.$action);
 	}
 
 	/**
