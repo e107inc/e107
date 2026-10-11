@@ -228,6 +228,41 @@ class AccountSessionsCest
 	}
 
 	/**
+	 * A site with no stored save method had Database preselected, so saving the page moved every session to the database.
+	 */
+	public function theSecurityPageShowsTheSaveMethodRunningWhenNoneIsStored(AcceptanceTester $I)
+	{
+		$this->havePref($I, 'session_save_method', null);
+		$I->resetAllCookies();
+		$I->loginAsAdmin();
+
+		$I->amOnPage('/e107_admin/prefs.php');
+
+		$I->seeOptionIsSelected('session_save_method', 'Files');
+	}
+
+	public function theSecurityPageSaysTheDatabaseUpdateIsNeededWhileTheTableIsMissing(AcceptanceTester $I)
+	{
+		$this->havePref($I, 'disallowMultiLogin', 1);
+		$I->resetAllCookies();
+		$I->loginAsAdmin();
+		$I->amOnPage('/e107_admin/prefs.php');
+		$I->dontSee('core database structure update', '#core-prefs-security');
+
+		$I->probe('act=hide');
+
+		try
+		{
+			$I->amOnPage('/e107_admin/prefs.php');
+			$I->see('This has no effect until the core database structure update has been run.', '#core-prefs-security .has-warning');
+		}
+		finally
+		{
+			$I->probe('act=unhide');
+		}
+	}
+
+	/**
 	 * Two browsers sign in as one member with "Disallow multiple logins" on: the first is signed out, the second stays.
 	 *
 	 * @param AcceptanceTester $I
