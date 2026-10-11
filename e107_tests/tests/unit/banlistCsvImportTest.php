@@ -131,7 +131,10 @@ class banlistCsvImportTest extends \Codeception\Test\Unit
 	{
 		if($this->lockProbe === null)
 		{
+			$config = e107::getMySQLConfig();
 			$this->lockProbe = e107::getDb('banlistReplaceLockProbe');
+			self::assertTrue($this->lockProbe->connect($config['mySQLserver'], $config['mySQLuser'], $config['mySQLpassword'], true)
+				&& $this->lockProbe->database($config['mySQLdefaultdb'], $config['mySQLprefix']), 'the probe needs a session of its own');
 			$probeConnectionId = $this->connectionId($this->lockProbe);
 
 			self::assertGreaterThan(0, $this->importerConnectionId,
