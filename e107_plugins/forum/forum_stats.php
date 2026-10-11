@@ -340,7 +340,7 @@ class forumStats
 			$text_1 .= "
 			<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 40%;' class='forumheader3'><a href='".$url."'>{$ma['thread_name']}</a></td>
+			<td style='width: 40%;' class='forumheader3'><a href='".$url."'>{$tp->attributeValue($ma['thread_name'])}</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>{$ma['thread_total_replies']}</td>
 			<td style='width: 20%; text-align: center;' class='forumheader3'>{$uinfo}</td>
 			<td style='width: 20%; text-align: center;' class='forumheader3'>".$gen->convert_date($ma['thread_datestamp'], "forum")."</td>
@@ -389,7 +389,7 @@ class forumStats
 			$text_2 .= "
 			<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 40%;' class='forumheader3'><a href='".$url."'>".$ma['thread_name']."</a></td>
+			<td style='width: 40%;' class='forumheader3'><a href='".$url."'>".$tp->attributeValue($ma['thread_name'])."</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['thread_views']."</td>
 			<td style='width: 20%; text-align: center;' class='forumheader3'>".$uinfo."</td>
 			<td style='width: 20%; text-align: center;' class='forumheader3'>".$gen->convert_date($ma['thread_datestamp'], "forum")."</td>

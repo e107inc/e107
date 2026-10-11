@@ -107,6 +107,28 @@ trait ForumRows
 	}
 
 	/**
+	 * A thread name as an edit stored it before edits were converted.
+	 *
+	 * @return string
+	 */
+	protected function storedMarkupName()
+	{
+		return 'Stored <name-markup>as typed</name-markup>';
+	}
+
+	/**
+	 * Asserts that $printed carries {@see ForumRows::storedMarkupName()} once, as text, and none of its tags as markup.
+	 *
+	 * @param string $printed
+	 * @return void
+	 */
+	protected function assertNamePrintedAsText($printed)
+	{
+		self::assertSame(0, preg_match('#</?name-markup#', $printed), $printed);
+		self::assertSame(1, substr_count($printed, '&lt;name-markup'), $printed);
+	}
+
+	/**
 	 * Drops every row planted, and the tables again if this test installed the plugin for them.
 	 *
 	 * @return void

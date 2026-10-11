@@ -285,7 +285,7 @@
 			WHERE t.thread_id = " . intval($tmp[0]);
 				$sql->gen($qry);
 				$forum = $sql->fetch();
-				$online_location_page = ONLINE_EL13 . " .:. " . $forum['forum_name'] . "->" . ONLINE_EL14 . " .:. " . $forum['thread_name'] . "->" . ONLINE_EL15 . ": " . $t_page;
+				$online_location_page = ONLINE_EL13 . " .:. " . $forum['forum_name'] . "->" . ONLINE_EL14 . " .:. " . $tp->attributeValue($forum['thread_name']) . "->" . ONLINE_EL15 . ": " . $t_page;
 				$online_location = str_replace("php.", "php?", $online_location);
 				if(!in_array((int) $forum['thread_forum_id'], $visibleForums))
 				{

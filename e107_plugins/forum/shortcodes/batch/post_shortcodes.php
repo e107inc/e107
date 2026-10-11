@@ -516,7 +516,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		if($this->var['action'] == "rp")
 		{
 			$pre = LAN_FORUM_1003;
-			$name = $tp->toHTML($this->var['thread_name'], false, 'no_hook, emotes_off');
+			$name = e107forum::threadNameHtml($this->var['thread_name'], $tp);
 			$url = e107::url('forum', 'topic', $this->var);
 			$post = LAN_FORUM_2006;
 		}

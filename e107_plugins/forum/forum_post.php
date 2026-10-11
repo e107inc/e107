@@ -421,7 +421,7 @@ class forum_post_handler
 
 		$data['forum_name'] = $tp->toHTML($data['forum_name'], true);
 
-		define('e_PAGETITLE', ($this->action == 'rp' ? LAN_FORUM_3003.": ".$data['thread_name'] : LAN_FORUM_1018).' / '.$data['forum_name'].' / '.LAN_FORUM_1001);
+		define('e_PAGETITLE', ($this->action == 'rp' ? LAN_FORUM_3003.": ".$tp->attributeValue($data['thread_name']) : LAN_FORUM_1018).' / '.$data['forum_name'].' / '.LAN_FORUM_1001);
 
 
 	}
@@ -919,7 +919,7 @@ class forum_post_handler
 		<tr>
 		<td>".LAN_FORUM_3011.": </td>
 		<td>
-		".$tp->toHTML($this->data['thread_name'],true)."
+		".e107forum::threadNameHtml($this->data['thread_name'], $tp)."
 		</td>
 		</tr>
 		<tr><td></td>
@@ -1001,7 +1001,7 @@ class forum_post_handler
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 
-		$thread_name = e107::getParser()->toHTML($this->data['thread_name'], true, 'no_hook, emotes_off');
+		$thread_name = e107forum::threadNameHtml($this->data['thread_name'], $tp);
 	//	define('e_PAGETITLE', LAN_FORUM_1001.' / '.LAN_FORUM_2024.': '.$thread_name);
 	//	$url = e107::getUrl()->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId));
 	//	$actionUrl = e107::getUrl()->create('forum/thread/report', "id={$threadId}&post={$postId}");
@@ -1128,7 +1128,7 @@ class forum_post_handler
 
 		if (empty($tsubject))
 		{
-			$tsubject = $this->data['thread_name'];
+			$tsubject = $tp->attributeValue($this->data['thread_name']);
 		}
 
 		if ($_POST['poll_title'] != '' && check_class($this->forumObj->prefs->get('poll')))

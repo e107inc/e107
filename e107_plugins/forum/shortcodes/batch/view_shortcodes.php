@@ -1018,7 +1018,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_threadname($parm = null)
 	{
 
-		return e107::getParser()->toHTML($this->var['thread_name'], true, 'no_hook, emotes_off');
+		return e107forum::threadNameHtml($this->var['thread_name'], e107::getParser());
 	}
 
 	function sc_nextprev()

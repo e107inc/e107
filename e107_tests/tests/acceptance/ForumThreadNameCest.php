@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A thread's name is stored one way, whichever form wrote it.
+ * A thread's name is stored one way, whichever form wrote it, and printed as text.
  */
 class ForumThreadNameCest
 {
@@ -11,11 +11,23 @@ class ForumThreadNameCest
 	/** A name none of these forms stored: an '&' raw and encoded, and sequences the split and move forms decode. */
 	const LEGACY_NAME = 'Tom & Jerry, AT&amp;T, 100%25 %3Cb%3Esure%3C/b%3E';
 
+	/** A name as an edit stored it before edits were converted. */
+	const STORED_MARKUP = 'Stored <name-markup>as typed</name-markup>';
+
+	/** A name carrying bbcode, which a title box takes as typed text. */
+	const STORED_BBCODE = '[b]bbcode probe[/b]';
+
 	/** @var array ids from Helper\ForumFixture::haveForumStructure() */
 	private $ids;
 
 	/** @var string the site's flood switch before this Cest changed it */
 	private $antifloodWas;
+
+	/** @var array the site preferences a case changed, as they were before it */
+	private $prefsWas = array();
+
+	/** @var int */
+	private $member;
 
 	/** @var int a thread the member started */
 	private $thread;
@@ -34,9 +46,9 @@ class ForumThreadNameCest
 		$this->ids = $I->haveForumStructure();
 		$this->antifloodWas = $I->haveSitePref('antiflood1', 0);
 
-		$member = $I->haveForumMember('namemember');
-		$this->thread = $I->haveForumThread('Fixture Named Thread', $this->ids['forumA'], $member);
-		$this->openingPost = $I->haveForumPost('Opening post of the named thread', $this->thread, $this->ids['forumA'], $member);
+		$this->member = $I->haveForumMember('namemember');
+		$this->thread = $I->haveForumThread('Fixture Named Thread', $this->ids['forumA'], $this->member);
+		$this->openingPost = $I->haveForumPost('Opening post of the named thread', $this->thread, $this->ids['forumA'], $this->member);
 		$this->reply = $I->haveForumPost('A reply in the named thread', $this->thread, $this->ids['forumA'], 1);
 
 		$I->purgeForumPermCache();
@@ -46,6 +58,11 @@ class ForumThreadNameCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->haveSitePref('antiflood1', $this->antifloodWas === '' ? null : $this->antifloodWas);
+
+		foreach($this->prefsWas as $name => $was)
+		{
+			$I->haveSitePref($name, $was === '' ? null : $was);
+		}
 		$I->dropForumProbe();
 	}
 
@@ -155,6 +172,170 @@ class ForumThreadNameCest
 		$I->seeInDatabase('e107_forum_thread', array('thread_user' => 1, 'thread_name' => $this->startThread($I)));
 	}
 
+	public function theTopicPagePrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$this->seeStoredNameAsText($I, '/e107_plugins/forum/forum_viewtopic.php?id='.$this->thread);
+	}
+
+	/**
+	 * The name's bbcode is not rendered.
+	 */
+	public function theTopicPagePrintsANamesBbcodeAsText(AcceptanceTester $I)
+	{
+		$this->haveStoredName($I, self::STORED_BBCODE);
+		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->thread);
+
+		$I->dontSeeElement('strong.bbcode');
+		$I->seeInSource(self::STORED_BBCODE);
+	}
+
+	/**
+	 * The site's profanity filter applies to a name as it does to the rest of a visitor's text.
+	 */
+	public function theTrackedTopicsListFiltersAStoredName(AcceptanceTester $I)
+	{
+		$this->haveSitePrefUntilAfter($I, 'profanity_filter', 1);
+		$this->haveSitePrefUntilAfter($I, 'profanity_words', 'darn');
+		$this->haveSitePrefUntilAfter($I, 'profanity_replace', '[censored]');
+		$this->haveStoredName($I, 'darn spammers');
+		$I->haveForumSubscriber($this->member, $this->thread);
+		$I->loginToForum('namemember');
+
+		$I->amOnPage('/e107_plugins/forum/forum.php?f=track');
+
+		$I->seeInSource('[censored] spammers');
+		$I->dontSeeInSource('darn spammers');
+	}
+
+	public function theReplyFormPrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$I->loginToForum('namemember');
+
+		$this->seeStoredNameAsText($I, '/e107_plugins/forum/forum_post.php?f=rp&id='.$this->thread);
+	}
+
+	public function aReplyPreviewPrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$I->loginToForum('namemember');
+		$this->haveStoredName($I, self::STORED_MARKUP);
+
+		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=rp&id='.$this->thread);
+		$I->submitForm('#dataform', array('post' => 'A reply to preview'), 'fpreview');
+
+		$this->seePrintedAsText($I);
+	}
+
+	/**
+	 * With the forum's redirect off, as it is on a new install, a posted reply is answered with a page captioned with the name.
+	 */
+	public function theReplyPostedPagePrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$I->loginToForum('namemember');
+		$this->haveStoredName($I, self::STORED_MARKUP);
+
+		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=rp&id='.$this->thread);
+		$I->submitForm('#dataform', array('post' => 'A reply to post'), 'reply');
+		$I->seeInDatabase('e107_forum_post', array('post_thread' => $this->thread, 'post_entry' => 'A reply to post'));
+		$I->seeCurrentUrlMatches('~/forum_post\.php~');
+
+		$this->seePrintedAsText($I);
+	}
+
+	/**
+	 * The who's online page names the thread a member's last request named, whatever URL form it took.
+	 */
+	public function theOnlinePagePrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$this->haveSitePrefUntilAfter($I, 'track_online', 1);
+		$I->haveSitePref('antiflood1', 1);
+		$this->haveStoredName($I, self::STORED_MARKUP);
+
+		$I->loginToForum('namemember');
+		$I->stopFollowingRedirects();
+		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?'.$this->thread);
+		$I->startFollowingRedirects();
+		$I->seeInDatabase('e107_online', array('online_user_id' => $this->member.'.namemember', 'online_location like' => '%forum_viewtopic.php?'.$this->thread));
+		$I->logoutFromForum();
+
+		$I->amOnPage('/online.php');
+
+		$this->seePrintedAsText($I);
+	}
+
+	public function theReportFormPrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$I->loginToForum('namemember');
+
+		$this->seeStoredNameAsText($I, '/e107_plugins/forum/forum_post.php?f=report&id='.$this->thread.'&post='.$this->reply);
+	}
+
+	public function theMoveFormPrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$this->loginAsModerator($I);
+
+		$this->seeStoredNameAsText($I, '/e107_plugins/forum/forum_post.php?f=move&id='.$this->thread.'&post='.$this->openingPost);
+	}
+
+	public function theTrackedTopicsListPrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$I->haveForumSubscriber($this->member, $this->thread);
+		$I->loginToForum('namemember');
+
+		$this->seeStoredNameAsText($I, '/e107_plugins/forum/forum.php?f=track');
+	}
+
+	public function theForumStatisticsPrintAStoredNameAsText(AcceptanceTester $I)
+	{
+		$this->seeStoredNameAsText($I, '/e107_plugins/forum/forum_stats.php');
+	}
+
+	public function thePrintViewPrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$this->seeStoredNameAsText($I, '/print.php?plugin:forum.'.$this->thread);
+	}
+
+	public function aMembersPostListPrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$I->loginToForum('namemember');
+
+		$this->seeStoredNameAsText($I, '/userposts.php?0.forums.'.$this->member);
+	}
+
+	public function theMostActiveTopicsPrintAStoredNameAsText(AcceptanceTester $I)
+	{
+		$this->seeStoredNameAsText($I, '/top.php?0.active.forum.10');
+	}
+
+	public function theNewPostsListPrintsAStoredNameAsText(AcceptanceTester $I)
+	{
+		$I->loginToForum('namemember');
+
+		$this->seeStoredNameAsText($I, '/e107_plugins/forum/forum.php?new');
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $page
+	 */
+	private function seeStoredNameAsText(AcceptanceTester $I, $page)
+	{
+		$this->haveStoredName($I, self::STORED_MARKUP);
+		$I->amOnPage($page);
+
+		$this->seePrintedAsText($I);
+	}
+
+	/**
+	 * The name is on the page, and nowhere on it as markup.
+	 *
+	 * @param AcceptanceTester $I
+	 */
+	private function seePrintedAsText(AcceptanceTester $I)
+	{
+		$I->dontSeeInSource('<name-markup>');
+		$I->seeInSource('&lt;name-markup');
+	}
+
 	/**
 	 * Start a thread named {@see ForumThreadNameCest::SUBJECT} through the new-thread form.
 	 *
@@ -221,6 +402,23 @@ class ForumThreadNameCest
 	private function seeLegacyNameOn(AcceptanceTester $I, $thread)
 	{
 		$I->assertSame(self::LEGACY_NAME, $I->grabFromDatabase('e107_forum_thread', 'thread_name', array('thread_id' => $thread)));
+	}
+
+	/**
+	 * Set a site preference for this case alone; _after() puts it back.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	private function haveSitePrefUntilAfter(AcceptanceTester $I, $name, $value)
+	{
+		$was = $I->haveSitePref($name, $value);
+
+		if(!array_key_exists($name, $this->prefsWas))
+		{
+			$this->prefsWas[$name] = $was;
+		}
 	}
 
 	/**

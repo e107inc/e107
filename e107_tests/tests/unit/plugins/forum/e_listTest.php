@@ -50,6 +50,31 @@ class e_listTest extends \Codeception\Test\Unit
 	 */
 	public function testAThreadOpenedByAGuestIsAttributedToTheNameTheGuestGave()
 	{
+		$record = null;
+		foreach($this->listRecords() as $candidate)
+		{
+			if(strpos($candidate['heading'], $this->threadName) !== false)
+			{
+				$record = $candidate;
+			}
+		}
+
+		self::assertNotNull($record, 'the seeded thread is missing from the list the forum section returned');
+		self::assertSame(self::GUEST, $record['author']);
+	}
+
+	public function testAThreadsStoredNameIsHeadedAsText()
+	{
+		$this->haveForumThread($this->storedMarkupName(), $this->forumId);
+
+		$this->assertNamePrintedAsText(implode("\n", array_column($this->listRecords(), 'heading')));
+	}
+
+	/**
+	 * @return array the records the forum section gives the list_new page
+	 */
+	private function listRecords()
+	{
 		require_once(e_PLUGIN.'list_new/list_class.php');
 		require_once(e_PLUGIN.'forum/e_list.php');
 
@@ -79,16 +104,6 @@ class e_listTest extends \Codeception\Test\Unit
 
 		self::assertIsArray($data['records'], 'the seeded thread is the most recent, so the section has records');
 
-		$record = null;
-		foreach($data['records'] as $candidate)
-		{
-			if(strpos($candidate['heading'], $this->threadName) !== false)
-			{
-				$record = $candidate;
-			}
-		}
-
-		self::assertNotNull($record, 'the seeded thread is missing from the list the forum section returned');
-		self::assertSame(self::GUEST, $record['author']);
+		return $data['records'];
 	}
 }

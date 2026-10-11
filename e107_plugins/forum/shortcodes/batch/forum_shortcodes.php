@@ -574,7 +574,7 @@ class forum_shortcodes extends e_shortcode
 					return $url;
 //					break;
 				case "name":
-					return $lastpost['thread_name'];
+					return e107::getParser()->attributeValue($lastpost['thread_name']);
 //			default:
 
 //				return $relativeDate.'<br />'.$lastpost_name." <a href='".$url."'>".IMAGE_post2.'</a>';
@@ -606,7 +606,7 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_newspostname()
 	{
-		return empty($this->var) || empty($this->var['thread_name']) ? LAN_FORUM_0029 : "<a href='".e107::getUrl()->create('forum/thread/last', $this->var)."'>".e107::getParser()->toHTML($this->var['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
+		return empty($this->var) || empty($this->var['thread_name']) ? LAN_FORUM_0029 : "<a href='".e107::getUrl()->create('forum/thread/last', $this->var)."'>".e107forum::threadNameHtml($this->var['thread_name'], e107::getParser()).'</a>';
 	}
 
 

@@ -145,7 +145,7 @@ class forum_notify extends notify
 			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_NEWTOPIC_MSG), array(
 				'user' => USERNAME,
 				'forum' => $data['forum_name'],
-				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'thread' => sprintf('<a href="%s">%s</a>', $url, e107::getParser()->attributeValue($data['thread_name'])),
 				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
@@ -171,7 +171,7 @@ class forum_notify extends notify
 			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_NEWTOPIC_PROB_MSG), array(
 				'user' => USERNAME,
 				'forum' => $data['forum_name'],
-				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'thread' => sprintf('<a href="%s">%s</a>', $url, e107::getParser()->attributeValue($data['thread_name'])),
 				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
@@ -198,7 +198,7 @@ class forum_notify extends notify
 				'user' => USERNAME,
 				'forum' => $data['old_thread']['forum_name'],
 				'forum2' => sprintf('<a href="%s">%s</a>', $url, $data['new_thread']['forum_name']),
-				'thread' => $data['new_thread']['thread_name']
+				'thread' => e107::getParser()->attributeValue($data['new_thread']['thread_name'])
 			));
 		}
 
@@ -224,7 +224,7 @@ class forum_notify extends notify
 			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_TOPIC_DELETED_MSG), array(
 				'user' => USERNAME,
 				'forum' => sprintf('<a href="%s">%s</a>', $url, $data['forum_name']),
-				'thread' => $data['thread_name']
+				'thread' => e107::getParser()->attributeValue($data['thread_name'])
 			));
 		}
 
@@ -249,7 +249,7 @@ class forum_notify extends notify
 			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_TOPIC_UPDATED_MSG), array(
 				'user' => USERNAME,
 				'forum' => $data['forum_name'],
-				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'thread' => sprintf('<a href="%s">%s</a>', $url, e107::getParser()->attributeValue($data['thread_name'])),
 				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
@@ -288,7 +288,7 @@ class forum_notify extends notify
 			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_POST_CREATED_MSG), array(
 				'user' => USERNAME,
 				'forum' => $data['forum_name'],
-				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'thread' => sprintf('<a href="%s">%s</a>', $url, e107::getParser()->attributeValue($data['thread_name'])),
 				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
@@ -312,7 +312,7 @@ class forum_notify extends notify
 			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_POST_UPDATED_MSG), array(
 				'user' => USERNAME,
 				'forum' => $data['forum_name'],
-				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'thread' => sprintf('<a href="%s">%s</a>', $url, e107::getParser()->attributeValue($data['thread_name'])),
 				'post' => e107::getParser()->toHTML($data['post_entry'], true, 'BODY')
 			));
 		}
@@ -340,7 +340,7 @@ class forum_notify extends notify
 			$message = e107::getParser()->lanVars(nl2br(LAN_FORUM_NT_POST_DELETED_MSG), array(
 				'user' => USERNAME,
 				'forum' => $data['forum_name'],
-				'thread' => sprintf('<a href="%s">%s</a>', $url, $data['thread_name']),
+				'thread' => sprintf('<a href="%s">%s</a>', $url, e107::getParser()->attributeValue($data['thread_name'])),
 				'postid' => $postid,
 				'post' => $entry
 			));

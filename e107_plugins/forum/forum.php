@@ -478,7 +478,7 @@ class forum_front
 
 					$forumUrl = e107::url('forum', 'forum', $row);
 					$threadUrl = e107::url('forum', 'topic', $row, array('query' => array('last' => 1))); // ('forum/thread/view', $row); // configs will be able to map thread_* vars to the url
-					$data['TRACKPOSTNAME'] = "<a href='" . $forumUrl . "'>" . $row['forum_name'] . "</a> / <a href='" . $threadUrl . "'>" . $tp->toHTML($row['thread_name'], false, 'TITLE') . '</a>';
+					$data['TRACKPOSTNAME'] = "<a href='" . $forumUrl . "'>" . $row['forum_name'] . "</a> / <a href='" . $threadUrl . "'>" . e107forum::threadNameHtml($row['thread_name'], $tp) . '</a>';
 					//	$data['UNTRACK'] = "<a class='btn btn-default' href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_FORUM_0070."</a>";
 
 

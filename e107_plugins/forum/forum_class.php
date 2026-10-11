@@ -1139,6 +1139,18 @@ class e107forum
 		return $column.' IN ('.implode(',', array_map('intval', $visible)).')';
 	}
 
+	/**
+	 * A thread's stored name as HTML, with nothing in it taken as markup.
+	 *
+	 * @param string  $name
+	 * @param e_parse $tp
+	 * @return string
+	 */
+	public static function threadNameHtml($name, e_parse $tp)
+	{
+		return $tp->toHTML($tp->attributeValue($name), false, 'USER_TITLE');
+	}
+
 
 	function threadViewed($threadId)
 	{
@@ -3027,7 +3039,7 @@ class e107forum
 				$threadInfo['thread_id'] = intval($threadInfo['thread_id']);
 			}
 			$search 	= array('{THREAD_TITLE}', '{THREAD_HREF}');
-			$replace 	= array(vartrue($threadInfo['thread_name']), ''); // $thread->threadInfo - no reference found
+			$replace 	= array($tp->attributeValue(vartrue($threadInfo['thread_name'])), ''); // $thread->threadInfo - no reference found
 
 
 			$FORUM_CRUMB['thread']['value'] = str_replace($search, $replace, varset($FORUM_CRUMB['thread']['value']));
@@ -3065,7 +3077,7 @@ class e107forum
 
 			if(strlen($thread_title))
 			{
-				$BREADCRUMB .= $dfltsep.$thread_title;
+				$BREADCRUMB .= $dfltsep.$tp->attributeValue($thread_title);
 			}
 		}
 
@@ -3100,7 +3112,7 @@ class e107forum
 
 		if(vartrue($forumInfo['thread_name']))
 		{
-			$breadcrumb[]	= array('text'=> $forumInfo['thread_name'] , 'url'=>null);
+			$breadcrumb[]	= array('text'=> $tp->attributeValue($forumInfo['thread_name']) , 'url'=>null);
 		}
 		
 		
