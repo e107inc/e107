@@ -148,6 +148,35 @@ class CommentRoutesParentVisibilityCest
 	}
 
 	/**
+	 * Neither the menu nor the feed publishes a comment left on a forum poll, which only its forum thread shows.
+	 */
+	public function forumPollCommentsReachNeitherTheMenuNorTheFeed(AcceptanceTester $I)
+	{
+		$this->haveCommentMenu($I);
+
+		$I->amOnPage('/news.php');
+		$I->seeInSource('Text of CMTPOLL');
+		$I->dontSeeInSource('Text of CMTFORUMPOLL');
+		$I->dontSeeInSource('Fixture Forum Poll');
+
+		$I->haveInDatabase('e107_rss', array(
+			'rss_name'      => 'Fixture feed comments',
+			'rss_url'       => 'comments',
+			'rss_topicid'   => '',
+			'rss_path'      => '',
+			'rss_text'      => 'fixture',
+			'rss_datestamp' => time(),
+			'rss_class'     => 0,
+			'rss_limit'     => 50,
+		));
+
+		$I->amOnPage('/e107_plugins/rss_menu/rss.php?comments.2.');
+		$I->seeInSource('</rss>');
+		$I->seeInSource('Text of CMTPOLL');
+		$I->dontSeeInSource('Text of CMTFORUMPOLL');
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @return void
 	 */

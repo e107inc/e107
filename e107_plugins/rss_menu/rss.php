@@ -575,7 +575,8 @@ class rssCreate
 				break;
 
 			case 'poll':
-				$where .= " AND p.poll_start_datestamp <= ".$now
+				$where .= " AND p.poll_type = 1"
+					." AND p.poll_start_datestamp <= ".$now
 					." AND (p.poll_end_datestamp = 0 OR p.poll_end_datestamp > ".$now.")";
 				break;
 

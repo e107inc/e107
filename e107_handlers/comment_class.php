@@ -1704,7 +1704,7 @@ class comment
 							break;
 						// '3' was FAQ
 						case '4': //	poll
-							if ($sql2->select("polls", "*", "poll_id='".$row['comment_item_id']."' "))
+							if ($sql2->select("polls", "*", "poll_id='".$row['comment_item_id']."' AND poll_type=1 "))
 							{
 								$row2 = $sql2->fetch();
 								$ret['comment_type'] = COMLAN_TYPE_4;
