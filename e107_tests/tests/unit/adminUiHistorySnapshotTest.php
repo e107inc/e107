@@ -31,6 +31,7 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 
 		require_once(e_HANDLER . 'admin_ui.php');
 		require_once(__DIR__ . '/fixtures/AdminUiHistoryProbeFixture.php');
+		e107::coreLan('admin', true);
 
 		$sql = e107::getDb();
 		$sql->gen('DROP TEMPORARY TABLE IF EXISTS `' . $this->table . '`');
@@ -56,6 +57,14 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 	private function forgetArchiveFieldDefinition()
 	{
 		@unlink(e_CACHE_DB . 'admin_history.php');
+	}
+
+	/**
+	 * The error stack as the administrator reads it, drained so it does not carry into the next test.
+	 */
+	private function reportedErrors()
+	{
+		return strip_tags(implode("\n", (array) e107::getMessage()->get(E_MESSAGE_ERROR, 'default', true)));
 	}
 
 	private function probe(array $inModel, array $written)
@@ -222,6 +231,82 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 	}
 
 	/**
+	 * The archive is the only copy of the row once it is gone, so a delete whose archive write
+	 * failed does not happen at all and the administrator is told why.
+	 */
+	public function testAFailedArchiveRefusesTheSingleDelete()
+	{
+		$node = new AdminUiHistoryNodeStub(array('probe_id' => 1, 'probe_fields' => null));
+		$probe = new AdminUiHistoryDeleteProbeFixture('admin_ui_history_probe', 'probe_id', $node);
+		$probe->archiveFailsFor = array(1);
+		e107::getMessage()->reset();
+
+		$probe->ListDeleteTrigger(array(1 => 'delete'));
+
+		$this->assertSame(array(), $probe->treeStub->deleted, 'the row stays until it can be archived');
+		$this->assertStringContainsString('Record 1 was not deleted', $this->reportedErrors(),
+			'the administrator is told which record was kept');
+	}
+
+	/**
+	 * The fall-back for the missing node is a second delete of its own, and it is behind the same
+	 * gate because the archive is written before the two paths part.
+	 */
+	public function testAFailedArchiveRefusesTheDeleteFallBackThatHasNoTreeNode()
+	{
+		$probe = new AdminUiHistoryDeleteProbeFixture('admin_ui_history_probe', 'probe_id');
+		$probe->archiveFailsFor = array(1);
+		e107::getMessage()->reset();
+
+		$probe->ListDeleteTrigger(array(1 => 'delete'));
+
+		$this->assertSame(array(), $probe->treeStub->deleted);
+		$this->assertStringContainsString('Record 1 was not deleted', $this->reportedErrors());
+	}
+
+	/**
+	 * The batch trigger resurrects the confirmed ids out of a posted string, so what reaches the
+	 * loop, the archive and the refusal is always a string.
+	 */
+	public function testAFailedArchiveRefusesTheBatchDelete()
+	{
+		$node = new AdminUiHistoryNodeStub(array('probe_id' => 1, 'probe_fields' => null));
+		$probe = new AdminUiHistoryDeleteProbeFixture('admin_ui_history_probe', 'probe_id', $node);
+		$probe->archiveFailsFor = array(1);
+		e107::getMessage()->reset();
+
+		$probe->probeBatchDelete(array('1'));
+
+		$this->assertSame(array(), $probe->treeStub->deleted);
+		$this->assertStringContainsString('Record 1 was not deleted', $this->reportedErrors());
+	}
+
+	/**
+	 * A refused row is neither deleted nor missing, so it must count towards neither total: the
+	 * batch reports what it removed and names what it kept.
+	 */
+	public function testABatchDeletesTheRowsItCouldArchiveAndKeepsTheRest()
+	{
+		e107::getDb()->gen('INSERT INTO `' . $this->table
+			. '` (probe_id, probe_fields, probe_menu) VALUES (2, \'{"colour":"green"}\', \'right\')');
+
+		$node = new AdminUiHistoryNodeStub(array('probe_id' => 1, 'probe_fields' => null));
+		$probe = new AdminUiHistoryDeleteProbeFixture('admin_ui_history_probe', 'probe_id', $node);
+		$probe->archiveFailsFor = array('2');
+		e107::getMessage()->reset();
+
+		$probe->probeBatchDelete(array('1', '2'));
+
+		$this->assertSame(array('1'), $probe->treeStub->deleted, 'the row that archived is the row that goes');
+
+		$errors = $this->reportedErrors();
+		$this->assertStringContainsString('Record 2 was not deleted', $errors);
+		$this->assertStringNotContainsString('not found', $errors, 'a refused row is not a missing one');
+		$this->assertStringContainsString('1 record(s) successfully deleted',
+			strip_tags(implode("\n", (array) e107::getMessage()->get(E_MESSAGE_SUCCESS, 'default', true))));
+	}
+
+	/**
 	 * The archive insert fails on a site whose in-place upgrade has not created admin_history yet,
 	 * and what it was archiving is the whole stored row. The report names the record, never its
 	 * contents, which on a user delete carry the password hash.
@@ -235,7 +320,7 @@ class adminUiHistorySnapshotTest extends \Test\Unit
 
 		$this->assertFalse($probe->probeBackup(1, array('user_password' => self::SECRET)));
 
-		$reported = implode("\n", (array) e107::getMessage()->get(E_MESSAGE_ERROR, 'default', true));
+		$reported = $this->reportedErrors();
 
 		$this->assertStringContainsString('admin_ui_history_probe', $reported,
 			'the administrator is told which record could not be archived');
