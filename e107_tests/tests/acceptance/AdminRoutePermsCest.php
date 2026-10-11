@@ -900,6 +900,63 @@ class AdminRoutePermsCest
 		$I->dontSeeInDatabase('e107_generic', array('gen_id' => $target));
 	}
 
+	/** A list's batch writes reach only the rows its own query selects. */
+	public function aWelcomeMessageAdministratorCannotBatchWriteRowsAnotherListOwns(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a welcome-message batch write on the shared-table rows another permission owns');
+
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+		$rank = $this->seedGenericRow($I, 'user_rank_data', 'p7rp rank', 0);
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		foreach(array($counter, $rank) as $id)
+		{
+			$this->sendBatch($I, self::ROUTE_WMESSAGE, 'gen_intdata__254', $id, 'e-multiselect');
+
+			$I->seeInDatabase('e107_generic', array('gen_id' => $id, 'gen_intdata' => 0));
+		}
+	}
+
+	/** A list's batch copy reaches only the rows its own query selects. */
+	public function aWelcomeMessageAdministratorCannotBatchCopyRowsAnotherListOwns(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a welcome-message batch copy of the shared-table rows another permission owns');
+
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+		$this->sendBatch($I, self::ROUTE_WMESSAGE, 'copy', $counter, 'e-multiselect');
+
+		$I->seeNumRecords(1, 'e107_generic', array('gen_type' => 'failed_login', 'gen_ip' => '203.0.113.7'));
+	}
+
+	/** A list's batch export reaches only the rows its own query selects. */
+	public function aWelcomeMessageAdministratorCannotBatchExportRowsAnotherListOwns(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a welcome-message batch export of the shared-table rows another permission owns');
+
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+		$this->sendBatch($I, self::ROUTE_WMESSAGE, 'export', $counter, 'e-multiselect');
+
+		$I->dontSeeInSource('203.0.113.7');
+	}
+
+	/** Positive control: the welcome-message batch still writes a welcome message. */
+	public function aWelcomeMessageAdministratorStillBatchWritesAWelcomeMessage(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the welcome-message batch write working on a welcome message');
+
+		$message = $this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+		$this->sendBatch($I, self::ROUTE_WMESSAGE, 'gen_intdata__254', $message, 'e-multiselect');
+
+		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_intdata' => 254));
+	}
+
 	/** A list's edit form writes the row it loaded, whatever primary key the request carries. */
 	public function aWelcomeMessageEditCannotBeTurnedOnAnotherListsRow(AcceptanceTester $I)
 	{

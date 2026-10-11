@@ -98,6 +98,12 @@ class AdminUiBatchSpyTree
 		return 0;
 	}
 
+	/** Every posted row is on the loaded list page. */
+	public function hasNode($node_id)
+	{
+		return true;
+	}
+
 	public function setMessages($session_messages = false)
 	{
 		return $this;
