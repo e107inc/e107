@@ -135,12 +135,17 @@ class AccountSessionsCest
 	 */
 	public function theSecondSignInSignsTheFirstBrowserOutOnDatabaseSessions(AcceptanceTester $I)
 	{
-		$this->signInFromTwoBrowsers($I, 'db');
+		$this->signInFromTwoBrowsers($I, 'db', 'user');
 	}
 
 	public function theSecondSignInSignsTheFirstBrowserOutOnFileSessions(AcceptanceTester $I)
 	{
-		$this->signInFromTwoBrowsers($I, 'files');
+		$this->signInFromTwoBrowsers($I, 'files', 'files');
+	}
+
+	public function theSecondSignInSignsTheFirstBrowserOutOnFileSessionsWithoutLocking(AcceptanceTester $I)
+	{
+		$this->signInFromTwoBrowsers($I, 'nonblocking', 'user');
 	}
 
 	/**
@@ -267,8 +272,9 @@ class AccountSessionsCest
 	 *
 	 * @param AcceptanceTester $I
 	 * @param string $method session_save_method for the run
+	 * @param string $handler what PHP then reports as session.save_handler: "user" where core's own handler stores the sessions
 	 */
-	private function signInFromTwoBrowsers(AcceptanceTester $I, $method)
+	private function signInFromTwoBrowsers(AcceptanceTester $I, $method, $handler)
 	{
 		$this->havePref($I, 'disallowMultiLogin', 1);
 		$this->havePref($I, 'session_save_method', $method);
@@ -279,6 +285,7 @@ class AccountSessionsCest
 		$first = $this->probe($I);
 		$I->assertSame((string) $userId, $first['USER_ID'], 'the first browser is signed in');
 		$I->assertSame($method, $first['SAVE_METHOD']);
+		$I->assertSame($handler, $first['SAVE_HANDLER']);
 
 		$I->loginAsMember($name, self::PASSWORD);
 		$second = $this->probe($I);
@@ -368,14 +375,14 @@ class AccountSessionsCest
 
 	/**
 	 * @param AcceptanceTester $I
-	 * @return array SESSION_NAME, SESSION_ID, COOKIE_PATH, USER_ID, SAVE_METHOD and HANDLE as the application sees them
+	 * @return array SESSION_NAME, SESSION_ID, COOKIE_PATH, USER_ID, SAVE_METHOD, SAVE_HANDLER and HANDLE as the application sees them
 	 */
 	private function probe(AcceptanceTester $I)
 	{
 		$body = $I->grabProbe();
 		$read = array();
 
-		foreach(array('SESSION_NAME', 'SESSION_ID', 'COOKIE_PATH', 'USER_ID', 'SAVE_METHOD', 'HANDLE') as $key)
+		foreach(array('SESSION_NAME', 'SESSION_ID', 'COOKIE_PATH', 'USER_ID', 'SAVE_METHOD', 'SAVE_HANDLER', 'HANDLE') as $key)
 		{
 			if(!preg_match('/^'.$key.':(.*)$/m', $body, $matches))
 			{
@@ -446,6 +453,7 @@ switch(isset($_GET['act']) ? $_GET['act'] : '')
 		echo "COOKIE_PATH:", defined('e_HTTP') ? e_HTTP : '/', "\n";
 		echo "USER_ID:", (int) e107::getUser()->getId(), "\n";
 		echo "SAVE_METHOD:", e107::getSession()->getSaveMethod(), "\n";
+		echo "SAVE_HANDLER:", ini_get('session.save_handler'), "\n";
 		echo "HANDLE:", isset($token[2]) ? $token[2] : '', "\n";
 }
 PHP;

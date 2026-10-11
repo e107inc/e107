@@ -169,7 +169,7 @@ class e_session
 
     /**
      * Session save method
-     * @var string files|db
+     * @var string db|files|nonblocking, or the name of another PHP session module
      */
     protected $_sessionSaveMethod = 'files';
 
@@ -980,19 +980,9 @@ public function getData($key = null, $clear = false)
             session_save_path($this->_sessionSavePath);
         }
 
-        switch ($this->_sessionSaveMethod)
+        if (!isset($_SESSION))
         {
-            case 'db':
-                $session = new e_session_db;
-                session_set_save_handler($session);
-                break;
-
-            default:
-                if(!isset($_SESSION))
-                {
-                    session_module_name($this->_sessionSaveMethod);
-                }
-                break;
+            $this->installSaveHandler();
         }
 
         if (empty($this->_options['domain']))
@@ -1031,6 +1021,37 @@ public function getData($key = null, $clear = false)
         session_start();
         self::$_sessionStarted = true;
         return $this;
+    }
+
+    /**
+     * Hand PHP the storage the save method names: core's own handler where it has one, PHP's module of that name otherwise, and the files module for "nonblocking" where it cannot reach its directory.
+     *
+     * @return void
+     */
+    private function installSaveHandler()
+    {
+        $method = $this->_sessionSaveMethod;
+
+        if ('db' === $method)
+        {
+            session_set_save_handler(new e_session_db(), true);
+            return;
+        }
+
+        if ('nonblocking' === $method)
+        {
+            $handler = new \e107\SessionHandlers\NonblockingFilesSessionHandler(session_save_path());
+
+            if ($handler->isReachable())
+            {
+                session_set_save_handler($handler, true);
+                return;
+            }
+
+            $method = $this->_sessionSaveMethod = 'files';
+        }
+
+        session_module_name($method);
     }
 
     /**
@@ -1112,7 +1133,7 @@ public function getData($key = null, $clear = false)
     public function setSessionId($sid = null)
     {
         // comma and minus allowed since 5.0
-        if (!empty($sid) && preg_match('#^[0-9a-zA-Z,-]+$#', $sid))
+        if (!empty($sid) && is_scalar($sid) && \e107\SessionHandlers\SessionId::isWellFormed((string) $sid))
         {
             session_id($sid);
         }

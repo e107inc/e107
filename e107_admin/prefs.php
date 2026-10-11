@@ -1627,10 +1627,8 @@ $text .= "
 
     $text .= "
 					<tr>
-						<td><label for='session-save-method'>".PRFLAN_282."</label></td>
-						<td class='form-inline'>
-							".$frm->select('session_save_method', prefs_session_save_methods(), vartrue($pref['session_save_method'], e107::getSession()->getSaveMethod()))."
-						</td>
+						<td><label for='session-save-method'>".PRFLAN_282."</label>".$frm->help(PRFLAN_SESSION_SAVE_METHOD_HELP)."</td>
+						".prefs_session_save_method_cell($frm, $pref)."
 					</tr>
 					";
 
@@ -2267,13 +2265,34 @@ function prefs_disallow_multi_login_cell($frm, $pref)
 }
 
 /**
+ * The cell holding the Session Save Method select, with a warning while the method chosen is not the one running.
+ *
+ * @param e_form $frm
+ * @param array $pref
+ * @return string
+ */
+function prefs_session_save_method_cell($frm, $pref)
+{
+	$running = e107::getSession()->getSaveMethod();
+	$select = $frm->select('session_save_method', prefs_session_save_methods(), vartrue($pref['session_save_method'], $running));
+
+	if(varset($pref['session_save_method']) !== 'nonblocking' || $running === 'nonblocking')
+	{
+		return "<td class='form-inline'>".$select."</td>";
+	}
+
+	return "<td class='form-inline has-warning'>".$select."<div class='text-warning'>".PRFLAN_SESSION_SAVE_METHOD_NONBLOCKING_UNREACHABLE."</div></td>";
+}
+
+/**
  * @return array save method => label: core's own, and the storage running now when it is none of them, so that saving the page never changes it unasked
  */
 function prefs_session_save_methods()
 {
 	$methods = array(
-		'db'    => PRFLAN_SESSION_SAVE_METHOD_DATABASE,
-		'files' => PRFLAN_SESSION_SAVE_METHOD_FILES,
+		'db'          => PRFLAN_SESSION_SAVE_METHOD_DATABASE,
+		'files'       => PRFLAN_SESSION_SAVE_METHOD_FILES,
+		'nonblocking' => PRFLAN_SESSION_SAVE_METHOD_NONBLOCKING,
 	);
 
 	$running = (string) e107::getSession()->getSaveMethod();
