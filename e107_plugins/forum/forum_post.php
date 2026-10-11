@@ -197,12 +197,6 @@ class forum_post_handler
 	 */
 	function processPosted()
 	{
-
-		if(!empty($_POST['action'])) // override from 'quote' mode to 'rp' mode.
-		{
-			$this->action = $_POST['action'];
-		}
-
 		if(isset($_POST['newthread']) || isset($_POST['reply']))
 		{
 			$this->insertPost();
@@ -1283,6 +1277,7 @@ class forum_post_handler
 				// Reply only.  Add the post, update thread record with latest post info.
 				// Update forum with latest post info
 				case 'rp':
+				case 'quote':
 					$postInfo['post_thread']        = $this->id;
 					$newPostId = $this->forumObj->postAdd($postInfo);
 					break;
