@@ -19,6 +19,9 @@ class adminUiDefaultActionTest extends \Codeception\Test\Unit
 	/** @var array */
 	private $savedGet;
 
+	/** @var array */
+	private $savedPost;
+
 	protected function _before()
 	{
 		require_once(e_HANDLER . 'admin_ui.php');
@@ -26,12 +29,14 @@ class adminUiDefaultActionTest extends \Codeception\Test\Unit
 
 		$this->savedDispatcher = e107::getRegistry('admin/ui/dispatcher');
 		$this->savedGet = $_GET;
+		$this->savedPost = $_POST;
 	}
 
 	protected function _after()
 	{
 		e107::setRegistry('admin/ui/dispatcher', $this->savedDispatcher);
 		$_GET = $this->savedGet;
+		$_POST = $this->savedPost;
 	}
 
 	public function testTheDefaultActionRunsForAnAdministratorWhoHoldsItsRoute()
@@ -85,6 +90,67 @@ class adminUiDefaultActionTest extends \Codeception\Test\Unit
 		}
 	}
 
+	public function testAnActionNamingOneOfTheControllersOwnMethodsIsRefusedToAnAdministratorWhoLacksTheDefaultRoute()
+	{
+		foreach(array('dispatch', 'DISPATCH', 'dis_patch', 'getper', 'GET_PER') as $action)
+		{
+			$this->assertSame('e403', $this->landOn(array(), array(), $action), $action);
+		}
+	}
+
+	public function testAnActionNamingTheControllersOwnDispatchGivesWayToTheDefaultActionForAnAdministratorWhoHoldsItsRoute()
+	{
+		$this->assertSame('list', $this->landOn(array('main/list'), array(), 'dispatch'));
+	}
+
+	public function testADefaultActionNamingOneOfTheControllersOwnMethodsIsNotFound()
+	{
+		$controller = $this->controllerFor(array('main/getper'), array(), 'nopage', 'AdminUiDefaultActionProbeFixture');
+		$controller->setDefaultAction('getper');
+
+		$this->assertSame('e404', $controller->probe());
+	}
+
+	public function testTheObserverDispatchRunsOnceForARequestNamingItself()
+	{
+		$controller = $this->controllerFor(array('main/list'), array(), 'dispatch', 'AdminUiOwnMethodProbeFixture');
+
+		$controller->dispatchObserver();
+
+		$this->assertSame(array('dispatchObserver'), $controller->ran);
+	}
+
+	public function testEachDispatchMethodRunsOnceWhenItIsGivenItsOwnNameAsTheAction()
+	{
+		foreach(array('dispatchObserver', 'dispatchHeader', 'dispatchPage') as $method)
+		{
+			$controller = $this->controllerFor(array('main/list'), array(), 'list', 'AdminUiOwnMethodProbeFixture');
+
+			$controller->$method('dispatch');
+
+			$this->assertSame(array($method), $controller->ran, $method);
+		}
+	}
+
+	public function testTheHeaderOfAnActionIsNeverTheControllersOwnAddHeader()
+	{
+		$controller = $this->controllerFor(array('main/list'), array(), 'add', 'AdminUiOwnMethodProbeFixture');
+
+		$controller->dispatchHeader();
+
+		$this->assertSame(array('dispatchHeader'), $controller->ran);
+	}
+
+	public function testATriggerOfAnActionIsNeverTheControllersOwnSetDefaultTrigger()
+	{
+		$controller = $this->controllerFor(array('main/list'), array(), 'set', 'AdminUiOwnMethodProbeFixture');
+		$controller->getRequest()->setPosted('etrigger_default', 'list');
+
+		$controller->dispatchObserver();
+
+		$this->assertSame(array('dispatchObserver'), $controller->ran);
+	}
+
 	/**
 	 * @param array|null $granted routes the registered dispatcher grants, or null to register none
 	 * @param array $disallow actions the controller refuses
@@ -94,10 +160,20 @@ class adminUiDefaultActionTest extends \Codeception\Test\Unit
 	 */
 	private function landOn($granted, $disallow = array(), $action = 'nopage', $controllerClass = 'AdminUiDefaultActionProbeFixture')
 	{
+		return $this->controllerFor($granted, $disallow, $action, $controllerClass)->probe();
+	}
+
+	/**
+	 * @param array|null $granted routes the registered dispatcher grants, or null to register none
+	 * @param array $disallow actions the controller refuses
+	 * @param string $action the action requested
+	 * @param string $controllerClass {@see AdminUiDefaultActionProbeFixture} or a subclass
+	 * @return AdminUiDefaultActionProbeFixture
+	 */
+	private function controllerFor($granted, $disallow, $action, $controllerClass)
+	{
 		e107::setRegistry('admin/ui/dispatcher', $granted === null ? null : new AdminUiDefaultActionDispatcherFixture($granted));
 
-		$controller = new $controllerClass(new e_admin_request('mode=main&action='.$action), $disallow);
-
-		return $controller->probe();
+		return new $controllerClass(new e_admin_request('mode=main&action='.$action), $disallow);
 	}
 }

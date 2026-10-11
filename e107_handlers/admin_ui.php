@@ -2318,7 +2318,7 @@ class e_admin_controller
 			$action = $this->getRequest()->getActionName();
 		}
 		$method = $this->toMethodName($action);
-		if(!method_exists($this, $method) || $this->endsInTheAjaxInfix($action))
+		if(!$this->isActionMethod($method) || $this->endsInTheAjaxInfix($action))
 		{
 			$this->_log('Skipping ' .$method. '() (no page of its own)');
 			$default = $this->getDefaultAction();
@@ -2336,7 +2336,7 @@ class e_admin_controller
 
 		// switch to 404 if needed
 		$method = $this->toMethodName($this->getRequest()->getActionName());
-		if(!method_exists($this, $method))
+		if(!$this->isActionMethod($method))
 		{
 			$this->_log('Skipping ' .$method. '() (not found)');
 			$this->getRequest()->setAction('e404');
@@ -2358,6 +2358,29 @@ class e_admin_controller
 		$page = $request->canonicalizeAction($this->toMethodName($action, 'page', false));
 
 		return (string) substr($page, -strlen($ajaxSuffix)) === $ajaxSuffix;
+	}
+
+	/**
+	 * Whether a method named from the request is an action method: one the admin UI does not declare, or declares under the capitalised name {@see e_admin_request::camelize()} gives an action.
+	 *
+	 * @param string $method
+	 * @return bool
+	 */
+	private function isActionMethod($method)
+	{
+		if(!method_exists($this, $method))
+		{
+			return false;
+		}
+
+		if(!method_exists('e_admin_ui', $method))
+		{
+			return true;
+		}
+
+		$declared = new \e107\Reflection\ReflectionMethod('e_admin_ui', $method);
+
+		return strspn($declared->getName(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 0, 1) === 1;
 	}
 
 	/**
@@ -2408,7 +2431,7 @@ class e_admin_controller
 
 		// check for observer
 		$actionObserverName = $this->toMethodName($action, 'observer', e_AJAX_REQUEST);
-		if(method_exists($this, $actionObserverName))
+		if($this->isActionMethod($actionObserverName))
 		{
 			$this->_log('Executing ' .$actionObserverName. '()');
 			$this->$actionObserverName();
@@ -2429,7 +2452,7 @@ class e_admin_controller
 					if(strpos($key, 'etrigger_') === 0)
 					{
 						$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
-						if(method_exists($this, $actionTriggerName))
+						if($this->isActionMethod($actionTriggerName))
 						{
 							if(!$this->checkRequestToken())
 							{
@@ -2506,7 +2529,7 @@ class e_admin_controller
 
 		// check for observer
 		$actionHeaderName = $this->toMethodName($action, 'header', false);
-		if(method_exists($this, $actionHeaderName))
+		if($this->isActionMethod($actionHeaderName))
 		{
 			$this->$actionHeaderName();
 		}
@@ -2542,7 +2565,7 @@ class e_admin_controller
 		// check for observer
 		$actionName = $this->toMethodName($action);
 		$ret = '';
-		if(!method_exists($this, $actionName)) // pre dispatch already switched to default action/not found page if needed
+		if(!$this->isActionMethod($actionName)) // pre dispatch already switched to default action/not found page if needed
 		{
 			$this->_log('Skipping ' .$actionName. '() (not found)');
 			e107::getMessage()->add('Action '.$actionName.' no found!', E_MESSAGE_ERROR);

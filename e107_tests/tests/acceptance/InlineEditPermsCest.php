@@ -72,6 +72,12 @@ class InlineEditPermsCest
 	/** The FAQ category list's ajax page, named by an action on a request that is not ajax. */
 	const ROUTE_FAQ_CATEGORY_LIST_AJAX_PAGE = '/e107_plugins/faqs/admin_config.php?mode=cat&action=listajax';
 
+	/** An action that names the news item controller's own dispatch methods. */
+	const ROUTE_ITEM_DISPATCH = '/e107_admin/newspost.php?mode=main&action=dispatch';
+
+	/** An action that names the news item controller's own per-page getter as its page. */
+	const ROUTE_ITEM_PER_PAGE = '/e107_admin/newspost.php?mode=main&action=getper';
+
 	/**
 	 * Administrators seeded per test, login name => user_perms with the trailing dot e_userperms::updatePerms() writes.
 	 *
@@ -657,6 +663,30 @@ class InlineEditPermsCest
 		$I->wantTo('Give an administrator who may list items the news list when a plain request names its ajax page');
 
 		$this->requestWithANewsItemAs($I, 'p7ieitem', self::ROUTE_ITEM_LIST_AJAX_PAGE);
+		$I->see(self::ITEM_TITLE);
+	}
+
+	public function aNewsItemAdministratorGetsTheNewsListWhenARequestNamesTheControllersOwnDispatch(AcceptanceTester $I)
+	{
+		$I->wantTo('Give an administrator who may list items the news list when a request names a dispatch method of the controller itself');
+
+		$this->requestWithANewsItemAs($I, 'p7ieitem', self::ROUTE_ITEM_DISPATCH);
+		$I->see(self::ITEM_TITLE);
+	}
+
+	public function aCategoryAdministratorIsRefusedWhenARequestNamesTheControllersOwnDispatch(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the news list to an administrator who may only edit categories when a request names a dispatch method of the controller itself');
+
+		$this->requestWithANewsItemAs($I, 'p7iecategory', self::ROUTE_ITEM_DISPATCH);
+		$this->seeRefusedWithout($I, self::ITEM_TITLE);
+	}
+
+	public function aNewsItemAdministratorGetsTheNewsListWhenARequestNamesTheControllersOwnPerPageGetter(AcceptanceTester $I)
+	{
+		$I->wantTo('Give an administrator who may list items the news list when a request names the per-page getter of the controller itself');
+
+		$this->requestWithANewsItemAs($I, 'p7ieitem', self::ROUTE_ITEM_PER_PAGE);
 		$I->see(self::ITEM_TITLE);
 	}
 
