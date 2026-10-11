@@ -209,7 +209,7 @@ class forum_post_handler
 			$this->updateThread();
 		}
 
-		if(!empty($_POST['move_thread']))
+		if(!empty($_POST['move_thread']) && $this->action === 'move')
 		{
 			$this->moveThread($_POST);
 		}
@@ -810,7 +810,7 @@ class forum_post_handler
 		<td >".LAN_FORUM_3042."</td>
 		<td>
 
-		".$frm->text('new_thread_title', $tp->toForm($this->data['thread_name'], 250))."
+		".$frm->text('new_thread_title', $this->offeredThreadName())."
 
 		</div></td>
 		</tr>
@@ -937,7 +937,7 @@ class forum_post_handler
 		".$frm->radio('rename_thread', 'add', false, array('label'=> $tp->lanVars(LAN_FORUM_5024,'<b> ['.LAN_FORUM_5021.']</b> '))). "
 		</div>
 		<div class='radio'>".$frm->radio('rename_thread','rename', false, array('label'=>LAN_FORUM_5025))."
-		".$frm->text('newtitle', $tp->toForm($this->data['thread_name'], 250))."
+		".$frm->text('newtitle', $this->offeredThreadName())."
 		</div>
 		</div></td>
 		</tr>
@@ -1406,7 +1406,6 @@ class forum_post_handler
 			return false;
 		}
 
-		$tp = e107::getParser();
 		$mes = e107::getMessage();
 
 		$newThreadTitle = '';
@@ -1418,7 +1417,7 @@ class forum_post_handler
 		}
 		elseif($posted['rename_thread'] == 'rename' && trim($posted['newtitle']) != '')
 		{
-			$newThreadTitle = $tp->toDB($posted['newtitle']);
+			$newThreadTitle = $this->threadName($posted['newtitle'], $this->offeredThreadName());
 			$newThreadTitleType = 1;
 		}
 
@@ -1462,7 +1461,7 @@ class forum_post_handler
 
 		$threadInfo = array();
 		$threadInfo['thread_sticky']    = 0;
-		$threadInfo['thread_name']      = $post['new_thread_title'];
+		$threadInfo['thread_name']      = $this->threadName($post['new_thread_title'], $this->offeredThreadName());
 		$threadInfo['thread_forum_id']  = (!empty($post['forum_split'])) ? intval($post['forum_split']) : $this->data['forum_id'];
 		$threadInfo['thread_active']    = 1;
 		$threadInfo['thread_datestamp'] = $this->data['post_datestamp'];
@@ -1534,6 +1533,28 @@ class forum_post_handler
 	}
 
 
+	/**
+	 * The name to store for a title posted from a box that offered the thread's name as $offered.
+	 *
+	 * @param string $title
+	 * @param string $offered
+	 * @return string
+	 */
+	private function threadName($title, $offered)
+	{
+		return $title === $offered ? $this->data['thread_name'] : e107::getParser()->toDB($title);
+	}
+
+	/**
+	 * The thread's name as the split and move forms offer it.
+	 *
+	 * @return string
+	 */
+	private function offeredThreadName()
+	{
+		return e107::getParser()->toForm($this->data['thread_name']);
+	}
+
 
 	function updateThread()
 	{
@@ -1586,7 +1607,7 @@ class forum_post_handler
 
 			if(!empty($_POST['subject']))
 			{
-				$threadVals['thread_name'] 	 = $_POST['subject'];
+				$threadVals['thread_name'] 	 = $this->threadName($_POST['subject'], e107::getParser()->post_toForm($this->data['thread_name']));
 			}
 
 			$threadVals['thread_sticky'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);

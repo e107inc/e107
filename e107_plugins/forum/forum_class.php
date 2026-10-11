@@ -1513,9 +1513,6 @@ class e107forum
 		$qb = $sql->createQueryBuilder()->update('forum_thread')->set('thread_forum_id', $newForumId);
 		if(!empty($threadTitle))
 		{
-			// toDB() is the storage transform for thread_name; the value is bound.
-			$threadTitle = e107::getParser()->toDB($threadTitle);
-
 			if($titleType == 0)
 			{
 				//prepend to existing title
