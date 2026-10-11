@@ -151,9 +151,10 @@ class comment
 		$row = $sql->createQueryBuilder()
 			->select('*')->from('comments')
 			->where('comment_id', (int) $id)
+			->where('comment_blocked', 0)
 			->setMaxResults(1)
 			->fetchRow();
-		if($row)
+		if($row && $this->canReadComments($row['comment_type'], $row['comment_item_id']))
 		{
 			// [comment_id] =&gt; 65
 
@@ -712,6 +713,91 @@ class comment
 
 
 
+
+	/**
+	 * Whether the visitor may read the comments on an item, asked as the item's own page asks before it shows them.
+	 *
+	 * @param string|int $table comment type, or the core table name it maps to
+	 * @param int        $id    id of the item in that table
+	 * @return bool false for a comment type core does not model
+	 */
+	public function canReadComments($table, $id)
+	{
+		$id = (int) $id;
+		$type = $this->getCommentType($table);
+		$visitor = \e107\Userclass\Membership::current();
+		$qb = e107::getDb()->createQueryBuilder();
+
+		switch ($this->getTable(is_numeric($type) ? (int) $type : $type))
+		{
+			case 'news':
+				$now = time();
+				return (bool) $qb->select('news_id')->from('news')
+					->where('news_id', $id)
+					->where($visitor->predicate('news_class'))
+					->where($qb->expr()->not($qb->expr()->regexp('news_class', e_NOBODY_REGEXP)))
+					->where('news_start', '<', $now)
+					->where($qb->expr()->anyOf(
+						$qb->expr()->eq('news_end', 0),
+						$qb->expr()->gt('news_end', $now)
+					))
+					->where('news_allow_comments', 0)
+					->fetchRow();
+
+			case 'download':
+				return e107::isInstalled('download') && (bool) $qb->select('d.download_id')->from('download', 'd')
+					->innerJoin('download_category', 'dc', $qb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
+					->where('d.download_id', $id)
+					->where($visitor->predicate('dc.download_category_class'))
+					->where($visitor->predicate('d.download_visible'))
+					->where('d.download_active', '>', 0)
+					->where('d.download_comment', '>', 0)
+					->fetchRow();
+
+			case 'poll':
+				return e107::isInstalled('poll') && (bool) $qb->select('poll_id')->from('polls')
+					->where('poll_id', $id)
+					->where('poll_type', 1)
+					->fetchRow();
+
+			case 'page':
+				$page = $qb->select('page_password')->from('page')
+					->where('page_id', $id)
+					->where($visitor->predicate('page_class'))
+					->where('page_comment_flag', '>', 0)
+					->fetchRow();
+				return $page && $this->pageUnlocked($id, $page['page_password']);
+
+			case 'user':
+			case 'profile':
+				$user = e107::getUser();
+				return !empty(e107::pref('core', 'profile_comments'))
+					&& ($user->getId() === $id || $user->checkClass(e107::pref('core', 'memberlist_access', 253)))
+					&& (bool) $qb->select('user_id')->from('user')->where('user_id', $id)->fetchRow();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether a page's password, if it has one, has been given, as page.php records it in a cookie.
+	 *
+	 * @param int    $id
+	 * @param string $password page_password
+	 * @return bool
+	 */
+	private function pageUnlocked($id, $password)
+	{
+		if (empty($password))
+		{
+			return true;
+		}
+
+		$cookie = e_COOKIE.'_page_'.$id;
+
+		return isset($_COOKIE[$cookie]) && is_string($_COOKIE[$cookie])
+			&& hash_equals(md5($password.e107::getUser()->getId()), $_COOKIE[$cookie]);
+	}
 
 	/**
 	 * Whether the item accepts comments; a comment type core models no switch for passes.
