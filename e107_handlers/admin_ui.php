@@ -3255,8 +3255,97 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function isTypedBatchTrigger($type)
 	{
-		return in_array($type, array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach',
-			'attach_all', 'deattach_all', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall'), true);
+		return in_array($type, $this->typedBatchCommands(), true);
+	}
+
+	/**
+	 * The batch commands that carry their target field in the trigger's second segment.
+	 *
+	 * @return string[]
+	 */
+	private function typedBatchCommands()
+	{
+		return array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach',
+			'attach_all', 'deattach_all', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall');
+	}
+
+	/**
+	 * Whether this administrator holds the named action's route in the current mode.
+	 *
+	 * @param string $action
+	 * @return bool
+	 */
+	protected function hasModeRouteAccess($action)
+	{
+		$dispatcher = $this->getDispatcher();
+
+		return ($dispatcher instanceof e_admin_dispatcher)
+			&& $dispatcher->hasRouteAccess($this->getRequest()->getMode().'/'.$action);
+	}
+
+	/**
+	 * The declared spelling of a core batch command, for any spelling that reaches the same handler.
+	 *
+	 * @param string $command leading segment of the posted batch trigger
+	 * @return string the declared spelling, or the command as posted when it names no core command
+	 */
+	private function batchCommand($command)
+	{
+		$request = $this->getRequest();
+		$canonical = $request->canonicalizeAction($command);
+
+		foreach(array_merge(array('delete', 'copy', 'export', 'url', 'featurebox'), $this->typedBatchCommands()) as $declared)
+		{
+			if($request->canonicalizeAction($declared) === $canonical)
+			{
+				return $declared;
+			}
+		}
+
+		return $command;
+	}
+
+	/**
+	 * The custom handler a batch command dispatches to, or null when it names none.
+	 *
+	 * @param string $command leading segment of the posted batch trigger
+	 * @param string $actionName
+	 * @return string|null method name, or null when the command has no handler of its own
+	 */
+	private function batchHandler($command, $actionName)
+	{
+		$name = $this->getRequest()->camelize($command);
+		$method = 'handle'.$actionName.$name.'Batch';
+
+		return ($name !== '' && method_exists($this, $method)) ? $method : null;
+	}
+
+	/**
+	 * The route a batch command writes through: create for a copy, none for the delete, the export and the commands that write other tables, and edit for a field write or any other handler.
+	 *
+	 * @param string $command leading segment of the posted batch trigger, in its declared spelling
+	 * @param string $actionName
+	 * @return string|null
+	 */
+	private function batchRoute($command, $actionName)
+	{
+		if($command === 'copy')
+		{
+			return 'create';
+		}
+
+		if($command === 'delete' || $command === 'export' || $command === 'url' || $command === 'featurebox')
+		{
+			return null;
+		}
+
+		if($this->isTypedBatchTrigger($command) || $this->getFieldAttr($command, 'batch', false)
+			|| $this->batchHandler($command, $actionName) !== null)
+		{
+			return 'edit';
+		}
+
+		return null;
 	}
 
 	/**
@@ -3954,6 +4043,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$multi_name = $this->getFieldAttr('checkboxes', 'toggle', 'multiselect');
 		$selected = array_values($this->getPosted($multi_name, array()));
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
+		$trigger[0] = $this->batchCommand($trigger[0]);
 
 		if(!empty($selected))
 		{
@@ -3986,6 +4076,14 @@ class e_admin_controller_ui extends e_admin_controller
 			$actionName = 'List';
 		}
 
+		$route = $this->batchRoute($trigger[0], $actionName);
+
+		if($route !== null && !$this->hasModeRouteAccess($route))
+		{
+			e107::getMessage()->addError(LAN_NO_PERMISSIONS);
+
+			return $this;
+		}
 
 		switch($trigger[0])
 		{
@@ -4214,7 +4312,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				e107::getMessage()->addDebug('Searching for custom batch method: ' .$method. '(' .implode(',', $selected). ',' .$value. ')');
 
-				if(method_exists($this, $method)) // callback handling
+				if($this->batchHandler($field, $actionName) !== null) // callback handling
 				{
 					$this->$method($selected, $value);
 					break;
@@ -6671,19 +6769,6 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 	
 	/**
-	 * Whether this administrator holds the edit route, which is the route an ajax write acts through.
-	 *
-	 * @return bool
-	 */
-	private function hasAjaxWriteAccess()
-	{
-		$dispatcher = $this->getDispatcher();
-
-		return ($dispatcher instanceof e_admin_dispatcher)
-			&& $dispatcher->hasRouteAccess($this->getRequest()->getMode().'/edit');
-	}
-
-	/**
 	 * Refuse an ajax write with 403 Forbidden, recording in the ajax log what was missing.
 	 *
 	 * @param string $reason
@@ -6732,7 +6817,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->fields[$_name]['inline'] = true;
 		}
 		
-		$mayWrite = $this->hasAjaxWriteAccess();
+		$mayWrite = $this->hasModeRouteAccess('edit');
 
 		if(!$mayWrite || !empty($this->fields[$_name]['noedit']) || !empty($this->fields[$_name]['nolist']) || empty($this->fields[$_name]['inline']) || empty($_token) || !password_verify(session_id(),$_token))
 		{
@@ -6833,7 +6918,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function SortAjaxPage()
 	{
-		if(!$this->hasAjaxWriteAccess())
+		if(!$this->hasModeRouteAccess('edit'))
 		{
 			$this->refuseAjaxWrite("Forbidden\nAction:".$this->getAction()."\nRoute: the mode's edit route is not this administrator's");
 			return;

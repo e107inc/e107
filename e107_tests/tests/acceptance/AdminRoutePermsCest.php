@@ -1788,9 +1788,7 @@ class AdminRoutePermsCest
 	// -----------------------------------------------------------------
 
 	/**
-	 * Post a batch the way the user list posts one: the trigger string names
-	 * the operation and the column, and the selection is the checkbox column
-	 * e_admin_ui reads through getFieldAttr('checkboxes', 'toggle').
+	 * Post a batch the way the user list posts one.
 	 *
 	 * @param string $route
 	 * @param string $trigger etrigger_batch value
@@ -1800,11 +1798,7 @@ class AdminRoutePermsCest
 	 */
 	private function sendBatch(AcceptanceTester $I, $route, $trigger, $id, $selection = 'multiselect')
 	{
-		$this->postWithToken($I, $route, array(
-			'etrigger_batch'    => $trigger,
-			'e__execute_batch'  => 'Go',
-			$selection          => array($id => $id),
-		));
+		$this->postWithToken($I, $route, \Test\AdminListPost::batch($trigger, $id, $selection));
 	}
 
 	/**
@@ -1846,9 +1840,7 @@ class AdminRoutePermsCest
 	}
 
 	/**
-	 * Post the request a batch delete is finished by: the ids travel in
-	 * delete_confirm_value, which {@see e_admin_ui::handleListDeleteBatch()} reads
-	 * in place of the selection once the confirm trigger is present.
+	 * Post the request a batch delete is finished by.
 	 *
 	 * @param string $route
 	 * @param int $id row to delete
@@ -1856,12 +1848,7 @@ class AdminRoutePermsCest
 	 */
 	private function sendConfirmedBatchDelete(AcceptanceTester $I, $route, $id)
 	{
-		$this->postWithToken($I, $route, array(
-			'etrigger_batch'          => 'delete',
-			'e__execute_batch'        => 'Go',
-			'etrigger_delete_confirm' => 'Confirm',
-			'delete_confirm_value'    => $id,
-		));
+		$this->postWithToken($I, $route, \Test\AdminListPost::confirmedBatchDelete($id));
 	}
 
 	/**
@@ -1899,9 +1886,7 @@ class AdminRoutePermsCest
 	}
 
 	/**
-	 * Post the request a single-row delete is finished by: the confirm screen re-posts
-	 * etrigger_delete keyed by the id beside the ids it carries in delete_confirm_value, which
-	 * reaches {@see e_admin_ui::ListDeleteTrigger()} and never the batch handler.
+	 * Post the request a single-row delete is finished by.
 	 *
 	 * @param string $route
 	 * @param int $id row to delete
@@ -1909,11 +1894,7 @@ class AdminRoutePermsCest
 	 */
 	private function sendConfirmedRowDelete(AcceptanceTester $I, $route, $id)
 	{
-		$this->postWithToken($I, $route, array(
-			'etrigger_delete'         => array($id => $id),
-			'etrigger_delete_confirm' => 'Confirm',
-			'delete_confirm_value'    => $id,
-		));
+		$this->postWithToken($I, $route, \Test\AdminListPost::confirmedRowDelete($id));
 	}
 
 	/**
