@@ -22,17 +22,15 @@ class forum_postTest extends \Test\Unit
 	const READ = '@@e107help-read-the-query-string@@';
 
 	/**
-	 * The marker is written from a shutdown function, because the page
-	 * redirects and exits on plenty of query strings, and it reports MODERATOR:
-	 * that constant is defined on the line after the three reads under test, so
-	 * its presence is what says they happened.
+	 * Open the post form in a child process, which prints the marker once the form has read its query string.
 	 *
 	 * @param array $get the query string the form is opened with
 	 * @return string everything the page wrote, diagnostics included
 	 */
 	private function openThePostForm(array $get)
 	{
-		$php = "register_shutdown_function(function() { if(defined('MODERATOR')) { echo '".self::READ."'; } }); ";
+		$php = "\$loadedBefore = class_exists('e107forum', false); ";
+		$php .= "register_shutdown_function(function() use (\$loadedBefore) { \$error = error_get_last(); if(!\$loadedBefore && class_exists('e107forum', false) && !(\$error && (\$error['type'] & (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR)))) { echo '".self::READ."'; } }); ";
 		$php .= "require_once('".addslashes(APP_PATH.'/e107_plugins/forum/forum_post.php')."'); ";
 
 		list($output, ) = $this->bootPluginInCli('forum', '2.0', $get, $php);

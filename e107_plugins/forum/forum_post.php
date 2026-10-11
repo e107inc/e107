@@ -70,21 +70,9 @@ class forum_post_handler
 		$this->post     = (int) varset($_GET['post'], 0); // post ID if needed.
 
 
-		// issue #3619: In case the post id is not set
-		// use the thread id to look for the moderator ids
-		if (!empty($this->post))
-		{
-			$moderatorUserIds = $forum->getModeratorUserIdsByPostId($this->post);
-		}
-		else
-		{
-			$moderatorUserIds = $forum->getModeratorUserIdsByThreadId($this->id);
-		}
-
-		define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds) || getperms('0')));
-
-
 		$this->data = $this->processGet();
+
+		define('MODERATOR', $this->forumObj->canModerateForum($this->data['forum_id']));
 
 		$this->checkPerms($this->data['forum_id']);
 
