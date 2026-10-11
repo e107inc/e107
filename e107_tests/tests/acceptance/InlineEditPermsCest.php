@@ -418,6 +418,88 @@ class InlineEditPermsCest
 		$I->seeInDatabase('e107_faqs', array('faq_id' => $faqId, 'faq_parent' => 1));
 	}
 
+	public function aNewsItemAdministratorCannotDeleteANewsItemFromTheRow(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news row delete to an administrator who may only edit items');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7ieitem');
+		$this->sendConfirmedRowDelete($I, self::ROUTE_ITEM_LIST, $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId));
+	}
+
+	public function aNewsItemAdministratorCannotBatchDeleteANewsItem(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news batch delete to an administrator who may only edit items');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7ieitem');
+		$this->sendConfirmedBatchDelete($I, self::ROUTE_ITEM_LIST, $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId));
+	}
+
+	public function aNewsItemAdministratorCannotBatchDeleteANewsItemUnderAnotherSpelling(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news batch delete to an administrator who may only edit items, however the command is spelt');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7ieitem');
+
+		foreach(array('Delete', 'de_lete', 'DE-LETE') as $command)
+		{
+			$this->sendConfirmedBatchDelete($I, self::ROUTE_ITEM_LIST, $itemId, $command);
+		}
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId));
+	}
+
+	public function aCategoryAdministratorCannotDeleteANewsItemOnTheGrid(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news grid row delete to an administrator who may only edit categories');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iecategory');
+		$this->sendConfirmedRowDelete($I, self::ROUTE_ITEM_GRID, $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId));
+	}
+
+	public function aNewsDeleterStillDeletesANewsItemFromTheRow(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the news row delete working for an administrator who may delete items');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iedelete');
+		$this->sendConfirmedRowDelete($I, self::ROUTE_ITEM_LIST, $itemId);
+
+		$I->dontSeeInDatabase('e107_news', array('news_id' => $itemId));
+	}
+
+	public function aNewsDeleterStillBatchDeletesANewsItem(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the news batch delete working for an administrator who may delete items');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iedelete');
+		$this->sendConfirmedBatchDelete($I, self::ROUTE_ITEM_LIST, $itemId);
+
+		$I->dontSeeInDatabase('e107_news', array('news_id' => $itemId));
+	}
+
 	/**
 	 * Render the item, which files the editable map in the session, then save through the front-end editor.
 	 *
@@ -532,6 +614,31 @@ class InlineEditPermsCest
 		$payload['e-token'] = $this->sessionToken($I);
 
 		$I->sendPostRequest($route, $payload);
+	}
+
+	/**
+	 * Post what a row delete's confirm screen posts.
+	 *
+	 * @param string $route
+	 * @param int $id row to delete
+	 * @return void
+	 */
+	private function sendConfirmedRowDelete(AcceptanceTester $I, $route, $id)
+	{
+		$this->postWithSessionToken($I, $route, \Test\AdminListPost::confirmedRowDelete($id));
+	}
+
+	/**
+	 * Post what a batch delete's confirm screen posts.
+	 *
+	 * @param string $route
+	 * @param int $id row to delete
+	 * @param string $command the batch command, as the confirm screen or a caller spells it
+	 * @return void
+	 */
+	private function sendConfirmedBatchDelete(AcceptanceTester $I, $route, $id, $command = 'delete')
+	{
+		$this->postWithSessionToken($I, $route, \Test\AdminListPost::confirmedBatchDelete($id, $command));
 	}
 
 	/**

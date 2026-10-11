@@ -215,6 +215,12 @@ class AdminUiHistoryDeleteProbeFixture extends e_admin_ui
 		return $this->handleListDeleteBatch($selected);
 	}
 
+	/** This administrator holds every route the probe exercises. */
+	protected function hasModeRouteAccess($action)
+	{
+		return true;
+	}
+
 	protected function backupToHistory($table, $pid, $id, $action, $data, $posted = true)
 	{
 		$this->backups[] = array(
