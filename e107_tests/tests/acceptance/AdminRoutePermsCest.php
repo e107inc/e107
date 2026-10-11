@@ -765,6 +765,26 @@ class AdminRoutePermsCest
 		$I->dontSeeInDatabase('e107_generic', array('gen_id' => $rank));
 	}
 
+	/** The superseded ranks editor deletes rank rows and no other kind of e107_generic row. */
+	public function theSupersededRanksEditorDeletesOnlyRankRows(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the superseded ranks editor an e107_generic row that is not a rank');
+
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+		$message = $this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpU3admin');
+
+		foreach(array($counter, $message) as $id)
+		{
+			$this->postWithToken($I, self::ROUTE_RANKS_LEGACY, array(
+				'etrigger_delete' => array($id => $id),
+			));
+
+			$I->seeInDatabase('e107_generic', array('gen_id' => $id));
+		}
+	}
+
 	/**
 	 * A route permission is only a permission if it cannot be spelled around.
 	 *
