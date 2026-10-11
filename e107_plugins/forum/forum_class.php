@@ -806,6 +806,17 @@ class e107forum
 
 
 	/**
+	 * Whether the visitor may attach a poll to a thread they start.
+	 *
+	 * @return bool
+	 */
+	public function canAttachPoll()
+	{
+		return e107::isInstalled('poll') && check_class($this->prefs->get('poll'));
+	}
+
+
+	/**
 	 * get user ids with moderator permissions for the given $threadId
 	 * @param $threadId id of a forum thread
 	 * @return array an array with user ids how have moderator permissions for the $threadId

@@ -183,6 +183,21 @@ class ForumPollCest
 	}
 
 	/**
+	 * The posting form offers a poll on the rule the save applies.
+	 */
+	public function thePostingFormOffersAPollOnlyInsideTheForumsPollClass(AcceptanceTester $I)
+	{
+		$page = '/e107_plugins/forum/forum_post.php?f=nt&id='.$this->ids['forumA'];
+
+		$I->amOnPage($page);
+		$I->seeElement('input[name="poll_title"]');
+
+		$I->havePluginPref('forum', 'poll', self::CLASS_NOBODY);
+		$I->amOnPage($page);
+		$I->dontSeeElement('input[name="poll_title"]');
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @param string $subject unique per test, which is how the thread is found again
 	 * @param array $extra fields added to, or replacing, an ordinary submission
