@@ -22,6 +22,12 @@ class AdminUiBatchProbeFixture extends e_admin_ui
 		return $this->spyTree;
 	}
 
+	/** This administrator holds every route the probe exercises. */
+	protected function hasModeRouteAccess($action)
+	{
+		return true;
+	}
+
 	/** @var array one entry per batch handler the dispatcher reached */
 	public $dispatched = array();
 

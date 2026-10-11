@@ -26,6 +26,15 @@ class InlineEditPermsCest
 	/** The news item edit form. The row id goes on the end. */
 	const ROUTE_ITEM_EDIT = '/e107_admin/newspost.php?mode=main&action=edit&id=';
 
+	/** The news item list. */
+	const ROUTE_ITEM_LIST = '/e107_admin/newspost.php?mode=main&action=list';
+
+	/** The same rows in the grid view, a route the news map does not declare. */
+	const ROUTE_ITEM_GRID = '/e107_admin/newspost.php?mode=main&action=grid';
+
+	/** The FAQ question list. */
+	const ROUTE_FAQ_LIST = '/e107_plugins/faqs/admin_config.php?mode=main&action=list';
+
 	/** The administrator-side inline editor for news items. */
 	const ROUTE_ITEM_INLINE = '/e107_admin/newspost.php?mode=main&action=inline&ajax_used=1&id=';
 
@@ -47,6 +56,7 @@ class InlineEditPermsCest
 		'p7iecategory'  => 'H4.',
 		'p7iecreate'    => 'H0.',
 		'p7ieitem'      => 'H1.',
+		'p7iedelete'    => 'H2.',
 		'p7iesubmitted' => 'N.',
 	);
 
@@ -289,6 +299,125 @@ class InlineEditPermsCest
 		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::SAVED_VALUE));
 	}
 
+	public function aNewsCreatorCannotBatchWriteANewsItem(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news list batch write to an administrator who may only create items');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iecreate');
+		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'news_class__255', $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_class' => '0'));
+	}
+
+	public function aCategoryAdministratorCannotBatchWriteANewsItemOnTheGrid(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news grid batch write to an administrator who may only edit categories');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iecategory');
+		$this->sendBatch($I, self::ROUTE_ITEM_GRID, 'bool__news_sticky__1', $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_sticky' => 0));
+	}
+
+	public function aNewsDeleterCannotBatchCopyANewsItem(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news list batch copy to an administrator who may not create items');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iedelete');
+		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'copy', $itemId);
+
+		$I->seeNumRecords(1, 'e107_news', array('news_title' => self::ITEM_TITLE));
+	}
+
+	public function aNewsCreatorCannotBatchWriteANewsItemUnderAnotherSpelling(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news list batch write to an administrator who may only create items, however the command is spelt');
+
+		$categoryId = $this->seedCategory($I);
+
+		$this->loginAsAdminHolding($I, 'p7iecreate');
+
+		foreach(array('Boolreverse__news_sticky', 'bool_reverse__news_sticky') as $trigger)
+		{
+			$itemId = $this->seedNewsItem($I, $categoryId);
+
+			$this->sendBatch($I, self::ROUTE_ITEM_LIST, $trigger, $itemId);
+
+			$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_sticky' => 0));
+		}
+	}
+
+	public function aNewsDeleterCannotBatchCopyANewsItemUnderAnotherSpelling(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news list batch copy to an administrator who may not create items, however the command is spelt');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iedelete');
+
+		foreach(array('Copy', 'co_py', 'CO-PY') as $trigger)
+		{
+			$this->sendBatch($I, self::ROUTE_ITEM_LIST, $trigger, $itemId);
+		}
+
+		$I->seeNumRecords(1, 'e107_news', array('news_title' => self::ITEM_TITLE));
+	}
+
+	public function aNewsItemAdministratorCannotBatchWriteAColumnTheListDoesNotOffer(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news list batch write to a column the list offers no batch for, however the command is spelt');
+
+		$categoryId = $this->seedCategory($I);
+
+		$this->loginAsAdminHolding($I, 'p7ieitem');
+
+		foreach(array('boolreverse__news_comment_total', 'Boolreverse__news_comment_total') as $trigger)
+		{
+			$itemId = $this->seedNewsItem($I, $categoryId);
+
+			$this->sendBatch($I, self::ROUTE_ITEM_LIST, $trigger, $itemId);
+
+			$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_comment_total' => 0));
+		}
+	}
+
+	public function aNewsItemAdministratorStillBatchWritesANewsItem(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the news list batch write working for an administrator who may edit items');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7ieitem');
+		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'bool__news_sticky__1', $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_sticky' => 1));
+	}
+
+	public function aFaqsAdministratorOutsideTheEditClassCannotBatchMoveAQuestion(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a FAQ list batch write to an administrator outside the class the site lets edit FAQs');
+
+		$I->havePluginInstalled('faqs');
+		$faqId = $this->seedFaq($I, 1);
+		$I->probe('act=faqsedit&class=mainadmin');
+
+		$this->loginAsFaqsAdministrator($I);
+		$this->sendBatch($I, self::ROUTE_FAQ_LIST, 'faq_parent__99', $faqId, 'multiselect');
+
+		$I->seeInDatabase('e107_faqs', array('faq_id' => $faqId, 'faq_parent' => 1));
+	}
+
 	/**
 	 * Render the item, which files the editable map in the session, then save through the front-end editor.
 	 *
@@ -380,6 +509,32 @@ class InlineEditPermsCest
 	}
 
 	/**
+	 * Post what a list's batch menu posts.
+	 *
+	 * @param string $route
+	 * @param string $trigger etrigger_batch value
+	 * @param int $id the one row the selection carries
+	 * @param string $selection name of the list's checkbox column
+	 * @return void
+	 */
+	private function sendBatch(AcceptanceTester $I, $route, $trigger, $id, $selection = 'news_selected')
+	{
+		$this->postWithSessionToken($I, $route, \Test\AdminListPost::batch($trigger, $id, $selection));
+	}
+
+	/**
+	 * @param string $route
+	 * @param array $payload posted keys, which the session's form token is added to
+	 * @return void
+	 */
+	private function postWithSessionToken(AcceptanceTester $I, $route, array $payload)
+	{
+		$payload['e-token'] = $this->sessionToken($I);
+
+		$I->sendPostRequest($route, $payload);
+	}
+
+	/**
 	 * Post what the drag-and-drop sort posts.
 	 *
 	 * @param int $id the one row the selection carries
@@ -464,11 +619,13 @@ class InlineEditPermsCest
 	}
 
 	/**
+	 * @param int $parent FAQ category
 	 * @return int faq id
 	 */
-	private function seedFaq(AcceptanceTester $I)
+	private function seedFaq(AcceptanceTester $I, $parent = 0)
 	{
 		return (int) $I->haveInDatabase('e107_faqs', array(
+			'faq_parent'    => $parent,
 			'faq_question'  => self::ITEM_TITLE,
 			'faq_answer'    => 'Seeded by InlineEditPermsCest.',
 			'faq_author_ip' => '',
