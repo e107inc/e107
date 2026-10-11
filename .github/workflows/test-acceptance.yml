@@ -17,10 +17,16 @@ concurrency:
 #   e107_tests/bin/e107-tests up --php 5.6 --db mysql:5.5
 #   e107_tests/bin/e107-tests run acceptance
 #
-# Add --base-path e107 for the subdirectory legs. That flag is not decoration:
-# e107 derives e_HTTP from the request and scopes cookies, redirects and
-# generated links to it, so a site under a subdirectory reaches code a docroot
-# install never does, and most e107 sites are installed that way.
+# Add --base-path e107 for the subdirectory layout. That flag is not
+# decoration: e107 derives e_HTTP from the request and scopes cookies,
+# redirects and generated links to it, so a site under a subdirectory reaches
+# code a docroot install never does, and most e107 sites are installed that way.
+#
+# Each job runs both layouts at once, one env each on the same runner, each in
+# its own copy of the tree (see .github/actions/harness-stack/cells.sh). A
+# failed layout is named, as "PHP 8.5, mariadb:12.3, subdirectory", in an
+# annotation and in the job summary, and its output is the log group of that
+# name in the step that failed.
 #
 # The matrix is the ends of the supported range rather than every point in it.
 # A version break is nearly always "too old to have it" or "too new to still
@@ -28,11 +34,11 @@ concurrency:
 
 jobs:
   test-acceptance:
-    name: PHP ${{ matrix.php }}, ${{ matrix.db }}, ${{ matrix.layout }}
+    name: PHP ${{ matrix.php }}, ${{ matrix.db }}
     strategy:
       fail-fast: false
       matrix:
-        # Spelled out rather than built from axes: four entries are easier to
+        # Spelled out rather than built from axes: the entries are easier to
         # read, and to add one to, than the rules for how `include` merges.
         # Old PHP is paired with old MySQL and new with new, which is how
         # these are actually deployed.
@@ -48,53 +54,36 @@ jobs:
         # Both layouts are tested because e107 derives e_HTTP from the
         # request and scopes its session cookie, its redirects and every
         # generated link to it. The job this replaced only ever tested the
-        # subdirectory shape, so the docroot rows are new coverage and the
-        # subdirectory rows are what CI has always had.
+        # subdirectory shape, so the docroot layout is new coverage and the
+        # subdirectory layout is what CI has always had.
         include:
           - php: '5.6'
             db: 'mysql:5.5'
-            layout: docroot
-            base_path: ''
-          - php: '5.6'
-            db: 'mysql:5.5'
-            layout: subdirectory
-            base_path: 'e107'
           - php: '8.5'
             db: 'mariadb:12.3'
-            layout: docroot
-            base_path: ''
-          - php: '8.5'
-            db: 'mariadb:12.3'
-            layout: subdirectory
-            base_path: 'e107'
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
 
-      # An empty --base-path means a docroot install.
-      - name: Bring up the stack
+      - name: Bring up one stack per layout
         uses: ./.github/actions/harness-stack
         with:
           php: ${{ matrix.php }}
           db: ${{ matrix.db }}
-          up-args: --base-path '${{ matrix.base_path }}'
+          cells: |
+            docroot
+            subdirectory --base-path e107
 
-      - name: Run acceptance tests
-        run: ./e107_tests/bin/e107-tests run acceptance
+      # !cancelled(): a layout whose env did not come up is reported as a
+      # failed cell, and the other still runs.
+      - name: Run acceptance tests in both layouts
+        if: ${{ !cancelled() }}
+        run: .github/actions/harness-stack/cells.sh run run acceptance
 
-      - name: Collect container logs
+      - name: Keep the failed cells' output
         if: failure()
-        run: ./e107_tests/bin/e107-tests logs > /tmp/container.log 2>&1 || true
-
-      - name: Upload failure output
-        if: failure()
-        uses: actions/upload-artifact@v7
+        uses: ./.github/actions/harness-stack/failed-cells
         with:
-          name: acceptance-php${{ matrix.php }}-${{ matrix.layout }}
-          path: |
-            e107_tests/tests/_output/
-            /tmp/container.log
-          if-no-files-found: ignore
-          retention-days: 7
+          name: acceptance-php${{ matrix.php }}
