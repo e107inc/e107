@@ -593,6 +593,13 @@ class news_admin_ui extends e_admin_ui
 
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
+		if(!$this->mayWriteItem($old_data))
+		{
+			e107::getMessage()->addError(LAN_NO_PERMISSIONS);
+
+			return false;
+		}
+
 		if(!empty($new_data['news_thumbnail']))
 		{
 			$new_data['news_thumbnail'] = $this->processThumbs($new_data['news_thumbnail']);
@@ -908,10 +915,26 @@ class news_admin_ui extends e_admin_ui
 		return false;
 	}
 
+	/**
+	 * Whether this administrator may write the news item, which limit-to-self restricts to their own.
+	 *
+	 * @param array $item the stored row
+	 * @return bool
+	 */
+	private function mayWriteItem($item)
+	{
+		return !$this->limitToSelfEnabled() || (int) varset($item['news_author']) === (int) e107::getUser()->getId();
+	}
+
 
 	function init()
 	{
 		$this->addons = e107::getAddonConfig('e_admin',null, 'config', $this);
+
+		if($this->limitToSelfEnabled())
+		{
+			$this->listQry .= " WHERE n.news_author = ".(int) e107::getUser()->getId();
+		}
 /*
 		if(!empty($_POST['save_prefs']))
 		{
@@ -1006,9 +1029,7 @@ class news_admin_ui extends e_admin_ui
 
 		parent::EditObserver();
 
-		$author = (int) $this->getModel()->get('news_author');
-
-		if($this->limitToSelfEnabled() && $author !== USERID)
+		if(!$this->mayWriteItem($this->getModel()->getData()))
 		{
 			$this->getRequest()->setAction('e403');
 			return false;
@@ -1017,27 +1038,6 @@ class news_admin_ui extends e_admin_ui
 		$this->initSEOFields();
 
 	}
-
-	function ListObserver()
-	{
-		if($this->limitToSelfEnabled())
-		{
-			$this->listQry .= " WHERE n.news_author = ".USERID;
-		}
-
-		parent::ListObserver();
-	}
-
-	function ListAjaxObserver()
-	{
-		if($this->limitToSelfEnabled())
-		{
-			$this->listQry .= " WHERE n.news_author = ".USERID;
-		}
-
-		parent::ListAjaxObserver();
-	}
-
 
 	function CreateObserver()
 	{

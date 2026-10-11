@@ -81,6 +81,9 @@ class InlineEditPermsCest
 	/** A news id no row has. */
 	const MISSING_ID = 987654;
 
+	/** The user class news_limit_to_self names, and the limited administrator belongs to. */
+	const LIMITED_CLASS = 30;
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
@@ -500,6 +503,112 @@ class InlineEditPermsCest
 		$I->dontSeeInDatabase('e107_news', array('news_id' => $itemId));
 	}
 
+	public function aSelfLimitedNewsEditorCannotSaveAnotherAuthorsItemInline(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse an inline save of another author\'s item to an administrator limited to their own');
+
+		$itemId = $this->seedNewsItem($I, $this->seedCategory($I));
+
+		$this->loginAsSelfLimitedEditor($I);
+		$this->saveInline($I, self::ROUTE_ITEM_INLINE.$itemId, 'news_title', self::ATTACK_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::ITEM_TITLE));
+	}
+
+	public function aSelfLimitedNewsEditorCannotSaveAnotherAuthorsItemThroughTheEditForm(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse an edit form save of another author\'s item to an administrator limited to their own');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsSelfLimitedEditor($I);
+		$this->submitNewsForm($I, self::ROUTE_ITEM_EDIT.$itemId, 'update', $categoryId, self::ATTACK_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::ITEM_TITLE));
+	}
+
+	public function aSelfLimitedNewsEditorCannotBatchWriteAnotherAuthorsItem(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a batch write of another author\'s item to an administrator limited to their own');
+
+		$itemId = $this->seedNewsItem($I, $this->seedCategory($I));
+
+		$this->loginAsSelfLimitedEditor($I);
+		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'bool__news_sticky__1', $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_sticky' => 0));
+	}
+
+	public function aSelfLimitedNewsEditorCannotBatchWriteAnotherAuthorsItemOnTheGrid(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a grid batch write of another author\'s item to an administrator limited to their own');
+
+		$itemId = $this->seedNewsItem($I, $this->seedCategory($I));
+
+		$this->loginAsSelfLimitedEditor($I);
+		$this->sendBatch($I, self::ROUTE_ITEM_GRID, 'bool__news_sticky__1', $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_sticky' => 0));
+	}
+
+	public function aSelfLimitedNewsEditorCannotDeleteAnotherAuthorsItemOnTheGrid(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a grid row delete of another author\'s item to an administrator limited to their own');
+
+		$itemId = $this->seedNewsItem($I, $this->seedCategory($I));
+
+		$this->loginAsSelfLimitedEditor($I, 'H1.H2.');
+		$this->sendConfirmedRowDelete($I, self::ROUTE_ITEM_GRID, $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId));
+	}
+
+	public function aSelfLimitedNewsEditorStillBatchWritesTheirOwnItemOnTheList(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the list batch working on an item of their own for an administrator limited to their own');
+
+		$categoryId = $this->seedCategory($I);
+
+		$this->loginAsSelfLimitedEditor($I);
+		$author = (int) $I->grabFromDatabase('e107_user', 'user_id', array('user_loginname' => 'p7ieself'));
+		$itemId = $this->seedNewsItem($I, $categoryId, $author);
+
+		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'bool__news_sticky__1', $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_sticky' => 1));
+	}
+
+	public function aSelfLimitedNewsEditorStillBatchWritesTheirOwnItemOnTheGrid(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the grid batch working on an item of their own for an administrator limited to their own');
+
+		$categoryId = $this->seedCategory($I);
+
+		$this->loginAsSelfLimitedEditor($I);
+		$author = (int) $I->grabFromDatabase('e107_user', 'user_id', array('user_loginname' => 'p7ieself'));
+		$itemId = $this->seedNewsItem($I, $categoryId, $author);
+
+		$this->sendBatch($I, self::ROUTE_ITEM_GRID, 'bool__news_sticky__1', $itemId);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_sticky' => 1));
+	}
+
+	public function aSelfLimitedNewsEditorStillSavesTheirOwnItemInline(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the inline editor working on an item of their own for an administrator limited to their own');
+
+		$categoryId = $this->seedCategory($I);
+
+		$this->loginAsSelfLimitedEditor($I);
+		$author = (int) $I->grabFromDatabase('e107_user', 'user_id', array('user_loginname' => 'p7ieself'));
+		$itemId = $this->seedNewsItem($I, $categoryId, $author);
+
+		$this->saveInline($I, self::ROUTE_ITEM_INLINE.$itemId, 'news_title', self::SAVED_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::SAVED_VALUE));
+	}
+
 	/**
 	 * Render the item, which files the editable map in the session, then save through the front-end editor.
 	 *
@@ -705,7 +814,7 @@ class InlineEditPermsCest
 	 * @param int $categoryId
 	 * @return int news id
 	 */
-	private function seedNewsItem(AcceptanceTester $I, $categoryId)
+	private function seedNewsItem(AcceptanceTester $I, $categoryId, $author = 1)
 	{
 		return (int) $I->haveInDatabase('e107_news', array(
 			'news_title'            => self::ITEM_TITLE,
@@ -716,7 +825,7 @@ class InlineEditPermsCest
 			'news_meta_keywords'    => '',
 			'news_meta_description' => '',
 			'news_datestamp'        => self::PWCHANGE,
-			'news_author'           => 1,
+			'news_author'           => $author,
 			'news_category'         => $categoryId,
 			'news_class'            => '0',
 			'news_render_type'      => '0',
@@ -764,11 +873,25 @@ class InlineEditPermsCest
 	}
 
 	/**
-	 * @param string $loginName also the password
-	 * @param string $perms user_perms, with the trailing dot {@see e_userperms::updatePerms()} writes
+	 * Limit news editing to each administrator's own items, and log in as a news administrator the limit applies to.
+	 *
+	 * @param string $perms user_perms, a news item administrator's by default
 	 * @return void
 	 */
-	private function loginAsAdministrator(AcceptanceTester $I, $loginName, $perms)
+	private function loginAsSelfLimitedEditor(AcceptanceTester $I, $perms = 'H1.')
+	{
+		$I->probe('act=limitself&class='.self::LIMITED_CLASS);
+
+		$this->loginAsAdministrator($I, 'p7ieself', $perms, (string) self::LIMITED_CLASS);
+	}
+
+	/**
+	 * @param string $loginName also the password
+	 * @param string $perms user_perms, with the trailing dot {@see e_userperms::updatePerms()} writes
+	 * @param string $class user_class
+	 * @return void
+	 */
+	private function loginAsAdministrator(AcceptanceTester $I, $loginName, $perms, $class = '')
 	{
 		$I->haveInDatabase('e107_user', array(
 			'user_name'      => $loginName,
@@ -776,7 +899,7 @@ class InlineEditPermsCest
 			'user_email'     => $loginName.'@example.com',
 			'user_password'  => \Test\Password::hash($loginName),
 			'user_join'      => self::PWCHANGE,
-			'user_class'     => '',
+			'user_class'     => $class,
 			'user_admin'     => 1,
 			'user_perms'     => $perms,
 			'user_pwchange'  => self::PWCHANGE,
@@ -811,13 +934,19 @@ switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 {
 	case 'reset':
 		e107::getDb()->delete('user', "user_loginname LIKE 'p7ie%'");
-		\$core->set('inline_editing', e_UC_NOBODY)->save(false, true, false);
+		\$core->set('inline_editing', e_UC_NOBODY)->set('news_limit_to_self', 0)->save(false, true, false);
 
 		echo "PROBE_OK\n";
 		break;
 
 	case 'enable':
 		\$core->set('inline_editing', e_UC_ADMIN)->save(false, true, false);
+
+		echo "PROBE_OK\n";
+		break;
+
+	case 'limitself':
+		\$core->set('news_limit_to_self', (int) \$_GET['class'])->save(false, true, false);
 
 		echo "PROBE_OK\n";
 		break;
