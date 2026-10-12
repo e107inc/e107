@@ -4256,6 +4256,27 @@ Your browser does not support the audio tag.
 		self::assertSame('<pre>later</pre>', $this->tp->cleanHtml('<pre>later</pre>'), 'third call on a reused parser');
 	}
 
+	public function testCleanHtmlRefusesAScriptSchemeWhateverTheLocale()
+	{
+		$previous = setlocale(LC_CTYPE, 0);
+
+		if (setlocale(LC_CTYPE, 'tr_TR.UTF-8', 'tr_TR.utf8') === false)
+		{
+			self::markTestSkipped('No Turkish locale is installed.');
+		}
+
+		try
+		{
+			$html = $this->tp->cleanHtml('<a href="JAVASCRIPT:document.title=1">notes</a>');
+		}
+		finally
+		{
+			setlocale(LC_CTYPE, $previous);
+		}
+
+		self::assertSame('<a href="#---sanitized---#">notes</a>', $html);
+	}
+
 	/**
 	 * libxml < 2.13 mis-parsed <source> and other HTML5 void elements as
 	 * non-void, making following text become the element's child content

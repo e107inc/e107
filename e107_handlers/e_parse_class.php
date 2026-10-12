@@ -6794,11 +6794,11 @@ class e_parse
 	 */
 	public function invalidAttributeValue($value)
 	{
-
+		$probe = eShims::strtolower($value);
 
 		foreach ($this->badAttrValues as $v) // global list because a bad value is bad regardless of the attribute it's in. ;-)
 		{
-			if (preg_match('/' . $v . '/i', $value) == true)
+			if (preg_match('/' . $v . '/i', $probe) == true)
 			{
 				$this->removedList['blacklist'][] = "Match found for '{$v}' in '{$value}'";
 
