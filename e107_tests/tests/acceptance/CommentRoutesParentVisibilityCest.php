@@ -382,6 +382,72 @@ class CommentRoutesParentVisibilityCest
 	}
 
 	/**
+	 * A comment is stored only on an item the poster may read, through each route comment.php takes to the insert.
+	 */
+	public function aCommentIsStoredOnlyOnAnItemThePosterMayRead(AcceptanceTester $I)
+	{
+		$token = $this->loginAsReader($I);
+
+		foreach($this->refusedToEveryone() as $marker => $table)
+		{
+			$this->postAjaxComment($I, $table, $marker, $token);
+			$I->dontSeeInDatabase('e107_comments', array('comment_comment' => 'Posted on '.$marker));
+		}
+
+		$this->postAjaxComment($I, 'fixtureplugin', 'CMTPLUGIN', $token);
+		$I->dontSeeInDatabase('e107_comments', array('comment_comment' => 'Posted on CMTPLUGIN'));
+
+		$I->sendPostRequest('/comment.php?comment.news.'.$this->items['CMTSTAFF'],
+			$this->commentFields('Posted by form on CMTSTAFF', $token, array('commentsubmit' => 'Submit')));
+		$I->sendPostRequest('/comment.php?reply.news.'.$this->comments['CMTSTAFF'].'.'.$this->items['CMTSTAFF'],
+			$this->commentFields('Posted in reply on CMTSTAFF', $token, array('replysubmit' => 'Submit', 'pid' => $this->comments['CMTSTAFF'])));
+		$I->dontSeeInDatabase('e107_comments', array('comment_comment' => 'Posted by form on CMTSTAFF'));
+		$I->dontSeeInDatabase('e107_comments', array('comment_comment' => 'Posted in reply on CMTSTAFF'));
+
+		foreach($this->readByEveryone() as $marker => $table)
+		{
+			$this->postAjaxComment($I, $table, $marker, $token);
+			$I->seeInDatabase('e107_comments', array('comment_comment' => 'Posted on '.$marker, 'comment_item_id' => $this->items[$marker]));
+		}
+
+		$this->unlockPage($I, 'CMTPAGEPASSWORD');
+		$I->sendAjaxPostRequest('/comment.php?ajax_used=1&mode=submit', $this->commentFields('Posted on the unlocked page', $token,
+			array('table' => 'page', 'itemid' => $this->items['CMTPAGEPASSWORD'])));
+		$I->seeInDatabase('e107_comments', array('comment_comment' => 'Posted on the unlocked page', 'comment_item_id' => $this->items['CMTPAGEPASSWORD']));
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $table the table field the comment form posts
+	 * @param string $marker the item to post on
+	 * @param string $token
+	 * @return void
+	 */
+	private function postAjaxComment(AcceptanceTester $I, $table, $marker, $token)
+	{
+		$I->sendAjaxPostRequest('/comment.php?ajax_used=1&mode=submit', $this->commentFields('Posted on '.$marker, $token,
+			array('table' => $table, 'itemid' => $this->items[$marker])));
+	}
+
+	/**
+	 * @param string $text
+	 * @param string $token
+	 * @param array $fields the route's own fields
+	 * @return array what the comment form posts
+	 */
+	private function commentFields($text, $token, array $fields)
+	{
+		return $fields + array(
+			'comment'       => $text,
+			'subject'       => 'Fixture subject',
+			'author_name'   => '',
+			'pid'           => 0,
+			'comment_share' => 0,
+			'e-token'       => $token,
+		);
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @param string $table the type segment the list is asked for
 	 * @param string $marker

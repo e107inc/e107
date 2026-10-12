@@ -867,6 +867,8 @@ class comment
 
 		if (!$this->itemAcceptsComments($table, $id)) return false;
 
+		if (!$this->canReadComments($table, $id)) return false;
+
 		if ($user_func = e107::getOverride()->check($this,'enter_comment'))
 		{
 			return call_user_func($user_func, array('data'=>$data, 'comment'=>$comment, 'table'=>$table, 'id'=>$id, 'pid'=>$pid, 'subject'=>$subject, 'rateindex'=>$rateindex));
