@@ -60,6 +60,20 @@ function nextprev_shortcode($parm = null)
 	$e107 = e107::getInstance();
 	$pref = e107::getPref();
 	$tp = e107::getParser();
+	$toUrl = function ($url) use ($tp)
+	{
+		$url = html_entity_decode($url, ENT_QUOTES, 'UTF-8');
+
+		if(!preg_match('//u', $url))
+		{
+			$url = preg_replace_callback('/[\x80-\xFF]/', function ($byte)
+			{
+				return rawurlencode($byte[0]);
+			}, $url);
+		}
+
+		return $tp->toUrlAttribute($url);
+	};
 
 	e107::coreLan('np');
 
@@ -197,7 +211,7 @@ function nextprev_shortcode($parm = null)
 			// Example: route::news/list/category::id=xxx--AMP--name=yyy--AMP--page=--FROM--::full=1
 			// WARNING - url parameter string have to be rawurlencode-ed BEFORE passed to the shortcode, or it'll break everything
 			$urlParms = explode('::', str_replace('--AMP--', '&', $parm['url']));
-			$url = str_replace('--FROM--', '[FROM]', $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
+			$url = $toUrl(str_replace('--FROM--', '[FROM]', $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3]))));
 		}
 		elseif(substr($parm['url'], 0, 5) == 'url::')
 		{
@@ -205,10 +219,14 @@ function nextprev_shortcode($parm = null)
 			// Format is: url::module/controller/action?id=xxx--AMP--name=yyy--AMP--page=--FROM--::full=1
 			// WARNING - url parameter string have to be rawurlencode-ed BEFORE passed to the shortcode, or it'll break everything
 			$urlParms = explode('::', str_replace('--AMP--', '&', $parm['url']));
-			$url = str_replace('--FROM--', '[FROM]', $e107->url->create($urlParms[1], array(), varset($urlParms[2])));
+			$url = $toUrl(str_replace('--FROM--', '[FROM]', $e107->url->create($urlParms[1], array(), varset($urlParms[2]))));
 		}
 		// just regular full or absolute URL
-		else $url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&amp;'), $parm['url']);
+		else
+		{
+			$url = str_replace(array('--FROM--', '--AMP--'), array('[FROM]', '&'), $parm['url']);
+			$url = $toUrl($url);
+		}
 
 		// Simple parser vars
 		$e_vars = new e_vars(array(
@@ -502,7 +520,7 @@ function nextprev_shortcode($parm = null)
 					}
 					else
 					{
-						$link = str_replace("[FROM]", ($perpage * ($c + $index_add)), $url);
+						$link = $toUrl(str_replace("[FROM]", ($perpage * ($c + $index_add)), $url));
 						$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 
 					}
@@ -518,7 +536,7 @@ function nextprev_shortcode($parm = null)
 						}
 						else
 						{
-							$link = str_replace("[FROM]", ($perpage * ($c + $index_add)), $url);
+							$link = $toUrl(str_replace("[FROM]", ($perpage * ($c + $index_add)), $url));
 							$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 						}
 					}
@@ -534,7 +552,7 @@ function nextprev_shortcode($parm = null)
 						}
 						else
 						{
-							$link = str_replace("[FROM]", ($perpage * ($c + $index_add)), $url);
+							$link = $toUrl(str_replace("[FROM]", ($perpage * ($c + $index_add)), $url));
 							$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 						}
 					}
@@ -558,7 +576,7 @@ function nextprev_shortcode($parm = null)
 					}
 					else
 					{
-						$link = str_replace("[FROM]", ($perpage * ($c + $index_add)), $url);
+						$link = $toUrl(str_replace("[FROM]", ($perpage * ($c + $index_add)), $url));
 						$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 					}
 				}
@@ -574,7 +592,7 @@ function nextprev_shortcode($parm = null)
 					}
 					else
 					{
-						$link = str_replace("[FROM]", ($perpage * ($c + $index_add)), $url);
+						$link = $toUrl(str_replace("[FROM]", ($perpage * ($c + $index_add)), $url));
 						$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 					}
 				}
@@ -612,11 +630,11 @@ function nextprev_shortcode($parm = null)
 			{
 				$urlParms = explode('::', $url);
 				$urlParms[2] = str_replace('[FROM]', $prevstart, $urlParms[2]);
-				$link = $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3]));
+				$link = $toUrl($e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
 			}
 			else
 			{
-				$link = str_replace('[FROM]', $prevstart, $url);
+				$link = $toUrl(str_replace('[FROM]', $prevstart, $url));
 			}
 			$prev = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['prev']}</a>";
 		}
@@ -627,11 +645,11 @@ function nextprev_shortcode($parm = null)
 			{
 				$urlParms = explode('::', $url);
 				$urlParms[2] = str_replace('[FROM]', $nextstart, $urlParms[2]);
-				$link = $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3]));
+				$link = $toUrl($e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
 			}
 			else
 			{
-				$link = str_replace('[FROM]', $nextstart, $url);
+				$link = $toUrl(str_replace('[FROM]', $nextstart, $url));
 			}
 			$next = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['next']}</a>";
 		}
@@ -648,11 +666,11 @@ function nextprev_shortcode($parm = null)
 			{
 				$urlParms = explode('::', $url);
 				$urlParms[2] = str_replace('[FROM]', $newstart, $urlParms[2]);
-				$link = $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3]));
+				$link = $toUrl($e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
 			}
 			else
 			{
-				$link = str_replace('[FROM]', $newstart, $url);
+				$link = $toUrl(str_replace('[FROM]', $newstart, $url));
 			}
 	        $c = $i-1 + $index_add;
 	        $title = (isset($pagetitle[$c]) && $pagetitle[$c]) ? $pagetitle[$c] : $i;
