@@ -1275,6 +1275,73 @@ EXPECTED;
 		self::assertSame('Look &lt;/textarea&gt;&lt;img src=x&gt; &#039;q&#039; it\'s &lt;b&gt; a+b', $result);
 	}
 
+	/**
+	 * toDB() leaves no [html] marker in a member's text, however deeply nested (the phpunit flag turns off check_class()'s command-line grant).
+	 */
+	public function testToDBLeavesNoHtmlMarkerInAMembersText()
+	{
+		$config = e107::getConfig();
+		$postHtml = $config->get('post_html');
+		$phpunit = isset($GLOBALS['_E107']['phpunit']) ? $GLOBALS['_E107']['phpunit'] : null;
+		$config->set('post_html', e_UC_NOBODY);
+		$GLOBALS['_E107']['phpunit'] = true;
+
+		try
+		{
+			$stored = $this->tp->toDB('[[html]html]&lt;b&gt;bold&lt;/b&gt;[[/html]/html] and '.str_repeat('[', 300).str_repeat('html]', 300));
+		}
+		finally
+		{
+			$config->set('post_html', $postHtml);
+			$GLOBALS['_E107']['phpunit'] = $phpunit;
+		}
+
+		self::assertStringContainsString('&lt;b&gt;bold&lt;/b&gt;', $stored);
+		self::assertStringNotContainsString('[html]', $stored);
+		self::assertStringNotContainsString('[/html]', $stored);
+	}
+
+	/**
+	 * toEmail() restores an administrator's stored attribute quotes but adds no element and no attribute to a member's text.
+	 */
+	public function testToEmailAddsNoElementOrAttribute()
+	{
+		$result = $this->tp->toEmail('[html]<!-- it\'s --><!--&#45;><b>x</b>--><p class=&quot;x&quot;>&lt;img src=x onerror=alert(1)&gt; &#60;b&#62; &#x3C;i&#x3E; &amp; &copy;</p><a href="http://x&quot; onmouseover=&quot;alert(1)">y</a>[/html]');
+
+		self::assertSame('<!-- it\'s --><!--&#45;><b>x</b>--><p class="x">&lt;img src=x onerror=alert(1)&gt; &#60;b&#62; &#x3C;i&#x3E; & ©</p><a href="http://x&quot; onmouseover=&quot;alert(1)">y</a>', $result);
+	}
+
+	/**
+	 * toRss() prints no tag from a member's encoded text, whether its [html] marker was stored or rebuilt by rendering.
+	 *
+	 * @dataProvider membersEncodedTags
+	 * @param string $stored a post as toDB() stores it for a member
+	 * @param bool $tags true for RSS 2.0, whose description is HTML in CDATA
+	 */
+	public function testToRssKeepsAMembersEncodedTagAsText($stored, $tags)
+	{
+		$result = $this->tp->toRss($stored, $tags);
+		$html = $tags ? $result : html_entity_decode($result, ENT_QUOTES | ENT_XML1, 'UTF-8');
+
+		self::assertStringContainsString('src=x', $html);
+		self::assertStringNotContainsString('<img', $html);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function membersEncodedTags()
+	{
+		$tag = '&lt;img src=x onerror=alert(1)&gt;';
+
+		return array(
+			'a stored marker, RSS 2.0'                => array('[html]'.$tag.'[/html]', true),
+			'an unpaired stored marker, RSS 2.0'      => array('lead [html] then '.$tag.' tail', true),
+			'an unpaired stored marker, plain feeds'  => array('lead [html] then '.$tag.' tail', false),
+			'a marker rendering rebuilds, plain feeds' => array('[ht[b][/b]ml] '.$tag, false),
+		);
+	}
+
 	private function isValidXML($xmlContent)
 	{
 		if (trim($xmlContent) == '')

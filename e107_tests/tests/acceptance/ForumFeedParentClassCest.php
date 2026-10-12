@@ -237,6 +237,20 @@ class ForumFeedParentClassCest
 		$I->startFollowingRedirects();
 	}
 
+	/**
+	 * An [html] marker stored in a post does not make RSS 2.0 print the post's encoded tags as markup.
+	 */
+	public function theFeedKeepsAMembersEncodedTagAsText(AcceptanceTester $I)
+	{
+		$I->haveForumPost('Lead in A [html] then &lt;img src=x data-v=member-entities onerror=alert(1)&gt; tail',
+			$this->ids['threadA'], $this->ids['forumA'], 1);
+
+		$this->fetchFeed($I, 'forumposts');
+
+		$I->seeInSource('data-v=member-entities');
+		$I->dontSeeInSource('<img src=x data-v=member-entities');
+	}
+
 	// -----------------------------------------------------------------
 
 	/**

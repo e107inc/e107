@@ -649,7 +649,7 @@ class e_parse
 			if ($authorPostsHtml === false || ($authorPostsHtml === null && !check_class($core_pref->get('post_html', e_UC_MAINADMIN))))
 			{
 				$data = strip_tags($data); // remove tags from cleaned html.
-				$data = str_replace(array('[html]', '[/html]'), '', $data);
+				$data = str_replace(array('[html]', '[/html]'), array('&#91;html]', '&#91;/html]'), $data);
 			}
 
 			//  $data = html_entity_decode($data, ENT_QUOTES, 'utf-8');	// Prevent double-entities. Fix for [code]  - see bb_code.php toDB();
@@ -3878,7 +3878,7 @@ class e_parse
 		if ($this->isHtml($text))
 		{
 			$text = str_replace(array('[html]', '[/html]'), '', $text);
-			$text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
+			$text = $this->decodeEntitiesKeepingMarkup($text);
 		}
 		else
 		{
@@ -3887,6 +3887,68 @@ class e_parse
 		}
 
 		return $text;
+	}
+
+	/**
+	 * html_entity_decode() for HTML that adds no element and no attribute: entities stay as they are in a comment and a tag name, '<' and '>' everywhere, and '"' anywhere but in text or between a tag's attributes; '' if the text cannot be searched.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function decodeEntitiesKeepingMarkup($text)
+	{
+		$inside = '';
+
+		$html = preg_replace_callback('/<!---?>|<!--|--!?>|<\/?[a-z!&][^\s\/<>"\']*|>|"|\'|&(?:#\d+|#x[0-9a-f]+|[a-z][a-z0-9]*);/i', function ($match) use (&$inside)
+		{
+			$token = $match[0];
+
+			if ($token[0] === '&')
+			{
+				$character = html_entity_decode($token, ENT_COMPAT, 'UTF-8');
+				$keep = $inside === '<!--' || $character === '<' || $character === '>' || ($character === '"' && $inside !== '' && $inside !== '<');
+
+				return $keep ? $token : $character;
+			}
+
+			if ($inside === '<!--')
+			{
+				if ($token === '-->' || $token === '--!>')
+				{
+					$inside = '';
+				}
+			}
+			elseif ($inside === '')
+			{
+				if ($token === '<!--')
+				{
+					$inside = '<!--';
+				}
+				elseif ($token[0] === '<' && $token !== '<!-->' && $token !== '<!--->')
+				{
+					$inside = '<';
+				}
+			}
+			elseif ($inside === '<')
+			{
+				if (substr($token, -1) === '>')
+				{
+					$inside = '';
+				}
+				elseif ($token === '"' || $token === "'")
+				{
+					$inside = $token;
+				}
+			}
+			elseif ($token === $inside)
+			{
+				$inside = '<';
+			}
+
+			return $token;
+		}, $text);
+
+		return ($html === null) ? '' : $html;
 	}
 
 
