@@ -72,7 +72,9 @@ class generic_ui extends e_admin_ui
 	//	protected $orderStep		= 10;
 	//	protected $tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable. 
 		
-		protected $listQry      	= "SELECT * FROM `#generic` WHERE gen_type='wmessage'  "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+		protected $listQry      	= "SELECT * FROM `#generic`"; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+
+		protected $listScope		= array('gen_type' => 'wmessage');
 	
 		protected $listOrder		= 'gen_id DESC';
 	

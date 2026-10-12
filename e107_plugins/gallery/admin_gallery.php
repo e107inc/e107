@@ -166,7 +166,14 @@ class gallery_cat_admin_ui extends e_admin_ui
 	 *
 	 * @var string
 	 */
-	protected $listQry = "SELECT * FROM `#core_media_cat` WHERE media_cat_owner = 'gallery' ";
+	protected $listQry = "SELECT * FROM `#core_media_cat`";
+
+	/**
+	 * The owner every gallery category has, which the list and the edit form both select by and the edit form never changes.
+	 *
+	 * @var array
+	 */
+	protected $listScope = array('media_cat_owner' => 'gallery');
 
 	/**
 	 * UI field data.

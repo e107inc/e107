@@ -95,6 +95,37 @@ class AdminRoutePermsCest
 	/** The welcome-message edit form. The row id goes on the end. */
 	const ROUTE_WMESSAGE_EDIT = '/e107_admin/wmessage.php?mode=main&action=edit&id=';
 
+	/** The welcome-message list's inline editor, less the row id. */
+	const ROUTE_WMESSAGE_INLINE = '/e107_admin/wmessage.php?mode=main&action=inline&ajax_used=1&id=';
+
+	/** Ban list routes, less the row id where they take one. */
+	const ROUTE_BANLIST_EDIT = '/e107_admin/banlist.php?mode=main&action=edit&id=';
+	const ROUTE_WHITELIST_EDIT = '/e107_admin/banlist.php?mode=white&action=edit&id=';
+
+	/**
+	 * Every list that shares its table with another, by route, with the row type it shows and a
+	 * row type of the same table it must not.
+	 */
+	const SHARED_TABLE_LISTS = array(
+		'/e107_admin/wmessage.php?mode=main&action=list'                   => array('wmessage', 'failed_login'),
+		'/e107_admin/users.php?mode=ranks&action=list'                     => array('user_rank_data', 'wmessage'),
+		'/e107_admin/banlist.php?mode=failed&action=list'                  => array('failed_login', 'user_rank_data'),
+		'/e107_plugins/forum/forum_admin.php?mode=report&action=list'      => array('reported_post', 'wmessage'),
+		'/e107_plugins/download/admin_download.php?mode=broken&action=list' => array('Broken Download', 'reported_post'),
+	);
+
+	/** The welcome-message create form. */
+	const ROUTE_WMESSAGE_CREATE = '/e107_admin/wmessage.php?mode=main&action=create';
+
+	/** The user ranks list's inline editor, less the row id. */
+	const ROUTE_RANKS_INLINE = '/e107_admin/users.php?mode=ranks&action=inline&ajax_used=1&id=';
+
+	/** The gallery's category edit form, less the row id. */
+	const ROUTE_GALLERY_CATEGORY_EDIT = '/e107_plugins/gallery/admin_gallery.php?mode=main&action=edit&id=';
+
+	/** The custom menu list's drag-and-drop sort. */
+	const ROUTE_MENU_SORT = '/e107_admin/cpage.php?mode=menu&action=sort&ajax_used=1';
+
 	/** wmessage.php pages its list at ten rows. */
 	const WMESSAGE_PER_PAGE = 10;
 
@@ -193,6 +224,7 @@ class AdminRoutePermsCest
 	{
 		$I->startFollowingRedirects();
 		$this->reset($I);
+		$I->dropPluginProbe();
 	}
 
 	// -----------------------------------------------------------------
@@ -912,6 +944,250 @@ class AdminRoutePermsCest
 
 		$I->seeInDatabase('e107_generic', array('gen_id' => $counter, 'gen_type' => 'failed_login', 'gen_ip' => '203.0.113.7'));
 		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_ip' => 'p7rp edited'));
+	}
+
+	/** A list's edit form loads only the rows its own query selects. */
+	public function aWelcomeMessageAdministratorCannotEditRowsAnotherListOwns(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a welcome-message edit of the shared-table rows another permission owns');
+
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+		$rank = $this->seedGenericRow($I, 'user_rank_data', 'p7rp rank', 0);
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		foreach(array($counter => 'failed_login', $rank => 'user_rank_data') as $id => $type)
+		{
+			$this->postWithToken($I, self::ROUTE_WMESSAGE_EDIT.$id, array(
+				'etrigger_submit' => 'update',
+				'gen_type'        => $type,
+				'gen_ip'          => 'p7rp edited',
+				'gen_intdata'     => '0',
+				'gen_chardata'    => 'p7rp edited',
+			));
+
+			$I->dontSeeInDatabase('e107_generic', array('gen_id' => $id, 'gen_ip' => 'p7rp edited'));
+		}
+	}
+
+	/** A list's inline editor loads only the rows its own query selects. */
+	public function aWelcomeMessageAdministratorCannotInlineEditRowsAnotherListOwns(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a welcome-message inline edit of the shared-table rows another permission owns');
+
+		$this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+		$rank = $this->seedGenericRow($I, 'user_rank_data', 'p7rp rank', 0);
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		foreach(array($counter, $rank) as $id)
+		{
+			$this->sendInline($I, $id, 'gen_ip', 'p7rp edited', self::ROUTE_WMESSAGE, self::ROUTE_WMESSAGE_INLINE);
+
+			$I->dontSeeInDatabase('e107_generic', array('gen_id' => $id, 'gen_ip' => 'p7rp edited'));
+		}
+	}
+
+	/** Positive control: the welcome-message edit form and inline editor still write a welcome message. */
+	public function aWelcomeMessageAdministratorStillEditsAWelcomeMessage(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the welcome-message edit form and inline editor working on a welcome message');
+
+		$message = $this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		$this->postWithToken($I, self::ROUTE_WMESSAGE_EDIT.$message, array(
+			'etrigger_submit' => 'update',
+			'gen_type'        => 'wmessage',
+			'gen_ip'          => 'p7rp edited',
+			'gen_intdata'     => '0',
+			'gen_chardata'    => 'p7rp edited',
+		));
+		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_ip' => 'p7rp edited'));
+
+		$this->sendInline($I, $message, 'gen_ip', 'p7rp inline', self::ROUTE_WMESSAGE, self::ROUTE_WMESSAGE_INLINE);
+		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_ip' => 'p7rp inline'));
+	}
+
+	/** Positive control: the white list's edit form loads a white-list entry, and the ban list's does not. */
+	public function theWhiteListEditFormStillLoadsAWhiteListEntry(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the white-list edit form loading white-list entries');
+
+		$entry = (int) $I->haveInDatabase('e107_banlist', array(
+			'banlist_ip'         => '198.51.100.77',
+			'banlist_bantype'    => 100,
+			'banlist_datestamp'  => 1262304000,
+			'banlist_banexpires' => 0,
+			'banlist_admin'      => 1,
+			'banlist_reason'     => 'p7rp white',
+			'banlist_notes'      => '',
+		));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$I->amOnPage(self::ROUTE_WHITELIST_EDIT.$entry);
+		$I->seeInSource('198.51.100.77');
+
+		$I->amOnPage(self::ROUTE_BANLIST_EDIT.$entry);
+		$I->dontSeeInSource('198.51.100.77');
+	}
+
+	/** Positive control: each list over a shared table still shows its own rows, and only those. */
+	public function eachSharedTableListStillShowsItsOwnRows(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep every shared-table list showing its own rows and no others');
+
+		$I->havePluginInstalled('forum');
+		$I->havePluginInstalled('download');
+		$I->loginAsAdmin();
+
+		foreach(self::SHARED_TABLE_LISTS as $route => $types)
+		{
+			list($own, $other) = $types;
+
+			$this->seedGenericRow($I, $own, 'p7rp own '.$own);
+			$this->seedGenericRow($I, $other, 'p7rp other '.$other);
+
+			$I->amOnPage($route);
+			$I->see('p7rp own '.$own);
+			$I->dontSee('p7rp other '.$other);
+		}
+	}
+
+	/** A list's edit form keeps the row type its scope pins, and still saves the row's other fields. */
+	public function aWelcomeMessageCannotBeMovedToAnotherListThroughItsEditForm(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep a welcome message a welcome message when its edit form posts the row type of another list');
+
+		$message = $this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		$this->postWithToken($I, self::ROUTE_WMESSAGE_EDIT.$message, array(
+			'etrigger_submit' => 'update',
+			'gen_type'        => 'user_rank_data',
+			'gen_ip'          => 'p7rp edited',
+			'gen_intdata'     => '0',
+			'gen_chardata'    => 'p7rp edited',
+		));
+
+		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_ip' => 'p7rp edited'));
+		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_type' => 'wmessage'));
+	}
+
+	/** A list's create form stores the row type its scope pins, whatever it is posted. */
+	public function aWelcomeMessageCreatedAsAnotherListsRowIsStillAWelcomeMessage(AcceptanceTester $I)
+	{
+		$I->wantTo('Store a welcome message as a welcome message when its create form posts the row type of another list');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		$this->postWithToken($I, self::ROUTE_WMESSAGE_CREATE, array(
+			'etrigger_submit' => 'create',
+			'gen_type'        => 'user_rank_data',
+			'gen_ip'          => 'p7rp created',
+			'gen_intdata'     => '0',
+			'gen_chardata'    => 'p7rp created',
+		));
+
+		$I->seeInDatabase('e107_generic', array('gen_ip' => 'p7rp created'));
+		$I->seeInDatabase('e107_generic', array('gen_ip' => 'p7rp created', 'gen_type' => 'wmessage'));
+	}
+
+	/** A list's inline editor refuses the row type its scope pins, and still saves the row's other fields. */
+	public function aUserRankCannotBeMovedToAnotherListInline(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a user-ranks inline edit of the row type, and keep the inline editor saving a rank');
+
+		$rank = $this->seedGenericRow($I, 'user_rank_data', 'p7rp rank', 0);
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpU3admin');
+
+		$this->sendInline($I, $rank, 'gen_type', 'wmessage', self::ROUTE_RANKS, self::ROUTE_RANKS_INLINE);
+		$I->seeInDatabase('e107_generic', array('gen_id' => $rank, 'gen_type' => 'user_rank_data'));
+
+		$this->sendInline($I, $rank, 'gen_ip', 'p7rp inline', self::ROUTE_RANKS, self::ROUTE_RANKS_INLINE);
+		$I->seeInDatabase('e107_generic', array('gen_id' => $rank, 'gen_ip' => 'p7rp inline'));
+	}
+
+	/** A list's batch refuses the row type its scope pins, and still writes the row's other fields. */
+	public function aUserRankCannotBeMovedToAnotherListByBatch(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a user-ranks batch write of the row type, and keep the batch writing a rank');
+
+		$rank = $this->seedGenericRow($I, 'user_rank_data', 'p7rp rank', 0);
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpU3admin');
+
+		$this->sendBatch($I, self::ROUTE_RANKS, 'gen_type__wmessage', $rank, 'e-multiselect');
+		$I->seeInDatabase('e107_generic', array('gen_id' => $rank, 'gen_type' => 'user_rank_data'));
+
+		$this->sendBatch($I, self::ROUTE_RANKS, 'bool__gen_user_id__0', $rank, 'e-multiselect');
+		$I->seeInDatabase('e107_generic', array('gen_id' => $rank, 'gen_user_id' => 0));
+	}
+
+	/** The gallery's category edit form keeps the owner its scope pins, and still saves the category's other fields. */
+	public function aGalleryCategoryCannotBeMovedOutOfTheGallery(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep a gallery category in the gallery when its edit form posts another owner');
+
+		$I->havePluginInstalled('gallery');
+
+		$category = (int) $I->haveInDatabase('e107_core_media_cat', array(
+			'media_cat_owner'    => 'gallery',
+			'media_cat_category' => 'gallery_image_p7rp',
+			'media_cat_title'    => 'p7rp gallery',
+			'media_cat_sef'      => 'p7rp-gallery',
+			'media_cat_diz'      => '',
+			'media_cat_class'    => 0,
+			'media_cat_image'    => '',
+			'media_cat_order'    => 0,
+		));
+
+		$I->loginAsAdmin();
+
+		$this->postWithToken($I, self::ROUTE_GALLERY_CATEGORY_EDIT.$category, array(
+			'etrigger_submit'    => 'update',
+			'media_cat_owner'    => 'p7rp',
+			'media_cat_category' => 'gallery_image_p7rp',
+			'media_cat_title'    => 'p7rp edited',
+			'media_cat_sef'      => 'p7rp-gallery',
+			'media_cat_diz'      => '',
+			'media_cat_class'    => 0,
+			'media_cat_image'    => '',
+			'media_cat_order'    => 0,
+		));
+
+		$I->seeInDatabase('e107_core_media_cat', array('media_cat_id' => $category, 'media_cat_title' => 'p7rp edited'));
+		$I->seeInDatabase('e107_core_media_cat', array('media_cat_id' => $category, 'media_cat_owner' => 'gallery'));
+	}
+
+	/** A list's drag-and-drop sort resets, writes and renumbers only the rows its scope selects. */
+	public function aMenuListSortLeavesTheCustomPagesInTheirOrder(AcceptanceTester $I)
+	{
+		$I->wantTo('Hold a custom menu sort to the menus, leaving every custom page in its order');
+
+		$menu = (int) $I->haveInDatabase('e107_page', array('menu_title' => 'p7rp menu', 'page_order' => 3));
+		$posted = (int) $I->haveInDatabase('e107_page', array('page_title' => 'p7rp posted page', 'page_order' => 5));
+		$page = (int) $I->haveInDatabase('e107_page', array('page_title' => 'p7rp page', 'page_order' => 6));
+		$unposted = (int) $I->haveInDatabase('e107_page', array('menu_title' => 'p7rp unposted menu', 'page_order' => 45));
+		$late = (int) $I->haveInDatabase('e107_page', array('page_title' => 'p7rp late page', 'page_order' => 50));
+
+		$I->loginAsAdmin();
+
+		$I->sendPostRequest(self::ROUTE_MENU_SORT, array(
+			'all'     => array('row-'.$menu, 'row-'.$posted),
+			'e-token' => $this->grabTokenFrom($I, self::ROUTE_WMESSAGE),
+		));
+
+		$I->seeInDatabase('e107_page', array('page_id' => $menu, 'page_order' => 10));
+		$I->seeInDatabase('e107_page', array('page_id' => $posted, 'page_order' => 5));
+		$I->seeInDatabase('e107_page', array('page_id' => $page, 'page_order' => 6));
+		$I->assertNotContains((int) $I->grabFromDatabase('e107_page', 'page_order', array('page_id' => $unposted)), array(45, 999), 'The sort did not renumber an unposted custom menu.');
+		$I->seeInDatabase('e107_page', array('page_id' => $late, 'page_order' => 50));
 	}
 
 	/**
@@ -1865,13 +2141,15 @@ class AdminRoutePermsCest
 	 * @param int $id row to edit
 	 * @param string $field column to write
 	 * @param string $value posted value
+	 * @param string $listRoute list page whose inline links carry the token
+	 * @param string $inlineRoute inline route, less the row id
 	 * @return void
 	 */
-	private function sendInline(AcceptanceTester $I, $id, $field, $value)
+	private function sendInline(AcceptanceTester $I, $id, $field, $value, $listRoute = self::ROUTE_LIST, $inlineRoute = self::ROUTE_INLINE)
 	{
-		$I->amOnPage(self::ROUTE_LIST);
+		$I->amOnPage($listRoute);
 
-		$I->sendPostRequest(self::ROUTE_INLINE.$id, array(
+		$I->sendPostRequest($inlineRoute.$id, array(
 			'name'    => $field,
 			'value'   => $value,
 			'pk'      => $id,
@@ -2294,6 +2572,9 @@ switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 
 		// Seeded by users_ranks_ui::init() on the first view of the ranks route.
 		\$db->delete('generic', "gen_type = 'user_rank_data'");
+
+		// Stored by a create route this Cest posted to.
+		\$db->delete('generic', "gen_ip LIKE 'p7rp%'");
 
 		// Queued by resend_to_all(), which runs with mail_force_queue so nothing
 		// is actually sent, but the rows outlive the request that made them.

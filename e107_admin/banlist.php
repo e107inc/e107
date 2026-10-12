@@ -102,7 +102,8 @@ class banlist_ui extends e_admin_ui
 		protected $table			= 'banlist';
 		protected $pid				= 'banlist_id'; 
 		protected $perPage 			= 10;
-		protected $listQry          = "SELECT * FROM `#banlist` WHERE banlist_bantype != 100 ";
+		protected $listQry          = "SELECT * FROM `#banlist`";
+		protected $listScope		= 'banlist_bantype != 100';
 		protected $listOrder		= 'banlist_datestamp DESC';
 
 		protected $fields 	= array (  
@@ -168,10 +169,7 @@ class banlist_ui extends e_admin_ui
 
 			if($this->getMode() == 'white')
 			{
-				if($this->getAction() == 'list')
-				{
-					$this->listQry = "SELECT * FROM `#banlist` WHERE banlist_bantype = 100 ";
-				}
+				$this->listScope = array('banlist_bantype' => eIPHandler::BAN_TYPE_WHITELIST);
 
 
 				if($this->getAction() == 'create')
@@ -957,7 +955,8 @@ class banlist_form_ui extends e_admin_form_ui
 		protected $table			= 'generic';
 		protected $pid				= 'gen_id';
 		protected $perPage 			= 10;
-		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='failed_login' ";
+		protected $listQry			= "SELECT * FROM `#generic`";
+		protected $listScope		= array('gen_type' => 'failed_login');
 		protected $listOrder        = "gen_datestamp DESC";
 
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),

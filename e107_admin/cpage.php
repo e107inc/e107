@@ -410,8 +410,8 @@ class page_admin_ui extends e_admin_ui
 		                               FROM #page AS p
 		                               LEFT JOIN #user AS u ON p.page_author = u.user_id
 		                               LEFT JOIN #page_chapters AS pch ON p.page_chapter = pch.chapter_id
-		                               LEFT JOIN #page_chapters AS pbk ON pch.chapter_parent = pbk.chapter_id
-		                               WHERE (p.page_title != '' OR p.page_text != '')   "; // without any Order or Limit.
+		                               LEFT JOIN #page_chapters AS pbk ON pch.chapter_parent = pbk.chapter_id"; // without any Order or Limit.
+		protected $listScope		= "page_title != '' OR page_text != ''";
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid 				= "page_id";
@@ -516,6 +516,15 @@ class page_admin_ui extends e_admin_ui
 
 			$mode = $this->getMode();
 
+			if($mode === 'overview')
+			{
+				$this->listScope = '';
+			}
+			elseif($mode === 'menu')
+			{
+				$this->listScope = "menu_title != '' OR menu_name != '' OR menu_image != '' OR menu_icon != ''";
+			}
+
 			$this->perPage = (int) e107::pref('core','admin_page_perpage', 10);
 
 			if($mode !== 'menu')
@@ -577,7 +586,7 @@ class page_admin_ui extends e_admin_ui
 			if($this->getMode() === 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline' || $this->getAction() == 'grid'))
 			{
 			
-				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE (p.menu_title != '' OR p.menu_name != '' OR p.menu_image != '' OR p.menu_icon !='') "; // without any Order or Limit.
+				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id"; // without any Order or Limit.
 		//	$this->gridQry = $this->listQry;
 				$this->listOrder 		= 'p.page_order asc'; // 'p.page_id desc';
 				$this->fieldPrefName = 'cPageMenu';
@@ -772,11 +781,9 @@ class page_admin_ui extends e_admin_ui
 
 		private function loadCustomFieldsData()
 		{
-			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
-
 			$cf = e107::getCustomFields();
 
-			$cf->loadData($row['page_fields'])->setAdminUIData('page_fields',$this);
+			$cf->loadData($this->getModel()->get('page_fields'))->setAdminUIData('page_fields',$this);
 
 		//	e107::getDebug()->log($cf);
 
@@ -799,11 +806,12 @@ class page_admin_ui extends e_admin_ui
 
 			parent::EditObserver();
 
-			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
-			$chap = intval($row['page_chapter']);
+			if($this->getModel()->getId())
+			{
+				$this->initCustomFields((int) $this->getModel()->get('page_chapter'));
+				$this->loadCustomFieldsData();
+			}
 
-			$this->initCustomFields($chap);
-			$this->loadCustomFieldsData();
 			$this->initSEOFields();
 
 		}

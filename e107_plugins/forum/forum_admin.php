@@ -1030,7 +1030,9 @@ e107::css('inline',"
 		protected $table			= 'generic';
 		protected $pid				= 'gen_id';
 		protected $perPage 			= 10;
-		protected $listQry			= "SELECT g.*,u.user_name FROM `#generic` AS g LEFT JOIN `#user` AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='reported_post' OR g.gen_type='Reported Forum Post' ORDER BY g.gen_datestamp DESC";
+		protected $listQry			= "SELECT g.*,u.user_name FROM `#generic` AS g LEFT JOIN `#user` AS u ON g.gen_user_id = u.user_id";
+		protected $listScope		= array('gen_type' => array('reported_post', 'Reported Forum Post'));
+		protected $listOrder		= 'g.gen_datestamp DESC';
 
 		protected $fields 		= array (
 			'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
