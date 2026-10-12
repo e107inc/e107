@@ -145,14 +145,14 @@ function nextprev_shortcode($parm = null)
 		
 		$tprefix .= '_';
 
-		if($parm['amount'] === 'all')
+		if(varset($parm['amount']) === 'all')
 		{
 			$perpage = 1; // amount is ignored
 			$check_render = ($total_items > 1);
 		}
 		else
 		{
-			$perpage = intval($parm['amount']);
+			$perpage = intval(varset($parm['amount']));
 		}
 		if(!$check_render) {	return ''; }
 
@@ -173,6 +173,10 @@ function nextprev_shortcode($parm = null)
 			break;
 
 			default:
+				if($perpage < 1)
+				{
+					return '';
+				}
 				$total_pages = ceil($total_items/$perpage);
 				$last_page = ceil($total_pages*$perpage)-$perpage;
 				$current_page = ($current_start/$perpage) + 1;
@@ -349,7 +353,8 @@ function nextprev_shortcode($parm = null)
 			$label = '';
 			if(varset($pagetitle[$c]))
 			{
-				$label = defset($pagetitle[$c], $pagetitle[$c]);
+				$label = e_parse::languageTerm($pagetitle[$c]);
+				$label = $label !== null ? $label : $pagetitle[$c];
 			}
 			$e_vars_loop->url = str_replace('[FROM]', ($perpage * ($c + $index_add)), $url);
 			$e_vars_loop->label = $label ? $tp->toHTML(stripslashes($label), false, 'TITLE') : $c + 1; //quick fix servers with magicquotes - stripslashes()
@@ -432,6 +437,10 @@ function nextprev_shortcode($parm = null)
 		// page number instead record start now supported
 		if(is_numeric($p[2]))
 		{
+			if($perpage < 1)
+			{
+				return '';
+			}
 			$current_start = intval($p[2]);
 			$current_page = ($current_start/$perpage) + 1;
 			$total_pages = ceil($total_items/$perpage);
