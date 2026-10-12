@@ -1446,6 +1446,26 @@ EXPECTED;
 
 	}
 
+	/**
+	 * With no WYSIWYG editor on the page, toForm() decodes a stored %3C, %3E or %27 to its entity, so it comes out as text, and leaves a stored ' as it is.
+	 */
+	public function testToFormKeepsPercentEscapedMarkupAsText()
+	{
+		$editor = e107::wysiwyg(null, true);
+		e107::wysiwyg(false);
+
+		try
+		{
+			$result = $this->tp->toForm('Look %3C/textarea%3E%3cimg src=x%3E %27q%27 it\'s <b> a+b');
+		}
+		finally
+		{
+			e107::wysiwyg($editor);
+		}
+
+		self::assertSame('Look &lt;/textarea&gt;&lt;img src=x&gt; &#039;q&#039; it\'s &lt;b&gt; a+b', $result);
+	}
+
 	private function isValidXML($xmlContent)
 	{
 		if (trim($xmlContent) == '')
