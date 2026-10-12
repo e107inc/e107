@@ -298,4 +298,33 @@
 
 		}
 
+
+		public function testParseBBCodesKeepsAnUnmatchedOpeningCodeVerbatim()
+		{
+			$inputs = array(
+				'[b]bold[/b] and [color=#ff0000]unclosed',
+				'[b]bold[/b] and [size2]unclosed',
+				'[b]bold[/b] and [URL=https://example.com]a link',
+				'Our logo lives at [/img/logo.png] and here is [url=https://example.com/a?b=c]a link',
+			);
+
+			$stored = array();
+
+			foreach($inputs as $input)
+			{
+				$stored[] = $this->bb->parseBBCodes($input, '', 'default', 'PRE');
+			}
+
+			$this->assertSame($inputs, $stored);
+		}
+
+
+		public function testParseBBCodesDisplaysAnUnmatchedOpeningCodeVerbatim()
+		{
+			$display = $this->bb->parseBBCodes('[b]bold[/b] and [color=#ff0000]unclosed');
+
+			$this->assertStringContainsString('[color=#ff0000]unclosed', $display);
+			$this->assertStringNotContainsString('[color]', $display);
+		}
+
 	}
