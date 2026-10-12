@@ -1849,6 +1849,11 @@ class e_parse
 							break;
 					}
 
+					if (($matches[2] === 'hide') && (strpos($full_text, $matches[1]) === 0)) // the parser left the opening tag unpaired
+					{
+						$full_text = $this->parseBBCodes(preg_replace('#^\[hide\w*#', '[hide', $matches[0]), $postID);
+					}
+
 				}
 			}
 

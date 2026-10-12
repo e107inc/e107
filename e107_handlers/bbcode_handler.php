@@ -196,7 +196,7 @@ class e_bbcode
 								$i = 0;
 								while ($i < count($code_stack))
 								{     // See if code is anywhere on the stack.
-									if (($code_stack[$i]['type'] == 'bbcode') && ($code_stack[$i]['code'] == $bbword) && ($code_stack[0]['numbers'] == $matches[3]))
+									if (($code_stack[$i]['type'] == 'bbcode') && ($code_stack[$i]['code'] == $bbword) && ($code_stack[$i]['numbers'] == $matches[3]))
 									{
 										$found = TRUE;
 										break;
