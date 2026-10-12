@@ -321,7 +321,19 @@ class e_bbcode
 								{
 									$found = FALSE;   // Use as 'done' variable now
 									// Code is on stack - $i has index number. Process text, discard unmatched open codes, process 'our' code
-									while ($i > 0) { $unmatch_stack[] = array_shift($code_stack); $i--; }    // Get required code to top of stack
+									while ($i > 0)
+									{    // Get required code to top of stack; on save, what lies above it stays inside the pair, as typed
+										if ($this->preProcess === 'toDB')
+										{
+											$stacktext = (($code_stack[0]['type'] == 'text') ? $code_stack[0]['code'] : $code_stack[0]['block']).$stacktext;
+											array_shift($code_stack);
+										}
+										else
+										{
+											$unmatch_stack[] = array_shift($code_stack);
+										}
+										$i--;
+									}
 
 									// Pull it off using array_shift - this keeps it as a zero-based array, newest first.
 									while (!$found && (count($code_stack) != 0))
