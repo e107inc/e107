@@ -199,6 +199,8 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	public function scriptUrls()
 	{
 		return array(
+			'url in a table' => array('[table][url=[nobr]]javascript:alert(1)//[/nobr]">x[/url][/table]'),
+			'url in a hide'  => array('[hide][url=[nobr]]javascript:alert(1)//[/nobr]">x[/url][/hide]'),
 			'url body'       => array("[url]java\tscript:alert(1)[/url]"),
 			'url parameter'  => array("[url=java\tscript:alert(1)]x[/url]"),
 			'link parameter' => array("[link=java\tscript:alert(1)]x[/link]"),
@@ -265,6 +267,23 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 
 		$this->elementIn($html, 'img');
 		$this->assertNoEventHandler($html, 'A quote a handler encoded inside a [hide] block was decoded.');
+	}
+
+	/** The markup a link bbcode builds inside a [table] or [hide] block is never read as bbcode a second time. */
+	public function testALinkInsideABlockGainsNoEventHandler()
+	{
+		foreach(array('[table]%s[/table]', '[hide]%s[/hide]') as $block)
+		{
+			$bbcode = sprintf($block, '[url=[nobr]]http://example.com/[/nobr]" autofocus onfocus="alert(1)" x="[/url]');
+
+			foreach(array('', 'BODY', 'USER_BODY') as $modifiers)
+			{
+				$html = $this->renderStored($bbcode, null, $modifiers);
+
+				$this->elementIn($html, 'a');
+				$this->assertNoEventHandler($html, 'A link inside a block gained an event handler: '.$bbcode.' '.$modifiers);
+			}
+		}
 	}
 
 	/**
