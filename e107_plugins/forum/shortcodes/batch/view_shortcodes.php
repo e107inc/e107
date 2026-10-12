@@ -1018,7 +1018,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_threadname($parm = null)
 	{
 
-		return e107forum::threadNameHtml($this->var['thread_name'], e107::getParser());
+		return e107forum::threadNameHtml($this->var['thread_name'], e107::getParser(), e107::getBB());
 	}
 
 	function sc_nextprev()

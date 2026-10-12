@@ -14,8 +14,8 @@ class ForumThreadNameCest
 	/** A name as an edit stored it before edits were converted. */
 	const STORED_MARKUP = 'Stored <name-markup>as typed</name-markup>';
 
-	/** A name carrying bbcode, which a title box takes as typed text. */
-	const STORED_BBCODE = '[b]bbcode probe[/b]';
+	/** A name carrying inline, table, image and link bbcode, and a mention of a code nothing closes. */
+	const STORED_BBCODE = '[b]bbcode probe[/b] [table][tr][td]table probe[/td][/tr][/table] [img]image-probe.png[/img] [link=https://example.com/link-probe]link probe[/link] [img] lone probe';
 
 	/** @var array ids from Helper\ForumFixture::haveForumStructure() */
 	private $ids;
@@ -178,15 +178,17 @@ class ForumThreadNameCest
 	}
 
 	/**
-	 * The name's bbcode is not rendered.
+	 * The name's inline bbcode is rendered, every other code it closes is stripped to its text, and one it leaves open prints as typed.
 	 */
-	public function theTopicPagePrintsANamesBbcodeAsText(AcceptanceTester $I)
+	public function theTopicPageRendersANamesInlineBbcodeAndStripsTheRest(AcceptanceTester $I)
 	{
 		$this->haveStoredName($I, self::STORED_BBCODE);
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->thread);
 
-		$I->dontSeeElement('strong.bbcode');
-		$I->seeInSource(self::STORED_BBCODE);
+		$I->see('bbcode probe', 'strong.bbcode');
+		$I->seeInSource('bbcode probe</strong> table probe image-probe.png link probe [img] lone probe');
+		$I->dontSeeElement('img[src*="image-probe"]');
+		$I->dontSeeElement('a[href*="link-probe"]');
 	}
 
 	/**

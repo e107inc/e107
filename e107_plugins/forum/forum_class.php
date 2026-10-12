@@ -1140,15 +1140,29 @@ class e107forum
 	}
 
 	/**
-	 * A thread's stored name as HTML, with nothing in it taken as markup.
+	 * A thread's stored name as HTML, with core's inline bbcode rendered, every other code stripped to its text, and nothing else in it taken as markup.
 	 *
-	 * @param string  $name
-	 * @param e_parse $tp
+	 * @param string   $name
+	 * @param e_parse  $tp
+	 * @param e_bbcode $bb
 	 * @return string
 	 */
-	public static function threadNameHtml($name, e_parse $tp)
+	public static function threadNameHtml($name, e_parse $tp, e_bbcode $bb)
 	{
-		return $tp->toHTML($tp->attributeValue($name), false, 'USER_TITLE');
+		$strip = array('html', 'php', 'scode');
+
+		foreach ($bb->getRegistered() as $code => $location)
+		{
+			$word = ltrim($code, '_');
+
+			if ($location !== 'core' || !in_array($word, array('b', 'i', 'u', 'color', 'size', 'spoiler', 'time', 'br', 'nobr', 'sanitised'), true))
+			{
+				$strip[] = $code;
+				$strip[] = $word;
+			}
+		}
+
+		return $tp->toHTML($tp->attributeValue($name), implode(',', array_unique($strip)), 'USER_TITLE');
 	}
 
 

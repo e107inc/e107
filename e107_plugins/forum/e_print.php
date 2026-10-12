@@ -25,7 +25,7 @@ class forum_print // plugin-folder + '_print'
 		//print_a($post_list);
 
 		// Set topic name
-		$topic_name = e107forum::threadNameHtml($thread_info['thread_name'], $tp);
+		$topic_name = e107forum::threadNameHtml($thread_info['thread_name'], $tp, e107::getBB());
 
 		// Display topic name
 		$text .= "<h3>".$topic_name."</h3>";

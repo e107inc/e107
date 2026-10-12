@@ -842,4 +842,50 @@
 			}
 		}
 
+		public function testParseBBCodesStripsAListedCodeOnlyWhereItIsClosed()
+		{
+			$tests = array(
+				'Problem with [img] tags'           => 'Problem with [img] tags',
+				'Where did [/quote] come from?'     => 'Where did [/quote] come from?',
+				'See [IMG=left] here'               => 'See [IMG=left] here',
+				'[img]a.png[/img] and [img] alone'  => 'a.png and [img] alone',
+				'[quote=x]a [img]b[/img][/quote]'   => 'a b',
+				'line [br] break'                   => 'line  break',
+			);
+
+			foreach($tests as $text => $expected)
+			{
+				self::assertSame($expected, $this->bb->parseBBCodes($text, '', 'default', 'img,quote,br'), $text);
+			}
+
+			self::assertSame('bold, [img] alone', $this->bb->parseBBCodes('[b]bold[/b], [img] alone', '', 'default', true));
+		}
+
+		public function testGetRegisteredMapsEachCodeToWhereItsHandlerLives()
+		{
+			$config = e107::getConfig();
+			$saved = $config->get('bbcode_list');
+
+			try
+			{
+				$config->set('bbcode_list', array('myplugin' => array('mycode' => 0, '_mysingle' => 0, 'b' => 0)));
+				$this->bb->__construct();
+
+				$registered = $this->bb->getRegistered();
+			}
+			finally
+			{
+				$config->set('bbcode_list', $saved);
+				$this->bb->__construct();
+			}
+
+			self::assertSame('myplugin', $registered['mycode']);
+			self::assertSame('myplugin', $registered['_mysingle']);
+			self::assertSame('myplugin', $registered['b']);
+			self::assertSame('core', $registered['i']);
+			self::assertSame('core', $registered['_br']);
+			self::assertArrayNotHasKey('br', $registered);
+			self::assertArrayNotHasKey('html', $registered);
+		}
+
 	}
