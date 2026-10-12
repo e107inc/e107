@@ -18,6 +18,7 @@ class eIPHandlerTest extends \Test\Unit
 {
 	const VISITOR = '198.51.100.77';
 	const NEIGHBOUR = '198.51.100.78';
+	const CONTENDED = '203.0.113.71';
 	const TEST_NET = '198.51.100.0/24';
 	const STRANGER = '203.0.113.9';
 	const OUTSIDER = '203.0.113.99';
@@ -33,6 +34,9 @@ class eIPHandlerTest extends \Test\Unit
 	/** @var mixed the enable_rdns pref as found */
 	private $savedRdns = null;
 
+	/** @var mixed the enable_rdns_on_ban pref as found */
+	private $savedRdnsOnBan = null;
+
 	/** @var mixed the ban_retrigger pref as found */
 	private $savedRetrigger = null;
 
@@ -42,6 +46,7 @@ class eIPHandlerTest extends \Test\Unit
 	protected function _before()
 	{
 		$this->savedRdns = e107::getConfig()->get('enable_rdns');
+		$this->savedRdnsOnBan = e107::getConfig()->get('enable_rdns_on_ban');
 		$this->savedRetrigger = e107::getConfig()->get('ban_retrigger');
 		$this->savedDurations = e107::getConfig()->get('ban_durations');
 		unset($_SERVER['REMOTE_ADDR']);
@@ -65,10 +70,12 @@ class eIPHandlerTest extends \Test\Unit
 		unset($_SERVER['REMOTE_ADDR']);
 		putenv('REMOTE_ADDR');
 		e107::getConfig()->set('enable_rdns', $this->savedRdns);
+		e107::getConfig()->set('enable_rdns_on_ban', $this->savedRdnsOnBan);
 		e107::getConfig()->set('ban_retrigger', $this->savedRetrigger);
 		e107::getConfig()->set('ban_durations', $this->savedDurations);
 
 		e107::getDb()->createQueryBuilder()->delete('banlist')->where('banlist_reason', self::REASON)->execute();
+		e107::getDb()->createQueryBuilder()->delete('banlist')->where('banlist_ip', $this->ip->ipEncode(self::CONTENDED))->execute();
 
 		$this->ip->regenerateFiles();
 
@@ -397,6 +404,62 @@ class eIPHandlerTest extends \Test\Unit
 		self::assertSame(0, e107::getDb()->createQueryBuilder()->from('banlist')->where('banlist_ip', $inside)->count());
 		self::assertTrue($this->ip->add_ban(2, self::REASON, $outside), 'an address outside it can');
 		self::assertSame(1, e107::getDb()->createQueryBuilder()->from('banlist')->where('banlist_ip', $outside)->count());
+	}
+
+	/**
+	 * The second request arrives where the first runs its reverse-DNS lookup, between looking the address up and adding it.
+	 */
+	public function testARequestBanningTheSameAddressAlongsideAddsNoSecondRow()
+	{
+		$address = $this->ip->ipEncode(self::CONTENDED);
+		$alongside = '';
+		$banAlongside = function() use ($address, &$alongside)
+		{
+			$alongside = $this->addBanInAnotherRequest($address);
+		};
+		$this->ip = $this->make('eIPHandler', array(
+			'get_host_name' => function() use ($banAlongside)
+			{
+				$banAlongside();
+
+				return 'host.example.test';
+			},
+		));
+		$this->ip->__construct();
+		e107::getConfig()->set('enable_rdns_on_ban', 1);
+
+		self::assertTrue($this->ip->add_ban(2, self::REASON, $address), 'the first request adds the ban');
+		self::assertStringContainsString('answer:1', $alongside,
+			'the request alongside finds the ban being added and reports the address as listed');
+		self::assertSame(1, e107::getDb()->createQueryBuilder()->from('banlist')->where('banlist_ip', $address)->count(),
+			'one ban, however many requests asked for it at once');
+	}
+
+	/**
+	 * Covers both ways out of add_ban() that hold the lock: adding the ban, and finding it listed.
+	 */
+	public function testAnotherRequestCanBanTheAddressAfreshOnceEarlierOnesHaveAnswered()
+	{
+		$address = $this->ip->ipEncode(self::CONTENDED);
+		$this->ip->__construct();
+
+		self::assertTrue($this->ip->add_ban(2, self::REASON, $address));
+		self::assertSame(1, $this->ip->add_ban(2, self::REASON, $address), 'the address is listed now');
+		e107::getDb()->createQueryBuilder()->delete('banlist')->where('banlist_ip', $address)->execute();
+
+		self::assertStringContainsString('answer:true', $this->addBanInAnotherRequest($address),
+			'with the earlier requests answered, another one adds the ban afresh');
+	}
+
+	/**
+	 * @param string $address encoded, as core's callers pass it
+	 * @return string what add_ban() answered in a request of its own, as 'answer:' and its var_export()
+	 */
+	private function addBanInAnotherRequest($address)
+	{
+		list($output) = $this->runInBootedCli("echo 'answer:', var_export(e107::getIPHandler()->add_ban(2, '".self::REASON."', '".$address."', 0), true);");
+
+		return implode("\n", $output);
 	}
 
 	/**
