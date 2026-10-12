@@ -309,6 +309,8 @@
 				'Our logo lives at [/img/logo.png] and here is [url=https://example.com/a?b=c]a link',
 				'[size2]hello[b]world[/size]',
 				'[h1]Title [b]bold[/h]',
+				'[size2=20]a [b]b[/size2]',
+				'[hide]a [b]b[/hide]',
 			);
 
 			$stored = array();
@@ -319,6 +321,36 @@
 			}
 
 			$this->assertSame($inputs, $stored);
+		}
+
+
+		/**
+		 * Saving keeps a post as typed, for posts put together at random from codes left open and closed out of order.
+		 */
+		public function testSavingKeepsAPostAsTyped()
+		{
+			$tags = array('[b]', '[/b]', '[i]', '[/i]', '[size2=3]', '[/size2]', '[size=3]', '[/size]', '[hide]', '[/hide]', '[hide2]', '[/hide2]', '[color=red]', '[/color]', '[x', '[/b2]');
+
+			mt_srand(6573);
+
+			try
+			{
+				for($i = 0; $i < 500; $i++)
+				{
+					$post = '';
+
+					for($j = mt_rand(2, 12); $j > 0; $j--)
+					{
+						$post .= mt_rand(0, 2) ? $tags[mt_rand(0, count($tags) - 1)] : 'w' . $j . ' ';
+					}
+
+					self::assertSame($post, $this->bb->parseBBCodes($post, '', 'default', 'PRE'));
+				}
+			}
+			finally
+			{
+				mt_srand();
+			}
 		}
 
 
@@ -400,6 +432,7 @@
 				'upper case'                                           => array('[HIDE]The answer is 42[/HIDE]'),
 				'mixed case and a parameter'                           => array('[Hide=x]The answer is 42[/hIDE]'),
 				'inside a table'                                       => array('[table][tr][td][hide]The answer is 42[/hide][/td][/tr][/table]'),
+				'text typed before a code left open'                   => array('[hide]The answer is 42 [b]x[/hide]'),
 				'a code block never closed'                            => array('[hide]The answer is 42 [code]x[/hide]'),
 				'a code block closed only after the block'             => array('[hide]The answer is 42 [code]x[/hide] [code]y[/code]'),
 			);
