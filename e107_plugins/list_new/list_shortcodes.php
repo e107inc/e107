@@ -62,12 +62,7 @@ class list_shortcodes extends e_shortcode
 	 */
 	function sc_list_heading()
 	{
-		if(empty($this->row['heading']))
-		{
-			return null;
-		}
-
-		return $this->row['heading'];
+		return $this->asBuilt('heading');
 	}
 
 	function sc_list_author()
@@ -85,14 +80,21 @@ class list_shortcodes extends e_shortcode
 		return e107::getParser()->toHTML($this->row['category'], true, "");
 	}
 
+	/**
+	 * The item's info, printed as the section built it.
+	 */
 	function sc_list_info()
 	{
-		if(empty($this->row['info']))
-		{
-			return null;
-		}
+		return $this->asBuilt('info');
+	}
 
-		return e107::getParser()->toHTML($this->row['info'], true, "");
+	/**
+	 * @param string $field
+	 * @return string|null the item's field as its section built it, or null where the section left it empty
+	 */
+	private function asBuilt($field)
+	{
+		return empty($this->row[$field]) ? null : $this->row[$field];
 	}
 
 	function sc_list_caption()

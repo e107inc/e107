@@ -10,7 +10,7 @@
 /**
  * @group plugins
  *
- * The headings of the list_new page and menus, each built by its section from what the section's plugin stored.
+ * The headings of the list_new page and menus, and the info of its page, each built by its section from what the section's plugin stored.
  */
 class list_shortcodesTest extends \Codeception\Test\Unit
 {
@@ -34,7 +34,7 @@ class list_shortcodesTest extends \Codeception\Test\Unit
 	 */
 	public function testAHeadingIsPrintedAsItsSectionBuiltIt($heading)
 	{
-		self::assertSame($heading, $this->printedHeading($heading));
+		self::assertSame($heading, $this->printed('heading', $heading));
 	}
 
 	/**
@@ -45,20 +45,31 @@ class list_shortcodesTest extends \Codeception\Test\Unit
 		$subject = e107::getParser()->toHTML('[link=//x/&#039;/autofocus/onfocus=&#039;alert(1)&#039;/]y[/link]', true);
 		$heading = "<a href='/page.php?id=1'>".$subject.'</a>';
 
-		self::assertSame($heading, $this->printedHeading($heading));
+		self::assertSame($heading, $this->printed('heading', $heading));
 	}
 
 	/**
-	 * @param string $heading
+	 * A chatbox message as the chatbox section builds it, with the site making links clickable.
+	 */
+	public function testARenderedInfoIsNotRenderedAgain()
+	{
+		$info = e107::getParser()->makeClickable('http://x[url=//z/autofocus/onfocus=alert(1)//]q[/url]', 'url', array('ext' => true));
+
+		self::assertSame($info, $this->printed('info', $info));
+	}
+
+	/**
+	 * @param string $field heading or info
+	 * @param string $value as the section built it
 	 * @return string
 	 */
-	private function printedHeading($heading)
+	private function printed($field, $value)
 	{
 		require_once(e_PLUGIN.'list_new/list_shortcodes.php');
 
 		$sc = new list_shortcodes();
-		$sc->row = array('heading' => $heading);
+		$sc->row = array($field => $value);
 
-		return $sc->sc_list_heading();
+		return $sc->{'sc_list_'.$field}();
 	}
 }
