@@ -1091,6 +1091,34 @@ EXPECTED;
 	}
 
 	/**
+	 * A quote inside an attribute value stays inside it on its way through toDB() and toHTML().
+	 */
+	public function testAQuoteInsideAnAttributeValueStaysInIt()
+	{
+		$typed = array(
+			'<b title="q&quot; x=&#039;y">T</b>'        => 'q" x=\'y',
+			'<b title="&amp;quot; x=&amp;quot;y">T</b>' => '" x="y',
+			'<b title=\'q" x\'>T</b>'                     => 'q" x',
+			'<b title="it\'s">T</b>'                      => "it's",
+			'[html]<p><b title="q&quot; x=&#039;y">T</b></p>[/html]'                  => 'q" x=\'y',
+			'[table][tr][td]<b title="q&quot; x=&#039;y">T</b>[/td][/tr][/table]' => 'q" x=\'y',
+		);
+
+		foreach($typed as $html => $title)
+		{
+			$doc = new DOMDocument();
+			$errors = libxml_use_internal_errors(true);
+			$doc->loadHTML('<!DOCTYPE html><html><body>'.$this->tp->toHTML($this->tp->toDB($html), true, 'BODY').'</body></html>');
+			libxml_clear_errors();
+			libxml_use_internal_errors($errors);
+
+			$b = $doc->getElementsByTagName('b')->item(0);
+			$this->assertSame(1, $b->attributes->length, $html);
+			$this->assertSame($title, $b->getAttribute('title'), $html);
+		}
+	}
+
+	/**
 	 * Given an author, toDB() keeps that author's HTML but no script they may not post, whatever the current user may.
 	 */
 	public function testToDBKeepsNoScriptAnAuthorMayNotPost()
