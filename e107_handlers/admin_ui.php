@@ -8171,6 +8171,8 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 	/**
+	 * Save the options this screen declares, {@see e_admin_ui::getPrefs()}, and no other posted key.
+	 *
 	 * @return void
 	 */
 	public function PrefsSaveTrigger()
@@ -8195,7 +8197,7 @@ class e_admin_ui extends e_admin_controller_ui
 			}
 		}
 
-		foreach($data as $key=>$val)
+		foreach(array_intersect_key($data, $this->getPrefs()) as $key=>$val)
 		{
 
 			if(!empty($this->prefs[$key]['multilan']))
