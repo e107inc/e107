@@ -153,6 +153,17 @@ class AdminRoutePermsCest
 	/** The custom menu list's drag-and-drop sort. */
 	const ROUTE_MENU_SORT = '/e107_admin/cpage.php?mode=menu&action=sort&ajax_used=1';
 
+	/** The custom page list's drag-and-drop sort and filter routes. */
+	const ROUTE_PAGE_SORT = '/e107_admin/cpage.php?mode=page&action=sort&ajax_used=1';
+	const ROUTE_PAGE_FILTER = '/e107_admin/cpage.php?mode=page&action=filter&ajax_used=1';
+
+	/** The fields a custom page create form loads when its chapter changes. */
+	const ROUTE_PAGE_CHAPTER_CHANGE = '/e107_admin/cpage.php?mode=page&action=chapter-change&ajax_used=1';
+
+	/** The chapter list's drag-and-drop sort and its inline editor, less the row id. */
+	const ROUTE_CHAPTER_SORT = '/e107_admin/cpage.php?mode=cat&action=sort&ajax_used=1';
+	const ROUTE_CHAPTER_INLINE = '/e107_admin/cpage.php?mode=cat&action=inline&ajax_used=1&id=';
+
 	/** wmessage.php pages its list at ten rows. */
 	const WMESSAGE_PER_PAGE = 10;
 
@@ -1637,6 +1648,100 @@ class AdminRoutePermsCest
 
 		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
 		$this->seeTheCustomPageOptionsRefusedInEveryMode($I);
+	}
+
+	/** cpage.php opens no route its permission map does not name, to the main administrator either. */
+	public function theCustomPageAdminRefusesARouteItsMapDoesNotName(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse every custom page route the permission map does not declare');
+
+		$I->loginAsAdmin();
+
+		foreach(array('mode=cat&action=prefs', 'mode=overview&action=grid', 'mode=dialog&action=list', 'mode=page&action=p7rpundeclared') as $query)
+		{
+			$I->amOnPage('/e107_admin/cpage.php?'.$query);
+			$I->see('You do not have permission to view this page.');
+		}
+	}
+
+	/** Positive control: an admin menu divider names no action, so the custom page admin menu keeps both of its dividers. */
+	public function theCustomPageAdminMenuKeepsItsDividers(AcceptanceTester $I)
+	{
+		$I->wantTo('Draw both dividers of the custom page admin menu');
+
+		$I->loginAsAdmin();
+		$I->amOnPage(self::ROUTE_OVERVIEW_LIST);
+		$I->seeNumberOfElements('li[role="separator"]', 2);
+	}
+
+	/** Positive control: the menu list's grid view, which its toggle draws, still answers a custom-menus administrator. */
+	public function aMenusAdministratorStillReachesTheMenuGrid(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the menu grid open to the menus permission');
+
+		$this->seedPageRow($I, '', 'p7rp grid menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$I->amOnPage(self::ROUTE_MENU_LIST);
+		$I->seeElement('a[href*="mode=menu"][href*="action=grid"]');
+		$I->amOnPage('/e107_admin/cpage.php?mode=menu&action=grid');
+		$I->dontSee('You do not have permission to view this page.');
+		$I->see('p7rp grid menu');
+	}
+
+	/** Positive control: the custom page list's inline editor, sort, filter route and create form's chapter fields still answer a custom-pages administrator. */
+	public function aPagesAdministratorStillReachesThePageListsAjaxRoutes(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the custom page list\'s ajax routes open to the pages permission');
+
+		$first = (int) $I->haveInDatabase('e107_page', array('page_title' => 'p7rp first page', 'page_text' => 'p7rppagebody', 'page_order' => 50));
+		$second = (int) $I->haveInDatabase('e107_page', array('page_title' => 'p7rp second page', 'page_order' => 60));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+
+		$this->sendInline($I, $first, 'page_title', 'p7rp inline title', self::ROUTE_PAGE_LIST, self::ROUTE_PAGE_INLINE);
+		$I->seeInDatabase('e107_page', array('page_id' => $first, 'page_title' => 'p7rp inline title'));
+
+		$I->sendPostRequest(self::ROUTE_PAGE_SORT, array('all' => array('row-'.$second, 'row-'.$first), 'e-token' => $this->grabTokenFrom($I, self::ROUTE_PAGE_LIST)));
+		$I->assertLessThan((int) $I->grabFromDatabase('e107_page', 'page_order', array('page_id' => $first)), (int) $I->grabFromDatabase('e107_page', 'page_order', array('page_id' => $second)), 'The custom page sort did not reorder the pages.');
+
+		$I->sendPostRequest(self::ROUTE_PAGE_FILTER, array('searchquery' => 'p7rppage', 'e-token' => $this->grabTokenFrom($I, self::ROUTE_PAGE_LIST)));
+		$I->seeInSource('p7rppagebody');
+
+		$I->sendPostRequest(self::ROUTE_PAGE_CHAPTER_CHANGE, array('page_chapter' => '0', 'e-token' => $this->grabTokenFrom($I, self::ROUTE_PAGE_CREATE)));
+		$I->seeInSource('#tab');
+	}
+
+	/** Positive control: the chapter list's inline editor and sort still answer a custom-pages administrator. */
+	public function aPagesAdministratorStillReachesTheChapterListsAjaxRoutes(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the chapter list\'s ajax routes open to the pages permission');
+
+		$chapter = array('chapter_parent' => 0, 'chapter_meta_description' => '', 'chapter_meta_keywords' => '', 'chapter_manager' => 254, 'chapter_icon' => '', 'chapter_image' => '', 'chapter_template' => 'default', 'chapter_visibility' => 0);
+		$first = (int) $I->haveInDatabase('e107_page_chapters', $chapter + array('chapter_name' => 'p7rp first book', 'chapter_sef' => 'p7rp-first-book', 'chapter_order' => 50));
+		$second = (int) $I->haveInDatabase('e107_page_chapters', $chapter + array('chapter_name' => 'p7rp second book', 'chapter_sef' => 'p7rp-second-book', 'chapter_order' => 60));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+
+		$this->sendInline($I, $first, 'chapter_sef', 'p7rp-inline-sef', self::ROUTE_CHAPTER_LIST, self::ROUTE_CHAPTER_INLINE);
+		$I->seeInDatabase('e107_page_chapters', array('chapter_id' => $first, 'chapter_sef' => 'p7rp-inline-sef'));
+
+		$I->sendPostRequest(self::ROUTE_CHAPTER_SORT, array('all' => array('row-'.$second, 'row-'.$first), 'e-token' => $this->grabTokenFrom($I, self::ROUTE_CHAPTER_LIST)));
+		$I->assertLessThan((int) $I->grabFromDatabase('e107_page_chapters', 'chapter_order', array('chapter_id' => $first)), (int) $I->grabFromDatabase('e107_page_chapters', 'chapter_order', array('chapter_id' => $second)), 'The chapter sort did not reorder the chapters.');
+	}
+
+	/** Positive control: the overview's batch copy, which asks the overview's create route, still answers the main administrator. */
+	public function theMainAdministratorStillCopiesThroughTheOverview(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the overview\'s batch copy open to the main administrator');
+
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+		$I->updateInDatabase('e107_page', array('page_sef' => 'p7rp-both'), array('page_id' => $both));
+
+		$I->loginAsAdmin();
+		$this->sendBatch($I, self::ROUTE_OVERVIEW_LIST, 'copy', $both);
+
+		$I->seeNumRecords(2, 'e107_page', array('menu_title' => 'p7rp both menu'));
 	}
 
 	/** The custom page grid answers to the pages permission, as the custom page list does. */
@@ -3154,19 +3259,28 @@ class AdminRoutePermsCest
 	}
 
 	/**
-	 * Open the custom page options in each mode that serves them and see each refused.
+	 * Open the custom page options in every mode, the chapters' included, see each refused, and see no save through any of them reach a core preference.
 	 *
 	 * @return void
 	 */
 	private function seeTheCustomPageOptionsRefusedInEveryMode(AcceptanceTester $I)
 	{
-		foreach(array('page', 'menu', 'overview') as $mode)
+		foreach(array('page', 'menu', 'overview', 'cat') as $mode)
 		{
-			$I->amOnPage('/e107_admin/cpage.php?mode='.$mode.'&action=prefs');
+			$route = '/e107_admin/cpage.php?mode='.$mode.'&action=prefs';
+			$I->amOnPage($route);
 
 			$I->see('You do not have permission to view this page.');
 			$I->dontSeeElement('[name="listPages"]');
+
+			$I->sendPostRequest($route, array(
+				'etrigger_save'   => 'save',
+				'user_new_period' => self::PREF_ATTACK,
+				'e-token'         => $this->grabTokenFrom($I, self::ROUTE_OVERVIEW_LIST),
+			));
 		}
+
+		$I->assertSame(0, preg_match('/user_new_period\W+'.self::PREF_ATTACK.'\W/', (string) $I->grabFromDatabase('e107_core', 'e107_value', array('e107_name' => 'SitePrefs'))), 'A custom page options save rewrote a core preference.');
 	}
 
 	/**
