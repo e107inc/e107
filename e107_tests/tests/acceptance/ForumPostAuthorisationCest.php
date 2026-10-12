@@ -41,6 +41,18 @@ class ForumPostAuthorisationCest
 	/** @var int a forum where only administrators (254) reply and members (253) start threads */
 	private $adminReplied;
 
+	/** Under 256, and clear of the fixture's moderator classes. */
+	const CLASS_VIP = 202;
+
+	/** @var int a forum only VIP members may view, left open to every member for posting */
+	private $vipForum;
+
+	/** @var int a thread in it */
+	private $vipThread;
+
+	/** @var int its opening post */
+	private $vipPost;
+
 	/** @var string the site's flood switch before this Cest changed it */
 	private $antifloodWas;
 
@@ -77,6 +89,12 @@ class ForumPostAuthorisationCest
 		$this->adminStartedThread = $I->haveForumThread('Fixture Admin-Started Thread', $this->adminStarted, 1);
 		$I->haveForumPost('Opening post in the admin-started thread', $this->adminStartedThread, $this->adminStarted, 1);
 		$this->adminReplied = $I->haveForum('Fixture Admin-Replied Forum', 'fixture-admin-replied-forum', $this->ids['category'], \Helper\ForumFixture::CLASS_MOD_B, 6, 0, 254, 253);
+
+		$I->haveUserClass(self::CLASS_VIP, 'fixture_vip');
+		$I->haveForumMember('authvip', '253,'.self::CLASS_VIP);
+		$this->vipForum = $I->haveForum('Fixture VIP Forum', 'fixture-vip-forum', $this->ids['category'], \Helper\ForumFixture::CLASS_MOD_B, 5, self::CLASS_VIP, 253, 253);
+		$this->vipThread = $I->haveForumThread('Fixture VIP Thread', $this->vipForum, 1);
+		$this->vipPost = $I->haveForumPost('A post only VIP members may read', $this->vipThread, $this->vipForum, 1);
 
 		$I->purgeForumPermCache();
 		$I->logoutFromForum();
@@ -284,6 +302,54 @@ class ForumPostAuthorisationCest
 
 		$I->dontSeeInDatabase('e107_forum_thread', array('thread_name' => 'Split into forum B'));
 		$I->seeInDatabase('e107_forum_post', array('post_id' => $this->replyA, 'post_thread' => $this->ids['threadA']));
+	}
+
+	public function aMemberWhoMayViewAForumQuotesAndRepliesThere(AcceptanceTester $I)
+	{
+		$I->loginToForum('authvip');
+
+		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=quote&id='.$this->vipThread.'&post='.$this->vipPost);
+		$I->see('A post only VIP members may read');
+
+		$this->submit($I, '?f=rp&id='.$this->vipThread, array('post' => 'A VIP reply', 'reply' => 'Post reply'));
+		$I->seeInDatabase('e107_forum_post', array('post_thread' => $this->vipThread, 'post_entry' => 'A VIP reply'));
+	}
+
+	public function aMemberWhoMayNotViewAForumIsShownNoPostOfIt(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		foreach(array('quote', 'report', 'edit') as $form)
+		{
+			$I->amOnPage('/e107_plugins/forum/forum_post.php?f='.$form.'&id='.$this->vipThread.'&post='.$this->vipPost);
+			$I->seeInSource('forum-post-unauthorized');
+			$I->dontSeeInSource('A post only VIP members may read');
+		}
+	}
+
+	public function aMemberWhoMayNotViewAForumCannotPostThere(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		$this->submit($I, '?f=rp&id='.$this->vipThread, array('post' => 'A reply in a forum the member cannot view', 'reply' => 'Post reply'));
+		$this->submit($I, '?f=nt&id='.$this->vipForum, array('subject' => 'Started where the member cannot view', 'post' => 'A new thread', 'newthread' => 'Post thread'));
+
+		$I->dontSeeInDatabase('e107_forum_post', array('post_entry' => 'A reply in a forum the member cannot view'));
+		$I->dontSeeInDatabase('e107_forum_thread', array('thread_name' => 'Started where the member cannot view'));
+	}
+
+	/**
+	 * The topic page checks the thread in its address, and the quick reply writes to the thread in its body.
+	 */
+	public function aMemberWhoMayNotViewAForumCannotQuickReplyThere(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		$I->sendForumQuickReply($this->ids['threadA'], array(
+			'thread' => $this->vipThread, 'text' => 'A quick reply in a forum the member cannot view',
+		));
+
+		$I->dontSeeInDatabase('e107_forum_post', array('post_entry' => 'A quick reply in a forum the member cannot view'));
 	}
 
 	/**

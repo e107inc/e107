@@ -1165,7 +1165,7 @@ class e107forum
 	
 	
 	/**
-	 * Whether the caller holds $type in a forum; starting a thread also takes the posting class.
+	 * Whether the caller holds $type in a forum; a forum the caller may not view grants nothing, and a thread also takes the posting class.
 	 *
 	 * @param int $forumId
 	 * @param string $type view, post or thread
@@ -1173,7 +1173,7 @@ class e107forum
 	 */
 	function checkPerm($forumId, $type='view')
 	{
-		if(empty($this->permList[$type]))
+		if(empty($this->permList[$type]) || empty($this->permList['view']))
 		{
 			return false;
 		}
@@ -1183,7 +1183,7 @@ class e107forum
 			return false;
 		}
 
-		return (in_array($forumId, $this->permList[$type]));
+		return in_array($forumId, $this->permList['view']) && in_array($forumId, $this->permList[$type]);
 	}
 
 

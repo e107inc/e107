@@ -495,16 +495,10 @@ class ForumTrackDeliveryCest
 	 */
 	private function reply(AcceptanceTester $I, $text, $forumId, $threadId)
 	{
-		$page = '/e107_plugins/forum/forum_viewtopic.php?id='.$threadId;
-
-		$I->haveHttpHeader('X-Requested-With', 'XMLHttpRequest');
-		$I->sendPostRequest($page, array(
-			'action'  => 'quickreply',
-			'insert'  => 0,
-			'post'    => $forumId,
-			'thread'  => $threadId,
-			'text'    => $text,
-			'e-token' => $I->grabForumToken($page),
+		$I->sendForumQuickReply($threadId, array(
+			'post'   => $forumId,
+			'thread' => $threadId,
+			'text'   => $text,
 		));
 
 		$I->seeInDatabase('e107_forum_post', array(
