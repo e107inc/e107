@@ -333,6 +333,36 @@ class searchCommentHandlersTest extends \Test\Unit
 	}
 
 	/**
+	 * Building the plugin handler scans and parses every plugin folder, which is admin work, so a visitor's search must answer without it.
+	 */
+	public function testCommentSearchDoesNotBuildThePluginHandler()
+	{
+		$result = $this->runIsolated(
+			"e107::coreLan('search'); " .
+			"require_once(e_HANDLER . 'userclass_class.php'); " .
+			"require_once(e_HANDLER . 'search_class.php'); " .
+			"e107::getConfig()->removePref('plug_installed/download'); " .
+			"e107::getConfig()->removePref('plug_installed/poll'); " .
+			"\$tp = e107::getParser(); \$sch = new e_search('example'); \$text = ''; " .
+			"\$search_prefs = array('comments_handlers' => array(" .
+				"'news' => array('id' => 0, 'class' => '0', 'dir' => 'core'), " .
+				"'download' => array('id' => 2, 'class' => '0', 'dir' => 'core'), " .
+				"'poll' => array('id' => 4, 'class' => '0', 'dir' => 'poll'))); " .
+			"echo 'BEFORE=' . (e107::getRegistry('core/e107/singleton/e_plugin') ? 'built' : 'absent') . PHP_EOL; " .
+			"require_once(e_HANDLER . 'search/search_comment.php'); " .
+			"require_once(e_HANDLER . 'search/advanced_comment.php'); " .
+			"echo 'AFTER=' . (e107::getRegistry('core/e107/singleton/e_plugin') ? 'built' : 'absent') . PHP_EOL; "
+		);
+
+		$this->assertBooted($result);
+		$this->assertStringContainsString('BEFORE=absent', $result['out'],
+			"Something built the plugin handler before the search ran, so this case proves nothing.\n" . $result['out']);
+		$this->assertStringContainsString('AFTER=absent', $result['out'],
+			"The comments search built the plugin handler.\n" . $result['out']);
+		$this->assertSame(0, $result['exit'], $result['out']);
+	}
+
+	/**
 	 * Defence in depth: the handler is also required directly by
 	 * e107plugin::manage_search(), where no page has loaded the plugin's LAN.
 	 */

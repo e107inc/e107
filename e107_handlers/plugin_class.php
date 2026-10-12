@@ -259,12 +259,18 @@ class e_plugin
 			e107::getDebug()->log("\$this->_plugdir is empty ".__FILE__." ". __CLASS__ ."::".__METHOD__);
 		}
 
-		if(isset($this->_data[$this->_plugdir]['@attributes']['installRequired']))
-		{
-			return $this->_data[$this->_plugdir]['@attributes']['installRequired'] !== 'false';
-		}
+		return self::isInstallRequired(varset($this->_data[$this->_plugdir], array()));
+	}
 
-		return false;
+	/**
+	 * Whether plugin metadata, as parsed from a plugin.xml or plugin.php, asks for the plugin to be installed before it is used.
+	 *
+	 * @param array $meta the parsed metadata, with the root element's attributes under '@attributes'
+	 * @return bool
+	 */
+	public static function isInstallRequired(array $meta)
+	{
+		return isset($meta['@attributes']['installRequired']) && $meta['@attributes']['installRequired'] !== 'false';
 	}
 
 
