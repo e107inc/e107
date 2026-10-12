@@ -1,7 +1,11 @@
 //<?php
 
-global $$parm;
-$bc = $$parm;
+if(!is_string($parm) || !preg_match('/^[A-Za-z]\w*$/', $parm) || $parm === 'GLOBALS' || !isset($GLOBALS[$parm]) || !is_array($GLOBALS[$parm]))
+{
+	return '';
+}
+
+$bc = $GLOBALS[$parm];
 $flist = explode(",", varset($bc['fieldlist']));
 $ret = "";
 
