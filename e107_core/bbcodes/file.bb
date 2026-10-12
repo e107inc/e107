@@ -48,8 +48,7 @@ if ((e_PAGE === 'page.php') || (array_key_exists('forum_attach', $pref) && $pref
 	{
 		$fname = str_replace('{e_BASE}', SITEURL, $fname);			// Translate into an absolute URL
 	}
-	$text = $code_text;
 	$href = e107::getParser()->toBBCodeUrlAttribute($fname);
-	if ($fname !== '' && $href === '') return $text;
-	return "<a class='{$class}' href='".$href."'><img src='".$image."' alt='' style='border:0; vertical-align:middle' /></a> <a href='".$href."'>".$text."</a>";
+	if ($fname !== '' && $href === '') return $code_text;
+	return "<a class='{$class}' href='".$href."'><img src='".$image."' alt='' style='border:0; vertical-align:middle' /></a> <a href='".$href."'>".$code_text."</a>";
 }

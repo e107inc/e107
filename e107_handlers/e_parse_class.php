@@ -2512,18 +2512,29 @@ class e_parse
 	}
 
 	/**
-	 * Encode a bbcode's URL for an href or src attribute once the constants and shortcodes toHTML() expands in it are expanded.
+	 * Encode a bbcode's URL for an href or src attribute once the constants and shortcodes toHTML() expands in it are expanded, leaving the calling bbcode's globals as they were.
 	 *
 	 * @param string $url
 	 * @return string encoded with every opening brace as an entity, or '' when there is nothing {@see e_parse::toUrlAttribute()} will link
 	 */
 	public function toBBCodeUrlAttribute($url)
 	{
+		global $code_text, $parm, $postID, $fromadmin;
+
 		$url = $this->replaceConstants((string) $url);
 
 		if (self::$bbcodeShortcodes && strpos($url, '{') !== false)
 		{
-			$url = (string) $this->parseTemplate($this->disarmShortcodeParameters($url), true);
+			$bbcode = array($code_text, $parm, $postID, $fromadmin);
+
+			try
+			{
+				$url = (string) $this->parseTemplate($this->disarmShortcodeParameters($url), true);
+			}
+			finally
+			{
+				list($code_text, $parm, $postID, $fromadmin) = $bbcode;
+			}
 		}
 
 		return str_replace('{', '&#123;', $this->toUrlAttribute($url));

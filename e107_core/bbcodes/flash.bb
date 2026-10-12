@@ -3,11 +3,11 @@ $class = e107::getBB()->getClass('flash');
 
 // USAGE: [flash=width,height,param_name=value&param_name=value]http://www.example.com/file.swf[/flash]
 
+$movie_path = e107::getParser()->toBBCodeUrlAttribute($code_text);
+
 $parm_array = explode(',', $parm);
 $width = preg_replace('#[^0-9%]#', '', varsettrue($parm_array[0], 50));
 $height= preg_replace('#[^0-9%]#', '', varsettrue($parm_array[1], 50));
-
-$movie_path = e107::getParser()->toBBCodeUrlAttribute($code_text);
 
 $text = "
 <object class='{$class}' type='application/x-shockwave-flash' data='{$movie_path}' width='{$width}' height='{$height}'>
