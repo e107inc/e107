@@ -3164,20 +3164,25 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 	/**
+	 * Whether the batch offers "Create Navigation Link": the list turns it on, and the administrator may create in this mode and manage navigation links.
+	 *
 	 * @return bool
 	 */
 	public function getBatchLink()
     {
-        return $this->batchLink;
+        return $this->batchLink && $this->hasModeRouteAccess('create') && e107::getUser()->checkAdminPerms('I');
     }
 
 
 	/**
+	 * Whether the batch offers "Create Featurebox Item": the list turns it on, the feature box plugin is installed, and the administrator may administer it and create in this mode.
+	 *
 	 * @return bool
 	 */
 	public function getBatchFeaturebox()
     {
-        return $this->batchFeaturebox;
+        return $this->batchFeaturebox && e107::isInstalled('featurebox')
+			&& e107::getUser()->checkPluginAdminPerms('featurebox') && $this->hasModeRouteAccess('create');
     }
 
 	/**
@@ -3417,6 +3422,32 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		return null;
+	}
+
+	/**
+	 * Whether the list offers a core batch command, as {@see e_admin_form_ui::renderBatch()} draws it into the menu.
+	 *
+	 * @param string $command leading segment of the posted batch trigger, in its declared spelling
+	 * @return bool
+	 */
+	private function batchOffered($command)
+	{
+		switch($command)
+		{
+			case 'copy':
+				return (bool) $this->getBatchCopy();
+
+			case 'export':
+				return (bool) $this->getBatchExport();
+
+			case 'url':
+				return $this->getBatchLink();
+
+			case 'featurebox':
+				return $this->getBatchFeaturebox();
+		}
+
+		return true;
 	}
 
 	/**
@@ -4165,7 +4196,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		$route = $this->batchRoute($trigger[0], $actionName);
 
-		if($route !== null && !$this->hasModeRouteAccess($route))
+		if(!$this->batchOffered($trigger[0]) || ($route !== null && !$this->hasModeRouteAccess($route)))
 		{
 			e107::getMessage()->addError(LAN_NO_PERMISSIONS);
 
@@ -6459,12 +6490,6 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	protected function _add2featurebox($selected)
 	{
-		// FIX - don't allow if plugin not installed
-		if(!e107::isInstalled('featurebox'))
-		{
-			return false;
-		}
-		
 		if(empty($selected))
 		{
 			return false;
@@ -8780,12 +8805,6 @@ class e_admin_form_ui extends e_form
 			$mes = e107::getMessage();
 			$mes->add("Cannot display Batch drop-down as 'checkboxes' was not found in \$fields array.", E_MESSAGE_DEBUG);
 			return '';
-		}
-		
-		// FIX - don't show FB option if plugin not installed
-		if(!e107::isInstalled('featurebox'))
-		{
-			$options['featurebox'] = false;
 		}
 		
 		// TODO - core ui-batch-option class!!! REMOVE INLINE STYLE!

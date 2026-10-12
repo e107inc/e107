@@ -89,6 +89,7 @@ class InlineEditPermsCest
 	const ADMINS = array(
 		'p7iecategory'  => 'H4.',
 		'p7iecreate'    => 'H0.',
+		'p7iecreatenav' => 'H0.I.',
 		'p7ieitem'      => 'H1.',
 		'p7iedelete'    => 'H2.',
 		'p7iesubmitted' => 'N.',
@@ -427,6 +428,56 @@ class InlineEditPermsCest
 		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'copy', $itemId);
 
 		$I->seeNumRecords(1, 'e107_news', array('news_title' => self::ITEM_TITLE));
+	}
+
+	public function aNewsDeleterCannotBatchCreateANavigationLink(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news list batch navigation link to an administrator who may not create items');
+
+		$itemId = $this->seedNewsItem($I, $this->seedCategory($I));
+
+		$this->loginAsAdminHolding($I, 'p7iedelete');
+		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'url', $itemId);
+
+		$I->dontSeeInDatabase('e107_links', array('link_name' => self::ITEM_TITLE));
+	}
+
+	public function aNewsCreatorWithoutTheLinksPermissionCannotBatchCreateANavigationLink(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news list batch navigation link to an administrator who may create items but not manage navigation links');
+
+		$itemId = $this->seedNewsItem($I, $this->seedCategory($I));
+
+		$this->loginAsAdminHolding($I, 'p7iecreate');
+		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'url', $itemId);
+
+		$I->dontSeeInDatabase('e107_links', array('link_name' => self::ITEM_TITLE));
+	}
+
+	public function aNewsCreatorStillBatchCreatesANavigationLink(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the news list batch navigation link working for an administrator who may create items and manage navigation links');
+
+		$itemId = $this->seedNewsItem($I, $this->seedCategory($I));
+
+		$this->loginAsAdminHolding($I, 'p7iecreatenav');
+		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'url', $itemId);
+
+		$I->seeInDatabase('e107_links', array('link_name' => self::ITEM_TITLE));
+	}
+
+	public function aNewsCreatorCannotBatchCreateAFeatureBoxItemTheListDoesNotOffer(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a news list batch feature box item, which the news list does not offer');
+
+		$I->havePluginInstalled('featurebox');
+		$itemId = $this->seedNewsItem($I, $this->seedCategory($I));
+		$items = $I->grabNumRecords('e107_featurebox');
+
+		$this->loginAsAdminHolding($I, 'p7iecreate');
+		$this->sendBatch($I, self::ROUTE_ITEM_LIST, 'featurebox', $itemId);
+
+		$I->seeNumRecords($items, 'e107_featurebox');
 	}
 
 	public function aNewsCreatorCannotBatchWriteANewsItemUnderAnotherSpelling(AcceptanceTester $I)
@@ -1195,6 +1246,7 @@ switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 {
 	case 'reset':
 		e107::getDb()->delete('user', "user_loginname LIKE 'p7ie%'");
+		e107::getDb()->delete('links', "link_name LIKE 'p7ie%'");
 		\$core->set('inline_editing', e_UC_NOBODY)->save(false, true, false);
 
 		echo "PROBE_OK\n";
