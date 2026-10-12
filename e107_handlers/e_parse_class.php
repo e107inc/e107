@@ -2359,7 +2359,7 @@ class e_parse
 		$url = (string) $url;
 
 		// Browsers skip control characters and whitespace while reading a scheme.
-		$probe = strtolower(preg_replace('/[\x00-\x20\x7F]/', '', $url));
+		$probe = eShims::strtolower(preg_replace('/[\x00-\x20\x7F]/', '', $url));
 
 		if (preg_match('#^([a-z][a-z0-9+.\-]*):#', $probe, $match)
 			&& !in_array($match[1], array('http', 'https', 'ftp', 'ftps', 'mailto'), true))

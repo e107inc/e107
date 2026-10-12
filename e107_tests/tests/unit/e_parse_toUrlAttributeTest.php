@@ -65,6 +65,31 @@ class e_parse_toUrlAttributeTest extends \Codeception\Test\Unit
 		$this->assertSame('#', $this->tp->toUrlAttribute('javascript:alert(1)', '#'));
 	}
 
+	public function testASchemeIsReadInAsciiWhateverTheLocale()
+	{
+		$previous = setlocale(LC_CTYPE, 0);
+
+		if (setlocale(LC_CTYPE, 'tr_TR.UTF-8', 'tr_TR.utf8') === false)
+		{
+			$this->markTestSkipped('No Turkish locale is installed.');
+		}
+
+		try
+		{
+			foreach (array('JAVASCRIPT:alert(1)', 'javascrIpt:alert(1)', "JAVA\tSCRIPT:alert(1)", 'VBSCRIPT:msgbox(1)') as $url)
+			{
+				$this->assertSame('', $this->tp->toUrlAttribute($url),
+					'A URL whose scheme can execute was still emitted as an href under a Turkish locale: '.$url);
+			}
+
+			$this->assertSame('MAILTO:help@example.com', $this->tp->toUrlAttribute('MAILTO:help@example.com'));
+		}
+		finally
+		{
+			setlocale(LC_CTYPE, $previous);
+		}
+	}
+
 	/**
 	 * @return array
 	 */
