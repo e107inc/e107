@@ -208,14 +208,22 @@ class CsrfModeMatrixCest
 	/**
 	 * A page cached from before an upgrade carries a token minted by the old
 	 * session, and refusing it would be the same lockout this mode replaces. The
-	 * browser is allowed to overrule a stale token, but only by affirmatively
-	 * placing the request at this origin.
+	 * browser is allowed to overrule a stale token, but only by saying the
+	 * visitor followed a link or a form from that page.
 	 */
 	public function tokenOrBrowserLetsTheBrowserOverruleAStaleToken(AcceptanceTester $I)
 	{
 		$this->setMode($I, self::TOKEN_OR_SITE);
 
-		$this->post($I, array('e-token' => 'minted-before-the-upgrade'), 'same-origin');
+		$this->post($I, array('e-token' => 'minted-before-the-upgrade'), $this->navigation());
+		$I->seeInSource('PROBE_REACHED');
+
+		// Safari sends no Sec-Fetch-User.
+		$this->post($I, array('e-token' => 'minted-before-the-upgrade'), array('same-origin', 'navigate', 'document'));
+		$I->seeInSource('PROBE_REACHED');
+
+		$this->browserSays($I, $this->navigation());
+		$I->amOnProbe('e-token=minted-before-the-upgrade');
 		$I->seeInSource('PROBE_REACHED');
 
 		// Without the browser saying so, a wrong token is still a wrong token.
@@ -223,6 +231,30 @@ class CsrfModeMatrixCest
 		$I->seeInSource('Unauthorized access!');
 
 		$this->post($I, array('e-token' => 'minted-before-the-upgrade'), 'cross-site');
+		$I->seeInSource('Unauthorized access!');
+	}
+
+	/**
+	 * An image on this site is placed at this origin by whoever wrote the
+	 * markup, and a member's avatar or post is markup a member wrote. Only the
+	 * visitor's own navigation may overrule a wrong token, so an administrator
+	 * viewing a member's content cannot be made to act by it.
+	 */
+	public function aSubresourceCannotOverruleAWrongToken(AcceptanceTester $I)
+	{
+		$this->setMode($I, self::TOKEN_OR_SITE);
+
+		foreach(array(array('same-origin', 'no-cors', 'image'), array('same-origin', 'navigate', 'iframe')) as $subresource)
+		{
+			$this->browserSays($I, $subresource);
+			$I->amOnProbe('e-token=not-the-token');
+			$I->seeInSource('Unauthorized access!');
+		}
+
+		$this->post($I, array('e-token' => 'not-the-token'), array('same-origin', 'cors', 'empty'));
+		$I->seeInSource('Unauthorized access!');
+
+		$this->post($I, array('e-token' => 'not-the-token'), 'same-origin');
 		$I->seeInSource('Unauthorized access!');
 	}
 
@@ -334,7 +366,8 @@ class CsrfModeMatrixCest
 	 *
 	 * That division of labour is invisible until a mode stops reading tokens, at
 	 * which point the only thing left between those endpoints and an attacker's
-	 * <img> tag is a non-empty string. The browser has to vouch instead.
+	 * <img> tag is a non-empty string. The browser has to describe a navigation,
+	 * a frame of this origin or a script's request instead.
 	 */
 	public function aStateChangingGetIsGuardedInEveryMode(AcceptanceTester $I)
 	{
@@ -353,21 +386,29 @@ class CsrfModeMatrixCest
 		{
 			$this->setMode($I, $mode);
 
-			$I->deleteHeader('Sec-Fetch-Site');
-			$I->amOnProbe('e-token=any-non-empty-string');
-			$I->seeInSource('Unauthorized access!');
+			foreach(array(array(), array('same-origin'), array('same-origin', 'no-cors', 'image'), array('same-site', 'navigate', 'iframe')) as $refused)
+			{
+				$this->browserSays($I, $refused);
+				$I->amOnProbe('e-token=any-non-empty-string');
+				$I->seeInSource('Unauthorized access!');
+			}
 
-			$I->haveHttpHeader('Sec-Fetch-Site', 'same-origin');
-			$I->amOnProbe('e-token=any-non-empty-string');
-			$I->seeInSource('PROBE_REACHED');
-			$I->deleteHeader('Sec-Fetch-Site');
+			// A followed link, the admin dashboard's own XMLHttpRequest, and core's modal frame.
+			foreach(array($this->navigation(), array('same-origin', 'cors', 'empty'), array('same-origin', 'navigate', 'iframe')) as $accepted)
+			{
+				$this->browserSays($I, $accepted);
+				$I->amOnProbe('e-token=any-non-empty-string');
+				$I->seeInSource('PROBE_REACHED');
+			}
+
+			$this->browserSays($I, array());
 		}
 	}
 
 	/**
 	 * @param AcceptanceTester $I
 	 * @param array $data posted fields
-	 * @param string|null $secFetchSite value for the header, or null to send none
+	 * @param string|array|null $secFetchSite the header's value, or that followed by Sec-Fetch-Mode, -Dest and -User, or null to send none
 	 * @param string|null $origin value for the Origin header, or null to send none
 	 * @return void
 	 */
@@ -375,14 +416,11 @@ class CsrfModeMatrixCest
 	{
 		// The rule only applies to a request carrying a cookie, so pick one up
 		// first. It also resets any header left over from the previous call.
-		$I->deleteHeader('Sec-Fetch-Site');
+		$this->browserSays($I, array());
 		$I->deleteHeader('Origin');
 		$I->amOnProbe();
 
-		if($secFetchSite !== null)
-		{
-			$I->haveHttpHeader('Sec-Fetch-Site', $secFetchSite);
-		}
+		$this->browserSays($I, (array) $secFetchSite);
 
 		if($origin !== null)
 		{
@@ -393,13 +431,41 @@ class CsrfModeMatrixCest
 	}
 
 	/**
+	 * Send the Sec-Fetch-* headers one kind of browser request carries, and none left over from the last.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param array $fetch Sec-Fetch-Site, -Mode, -Dest and -User in that order, as many as the browser sends
+	 * @return void
+	 */
+	private function browserSays(AcceptanceTester $I, array $fetch)
+	{
+		foreach(array('Site', 'Mode', 'Dest', 'User') as $i => $name)
+		{
+			$I->deleteHeader('Sec-Fetch-' . $name);
+
+			if(isset($fetch[$i]))
+			{
+				$I->haveHttpHeader('Sec-Fetch-' . $name, $fetch[$i]);
+			}
+		}
+	}
+
+	/**
+	 * @return array what a browser sends when the visitor follows a link or submits a form on this site
+	 */
+	private function navigation()
+	{
+		return array('same-origin', 'navigate', 'document', '?1');
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @param int|string $mode a csrf_enforce value, or 'default' to unset it
 	 * @return void
 	 */
 	private function setMode(AcceptanceTester $I, $mode)
 	{
-		$I->deleteHeader('Sec-Fetch-Site');
+		$this->browserSays($I, array());
 		$I->deleteHeader('Origin');
 		$I->amOnProbe('csrf_matrix_mode=' . $mode);
 		$I->seeInSource('MODE_SET');
