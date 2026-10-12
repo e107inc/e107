@@ -67,6 +67,9 @@ class e_parse
 
 	public $replace = array("'", "'", "'", '"', 'one<i></i>rror', '>', '"', ' &amp; ');
 
+	/** @var array|null see {@see e_parse::bodyEntities()} */
+	private $bodyEntities = null;
+
 	// Set to TRUE or FALSE once it has been calculated
 	protected $e_highlighting;
 
@@ -716,6 +719,11 @@ class e_parse
 
 		if ($no_encode === true && strpos($mod, 'no_html') === false)
 		{
+			if ($mod !== 'pReFs')
+			{
+				$data = str_replace('&quot;', '&amp;quot;', $data);
+			}
+
 			$search = array('$', '"', "'", '\\', '<?');
 			$replace = array('&#036;', '&quot;', '&#039;', '&#092;', '&lt;?');
 			$ret = str_replace($search, $replace, $data);
@@ -6569,7 +6577,7 @@ class e_parse
 	{
 		return $forAttributeValue
 			? str_replace($this->replace, $this->search, $text)
-			: str_replace($this->search, $this->replace, $text);
+			: strtr($text, $this->bodyEntities());
 	}
 
 	/**
@@ -6636,6 +6644,19 @@ class e_parse
 
 			return '{'.$form[1].$separator.$parameters.'}';
 		}, $text);
+	}
+
+	/**
+	 * @return array the entity table toHTML() applies to body text, built once
+	 */
+	private function bodyEntities()
+	{
+		if ($this->bodyEntities === null)
+		{
+			$this->bodyEntities = array('&amp;quot;' => '&quot;', '&amp;#039;' => '&#039;') + array_combine($this->search, $this->replace);
+		}
+
+		return $this->bodyEntities;
 	}
 
 	/**
