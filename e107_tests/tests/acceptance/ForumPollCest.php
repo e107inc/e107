@@ -18,6 +18,8 @@ class ForumPollCest
 	const CLASS_MEMBER = 253;
 	const CLASS_NOBODY = 255;
 
+	const CALLER_FILE = 'e107_tests_poll_caller.php';
+
 	/** @var array */
 	private $ids;
 
@@ -119,6 +121,53 @@ class ForumPollCest
 	}
 
 	/**
+	 * A page that calls {@see poll::submit_poll()} without a mode writes the poll the request names only for a poll administrator.
+	 */
+	public function aCallerNamingNoModeCannotLetAMemberRewriteAPoll(AcceptanceTester $I)
+	{
+		$I->haveProbe(self::CALLER_FILE, $this->callerSource());
+		$polls = $I->grabNumRecords('e107_polls');
+
+		$this->submitThroughCaller($I, 'Lunch?');
+
+		$I->seeInDatabase('e107_polls', array(
+			'poll_id' => $this->mainPoll, 'poll_title' => 'Keep the dark theme?',
+			'poll_type' => 1, 'poll_vote_userclass' => 0,
+		));
+		$I->seeNumRecords($polls, 'e107_polls');
+
+		$I->logoutFromForum();
+		$I->loginAsAdmin();
+		$this->submitThroughCaller($I, 'Keep the light theme?');
+
+		$I->seeInDatabase('e107_polls', array(
+			'poll_id' => $this->mainPoll, 'poll_title' => 'Keep the light theme?',
+		));
+	}
+
+	/**
+	 * The poll plugin's own administration permission is what admits a caller of {@see poll::submit_poll()} without a mode, not any other.
+	 */
+	public function aCallerNamingNoModeAdmitsOnlyThePollPluginsAdministrators(AcceptanceTester $I)
+	{
+		$I->haveProbe(self::CALLER_FILE, $this->callerSource());
+
+		$this->loginAsPluginAdmin($I, 'forumadmin', 'forum');
+		$this->submitThroughCaller($I, 'Lunch?');
+
+		$I->seeInDatabase('e107_polls', array(
+			'poll_id' => $this->mainPoll, 'poll_title' => 'Keep the dark theme?', 'poll_vote_userclass' => 0,
+		));
+
+		$this->loginAsPluginAdmin($I, 'polladmin', 'poll');
+		$this->submitThroughCaller($I, 'Keep the light theme?');
+
+		$I->seeInDatabase('e107_polls', array(
+			'poll_id' => $this->mainPoll, 'poll_title' => 'Keep the light theme?',
+		));
+	}
+
+	/**
 	 * The forum's poll setting decides who may attach a poll, and the form and
 	 * the preview have always asked it. Saving the thread has to ask it too. The
 	 * first test is the control: with the member in the class, the poll is made.
@@ -154,5 +203,53 @@ class ForumPollCest
 		), $extra));
 
 		return (int) $I->grabFromDatabase('e107_forum_thread', 'thread_id', array('thread_name' => $subject));
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $title
+	 */
+	private function submitThroughCaller(AcceptanceTester $I, $title)
+	{
+		$token = $I->grabForumToken('/e107_plugins/forum/forum_post.php?f=nt&id='.$this->ids['forumA']);
+
+		$I->sendPostRequest('/'.self::CALLER_FILE, array(
+			'e-token'       => $token,
+			'poll_id'       => $this->mainPoll,
+			'poll_title'    => $title,
+			'poll_option'   => array('Soup', 'Salad'),
+			'pollUserclass' => self::CLASS_NOBODY,
+		));
+		$I->seeInSource('PROBE_OK');
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $name login name, and the password
+	 * @param string $plugin the one plugin the administrator may administer
+	 */
+	private function loginAsPluginAdmin(AcceptanceTester $I, $name, $plugin)
+	{
+		$pluginId = $I->grabFromDatabase('e107_plugin', 'plugin_id', array('plugin_path' => $plugin));
+
+		$I->logoutFromForum();
+		$I->haveMember($name, $name, array('user_admin' => 1, 'user_perms' => 'P'.$pluginId));
+		$I->loginAsAdmin($name, $name);
+	}
+
+	/**
+	 * @return string a page outside core that hands its form to the poll plugin
+	 */
+	private function callerSource()
+	{
+		return <<<'PHP'
+<?php
+require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
+require_once(e_PLUGIN.'poll/poll_class.php');
+$poll = new poll;
+$poll->submit_poll();
+echo "PROBE_OK\n";
+PHP;
 	}
 }

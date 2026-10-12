@@ -117,6 +117,11 @@ class poll
 	*/
 	function submit_poll($mode=1)
 	{
+		if($mode == 1 && !e107::getUser()->checkPluginAdminPerms('poll'))
+		{
+			return false;
+		}
+
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$admin_log = e107::getLog();
