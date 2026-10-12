@@ -539,9 +539,10 @@ class e_parse
 	 *
 	 * $no_encode IS NOT A REQUEST, IT IS A STARTING POINT. It is forced TRUE for
 	 * any author holding 'post_html', so passing FALSE does not guarantee the
-	 * value comes back encoded. Passing a numeric $parm puts the encoding back
-	 * when the userclass it names does not hold 'post_html'. If a caller needs a
-	 * value encoded no matter who is posting, it has to encode at the sink.
+	 * value comes back encoded. A numeric $parm names the author instead of the
+	 * current user: the user with that id decides both the strip and the
+	 * encoding, either way. If a caller needs a value encoded no matter who is
+	 * posting, it has to encode at the sink.
 	 *
 	 * Note also that it fails permissive on an unrecognised $mod: the modifiers
 	 * are matched with strpos(), so a misspelt 'no_htlm' silently permits HTML.
@@ -574,9 +575,12 @@ class e_parse
 	 *                                             entirely, so a caller passing it
 	 *                                             is asserting the data is already
 	 *                                             trusted.
-	 * @param mixed          $parm      [optional] two unrelated shapes. Numeric: a
-	 *                                  userclass to test 'post_html' against
-	 *                                  instead of the current user. Array with
+	 * @param mixed          $parm      [optional] two unrelated shapes. Numeric: the
+	 *                                  id of the author whose 'post_html' decides,
+	 *                                  in place of the current user's, and
+	 *                                  without whose 'post_script' no script is
+	 *                                  kept; 0 is a guest, with a guest's classes.
+	 *                                  Array with
 	 *                                  'type' and 'field' keys: passed to the
 	 *                                  e_parse hooks, and only read when $mod is
 	 *                                  'model'.
@@ -616,12 +620,15 @@ class e_parse
 		}
 
 		$core_pref = e107::getConfig();
+		$author = ($parm !== null && is_numeric($parm)) ? e107::getSystemUser((int) $parm, false) : null;
+		$authorPostsHtml = ($author !== null) ? $author->checkClass($core_pref->get('post_html', e_UC_MAINADMIN), false) : null;
+		$authorPostsScript = ($author !== null) ? $author->checkClass($core_pref->get('post_script', e_UC_NOBODY), false) : null;
 
 		if ($mod !== 'pReFs') //XXX We're not saving prefs.
 		{
 
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below.
-			$data = $this->cleanHtml($data); // clean it regardless of if it is text or html. (html could have missing closing tags)
+			$data = ($authorPostsScript === false) ? $this->cleanHtmlWithoutScript($data) : $this->cleanHtml($data); // clean it regardless of if it is text or html. (html could have missing closing tags)
 
 			if (($this->isHtml($data)) && strpos($mod, 'no_html') === false)
 			{
@@ -640,7 +647,7 @@ class e_parse
 			}
 
 
-			if (!check_class($core_pref->get('post_html', e_UC_MAINADMIN)))
+			if ($authorPostsHtml === false || ($authorPostsHtml === null && !check_class($core_pref->get('post_html', e_UC_MAINADMIN))))
 			{
 				$data = strip_tags($data); // remove tags from cleaned html.
 				$data = str_replace(array('[html]', '[/html]'), '', $data);
@@ -650,14 +657,13 @@ class e_parse
 		}
 
 
-		if (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && XXX preformecd by cleanHtml() */
+		if ($authorPostsHtml !== null)
+		{
+			$no_encode = $authorPostsHtml;
+		}
+		elseif (check_class($core_pref->get('post_html'))) /*$core_pref->is('post_html') && XXX preformecd by cleanHtml() */
 		{
 			$no_encode = true;
-		}
-
-		if ($parm !== null && is_numeric($parm) && !check_class($core_pref->get('post_html'), '', $parm))
-		{
-			$no_encode = false;
 		}
 
 		if ($no_encode === true && strpos($mod, 'no_html') === false)
@@ -6041,6 +6047,38 @@ class e_parse
 
 	}
 
+
+	/**
+	 * Clean HTML as cleanHtml() does for a user without script access, whatever the current user's.
+	 *
+	 * @param string $html
+	 * @return string
+	 */
+	private function cleanHtmlWithoutScript($html)
+	{
+		$access = $this->scriptAccess;
+		$tags = $this->allowedTags;
+		$attributes = $this->allowedAttributes;
+
+		$this->scriptAccess = e_UC_NOBODY;
+		$this->allowedTags = array_values(array_diff($tags, $this->scriptTags));
+
+		foreach ($attributes as $tag => $list)
+		{
+			$this->allowedAttributes[$tag] = array_values(array_diff($list, $this->scriptAttributes));
+		}
+
+		try
+		{
+			return $this->cleanHtml($html);
+		}
+		finally
+		{
+			$this->scriptAccess = $access;
+			$this->allowedTags = $tags;
+			$this->allowedAttributes = $attributes;
+		}
+	}
 
 	/**
 	 * Process and clean HTML from user input.

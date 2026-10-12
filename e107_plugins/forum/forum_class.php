@@ -1596,6 +1596,12 @@ class e107forum
 
 	function postUpdate($postId, $postInfo)
 	{
+		if(isset($postInfo['post_entry']))
+		{
+			$author = (int) e107::getDb()->createQueryBuilder()->select('post_user')->from('forum_post')->where('post_id', (int) $postId)->fetchOne();
+			$postInfo['post_entry'] = e107::getParser()->toDB($postInfo['post_entry'], false, false, false, $author);
+		}
+
 		$info = array();
 		$info['data'] = $postInfo;
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];

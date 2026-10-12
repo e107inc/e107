@@ -1083,6 +1083,37 @@ EXPECTED;
 
 	}
 
+	/**
+	 * Given an author, toDB() keeps that author's HTML but no script they may not post, whatever the current user may.
+	 */
+	public function testToDBKeepsNoScriptAnAuthorMayNotPost()
+	{
+		$config = e107::getConfig();
+		$prefs = array('post_html' => $config->get('post_html'), 'post_script' => $config->get('post_script'));
+		$config->set('post_html', e_UC_ADMIN)->set('post_script', e_UC_MAINADMIN);
+		$sql = e107::getDb();
+		$sql->createQueryBuilder()->insert('user')->values(array(
+			'user_name' => 'todb_author', 'user_loginname' => 'todb_author', 'user_password' => '', 'user_email' => 'todb_author@example.com',
+			'user_join' => time(), 'user_class' => '', 'user_admin' => 1, 'user_perms' => '',
+			'user_prefs' => '', 'user_signature' => '', 'user_realm' => '', 'user_xup' => '',
+		))->execute();
+		$author = (int) $sql->lastInsertId();
+		$this->tp->setScriptAccess(e_UC_PUBLIC);
+
+		try
+		{
+			$stored = $this->tp->toDB('<b onclick="x()">y</b>', false, false, false, $author);
+		}
+		finally
+		{
+			$sql->createQueryBuilder()->delete('user')->where('user_id', $author)->execute();
+			$config->set('post_html', $prefs['post_html'])->set('post_script', $prefs['post_script']);
+		}
+
+		self::assertStringContainsString('<b>y</b>', $stored);
+		self::assertStringNotContainsString('onclick', $stored);
+	}
+
 	public function testToDB()
 	{
 
