@@ -94,7 +94,7 @@ if ($action == 'active')
 			}
 			else
 			{
-				$POSTER = $row['thread_user_anon'];
+				$POSTER = $tp->attributeValue($row['thread_user_anon']);
 			}
 
 			$LINKTOTHREAD = e107::getUrl()->create('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
@@ -107,7 +107,7 @@ if ($action == 'active')
 			}
 			else
 			{
-				$LASTPOST = $row['thread_lastuser_anon'].'<br />'.$lastpost_datestamp;
+				$LASTPOST = $tp->attributeValue($row['thread_lastuser_anon']).'<br />'.$lastpost_datestamp;
 			}
 
 			$text .= "<tr>

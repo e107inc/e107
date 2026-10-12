@@ -71,6 +71,16 @@ class e_listTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * A guest's name stored as typed shows its markup as text.
+	 */
+	public function testAGuestsStoredNameIsAttributedAsText()
+	{
+		$this->haveForumThread('e107help probe guest thread', $this->forumId, 0, $this->guestNameAsTyped());
+
+		$this->assertGuestNamePrintedAsText(implode("\n", array_column($this->listRecords(), 'author')));
+	}
+
+	/**
 	 * @return array the records the forum section gives the list_new page
 	 */
 	private function listRecords()

@@ -114,7 +114,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 		elseif(!empty($this->postInfo['thread_user_anon']))
 		{
-			return '<b>' . e107::getParser()->toHTML($this->postInfo['thread_user_anon']) . '</b>';
+			return '<b>' . e107::getParser()->attributeValue($this->postInfo['thread_user_anon']) . '</b>';
 		}
 	}
 
@@ -217,7 +217,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			}
 			elseif($this->var['thread_lastuser_anon'])
 			{
-				return e107::getParser()->toHTML($this->var['thread_lastuser_anon']);
+				return e107::getParser()->attributeValue($this->var['thread_lastuser_anon']);
 			}
 			else
 			{
@@ -542,7 +542,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 		elseif(!empty($this->postInfo['post_user_anon']))
 		{
-			return '<b>' . e107::getParser()->toHTML($this->postInfo['post_user_anon']) . '</b>';
+			return '<b>' . e107::getParser()->attributeValue($this->postInfo['post_user_anon']) . '</b>';
 		}
 
 	}

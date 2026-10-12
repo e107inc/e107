@@ -398,7 +398,7 @@ class e107forum
 			}
 			else
 			{
-				$postInfo['post_user_anon'] = varset($_POST['anonname'], '');
+				$postInfo['post_user_anon'] = $tp->toDB(varset($_POST['anonname'], ''));
 			}
 
 			$postInfo['post_entry'] = $_POST['text'];
