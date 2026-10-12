@@ -295,6 +295,7 @@ $sc->setScVar('thisIsTheLastPost', false);
 
 $e_hide_hidden = LAN_FORUM_2008;
 $e_hide_allowed = $forum->mayReadHidden($thread->threadInfo['thread_id']);
+$e_hide_unseal = array($forum, 'unsealHidden');
 
 foreach ($postList as $c => $postInfo)
 {
@@ -358,6 +359,7 @@ foreach ($postList as $c => $postInfo)
 }
 unset($loop_uid);
 $e_hide_allowed = false;
+$e_hide_unseal = null;
 
 
 

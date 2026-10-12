@@ -2088,7 +2088,7 @@ class e_parse
 
 
 	/**
-	 * Put each block {@see e_parse::setAsideHideBlocks()} set aside back into $html, rendered by the hide bbcode, where its marker stands as a tag of its own, and put a space in place of every marker left anywhere else, so that the text either side cannot join.
+	 * Put each block {@see e_parse::setAsideHideBlocks()} set aside back into $html, rendered by the hide bbcode, where its marker stands as a tag of its own, and put a space in place of every marker left anywhere else, so that the text either side cannot join; the bbcode may put other text in the block's place, such as a sealed block opened.
 	 *
 	 * @param string      $html
 	 * @param array       $blocks
@@ -2128,11 +2128,12 @@ class e_parse
 			$was = $e_hide_block;
 			$e_hide_block = $markers[$part];
 			$box = e107::getBB()->parseBBCodes('[hide]' . $part . '[/hide]', $postID);
+			$content = $e_hide_block['content'];
 			$e_hide_block = $was;
 
 			if (strpos($box, $part) !== false)
 			{
-				$box = str_replace($part, $this->toHTML($markers[$part]['content'], $parseBB, $modifiers, $postID), $box);
+				$box = str_replace($part, $this->toHTML($content, $parseBB, $modifiers, $postID), $box);
 			}
 
 			$parts[$i] = $box;
