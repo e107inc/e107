@@ -191,7 +191,7 @@ TEMPL;
 				exit;
 			}
 
-			$content = html_entity_decode($content);
+			$content = html_entity_decode(strtr($content, array('&lt;' => '&amp;lt;', '&gt;' => '&amp;gt;', '&amp;' => '&amp;amp;')));
 			$text = !empty($content) ? "[html]".$content."[/html]" : ''; // Add the tags before saving to DB.
 		}
 		else  // User doesn't have HTML access -  bbcode Mode.
