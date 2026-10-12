@@ -326,7 +326,7 @@ class CommentRoutesParentVisibilityCest
 	{
 		$token = $this->loginAsReader($I);
 
-		foreach(array('download' => 'CMTDLPUBLIC', 'poll' => 'CMTPOLL') as $plugin => $marker)
+		foreach($this->readOnlyWhileInstalled() as $plugin => $marker)
 		{
 			$this->askAjaxReplyForm($I, $marker, $token);
 			$I->seeInSource($marker);
@@ -417,6 +417,66 @@ class CommentRoutesParentVisibilityCest
 	}
 
 	/**
+	 * comment.php's page of comments about a member shows them only to a visitor the member's profile page shows its comments to.
+	 */
+	public function theCommentPageAboutAMemberAsksWhatTheProfileAsks(AcceptanceTester $I)
+	{
+		$owner = $I->haveMember('cmtrouteowner', self::READER_PASSWORD);
+		$this->haveComment($I, 'CMTUSER', 'user', $owner);
+
+		$this->amOnCommentPage($I, 'user', 'CMTUSER');
+		$I->dontSeeInSource('Text of CMTUSER');
+
+		$this->haveSitePref($I, 'profile_comments', 1);
+
+		$this->amOnCommentPage($I, 'user', 'CMTUSER');
+		$I->dontSeeInSource('Text of CMTUSER');
+
+		$this->loginAsReader($I);
+
+		$this->amOnCommentPage($I, 'user', 'CMTUSER');
+		$I->seeInSource('Text of CMTUSER');
+	}
+
+	/**
+	 * comment.php lists the comments of a type none of its arms names whenever the debug level is set, which any visitor may set; it lists them only where the item's own page would, and a plugin's own type nowhere.
+	 */
+	public function aTypeWithNoArmOfItsOwnIsListedOnlyWhereItMayBeRead(AcceptanceTester $I)
+	{
+		$owner = $I->haveMember('cmtrouteowner', self::READER_PASSWORD);
+		$this->haveComment($I, 'CMTDEBUGPROFILE', 'profile', $owner);
+
+		$I->stopFollowingRedirects();
+		$I->setCookie('e107_debug_level', 'level=1');
+
+		$this->amOnCommentPage($I, 'page', 'CMTPAGEPUBLIC');
+		$I->seeInSource('Text of CMTPAGEPUBLIC');
+
+		foreach(array('page' => 'CMTPAGEPASSWORD', '0' => 'CMTSTAFF', 'profile' => 'CMTDEBUGPROFILE', 'fixtureplugin' => 'CMTPLUGIN') as $table => $marker)
+		{
+			$this->amOnCommentPage($I, $table, $marker);
+			$I->dontSeeInSource('Text of '.$marker);
+		}
+	}
+
+	/**
+	 * comment.php's page of a download's or a poll's comments is not served while its plugin is not installed, as the item's own page then serves nothing.
+	 */
+	public function theCommentPageServesNoItemWhosePluginIsNotInstalled(AcceptanceTester $I)
+	{
+		$I->stopFollowingRedirects();
+
+		foreach($this->readOnlyWhileInstalled() as $plugin => $marker)
+		{
+			$this->seeCommentPage($I, $plugin, $marker, null);
+
+			$this->haveSitePref($I, 'plug_installed/'.$plugin, null);
+
+			$this->dontSeeCommentPage($I, $plugin, $marker, $this->titles[$marker]);
+		}
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @param string $table the table field the comment form posts
 	 * @param string $marker the item to post on
@@ -494,6 +554,17 @@ class CommentRoutesParentVisibilityCest
 			'CMTDLPUBLIC'   => 'download',
 			'CMTPOLL'       => 'poll',
 			'CMTPAGEPUBLIC' => 'page',
+		);
+	}
+
+	/**
+	 * @return string[] the marker of an item everyone may read while its plugin is installed, by plugin
+	 */
+	private function readOnlyWhileInstalled()
+	{
+		return array(
+			'download' => 'CMTDLPUBLIC',
+			'poll'     => 'CMTPOLL',
 		);
 	}
 

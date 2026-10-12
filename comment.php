@@ -375,6 +375,12 @@ if ($action == "reply")
 elseif ($action == 'comment')
 {  //  Default code if not reply
 
+		if (!$cobj->canReadComments($table, $id))
+		{
+			e107::redirect();
+			exit;
+		}
+
 		switch ($table)
 		{
 			case 'news' :
@@ -382,9 +388,6 @@ elseif ($action == 'comment')
 					LEFT JOIN #user AS u ON n.news_author = u.user_id
 					LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 					WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
-					AND n.news_class NOT REGEXP '".e_NOBODY_REGEXP."'
-					AND n.news_start < ".time()."
-					AND (n.news_end = 0 OR n.news_end > ".time().")
 					AND n.news_id={$id}
 					AND n.news_allow_comments=0";
 			//	}
@@ -415,7 +418,7 @@ elseif ($action == 'comment')
 				}
 				break;
 			case 'poll' :
-				if (!$sql->select("polls", "*", "poll_id='{$id}' AND poll_type=1"))
+				if (!$sql->select("polls", "*", "poll_id='{$id}'"))
 				{
 					e107::redirect();
 					exit;
@@ -438,13 +441,7 @@ elseif ($action == 'comment')
 				}
 				break;
 			case 'download' :
-				if ($sql->gen("SELECT d.download_name FROM #download AS d
-					INNER JOIN #download_category AS dc ON d.download_category = dc.download_category_id
-					WHERE d.download_id = {$id}
-					AND dc.download_category_class IN (".USERCLASS_LIST.")
-					AND d.download_visible IN (".USERCLASS_LIST.")
-					AND d.download_active > 0
-					AND d.download_comment > 0"))
+				if ($sql->select('download','download_name',"download_id={$id} "))
 				{
 					$row = $sql->fetch();
 					$subject = $row['download_name'];
