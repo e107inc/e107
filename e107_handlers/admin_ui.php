@@ -4125,7 +4125,13 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 
+		$posted = count($selected);
 		$selected = array_values(array_filter($selected, array($this->getTreeModel(), 'hasNode')));
+
+		if(count($selected) < $posted)
+		{
+			e107::getMessage()->addWarning($tp->lanVars(defset('LAN_UI_BATCH_ROWS_NO_LONGER_LISTED', '[x] selected record(s) are no longer in this list and were left unchanged.'), $posted - count($selected), true));
+		}
 
 		// XXX An empty selection should always be permitted for custom batch methods which may apply changes to all records, not only selected ones.
 

@@ -474,6 +474,7 @@ define("LAN_UI_BATCH_UPDATE_SUCCESS", "[x] set for [y] record(s).");
 define("LAN_UI_BATCH_REVERSED_SUCCESS", "[x] records successfully reversed.");
 define("LAN_UI_BATCH_BOOL_SUCCESS", "[x] records successfully updated.");
 define("LAN_UI_BATCH_DEATTACH_SUCCESS", "[x] removed from [y] record(s).");
+define("LAN_UI_BATCH_ROWS_NO_LONGER_LISTED", "[x] selected record(s) are no longer in this list and were left unchanged.");
 
 define("LAN_UI_EDIT_LABEL", "Update record #[x]");
 define("LAN_UI_CREATE_LABEL", "Create new record");
