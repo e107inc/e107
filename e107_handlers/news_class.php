@@ -35,6 +35,24 @@ class news {
 	protected static $_rewrite_data = array();
 	protected static $_rewrite_map = null;
 
+	/**
+	 * The author whose news items alone the current administrator may edit, which news_limit_to_self decides.
+	 *
+	 * @return int that author's user id, or 0 when news_limit_to_self does not limit this administrator
+	 */
+	public function limitedToAuthor()
+	{
+		$class = (int) e107::getPref('news_limit_to_self', 0);
+		$user = e107::getUser();
+
+		if($class && $user->checkClass($class, false) && !$user->isMainAdmin())
+		{
+			return (int) $user->getId();
+		}
+
+		return 0;
+	}
+
 	//FIXME - LANs
 	//TODO - synch WIKI docs, add rewrite data to the event data
 	//@Deprecated and no longer used by newspost.php 
@@ -435,6 +453,11 @@ class news {
 			)
 
 		);
+
+		if($author = $this->limitedToAuthor())
+		{
+			$editable['where'] = array('news_author' => $author);
+		}
 
 
 

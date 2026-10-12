@@ -27,8 +27,9 @@ class e107InlineEdit
 
 		$editable = isset($_SESSION['editable'][$token]) ? $_SESSION['editable'][$token] : array();
 		$perms = isset($editable['perms']) ? trim((string) $editable['perms']) : '';
+		$where = isset($editable['where']) ? $editable['where'] : array();
 
-		if(!ADMIN || !e_AJAX_REQUEST || empty($editable) || $perms === '' || !getperms($perms))
+		if(!ADMIN || !e_AJAX_REQUEST || empty($editable) || $perms === '' || !getperms($perms) || !is_array($where))
 		{
 			$ret['msg'] = "Access Denied";
 			$ret['status'] = 'error';
@@ -62,6 +63,11 @@ class e107InlineEdit
 			return;
 		}
 
+		if($table === 'news' && ($author = e107::getObject('news')->limitedToAuthor()))
+		{
+			$where['news_author'] = $author;
+		}
+
 
 		$content = e107::getParser()->toDB($_POST['content']);
 
@@ -89,12 +95,17 @@ class e107InlineEdit
 		// $table/$field/$pid are server-set identifiers (the session 'editable' map,
 		// behind the ADMIN + token + getperms() gate above); the builder validates each
 		// fail-closed and binds the intval'd row id, replacing the hand-built WHERE/LIMIT.
-		if(e107::getDb()->createQueryBuilder()
+		$query = e107::getDb()->createQueryBuilder()
 			->update($table)
 			->setTyped($field, $content, $fieldType)
-			->where($pid, $id)
-			->limit(1)
-			->execute() !== false)
+			->where($pid, $id);
+
+		foreach($where as $column => $value)
+		{
+			$query->where($column, $value);
+		}
+
+		if($query->limit(1)->execute() !== false)
 		{
 			$ret['msg'] = "Saved"; // LAN_UPDATED; or LAN_SAVED
 			$ret['status'] = 'ok';

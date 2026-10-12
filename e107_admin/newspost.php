@@ -593,13 +593,6 @@ class news_admin_ui extends e_admin_ui
 
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
-		if(!$this->mayWriteItem($old_data))
-		{
-			e107::getMessage()->addError(LAN_NO_PERMISSIONS);
-
-			return false;
-		}
-
 		if(!empty($new_data['news_thumbnail']))
 		{
 			$new_data['news_thumbnail'] = $this->processThumbs($new_data['news_thumbnail']);
@@ -901,39 +894,13 @@ class news_admin_ui extends e_admin_ui
 	}
 
 
-	/**
-	 * Returns true when limit news post view/edit to self-authored content is active for the currently logged in administrator.
-	 * @return bool
-	 */
-	private function limitToSelfEnabled()
-	{
-		if((int) $limit = e107::getPref('news_limit_to_self', false))
-		{
-			return (check_class($limit) && !getperms('0'));
-		}
-
-		return false;
-	}
-
-	/**
-	 * Whether this administrator may write the news item, which limit-to-self restricts to their own.
-	 *
-	 * @param array $item the stored row
-	 * @return bool
-	 */
-	private function mayWriteItem($item)
-	{
-		return !$this->limitToSelfEnabled() || (int) varset($item['news_author']) === (int) e107::getUser()->getId();
-	}
-
-
 	function init()
 	{
 		$this->addons = e107::getAddonConfig('e_admin',null, 'config', $this);
 
-		if($this->limitToSelfEnabled())
+		if($author = e107::getObject('news')->limitedToAuthor())
 		{
-			$this->listQry .= " WHERE n.news_author = ".(int) e107::getUser()->getId();
+			$this->listScope = 'news_author = '.$author;
 		}
 /*
 		if(!empty($_POST['save_prefs']))
@@ -1028,12 +995,6 @@ class news_admin_ui extends e_admin_ui
 	{
 
 		parent::EditObserver();
-
-		if(!$this->mayWriteItem($this->getModel()->getData()))
-		{
-			$this->getRequest()->setAction('e403');
-			return false;
-		}
 
 		$this->initSEOFields();
 

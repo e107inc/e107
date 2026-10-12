@@ -1580,6 +1580,32 @@ class e_parse_shortcode
 
 
 	/**
+	 * Whether a row holds every column value the editable map's 'where' holds its saves to.
+	 *
+	 * @param array|ArrayAccess $row the row the shortcode renders
+	 * @return bool
+	 */
+	private function editableRowAllowed($row)
+	{
+		$where = isset($this->editableCodes['where']) ? $this->editableCodes['where'] : array();
+
+		if(!is_array($where))
+		{
+			return false;
+		}
+
+		foreach($where as $field => $value)
+		{
+			if(!isset($row[$field]) || (string) $row[$field] !== (string) $value)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Add Editable Container to shortcode (when detected)
 	 * @param string $text
 	 * @param string $code
@@ -1619,6 +1645,10 @@ class e_parse_shortcode
 			$var = $this->addedCodes->getVars();
 		}
 
+		if(!$this->editableRowAllowed($var))
+		{
+			return $text;
+		}
 
 		$container  = empty($this->editableCodes['shortcodes'][$lcode]['container']) ? 'span' : $this->editableCodes['shortcodes'][$lcode]['container'];
 		$pid        = $this->editableCodes['pid'];

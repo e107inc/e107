@@ -649,6 +649,89 @@ class InlineEditPermsCest
 		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::SAVED_VALUE));
 	}
 
+	public function aSelfLimitedNewsEditorCannotSaveAnotherAuthorsItemOnTheFrontEnd(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a front-end inline save of another author\'s item to an administrator limited to their own');
+
+		$categoryId = $this->seedCategory($I);
+		$otherId = $this->seedNewsItem($I, $categoryId);
+
+		$I->probe('act=enable');
+		$this->loginAsSelfLimitedEditor($I);
+		$author = (int) $I->grabFromDatabase('e107_user', 'user_id', array('user_loginname' => 'p7ieself'));
+		$ownId = $this->seedNewsItem($I, $categoryId, $author);
+
+		$I->amOnPage(self::ROUTE_NEWS_ITEM.$ownId);
+		$this->postFrontEndSave($I, $otherId, 'news_title', self::ATTACK_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $otherId, 'news_title' => self::ITEM_TITLE));
+
+		$I->amOnPage(self::ROUTE_NEWS_ITEM.$otherId);
+		$I->dontSeeElement('.e-editable-front[data-edit-id="'.$otherId.'"]');
+	}
+
+	public function aSelfLimitedNewsEditorStillSavesTheirOwnItemOnTheFrontEnd(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the front-end inline editor working on an item of their own for an administrator limited to their own');
+
+		$categoryId = $this->seedCategory($I);
+
+		$I->probe('act=enable');
+		$this->loginAsSelfLimitedEditor($I);
+		$author = (int) $I->grabFromDatabase('e107_user', 'user_id', array('user_loginname' => 'p7ieself'));
+		$itemId = $this->seedNewsItem($I, $categoryId, $author);
+
+		$I->amOnPage(self::ROUTE_NEWS_ITEM.$itemId);
+		$I->seeElement('.e-editable-front[data-edit-id="'.$itemId.'"]');
+		$this->postFrontEndSave($I, $itemId, 'news_title', self::SAVED_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::SAVED_VALUE));
+	}
+
+	public function aSelfLimitedNewsEditorCannotSaveAnotherAuthorsItemThroughAMapFiledBeforeTheLimit(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a front-end inline save of another author\'s item to an administrator limited to their own through a map filed before the limit');
+
+		$otherId = $this->seedNewsItem($I, $this->seedCategory($I));
+
+		$I->probe('act=enable');
+		$this->loginAsSelfLimitedEditor($I);
+		$this->renderWithTheLimitOff($I, $otherId);
+		$this->postFrontEndSave($I, $otherId, 'news_title', self::ATTACK_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $otherId, 'news_title' => self::ITEM_TITLE));
+	}
+
+	public function aSelfLimitedNewsEditorCannotSaveAnotherAuthorsItemRenderedUnderTheLimit(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a front-end inline save of another author\'s item to an administrator limited to their own who rendered it under the limit');
+
+		$otherId = $this->seedNewsItem($I, $this->seedCategory($I));
+
+		$I->probe('act=enable');
+		$this->loginAsSelfLimitedEditor($I);
+		$this->saveOnTheFrontEnd($I, $otherId, 'news_title', self::ATTACK_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $otherId, 'news_title' => self::ITEM_TITLE));
+	}
+
+	public function aSelfLimitedNewsEditorStillSavesTheirOwnItemThroughAMapFiledBeforeTheLimit(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the front-end inline editor working on an item of their own for an administrator limited to their own through a map filed before the limit');
+
+		$categoryId = $this->seedCategory($I);
+
+		$I->probe('act=enable');
+		$this->loginAsSelfLimitedEditor($I);
+		$author = (int) $I->grabFromDatabase('e107_user', 'user_id', array('user_loginname' => 'p7ieself'));
+		$itemId = $this->seedNewsItem($I, $categoryId, $author);
+
+		$this->renderWithTheLimitOff($I, $itemId);
+		$this->postFrontEndSave($I, $itemId, 'news_title', self::SAVED_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::SAVED_VALUE));
+	}
+
 	public function aCategoryAdministratorCannotOpenTheNewsListThroughAnActionWithNoPage(AcceptanceTester $I)
 	{
 		$I->wantTo('Refuse the news list to an administrator who may only edit categories when it stands in for an action with no page');
@@ -839,6 +922,20 @@ class InlineEditPermsCest
 		$I->amOnPage(self::ROUTE_NEWS_ITEM.$id);
 
 		$this->postFrontEndSave($I, $id, $shortcode, $value);
+	}
+
+	/**
+	 * Render the item with news_limit_to_self off, which files its editable map with no author 'where', then switch the limit back on.
+	 *
+	 * @param int $id the item to render
+	 * @return void
+	 */
+	private function renderWithTheLimitOff(AcceptanceTester $I, $id)
+	{
+		$I->probe('act=limitself&class=0');
+		$I->amOnPage(self::ROUTE_NEWS_ITEM.$id);
+		$I->seeElement('.e-editable-front[data-edit-id="'.$id.'"]');
+		$I->probe('act=limitself&class='.self::LIMITED_CLASS);
 	}
 
 	/**
