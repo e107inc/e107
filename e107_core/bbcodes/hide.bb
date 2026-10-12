@@ -5,7 +5,7 @@ if(empty($e_hide_block))
 	return '[hide'.(($parm !== '') ? '='.$parm : '').']'.$code_text.'[/hide]';
 }
 
-if(!$e_hide_allowed || !isset($e_hide_query) || !$sql->gen($e_hide_query))
+if(!$e_hide_allowed || (isset($e_hide_query) && !$sql->gen($e_hide_query)))
 {
 	if(defined('HIDE_TEXT_HIDDEN'))
 	{
