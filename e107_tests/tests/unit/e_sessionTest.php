@@ -371,6 +371,109 @@
 		}
 
 		/**
+		 * A same-origin image is placed at this origin by whoever wrote the markup, so only the visitor's own navigation may overrule a token.
+		 */
+		public function testAWrongTokenIsExcusedOnlyOnTheVisitorsOwnNavigation()
+		{
+			$image = array('same-origin', 'no-cors', 'image');
+			$navigation = array('same-origin', 'navigate', 'document', '?1');
+			$mode = e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE;
+
+			$this::assertFalse($this->attest($mode, 'GET', 'not-the-token', $image), 'an image');
+			$this::assertFalse($this->attest($mode, 'GET', 'not-the-token', array('same-origin', 'navigate', 'iframe')), 'a frame');
+			$this::assertFalse($this->attest($mode, 'GET', 'not-the-token', array('same-origin', 'no-cors', 'style')), 'a stylesheet');
+			$this::assertFalse($this->attest($mode, 'GET', 'not-the-token', array('same-origin', 'cors', 'empty')), 'a script request');
+			$this::assertFalse($this->attest($mode, 'POST', 'not-the-token', array('same-origin', 'cors', 'empty')), 'a script POST');
+			$this::assertFalse($this->attest($mode, 'GET', 'not-the-token', $navigation, array('PURPOSE' => 'prefetch;prerender')), 'a prerender');
+			$this::assertFalse($this->attest($mode, 'GET', 'not-the-token', array('cross-site', 'navigate', 'document', '?1')), 'another site');
+			$this::assertFalse($this->attest($mode, 'GET', 'not-the-token', array('none', 'navigate', 'document', '?1')), 'the address bar');
+			$this::assertFalse($this->attest($mode, 'GET', 'not-the-token', array()), 'silence');
+
+			// A page cached with a stale token, followed by the visitor.
+			$this::assertTrue($this->attest($mode, 'GET', 'not-the-token', $navigation), 'a followed link');
+			$this::assertTrue($this->attest($mode, 'POST', 'not-the-token', $navigation), 'a submitted form');
+			$this::assertTrue($this->attest($mode, 'GET', 'not-the-token', array('same-origin', 'navigate', 'document')), 'no Sec-Fetch-User');
+
+			$this::assertTrue($this->attest($mode, 'GET', e107::getSession()->getFormToken(), $image), 'a valid token never needed the browser');
+		}
+
+		/**
+		 * The browser-only modes read no token, so a token-marked GET from an image must not be enough there either.
+		 */
+		public function testATokenMarkedGetInABrowserOnlyModeRefusesASubresource()
+		{
+			foreach(array(e_session::CSRF_CHECK_SAME_SITE, e_session::CSRF_CHECK_SAME_ORIGIN) as $mode)
+			{
+				$this::assertFalse($this->attest($mode, 'GET', 'anything', array('same-origin', 'no-cors', 'image')), $mode.': an image');
+				$this::assertFalse($this->attest($mode, 'GET', 'anything', array('same-origin', 'no-cors', 'empty')), $mode.': a no-cors fetch');
+				$this::assertFalse($this->attest($mode, 'GET', 'anything', array('same-origin', 'cors', 'empty'), array('PURPOSE' => 'prefetch')), $mode.': a prefetch');
+				$this::assertFalse($this->attest($mode, 'GET', 'anything', array('same-site', 'navigate', 'iframe')), $mode.': a frame of another host');
+				$this::assertFalse($this->attest($mode, 'GET', 'anything', array('cross-site', 'cors', 'empty')), $mode.': another site\'s script');
+				$this::assertFalse($this->attest($mode, 'GET', 'anything', array()), $mode.': silence');
+
+				$this::assertTrue($this->attest($mode, 'GET', 'anything', array('same-origin', 'navigate', 'document', '?1')), $mode.': a followed link');
+				$this::assertTrue($this->attest($mode, 'GET', 'anything', array('same-origin', 'cors', 'empty')), $mode.': the dashboard\'s own XMLHttpRequest');
+				$this::assertTrue($this->attest($mode, 'GET', 'anything', array('same-origin', 'navigate', 'iframe')), $mode.': the marketplace modal');
+			}
+		}
+
+		/**
+		 * @param int $mode
+		 * @param string $method
+		 * @param string $token sent as e-token in the query string, or in the body of a POST
+		 * @param array $fetch Sec-Fetch-Site, -Mode, -Dest and -User, as many as the browser sends
+		 * @param array $extra further Sec-* headers by their $_SERVER suffix
+		 * @return bool what {@see e_core_session::attest()} decided
+		 */
+		private function attest($mode, $method, $token, array $fetch, array $extra = array())
+		{
+			$saved = array($_SERVER, $_GET, $_POST, $_COOKIE);
+
+			foreach(array_keys($_SERVER) as $key)
+			{
+				if(strpos($key, 'HTTP_SEC_') === 0 || $key === 'HTTP_X_E_TOKEN' || $key === 'HTTP_ORIGIN')
+				{
+					unset($_SERVER[$key]);
+				}
+			}
+
+			unset($_GET['e-token'], $_POST['e-token'], $_POST['e_token']);
+
+			foreach(array_combine(array_slice(array('SITE', 'MODE', 'DEST', 'USER'), 0, count($fetch)), $fetch) as $name => $value)
+			{
+				$_SERVER['HTTP_SEC_FETCH_'.$name] = $value;
+			}
+
+			foreach($extra as $name => $value)
+			{
+				$_SERVER['HTTP_SEC_'.$name] = $value;
+			}
+
+			$_SERVER['REQUEST_METHOD'] = $method;
+			$_COOKIE['e_sessionTest_ambient'] = '1';
+
+			if($method === 'POST')
+			{
+				$_POST['e-token'] = $token;
+			}
+			else
+			{
+				$_GET['e-token'] = $token;
+			}
+
+			try
+			{
+				$attest = new \e107\Reflection\ReflectionMethod('e_core_session', 'attest');
+
+				return $attest->invoke(e107::getSession(), $mode);
+			}
+			finally
+			{
+				list($_SERVER, $_GET, $_POST, $_COOKIE) = $saved;
+			}
+		}
+
+		/**
 		 * The runtime override is the designated seam for a test, and for a
 		 * bootstrap that knows better than the stored preference.
 		 */

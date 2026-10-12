@@ -1517,6 +1517,7 @@ class e_core_session extends e_session
 		$usesFetch = self::modeUsesFetchMetadata($mode);
 
 		$vouched = ($usesFetch && self::fetchMetadataVouches($mode));
+		$navigated = ($vouched && self::fetchMetadataDescribes(array('navigate'), array('document')));
 
 		// A token that does not validate is refused whatever the request was for,
 		// including a GET, because e107 has state-changing GETs whose only guard
@@ -1524,26 +1525,29 @@ class e_core_session extends e_session
 		// e107_admin/plugin.php, theme.php and language.php, which check for a
 		// value but leave validating it to this method.
 		//
-		// The browser can overrule that in a mode which asks it, but only by
-		// affirmatively vouching. A page cached from before an upgrade carries a
-		// stale token, and refusing it on a request the browser has already
-		// placed at this origin would recreate the lockout this replaces.
+		// The browser can overrule that in a mode which asks it, but only for a
+		// top-level navigation. A page cached from before an upgrade carries a
+		// stale token, and refusing the link or form followed from it would
+		// recreate the lockout this replaces.
 		if($usesToken && self::hasSubmittedToken() && !$this->submittedTokenIsValid())
 		{
-			return $vouched;
+			return $navigated;
 		}
 
 		// An e-token in the query string is e107's marker for a state-changing
 		// GET. Those endpoints test that it is not empty and leave the rest to
 		// this method, so in a mode that does not read tokens at all there would
 		// be nothing between them and any non-empty value an attacker's <img> tag
-		// cares to supply. The browser has to place the request here instead.
+		// cares to supply. The browser has to describe a navigation, a frame of
+		// this origin or a script's request instead.
 		//
 		// Fetch Metadata can do what the token could not: protect a GET without
 		// every ordinary inbound link having to carry something.
 		if(!$usesToken && isset($_GET['e-token']) && self::hasAmbientAuthority())
 		{
-			return $vouched;
+			return $navigated
+				|| ($vouched && self::fetchMetadataDescribes(array('cors', 'same-origin'), array('empty')))
+				|| ($vouched && (self::fetchMetadata('FETCH_SITE') === 'same-origin') && self::fetchMetadataDescribes(array('navigate'), array('iframe')));
 		}
 
 		// Cross-site request forgery borrows ambient authority on a request the
@@ -1632,12 +1636,12 @@ class e_core_session extends e_session
 	 */
 	private static function fetchMetadataVouches($mode)
 	{
-		if(empty($_SERVER['HTTP_SEC_FETCH_SITE']))
+		$site = self::fetchMetadata('FETCH_SITE');
+
+		if($site === '')
 		{
 			return false;
 		}
-
-		$site = strtolower(trim($_SERVER['HTTP_SEC_FETCH_SITE']));
 
 		if($site === 'same-origin')
 		{
@@ -1674,17 +1678,37 @@ class e_core_session extends e_session
 	 */
 	private static function fetchMetadataDisavows($mode)
 	{
-		if(!self::modeUsesFetchMetadata($mode) || empty($_SERVER['HTTP_SEC_FETCH_SITE']))
-		{
-			return false;
-		}
-
-		if(strtolower(trim($_SERVER['HTTP_SEC_FETCH_SITE'])) === 'none')
+		if(!self::modeUsesFetchMetadata($mode) || in_array(self::fetchMetadata('FETCH_SITE'), array('', 'none'), true))
 		{
 			return false;
 		}
 
 		return !self::fetchMetadataVouches($mode);
+	}
+
+	/**
+	 * Does the browser say this request is one of $modes fetching one of $dests, and not a prefetch or prerender?
+	 *
+	 * @param array $modes Sec-Fetch-Mode values
+	 * @param array $dests Sec-Fetch-Dest values
+	 * @return bool
+	 */
+	private static function fetchMetadataDescribes(array $modes, array $dests)
+	{
+		return in_array(self::fetchMetadata('FETCH_MODE'), $modes, true)
+			&& in_array(self::fetchMetadata('FETCH_DEST'), $dests, true)
+			&& (self::fetchMetadata('PURPOSE') === '');
+	}
+
+	/**
+	 * @param string $name the header after 'Sec-', in $_SERVER form, such as 'FETCH_SITE'
+	 * @return string its value, trimmed and lower-cased, or '' when the browser did not send it
+	 */
+	private static function fetchMetadata($name)
+	{
+		$key = 'HTTP_SEC_'.$name;
+
+		return empty($_SERVER[$key]) ? '' : strtolower(trim((string) $_SERVER[$key]));
 	}
 
 	/**
