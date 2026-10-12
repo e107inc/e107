@@ -16,7 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$comments_title = LAN_418;
+$comments_title = defset('LAN_418');
 $comments_type_id = 'page';
 $comments_return['page'] = "cp.page_id, cp.page_title";
 $comments_table['page'] = "LEFT JOIN #page AS cp ON c.comment_type='page' AND cp.page_id = c.comment_item_id";

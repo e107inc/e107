@@ -25,7 +25,16 @@ $advanced_caption['title']['all'] = LAN_SEARCH_59;
 
 foreach ($search_prefs['comments_handlers'] as $h_key => $value) {
 	if (check_class($value['class'])) {
-		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$h_key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
+		if (!e_search::isCommentHandlerAvailable($h_key, $value)) {
+			continue;
+		}
+
+		$path = e_search::getCommentHandlerPath($h_key, $value);
+
+		if (!is_readable($path)) {
+			continue;
+		}
+
 		require_once($path);
 		$advanced['type']['list'][] = array('id' => 's_'.$value['id'], 'title' => $comments_title);
 		$advanced_caption['title']['s_'.$value['id']] = LAN_SEARCH_60.' '.$comments_title;

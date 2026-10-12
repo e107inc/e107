@@ -48,20 +48,13 @@ foreach($search_prefs['comments_handlers'] as $h_key => $value)
 {
 	if(check_class($value['class']))
 	{
-		if($value['dir'] == 'core')
+		if(!e_search::isCommentHandlerAvailable($h_key, $value))
 		{
-			$path = e_HANDLER . 'search/comments_' . $h_key . '.php';
+			continue;
 		}
-		else
-		{
-			if(!e107::isInstalled($value['dir']))
-			{
-				continue;
-			}
 
-			$path = e_PLUGIN . $value['dir'] . '/search/search_comments.php';
-		}
-		$path = ($value['dir'] == 'core') ? e_HANDLER . 'search/comments_' . $h_key . '.php' : e_PLUGIN . $value['dir'] . '/search/search_comments.php';
+		$path = e_search::getCommentHandlerPath($h_key, $value);
+
 		if(is_readable($path)) // TODO Rework this to use e_search.php
 		{
 			require_once($path);

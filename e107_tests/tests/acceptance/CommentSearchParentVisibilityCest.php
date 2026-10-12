@@ -97,6 +97,7 @@ class CommentSearchParentVisibilityCest
 	{
 		$I->probe('act=restore');
 		$I->dropPluginProbe();
+		$I->dropForumProbe();
 	}
 
 	/**
@@ -173,14 +174,37 @@ class CommentSearchParentVisibilityCest
 		$this->searchAndAssert($I, 'comments');
 	}
 
+	/**
+	 * A plugin uninstalled with its tables kept, which clears its install flag and its plug_installed entry, takes its items' comments out of the search, whichever directory its handler names.
+	 */
+	public function anUninstalledPluginsCommentsLeaveTheSearch(AcceptanceTester $I)
+	{
+		foreach(array('download' => array('CMTDLPUBLIC', 'CMTDLCLASS'), 'poll' => array('CMTPOLL')) as $plugin => $markers)
+		{
+			$I->updateInDatabase('e107_plugin', array('plugin_installflag' => 0), array('plugin_path' => $plugin));
+			$version = $I->haveSitePref('plug_installed/'.$plugin, null);
+
+			try
+			{
+				$this->searchAndAssert($I, 'comments', $markers);
+			}
+			finally
+			{
+				$I->haveSitePref('plug_installed/'.$plugin, $version === '' ? null : $version);
+				$I->updateInDatabase('e107_plugin', array('plugin_installflag' => 1), array('plugin_path' => $plugin));
+			}
+		}
+	}
+
 	// -----------------------------------------------------------------
 
 	/**
 	 * @param AcceptanceTester $I
 	 * @param string $type what $_GET['t'] holds
+	 * @param string[] $withdrawn markers of the reachable comments this search must refuse instead
 	 * @return void
 	 */
-	private function searchAndAssert(AcceptanceTester $I, $type)
+	private function searchAndAssert(AcceptanceTester $I, $type, array $withdrawn = array())
 	{
 		$I->resetAllCookies();
 
@@ -191,7 +215,7 @@ class CommentSearchParentVisibilityCest
 		$missing = array();
 		$published = array();
 
-		foreach(self::$reachable as $marker)
+		foreach(array_diff(self::$reachable, $withdrawn) as $marker)
 		{
 			if(strpos($source, $marker) === false)
 			{
@@ -199,7 +223,7 @@ class CommentSearchParentVisibilityCest
 			}
 		}
 
-		foreach(self::$refused as $marker)
+		foreach(array_merge(self::$refused, $withdrawn) as $marker)
 		{
 			if(strpos($source, $marker) !== false)
 			{

@@ -39,7 +39,7 @@ $search_prefs = e107::getConfig('search')->getPref();
 $search_handlers['comments'] = LAN_COMMENTS;
 
 
-foreach($pref['e_search_list'] as $file)
+foreach(varset($pref['e_search_list'], array()) as $file)
 {
 	if(!e107::isInstalled($file))
 	{
@@ -196,6 +196,16 @@ if (isset($_POST['update_prefs']))
 if(empty($search_prefs['core_handlers']))
 {
 	$search_prefs['core_handlers'] = [];
+}
+
+if(empty($search_prefs['plug_handlers']))
+{
+	$search_prefs['plug_handlers'] = [];
+}
+
+if(empty($search_prefs['comments_handlers']))
+{
+	$search_prefs['comments_handlers'] = [];
 }
 
 $handlers_total = count($search_handlers) + count($search_prefs['plug_handlers']);
@@ -491,19 +501,21 @@ else
 					<tbody>
 	";
 
-	foreach ($search_prefs['comments_handlers'] as $key => $value) 
+	foreach ($search_prefs['comments_handlers'] as $key => $value)
 	{
-		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
-
-		if(($value['dir'] == 'download' || $key == 'download') && !e107::isInstalled('download'))
+		if(!e_search::isCommentHandlerAvailable($key, $value))
 		{
-			continue;
+			continue; // pref left behind by a plugin that is no longer installed
 		}
 
-		if(is_readable($path))
+		$path = e_search::getCommentHandlerPath($key, $value);
+
+		if(!is_readable($path))
 		{
-			require_once($path);
+			continue; // pref left behind by a handler whose file is gone
 		}
+
+		require_once($path);
 		$text .= "
 						<tr>
 							<td>".vartrue($comments_title)."</td>
