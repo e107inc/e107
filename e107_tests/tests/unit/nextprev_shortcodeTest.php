@@ -141,4 +141,68 @@ class nextprev_shortcodeTest extends \Codeception\Test\Unit
 
 		self::assertStringNotContainsString("' autofocus", $html, 'An old-style link address escaped its attribute: '.$html);
 	}
+
+	/**
+	 * @return array
+	 */
+	public function hostilePageTitles()
+	{
+		return array(
+			'markup'           => array('%3Csvg%20onload%3Dalert(1)%3E'),
+			'nested shortcode' => array('%7BGLYPH%3A%20type%3Dfa-star%26class%3Dx%2527%253E%253Csvg%2520onload%253Dalert(1)%253E%7D'),
+		);
+	}
+
+	/**
+	 * @dataProvider hostilePageTitles
+	 * @param string $title
+	 */
+	public function testAPageTitleCannotAddMarkup($title)
+	{
+		$html = e107::getParser()->parseTemplate('{NEXTPREV:total=2&amount=1&current=0&type=page&tmpl=admin&url=x&pagetitle='.$title.'|y}', true);
+
+		self::assertStringNotContainsString('<svg', $html, 'A page title added markup: '.$html);
+	}
+
+	public function testAPageTitleDoesNotExpandAPathConstant()
+	{
+		$html = e107::getParser()->parseTemplate('{NEXTPREV:total=2&amount=1&current=0&type=page&tmpl=admin&url=x&pagetitle=%7Be_SYSTEM%7D|y}', true);
+
+		self::assertStringNotContainsString(e_SYSTEM, $html, 'A page title printed the system folder: '.$html);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function bulletsThatAreNotTheThemeImage()
+	{
+		return array(
+			'script handler'  => array('<svg onload=alert(1)>', '<svg'),
+			'icon font'       => array("<i class='fa fa-angle-right'></i>", '<i class'),
+			'image elsewhere' => array("<img src='https://evil.example/x.png' alt='' />", '<img'),
+			'theme image with a handler' => array("<img src='{THEME_ABS}x.png' onerror='alert(1)' />", '<img'),
+		);
+	}
+
+	/**
+	 * @dataProvider bulletsThatAreNotTheThemeImage
+	 * @param string $bullet
+	 * @param string $markup
+	 */
+	public function testABulletOtherThanTheThemeImagePrintsAsText($bullet, $markup)
+	{
+		$bullet = str_replace('{THEME_ABS}', THEME_ABS, $bullet);
+		$html = e107::getParser()->parseTemplate('{NEXTPREV:total=2&amount=1&current=0&type=page&tmpl=page&url=x&bullet='.rawurlencode($bullet).'}', true);
+
+		self::assertNotSame('', $html, 'The pagination did not render');
+		self::assertStringNotContainsString($markup, $html, 'A bullet printed as markup: '.$html);
+	}
+
+	public function testTheThemeBulletImageStillPrints()
+	{
+		$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='' class='icon' /> ";
+		$html = e107::getParser()->parseTemplate('{NEXTPREV:total=2&amount=1&current=0&type=page&tmpl=page&url=x&bullet='.rawurlencode($bullet).'}', true);
+
+		self::assertStringContainsString("<img src='".THEME_ABS."images/bullet2.gif' alt='' class='icon' />", $html);
+	}
 }
