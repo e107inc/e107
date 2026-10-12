@@ -3131,6 +3131,23 @@ Your browser does not support the audio tag.
 
 	}
 
+	/**
+	 * The file path is printed into a src, and a caller may hand it a quote or an entity it already encoded.
+	 */
+	public function testToVideoEncodesTheFilePath()
+	{
+		$breakout = '" onwheel="alert(1)';
+
+		$result = $this->tp->toVideo('http://example.com/a' . $breakout . '.mp4');
+
+		self::assertStringContainsString('src="http://example.com/a&quot; onwheel=&quot;alert(1).mp4"', $result);
+		self::assertStringNotContainsString($breakout, $result);
+
+		$result = $this->tp->toVideo('http://example.com/tom&amp;jerry.mp4');
+
+		self::assertStringContainsString('src="http://example.com/tom&amp;jerry.mp4"', $result);
+	}
+
 	public function testMakeClickable()
 	{
 		$email = 'myemail@somewhere.com.tk';
