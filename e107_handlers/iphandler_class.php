@@ -61,6 +61,7 @@
  */
 
 use e107\Banlist\Entry;
+use e107\Database\NamedLock;
 use e107\Ip\Address;
 use e107\Ip\Range;
 use e107\Ip\RangeFile;
@@ -1434,7 +1435,6 @@ class banlistManager
 	const DELETE_GUARD_LAPSED = 'lapsed';
 
 	private $ourConfigDir = '';
-	private $replaceLockHeld = false;
 	public $banTypes = array();
 
 	public function __construct()
@@ -1612,10 +1612,11 @@ class banlistManager
 		$defaultExpiry = ($defaultHours > 0) ? time() + ($defaultHours * 3600) : 0;
 
 		$replacedIds = array();
+		$replaceLock = new NamedLock($sql, $this->replaceLockName());
 
 		if($replaceImported)
 		{
-			$lock = $this->takeReplaceLock();
+			$lock = $replaceLock->take();
 
 			if($lock !== true)
 			{
@@ -1787,38 +1788,8 @@ class banlistManager
 		}
 		finally
 		{
-			$this->releaseReplaceLock();
+			$replaceLock->release();
 		}
-	}
-
-	/**
-	 *	Take the lock that holds a replace-import's snapshot and delete together, without waiting for a run that already has it.
-	 *
-	 *	@return bool|null true where this run has the lock, false where another run holds it, null where the server did not say.
-	 */
-	private function takeReplaceLock()
-	{
-		$sql = e107::getDb();
-		$sql->execute('SELECT GET_LOCK(:name, 0) AS locked', array('name' => $this->replaceLockName()));
-		$row = $sql->fetch();
-		$locked = (is_array($row) && isset($row['locked'])) ? (string) $row['locked'] : null;
-		$this->replaceLockHeld = ($locked === '1');
-
-		return ($locked === null) ? null : $this->replaceLockHeld;
-	}
-
-	/**
-	 *	Release the replace-import lock where this run took it.
-	 */
-	private function releaseReplaceLock()
-	{
-		if(!$this->replaceLockHeld)
-		{
-			return;
-		}
-
-		$this->replaceLockHeld = false;
-		e107::getDb()->execute('SELECT RELEASE_LOCK(:name)', array('name' => $this->replaceLockName()));
 	}
 
 	/**
