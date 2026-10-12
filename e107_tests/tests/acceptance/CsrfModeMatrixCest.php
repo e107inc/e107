@@ -294,6 +294,22 @@ class CsrfModeMatrixCest
 
 		$this->post($I, array(), 'same-site', 'https://uploads.example.net');
 		$I->seeInSource('Unauthorized access!');
+
+		foreach(array(self::TOKEN_OR_SITE, self::SAME_SITE) as $mode)
+		{
+			$this->setMode($I, $mode);
+			$this->browserSays($I, array('same-site', 'navigate', 'document'));
+
+			foreach(array('https://uploads.example.net/' => 'Unauthorized access!', $this->ourOrigin($I) . '/' => 'PROBE_REACHED') as $referer => $expected)
+			{
+				$I->haveHttpHeader('Referer', $referer);
+				$I->amOnProbe('e-token=not-the-token');
+				$I->seeInSource($expected);
+			}
+
+			$I->deleteHeader('Referer');
+			$this->browserSays($I, array());
+		}
 	}
 
 	/**

@@ -322,9 +322,14 @@
 
 			$_SERVER['HTTP_HOST'] = 'example.org';
 
-			$vouches = function($site, $mode, $origin = null)
+			$vouches = function($site, $mode, $origin = null, $referer = null)
 			{
-				unset($_SERVER['HTTP_SEC_FETCH_SITE'], $_SERVER['HTTP_ORIGIN']);
+				unset($_SERVER['HTTP_SEC_FETCH_SITE'], $_SERVER['HTTP_ORIGIN'], $_SERVER['HTTP_REFERER']);
+
+				if($referer !== null)
+				{
+					$_SERVER['HTTP_REFERER'] = $referer;
+				}
 
 				if($site !== null)
 				{
@@ -365,6 +370,28 @@
 			// for: the browser is telling the truth, and the truth is not enough.
 			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'https://uploads.example.org'));
 			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'null'));
+
+			// A navigation carries no Origin, so it is placed by its Referer, and one that sends neither is not placed.
+			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE), 'neither Origin nor Referer');
+			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, null, 'https://uploads.example.org/page'));
+			$this::assertTrue($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, null, 'http://example.org/news.php'));
+			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'https://uploads.example.org', 'http://example.org/'), 'Origin is asked before Referer');
+
+			// The site language is served from the bare domain and from www, beside the language subdomains.
+			$config = e107::getConfig();
+			$subdomained = $config->get('multilanguage_subdomain');
+			$config->set('multilanguage_subdomain', 'example.org');
+			$_SERVER['HTTP_HOST'] = 'fr.example.org';
+
+			try
+			{
+				$this::assertTrue($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, null, 'https://www.example.org/'));
+				$this::assertTrue($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, null, 'https://example.org/'));
+			}
+			finally
+			{
+				$config->set('multilanguage_subdomain', $subdomained);
+			}
 
 			$_SERVER = $server;
 		}
