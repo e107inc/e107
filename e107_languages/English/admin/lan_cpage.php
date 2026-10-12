@@ -57,4 +57,5 @@ return [
     'CUSLAN_85' => "Leave blank to use the default",
     'CUSLAN_86' => "Leave blank to use the corresponding page",
     'CUSLAN_87' => "Page Count",
+    'CUSLAN_CHAPTER_ROWS_LEFT_OUT' => "[x] selected record(s) were left in their chapter, which belongs to a custom page or menu this list does not edit.",
 ];

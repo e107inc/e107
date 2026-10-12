@@ -8879,6 +8879,11 @@ class e_admin_form_ui extends e_form
 			$controller->setBatchCopy(false);
 		}
 
+		if(isset($fields['options']['readParms']) && !is_array($fields['options']['readParms']))
+		{
+			parse_str($fields['options']['readParms'], $fields['options']['readParms']);
+		}
+
 		if(!$controller->getDispatcher()->hasRouteAccess($deleteRoute)) // disable the delete button and batch delete.
 		{
 			$fields['options']['readParms']['deleteClass'] = e_UC_NOBODY;

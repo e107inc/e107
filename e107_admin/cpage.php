@@ -77,6 +77,29 @@ class page_admin extends e_admin_dispatcher
 		'page/prefs'	=> array('caption'=> LAN_OPTIONS, 'perm' => '0')		
 	);
 
+	protected $perm = array(
+		'page/list'     => '5',
+		'page/create'   => '5',
+		'page/edit'     => '5',
+		'page/prefs'    => '0',
+		'page/grid'     => '5',
+		'page/filter'   => '5',
+		'cat/list'      => '5',
+		'cat/create'    => '5',
+		'cat/edit'      => '5',
+		'cat/grid'      => '5',
+		'cat/filter'    => '5',
+		'menu/list'     => 'J',
+		'menu/grid'     => 'J',
+		'menu/create'   => 'J',
+		'menu/edit'     => 'J',
+		'menu/prefs'    => '0',
+		'menu/filter'   => 'J',
+		'overview/list' => '5|J',
+		'overview/edit' => '5|J',
+		'overview/prefs' => '0',
+	);
+
 	protected $adminMenuIcon = 'e-custom-24';
 	
 
@@ -151,6 +174,23 @@ class page_admin_form_ui extends e_admin_form_ui
 				$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-danger'));
 			}
 			return $text;
+		}
+	}
+
+	/**
+	 * Draw the chapter of a listed row as plain text where this route does not save it.
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 * @param array $params
+	 * @param int $id
+	 * @return void
+	 */
+	public function renderValueTrigger(&$field, &$value, &$params, $id)
+	{
+		if($field === 'page_chapter' && !$this->getController()->savesListedChapter($id))
+		{
+			unset($params['editable']);
 		}
 	}
 
@@ -423,7 +463,6 @@ class page_admin_ui extends e_admin_ui
 		                               LEFT JOIN #user AS u ON p.page_author = u.user_id
 		                               LEFT JOIN #page_chapters AS pch ON p.page_chapter = pch.chapter_id
 		                               LEFT JOIN #page_chapters AS pbk ON pch.chapter_parent = pbk.chapter_id"; // without any Order or Limit.
-		protected $listScope		= "page_title != '' OR page_text != ''";
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid 				= "page_id";
@@ -517,6 +556,16 @@ class page_admin_ui extends e_admin_ui
 		protected $chapterFields = array();
 		protected $chapters = array();
 
+		/**
+		 * The columns that make a row a custom page or a custom menu when any of them is filled in, keyed by half.
+		 *
+		 * @var array
+		 */
+		private static $filledBy = array(
+			'page_' => array('page_title', 'page_text'),
+			'menu_' => array('menu_title', 'menu_name', 'menu_image', 'menu_icon'),
+		);
+
 		function init()
 		{
 
@@ -528,14 +577,7 @@ class page_admin_ui extends e_admin_ui
 
 			$mode = $this->getMode();
 
-			if($mode === 'overview')
-			{
-				$this->listScope = '';
-			}
-			elseif($mode === 'menu')
-			{
-				$this->listScope = "menu_title != '' OR menu_name != '' OR menu_image != '' OR menu_icon != ''";
-			}
+			$this->listScope = ($mode === 'overview') ? '' : $this->filledScope($mode === 'menu' ? 'menu_' : 'page_');
 
 			$this->perPage = (int) e107::pref('core','admin_page_perpage', 10);
 
@@ -721,10 +763,12 @@ class page_admin_ui extends e_admin_ui
 			$this->fields['page_chapter']['writeParms']['optArray'] = $this->cats;
 			$this->fields['page_chapter']['writeParms']['size'] = 'xxlarge';
 
-			if($this->getAction() === 'create')
+			if($this->getAction() === 'create' && $this->savedHalves()['page_'])
 			{
 				$this->fields['page_chapter']['writeParms']['ajax'] = array('src'=>e_SELF."?mode=page&action=chapter-change",'target'=>'tabadditional');
 			}
+
+			$this->holdFieldsToSavedHalves();
 /*
 
 			if(e_AJAX_REQUEST)
@@ -794,6 +838,227 @@ class page_admin_ui extends e_admin_ui
 			e107::getCustomFields()->setAdminUIConfig('page_fields',$this);
 		}
 
+		/**
+		 * Whether this administrator holds each half of a row, keyed by the prefix of that half's fields.
+		 *
+		 * @return array
+		 */
+		private function heldHalves()
+		{
+			return array('page_' => getperms('5'), 'menu_' => getperms('J'));
+		}
+
+		/**
+		 * Whether this route saves each half of a row, keyed by the prefix of that half's fields.
+		 *
+		 * @return array
+		 */
+		private function savedHalves()
+		{
+			$mode = $this->getMode();
+
+			if($mode === 'overview' || $this->getRequest()->canonicalizeAction($this->getAction()) === 'create')
+			{
+				return $this->heldHalves();
+			}
+
+			return array('page_' => ($mode === 'page'), 'menu_' => ($mode === 'menu'));
+		}
+
+		/**
+		 * The SQL condition that selects the rows with the named half filled in, as its list shows them.
+		 *
+		 * @param string $half
+		 * @return string
+		 */
+		private function filledScope($half)
+		{
+			return implode(" != '' OR ", self::$filledBy[$half])." != ''";
+		}
+
+		/**
+		 * Whether a row has each half filled in, as {@see page_admin_ui::filledScope()} selects it.
+		 *
+		 * @param array $row
+		 * @return array
+		 */
+		private function filledHalves($row)
+		{
+			$filled = array();
+
+			foreach(self::$filledBy as $half => $columns)
+			{
+				$filled[$half] = false;
+
+				foreach($columns as $column)
+				{
+					$filled[$half] = $filled[$half] || (string) varset($row[$column]) !== '';
+				}
+			}
+
+			return $filled;
+		}
+
+		/**
+		 * The half a column belongs to, null for the row's id, the order both lists sort by, and the chapter, which {@see page_admin_ui::savesChapterOf()} places row by row.
+		 *
+		 * @param string $column
+		 * @return string|null
+		 */
+		private function columnHalf($column)
+		{
+			$half = substr($column, 0, 5);
+
+			if(in_array($column, array($this->pid, 'page_order', 'page_chapter'), true) || ($half !== 'page_' && $half !== 'menu_'))
+			{
+				return null;
+			}
+
+			return $half;
+		}
+
+		/**
+		 * Whether this administrator holds the half a column belongs to, as it holds every column of neither half.
+		 *
+		 * @param string $column
+		 * @return bool
+		 */
+		private function holdsColumn($column)
+		{
+			$half = $this->columnHalf($column);
+
+			return $half === null || $this->heldHalves()[$half];
+		}
+
+		/**
+		 * Whether this route saves the chapter of a row: the page half's on a row that is a custom page, the menu half's on a menu-only row.
+		 *
+		 * @param array $row
+		 * @return bool
+		 */
+		private function savesChapterOf($row)
+		{
+			$filled = $this->filledHalves($row);
+
+			return $this->savedHalves()[$filled['page_'] ? 'page_' : 'menu_'];
+		}
+
+		/**
+		 * Whether this route saves the chapter of the listed row with the given id, for the list to draw its editor.
+		 *
+		 * @param int $id
+		 * @return bool
+		 */
+		public function savesListedChapter($id)
+		{
+			$node = $this->getTreeModel()->getNode($id);
+
+			return $node !== null && $this->savesChapterOf($node->getData());
+		}
+
+		/**
+		 * The page columns a create that does not save the page half fills in itself, as a custom page form fills them for its author.
+		 *
+		 * @param array $posted
+		 * @return array
+		 */
+		private function pageColumnsFilledOnCreate($posted = array())
+		{
+			return array(
+				'page_author'    => e107::getUser()->getId(),
+				'page_datestamp' => time(),
+				'page_sef'       => eHelper::title2sef((string) varset($posted['menu_name'])),
+			);
+		}
+
+		/**
+		 * Keep the fields of a half this route does not save out of the form, the model, the inline editor and the batch, and mark those of a half this administrator does not hold as neither listed, sorted, filtered nor searched.
+		 *
+		 * @return void
+		 */
+		private function holdFieldsToSavedHalves()
+		{
+			$saved = $this->savedHalves();
+			$filled = ($this->getRequest()->canonicalizeAction($this->getAction()) === 'create' && !$saved['page_']) ? $this->pageColumnsFilledOnCreate() : array();
+			$drawn = array();
+
+			if(!$saved['page_'] && isset($this->fields['page_chapter'], $this->fields['menu_name']['tab']))
+			{
+				$this->fields['page_chapter']['tab'] = $this->fields['menu_name']['tab'];
+			}
+
+			foreach($this->fields as $key => $att)
+			{
+				$half = $this->columnHalf($key);
+
+				if($half !== null && !$saved[$half])
+				{
+					$att = array_merge($att, array('noedit' => true, 'data' => isset($filled[$key]) ? $att['data'] : false, 'inline' => false, 'batch' => false));
+				}
+
+				if(!$this->holdsColumn($key))
+				{
+					$att = array_merge($att, array('nolist' => true, 'filter' => false, 'search' => false));
+
+					if($this->getQuery('field') === $key)
+					{
+						$this->getRequest()->setQuery('field', null);
+					}
+				}
+
+				$this->fields[$key] = $att;
+
+				if(isset($att['tab']) && !empty($att['type']) && empty($att['noedit']) && $key !== $this->pid)
+				{
+					$drawn[$att['tab']] = true;
+				}
+			}
+
+			$this->tabs = array_intersect_key($this->tabs, $drawn);
+		}
+
+		/**
+		 * Keep the chapter of the row this request edits out of the form, the model and the inline editor when the route does not save the half the chapter belongs to on that row.
+		 *
+		 * @return void
+		 */
+		private function holdChapterToRow()
+		{
+			$model = $this->getModel()->load($this->getId());
+
+			if(!$model->getId() || $this->savesChapterOf($model->getData()))
+			{
+				return;
+			}
+
+			$this->fields['page_chapter'] = array_merge($this->fields['page_chapter'], array('noedit' => true, 'data' => false, 'inline' => false, 'batch' => false));
+			$model->setDataFields(array_diff_key($model->getDataFields(), array('page_chapter' => true)));
+		}
+
+		/**
+		 * Whether this administrator holds every half each selected row has filled in, adding the refusal when not.
+		 *
+		 * @param array $selected
+		 * @return bool
+		 */
+		private function holdsFilledHalvesOf($selected)
+		{
+			$held = $this->heldHalves();
+			$tree = $this->getTreeModel();
+
+			foreach($selected as $id)
+			{
+				if(in_array(false, array_intersect_key($held, array_filter($this->filledHalves($tree->getNode($id)->getData()))), true))
+				{
+					e107::getMessage()->addError(LAN_NO_PERMISSIONS);
+
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		private function loadCustomFieldsData()
 		{
 			$cf = e107::getCustomFields();
@@ -809,7 +1074,12 @@ class page_admin_ui extends e_admin_ui
 		function CreateObserver()
 		{
 			parent::CreateObserver();
-			$this->initCustomFields(0);
+
+			if($this->savedHalves()['page_'])
+			{
+				$this->initCustomFields(0);
+			}
+
 			$this->initSEOFields();
 		}
 
@@ -821,7 +1091,9 @@ class page_admin_ui extends e_admin_ui
 
 			parent::EditObserver();
 
-			if($this->getModel()->getId())
+			$this->holdChapterToRow();
+
+			if($this->getModel()->getId() && $this->savedHalves()['page_'])
 			{
 				$this->initCustomFields((int) $this->getModel()->get('page_chapter'));
 				$this->loadCustomFieldsData();
@@ -829,6 +1101,16 @@ class page_admin_ui extends e_admin_ui
 
 			$this->initSEOFields();
 
+		}
+
+		/**
+		 * Load the row the inline editor writes before it checks the field, so the chapter is held to that row.
+		 *
+		 * @return void
+		 */
+		protected function InlineAjaxObserver()
+		{
+			$this->holdChapterToRow();
 		}
 
 		private function initSEOFields()
@@ -889,12 +1171,163 @@ class page_admin_ui extends e_admin_ui
             }
         }
 
+		/**
+		 * The selected rows a batch write of the field reaches: for the chapter, only those whose chapter this route saves, saying how many it leaves out.
+		 *
+		 * @param array $selected
+		 * @param string $field
+		 * @return array
+		 */
+		private function rowsSavingField($selected, $field)
+		{
+			if($field !== 'page_chapter')
+			{
+				return $selected;
+			}
+
+			$kept = array_values(array_filter($selected, array($this, 'savesListedChapter')));
+
+			if(count($kept) < count($selected))
+			{
+				e107::getMessage()->addWarning(e107::getParser()->lanVars(CUSLAN_CHAPTER_ROWS_LEFT_OUT, count($selected) - count($kept), true));
+			}
+
+			return $kept;
+		}
+
+		/**
+		 * A batch write of a field reaches only the rows {@see page_admin_ui::rowsSavingField()} keeps.
+		 *
+		 * @param array $selected
+		 * @param string $field
+		 * @param mixed $value
+		 * @return int|null
+		 */
+		protected function handleListBatch($selected, $field, $value)
+		{
+			return parent::handleListBatch($this->rowsSavingField($selected, $field), $field, $value);
+		}
+
+		/**
+		 * A boolean batch on a field reaches only the rows {@see page_admin_ui::rowsSavingField()} keeps.
+		 *
+		 * @param array $selected
+		 * @param string $field
+		 * @param mixed $value
+		 * @return void
+		 */
+		protected function handleListBoolBatch($selected, $field, $value)
+		{
+			parent::handleListBoolBatch($this->rowsSavingField($selected, $field), $field, $value);
+		}
+
+		/**
+		 * A reversing boolean batch on a field reaches only the rows {@see page_admin_ui::rowsSavingField()} keeps.
+		 *
+		 * @param array $selected
+		 * @param string $field
+		 * @return void
+		 */
+		protected function handleListBoolreverseBatch($selected, $field)
+		{
+			parent::handleListBoolreverseBatch($this->rowsSavingField($selected, $field), $field);
+		}
+
+		/**
+		 * An attach, detach or userclass batch on a field reaches only the rows {@see page_admin_ui::rowsSavingField()} keeps.
+		 *
+		 * @param array $selected
+		 * @param string $field
+		 * @param mixed $value
+		 * @param string $type
+		 * @return void
+		 */
+		public function handleCommaBatch($selected, $field, $value, $type)
+		{
+			parent::handleCommaBatch($this->rowsSavingField($selected, $field), $field, $value, $type);
+		}
+
+		/**
+		 * Leave the columns of a half this administrator does not hold out of the export, which otherwise streams every column of the row.
+		 *
+		 * @param array $selected
+		 * @return void
+		 */
+		protected function handleListExportBatch($selected)
+		{
+			$exclude = array();
+
+			foreach(array_keys($this->getTreeModel()->getNode(reset($selected))->getData()) as $column)
+			{
+				if(!$this->holdsColumn($column))
+				{
+					$exclude[] = $column;
+				}
+			}
+
+			$this->getTreeModel()->setParam('export_exclude', $exclude);
+
+			parent::handleListExportBatch($selected);
+		}
+
+		/**
+		 * Search no column of a half this administrator does not hold, which would tell it whether the column holds a word.
+		 *
+		 * @param string $selected
+		 * @return string
+		 */
+		protected function handleListSearchfieldFilter($selected)
+		{
+			return $this->holdsColumn($selected) ? parent::handleListSearchfieldFilter($selected) : '';
+		}
+
+		/**
+		 * Filter the list by no column of a half this administrator does not hold, which would tell it whether the column holds a value.
+		 *
+		 * @param string $filter_value
+		 * @return array|string
+		 */
+		protected function _parseFilterRequest($filter_value)
+		{
+			$filter = parent::_parseFilterRequest($filter_value);
+
+			return (is_array($filter) && isset($filter[0]) && !$this->holdsColumn($filter[0])) ? array() : $filter;
+		}
+
+		/**
+		 * A copy creates rows with every half the selected rows have, so it answers to holding each of them.
+		 *
+		 * @param array $selected
+		 * @return void
+		 */
+		protected function handleListCopyBatch($selected)
+		{
+			if($this->holdsFilledHalvesOf($selected))
+			{
+				parent::handleListCopyBatch($selected);
+			}
+		}
+
+		/**
+		 * A feature box item carries a selected row's page and menu columns into the feature box, so it answers to holding each half the row has.
+		 *
+		 * @param array $selected
+		 * @return void
+		 */
+		protected function handleListFeatureboxBatch($selected)
+		{
+			if($this->holdsFilledHalvesOf($selected))
+			{
+				parent::handleListFeatureboxBatch($selected);
+			}
+		}
+
 		function afterCreate($new_data, $old_data, $id)
 		{
 			$tp = e107::getParser();
 			$mes = e107::getMessage();
 
-			$menu_name = $tp->toDB($new_data['menu_name']); // not to be confused with menu-caption.
+			$menu_name = $tp->toDB(varset($new_data['menu_name'], '')); // not to be confused with menu-caption.
 			$menu_path = intval($id);
 
 			if (!e107::getDb()->createQueryBuilder()->from('menus')
@@ -916,9 +1349,17 @@ class page_admin_ui extends e_admin_ui
 		function beforeCreate($new_data, $old_data)
 		{
 
+			if(!$this->savedHalves()['page_'])
+			{
+				$new_data = array_merge($new_data, $this->pageColumnsFilledOnCreate($new_data));
+			}
+
 			$new_data = e107::getCustomFields()->processDataPost('page_fields',$new_data);
 
-			$new_data['menu_name'] = preg_replace('/[^\w\-*]/','-',$new_data['menu_name']);
+			if(isset($new_data['menu_name']))
+			{
+				$new_data['menu_name'] = preg_replace('/[^\w\-*]/','-',$new_data['menu_name']);
+			}
 
 			if(empty($new_data['page_sef']))
 			{
