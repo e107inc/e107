@@ -605,4 +605,22 @@
 			$this->assertStringContainsString($plugin, $text);
 		}
 
+		/**
+		 * The Edit link of a plugin or theme row opens the modal that hoists the
+		 * form's save button into the modal footer, as the core file rows do.
+		 */
+		public function testCheck_lanfilesEditLinkHoistsTheSaveButton()
+		{
+			$plugin = $this->writeScratchPlugin(array(
+				'English.php' => "define('LAN_TEST_FLAT', 'flat');\n",
+				'Dutch.php'   => "define('LAN_TEST_FLAT', 'plat');\n",
+			));
+
+			$this->startVerifying('Dutch');
+
+			$text = $this->lan->check_lanfiles('P', $plugin, 'English', 'Dutch');
+
+			$this->assertStringContainsString("data-modal-submit='true'", $text);
+		}
+
 	}
