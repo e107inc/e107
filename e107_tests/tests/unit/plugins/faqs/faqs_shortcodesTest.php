@@ -164,4 +164,18 @@ class faqs_shortcodesTest extends \Test\Unit
 			$this->sc->sc_faq_question('|tags=1')
 		);
 	}
+
+	public function testAQuestionCannotAddParametersToTheShareButtons()
+	{
+		$this->sc->setVars(array(
+			'faq_id'       => 42,
+			'faq_question' => 'Why x&class=x%22%3E%3Csvg%20onload%3Dalert(1)%3E y',
+			'faq_tags'     => '',
+		));
+
+		$html = $this->sc->sc_faq_share();
+
+		$this->assertStringContainsString('social-share', $html, 'The share buttons did not render, so the row proves nothing');
+		$this->assertStringNotContainsString('<svg', $html, 'A question added a parameter to the share buttons: '.$html);
+	}
 }
