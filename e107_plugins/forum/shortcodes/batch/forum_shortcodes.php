@@ -646,7 +646,7 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_newspostname()
 	{
-		return empty($this->var) || empty($this->var['thread_name']) ? LAN_FORUM_0029 : "<a href='".e107::getUrl()->create('forum/thread/last', $this->var)."'>".e107forum::threadNameHtml($this->var['thread_name'], e107::getParser()).'</a>';
+		return empty($this->var) || empty($this->var['thread_name']) ? LAN_FORUM_0029 : "<a href='".e107::getUrl()->create('forum/thread/last', $this->var)."'>".e107forum::threadNameHtml($this->var['thread_name'], e107::getParser(), e107::getBB()).'</a>';
 	}
 
 

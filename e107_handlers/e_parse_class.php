@@ -1855,7 +1855,9 @@ class e_parse
 	 *
 	 * @param string  $text      content to render. Non-strings and empty values
 	 *                           are returned unchanged.
-	 * @param boolean $parseBB   [optional] parse bbcode in $text
+	 * @param boolean|string $parseBB [optional] parse bbcode in $text, or a
+	 *                           comma-separated list of codes to strip while
+	 *                           parsing the rest
 	 * @param string  $modifiers [optional] see MODIFIER GRAMMAR above
 	 * @param mixed   $postID    [optional] id passed on to bbcode handlers that
 	 *                           need to know which item they are rendering
@@ -1942,7 +1944,9 @@ class e_parse
 		$saveOpts = $opts;
 
 
-		if ($parseBB == false)
+		$keyCodes = implode('|', array_diff(array('table', 'html', 'php', 'code', 'scode', 'hide'), is_string($parseBB) ? explode(',', $parseBB) : array()));
+
+		if ($parseBB == false || $keyCodes === '')
 		{
 			$content = array($text);
 		}
@@ -1950,7 +1954,7 @@ class e_parse
 		{
 			// Split each text block into bits which are either within one of the 'key' bbcodes, or outside them
 			// (Because we have to match end words, the 'extra' capturing subpattern gets added to output array. We strip it later)
-			$content = preg_split('#(\[(table|html|php|code|scode|hide).*?\[\/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+			$content = preg_split('#(\[(' . $keyCodes . ').*?\[\/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		}
 
 
@@ -1976,7 +1980,7 @@ class e_parse
 
 				// Have to have a good test in case a 'non-key' bbcode starts the block
 				// - so pull out the bbcode parameters while we're there
-				if (($parseBB !== false) && preg_match('#(^\[(table|html|php|code|scode|hide)(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches))
+				if (($parseBB !== false) && ($keyCodes !== '') && preg_match('#(^\[(' . $keyCodes . ')(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches))
 				{
 
 					$proc_funcs = false;

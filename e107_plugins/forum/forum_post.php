@@ -916,7 +916,7 @@ class forum_post_handler
 		<tr>
 		<td>".LAN_FORUM_3011.": </td>
 		<td>
-		".e107forum::threadNameHtml($this->data['thread_name'], $tp)."
+		".e107forum::threadNameHtml($this->data['thread_name'], $tp, e107::getBB())."
 		</td>
 		</tr>
 		<tr><td></td>
@@ -998,7 +998,7 @@ class forum_post_handler
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 
-		$thread_name = e107forum::threadNameHtml($this->data['thread_name'], $tp);
+		$thread_name = e107forum::threadNameHtml($this->data['thread_name'], $tp, e107::getBB());
 	//	define('e_PAGETITLE', LAN_FORUM_1001.' / '.LAN_FORUM_2024.': '.$thread_name);
 	//	$url = e107::getUrl()->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId));
 	//	$actionUrl = e107::getUrl()->create('forum/thread/report', "id={$threadId}&post={$postId}");

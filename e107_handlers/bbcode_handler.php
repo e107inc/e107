@@ -201,6 +201,7 @@ class e_bbcode
 	 *			TRUE (boolean or word), all bbcodes are stripped. 
 	 *			FALSE - normal display processing of all bbcodes
 	 *			comma separated (lower case) list - only the listed codes are stripped (and the rest are processed)
+	 *			A stripped code is paired like any other and leaves its text; an opening tag that nothing closes is left as typed
 	 *			If the first word is 'PRE', sets pre-save mode. Any other parameters follow, comma separated
 	 *
 	 *	@return string processed data
@@ -293,9 +294,10 @@ class e_bbcode
 					}
 					if (($bbword) && ($bbword == trim($bbword)) && !$nopro)
 					{  // Got a code to process here
-						if (($bbStrip === TRUE) || in_array($bbword,$strip_array))
+						$strip = ($bbStrip === TRUE) || in_array($bbword,$strip_array);
+						if ($strip && ($matches[1] == '') && array_key_exists('_'.$bbword, $this->bbLocation))
 						{
-							$is_proc = TRUE;		// Just discard this bbcode
+							$is_proc = TRUE;		// Just discard this single bbcode
 						}
 						else
 						{
@@ -356,7 +358,10 @@ class e_bbcode
 															'close'  => $cont,
 														);
 													}
-													$stacktext = $this->proc_bbcode($bbword, $code_stack[0]['param'], $stacktext, $bbparam, $code_stack[0]['bbsep'], $code_stack[0]['block'].$stacktext.$cont);
+													if (!$strip)
+													{
+														$stacktext = $this->proc_bbcode($bbword, $code_stack[0]['param'], $stacktext, $bbparam, $code_stack[0]['bbsep'], $code_stack[0]['block'].$stacktext.$cont);
+													}
 													array_shift($code_stack);
 													// Intentionally don't terminate here - may be some text we can clean up
 													$bbword='';    // Necessary to make sure we don't double process if several instances on stack
@@ -393,7 +398,7 @@ class e_bbcode
 									}
 									$is_proc = TRUE;
 								}
-								elseif (array_key_exists($bbword,$this->bbLocation))
+								elseif ($strip || array_key_exists($bbword,$this->bbLocation))
 								{
 									if ($stacktext != '')
 									{ // Stack the text we've accumulated so far
@@ -401,7 +406,7 @@ class e_bbcode
 										$stacktext = '';
 									}
 									array_unshift($code_stack,array('type' => 'bbcode','code' => $bbword, 'numbers'=> $matches[3], 'param'=>$bbparam, 'bbsep' => $bbsep, 'block' => $cont, 'pos' => $contPos));
-									if ($bbword == 'code')
+									if (($bbword == 'code') && !$strip)
 									{
 										$nopro = ($this->codeLeftOpen === null) || ($contPos < $this->codeLeftOpen);
 										$noproFrom = $contPos;
@@ -466,6 +471,17 @@ class e_bbcode
 		}
 		$result .= $stacktext;
 		return $result;
+	}
+
+
+	/**
+	 * Every registered bbcode, a single code such as _br with its leading underscore, mapped to 'core' or to the folder of the plugin whose handler renders it.
+	 *
+	 * @return array
+	 */
+	public function getRegistered()
+	{
+		return $this->bbLocation;
 	}
 
 

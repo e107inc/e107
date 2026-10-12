@@ -260,6 +260,17 @@ EXPECTED;
 		}
 	}
 
+	public function testToHTMLStripsTheBlockBbcodesAStripListNames()
+	{
+		foreach (array('table', 'html', 'php', 'code', 'scode', 'hide') as $code)
+		{
+			self::assertSame('kept text', $this->tp->toHTML('['.$code.']kept text[/'.$code.']', $code), $code);
+		}
+
+		self::assertSame(1, preg_match('#^<pre [^>]*>kept text</pre>$#', $this->tp->toHTML('[code]kept text[/code]', 'table')));
+		self::assertSame('after', $this->tp->toHTML('[php]echo 1;[/php] after', 'TITLE'));
+	}
+
 	public function testThumbUrlDecode()
 	{
 		$tests = array(

@@ -522,7 +522,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		if($this->var['action'] == "rp")
 		{
 			$pre = LAN_FORUM_1003;
-			$name = e107forum::threadNameHtml($this->var['thread_name'], $tp);
+			$name = e107forum::threadNameHtml($this->var['thread_name'], $tp, e107::getBB());
 			$url = e107::url('forum', 'topic', $this->var);
 			$post = LAN_FORUM_2006;
 		}
