@@ -1268,8 +1268,8 @@ class e_parse
 				{
 					// Use the ACK (006) ASCII symbol to replace all HTML entities temporarily
 					$value = str_replace("\x06", '', $value);
-					preg_match_all("/&([a-z\d]{2,7}|#\d{2,5});/i", $value, $ents);
-					$value = preg_replace("/&([a-z\d]{2,7}|#\d{2,5});/i", "\x06", $value);
+					preg_match_all("/&([a-z\d]{2,7}|#\d{2,5}|#x[\da-f]{1,6});/i", $value, $ents);
+					$value = preg_replace("/&([a-z\d]{2,7}|#\d{2,5}|#x[\da-f]{1,6});/i", "\x06", $value);
 					//			echo "Found block length ".strlen($value).': '.substr($value,20).'<br />';
 					// Split at spaces - note that this will fail if presented with invalid utf-8 when doing the regex whitespace search
 					//			$split = preg_split('#(\s)#'.$utf8, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
@@ -6940,7 +6940,7 @@ class e_parse
 		// Optional short-code conversion
 		if ($opts['parse_sc'])
 		{
-			$text = $this->parseTemplate($text, true);
+			$text = $this->parseTemplate($this->disarmShortcodeParameters($text), true);
 		}
 
 		/**
