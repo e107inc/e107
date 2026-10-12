@@ -1542,7 +1542,7 @@ class news_form_ui extends e_admin_form_ui
 
 		$val = strpos($curVal, "[img]http") !== false ? $curVal : str_replace("[img]../", "[img]", $curVal);
 		$text .= "<div id='news-body-container' class='tab-pane active'>";
-		$text .= $frm->bbarea('news_body', $val, 'news', 'news', 'large');
+		$text .= $frm->bbarea('news_body', $this->asElementContent($val), 'news', 'news', 'large');
 		$text .= "</div>";
 		$text .= "<div id='news-extended-container' class='tab-pane'>";
 
