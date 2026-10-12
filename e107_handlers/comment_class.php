@@ -146,12 +146,15 @@ class comment
 		}
 
 		$sql = e107::getDb();
-		if($sql->select("comments","*","comment_id= ".intval($id)." LIMIT 1"))
+		if($sql->select("comments","*","comment_id= ".intval($id)." AND comment_blocked = 0 LIMIT 1"))
 		{
 			$row = $sql->fetch();
 			// [comment_id] =&gt; 65
 
-			return $this->form_comment('reply', $row['comment_type'], $row['comment_item_id'], $row['comment_subject'], false, true,false,false,$id);
+			if($this->canReadComments($row['comment_type'], $row['comment_item_id']))
+			{
+				return $this->form_comment('reply', $row['comment_type'], $row['comment_item_id'], $row['comment_subject'], false, true,false,false,$id);
+			}
 	
 		}			
 	}
@@ -694,6 +697,81 @@ class comment
 	
 	
 	
+	/**
+	 * Whether the visitor may read the comments on an item, asked as the item's own page asks before it shows them.
+	 *
+	 * @param string|int $table comment type, or the core table name it maps to
+	 * @param int        $id    id of the item in that table
+	 * @return bool false for a comment type core does not model
+	 */
+	public function canReadComments($table, $id)
+	{
+		$sql = e107::getDb();
+		$id = (int) $id;
+		$now = time();
+		$type = $this->getCommentType($table);
+
+		switch ($this->getTable(is_numeric($type) ? (int) $type : $type))
+		{
+			case 'news':
+				return (bool) $sql->select('news', 'news_id', "`news_id` = ".$id
+					." AND `news_class` REGEXP '".e_CLASS_REGEXP."' AND `news_class` NOT REGEXP '".e_NOBODY_REGEXP."'"
+					." AND `news_start` < ".$now." AND (`news_end` = 0 OR `news_end` > ".$now.")"
+					." AND `news_allow_comments` = 0");
+
+			case 'download':
+				$classes = implode(',', array_map('intval', explode(',', USERCLASS_LIST)));
+				return e107::isInstalled('download') && (bool) $sql->gen("SELECT d.download_id FROM #download AS d
+					INNER JOIN #download_category AS dc ON d.download_category = dc.download_category_id
+					WHERE d.download_id = ".$id."
+					AND dc.download_category_class IN (".$classes.")
+					AND d.download_visible IN (".$classes.")
+					AND d.download_active > 0
+					AND d.download_comment > 0");
+
+			case 'poll':
+				return e107::isInstalled('poll')
+					&& (bool) $sql->select('polls', 'poll_id', "`poll_id` = ".$id." AND `poll_type` = 1");
+
+			case 'page':
+				if (!$sql->select('page', 'page_class, page_password', "`page_id` = ".$id." AND `page_comment_flag` > 0"))
+				{
+					return false;
+				}
+				$page = $sql->fetch();
+				return check_class($page['page_class']) && $this->pageUnlocked($id, $page['page_password']);
+
+			case 'user':
+			case 'profile':
+				$user = e107::getUser();
+				return !empty(e107::pref('core', 'profile_comments'))
+					&& ($user->getId() === $id || $user->checkClass(e107::pref('core', 'memberlist_access', 253)))
+					&& (bool) $sql->select('user', 'user_id', "`user_id` = ".$id);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether a page's password, if it has one, has been given, as page.php records it in a cookie.
+	 *
+	 * @param int    $id
+	 * @param string $password page_password
+	 * @return bool
+	 */
+	private function pageUnlocked($id, $password)
+	{
+		if (empty($password))
+		{
+			return true;
+		}
+
+		$cookie = e_COOKIE.'_page_'.$id;
+
+		return isset($_COOKIE[$cookie]) && is_string($_COOKIE[$cookie])
+			&& hash_equals(md5($password.e107::getUser()->getId()), $_COOKIE[$cookie]);
+	}
+
 	/**
 	 * Whether the item accepts comments; a comment type core models no switch for passes.
 	 *

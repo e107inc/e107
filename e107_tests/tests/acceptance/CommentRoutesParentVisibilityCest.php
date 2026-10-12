@@ -12,8 +12,24 @@ class CommentRoutesParentVisibilityCest
 
 	const STAFF_PASSWORD = 'Fixture-Staff-Pass-1';
 
+	/** A member outside the staff class. */
+	const READER_NAME = 'cmtroutereader';
+
+	const READER_PASSWORD = 'Fixture-Reader-Pass-1';
+
+	const PAGE_PASSWORD = 'fixture-secret';
+
 	/** @var int[] item id by fixture name */
 	private $items = array();
+
+	/** @var int[] comment id by fixture name */
+	private $comments = array();
+
+	/** @var string[] item title by fixture name */
+	private $titles = array();
+
+	/** @var string[] core preferences a test changed, by name, with the value to put back */
+	private $prefs = array();
 
 	public function _before(AcceptanceTester $I)
 	{
@@ -25,6 +41,9 @@ class CommentRoutesParentVisibilityCest
 		$this->haveNewsComment($I, 'CMTFUTURE', 'Fixture Future News', 0, time() + 86400, 0);
 		$this->haveNewsComment($I, 'CMTEXPIRED', 'Fixture Expired News', 0, 0, time() - 60);
 		$this->haveNewsComment($I, 'CMTNOBODY', 'Fixture Nobody News', '0,255', 0, 0);
+		$this->haveNewsComment($I, 'CMTSTAFF', 'Fixture Staff News', self::CLASS_STAFF, 0, 0);
+		$this->haveNewsComment($I, 'CMTNEWSOFF', 'Fixture Comments Off News', 0, 0, 0, 1);
+		$this->haveComment($I, 'CMTBLOCKED', 0, $this->items['CMTPUBLIC'], 1);
 
 		$open = $this->haveDownloadCategory($I, 'Fixture Open Category', 0);
 		$staff = $this->haveDownloadCategory($I, 'Fixture Staff Category', self::CLASS_STAFF);
@@ -38,14 +57,22 @@ class CommentRoutesParentVisibilityCest
 		$this->havePollComment($I, 'CMTFORUMPOLL', 'Fixture Forum Poll', 2);
 
 		$this->havePageComment($I, 'CMTPAGEPUBLIC', '', 1);
-		$this->havePageComment($I, 'CMTPAGEPASSWORD', 'fixture-secret', 1);
+		$this->havePageComment($I, 'CMTPAGEPASSWORD', self::PAGE_PASSWORD, 1);
 		$this->havePageComment($I, 'CMTPAGENOCOMMENTS', '', 0);
+		$this->havePageComment($I, 'CMTPAGESTAFF', '', 1, self::CLASS_STAFF);
+
+		$this->haveComment($I, 'CMTPLUGIN', 'fixtureplugin', 1);
 
 		$I->resetAllCookies();
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
+		foreach(array_reverse($this->prefs, true) as $name => $value)
+		{
+			$I->haveSitePref($name, $value === '' ? null : $value);
+		}
+
 		$I->haveSitePref('cachestatus', null);
 		$I->dropPluginProbe();
 	}
@@ -110,6 +137,12 @@ class CommentRoutesParentVisibilityCest
 		foreach(array('CMTDLINACTIVE', 'CMTDLNOCOMMENTS') as $marker)
 		{
 			$this->dontSeeCommentPage($I, 'download', $marker, 'Fixture Download '.$marker);
+		}
+
+		foreach(array('CMTSTAFF' => 'news', 'CMTPAGESTAFF' => 'page', 'CMTDLVISIBLE' => 'download', 'CMTDLCATEGORY' => 'download') as $marker => $table)
+		{
+			$this->amOnReplyPage($I, $table, $marker);
+			$I->seeInSource($marker);
 		}
 	}
 
@@ -177,6 +210,251 @@ class CommentRoutesParentVisibilityCest
 	}
 
 	/**
+	 * comment.php?reply.<table>.<comment id>.<item id> prints the item's title, or the comment's subject, only where the item's own page shows its comments.
+	 */
+	public function theReplyPageRefusesWhatTheItemPageRefuses(AcceptanceTester $I)
+	{
+		$I->stopFollowingRedirects();
+
+		foreach($this->refusedToEveryone() as $marker => $table)
+		{
+			$this->amOnReplyPage($I, $table, $marker);
+			$I->dontSeeInSource($marker);
+
+			$this->amOnReplyPage($I, $table, $marker, false);
+			$I->dontSeeInSource($this->titles[$marker]);
+		}
+
+		$this->amOnReplyPage($I, 'news', 'CMTBLOCKED');
+		$I->dontSeeInSource('CMTBLOCKED');
+
+		$I->amOnPage('/comment.php?reply.news.'.$this->comments['CMTSTAFF'].'.'.$this->items['CMTPUBLIC']);
+		$I->dontSeeInSource('CMTSTAFF');
+
+		$this->haveComment($I, 'CMTOTHERTYPE', 'page', $this->items['CMTPUBLIC']);
+		$I->amOnPage('/comment.php?reply.news.'.$this->comments['CMTOTHERTYPE'].'.'.$this->items['CMTPUBLIC']);
+		$I->dontSeeInSource('CMTOTHERTYPE');
+
+		foreach($this->readByEveryone() as $marker => $table)
+		{
+			$this->amOnReplyPage($I, $table, $marker);
+			$I->seeInSource($marker);
+		}
+
+		$this->amOnReplyPage($I, 'poll', 'CMTPOLL', false);
+		$I->seeInSource('Fixture Site Poll');
+	}
+
+	/**
+	 * The reply form comment.php serves over AJAX carries the comment's subject only where the item's own page shows the comment.
+	 */
+	public function theAjaxReplyFormRefusesWhatTheItemPageRefuses(AcceptanceTester $I)
+	{
+		$token = $this->loginAsReader($I);
+
+		foreach(array_keys($this->refusedToEveryone()) as $marker)
+		{
+			$this->askAjaxReplyForm($I, $marker, $token);
+			$I->dontSeeInSource($marker);
+		}
+
+		foreach(array('CMTBLOCKED', 'CMTPLUGIN') as $marker)
+		{
+			$this->askAjaxReplyForm($I, $marker, $token);
+			$I->dontSeeInSource($marker);
+		}
+
+		foreach(array_keys($this->readByEveryone()) as $marker)
+		{
+			$this->askAjaxReplyForm($I, $marker, $token);
+			$I->seeInSource($marker);
+		}
+	}
+
+	/**
+	 * A password-protected page's comments are replied to once the visitor has given the page its password, and not before.
+	 */
+	public function aLockedPageIsRepliedToOnceItsPasswordIsGiven(AcceptanceTester $I)
+	{
+		$I->stopFollowingRedirects();
+		$this->amOnReplyPage($I, 'page', 'CMTPAGEPASSWORD');
+		$I->dontSeeInSource('CMTPAGEPASSWORD');
+
+		$this->unlockPage($I, 'CMTPAGEPASSWORD');
+
+		$this->amOnReplyPage($I, 'page', 'CMTPAGEPASSWORD');
+		$I->seeInSource('CMTPAGEPASSWORD');
+	}
+
+	/**
+	 * A comment on a member's profile is replied to only by a visitor the profile page shows it to, and only while profile comments are on.
+	 */
+	public function profileCommentsAreRepliedToWhereTheProfileIsRead(AcceptanceTester $I)
+	{
+		$owner = $I->haveMember('cmtrouteowner', self::READER_PASSWORD);
+		$this->haveComment($I, 'CMTPROFILE', 'profile', $owner);
+		$this->haveComment($I, 'CMTNOPROFILE', 'profile', $owner + 1000);
+		$this->haveSitePref($I, 'profile_comments', 1);
+
+		$I->stopFollowingRedirects();
+		$this->amOnReplyPage($I, 'profile', 'CMTPROFILE');
+		$I->dontSeeInSource('CMTPROFILE');
+
+		$token = $this->loginAsReader($I);
+		$this->haveComment($I, 'CMTOWNPROFILE', 'profile', $this->items[self::READER_NAME]);
+
+		$this->askAjaxReplyForm($I, 'CMTPROFILE', $token);
+		$I->seeInSource('CMTPROFILE');
+		$this->askAjaxReplyForm($I, 'CMTNOPROFILE', $token);
+		$I->dontSeeInSource('CMTNOPROFILE');
+
+		$this->haveSitePref($I, 'memberlist_access', 254);
+		$this->askAjaxReplyForm($I, 'CMTPROFILE', $token);
+		$I->dontSeeInSource('CMTPROFILE');
+		$this->askAjaxReplyForm($I, 'CMTOWNPROFILE', $token);
+		$I->seeInSource('CMTOWNPROFILE');
+
+		$this->haveSitePref($I, 'profile_comments', 0);
+		$this->askAjaxReplyForm($I, 'CMTOWNPROFILE', $token);
+		$I->dontSeeInSource('CMTOWNPROFILE');
+	}
+
+	/**
+	 * A download or a poll is not read while its plugin is not installed, as its own page then serves nothing.
+	 */
+	public function anItemIsNotReadWhileItsPluginIsNotInstalled(AcceptanceTester $I)
+	{
+		$token = $this->loginAsReader($I);
+
+		foreach(array('download' => 'CMTDLPUBLIC', 'poll' => 'CMTPOLL') as $plugin => $marker)
+		{
+			$this->askAjaxReplyForm($I, $marker, $token);
+			$I->seeInSource($marker);
+
+			$this->haveSitePref($I, 'plug_installed/'.$plugin, null);
+
+			$this->askAjaxReplyForm($I, $marker, $token);
+			$I->dontSeeInSource($marker);
+		}
+	}
+
+	/**
+	 * Items each refused to a guest and to a signed-in member outside the staff class, by the condition named in the marker.
+	 *
+	 * @return string[] comment.php's table segment by marker
+	 */
+	private function refusedToEveryone()
+	{
+		return array(
+			'CMTSTAFF'          => 'news',
+			'CMTFUTURE'         => 'news',
+			'CMTEXPIRED'        => 'news',
+			'CMTNOBODY'         => 'news',
+			'CMTNEWSOFF'        => 'news',
+			'CMTDLVISIBLE'      => 'download',
+			'CMTDLINACTIVE'     => 'download',
+			'CMTDLCATEGORY'     => 'download',
+			'CMTDLNOCOMMENTS'   => 'download',
+			'CMTFORUMPOLL'      => 'poll',
+			'CMTPAGESTAFF'      => 'page',
+			'CMTPAGEPASSWORD'   => 'page',
+			'CMTPAGENOCOMMENTS' => 'page',
+		);
+	}
+
+	/**
+	 * @return string[] comment.php's table segment by marker
+	 */
+	private function readByEveryone()
+	{
+		return array(
+			'CMTPUBLIC'     => 'news',
+			'CMTDLPUBLIC'   => 'download',
+			'CMTPOLL'       => 'poll',
+			'CMTPAGEPUBLIC' => 'page',
+		);
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $table comment.php's table segment
+	 * @param string $marker
+	 * @param bool $withComment false asks with no comment, so the page looks the item's title up instead
+	 * @return void
+	 */
+	private function amOnReplyPage(AcceptanceTester $I, $table, $marker, $withComment = true)
+	{
+		$I->amOnPage('/comment.php?reply.'.$table.'.'.($withComment ? $this->comments[$marker] : 0).'.'.$this->items[$marker]);
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $marker the comment being replied to
+	 * @param string $token
+	 * @return void
+	 */
+	private function askAjaxReplyForm(AcceptanceTester $I, $marker, $token)
+	{
+		$I->sendAjaxPostRequest('/comment.php?ajax_used=1&mode=reply', array(
+			'itemid'  => $this->comments[$marker],
+			'e-token' => $token,
+		));
+	}
+
+	/**
+	 * Sign in as a member outside the staff class.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return string the session's e-token, which the AJAX routes are posted with
+	 */
+	private function loginAsReader(AcceptanceTester $I)
+	{
+		$this->items[self::READER_NAME] = $I->haveMember(self::READER_NAME, self::READER_PASSWORD);
+		$I->loginAsMember(self::READER_NAME, self::READER_PASSWORD);
+
+		return $I->grabForumToken('/comment.php?comment.news.'.$this->items['CMTPUBLIC']);
+	}
+
+	/**
+	 * Give a password-protected page its password, as its own form does.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $marker
+	 * @return void
+	 */
+	private function unlockPage(AcceptanceTester $I, $marker)
+	{
+		$page = '/page.php?id='.$this->items[$marker];
+
+		$I->sendPostRequest($page, array(
+			'page_pw'        => self::PAGE_PASSWORD,
+			'submit_page_pw' => 'Submit',
+			'e-token'        => $I->grabForumToken($page),
+		));
+
+		$this->amOnCustomPage($I, $marker);
+		$I->seeInSource('Text of '.$marker);
+	}
+
+	/**
+	 * Write a core preference for this test alone; _after() puts the first value back.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $name
+	 * @param string|int|null $value null removes it
+	 * @return void
+	 */
+	private function haveSitePref(AcceptanceTester $I, $name, $value)
+	{
+		$was = $I->haveSitePref($name, $value);
+
+		if(!array_key_exists($name, $this->prefs))
+		{
+			$this->prefs[$name] = $was;
+		}
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @return void
 	 */
@@ -199,19 +477,21 @@ class CommentRoutesParentVisibilityCest
 	 * @param string $marker
 	 * @param string $password page_password, empty when the page is not locked
 	 * @param int $comments page_comment_flag
+	 * @param int $class page_class
 	 * @return void
 	 */
-	private function havePageComment(AcceptanceTester $I, $marker, $password, $comments)
+	private function havePageComment(AcceptanceTester $I, $marker, $password, $comments, $class = 0)
 	{
+		$this->titles[$marker] = 'Fixture Page '.$marker;
 		$this->items[$marker] = $I->haveInDatabase('e107_page', array(
-			'page_title'        => 'Fixture Page '.$marker,
+			'page_title'        => $this->titles[$marker],
 			'page_sef'          => strtolower($marker),
 			'page_text'         => 'Body of '.$marker,
 			'page_author'       => 1,
 			'page_datestamp'    => time() - 3600,
 			'page_comment_flag' => $comments,
 			'page_password'     => $password,
-			'page_class'        => 0,
+			'page_class'        => $class,
 			'page_template'     => '',
 			'page_order'        => 1,
 		));
@@ -300,10 +580,12 @@ class CommentRoutesParentVisibilityCest
 	 * @param int|string $class news_class
 	 * @param int $start news_start
 	 * @param int $end news_end
+	 * @param int $allowComments news_allow_comments, where 0 is comments on
 	 * @return void
 	 */
-	private function haveNewsComment(AcceptanceTester $I, $marker, $title, $class, $start, $end)
+	private function haveNewsComment(AcceptanceTester $I, $marker, $title, $class, $start, $end, $allowComments = 0)
 	{
+		$this->titles[$marker] = $title;
 		$this->items[$marker] = $I->haveInDatabase('e107_news', array(
 			'news_title'            => $title,
 			'news_sef'              => strtolower($marker),
@@ -314,7 +596,7 @@ class CommentRoutesParentVisibilityCest
 			'news_datestamp'        => time() - 3600,
 			'news_author'           => 1,
 			'news_category'         => 1,
-			'news_allow_comments'   => 0,
+			'news_allow_comments'   => $allowComments,
 			'news_start'            => $start,
 			'news_end'              => $end,
 			'news_class'            => $class,
@@ -358,8 +640,9 @@ class CommentRoutesParentVisibilityCest
 	 */
 	private function haveDownloadComment(AcceptanceTester $I, $marker, $category, $visible, $active, $comments)
 	{
+		$this->titles[$marker] = 'Fixture Download '.$marker;
 		$this->items[$marker] = $I->haveInDatabase('e107_download', array(
-			'download_name'           => 'Fixture Download '.$marker,
+			'download_name'           => $this->titles[$marker],
 			'download_url'            => 'fixture.txt',
 			'download_sef'            => strtolower($marker),
 			'download_author'         => 'fixture',
@@ -393,6 +676,7 @@ class CommentRoutesParentVisibilityCest
 	 */
 	private function havePollComment(AcceptanceTester $I, $marker, $title, $type)
 	{
+		$this->titles[$marker] = $title;
 		$this->items[$marker] = $I->haveInDatabase('e107_polls', array(
 			'poll_datestamp'       => time() - 3600,
 			'poll_start_datestamp' => time() - 3600,
@@ -417,18 +701,25 @@ class CommentRoutesParentVisibilityCest
 	 * @param AcceptanceTester $I
 	 * @param string $marker the string a leak would carry, in the comment and its subject
 	 * @param string|int $type comment_type
+	 * @param int|null $itemId the item it is left on, when no fixture of the same name is that item
+	 * @param int $blocked comment_blocked
 	 * @return void
 	 */
-	private function haveComment(AcceptanceTester $I, $marker, $type)
+	private function haveComment(AcceptanceTester $I, $marker, $type, $itemId = null, $blocked = 0)
 	{
-		$I->haveInDatabase('e107_comments', array(
+		if($itemId !== null)
+		{
+			$this->items[$marker] = $itemId;
+		}
+
+		$this->comments[$marker] = $I->haveInDatabase('e107_comments', array(
 			'comment_item_id'     => $this->items[$marker],
 			'comment_subject'     => $marker,
 			'comment_author_id'   => 1,
 			'comment_author_name' => 'fixture',
 			'comment_datestamp'   => time() - 3600,
 			'comment_comment'     => 'Text of '.$marker,
-			'comment_blocked'     => 0,
+			'comment_blocked'     => $blocked,
 			'comment_ip'          => '127.0.0.1',
 			'comment_type'        => $type,
 			'comment_lock'        => 0,

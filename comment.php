@@ -290,9 +290,16 @@ if ($action == "reply")
 		exit;
 	}
 	
+	if (!$cobj->canReadComments($table, $nid))
+	{
+		e107::redirect();
+		exit;
+	}
+
 	$query = "`comment_id` = '{$id}' LIMIT 0,1";
 	
-	if ($sql->select("comments", "comment_subject", "`comment_id` = '{$id}'"))
+	if ($sql->select("comments", "comment_subject", "`comment_id` = :id AND `comment_type` = :type AND `comment_item_id` = :item AND `comment_blocked` = 0",
+		array('id' => $id, 'type' => (string) $cobj->getCommentType($table), 'item' => $nid)))
 	{
 		$comments = $sql->fetch();
 		$subject = $comments['comment_subject'];
