@@ -1429,9 +1429,9 @@ class forum_post_handler
 		$threadId = intval($_GET['id']);
 		$toForum = intval($posted['forum_move']);
 
-		if(!$this->moderatesBothEnds($threadId, $toForum))
+		if(!$this->maySendPosts($threadId, $toForum))
 		{
-			e107::getDebug()->log("Move Thread attempted without moderator rights over both ends");
+			e107::getDebug()->log("Move Thread attempted into a category or without moderator rights over both ends");
 
 			return false;
 		}
@@ -1463,9 +1463,9 @@ class forum_post_handler
 
 		$toForum = (!empty($post['forum_split'])) ? intval($post['forum_split']) : (int) $this->data['forum_id'];
 
-		if(!$this->moderatesBothEnds($this->data['post_thread'], $toForum))
+		if(!$this->maySendPosts($this->data['post_thread'], $toForum))
 		{
-			e107::getDebug()->log("Split Thread attempted without moderator rights over both ends");
+			e107::getDebug()->log("Split Thread attempted into a category or without moderator rights over both ends");
 
 			return false;
 		}
@@ -1545,15 +1545,28 @@ class forum_post_handler
 
 
 	/**
-	 * Whether the caller moderates both the forum a thread is in and the forum its posts are being sent to.
+	 * Whether a thread's posts may go to $toForum: a forum rather than a category, moderated by the caller as the thread's own is.
 	 *
 	 * @param int $threadId
 	 * @param int $toForum
 	 * @return bool
 	 */
-	private function moderatesBothEnds($threadId, $toForum)
+	private function maySendPosts($threadId, $toForum)
 	{
-		return $this->forumObj->canModerateThread($threadId) && $this->forumObj->canModerateForum($toForum);
+		return $this->holdsThreads($toForum) && $this->forumObj->canModerateThread($threadId) && $this->forumObj->canModerateForum($toForum);
+	}
+
+	/**
+	 * Whether a forum id names a forum, which holds threads, rather than a category, which holds forums.
+	 *
+	 * @param int $forumId
+	 * @return bool
+	 */
+	private function holdsThreads($forumId)
+	{
+		$forum = $this->forumObj->forumGet($forumId);
+
+		return !empty($forum['forum_parent']);
 	}
 
 	/**

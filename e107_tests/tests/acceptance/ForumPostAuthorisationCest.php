@@ -352,6 +352,97 @@ class ForumPostAuthorisationCest
 		$I->dontSeeInDatabase('e107_forum_post', array('post_entry' => 'A quick reply in a forum the member cannot view'));
 	}
 
+	public function aMemberCannotStartAThreadInACategory(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		$this->submit($I, '?f=nt&id='.$this->ids['category'], array('subject' => 'Started in a category', 'post' => 'A new thread', 'newthread' => 'Post thread'));
+
+		$I->dontSeeInDatabase('e107_forum_thread', array('thread_name' => 'Started in a category'));
+	}
+
+	public function aMemberIsOfferedANewThreadOnAForumPage(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		$I->amOnPage('/e107_plugins/forum/forum_viewforum.php?id='.$this->ids['forumA']);
+
+		$I->seeElement($this->newThreadLink($this->ids['forumA']));
+		$I->see('You can start new topics');
+	}
+
+	public function aMemberIsOfferedNoNewThreadOnACategorysForumPage(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		$I->amOnPage('/e107_plugins/forum/forum_viewforum.php?id='.$this->ids['category']);
+
+		$I->dontSeeElement($this->newThreadLink($this->ids['category']));
+		$I->see('You cannot start new topics');
+	}
+
+	public function aMemberIsOfferedNoNewThreadOnATopicPageOfAThreadStoredInACategory(AcceptanceTester $I)
+	{
+		$thread = $I->haveForumThread('Fixture Thread In A Category', $this->ids['category'], 1);
+		$I->haveForumPost('Opening post of a thread stored in a category', $thread, $this->ids['category'], 1);
+		$I->loginToForum('authmember');
+
+		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$thread);
+
+		$I->see('Opening post of a thread stored in a category');
+		$I->dontSeeElement($this->newThreadLink($this->ids['category']));
+	}
+
+	public function aMemberCannotStartAThreadInAContainer(AcceptanceTester $I)
+	{
+		$this->makeForumAContainer($I);
+		$I->loginToForum('authmember');
+
+		$this->submit($I, '?f=nt&id='.$this->ids['forumA'], array('subject' => 'Started in a container', 'post' => 'A new thread', 'newthread' => 'Post thread'));
+
+		$I->dontSeeInDatabase('e107_forum_thread', array('thread_name' => 'Started in a container'));
+	}
+
+	public function aMemberIsOfferedNoNewThreadOnATopicPageInAContainer(AcceptanceTester $I)
+	{
+		$this->makeForumAContainer($I);
+		$I->loginToForum('authmember');
+
+		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
+
+		$I->see('A reply in thread A');
+		$I->dontSeeElement($this->newThreadLink($this->ids['forumA']));
+	}
+
+	public function aModeratorMovesAThreadIntoAnotherForumTheyModerate(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmoda');
+
+		$this->submit($I, '?f=move&id='.$this->ids['threadA'], array('move_thread' => 1, 'forum_move' => $this->forumA2, 'rename_thread' => 'none'));
+
+		$I->seeInDatabase('e107_forum_thread', array('thread_id' => $this->ids['threadA'], 'thread_forum_id' => $this->forumA2));
+	}
+
+	public function aModeratorOfACategoryCannotSplitPostsIntoIt(AcceptanceTester $I)
+	{
+		$I->updateInDatabase('e107_forum', array('forum_moderators' => \Helper\ForumFixture::CLASS_MOD_A), array('forum_id' => $this->ids['category']));
+		$I->loginToForum('authmoda');
+
+		$this->split($I, $this->ids['category'], 'Split into a category');
+
+		$I->dontSeeInDatabase('e107_forum_thread', array('thread_name' => 'Split into a category'));
+	}
+
+	public function aModeratorOfACategoryCannotMoveAThreadIntoIt(AcceptanceTester $I)
+	{
+		$I->updateInDatabase('e107_forum', array('forum_moderators' => \Helper\ForumFixture::CLASS_MOD_A), array('forum_id' => $this->ids['category']));
+		$I->loginToForum('authmoda');
+
+		$this->submit($I, '?f=move&id='.$this->ids['threadA'], array('move_thread' => 1, 'forum_move' => $this->ids['category'], 'rename_thread' => 'none'));
+
+		$I->seeInDatabase('e107_forum_thread', array('thread_id' => $this->ids['threadA'], 'thread_forum_id' => $this->ids['forumA']));
+	}
+
 	/**
 	 * Split thread A from its reply onwards into $toForum, as the signed-in member.
 	 *
@@ -377,6 +468,16 @@ class ForumPostAuthorisationCest
 	private function newThreadLink($forumId)
 	{
 		return 'a[href$="?f=nt&id='.(int) $forumId.'"]';
+	}
+
+	/**
+	 * Name forum A with the leading '*' that makes a forum a container, whose page lists its sub-forums and no threads.
+	 *
+	 * @param AcceptanceTester $I
+	 */
+	private function makeForumAContainer(AcceptanceTester $I)
+	{
+		$I->updateInDatabase('e107_forum', array('forum_name' => '*Fixture Forum A'), array('forum_id' => $this->ids['forumA']));
 	}
 
 	/**
