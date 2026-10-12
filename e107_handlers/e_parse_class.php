@@ -868,7 +868,7 @@ class e_parse
 		if (is_string($text) && e107::wysiwyg() !== true)
 		{
 			// fix for utf-8 issue with html_entity_decode(); ???
-			$text = urldecode($text);
+			$text = urldecode(str_ireplace(array('%3C', '%3E', '%27'), array('&lt;', '&gt;', '&#039;'), $text));
 			//	$text = str_replace("&nbsp;", " ", $text);
 		}
 
