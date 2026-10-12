@@ -4709,6 +4709,14 @@ class e_admin_controller_ui extends e_admin_controller
 			return array();
 		}
 		$filter = (array) $tp->toDB(explode('__', $filter_value));
+
+		$fields = $this->getFields();
+		$searched = ($this->getRequest()->canonicalizeAction($filter[0]) === 'searchfield') ? varset($filter[1]) : null;
+		if(isset($fields[$searched]) && $this->_refusesSearch($fields[$searched]))
+		{
+			return array();
+		}
+
 		$res = array();
 		switch($filter[0])
 		{
@@ -4948,7 +4956,7 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
-	 * Build ajax auto-complete filter response
+	 * Build ajax auto-complete filter response from the columns the list search reads, taking the term as text.
 	 * @return string response markup
 	 */
 	protected function renderAjaxFilterResponse($listQry = '')
@@ -4957,8 +4965,13 @@ class e_admin_controller_ui extends e_admin_controller
 		$srch = $this->getPosted('searchquery');
 		$this->getRequest()->setQuery('searchquery', $srch); //_modifyListQry() is requiring GET String
 
+		$escape = function ($text)
+		{
+			return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false);
+		};
+
 		$ret = '<ul>';
-		$ret .= '<li>'.$srch.'<span class="informal warning"> '.LAN_FILTER_LABEL_TYPED.'</span></li>'; // fix Enter - search for typed word only
+		$ret .= '<li>'.$escape($srch).'<span class="informal warning"> '.LAN_FILTER_LABEL_TYPED.'</span></li>'; // fix Enter - search for typed word only
 
 		$reswords = array();
 		if(trim($srch) !== '')
@@ -4967,6 +4980,16 @@ class e_admin_controller_ui extends e_admin_controller
 			$qry = $this->_modifyListQry(false, true, 0, 20, $listQry);
 			$this->_log('Filter ListQry: ' .$qry);
 			//file_put_contents(e_LOG.'uiAjaxResponseSQL.log', $qry."\n\n", FILE_APPEND);
+
+			$term = str_replace(array('\\*', '\\?'), array('\\S*', '\\S'), preg_quote($srch, '#'));
+			$searched = array();
+			foreach($this->getFields() as $key => $field)
+			{
+				if($this->_isSearchField($field, $srch))
+				{
+					$searched[$key] = true;
+				}
+			}
 
 			// Make query. $qry is a fully-assembled list query from _modifyListQry()
 			// (the request search term is escaped via toDB() upstream); this is an
@@ -4978,7 +5001,7 @@ class e_admin_controller_ui extends e_admin_controller
 				while ($res = $sql->fetch())
 				{
 					$tmp1 = array();
-					$tmp = array_values(preg_grep('#'.$srch.'#i', $res));
+					$tmp = array_values(preg_grep('#'.$term.'#i', array_intersect_key($res, $searched)));
 					foreach ($tmp as $w)
 					{
 						if($w == $srch)
@@ -4986,7 +5009,7 @@ class e_admin_controller_ui extends e_admin_controller
 							array_unshift($reswords, $w); //exact match
 							continue;
 						}
-						preg_match('#[\S]*('.$srch.')[\S]*#i', $w, $tmp1);
+						preg_match('#[\S]*('.$term.')[\S]*#i', $w, $tmp1);
 						if($tmp1[0])
 						{
 							$reswords[] = $tmp1[0];
@@ -4999,7 +5022,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$reswords = array_unique($reswords);
 			if($reswords)
 			{
-				$ret .= '<li>'.implode("</li>\n\t<li>", $reswords).'</li>';
+				$ret .= '<li>'.implode("</li>\n\t<li>", array_map($escape, $reswords)).'</li>';
 			}
 		}
 
@@ -5305,6 +5328,13 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 
 		$request    = $this->getRequest();
+
+		$fields = $this->getFields();
+		$sortField = $request->getQuery('field');
+		if(isset($fields[$sortField]) && $this->_refusesSearch($fields[$sortField]))
+		{
+			$request->setQuery('field', null);
+		}
 
 
 		$tablePath  = $this->getIfTableAlias(true, true).'.';
@@ -5843,7 +5873,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 			list($filterField, $filterValue) = $searchFilter;
 
-			if($filterField && $filterValue !== '' && isset($fields[$filterField]))
+			if($filterField && $filterValue !== '' && isset($fields[$filterField]) && !$this->_refusesSearch($fields[$filterField]))
 			{
 				if(!empty($fields[$filterField]['data']))
 				{
@@ -5962,8 +5992,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$tableSFieldsArr[] = $tablePath . '*';
 		foreach($fields as $key => $var)
 		{
-			// disabled or system
-			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']) || empty($var['data']))
+			if(!$this->_isListColumn($var))
 			{
 				continue;
 			}
@@ -6041,14 +6070,18 @@ class e_admin_controller_ui extends e_admin_controller
 							$multiWordSearch = [];
 							foreach($fields as $key => $var)
 							{
-								if(!$this->_isSearchField($var, $splitSearchQuery) || $var['data'] === 'int' || $var['data'] === 'integer' || $var['type'] === 'int' || $var['type'] === 'integer')
+								if(!$this->_isSearchableType($var, $splitSearchQuery) || in_array(varset($var['data']), array('int', 'integer'), true) || $var['type'] === 'int' || $var['type'] === 'integer')
 								{
 									continue;
 								}
 
 								$multiWordSearch[] = $var['__tableField'] . " LIKE '%" . $splitSearchQuery . "%'";
 							}
-							$searchQry[] = '('.implode(' OR ', $multiWordSearch).')';
+
+							if($multiWordSearch)
+							{
+								$searchQry[] = '('.implode(' OR ', $multiWordSearch).')';
+							}
 						}
 					}
 
@@ -6285,22 +6318,60 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
-	 * Checks whether the field array should be searched oor not.
-	 * @param array $var
+	 * Whether the list search matches the term against a field: a list column of a searchable type that does not refuse search.
+	 * @param array $field
 	 * @param string $searchQuery
 	 * @return bool
 	 */
 	private function _isSearchField($field, $searchQuery)
 	{
+		return $this->_isListColumn($field) && $this->_isSearchableType($field, $searchQuery);
+	}
+
+	/**
+	 * Whether a term can be matched against a field by its type, which a field refusing search never can.
+	 * @param array $field
+	 * @param string $searchQuery
+	 * @return bool
+	 */
+	private function _isSearchableType($field, $searchQuery)
+	{
+		if($this->_refusesSearch($field))
+		{
+			return false;
+		}
+
 		$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'safestr', 'string', 'number'); //method? 'user',
 
-		if($field['type'] === 'method' && !empty($field['data']) && ($field['data'] === 'string' || $field['data'] === 'str' || $field['data'] === 'safestr' || $field['data'] === 'int'))
+		$type = varset($field['type']);
+
+		if($type === 'method' && !empty($field['data']) && ($field['data'] === 'string' || $field['data'] === 'str' || $field['data'] === 'safestr' || $field['data'] === 'int'))
 		{
 			$searchable_types[] = 'method';
 		}
 
-		return !empty($field['__tableField']) && trim($searchQuery) !== '' && in_array($field['type'], $searchable_types);
+		return !empty($field['__tableField']) && trim($searchQuery) !== '' && in_array($type, $searchable_types);
 
+	}
+
+	/**
+	 * Whether a field is a column the list reads, rather than a disabled or system entry.
+	 * @param array $field
+	 * @return bool
+	 */
+	private function _isListColumn($field)
+	{
+		return (empty($field['nolist']) || !empty($field['filter'])) && !empty($field['type']) && !empty($field['data']);
+	}
+
+	/**
+	 * Whether a field declares 'search' => false, which keeps request text from ever being matched against it.
+	 * @param array $field
+	 * @return bool
+	 */
+	private function _refusesSearch($field)
+	{
+		return isset($field['search']) && $field['search'] === false;
 	}
 }
 
