@@ -349,9 +349,10 @@ class ForumFixture extends AppFixture
 	 * @param int $active 0 locks the thread
 	 * @param int|null $datestamp when the thread was started
 	 * @param int|null $lastpost when it was last posted in; defaults to $datestamp
+	 * @param int|null $id the thread's id, or null for the next one
 	 * @return int thread id
 	 */
-	public function haveForumThread($name, $forumId, $userId, $active = 1, $datestamp = null, $lastpost = null)
+	public function haveForumThread($name, $forumId, $userId, $active = 1, $datestamp = null, $lastpost = null, $id = null)
 	{
 		// Backdated, because e107's flood check compares the newest
 		// thread_datestamp against now (forum_post.php:1152). A fixture stamped
@@ -360,13 +361,20 @@ class ForumFixture extends AppFixture
 		$started = $datestamp === null ? time() - 3600 : (int) $datestamp;
 		$latest = $lastpost === null ? $started : (int) $lastpost;
 
-		return $this->db()->haveInDatabase('e107_forum_thread', array(
+		$row = array(
 			'thread_name' => $name, 'thread_forum_id' => $forumId,
 			'thread_active' => $active, 'thread_sticky' => 0,
 			'thread_datestamp' => $started, 'thread_lastpost' => $latest,
 			'thread_user' => $userId, 'thread_lastuser' => $userId,
 			'thread_total_replies' => 0, 'thread_views' => 0,
-		));
+		);
+
+		if ($id !== null)
+		{
+			$row['thread_id'] = (int) $id;
+		}
+
+		return $this->db()->haveInDatabase('e107_forum_thread', $row);
 	}
 
 	/**
@@ -376,9 +384,10 @@ class ForumFixture extends AppFixture
 	 * @param int $userId 0 makes it an anonymous post, which is what an
 	 *                    unauthenticated caller's USERID compares equal to
 	 * @param string|null $attachments serialised post_attachments
+	 * @param int|null $id the post's id, or null for the next one
 	 * @return int post id
 	 */
-	public function haveForumPost($entry, $threadId, $forumId, $userId, $attachments = null)
+	public function haveForumPost($entry, $threadId, $forumId, $userId, $attachments = null, $id = null)
 	{
 		$row = array(
 			'post_entry' => $entry, 'post_thread' => $threadId, 'post_forum' => $forumId,
@@ -394,6 +403,11 @@ class ForumFixture extends AppFixture
 		if ($attachments !== null)
 		{
 			$row['post_attachments'] = $attachments;
+		}
+
+		if ($id !== null)
+		{
+			$row['post_id'] = (int) $id;
 		}
 
 		return $this->db()->haveInDatabase('e107_forum_post', $row);
