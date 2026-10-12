@@ -140,9 +140,9 @@ class comments_admin_ui extends e_admin_ui
 
 		public function afterUpdate($new_data, $old_data, $id)
 		{
-			if(($new_data['comment_type'] == 0 || $new_data['comment_type'] == 'news' ))
+			if(in_array((string) $new_data['comment_type'], array('0', 'news'), true))
 			{
-				$total = e107::getDb()->select('comments', 'comment_id', "(comment_type = 0 OR comment_type = 'news') AND comment_item_id = ".$new_data['comment_item_id']." AND comment_blocked = 0");
+				$total = e107::getDb()->select('comments', 'comment_id', "(comment_type = '0' OR comment_type = 'news') AND comment_item_id = ".$new_data['comment_item_id']." AND comment_blocked = 0");
 				e107::getDb()->update("news", "news_comment_total= ".intval($total)." WHERE news_id=".intval($new_data['comment_item_id']));
 				// e107::getMessage()->addInfo("Total Comments for this item: ".$total);
 			}
