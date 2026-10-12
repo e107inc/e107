@@ -3474,7 +3474,8 @@ class users_admin_form_ui extends e_admin_form_ui
 		protected $table			= 'generic';
 		protected $pid				= 'gen_id';
 		protected $perPage 			= 15;
-		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='user_rank_data' ";
+		protected $listQry			= "SELECT * FROM `#generic`";
+		protected $listScope		= array('gen_type' => 'user_rank_data');
 		protected $listOrder     = " CASE gen_datestamp WHEN 1 THEN 1 WHEN 2 THEN 2 WHEN 3 THEN 3  WHEN 0 THEN 4 END, gen_intdata ";
 
 		protected $fields 		= array (

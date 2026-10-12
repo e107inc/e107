@@ -46,7 +46,7 @@
             "file": "e107_handlers/admin_ui.php",
             "method": "execute",
             "sql_excerpt": "{$qry}",
-            "count": 2
+            "count": 1
         },
         {
             "file": "e107_handlers/admin_ui.php",

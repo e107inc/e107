@@ -2687,7 +2687,8 @@ class download_broken_ui extends e_admin_ui
 	protected $table			= 'generic';
 	protected $pid				= 'gen_id';
 	protected $perPage 			= 10;
-	protected $listQry			= "SELECT g.*,u.user_name FROM `#generic` AS g LEFT JOIN `#user` AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='Broken Download'";
+	protected $listQry			= "SELECT g.*,u.user_name FROM `#generic` AS g LEFT JOIN `#user` AS u ON g.gen_user_id = u.user_id";
+	protected $listScope		= array('gen_type' => 'Broken Download');
 	protected $listOrder		= 'gen_datestamp ASC';
 
 	protected $fields 		= array (  

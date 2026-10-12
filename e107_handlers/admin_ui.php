@@ -3200,6 +3200,9 @@ class e_admin_controller_ui extends e_admin_controller
 	/** @var string  */
 	protected $listQry;
 
+	/** @var string|array SQL condition every row of this list meets, which the list, the edit form, the inline editor and the sort all select by, or column => value (a list of values for IN), which also pins those columns */
+	protected $listScope = '';
+
 	protected $pid;
 
 	protected $fields = array();
@@ -4325,7 +4328,8 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * Whether a posted batch trigger may address the named field: it must carry the 'batch' flag
 	 * {@see e_admin_form_ui::renderBatchFilter()} builds the menu from, and must not be declared
-	 * 'data' => false, the declaration {@see e_admin_ui::_setModel()} keeps out of dataFields.
+	 * 'data' => false, the declaration {@see e_admin_ui::_setModel()} keeps out of dataFields,
+	 * nor be a column {@see e_admin_controller_ui::$listScope} pins.
 	 * An omitted or null 'data' is the common case on a real column and stays permitted.
 	 *
 	 * @param string $field field segment of the posted batch trigger
@@ -4334,7 +4338,8 @@ class e_admin_controller_ui extends e_admin_controller
 	protected function isBatchField($field)
 	{
 		if(!is_string($field) || !$this->getFieldAttr($field, 'batch', false)
-			|| $this->getFieldAttr($field, 'data', null) === false)
+			|| $this->getFieldAttr($field, 'data', null) === false
+			|| array_key_exists($field, $this->pinnedColumns()))
 		{
 			e107::getMessage()->addDebug('Unhandled batch field: ' .var_export($field, true));
 
@@ -5701,7 +5706,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 	/**
-	 * Hold a submit to what its route writes: the create route inserts, and the edit and inline routes update the row they loaded.
+	 * Hold a submit to what its route writes: the create route inserts with the values the list's scope pins, and the edit and inline routes update the row they loaded and keep what it pins.
 	 *
 	 * @param e_admin_model $model
 	 * @param array $posted
@@ -5713,6 +5718,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if($action === 'create')
 		{
+			$posted = array_merge($posted, array_filter($this->pinnedColumns(), 'is_scalar'));
 			$posted['etrigger_submit'] = 'create';
 
 			return true;
@@ -5730,10 +5736,59 @@ class e_admin_controller_ui extends e_admin_controller
 			return false;
 		}
 
+		$posted = array_merge($posted, array_intersect_key($model->getData(), $this->pinnedColumns()));
 		$posted[$this->getPrimaryName()] = $model->getId();
 		$posted['etrigger_submit'] = 'update';
 
 		return true;
+	}
+
+	/**
+	 * The columns the column => value form of {@see e_admin_controller_ui::$listScope} pins, each with the value it declares.
+	 *
+	 * @return array
+	 */
+	protected function pinnedColumns()
+	{
+		return is_array($this->listScope) ? $this->listScope : array();
+	}
+
+	/**
+	 * The SQL condition {@see e_admin_controller_ui::$listScope} declares, '' for none.
+	 *
+	 * @return string
+	 * @throws LogicException when the column => value form names something that is not a column
+	 */
+	protected function listScopeCondition()
+	{
+		if(!is_array($this->listScope))
+		{
+			return (string) $this->listScope;
+		}
+
+		$sql = e107::getDb();
+		$conditions = array();
+
+		foreach($this->listScope as $column => $value)
+		{
+			$quoted = $sql->quoteIdentifier($column);
+
+			if($quoted === false)
+			{
+				throw new LogicException(get_class($this).' declares $listScope on '.var_export($column, true).', which is not a column name.');
+			}
+
+			$literals = array();
+
+			foreach((array) $value as $one)
+			{
+				$literals[] = is_int($one) ? (string) $one : $sql->quoteStringLiteral((string) $one);
+			}
+
+			$conditions[] = $quoted.(is_array($value) ? ' IN ('.implode(', ', $literals).')' : ' = '.$literals[0]);
+		}
+
+		return implode(' AND ', $conditions);
 	}
 
 	/**
@@ -6250,13 +6305,24 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 
+		$conditions = $searchQry;
+		$scope = $this->listScopeCondition();
+
+		if($scope !== '')
+		{
+			array_unshift($conditions, '('.$scope.')');
+		}
+
 		// where query
-		if(count($searchQry) > 0)
+		if(count($conditions) > 0)
 		{
 			// add more where details on the fly via $this->listQrySql['db_where'];
 			$qry .= (strripos($qry, 'where') === false) ? ' WHERE ' : ' AND '; // Allow 'where' in custom listqry
-			$qry .= implode(' AND ', $searchQry);
+			$qry .= implode(' AND ', $conditions);
+		}
 
+		if(count($searchQry) > 0)
+		{
 			// Disable tree (use flat list instead) when filters are applied
 			// Implemented out of necessity under https://github.com/e107inc/e107/issues/3204
 			// Horrible hack, but only needs this one line of additional code
@@ -6395,6 +6461,12 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $sortParent;
 	protected $orderStep;
 	protected $treePrefix;
+
+	/**
+	 * The load condition {@see e_admin_ui::getModel()} last put on the edit model, '' for none.
+	 * @var string
+	 */
+	private $modelScope = '';
 
 
 	/**
@@ -7553,14 +7625,15 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 
 		$mayWrite = $this->hasModeRouteAccess('edit');
+		$noedit = !empty($this->fields[$_name]['noedit']) || array_key_exists($_name, $this->pinnedColumns());
 
-		if(!$mayWrite || !empty($this->fields[$_name]['noedit']) || !empty($this->fields[$_name]['nolist']) || empty($this->fields[$_name]['inline']) || empty($_token) || !password_verify(session_id(),$_token))
+		if(!$mayWrite || $noedit || !empty($this->fields[$_name]['nolist']) || empty($this->fields[$_name]['inline']) || empty($_token) || !password_verify(session_id(),$_token))
 		{
 			$result = var_export($this->fields[$_name], true);
 
 			$problem = array();
 			$problem['route'] = $mayWrite ? 'no' : 'yes';
-			$problem['noedit'] = !empty($this->fields[$_name]['noedit']) ? 'yes' : 'no';
+			$problem['noedit'] = $noedit ? 'yes' : 'no';
 			$problem['nolist'] = !empty($this->fields[$_name]['nolist']) ? 'yes' : 'no';
 			$problem['inline'] = empty($this->fields[$_name]['inline']) ? 'yes' : 'no';
 			$problem['token'] = empty($_token) ? 'yes' : 'no';
@@ -7678,10 +7751,9 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		else // Reset all the order fields first.
 		{
-			$sql->createQueryBuilder()->update($this->table)
-				->set($this->sortField, 999)
-				->execute();
-			$this->_log('Sort Qry ('.$this->table.'): '.$this->sortField.' = 999 WHERE 1');
+			$reset = $this->scopedUpdate()->set($this->sortField, 999);
+			$reset->execute();
+			$this->_log('Sort Qry: '.$reset->getSQL());
 		}
 
 
@@ -7697,7 +7769,7 @@ class e_admin_ui extends e_admin_controller_ui
 			list($tmp,$id) = explode('-', $row, 2);
 			$id = preg_replace('/[^\w\-:.]/', '', $id);
 
-			if($sql->createQueryBuilder()->update($this->table)
+			if($this->scopedUpdate()
 				->set($this->sortField, $c)
 				->where($this->pid, $id)
 				->execute() !== false)
@@ -7722,25 +7794,14 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$changed = $c - $step;
 
-		// User-variable derived-table UPDATE (vendor-specific @n counter) that the
-		// query builder cannot express; values are bound, the dynamic sort column
-		// identifier is validated fail-closed via quoteIdentifier().
-		$sortFieldId = $sql->quoteIdentifier($this->sortField);
-		if($sortFieldId === false)
-		{
-			$this->_log('Sort Qry: invalid sort field identifier: '.$this->sortField);
-			$result = false;
-		}
-		else
-		{
-			$qry = 'UPDATE `#' .$this->table. '` e, (SELECT @n := :n_init) m  SET e.' .$sortFieldId. ' = @n := @n + :step WHERE ' .$sortFieldId. ' > :threshold';
-			$result = $sql->execute($qry, array(
-				'n_init'    => (int) $changed,
-				'step'      => (int) $step,
-				'threshold' => (int) $changed,
-			));
-			$this->_log('Sort Qry: '.$qry);
-		}
+		$sql->execute('SET @n := :n_init', array('n_init' => (int) $changed));
+
+		$renumber = $this->scopedUpdate();
+		$result = $renumber
+			->setExpression($this->sortField, $renumber->raw('@n := @n + :step', array('step' => (int) $step)))
+			->where($this->sortField, '>', (int) $changed)
+			->execute();
+		$this->_log('Sort Qry: '.$renumber->getSQL());
 
 
 		// ------------ Fix Child Order when parent is used. ----------------
@@ -7791,6 +7852,19 @@ class e_admin_ui extends e_admin_controller_ui
 	//	e107::getLog()->addDebug($qry)->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
 
 
+	}
+
+	/**
+	 * An UPDATE of this list's table, held to the rows {@see e_admin_controller_ui::$listScope} selects.
+	 *
+	 * @return \e107\Database\QueryBuilder
+	 */
+	private function scopedUpdate()
+	{
+		$update = e107::getDb()->createQueryBuilder()->update($this->table);
+		$scope = $this->listScopeCondition();
+
+		return $scope === '' ? $update : $update->where($update->raw($scope));
 	}
 
 	/**
@@ -8354,6 +8428,53 @@ class e_admin_ui extends e_admin_controller_ui
 			->setParam('db_query', $this->editQry);
 
 		return $this;
+	}
+
+	/**
+	 * The edit model, under the list scope as it stands when the model is asked for rather than when it was built.
+	 *
+	 * @return e_admin_model
+	 */
+	public function getModel()
+	{
+		$model = parent::getModel();
+		$scope = $this->editScope();
+
+		if($scope !== '')
+		{
+			$model->setParam('db_where', $scope);
+		}
+		elseif($this->modelScope !== '' && $model->getParam('db_where') === $this->modelScope)
+		{
+			$model->setParam('db_where', null);
+		}
+
+		$this->modelScope = $scope;
+
+		return $model;
+	}
+
+	/**
+	 * The condition the edit form and the inline editor load a row under, which {@see e_admin_controller_ui::$listScope} sets.
+	 *
+	 * @return string
+	 * @throws LogicException when a list scope is declared beside an editQry, which the scope cannot be added to
+	 */
+	private function editScope()
+	{
+		$scope = $this->listScopeCondition();
+
+		if($scope === '')
+		{
+			return '';
+		}
+
+		if(!empty($this->editQry))
+		{
+			throw new LogicException(get_class($this).' declares both $listScope and $editQry; put the scope in $editQry and drop $listScope.');
+		}
+
+		return 'AND ('.$scope.')';
 	}
 
 	/**
