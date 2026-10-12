@@ -825,18 +825,12 @@ class cpage_shortcodes extends e_shortcode
 		}
 
 
-		if(!empty($this->chapterData[$chap]['chapter_fields']) && is_string($this->chapterData[$chap]['chapter_fields']))
+		if(empty($this->chapterData[$chap]['chapter_fields']))
 		{
-			$this->chapterData[$chap]['chapter_fields'] = e107::unserialize($this->chapterData[$chap]['chapter_fields']);
+			return null;
 		}
 
-
-		if(!empty($this->chapterData[$chap]['chapter_fields'][$key]['title']))
-		{
-			return $this->chapterData[$chap]['chapter_fields'][$key]['title'];
-		}
-
-		return null;
+		return e107::getCustomFields()->loadConfig($this->chapterData[$chap]['chapter_fields'])->getFieldTitle($key);
 	}
 
 
