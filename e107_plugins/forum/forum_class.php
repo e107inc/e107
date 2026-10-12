@@ -151,11 +151,11 @@ class e107forum
 	}
 
 	/**
-	 * Grab the forum data up front to reduce LEFT JOIN usage. Currently only forum_id and forum_sef but may be expanded as needed.
+	 * Grab the forum data up front to reduce LEFT JOIN usage.
 	 */
 	private function getForumData()
 	{
-		$data = e107::getDb()->retrieve("SELECT forum_id, forum_sef, forum_class FROM `#forum`", true); // no ordering for better performance.
+		$data = e107::getDb()->retrieve("SELECT forum_id, forum_sef, forum_class, forum_parent, forum_name FROM `#forum`", true); // no ordering for better performance.
 
 		$newData = array();
 		foreach($data as $row)
@@ -1112,7 +1112,7 @@ class e107forum
 	
 	
 	/**
-	 * Whether the caller holds $type in a forum; a forum the caller may not view grants nothing, and a thread also takes the posting class.
+	 * Whether the caller holds $type in a forum; a forum the caller may not view grants nothing, and a thread also takes the posting class and a forum that lists threads.
 	 *
 	 * @param int $forumId
 	 * @param string $type view, post or thread
@@ -1125,12 +1125,28 @@ class e107forum
 			return false;
 		}
 
-		if($type === 'thread' && !$this->checkPerm($forumId, 'post'))
+		if($type === 'thread' && (!$this->listsThreads($forumId) || !$this->checkPerm($forumId, 'post')))
 		{
 			return false;
 		}
 
 		return in_array($forumId, $this->permList['view']) && in_array($forumId, $this->permList[$type]);
+	}
+
+	/**
+	 * Whether a forum lists threads: a category, whose parent is 0, holds forums, and a forum named with a leading '*' holds only its sub-forums.
+	 *
+	 * @param int $forumId
+	 * @return bool
+	 */
+	private function listsThreads($forumId)
+	{
+		if(empty($this->forumData[$forumId]['forum_parent']))
+		{
+			return false;
+		}
+
+		return strpos((string) $this->forumData[$forumId]['forum_name'], '*') !== 0;
 	}
 
 
