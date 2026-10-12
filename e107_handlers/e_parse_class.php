@@ -93,6 +93,52 @@ class e_parse
 	/** @var bool Whether a shortcode pass will run over the bbcodes being parsed, for {@see e_parse::toBBCodeUrlAttribute()} */
 	private static $bbcodeShortcodes = false;
 
+	/** @var string[] The constants {@see e_parse::toAttribute()} may expand: folders the web server serves, never a request or session value */
+	private static $webPathConstants = array(
+		'e_AVATAR', 'e_AVATAR_ABS',
+		'e_BASE',
+		'e_BOOTSTRAP',
+		'e_CSS', 'e_CSS_ABS',
+		'e_DOCS_ABS',
+		'e_FILE', 'e_FILE_ABS',
+		'e_HELP_ABS',
+		'e_HTTP',
+		'e_IMAGE', 'e_IMAGE_ABS',
+		'e_JS', 'e_JS_ABS',
+		'e_MEDIA', 'e_MEDIA_ABS',
+		'e_MEDIA_FILE',
+		'e_MEDIA_ICON',
+		'e_MEDIA_IMAGE',
+		'e_MEDIA_VIDEO',
+		'e_PLUGIN', 'e_PLUGIN_ABS',
+		'e_THEME', 'e_THEME_ABS',
+		'e_WEB', 'e_WEB_ABS',
+		'e_WEB_CSS',
+		'e_WEB_IMAGE',
+		'e_WEB_JS',
+	);
+
+	/** @var string[] The further constants {@see e_parse::replaceConstants()} expands by default: the admin area, and folders a site may keep outside the web root */
+	private static $serverPathConstants = array(
+		'e_ADMIN', 'e_ADMIN_ABS',
+		'e_BACKUP',
+		'e_CACHE', 'e_CACHE_CONTENT', 'e_CACHE_DB', 'e_CACHE_IMAGE',
+		'e_CORE',
+		'e_DOCS',
+		'e_DOWNLOAD',
+		'e_HANDLER',
+		'e_HELP',
+		'e_IMPORT',
+		'e_LANGUAGEDIR',
+		'e_LOG',
+		'e_SYSTEM',
+		'e_TEMP',
+		'e_UPLOAD',
+	);
+
+	/** @var string Matches an {e_...} placeholder replaceConstants() may expand by default */
+	private static $constantPlaceholder = '#\{(e_[A-Z]*(?:_IMAGE|_VIDEO|_FILE|_CONTENT|_ICON|_AVATAR|_JS|_CSS|_PACK|_DB|_ABS){0,1})\}#s';
+
 
 	// BBcode that contain preformatted code.
 	private $preformatted = array('html', 'markdown');
@@ -2461,7 +2507,7 @@ class e_parse
 	 * Use it on html attributes to avoid breaking markup .
 	 *
 	 * @param string $text
-	 * @param bool   $pure True to skip the text mutation by {@see e_parse::replaceConstants()}
+	 * @param bool   $pure True to leave web path constants such as {e_PLUGIN} unexpanded
 	 * @example echo "<a href='#' title='".$tp->toAttribute($text)."'>Hello</a>";
 	 */
 	public function toAttribute($text, $pure = false)
@@ -2472,9 +2518,14 @@ class e_parse
 		// Xhtml compliance.
 		$text = htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8');
 
-		if (!$pure && !preg_match('/&#|\'|"|<|>/s', $text))
+		if (!$pure)
 		{
-			$text = $this->replaceConstants($text);
+			if (!preg_match('/&#|\'|"|<|>/s', $text))
+			{
+				$text = $this->expandConstants($text, self::$webPathConstants);
+			}
+
+			$text = $this->disarmConstantPlaceholders($text);
 		}
 
 		return $text;
@@ -2508,7 +2559,7 @@ class e_parse
 			$url = $fallback;
 		}
 
-		return $this->toAttribute($url, true);
+		return $this->disarmConstantPlaceholders($this->toAttribute($url, true));
 	}
 
 	/**
@@ -2521,7 +2572,7 @@ class e_parse
 	{
 		global $code_text, $parm, $postID, $fromadmin;
 
-		$url = $this->replaceConstants((string) $url);
+		$url = $this->expandConstants((string) $url, self::$webPathConstants);
 
 		if (self::$bbcodeShortcodes && strpos($url, '{') !== false)
 		{
@@ -2564,7 +2615,7 @@ class e_parse
 	 * @param array $attributes Key-value pairs of HTML attributes. The value must not be HTML-encoded. If the value is
 	 *                          boolean true, the value will be set to the key (e.g. `['required' => true]` becomes
 	 *                          "required='required'").
-	 * @param bool  $pure       True to skip the text mutation by {@see e_parse::replaceConstants()}
+	 * @param bool  $pure       True to leave web path constants such as {e_PLUGIN} unexpanded
 	 * @return string The HTML attributes to concatenate inside an HTML tag
 	 * @see e_parseTest::testToAttributesMixedPureAndReplaceConstants() for an example of how to use this method
 	 */
@@ -3951,9 +4002,23 @@ class e_parse
 			return !empty($text) ? str_replace($search, $replace, $text) : $text;
 		}
 
-//		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
-		$pattern = ($all ? '#\{([A-Za-z_0-9]*)\}#s' : '#\{(e_[A-Z]*(?:_IMAGE|_VIDEO|_FILE|_CONTENT|_ICON|_AVATAR|_JS|_CSS|_PACK|_DB|_ABS){0,1})\}#s');
-		$text = preg_replace_callback($pattern, array($this, 'doReplace'), $text);
+		return $this->expandConstants($text, $all ? null : array_merge(self::$webPathConstants, self::$serverPathConstants));
+	}
+
+	/**
+	 * Expand the {e_...} constants named in $names, or every {CONSTANT} when $names is null, and {THEME}.
+	 *
+	 * @param string        $text
+	 * @param string[]|null $names
+	 * @return string
+	 */
+	private function expandConstants($text, $names)
+	{
+		$pattern = ($names === null ? '#\{([A-Za-z_0-9]*)\}#s' : self::$constantPlaceholder);
+		$text = preg_replace_callback($pattern, function ($matches) use ($names)
+		{
+			return $this->doReplace($matches, $names);
+		}, $text);
 
 		if (!defined('THEME'))
 		{
@@ -3972,14 +4037,34 @@ class e_parse
 
 
 	/**
-	 * @param array $matches
+	 * Encode the brace of each {e_...} placeholder that names no web path constant, so that no later constants pass expands it.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function disarmConstantPlaceholders($text)
+	{
+		return preg_replace_callback(self::$constantPlaceholder, function ($matches)
+		{
+			return in_array($matches[1], self::$webPathConstants, true) ? $matches[0] : '&#123;'.substr($matches[0], 1);
+		}, $text);
+	}
+
+	/**
+	 * @param array         $matches
+	 * @param string[]|null $names the constants that may expand, or null for any
 	 * @return mixed|string
 	 */
-	private function doReplace($matches)
+	private function doReplace($matches, $names)
 	{
 
 		if (defined($matches[1]) && (deftrue('ADMIN') || strpos($matches[1], 'ADMIN') === false))
 		{
+			if ($names !== null && !in_array($matches[1], $names, true))
+			{
+				return $matches[0];
+			}
+
 			return constant($matches[1]);
 		}
 

@@ -1423,6 +1423,16 @@ EXPECTED;
 				'type'  => null,
 				'match' => 'e107_plugins/news/index.php',
 			),
+			3 => array(
+				'path'  => '{e_DOWNLOAD}x.zip',
+				'type'  => null,
+				'match' => e_DOWNLOAD.'x.zip',
+			),
+			4 => array(
+				'path'  => '{e_HANDLER}e_parse_class.php',
+				'type'  => null,
+				'match' => e_HANDLER.'e_parse_class.php',
+			),
 		);
 
 

