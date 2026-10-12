@@ -118,12 +118,14 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			return null;
 		}
 
+		$bullet = $this->var['hero_bullets'][$this->count];
+
 		if(!empty($parm['raw']))
 		{
-			return $this->var['hero_bullets'][$this->count]['icon'];
+			return e107::getParser()->attributeValue($bullet['icon']);
 		}
 
-		return e107::getParser()->toIcon($this->var['hero_bullets'][$this->count]['icon']);
+		return e107::getParser()->toIcon($this->iconOf($bullet));
 	}
 
 	/**
@@ -138,7 +140,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return $this->var['hero_bullets'][$this->count]['icon_style'];
+		return e107::getParser()->attributeValue($this->var['hero_bullets'][$this->count]['icon_style']);
    
    } 
   
@@ -154,8 +156,15 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 
 	public function sc_hero_text()
 	{
-		$count = $this->count;
-		return e107::getParser()->toHTML($this->var['hero_bullets'][$count]['text'],true,'BODY');
+		$tp = e107::getParser();
+		$bullet = varset($this->var['hero_bullets'][$this->count], array());
+
+		if($this->trustOf($bullet) >= 1)
+		{
+			return $tp->toHTML(varset($bullet['text']), true, 'BODY');
+		}
+
+		return $tp->toHTML($tp->attributeValue(varset($bullet['text'])), true, 'BODY,scparse_off');
 	}
 
 
@@ -166,7 +175,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return $this->var['hero_bullets'][$this->count]['animation'];
+		return e107::getParser()->attributeValue($this->var['hero_bullets'][$this->count]['animation']);
 	}
 
 	public function sc_hero_animation_delay()
@@ -176,7 +185,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return "animation-delay-".$this->var['hero_bullets'][$this->count]['animation_delay'];
+		return "animation-delay-".e107::getParser()->attributeValue($this->var['hero_bullets'][$this->count]['animation_delay']);
 	}
 
 	/**
@@ -185,7 +194,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 	*/
 	public function sc_hero_title($parm=null)
 	{
-		return $this->enwrap($this->var['hero_title'],$parm);
+		return $this->enwrap(e107::getParser()->toHTML(varset($this->var['hero_title']), false, 'TITLE,scparse_off,defs_off'), $parm);
 	}
 	
 	private function enwrap($text, $parm=null)
@@ -222,7 +231,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 	*/
 	public function sc_hero_description($parm=null)
 	{
-		return $this->enwrap($this->var['hero_description'],$parm);
+		return $this->enwrap(e107::getParser()->toHTML(varset($this->var['hero_description']), false, 'TITLE,scparse_off,defs_off'), $parm);
 	}
 	
 
@@ -246,7 +255,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return e107::getParser()->toIcon($this->var['hero_button1']['icon'],$parm);
+		return e107::getParser()->toIcon($this->iconOf($this->var['hero_button1']), $parm);
 	}
 
 	public function sc_hero_button1_label($parm=null)
@@ -256,17 +265,17 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return e107::getParser()->parseTemplate($this->var['hero_button1']['label']);
+		return $this->buttonLabel('hero_button1');
 	}
 	
 	public function sc_hero_button1_url($parm=null)
 	{
-		return e107::getParser()->parseTemplate($this->var['hero_button1']['url']);
+		return $this->buttonUrl('hero_button1');
 	}
 
 	public function sc_hero_button1_class($parm=null)
 	{
-		return $this->var['hero_button1']['class'];
+		return e107::getParser()->attributeValue(varset($this->var['hero_button1']['class']));
 	}
 
 
@@ -281,22 +290,95 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 			return null;
 		}
 
-		return e107::getParser()->toIcon($this->var['hero_button2']['icon'],$parm);
+		return e107::getParser()->toIcon($this->iconOf($this->var['hero_button2']), $parm);
 	}
 
 	public function sc_hero_button2_label($parm=null)
 	{
-		return e107::getParser()->parseTemplate($this->var['hero_button2']['label']);
+		return $this->buttonLabel('hero_button2');
 	}
 	
 	public function sc_hero_button2_url($parm=null)
 	{
-		return e107::getParser()->parseTemplate($this->var['hero_button2']['url']);
+		return $this->buttonUrl('hero_button2');
 	}
 
 	public function sc_hero_button2_class($parm=null)
 	{
-		return $this->var['hero_button2']['class'];
+		return e107::getParser()->attributeValue(varset($this->var['hero_button2']['class']));
+	}
+
+	/**
+	 * @param string $button 'hero_button1' or 'hero_button2'
+	 * @return string the button's label: as an HTML title for an author who may post HTML, otherwise as text with any shortcode in it parsed
+	 */
+	private function buttonLabel($button)
+	{
+		$tp = e107::getParser();
+		$part = varset($this->var[$button], array());
+
+		if($this->trustOf($part) >= 1)
+		{
+			return $tp->toHTML(varset($part['label']), false, 'TITLE,defs_off');
+		}
+
+		return $tp->attributeValue($tp->parseTemplate(varset($part['label'])));
+	}
+
+	/**
+	 * @param string $button 'hero_button1' or 'hero_button2'
+	 * @return string the button's address, with any shortcode in it parsed, encoded for an href; for an author who may post
+	 *                HTML any scheme but javascript:, data: and vbscript:, for anyone else only the schemes
+	 *                {@see e_parse::toUrlAttribute()} keeps; empty otherwise
+	 */
+	private function buttonUrl($button)
+	{
+		$tp = e107::getParser();
+		$part = varset($this->var[$button], array());
+		$url = $tp->parseTemplate(varset($part['url']));
+
+		if($this->trustOf($part) < 1)
+		{
+			return $tp->toUrlAttribute($url);
+		}
+
+		$url = html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+		$scheme = strtolower(preg_replace('/[\x00-\x20\x7F]/', '', $url));
+
+		if(preg_match('/&#|&[a-z][a-z0-9]*;/i', $url) || preg_match('#^(javascript|data|vbscript):#', $scheme))
+		{
+			return '';
+		}
+
+		return $tp->attributeValue(str_replace(array('"', "'", '<', '>', '`'), array('%22', '%27', '%3C', '%3E', '%60'), $url));
+	}
+
+	/**
+	 * @param array $part a bullet or a button as stored
+	 * @return string the icon to draw: as written for an author with script access, a quote stored as an entity inside
+	 *                an attribute value kept as one, otherwise encoded so only a name or path draws
+	 */
+	private function iconOf($part)
+	{
+		$icon = varset($part['icon']);
+
+		if($this->trustOf($part) === 2)
+		{
+			return strtr($icon, array('&quot;' => '"', '&#039;' => "'", '&amp;quot;' => '&quot;', '&amp;#039;' => '&#039;'));
+		}
+
+		return e107::getParser()->attributeValue($icon);
+	}
+
+	/**
+	 * @param array $part a bullet or a button as stored
+	 * @return int|null what its author could post when it was saved, or null for a part saved before that was recorded
+	 */
+	private function trustOf($part)
+	{
+		$trust = isset($part['__trust__']) ? $part['__trust__'] : null;
+
+		return in_array($trust, array(0, 1, 2), true) ? $trust : null;
 	}
 
 
