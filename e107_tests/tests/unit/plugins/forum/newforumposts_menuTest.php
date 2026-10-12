@@ -62,4 +62,33 @@ class newforumposts_menuTest extends \Test\Unit
 		self::assertReadNoUndefinedVariable('total_(?:topics|views|replies)', $printed,
 			"the menu counts into variables it never declared:\n".$printed);
 	}
+
+	/**
+	 * The main layout keeps no rule of its own: a sub-forum under a forum closed to the caller lists nothing.
+	 */
+	public function testTheMainLayoutListsNoThreadOfASubForumUnderAForumClosedToTheCaller()
+	{
+		$category = $this->haveForum('e107help menu sub category');
+		$closed = $this->haveForum('e107help menu closed forum', $category, e_UC_NOBODY);
+		$sub = $this->haveForum('e107help menu open sub-forum', $category, e_UC_PUBLIC, $closed);
+
+		$hidden = 'e107help menu hidden thread '.time();
+		$threadId = $this->haveForumThread($hidden, $sub);
+		$this->haveForumPost('e107help menu hidden post', $threadId, $sub);
+
+		$php = "e107::getConfig()->setPref('plug_installed/forum', '2.0'); ";
+		$php .= "e107::getCache()->clear('nfpCache_main'); ";
+		$php .= "\$menu = e107::getMenu(); \$parms = new ReflectionProperty(\$menu, '_current_parms'); ";
+		$php .= "\$parms->setAccessible(true); \$parms->setValue(\$menu, array('layout' => 'main')); ";
+		$php .= "require_once('".addslashes(APP_PATH.'/e107_plugins/forum/newforumposts_menu.php')."'); ";
+
+		list($output, ) = $this->runInBootedCli("error_reporting(E_ALL); ".$php);
+
+		$printed = implode("\n", $output);
+
+		self::assertStringContainsString($this->threadName, $printed,
+			"the menu rendered nothing, so nothing was measured:\n".$printed);
+
+		self::assertStringNotContainsString($hidden, $printed);
+	}
 }

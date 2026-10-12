@@ -105,10 +105,8 @@ class forum_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-		$visitor = \e107\Userclass\Membership::current();
-		$parent = $visitor->predicate('fp.forum_class');
-		$forum = $visitor->predicate('f.forum_class');
-		$qry = " f.forum_parent != 0 AND ".$parent->getSql()." AND ".$forum->getSql()." AND ";
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$qry = " ".e107forum::threadVisibleSql('t')." AND ";
 
 		if (!empty($parm['forum']) && is_numeric($parm['forum']))
 		{
@@ -125,7 +123,7 @@ class forum_search extends e_search // include plugin-folder in the name.
 			$qry .= " (u.user_id = '".$tp -> toDB($parm['author'])."' OR u.user_name = '".$tp -> toDB($parm['author'])."') AND";
 		}
 
-		return \e107\Database\SqlFragment::raw($qry, $parent->getParameters() + $forum->getParameters());
+		return \e107\Database\SqlFragment::raw($qry);
 	}
 
 

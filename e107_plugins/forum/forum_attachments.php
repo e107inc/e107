@@ -306,7 +306,8 @@ class forum_attachments
 	 * permission rule written twice is a permission rule that can drift apart.
 	 * A forum grants nothing unless its parent grants it too, and a forum at
 	 * the top level grants nobody anything, which is why the join is not
-	 * decoration.
+	 * decoration. A sub-forum is visible only while the forum it sits in is,
+	 * at any depth; its posting classes are its own.
 	 *
 	 * It lives in this file rather than in forum_class.php because this file
 	 * loads into thumb.php's bootstrap and forum_class.php cannot: forum_class
@@ -317,7 +318,7 @@ class forum_attachments
 	 * @param array $classes userclass ids the caller holds
 	 * @param string $column one of the three forum class columns
 	 * @param array $forumIds forum ids to consider, empty for all of them
-	 * @return array rows of forum_id and forum_parent
+	 * @return array rows of forum_id, forum_parent and forum_sub
 	 */
 	public static function readableForumRows(array $classes, $column, array $forumIds = array())
 	{
@@ -348,23 +349,74 @@ class forum_attachments
 	 * @param callable $rule function(\e107\Database\QueryBuilder $qb, string $column): \e107\Database\SqlFragment
 	 * @param string $column one of the three forum class columns
 	 * @param array $forumIds forum ids to consider, empty for all of them
-	 * @return array rows of forum_id and forum_parent
+	 * @return array rows of forum_id, forum_parent and forum_sub
 	 */
 	private static function forumRows($rule, $column, array $forumIds)
 	{
 		$qb = e107::getDb()->createQueryBuilder();
-		$qb->select('f.forum_id', 'f.forum_parent')->from('forum', 'f')
+		$qb->select('f.forum_id', 'f.forum_parent', 'f.forum_sub')->from('forum', 'f')
 			->leftJoin('forum', 'fp', $qb->expr()->allOf($qb->expr()->compareColumns('f.forum_parent', 'fp.forum_id'), $rule($qb, 'fp.'.$column)))
 			->where($rule($qb, 'f.'.$column))
 			->where('f.forum_parent', '!=', 0)
 			->where($qb->expr()->isNotNull('fp.forum_id'));
 
-		if($forumIds !== array())
+		return self::amongForums(self::withinVisibleForums($qb->fetchAll(), $column), $forumIds);
+	}
+
+	/**
+	 * $rows without the sub-forums whose forum is not among them, repeated until none is left out; for the view column only.
+	 *
+	 * @param array $rows rows of forum_id, forum_parent and forum_sub
+	 * @param string $column the class column the rows were read through
+	 * @return array
+	 */
+	private static function withinVisibleForums(array $rows, $column)
+	{
+		if($column !== 'forum_class')
 		{
-			$qb->whereIn('f.forum_id', $forumIds);
+			return $rows;
 		}
 
-		return $qb->fetchAll();
+		do
+		{
+			$ids = array_flip(array_map('intval', array_column($rows, 'forum_id')));
+			$kept = array();
+
+			foreach($rows as $row)
+			{
+				if((int) $row['forum_sub'] === 0 || isset($ids[(int) $row['forum_sub']]))
+				{
+					$kept[] = $row;
+				}
+			}
+
+			$dropped = count($kept) !== count($rows);
+			$rows = $kept;
+		}
+		while($dropped);
+
+		return $rows;
+	}
+
+	/**
+	 * $rows limited to the forums among $forumIds, or all of them when it is empty.
+	 *
+	 * @param array $rows
+	 * @param array $forumIds
+	 * @return array
+	 */
+	private static function amongForums(array $rows, array $forumIds)
+	{
+		if($forumIds === array())
+		{
+			return $rows;
+		}
+
+		$forumIds = array_flip(array_map('intval', $forumIds));
+
+		return array_values(array_filter($rows, function ($row) use ($forumIds) {
+			return isset($forumIds[(int) $row['forum_id']]);
+		}));
 	}
 
 	/**

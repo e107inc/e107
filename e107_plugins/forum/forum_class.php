@@ -1076,11 +1076,7 @@ class e107forum
 	 * those parent rows, so a category containing at least one permitted forum
 	 * is a member of the list in its own right.
 	 *
-	 * Two levels only. forum_sub, the third, is not consulted here and is not
-	 * consulted by forum_viewforum.php either: a sub-forum's forum_parent names
-	 * its category, so it is the category and not the parent forum that is
-	 * asked. Feeds built on this list are therefore exactly as permissive as
-	 * the site route, which is the property that matters.
+	 * A sub-forum is in the view list only while its forum is, at any depth; its posting classes are its own.
 	 *
 	 * @param string $type view, post or thread
 	 * @return int[]
@@ -2485,32 +2481,46 @@ class e107forum
 
 
 	/**
-	 * The two user classes a thread's forum is read through.
-	 *
-	 * forum_track records a user and a thread and nothing else, so where the
-	 * subscription was taken out has to be recovered before anyone can be judged
-	 * on it. A thread names its forum, and the forum's parent carries the second
-	 * half of the view permission, exactly as buildPermList() reads it. The
-	 * INNER JOIN to the parent is also what refuses a forum sitting at the top
-	 * level, which buildPermList() spells forum_parent != 0.
+	 * The user classes a thread is read through: its forum's and that forum's category's, and the same of every forum a sub-forum sits in.
 	 *
 	 * @param int $threadId
-	 * @return array|false forum_class and parent_class, or false when the thread
-	 *                     names no forum readable by anybody
+	 * @return int[]|false the classes, or false when the thread names no forum
+	 *                     readable by anybody
 	 */
 	private function trackForumClasses($threadId)
 	{
-		$qb = e107::getDb()->createQueryBuilder();
-		$expr = $qb->expr();
-
-		$row = $qb->selectAs('f.forum_class', 'forum_class')->selectAs('fp.forum_class', 'parent_class')
-			->from('forum_thread', 'th')
-			->innerJoin('forum', 'f', $expr->compareColumns('th.thread_forum_id', 'f.forum_id'))
-			->innerJoin('forum', 'fp', $expr->compareColumns('f.forum_parent', 'fp.forum_id'))
-			->where('th.thread_id', (int) $threadId)
+		$thread = e107::getDb()->createQueryBuilder()
+			->select('thread_forum_id')->from('forum_thread')
+			->where('thread_id', (int) $threadId)
 			->fetchRow();
 
-		return empty($row) ? false : $row;
+		$forumId = empty($thread) ? 0 : (int) $thread['thread_forum_id'];
+		$classes = array();
+		$seen = array();
+
+		while($forumId !== 0 && !isset($seen[$forumId]))
+		{
+			$seen[$forumId] = true;
+
+			$qb = e107::getDb()->createQueryBuilder();
+			$row = $qb->selectAs('f.forum_class', 'forum_class')->selectAs('fp.forum_class', 'parent_class')
+				->selectAs('f.forum_sub', 'forum_sub')
+				->from('forum', 'f')
+				->innerJoin('forum', 'fp', $qb->expr()->compareColumns('f.forum_parent', 'fp.forum_id'))
+				->where('f.forum_id', $forumId)
+				->fetchRow();
+
+			if(empty($row))
+			{
+				return false;
+			}
+
+			$classes[] = (int) $row['forum_class'];
+			$classes[] = (int) $row['parent_class'];
+			$forumId = (int) $row['forum_sub'];
+		}
+
+		return ($forumId !== 0 || $classes === array()) ? false : array_values(array_unique($classes));
 	}
 
 
@@ -2536,13 +2546,17 @@ class e107forum
 
 		$qb = e107::getDb()->createQueryBuilder();
 
-		return $qb->select('u.user_id', 'u.user_name', 'u.user_email', 'u.user_lastvisit')
+		$qb->select('u.user_id', 'u.user_name', 'u.user_email', 'u.user_lastvisit')
 			->from('forum_track', 't')
 			->innerJoin('user', 'u', $qb->expr()->compareColumns('t.track_userid', 'u.user_id'))
-			->where('t.track_thread', (int) $threadId)
-			->where($this->trackClassHeld($qb, $classes['forum_class']))
-			->where($this->trackClassHeld($qb, $classes['parent_class']))
-			->fetchAll();
+			->where('t.track_thread', (int) $threadId);
+
+		foreach($classes as $classId)
+		{
+			$qb->where($this->trackClassHeld($qb, $classId));
+		}
+
+		return $qb->fetchAll();
 	}
 
 
