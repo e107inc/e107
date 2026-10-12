@@ -874,4 +874,71 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 				'An [img] dimension was cast to zero: '.$bbcode.' Rendered: '.$html);
 		}
 	}
+
+	/**
+	 * @return array
+	 */
+	public function glyphBreakouts()
+	{
+		return array(
+			'glyph name'       => array("[glyph]fa-x' autofocus tabindex=1 onfocus='alert(1)[/glyph]"),
+			'glyph image path' => array("[glyph]x' autofocus tabindex=1 onfocus='alert(1).png[/glyph]"),
+		);
+	}
+
+	/**
+	 * A quote in [glyph] text stays inside the attribute {@see e_parse::toIcon()} prints it into.
+	 *
+	 * @dataProvider glyphBreakouts
+	 * @param string $bbcode
+	 */
+	public function testAGlyphCannotEscapeItsAttribute($bbcode)
+	{
+		$this->assertNoEventHandler($this->renderStored($bbcode), 'A [glyph] escaped its attribute: '.$bbcode);
+	}
+
+	/** A glyph is one class name, and a class list would let it lay Bootstrap utilities over the page. */
+	public function testAGlyphCannotCoverThePageWithUtilityClasses()
+	{
+		$html = $this->renderStored('[glyph]fa-x position-fixed top-0 start-0 w-100 vh-100[/glyph]');
+
+		foreach($this->elementsOf($html) as $element)
+		{
+			self::assertNotContains('position-fixed', preg_split('/\s+/', $element->getAttribute('class')), 'A [glyph] smuggled a second class in. Rendered: '.$html);
+		}
+	}
+
+	/** The media manager inserted some Bootstrap 3 names with a line break and tabs inside them. */
+	public function testAGlyphNameWithWhitespaceInsideStillRenders()
+	{
+		$expected = $this->renderStored('[glyph]glyphicon-book.glyph[/glyph]');
+		$html = $this->renderStored("[glyph]glyphicon-book\n\t\t\t.glyph[/glyph]");
+
+		self::assertNotSame(false, strpos($expected, 'book'));
+		self::assertSame($expected, $html, 'A [glyph] name with whitespace inside it stopped rendering.');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function glyphPassthroughs()
+	{
+		return array(
+			'glyph from the media manager' => array('[glyph]fas-camera.glyph[/glyph]', 'fa-camera'),
+			'core glyph'                   => array('[glyph]e-database-32[/glyph]', "class='S32 e-database-32'"),
+			'glyph image path'             => array('[glyph]{e_IMAGE}generic/blank.gif[/glyph]', 'generic/blank.gif'),
+		);
+	}
+
+	/**
+	 * @dataProvider glyphPassthroughs
+	 * @param string $bbcode
+	 * @param string $expected
+	 */
+	public function testAnOrdinaryGlyphStillRenders($bbcode, $expected)
+	{
+		$html = $this->renderStored($bbcode);
+
+		self::assertNotSame(false, strpos($html, $expected), 'An ordinary [glyph] stopped rendering: '.$bbcode.' Rendered: '.$html);
+	}
 }

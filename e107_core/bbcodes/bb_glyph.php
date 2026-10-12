@@ -21,12 +21,18 @@ class bb_glyph extends e_bb_base
 	}
 
 	/**
-	 *	Glyph tag. 
-	 * @param $code_text : xxxxxxx.youtube or xxxxxxx.mp4
+	 * Renders one icon name or path with {@see e_parse::toIcon()}, whitespace ignored, and nothing for any other text.
 	 */
 	function toHTML($code_text, $parm='')
 	{
-		return e107::getParser()->toIcon($code_text);
+		$icon = preg_replace('#\s+#', '', str_replace(E_NL, '', $code_text));
+
+		if(!preg_match('#^[\w\-./{}]+$#', $icon))
+		{
+			return '';
+		}
+
+		return e107::getParser()->toIcon($icon);
 	}
 	
 	
