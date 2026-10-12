@@ -1116,7 +1116,7 @@ class forum_post_handler
 		}
 		else
 		{
-			$poster = ($_POST['anonname']) ? $_POST['anonname'] : LAN_ANONYMOUS;
+			$poster = ($_POST['anonname']) ? $tp->attributeValue($_POST['anonname']) : LAN_ANONYMOUS;
 		}
 
 		$postdate = e107::getDate()->convert_date(time(), "forum");
@@ -1234,9 +1234,10 @@ class forum_post_handler
 			}
 			else
 			{
-				$postInfo['post_user_anon']         = $_POST['anonname'];
-				$threadInfo['thread_lastuser_anon'] = $_POST['anonname'];
-				$threadInfo['thread_user_anon']     = $_POST['anonname'];
+				$anonName = e107::getParser()->toDB($_POST['anonname']);
+				$postInfo['post_user_anon']         = $anonName;
+				$threadInfo['thread_lastuser_anon'] = $anonName;
+				$threadInfo['thread_user_anon']     = $anonName;
 			}
 
 			$time = time();

@@ -211,4 +211,22 @@ class forumStatsTest extends \Test\Unit
 		self::assertStringNotContainsString("href=''", $rendered,
 			'a thread or forum name is rendered as a link that goes nowhere');
 	}
+
+	/**
+	 * A guest's name stored as typed shows its markup as text, as the thread's starter and as its last poster.
+	 */
+	public function testTheMostActiveThreadsPrintAGuestsNameAsText()
+	{
+		$this->haveForumTables();
+
+		$category = $this->haveForum('e107help stats probe category');
+		$forumId = $this->haveForum('e107help stats probe forum', $category);
+		$this->haveForumThread('e107help stats probe guest thread '.time(), $forumId, 0, $this->guestNameAsTyped());
+
+		ob_start();
+		$this->stats->mostActiveTopics();
+		$rendered = ob_get_clean();
+
+		$this->assertGuestNamePrintedAsText($rendered, 2);
+	}
 }

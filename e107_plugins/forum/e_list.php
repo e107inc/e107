@@ -130,7 +130,7 @@ class list_forum
 				}
 				else
 				{
-					$author = e107::getParser()->toHTML($row['thread_user_anon']);
+					$author = e107::getParser()->attributeValue($row['thread_user_anon']);
 				}
 
 				$record['author'] = ($this->parent->settings['author'] ? $author : "");

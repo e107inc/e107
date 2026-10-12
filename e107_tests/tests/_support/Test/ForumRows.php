@@ -163,6 +163,29 @@ trait ForumRows
 	}
 
 	/**
+	 * A guest's name as one was stored before names were converted, short enough for the 30-character columns.
+	 *
+	 * @return string
+	 */
+	protected function guestNameAsTyped()
+	{
+		return '<guest-x>typed</guest-x>';
+	}
+
+	/**
+	 * Asserts that $printed carries {@see ForumRows::guestNameAsTyped()} $times times, as text, and none of its tags as markup.
+	 *
+	 * @param string $printed
+	 * @param int $times
+	 * @return void
+	 */
+	protected function assertGuestNamePrintedAsText($printed, $times = 1)
+	{
+		self::assertSame(0, preg_match('#</?guest-x#', $printed), $printed);
+		self::assertSame($times, substr_count($printed, '&lt;guest-x&gt;typed&lt;/guest-x&gt;'), $printed);
+	}
+
+	/**
 	 * @param string $table
 	 * @param string $key the table's primary key, for the tidy-up
 	 * @param array $fields

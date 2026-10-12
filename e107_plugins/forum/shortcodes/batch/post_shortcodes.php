@@ -204,7 +204,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		elseif($this->var['action'] == 'quote')
 		{
 			$post = $this->quotablePost();
-			$quoteName = ($this->var['user_name'] ? $this->var['user_name'] : $this->var['post_user_anon']);
+			$quoteName = $tp->attributeValue($this->var['user_name'] ? $this->var['user_name'] : $this->var['post_user_anon']);
 			$text = $tp->post_toForm("[quote={$quoteName}]\n".$post."\n[/quote]\n");
 			$text .= "\n\n";
 			$this->var['action'] = 'rp';

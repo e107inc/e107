@@ -537,7 +537,7 @@
 							$lp_name = $this->var['forum_lastpost_user_anon'];
 						}
 				--*/
-				$lp_name = ($this->var['user_name']) ? "<a href='" . e107::getUrl()->create('user/profile/view', array('id' => $this->var['forum_lastpost_user'], 'name' => $this->var['user_name'])) . "'>{$this->var['user_name']}</a>" : $this->var['forum_lastpost_user_anon'];
+				$lp_name = ($this->var['user_name']) ? "<a href='" . e107::getUrl()->create('user/profile/view', array('id' => $this->var['forum_lastpost_user'], 'name' => $this->var['user_name'])) . "'>{$this->var['user_name']}</a>" : e107::getParser()->attributeValue($this->var['forum_lastpost_user_anon']);
 				/*----
 						$tVars['SUB_LASTPOST'] = $lp_date.'<br />'.$lp_name.' '.$lp_thread;
 
@@ -664,7 +664,7 @@
 				{
 //----				$tVars['LASTPOST'] = $tp->toHTML($this->var['thread_lastuser_anon']);
 //----				$tVars['LASTPOSTUSER'] = $tp->toHTML($this->var['thread_lastuser_anon']);
-					$LASTPOST = $LASTPOSTUSER = e107::getParser()->toHTML($this->var['thread_lastuser_anon']);
+					$LASTPOST = $LASTPOSTUSER = e107::getParser()->attributeValue($this->var['thread_lastuser_anon']);
 					/*--
 								}
 
@@ -1122,7 +1122,7 @@
 			--*/
 //		else
 //		{
-			return (($this->var['user_name']) ? "<a href='" . e107::getUrl()->create('user/profile/view', array('id' => $this->var['thread_user'], 'name' => $this->var['user_name'])) . "'>" . $this->var['user_name'] . "</a>" : (($this->var['thread_user_anon']) ? e107::getParser()->toHTML($this->var['thread_user_anon']) : LAN_FORUM_1015));
+			return (($this->var['user_name']) ? "<a href='" . e107::getUrl()->create('user/profile/view', array('id' => $this->var['thread_user'], 'name' => $this->var['user_name'])) . "'>" . $this->var['user_name'] . "</a>" : (($this->var['thread_user_anon']) ? e107::getParser()->attributeValue($this->var['thread_user_anon']) : LAN_FORUM_1015));
 //		}
 //	}
 		}

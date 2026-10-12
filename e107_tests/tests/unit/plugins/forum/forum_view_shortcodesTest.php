@@ -18,6 +18,8 @@
  */
 class forum_view_shortcodesTest extends \Test\Unit
 {
+	use \Test\ForumRows;
+
 	/** @var plugin_forum_view_shortcodes */
 	private $sc;
 
@@ -98,6 +100,47 @@ class forum_view_shortcodesTest extends \Test\Unit
 		$buttons = $this->buttonsx(false);
 
 		self::assertStringNotContainsString('data-forum-action', $buttons);
+	}
+
+	/**
+	 * A guest's name stored as typed shows its markup as text.
+	 */
+	public function testAGuestsNameStoredAsTypedPrintsAsText()
+	{
+		foreach($this->guestNameShortcodes($this->guestNameAsTyped()) as $printed)
+		{
+			$this->assertGuestNamePrintedAsText($printed);
+		}
+	}
+
+	/**
+	 * A guest's name stored converted prints as stored, not encoded a second time.
+	 */
+	public function testAGuestsNameStoredConvertedPrintsAsStored()
+	{
+		foreach($this->guestNameShortcodes('Ann &amp; Co &lt;3') as $shortcode => $printed)
+		{
+			self::assertStringContainsString('Ann &amp; Co &lt;3', $printed, $shortcode);
+		}
+	}
+
+	/**
+	 * @param string $stored a guest's name as the columns hold it
+	 * @return string[] what each shortcode that names a guest prints, keyed by shortcode
+	 */
+	private function guestNameShortcodes($stored)
+	{
+		$this->sc->setScVar('postInfo', array('thread_user_anon' => $stored, 'post_user_anon' => $stored));
+		$this->sc->setVars(array('thread_views' => 1, 'thread_total_replies' => 1, 'thread_lastuser_anon' => $stored));
+
+		$printed = array();
+
+		foreach(array('sc_topic_author_name', 'sc_topic_lastpost_author', 'sc_poster') as $shortcode)
+		{
+			$printed[$shortcode] = $this->sc->$shortcode();
+		}
+
+		return $printed;
 	}
 
 	/**

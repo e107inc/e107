@@ -458,7 +458,7 @@ class forumStats
 				}
 				else
 				{
-					$POSTER = $tp->toHTML($row['thread_user_anon']);
+					$POSTER = $tp->attributeValue($row['thread_user_anon']);
 				}
 
 				$row['thread_sef'] = $forum->getThreadSef($row);
@@ -474,7 +474,7 @@ class forumStats
 				}
 				else
 				{
-					$LASTPOST = $tp->toHTML($row['thread_lastuser_anon']).'<br />'.$lastpost_datestamp;
+					$LASTPOST = $tp->attributeValue($row['thread_lastuser_anon']).'<br />'.$lastpost_datestamp;
 				}
 
 				$text .= "<tr>
