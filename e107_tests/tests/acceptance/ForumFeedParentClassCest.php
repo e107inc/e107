@@ -178,6 +178,49 @@ class ForumFeedParentClassCest
 	}
 
 	/**
+	 * RSS 2.0 prints a post stored as HTML without the bbcode pass that turns a
+	 * [hide] block into the hidden box on the topic page, so the feed has to
+	 * leave the block out itself. An administrator's post is stored as HTML by
+	 * default.
+	 */
+	public function theFeedsLeaveOutAHiddenBlockOfAPostStoredAsHtml(AcceptanceTester $I)
+	{
+		$I->haveForumPost('[html]<p>Lead in A [hide]Hidden in A[/hide] and [HIDE=x]more hidden in A[/HIDE] tail in A</p>[/html]',
+			$this->ids['threadA'], $this->ids['forumA'], 1);
+
+		foreach(array('forumposts' => '', 'forumtopic' => $this->ids['threadA']) as $feed => $topic)
+		{
+			$this->fetchFeed($I, $feed, $topic);
+
+			$I->seeInSource('Lead in A');
+			$I->seeInSource('tail in A');
+			$I->dontSeeInSource('Hidden in A');
+			$I->dontSeeInSource('more hidden in A');
+		}
+	}
+
+	/**
+	 * The topic, per-forum and single-topic feeds read a thread's opening post
+	 * by queries of their own. Here the block holds another.
+	 */
+	public function theFeedsLeaveOutAHiddenBlockOfAnOpeningPostStoredAsHtml(AcceptanceTester $I)
+	{
+		$thread = $I->haveForumThread('Fixture Thread H', $this->ids['forumA'], 1);
+		$I->haveForumPost('[html]<p>Lead in H [hide]First secret in H [hide]x[/hide] second secret in H[/hide] tail in H</p>[/html]',
+			$thread, $this->ids['forumA'], 1);
+
+		foreach(array('forumthreads' => '', 'forumname' => $this->ids['forumA'], 'forumtopic' => $thread) as $feed => $topic)
+		{
+			$this->fetchFeed($I, $feed, $topic);
+
+			$I->seeInSource('Lead in H');
+			$I->seeInSource('tail in H');
+			$I->dontSeeInSource('First secret in H');
+			$I->dontSeeInSource('second secret in H');
+		}
+	}
+
+	/**
 	 * The statistics page runs the same predicate over its two league tables,
 	 * so it names the topics of a forum the caller cannot open.
 	 */
