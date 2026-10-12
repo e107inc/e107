@@ -944,4 +944,61 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 
 		self::assertStringContainsString($expected, $html, 'An ordinary [glyph] stopped rendering: '.$bbcode.' Rendered: '.$html);
 	}
+
+	/**
+	 * @return array
+	 */
+	public function videoBreakouts()
+	{
+		return array(
+			'video youtube'  => array('[video]x" onload="alert(1);//.youtube[/video]'),
+			'video playlist' => array('[video]x" onload="alert(1).youtubepl[/video]'),
+			'video file'     => array('[video]x" autofocus tabindex=1 onfocus="alert(1).mp4[/video]'),
+		);
+	}
+
+	/**
+	 * A quote in [video] text stays inside the attribute {@see e_parse::toVideo()} prints it into.
+	 *
+	 * @dataProvider videoBreakouts
+	 * @param string $bbcode
+	 */
+	public function testAVideoCannotEscapeItsAttribute($bbcode)
+	{
+		$this->assertNoEventHandler($this->renderStored($bbcode), 'A [video] escaped its attribute: '.$bbcode);
+	}
+
+	/** A YouTube id reaches a style attribute as well as a src, so CSS has to be refused there too. */
+	public function testAVideoIdCannotAddCssToItsFrame()
+	{
+		$html = $this->renderStored('[video]x);position:fixed;top:0.youtube[/video]');
+
+		self::assertStringNotContainsString('position:fixed', $html, 'A [video] id carried CSS into the frame. Rendered: '.$html);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function videoPassthroughs()
+	{
+		return array(
+			'youtube video'                    => array('[video]dQw4w9WgXcQ.youtube[/video]', 'youtube.com/embed/dQw4w9WgXcQ?'),
+			'youtube playlist'                 => array('[video]PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG.youtubepl[/video]', 'list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG"'),
+			'video file'                       => array('[video]{e_MEDIA_FILE}2026-10/clip.mp4[/video]', 'files/2026-10/clip.mp4" type="video/mp4"'),
+			'remote video file'                => array('[video]https://example.com/media/clip.mp4[/video]', 'src="https://example.com/media/clip.mp4"'),
+			'remote video file with ampersand' => array('[video]https://example.com/tom&jerry/clip.mp4[/video]', 'src="https://example.com/tom&amp;jerry/clip.mp4"'),
+		);
+	}
+
+	/**
+	 * @dataProvider videoPassthroughs
+	 * @param string $bbcode
+	 * @param string $expected
+	 */
+	public function testAnOrdinaryVideoStillRenders($bbcode, $expected)
+	{
+		$html = $this->renderStored($bbcode);
+
+		self::assertStringContainsString($expected, $html, 'An ordinary [video] stopped rendering: '.$bbcode.' Rendered: '.$html);
+	}
 }

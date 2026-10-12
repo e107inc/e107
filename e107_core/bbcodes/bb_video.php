@@ -21,12 +21,19 @@ class bb_video extends e_bb_base
 	}
 
 	/**
-	 *	Video tag. 
-	 * @param $code_text : xxxxxxx.youtube or xxxxxxx.mp4
+	 * Renders a video file or a bare YouTube id with {@see e_parse::toVideo()}, and nothing for any other YouTube text.
 	 */
 	function toHTML($code_text, $parm='')
 	{
-		return e107::getParser()->toVideo($code_text);
+		$file = trim($code_text);
+		$type = pathinfo($file, PATHINFO_EXTENSION);
+
+		if(($type === 'youtube' || $type === 'youtubepl') && !preg_match('#^[\w\-]+\.'.$type.'$#', $file))
+		{
+			return '';
+		}
+
+		return e107::getParser()->toVideo($file);
 	}
 	
 	

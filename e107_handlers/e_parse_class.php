@@ -5899,7 +5899,7 @@ class e_parse
 			return '
 			<div class="video-responsive">
 			<video width="' . $width . '" height="' . $height . '" controls>
-			  <source src="' . $file . '" type="' . $mime . '">
+			  <source src="' . $this->attributeValue($file) . '" type="' . $mime . '">
 		
 			  Your browser does not support the video tag.
 			</video>
