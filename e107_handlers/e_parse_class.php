@@ -1963,7 +1963,7 @@ class e_parse
 		{
 			$proc_funcs = true;
 			$convertNL = true;
-			$entitiesRestored = false;
+			$blockRendered = false;
 
 			// We may have 'captured' a bbcode word - strip it if so
 			if ($last_bbcode == $full_text)
@@ -2015,7 +2015,7 @@ class e_parse
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							$opts['nobreak'] = true;
 							$parseBB = false; // prevent further bbcode processing.
-							$entitiesRestored = true;
+							$blockRendered = true;
 
 
 							break;
@@ -2027,7 +2027,7 @@ class e_parse
 						case 'hide' :
 							$proc_funcs = true;
 							$full_text = $this->parseBBCodes($this->restoreEntitiesOutsideCode($matches[0], $opts['value']), $postID);
-							$entitiesRestored = true;
+							$blockRendered = true;
 							break;
 
 						case 'scode':
@@ -2067,7 +2067,7 @@ class e_parse
 
 						//	Link substitution
 						// Convert URL's to clickable links, unless modifiers or prefs override
-						$sub_blk = $this->processModifiers($opts, $sub_blk, $convertNL, $parseBB, $modifiers, $postID, !$entitiesRestored);
+						$sub_blk = $this->processModifiers($opts, $sub_blk, $convertNL, $blockRendered ? false : $parseBB, $modifiers, $postID, !$blockRendered);
 
 						$ret_parser .= $sub_blk;
 					}    // End of 'normal' processing for a block of text

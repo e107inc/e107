@@ -604,6 +604,20 @@ EXPECTED;
 	}
 
 	/**
+	 * Bbcode inside a [table] still renders, a link and a [nobr] among it.
+	 */
+	public function testToHTMLStillRendersBbcodeInsideTable()
+	{
+		$result = $this->tp->toHTML($this->tp->toDB('[table][tr][td][b]bold[/b] [url=https://example.com/a?b=1]Read the notes[/url] [nobr]keep together[/nobr][/td][/tr][/table]'), true, 'USER_BODY');
+
+		self::assertStringContainsString('<table', $result);
+		self::assertStringContainsString('>bold</strong>', $result);
+		self::assertStringContainsString('href="https://example.com/a?b=1"', $result);
+		self::assertStringContainsString('keep together', $result);
+		self::assertStringNotContainsString('[nobr]', $result);
+	}
+
+	/**
 	 * A [code] block shows its source as typed, alone or inside a [table], so the entity table must not run over it.
 	 */
 	public function testToHTMLLeavesCodeBlockSourceUnrestored()
