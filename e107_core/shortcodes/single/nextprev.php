@@ -245,10 +245,17 @@ function nextprev_shortcode($parm = null)
 		// sprintXX(defset($e_vars->caption, $e_vars->caption), $current_page, $total_pages);
 
 		// urldecoded by parse_str()
-		$pagetitle = explode('|', vartrue($parm['pagetitle']));
+		$pagetitle = array_map('strip_tags', explode('|', vartrue($parm['pagetitle'])));
 		
 		// new - bullet support
 		$bullet = vartrue($parm['bullet'], '');
+		$themeAbs = defset('THEME_ABS');
+		$themeImage = '#^\s*<img\s+src=([\'"])'.preg_quote($themeAbs === '' ? "\0" : $themeAbs, '#').'[^\'"<>]*\1(?:\s+(?:alt|class)=([\'"])[^\'"<>]*\2)*\s*/?>\s*$#';
+
+		if(!preg_match($themeImage, $bullet))
+		{
+			$bullet = htmlspecialchars($bullet, ENT_QUOTES, 'UTF-8');
+		}
 
 		// no navigation counter
 		if(isset($parm['nonavcount']))
@@ -375,16 +382,16 @@ function nextprev_shortcode($parm = null)
 				$label = $label !== null ? $label : $pagetitle[$c];
 			}
 			$e_vars_loop->url = str_replace('[FROM]', ($perpage * ($c + $index_add)), $url);
-			$e_vars_loop->label = $label ? $tp->toHTML(stripslashes($label), false, 'TITLE') : $c + 1; //quick fix servers with magicquotes - stripslashes()
+			$e_vars_loop->label = $label ? $tp->toHTML(stripslashes($label), false, 'TITLE, scparse_off') : $c + 1; //quick fix servers with magicquotes - stripslashes()
 
 			if($c + 1 == $current_page)
 			{
-				$e_vars_loop->url_label = $label ? $tp->toAttribute($label) : LAN_NP_URLCURRENT;
+				$e_vars_loop->url_label = $label ? $tp->toAttribute($label, true) : LAN_NP_URLCURRENT;
 				$ret_items[] = $tp->simpleParse($tmpl[$tprefix.'item_current'], $e_vars_loop);
 			}
 			else
 			{
-				$e_vars_loop->url_label = $label ? $tp->toAttribute($label) : LAN_NP_GOTO;
+				$e_vars_loop->url_label = $label ? $tp->toAttribute($label, true) : LAN_NP_GOTO;
 				$e_vars_loop->url_label = str_replace("[x]", ($c + 1), $e_vars_loop->url_label);
 				$ret_items[] = $tp->simpleParse($tmpl[$tprefix.'item'], $e_vars_loop);
 			}
@@ -478,7 +485,7 @@ function nextprev_shortcode($parm = null)
 
 		$url = trim($p[3]);
 		$caption = trim($p[4]);
-		$pagetitle = explode('|',trim($p[5]));
+		$pagetitle = array_map('strip_tags', explode('|',trim($p[5])));
 
 		$caption = (!$caption || $caption == 'off') ? LAN_GOPAGE.'&nbsp;' : $caption;
 
