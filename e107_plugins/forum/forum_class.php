@@ -2261,6 +2261,12 @@ class e107forum
 
 
 
+	/**
+	 * The forum rows for the index, grouped by level: only those the caller may view unless $all, so a caller who may view no forum gets none.
+	 *
+	 * @param bool $all every row, whatever the caller may view
+	 * @return array|false keyed parents, forums, subs and all; false when no row is listed
+	 */
 	function forumGetForumList($all=false)
 	{
 		$sql = e107::getDb();
@@ -2268,9 +2274,9 @@ class e107forum
 		$qb = $sql->createQueryBuilder()
 			->select('f.*', 'u.user_name')->from('forum', 'f')
 			->leftJoin('user', 'u', SqlFragment::raw('f.forum_lastpost_user IS NOT NULL AND u.user_id = f.forum_lastpost_user'));
-		if(!$all && !empty($this->permList['view_list']))
+		if(!$all)
 		{
-			$qb->whereIn('forum_id', $this->permList['view']);
+			$qb->whereIn('forum_id', $this->getForumPermList('view'));
 		}
 		$rows = $qb->orderBy('f.forum_order', 'ASC')->fetchAll();
 		if ($rows)
