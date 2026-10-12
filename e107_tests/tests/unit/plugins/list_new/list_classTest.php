@@ -181,4 +181,25 @@ class list_classTest extends \Test\Unit
 		self::assertSame('stored', $matches[1],
 			"the preferences the front end built are gone again by the next request:\n".$printed);
 	}
+
+	/**
+	 * A section's headings sit in its records, which hold its message instead when it has nothing to list.
+	 */
+	public function testTheProfanityFilterReachesTheHeadingsInASectionsRecords()
+	{
+		$php = "e107::getConfig()->set('profanity_filter', 1)->set('profanity_words', 'darn')->set('profanity_replace', ''); "
+			."class list_e107help_listed { function getListData() { "
+			."return array('records' => array(array('heading' => 'A darn heading')), 'caption' => 'Listed', 'display' => ''); } } "
+			."class list_e107help_empty { function getListData() { "
+			."return array('records' => 'Nothing new', 'caption' => 'Empty', 'display' => ''); } } "
+			."require_once(e_PLUGIN.'list_new/list_class.php'); \$rc = new listclass(); "
+			."\$listed = \$rc->load_data('e107help_listed'); \$empty = \$rc->load_data('e107help_empty'); "
+			."echo '<<'.\$listed['records'][0]['heading'].'|'.\$empty['records'].'>>'; ";
+
+		$printed = $this->probe($php);
+		$matches = array();
+
+		self::assertSame(1, preg_match('/<<(.*)>>/s', $printed, $matches), "the probe printed nothing:\n".$printed);
+		self::assertSame('A d*rn heading|Nothing new', $matches[1]);
+	}
 }
