@@ -77,7 +77,7 @@ class e_token_injector
 	 * character, which a page carrying a large inline script pushes past
 	 * pcre.backtrack_limit, and the whole pass would then silently do nothing.
 	 */
-	const PATTERN = '~<!--(?:[^-]++|-(?!->|-!>))*+--!?>|<textarea\b[^>]*+>[^<]*+(?:<(?!/textarea\s*+>)[^<]*+)*+</textarea\s*+>|<script\b[^>]*+>[^<]*+(?:<(?!/script\s*+>)[^<]*+)*+</script\s*+>|<form\b(?:[^>"\']++|"[^"]*+"|\'[^\']*+\')*+>|<form\b[^>]*+>|<[a-z][a-z0-9:._-]*+(?:[^>"\']++|"[^"]*+"|\'[^\']*+\')*+>|<[a-z][a-z0-9:._-]*+[^>]*+>~is';
+	const PATTERN = '~<!--(?:[^-]++|-(?!->|-!>))*+--!?>|<textarea\b[^>]*+>[^<]*+(?:<(?!/textarea\s*+>)[^<]*+)*+</textarea\s*+>|<scr[iI]pt\b[^>]*+>[^<]*+(?:<(?!/scr[iI]pt\s*+>)[^<]*+)*+</scr[iI]pt\s*+>|<form\b(?:[^>"\']++|"[^"]*+"|\'[^\']*+\')*+>|<form\b[^>]*+>|<[a-zA-Z][a-zA-Z0-9:._-]*+(?:[^>"\']++|"[^"]*+"|\'[^\']*+\')*+>|<[a-zA-Z][a-zA-Z0-9:._-]*+[^>]*+>~is';
 
 	/**
 	 * Gate and transform a finished page.
@@ -168,7 +168,7 @@ class e_token_injector
 			return false;
 		}
 
-		if(!preg_match('~(?<![\w-])action\s*=\s*("[^"]*"|\'[^\']*\'|[^\s"\'>]+)~i', $tag, $match))
+		if(!preg_match('~(?<![\w-])act[iI]on\s*=\s*("[^"]*"|\'[^\']*\'|[^\s"\'>]+)~i', $tag, $match))
 		{
 			return true;
 		}
@@ -219,7 +219,7 @@ class e_token_injector
 			return self::hostMatches(substr($action, strlen($match[0])), $hosts);
 		}
 
-		if(preg_match('~^[a-z][a-z0-9+.\-]*:~i', $action))
+		if(preg_match('~^[a-z][a-z0-9+.\-]*:~', eShims::strtolower($action)))
 		{
 			return false;
 		}

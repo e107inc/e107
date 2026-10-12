@@ -1445,7 +1445,7 @@ class validatorClass
 										{    // Exact match search (noticed with exclamation mark in the end of the word)
 											$errMsg = ERR_DISALLOWED_TEXT_EXACT_MATCH;
 										}
-										elseif (stripos($v, $disTrim) !== false)
+										elseif (strpos(eShims::strtolower($v), eShims::strtolower($disTrim)) !== false)
 										{    // Wild card search
 											$errMsg = ERR_DISALLOWED_TEXT;
 										}

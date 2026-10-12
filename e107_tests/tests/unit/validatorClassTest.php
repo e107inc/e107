@@ -3,6 +3,8 @@
 
 	class validatorClassTest extends \Codeception\Test\Unit
 	{
+		use \Test\CorePrefs;
+
 
 		/** @var validatorClass */
 		protected $vc;
@@ -175,6 +177,33 @@
 			$this->assertSame($expected, $posted);
 
 		}
+
+		public function testADisallowedNameIsFoundInAnyCaseWhateverTheLocale()
+		{
+			$previous = setlocale(LC_CTYPE, 0);
+
+			if (setlocale(LC_CTYPE, 'tr_TR.UTF-8', 'tr_TR.utf8') === false)
+			{
+				self::markTestSkipped('No Turkish locale is installed.');
+			}
+
+			$restore = $this->withCorePrefs(array('signup_disallow_text' => 'mail'));
+
+			try
+			{
+				$posted = array('data' => array('user_name' => 'MAILROOM'), 'failed' => array(), 'errors' => array());
+				$vc = $this->vc;
+				$vc::dbValidateArray($posted, $this->vettingInfo, 'user', 0);
+			}
+			finally
+			{
+				$restore();
+				setlocale(LC_CTYPE, $previous);
+			}
+
+			self::assertSame(ERR_DISALLOWED_TEXT, $posted['errors']['user_name'], 'A disallowed name in capitals was accepted under a Turkish locale');
+		}
+
 		public function testValidateFields()
 		{
 

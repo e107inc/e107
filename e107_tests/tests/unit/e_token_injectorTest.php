@@ -66,6 +66,27 @@ class e_token_injectorTest extends \Codeception\Test\Unit
 		$this->assertInjected("<form\n\tmethod='post'\n\taction='/x'>x</form>");
 	}
 
+	public function testTheTokenStaysOutOfForeignFormsWhateverTheLocale()
+	{
+		$previous = setlocale(LC_CTYPE, 0);
+
+		if (setlocale(LC_CTYPE, 'tr_TR.UTF-8', 'tr_TR.utf8') === false)
+		{
+			self::markTestSkipped('No Turkish locale is installed.');
+		}
+
+		try
+		{
+			$this->assertNotInjected('<form method="post" action="MAILTO:someone@evil.example"><input name="a" /></form>');
+			$this->assertNotInjected('<form method="post" ACTION="https://evil.example/collect"><input name="a" /></form>');
+			$this->assertNotInjected('<SCRIPT>var t = \'<form method="post" action="/x">\';</SCRIPT>');
+		}
+		finally
+		{
+			setlocale(LC_CTYPE, $previous);
+		}
+	}
+
 	public function testGetFormIsLeftAlone()
 	{
 		$this->assertNotInjected('<form method="get" action="/search.php"><input name="q" /></form>');
