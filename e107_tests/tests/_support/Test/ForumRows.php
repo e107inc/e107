@@ -44,15 +44,17 @@ trait ForumRows
 	 * @param string $name
 	 * @param int $parent 0 for a category, or the id one is returned under
 	 * @param int $class the user class that may read it
+	 * @param int $sub the forum a sub-forum sits in, with $parent its category; 0 for a forum
 	 * @return int the new forum id
 	 */
-	protected function haveForum($name, $parent = 0, $class = e_UC_PUBLIC)
+	protected function haveForum($name, $parent = 0, $class = e_UC_PUBLIC, $sub = 0)
 	{
 		return $this->haveForumRow('forum', 'forum_id', array(
 			'forum_name'        => $name,
 			'forum_sef'         => \eHelper::title2sef($name, 'dashl'),
 			'forum_description' => '',
 			'forum_parent'      => (int) $parent,
+			'forum_sub'         => (int) $sub,
 			'forum_datestamp'   => time(),
 			'forum_class'       => (int) $class,
 			'forum_postclass'   => (int) $class,

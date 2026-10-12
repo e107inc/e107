@@ -136,8 +136,7 @@ if(!class_exists('forum_newforumposts_menu'))
 					LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id
 					LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 					LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
-					WHERE f.forum_id = t.thread_forum_id AND f.forum_class IN (".USERCLASS_LIST.")
-					AND fp.forum_class IN (".USERCLASS_LIST.") 
+					WHERE f.forum_id = t.thread_forum_id AND t.thread_forum_id IN ({$forumList}) 
 					GROUP BY t.thread_id  
 					ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int) vartrue($this->menuPref['display'],10);
 					}

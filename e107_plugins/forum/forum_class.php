@@ -1024,11 +1024,7 @@ class e107forum
 	 * those parent rows, so a category containing at least one permitted forum
 	 * is a member of the list in its own right.
 	 *
-	 * Two levels only. forum_sub, the third, is not consulted here and is not
-	 * consulted by forum_viewforum.php either: a sub-forum's forum_parent names
-	 * its category, so it is the category and not the parent forum that is
-	 * asked. Feeds built on this list are therefore exactly as permissive as
-	 * the site route, which is the property that matters.
+	 * A sub-forum is in the view list only while its forum is, at any depth; its posting classes are its own.
 	 *
 	 * @param string $type view, post or thread
 	 * @return int[]
@@ -2374,37 +2370,42 @@ class e107forum
 
 
 	/**
-	 * The two user classes a thread's forum is read through.
-	 *
-	 * forum_track records a user and a thread and nothing else, so where the
-	 * subscription was taken out has to be recovered before anyone can be judged
-	 * on it. A thread names its forum, and the forum's parent carries the second
-	 * half of the view permission, exactly as buildPermList() reads it. The
-	 * INNER JOIN to the parent is also what refuses a forum sitting at the top
-	 * level, which buildPermList() spells forum_parent != 0.
+	 * The user classes a thread is read through: its forum's and that forum's category's, and the same of every forum a sub-forum sits in.
 	 *
 	 * @param int $threadId
-	 * @return array|false forum_class and parent_class, or false when the thread
-	 *                     names no forum readable by anybody
+	 * @return int[]|false the classes, or false when the thread names no forum
+	 *                     readable by anybody
 	 */
 	private function trackForumClasses($threadId)
 	{
 		$sql = e107::getDb('forum_track');
 
-		$qry = "SELECT f.forum_class AS forum_class, fp.forum_class AS parent_class
-			FROM `#forum_thread` AS th
-			INNER JOIN `#forum` AS f ON th.thread_forum_id = f.forum_id
-			INNER JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id
-			WHERE th.thread_id = ".intval($threadId);
+		$forumId = $sql->gen("SELECT thread_forum_id FROM `#forum_thread` WHERE thread_id = ".intval($threadId))
+			? (int) $sql->fetch()['thread_forum_id'] : 0;
+		$classes = array();
+		$seen = array();
 
-		if(!$sql->gen($qry))
+		while($forumId !== 0 && !isset($seen[$forumId]))
 		{
-			return false;
+			$seen[$forumId] = true;
+
+			$qry = "SELECT f.forum_class AS forum_class, fp.forum_class AS parent_class, f.forum_sub AS forum_sub
+				FROM `#forum` AS f
+				INNER JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id
+				WHERE f.forum_id = ".$forumId;
+
+			if(!$sql->gen($qry))
+			{
+				return false;
+			}
+
+			$row = $sql->fetch();
+			$classes[] = (int) $row['forum_class'];
+			$classes[] = (int) $row['parent_class'];
+			$forumId = (int) $row['forum_sub'];
 		}
 
-		$row = $sql->fetch();
-
-		return empty($row) ? false : $row;
+		return ($forumId !== 0 || $classes === array()) ? false : array_values(array_unique($classes));
 	}
 
 
@@ -2433,9 +2434,12 @@ class e107forum
 		$qry = "SELECT u.user_id, u.user_name, u.user_email, u.user_lastvisit
 			FROM `#forum_track` AS t
 			INNER JOIN `#user` AS u ON t.track_userid = u.user_id
-			WHERE t.track_thread = ".intval($threadId)."
-			AND (".$this->trackClassHeld($classes['forum_class']).")
-			AND (".$this->trackClassHeld($classes['parent_class']).")";
+			WHERE t.track_thread = ".intval($threadId);
+
+		foreach($classes as $classId)
+		{
+			$qry .= " AND (".$this->trackClassHeld($classId).")";
+		}
 
 		if(!$sql->gen($qry))
 		{

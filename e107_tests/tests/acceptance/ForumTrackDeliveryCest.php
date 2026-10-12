@@ -87,6 +87,24 @@ class ForumTrackDeliveryCest
 	/** @var int */
 	private $threadN;
 
+	/** @var int a public sub-forum of D */
+	private $forumS;
+
+	/** @var int */
+	private $threadS;
+
+	/** @var int a public sub-forum of E, kept in the public category */
+	private $forumES;
+
+	/** @var int */
+	private $threadES;
+
+	/** @var int a public sub-forum of S */
+	private $forumSS;
+
+	/** @var int */
+	private $threadSS;
+
 	/** @var string[] addresses of the subscribers who may still read D and E */
 	private $readers = array();
 
@@ -142,6 +160,21 @@ class ForumTrackDeliveryCest
 		$this->threadN = $I->haveForumThread('Fixture Thread N', $this->forumN, 1);
 		$I->haveForumPost('Opening post in N', $this->threadN, $this->forumN, 1);
 
+		$this->forumS = $I->haveForum('Fixture Sub-forum S', 'fixture-subforum-s', $this->ids['category'],
+			\Helper\ForumFixture::CLASS_MOD_A, 9, 0, null, null, $this->forumD);
+		$this->threadS = $I->haveForumThread('Fixture Thread S', $this->forumS, 1);
+		$I->haveForumPost('Opening post in S', $this->threadS, $this->forumS, 1);
+
+		$this->forumES = $I->haveForum('Fixture Sub-forum ES', 'fixture-subforum-es', $this->ids['category'],
+			\Helper\ForumFixture::CLASS_MOD_A, 10, 0, null, null, $this->forumE);
+		$this->threadES = $I->haveForumThread('Fixture Sub-thread ES', $this->forumES, 1);
+		$I->haveForumPost('Opening post in ES', $this->threadES, $this->forumES, 1);
+
+		$this->forumSS = $I->haveForum('Fixture Sub-forum SS', 'fixture-subforum-ss', $this->ids['category'],
+			\Helper\ForumFixture::CLASS_MOD_A, 11, 0, null, null, $this->forumS);
+		$this->threadSS = $I->haveForumThread('Fixture Sub-thread SS', $this->forumSS, 1);
+		$I->haveForumPost('Opening post in SS', $this->threadSS, $this->forumSS, 1);
+
 		$I->haveForumMember('trackposter', '253,'.self::CLASS_STAFF);
 
 		$this->readers = array();
@@ -168,6 +201,9 @@ class ForumTrackDeliveryCest
 		$I->haveForumSubscriber($this->lapsed, $this->threadD);
 		$I->haveForumSubscriber($this->lapsed, $this->threadE);
 		$I->haveForumSubscriber($this->lapsed, $this->threadM);
+		$I->haveForumSubscriber($this->lapsed, $this->threadS);
+		$I->haveForumSubscriber($this->lapsed, $this->threadES);
+		$I->haveForumSubscriber($this->lapsed, $this->threadSS);
 
 		// Two accounts forum M is granted to that the class list cannot find:
 		// one carrying no user_class at all, one whose address has bounced.
@@ -311,6 +347,27 @@ class ForumTrackDeliveryCest
 		$I->dontSeeInDatabase('e107_mail_recipients', array(
 			'mail_recipient_email' => 'tracklapsed@example.com',
 		));
+	}
+
+	public function aSubscriberShutOutOfTheParentForumIsNotMailedASubForumReply(AcceptanceTester $I)
+	{
+		$this->reply($I, 'a reply in a sub-forum of the staff forum', $this->forumS, $this->threadS);
+
+		$this->seeOnlyTheReadersMailed($I);
+	}
+
+	public function aSubscriberShutOutOfAForumsCategoryIsNotMailedItsSubForumsReply(AcceptanceTester $I)
+	{
+		$this->reply($I, 'a reply in a sub-forum of forum E', $this->forumES, $this->threadES);
+
+		$this->seeOnlyTheReadersMailed($I);
+	}
+
+	public function aSubscriberShutOutOfAnEnclosingSubForumIsNotMailedTheReply(AcceptanceTester $I)
+	{
+		$this->reply($I, 'a reply in a sub-forum of sub-forum S', $this->forumSS, $this->threadSS);
+
+		$this->seeOnlyTheReadersMailed($I);
 	}
 
 	/**
@@ -460,12 +517,30 @@ class ForumTrackDeliveryCest
 	 * @param string $classes
 	 * @return string the member's address
 	 */
+	/**
+	 * Every reader mailed the reply just posted, and the lapsed subscriber not.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return void
+	 */
+	private function seeOnlyTheReadersMailed(AcceptanceTester $I)
+	{
+		foreach ($this->readers as $address)
+		{
+			$I->seeInDatabase('e107_mail_recipients', array('mail_recipient_email' => $address));
+		}
+
+		$I->dontSeeInDatabase('e107_mail_recipients', array(
+			'mail_recipient_email' => 'tracklapsed@example.com',
+		));
+	}
+
 	private function subscribe(AcceptanceTester $I, $name, $classes)
 	{
 		$userId = $I->haveForumMember($name, $classes);
 
 		foreach (array($this->ids['threadA'], $this->threadD, $this->threadE,
-			$this->threadM, $this->threadN) as $threadId)
+			$this->threadM, $this->threadN, $this->threadS, $this->threadES, $this->threadSS) as $threadId)
 		{
 			$I->haveForumSubscriber($userId, $threadId);
 		}

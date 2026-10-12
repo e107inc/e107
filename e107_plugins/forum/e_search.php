@@ -102,7 +102,8 @@ class forum_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-		$qry = " f.forum_parent != 0 AND fp.forum_class IN (".USERCLASS_LIST.") AND f.forum_class IN (".USERCLASS_LIST.") AND ";
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$qry = " ".e107forum::threadVisibleSql('t')." AND ";
 
 		if (!empty($parm['forum']) && is_numeric($parm['forum']))
 		{

@@ -297,7 +297,8 @@ class forum_attachments
 	 * permission rule written twice is a permission rule that can drift apart.
 	 * A forum grants nothing unless its parent grants it too, and a forum at
 	 * the top level grants nobody anything, which is why the join is not
-	 * decoration.
+	 * decoration. A sub-forum is visible only while the forum it sits in is,
+	 * at any depth; its posting classes are its own.
 	 *
 	 * It lives in this file rather than in forum_class.php because this file
 	 * loads into thumb.php's bootstrap and forum_class.php cannot: forum_class
@@ -308,7 +309,7 @@ class forum_attachments
 	 * @param array $classes userclass ids the caller holds
 	 * @param string $column one of the three forum class columns
 	 * @param array $forumIds forum ids to consider, empty for all of them
-	 * @return array rows of forum_id and forum_parent
+	 * @return array rows of forum_id, forum_parent and forum_sub
 	 */
 	public static function readableForumRows(array $classes, $column, array $forumIds = array())
 	{
@@ -330,15 +331,10 @@ class forum_attachments
 		// integers by construction rather than by escaping.
 		$classList = implode(', ', $classes);
 
-		$query = "SELECT f.forum_id, f.forum_parent
+		$query = "SELECT f.forum_id, f.forum_parent, f.forum_sub
 			FROM `#forum` AS f
 			LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp." . $column . " IN (" . $classList . ")
 			WHERE f." . $column . " IN (" . $classList . ") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL";
-
-		if($forumIds !== array())
-		{
-			$query .= " AND f.forum_id IN (" . implode(', ', array_map('intval', $forumIds)) . ")";
-		}
 
 		// A named handle, because a caller may be part way through a result set
 		// of its own when it asks.
@@ -356,7 +352,63 @@ class forum_attachments
 			$rows[] = $row;
 		}
 
+		return self::amongForums(self::withinVisibleForums($rows, $column), $forumIds);
+	}
+
+	/**
+	 * $rows without the sub-forums whose forum is not among them, repeated until none is left out; for the view column only.
+	 *
+	 * @param array $rows rows of forum_id, forum_parent and forum_sub
+	 * @param string $column the class column the rows were read through
+	 * @return array
+	 */
+	private static function withinVisibleForums(array $rows, $column)
+	{
+		if($column !== 'forum_class')
+		{
+			return $rows;
+		}
+
+		do
+		{
+			$ids = array_flip(array_map('intval', array_column($rows, 'forum_id')));
+			$kept = array();
+
+			foreach($rows as $row)
+			{
+				if((int) $row['forum_sub'] === 0 || isset($ids[(int) $row['forum_sub']]))
+				{
+					$kept[] = $row;
+				}
+			}
+
+			$dropped = count($kept) !== count($rows);
+			$rows = $kept;
+		}
+		while($dropped);
+
 		return $rows;
+	}
+
+	/**
+	 * $rows limited to the forums among $forumIds, or all of them when it is empty.
+	 *
+	 * @param array $rows
+	 * @param array $forumIds
+	 * @return array
+	 */
+	private static function amongForums(array $rows, array $forumIds)
+	{
+		if($forumIds === array())
+		{
+			return $rows;
+		}
+
+		$forumIds = array_flip(array_map('intval', $forumIds));
+
+		return array_values(array_filter($rows, function ($row) use ($forumIds) {
+			return isset($forumIds[(int) $row['forum_id']]);
+		}));
 	}
 
 	/**
