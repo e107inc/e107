@@ -514,7 +514,7 @@ class poll
 
 		if ($pollArray['poll_comment']) // Only get comments if they're allowed on poll. And we only need the count ATM
 		{
-			$sc->pollCommentTotal = $sql->count("comments", "(*)", "WHERE `comment_item_id`='".intval($pollArray['poll_id'])."' AND `comment_type`=4");
+			$sc->pollCommentTotal = $sql->count("comments", "(*)", "WHERE `comment_item_id`='".intval($pollArray['poll_id'])."' AND `comment_type`='4'");
 		}
 
 		$sc->pollCount 	    = $sql->count("polls", "(*)", "WHERE poll_id <= '".intval($pollArray['poll_id'])."'");
