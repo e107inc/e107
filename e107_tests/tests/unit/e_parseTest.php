@@ -520,6 +520,13 @@ EXPECTED;
 	}
 
 
+	public function testAWholeFieldPrintsOnlyALanguageTermItNames()
+	{
+		self::assertSame('e_ROOT', $this->tp->toHTML('e_ROOT', false, 'TITLE'), 'A title that names a server path constant printed its value');
+		self::assertSame('e_SYSTEM', $this->tp->toHTML('e_SYSTEM', false, 'DESCRIPTION'));
+		self::assertSame(LAN_EDIT, $this->tp->toHTML('LAN_EDIT', false, 'TITLE'));
+	}
+
 	function testToHTMLWithBBcode()
 	{
 		$tests = array(

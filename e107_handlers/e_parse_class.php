@@ -2012,13 +2012,10 @@ class e_parse
 
 		$fromadmin = $opts['fromadmin'];
 
-		// Convert defines(constants) within text. eg. Lan_XXXX - must be the entire text string (i.e. not embedded)
-		// The check for '::' is a workaround for a bug in the Zend Optimiser 3.3.0 and PHP 5.2.4 combination
-		// - causes crashes if '::' in site name
-
-		if ($opts['defs'] && (strlen($text) < 35) && ((strpos($text, '::') === false) && defined(trim($text))))
+		// Convert a language term named by the entire text, eg. LAN_XXXX (i.e. not embedded)
+		if ($opts['defs'] && (strlen($text) < 35) && ($term = self::languageTerm($text)) !== null)
 		{
-			$text = constant(trim($text)); // don't return yet, words could be hooked with linkwords etc.
+			$text = $term; // don't return yet, words could be hooked with linkwords etc.
 		}
 
 		if ($opts['no_tags'])
@@ -4744,6 +4741,24 @@ class e_parse
 	public function leadingZeros($num, $numDigits)
 	{
 		return (string) sprintf('%0' . $numDigits . 'd', $num);
+	}
+
+	/**
+	 * The value of the language term a name in content refers to, or null when it names no defined language term.
+	 *
+	 * @param string $name
+	 * @return string|null
+	 */
+	public static function languageTerm($name)
+	{
+		$name = trim((string) $name);
+
+		if (preg_match('/^[A-Z][A-Za-z0-9_]*$/', $name) && preg_match('/LAN|\d$/', $name) && defined($name))
+		{
+			return constant($name);
+		}
+
+		return null;
 	}
 
 	/**

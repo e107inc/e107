@@ -14,9 +14,9 @@ function lan_shortcode($parm = '')
 	{
 		return constant('LAN_'.$lan);
 	}
-	elseif(preg_match('/^[A-Z][A-Za-z0-9_]*$/', $lan) && preg_match('/LAN|\d$/', $lan) && defined($lan))
+	elseif(($term = e_parse::languageTerm($lan)) !== null)
 	{
-		return constant($lan);
+		return $term;
 	}
 	elseif(ADMIN)
 	{
