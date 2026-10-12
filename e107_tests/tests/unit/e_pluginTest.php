@@ -122,6 +122,14 @@
 
 		}
 
+		public function testIsInstallRequiredReadsTheRootAttribute()
+		{
+			$this->assertTrue(e_plugin::isInstallRequired(array('@attributes' => array('name' => 'Fixture', 'installRequired' => 'true'))));
+			$this->assertFalse(e_plugin::isInstallRequired(array('@attributes' => array('name' => 'Fixture', 'installRequired' => 'false'))));
+			$this->assertFalse(e_plugin::isInstallRequired(array('@attributes' => array('name' => 'Fixture'))));
+			$this->assertFalse(e_plugin::isInstallRequired(array()));
+		}
+
 		public function testSetInstalled()
 		{
 			$this->ep->setInstalled('some-plugin', '1.3');

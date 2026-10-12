@@ -316,16 +316,59 @@
 		}
 
 		/**
-		 * Handlers of plugins that were deleted rather than uninstalled have
-		 * no plugin data to check, so the caller's readability check decides.
+		 * The shipped download entry names core's own handler file, so a deleted plugin folder is the only sign that nothing backs it.
 		 */
-		public function testIsCommentHandlerAvailableToleratesMissingPlugin()
+		public function testIsCommentHandlerAvailableRefusesAPluginWhoseFolderIsGone()
 		{
-			$handler = array('id' => 5, 'dir' => 'content', 'class' => '0');
+			self::assertFalse(is_dir(e_PLUGIN . 'content'), 'The 0.7-era content plugin should not be on disk.');
 
-			self::assertTrue(e_search::isCommentHandlerAvailable('content', $handler));
-			self::assertFalse(is_readable(e_search::getCommentHandlerPath('content', $handler)),
-				'The 0.7-era content plugin should not be on disk.');
+			e107::getConfig()->setPref('plug_installed/content', '1.0');
+
+			self::assertFalse(e_search::isCommentHandlerAvailable('content', array('id' => 5, 'dir' => 'content', 'class' => '0')),
+				'A handler whose plugin folder is gone is not usable, even while the plugin is still listed as installed.');
+			self::assertFalse(e_search::isCommentHandlerAvailable('content', array('id' => 5, 'dir' => 'core', 'class' => '0')),
+				'A core-flagged handler whose plugin folder is gone is not usable either.');
+		}
+
+		/**
+		 * A plugin without a plugin.xml declares nothing, so it counts as needing installation.
+		 */
+		public function testIsCommentHandlerAvailableRequiresALegacyPluginToBeInstalled()
+		{
+			$handler = array('id' => 9, 'dir' => 'newforumposts_main', 'class' => '0');
+
+			self::assertFalse(is_readable(e_PLUGIN . 'newforumposts_main/plugin.xml'), 'newforumposts_main should still ship a plugin.php alone.');
+
+			e107::getConfig()->removePref('plug_installed/newforumposts_main');
+			self::assertFalse(e_search::isCommentHandlerAvailable('newforumposts_main', $handler));
+
+			e107::getConfig()->setPref('plug_installed/newforumposts_main', '1.0');
+			self::assertTrue(e_search::isCommentHandlerAvailable('newforumposts_main', $handler));
+		}
+
+		/**
+		 * An uninstalled plugin counts only when its plugin.xml names it and does not ask to be installed.
+		 */
+		public function testIsCommentHandlerAvailableReadsAnUninstalledPluginsOwnDeclaration()
+		{
+			$folder = 'e107_tests_comment_handler_plugin';
+			$handler = array('id' => 'e107_tests', 'dir' => $folder, 'class' => '0');
+			$declarations = array(
+				'<e107Plugin name="Fixture" installRequired="false"></e107Plugin>' => true,
+				'<e107Plugin name="Fixture"></e107Plugin>' => true,
+				'<e107Plugin name="Fixture" installRequired="true"></e107Plugin>' => false,
+				'<e107Plugin><name>Fixture</name></e107Plugin>' => false,
+				'<e107Plugin name="Fixture"' => false,
+			);
+
+			e107::getConfig()->removePref('plug_installed/' . $folder);
+
+			foreach($declarations as $xml => $available)
+			{
+				$this->getModule('\Helper\Unit')->writeAppFile('e107_plugins/' . $folder . '/plugin.xml', $xml);
+
+				self::assertSame($available, e_search::isCommentHandlerAvailable($folder, $handler), $xml);
+			}
 		}
 
 		public function testIsCommentHandlerAvailableToleratesMalformedEntries()
