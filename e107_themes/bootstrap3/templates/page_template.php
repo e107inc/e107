@@ -156,7 +156,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_WRAPPER['customfields']['CPAGEFIELD: name=myvideo'] = "<tr><td colspan='2'>{---}</td></tr>";
 
 	// Make image clickable for the display of a larger image in a modal window.
-	$PAGE_WRAPPER['customfields']['CPAGEFIELD: name=myimage'] = "<td><a class='e-modal' data-modal-caption='{CPAGEFIELDTITLE: name=myimage}' target='_blank' href='{CPAGEFIELD: name=myimage&mode=raw&w=800}'>{---}</a></td></tr>";
+	$PAGE_WRAPPER['customfields']['CPAGEFIELD: name=myimage'] = "<td><a class='e-modal' target='_blank' href='{CPAGEFIELD: name=myimage&mode=raw&w=800}'>{---}</a></td></tr>";
 
 	//Custom description for URL link.
 	$PAGE_WRAPPER['customfields']['CPAGEFIELD: name=myurl&mode=raw'] = "<td><a class='btn btn-primary' target='_blank' href='{---}'>View Website</a></td></tr>";

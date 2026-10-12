@@ -881,6 +881,170 @@
 		}
 
 		/**
+		 * A field's settings, as a chapter stored them, reach the page form and the page encoded, and only the settings
+		 * a field has.
+		 */
+		public function testStoredMarkupInAFieldsSettingsReachesTheFormAsText()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+
+			$markup = '"><svg onload=alert(1)>';
+			$this->cf->loadConfig(array(
+				'__tabs__' => array('additional' => 'Tab'.$markup),
+				'colour'   => array(
+					'title'      => 'Colour'.$markup,
+					'type'       => 'dropdown',
+					'writeParms' => json_encode(array('optArray' => array('blue' => 'Blue'.$markup, 'R&D' => 'Research', "x'>".$markup => array('a' => 'A')), 'trClass' => "x' onmouseover='a",
+						'tabindex' => "1'><svg onload=alert(1)>", 'other' => 'onfocus=alert(1)', 'post' => $markup, 'ajax' => array('src' => 'https://example.com/'))),
+					'help'       => 'Help'.$markup,
+					'note'       => 'Note'.$markup,
+				),
+				'shape'    => array('title' => 'Shape', 'type' => 'text', 'writeParms' => "tdClassLeft=x'".$markup.'&default='.rawurlencode($markup).'&size=large', 'help' => ''),
+				'count'    => array('title' => 'Count', 'type' => 'number', 'writeParms' => '{"decimals":2,"min":-5}', 'help' => ''),
+				'answer'   => array('title' => 'Answer', 'type' => 'dropdown', 'writeParms' => json_encode(array('optArray' => array("Don't know", 'R&D'), 'useValues' => 1, 'default' => 'Pick'.$markup)), 'help' => ''),
+				'tone'     => array('title' => 'Tone', 'type' => 'radio', 'writeParms' => json_encode(array('optArray' => array('Red', 'Green'), 'useValues' => 1, 'default' => 'Red')), 'help' => ''),
+				'unknown'  => array('title' => 'Unknown', 'type' => 'method', 'writeParms' => '', 'help' => ''),
+				'x'.$markup => array('title' => 'Bad key', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+			));
+
+			$seen = array();
+			$ui = $this->make('e_admin_ui', array(
+				'addTab'       => function ($key, $label) use (&$seen) { $seen['tab'] = $label; },
+				'setFieldAttr' => function ($fields) use (&$seen) { $seen['fields'] = $fields; },
+			));
+
+			$this->cf->setAdminUIConfig('page_fields', $ui);
+
+			$this->assertSame(array('page_fields__colour', 'page_fields__shape', 'page_fields__count', 'page_fields__answer', 'page_fields__tone'), array_keys($seen['fields']));
+			$this->assertSame(array("Don't know", 'R&D'), array_keys($seen['fields']['page_fields__answer']['writeParms']['optArray']));
+			$this->assertSame(array('optArray', 'default'), array_keys($seen['fields']['page_fields__answer']['writeParms']));
+			$this->assertNoMarkupIn($seen['fields']['page_fields__answer']['writeParms']['default'], 'dropdown default');
+			$this->assertSame(array('optArray' => array('Red', 'Green')), $seen['fields']['page_fields__tone']['writeParms']);
+			$this->assertNoMarkupIn($seen['tab'], 'tab');
+			$this->assertNoMarkupIn($this->cf->getTabLabel(), 'tab label');
+			$this->assertNoMarkupIn($this->cf->getFieldTitle('colour'), 'field title');
+
+			$colour = $seen['fields']['page_fields__colour'];
+			$this->assertSame(array('title', 'type', 'writeParms', 'help', 'tab', 'data'), array_keys($colour));
+			$this->assertSame('additional', $colour['tab']);
+			$this->assertNoMarkupIn($colour['title'], 'title');
+			$this->assertNoMarkupIn($colour['help'], 'help');
+			$this->assertSame(array('optArray'), array_keys($colour['writeParms']));
+			$this->assertSame(array('blue', 'R&D'), array_keys($colour['writeParms']['optArray']));
+			$this->assertNoMarkupIn($colour['writeParms']['optArray']['blue'], 'option');
+			$this->assertSame(array('size' => 'large'), $seen['fields']['page_fields__shape']['writeParms']);
+			$this->assertSame(array('decimals' => 2, 'min' => -5), $seen['fields']['page_fields__count']['writeParms']);
+
+			$this->cf->loadData(json_encode(array('colour' => 'blue')));
+			$this->assertNoMarkupIn((string) $this->cf->getFieldValue('colour'), 'chosen option');
+			$this->assertStringContainsString('Blue', $this->cf->getFieldValue('colour'));
+		}
+
+		/**
+		 * A tab setting stored with a key of its own choosing still opens the field tab the form expects.
+		 */
+		public function testAStoredTabKeyIsNotTheTabId()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+
+			$this->cf->loadConfig(array(
+				'__tabs__' => array('x"><svg onload=alert(1)>' => 'Tab'),
+				'shape'    => array('title' => 'Shape', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+			));
+
+			$seen = array();
+			$ui = $this->make('e_admin_ui', array(
+				'addTab'       => function ($key, $label) use (&$seen) { $seen['tab'] = array($key => $label); },
+				'setFieldAttr' => function ($fields) use (&$seen) { $seen['fields'] = $fields; },
+			));
+
+			$this->cf->setAdminUIConfig('page_fields', $ui);
+
+			$this->assertSame(array('additional' => 'Additional'), $seen['tab']);
+			$this->assertSame('additional', $seen['fields']['page_fields__shape']['tab']);
+		}
+
+		public function testProcessConfigPostKeepsOnlyAFieldsOwnSettings()
+		{
+			$result = $this->withPostClasses(e_UC_NOBODY, e_UC_NOBODY, function () { return $this->cf->processConfigPost('chapter_fields', $this->postedConfig()); });
+
+			$this->assertSame('Chapter', $result['chapter_name']);
+			$this->assertArrayNotHasKey('__e_customfields_tabs__', $result);
+			$this->assertSame(array(
+				'__tabs__'  => array('additional' => 'My Tab'),
+				'colour'    => array('title' => 'Colour', 'type' => 'dropdown', 'writeParms' => '{ "optArray": { "blue": "Blue" } }', 'help' => 'Pick one'),
+				'__trust__' => 0,
+			), $result['chapter_fields']);
+
+			$result = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function () { return $this->cf->processConfigPost('chapter_fields', $this->postedConfig()); });
+			$this->assertSame(2, $result['chapter_fields']['__trust__']);
+			$this->assertSame('n', $result['chapter_fields']['colour']['note']);
+		}
+
+		/**
+		 * A title, help text or tab label saved by an administrator who may post HTML prints as HTML; parameters stay
+		 * read through the whitelist unless the author has script access, and a configuration with no record, or saved
+		 * by an administrator who may not post HTML, prints encoded.
+		 */
+		public function testAFieldsSettingsPrintAsTheirAuthorMayPostThem()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+
+			$config = array(
+				'__tabs__' => array('additional' => 'Tab <b>bold</b>'),
+				'colour'   => array('title' => 'Colour <b>bold</b>', 'type' => 'dropdown', 'help' => 'Help <b>bold</b>', 'note' => 'Note',
+					'writeParms' => json_encode(array('optArray' => array('blue' => 'Blue <b>bold</b>'), 'trClass' => 'row-class'))),
+			);
+
+			foreach(array(1 => false, 2 => true) as $trust => $everyParameter)
+			{
+				$seen = array();
+				$ui = $this->make('e_admin_ui', array(
+					'addTab'       => function ($key, $label) use (&$seen) { $seen['tab'] = $label; },
+					'setFieldAttr' => function ($fields) use (&$seen) { $seen['fields'] = $fields; },
+				));
+				$this->cf->loadConfig($config + array('__trust__' => $trust))->setAdminUIConfig('page_fields', $ui);
+				$colour = $seen['fields']['page_fields__colour'];
+
+				$this->assertSame('Tab <b>bold</b>', $seen['tab']);
+				$this->assertSame('Colour <b>bold</b>', $colour['title']);
+				$this->assertSame('Help <b>bold</b>', $colour['help']);
+				$this->assertSame('Colour <b>bold</b>', $this->cf->getFieldTitle('colour'));
+				$this->assertSame($everyParameter, isset($colour['writeParms']['trClass']), 'trust '.$trust);
+				$this->assertSame($everyParameter, isset($colour['note']), 'trust '.$trust);
+			}
+
+			$this->cf->loadConfig($config);
+			$this->assertNoMarkupIn($this->cf->getFieldTitle('colour'), 'unrecorded title');
+			$this->assertNoMarkupIn($this->cf->getTabLabel(), 'unrecorded tab label');
+
+			$this->cf->loadConfig(array('colour' => array('title' => 'e_ROOT', 'type' => 'text', 'writeParms' => '', 'help' => ''), '__trust__' => 1));
+			$this->assertSame('e_ROOT', $this->cf->getFieldTitle('colour'), 'a constant name stays a name');
+
+			$this->cf->loadConfig(array('colour' => array('title' => 'Colour&#039; <b>bold</b>', 'type' => 'text', 'writeParms' => '', 'help' => ''), '__trust__' => 0));
+			$this->assertSame('Colour&#039; &lt;b&gt;bold&lt;/b&gt;', $this->cf->getFieldTitle('colour'));
+		}
+
+		/**
+		 * @return array a chapter form's post with one good row and every kind of row
+		 *               {@see e_customfields::processConfigPost()} refuses
+		 */
+		private function postedConfig()
+		{
+			return array(
+				'chapter_name'            => 'Chapter',
+				'__e_customfields_tabs__' => 'My Tab',
+				'chapter_fields'          => array(
+					array('key' => 'colour', 'title' => 'Colour', 'type' => 'dropdown', 'writeParms' => '{ "optArray": { "blue": "Blue" } }', 'help' => 'Pick one', 'note' => 'n', 'validate' => true),
+					array('key' => 'shape', 'title' => 'Shape', 'type' => 'method', 'writeParms' => '', 'help' => ''),
+					array('key' => '__tabs__', 'title' => 'Tabs', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+					array('key' => 'x"><svg', 'title' => 'Bad key', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+					array('key' => '', 'title' => 'Empty row', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+				),
+			);
+		}
+
+		/**
 		 * @param array $stored a page's custom field values as {@see e_customfields::processDataPost()} stored them
 		 * @return array what the page form posts back for them untouched: each value it is given, as a browser reads it
 		 *               once decoded and posts it back from the field's input or text area

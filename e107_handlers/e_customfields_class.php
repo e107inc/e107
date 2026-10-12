@@ -29,17 +29,25 @@
 		 */
 		private $_trust = array();
 
+		/** @var int|null the same for the administrator who last saved $_config */
+		private $_configTrust = null;
+
 		private $_field_limit = 30;
 
 		private $_tab = array();
 
 		private $_tab_default = 'additional';
 
+		private $_tab_label = 'Additional';
+
+		private $_writeParms = array('optArray', 'useValues', 'default', 'format', 'type', 'size', 'rows', 'placeholder', 'maxlength',
+			'multiple', 'min', 'max', 'step', 'decimals');
+
 
 		public function __construct()
 		{
 			asort($this->_fieldTypes);
-			$this->_tab = array($this->_tab_default => 'Additional');
+			$this->_tab = array($this->_tab_default => $this->_tab_label);
 
 		}
 
@@ -61,11 +69,11 @@
 		}
 
 		/**
-		 * @return mixed|string
+		 * @return string the tab's label, encoded for HTML unless its author's classes decided how it was stored
 		 */
 		public function getTabLabel()
 		{
-			return $this->_tab[$this->_tab_default];
+			return $this->printable($this->_tab[$this->_tab_default]);
 		}
 
 
@@ -81,15 +89,17 @@
 				return $this;
 			}
 
+			$this->_configTrust = null;
+
 			if(is_array($data))
 			{
 				if(isset($data['__tabs__']))
 				{
-					$this->_tab = $data['__tabs__'];
+					$this->_tab = $this->tabsFrom($data['__tabs__']);
 					unset($data['__tabs__']);
 				}
 
-				$this->_config = $data;
+				$this->_config = $this->withoutTrust($data);
 
 				return $this;
 			}
@@ -101,11 +111,11 @@
 
 				if(!empty($arr['__tabs__']))
 				{
-					$this->_tab = $arr['__tabs__'];
+					$this->_tab = $this->tabsFrom($arr['__tabs__']);
 					unset($arr['__tabs__']);
 				}
 
-				$this->_config = $arr;
+				$this->_config = $this->withoutTrust($arr);
 			}
 
 
@@ -200,7 +210,7 @@
 				case 'dropdown':
 				case 'checkboxes':
 				case 'radio':
-					$ret = ($raw) ? $text : e107::getForm()->renderValue('customfield_'.$key,$this->decoded($value),$this->_config[$key]);
+					$ret = ($raw) ? $text : e107::getForm()->renderValue('customfield_'.$key,$this->decoded($value),$this->definition($this->_config[$key]));
 				break;
 
 				case 'video':
@@ -271,7 +281,7 @@
 					}
 					else
 					{
-						$ret = e107::getForm()->progressBar($key,$label,$this->_config[$key]);
+						$ret = e107::getForm()->progressBar($key,$label,$this->definition($this->_config[$key]));
 					}
 
 					break;
@@ -383,6 +393,129 @@
 			}
 
 			return is_string($value) ? html_entity_decode($value, ENT_QUOTES, 'UTF-8') : $value;
+		}
+
+
+		/**
+		 * The parts of a field's stored configuration a form or a page reads, encoded to print, or null for a type this
+		 * class does not render.
+		 *
+		 * @param array $fld
+		 * @return array|null
+		 */
+		private function definition($fld)
+		{
+			if(!is_array($fld) || !in_array(varset($fld['type']), $this->_fieldTypes, true))
+			{
+				return null;
+			}
+
+			$writeParms = varset($fld['writeParms'], array());
+
+			if(is_string($writeParms))
+			{
+				$json = e107::getParser()->isJSON($writeParms);
+
+				if(is_array($json))
+				{
+					$writeParms = $json;
+				}
+				else
+				{
+					parse_str($writeParms, $writeParms);
+				}
+			}
+
+			$writeParms = is_array($writeParms) ? $writeParms : array();
+
+			if($this->_configTrust !== 2)
+			{
+				$writeParms = array_intersect_key($writeParms, array_flip($this->_writeParms));
+
+				if(isset($writeParms['optArray']))
+				{
+					$options = is_array($writeParms['optArray']) ? array_filter($writeParms['optArray'], 'is_scalar') : array();
+					$writeParms['optArray'] = ($fld['type'] === 'dropdown' && !empty($writeParms['useValues'])) ? array_combine($options, $options) : $options;
+					unset($writeParms['useValues']);
+				}
+
+				if(!isset($writeParms['default']) || !is_string($writeParms['default']) || ($fld['type'] !== 'dropdown' && ($writeParms['default'] !== 'blank' || !in_array($fld['type'], array('radio', 'checkboxes'), true))))
+				{
+					unset($writeParms['default']);
+				}
+
+				$writeParms = $this->encoded($writeParms);
+			}
+
+			$definition = array(
+				'title'      => $this->printable(varset($fld['title'], '')),
+				'type'       => $fld['type'],
+				'writeParms' => $writeParms,
+				'help'       => $this->printable(varset($fld['help'], '')),
+			);
+
+			return ($this->_configTrust === 2) ? $definition + $fld : $definition;
+		}
+
+
+		/**
+		 * @param mixed $value a title, help text or tab label as the configuration stores it
+		 * @return mixed HTML for an author who could post it when it was stored, otherwise encoded text
+		 */
+		private function printable($value)
+		{
+			if(empty($this->_configTrust) || !is_string($value))
+			{
+				return $this->encoded($value);
+			}
+
+			return ($this->_configTrust === 2) ? $this->asScriptAuthorWrote($value) : e107::getParser()->toHTML($value, false, 'TITLE,scparse_off,defs_off');
+		}
+
+
+		/**
+		 * @param array $config a stored configuration
+		 * @return array the configuration without its '__trust__' record, which sets $_configTrust
+		 */
+		private function withoutTrust(array $config)
+		{
+			if(isset($config['__trust__']))
+			{
+				$this->_configTrust = in_array($config['__trust__'], array(0, 1, 2), true) ? $config['__trust__'] : null;
+				unset($config['__trust__']);
+			}
+
+			return $config;
+		}
+
+
+		/**
+		 * @param mixed $tabs the stored '__tabs__' setting
+		 * @return array the field tab's id and label, the id always the default one
+		 */
+		private function tabsFrom($tabs)
+		{
+			$label = is_array($tabs) && isset($tabs[$this->_tab_default]) ? $tabs[$this->_tab_default] : null;
+
+			return array($this->_tab_default => is_string($label) ? $label : $this->_tab_label);
+		}
+
+
+		/**
+		 * @param mixed $value a string, or an array whose string values are encoded at every depth and whose keys
+		 *                     are kept
+		 * @return mixed
+		 */
+		private function encoded($value)
+		{
+			$tp = e107::getParser();
+
+			if(is_array($value))
+			{
+				return array_map(array($this, 'encoded'), $value);
+			}
+
+			return is_string($value) ? $tp->attributeValue($value) : $value;
 		}
 
 
@@ -615,14 +748,14 @@
 
 		/**
 		 * @param $key
-		 * @return mixed|null
+		 * @return string|null the field's title, encoded for HTML unless its author's classes decided how it was stored
 		 */
 		public function getFieldTitle($key)
 		{
 
 			if(!empty($this->_config[$key]['title']))
 			{
-				return $this->_config[$key]['title'];
+				return $this->printable($this->_config[$key]['title']);
 			}
 
 			return null;
@@ -653,7 +786,7 @@
 
 			$text = "
 			<div class='form-group'>
-				".$frm->text('__e_customfields_tabs__', $this->_tab[$this->_tab_default], 30, array('placeholder' => 'Tab label', 'size' =>'medium', 'required' =>1))."
+				".$frm->text('__e_customfields_tabs__', html_entity_decode($this->_tab[$this->_tab_default], ENT_QUOTES, 'UTF-8'), 30, array('placeholder' => 'Tab label', 'size' =>'medium', 'required' =>1))."
 			</div>
 			<table class='table table-striped table-bordered'>
 			<colgroup>
@@ -682,10 +815,10 @@
 				);
 
 				$fieldName = $frm->text($name . '[' . $i . '][key]', varset($value[$i]['key']), 30, array('pattern' => '^[a-z0-9-]*'));
-				$fieldTitle = $frm->text($name . '[' . $i . '][title]', varset($value[$i]['title']), 80);
+				$fieldTitle = $frm->text($name . '[' . $i . '][title]', html_entity_decode(varset($value[$i]['title']), ENT_QUOTES, 'UTF-8'), 80);
 				$fieldType = $frm->select($name . '[' . $i . '][type]', $this->getFieldTypes(), varset($value[$i]['type']), $writeParms);
 				$fieldParms = $frm->text($name . '[' . $i . '][writeParms]', varset($value[$i]['writeParms']), 255, $parmsWriteParms);
-				$fieldHelp = $frm->text($name . '[' . $i . '][help]', varset($value[$i]['help']), 255, array('size' => 'block-level'));
+				$fieldHelp = $frm->text($name . '[' . $i . '][help]', html_entity_decode(varset($value[$i]['help']), ENT_QUOTES, 'UTF-8'), 255, array('size' => 'block-level'));
 				$text .= '<tr><td>' . $fieldName . '</td><td>' . $fieldTitle . '</td><td>' . $fieldType . '</td><td>' . $fieldParms . '</td><td>' . $fieldHelp . '</td></tr>';
 			}
 
@@ -738,26 +871,28 @@
 			$fields = array();
 
 			$tabKey = key($this->_tab);
-			$ui->addTab($tabKey, $this->_tab[$tabKey]);
+			$ui->addTab($tabKey, $this->printable($this->_tab[$tabKey]));
 
 
 			foreach($this->_config as $key=>$fld)
 			{
+				$fld = $this->definition($fld);
+
+				if($fld === null || !$this->isFieldKey($key))
+				{
+					continue;
+				}
+
 				$fld['tab'] = $tabKey;
 				$fld['data'] = false;
 
 				if($fld['type'] === 'icon')
 				{
-					$fld['writeParms'] .= '&glyphs=1';
+					$fld['writeParms']['glyphs'] = 1;
 				}
 
 				if($fld['type'] === 'checkboxes')
 				{
-					if($tmp = e107::getParser()->isJSON($fld['writeParms']))
-					{
-						$fld['writeParms'] = $tmp;
-					}
-
 					$fld['writeParms']['useKeyValues'] = 1;
 				}
 
@@ -809,31 +944,38 @@
 			}
 
 
+			$tp = e107::getParser();
+			$trust = $this->authorTrust();
 			$new = array();
 
-			if(!empty($postData['__e_customfields_tabs__']))
+			if(!empty($postData['__e_customfields_tabs__']) && is_string($postData['__e_customfields_tabs__']))
 			{
-				$new['__tabs__'] = array($this->_tab_default =>	$postData['__e_customfields_tabs__']);
-				unset($postData['__e_customfields_tabs__']);
+				$new['__tabs__'] = array($this->_tab_default =>	$tp->toDB($postData['__e_customfields_tabs__']));
 			}
 
-			foreach($postData[$fieldname] as $fields)
+			unset($postData['__e_customfields_tabs__']);
+
+			foreach((array) $postData[$fieldname] as $fields)
 			{
-
-
-
-
-				if(empty($fields['key']) || empty($fields['type']))
+				if(!is_array($fields) || empty($fields['key']) || !$this->isFieldKey($fields['key']) || !in_array(varset($fields['type']), $this->_fieldTypes, true))
 				{
 					continue;
 				}
 
-
 				$key = $fields['key'];
 				unset($fields['key']);
-				$new[$key] = $fields;
 
+				$new[$key] = array(
+					'title'      => is_string(varset($fields['title'])) ? $tp->toDB($fields['title']) : '',
+					'type'       => $fields['type'],
+					'writeParms' => is_string(varset($fields['writeParms'])) ? $fields['writeParms'] : '',
+					'help'       => is_string(varset($fields['help'])) ? $tp->toDB($fields['help']) : '',
+				) + (($trust === 2) ? $fields : array());
+			}
 
+			if(!empty($new))
+			{
+				$new['__trust__'] = $trust;
 			}
 
 			$postData[$fieldname] = empty($new) ? null : $new;
