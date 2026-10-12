@@ -4585,6 +4585,12 @@ class e_parse
 	private function toGlyphEmbed($cat, $id, $parm = array())
 	{
 		$dirs = ['far' => 'regular', 'fab' => 'brands', 'fas' => 'solid'];
+
+		if (!isset($dirs[$cat]) || !preg_match('/^[a-z0-9-]+$/', $id))
+		{
+			return false;
+		}
+
 		$path = e_WEB . 'lib/font-awesome/5/svgs/';
 		$path .= $dirs[$cat] . '/';
 		$path .= str_replace('fa-', '', $id) . ".svg";
