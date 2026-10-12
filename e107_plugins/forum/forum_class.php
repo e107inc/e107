@@ -2150,14 +2150,25 @@ class e107forum
 
 
 
+	/**
+	 * The forum rows for the index, grouped by level: only those the caller may view unless $all, so a caller who may view no forum gets none.
+	 *
+	 * @param bool $all every row, whatever the caller may view
+	 * @return array|false keyed parents, forums, subs and all; false when no row is listed
+	 */
 	function forumGetForumList($all=false)
 	{
 		$sql = e107::getDb();
 
 		$where = '';
-		if(!empty($this->permList['view_list']))
+		if(!$all)
 		{
-			$where = ($all ? '' : " WHERE forum_id IN ({$this->permList['view_list']}) ");
+			if(empty($this->permList['view_list']))
+			{
+				return false;
+			}
+
+			$where = " WHERE forum_id IN ({$this->permList['view_list']}) ";
 		}
 
 		$qry = 'SELECT f.*, u.user_name FROM `#forum` AS f
