@@ -58,6 +58,7 @@
  *
  */
 
+use e107\Database\NamedLock;
 
 class eIPHandler
 {
@@ -1295,7 +1296,6 @@ class banlistManager
 	const DELETE_GUARD_LAPSED = 'lapsed';
 
 	private $ourConfigDir = '';
-	private $replaceLockHeld = false;
 	public $banTypes = array();
 
 	public function __construct()
@@ -1519,10 +1519,11 @@ class banlistManager
 		$defaultExpiry = ($defaultHours > 0) ? time() + ($defaultHours * 3600) : 0;
 
 		$replacedIds = array();
+		$replaceLock = new NamedLock($sql, $this->replaceLockName());
 
 		if($replaceImported)
 		{
-			$lock = $this->takeReplaceLock();
+			$lock = $replaceLock->take();
 
 			if($lock !== true)
 			{
@@ -1698,53 +1699,8 @@ class banlistManager
 		}
 		finally
 		{
-			$this->releaseReplaceLock();
+			$replaceLock->release();
 		}
-	}
-
-	/**
-	 *	Take the lock that holds a replace-import's snapshot and delete together, without waiting for a run that already has it.
-	 *
-	 *	@return bool|null true where this run has the lock, false where another run holds it, null where the server did not say.
-	 */
-	private function takeReplaceLock()
-	{
-		$row = $this->lockQuery('SELECT GET_LOCK(:name, 0) AS locked');
-		$locked = (is_array($row) && isset($row['locked'])) ? (string) $row['locked'] : null;
-		$this->replaceLockHeld = ($locked === '1');
-
-		return ($locked === null) ? null : $this->replaceLockHeld;
-	}
-
-	/**
-	 *	Release the replace-import lock where this run took it.
-	 */
-	private function releaseReplaceLock()
-	{
-		if(!$this->replaceLockHeld)
-		{
-			return;
-		}
-
-		$this->replaceLockHeld = false;
-		$this->lockQuery('SELECT RELEASE_LOCK(:name)');
-	}
-
-	/**
-	 *	Run one statement about the replace-import lock, which names it as :name.
-	 *
-	 *	@param string $statement
-	 *	@return array|false the row the server answered with.
-	 */
-	private function lockQuery($statement)
-	{
-		$sql = e107::getDb();
-		$sql->db_Query(array(
-			'PREPARE' => $statement,
-			'BIND'    => array('name' => array('value' => $this->replaceLockName(), 'type' => PDO::PARAM_STR)),
-		), null, 'db_Select');
-
-		return $sql->fetch();
 	}
 
 	/**
