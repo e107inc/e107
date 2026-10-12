@@ -106,5 +106,65 @@
 			$this->assertSame(IMAGE_nonew_comments, $NEWIMAGE);
 		}
 
+		/**
+		 * The fixture's profile comments are left on item 55, the id a news item can also have.
+		 */
+		public function testGetCommentsListsOnlyTheCommentsOfTheTypeAsked()
+		{
+			$this->haveNewsComment(55, 0, 'news on 55');
+
+			$result = $this->cm->getComments('news', 55, 0, array('action' => 'comment'));
+
+			$this->assertStringContainsString('news on 55', $result['comments']);
+			$this->assertStringNotContainsString('blue', $result['comments']);
+		}
+
+		public function testCountCommentsCountsOnlyTheTypeAsked()
+		{
+			$this->haveNewsComment(55, 0, 'news on 55');
+
+			$this->assertSame(1, $this->cm->count_comments('news', 55));
+		}
+
+		public function testLoadNestedLoadsOnlyTheRepliesOfTheTypeAsked()
+		{
+			$parent = $this->haveNewsComment(55, 0, 'news on 55');
+			$this->haveNewsComment(55, $parent, 'news reply on 55');
+
+			$result = $this->cm->loadNested(55, 0, 'desc');
+
+			$this->assertSame(array($parent), array_keys($result[0]));
+			$this->assertSame('news reply on 55', $result[0][$parent][0]['comment_comment']);
+		}
+
+		public function testDeleteCommentsDeletesOnlyTheCommentsOfTheTypeAsked()
+		{
+			$this->haveNewsComment(55, 0, 'news on 55');
+
+			$this->assertSame(1, $this->cm->delete_comments('news', 55));
+			$this->assertSame(7, e107::getDb()->createQueryBuilder()->from('comments')
+				->where('comment_item_id', 55)->where('comment_type', 'profile')->count());
+		}
+
+		/**
+		 * @param int    $itemId
+		 * @param int    $pid
+		 * @param string $text
+		 * @return int comment_id
+		 */
+		private function haveNewsComment($itemId, $pid, $text)
+		{
+			return (int) e107::getDb()->createQueryBuilder()->insert('comments')->insertGetId(array(
+				'comment_pid'         => $pid,
+				'comment_item_id'     => $itemId,
+				'comment_type'        => '0',
+				'comment_author_id'   => 1,
+				'comment_author_name' => 'admin',
+				'comment_datestamp'   => 1700000000,
+				'comment_comment'     => $text,
+				'comment_blocked'     => 0,
+			));
+		}
+
 
 	}

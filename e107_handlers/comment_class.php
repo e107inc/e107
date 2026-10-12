@@ -856,7 +856,7 @@ class comment
 			->from('comments')
 			->where('comment_comment', $comment)
 			->where('comment_item_id', (int) $id)
-			->where('comment_type', $tp->toDB($type, true))
+			->where('comment_type', (string) $tp->toDB($type, true))
 			->count();
 		if (!$existing)
 		{
@@ -1119,7 +1119,7 @@ class comment
 		$count_comments = $sql->createQueryBuilder()
 			->from('comments')
 			->where('comment_item_id', (int) $id)
-			->where('comment_type', $tp->toDB($type, true))
+			->where('comment_type', (string) $tp->toDB($type, true))
 			->count();
 
 		return (int) $count_comments;
@@ -1460,7 +1460,7 @@ class comment
 				$qb->expr()->eq('r.rate_table', 'comments')
 			))
 			->where('c.comment_item_id', (int) $id)
-			->where('c.comment_type', $tp->toDB($type, true));
+			->where('c.comment_type', (string) $tp->toDB($type, true));
 
 		if($topOnly)
 		{
@@ -1548,7 +1548,7 @@ class comment
 				->addSelect(SqlFragment::raw('DISTINCT(comment_author_id) AS author'))
 				->from('comments')
 				->where('comment_item_id', $id)
-				->where('comment_type', $comment_type)
+				->where('comment_type', (string) $comment_type)
 				->groupBy('author')
 				->fetchColumn('author');
 
@@ -1574,7 +1574,7 @@ class comment
 			$num_deleted = $sql->createQueryBuilder()
 				->delete('comments')
 				->where('comment_item_id', $id)
-				->where('comment_type', $type)
+				->where('comment_type', (string) $type)
 				->execute();
 
 			$this->recalc_user_comments($author_list);
@@ -1923,7 +1923,7 @@ class comment
 				$nested->expr()->eq('r.rate_table', 'comments')
 			))
 			->where('c.comment_item_id', (int) $id)
-			->where('c.comment_type', $type)
+			->where('c.comment_type', (string) $type)
 			->where('c.comment_pid', '>', 0)
 			->orderBy('c.comment_datestamp', $sort)
 			->fetchAll();
