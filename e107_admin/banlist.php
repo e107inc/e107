@@ -513,7 +513,10 @@ class banlist_ui extends e_admin_ui
 		
 		private function timesPageSave()
 		{
-
+			if (!getperms('0'))
+			{
+				return;
+			}
 
 			$ipAdministrator = new banlistManager;
 			$tp = e107::getParser();
