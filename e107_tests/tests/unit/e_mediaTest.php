@@ -289,6 +289,18 @@
 			 $this->assertContains('myprefix-500px', $prefixTest);
 
 		}
+
+		/**
+		 * The media manager inserts these names as they are, so whitespace inside one breaks the icon it names.
+		 */
+		public function testGetGlyphsNamesCarryNoWhitespace()
+		{
+			foreach(array('bs2', 'bs3', 'fa4', 'fa5-fab', 'fa5-fas', 'fa5-far', 'fa6-fab', 'fa6-fas') as $set)
+			{
+				self::assertSame(array(), preg_grep('/\s/', $this->md->getGlyphs($set)), 'getGlyphs() returned names with whitespace in them for '.$set);
+			}
+		}
+
 		public function testResizeImage()
 		{
 			$tests = array(
