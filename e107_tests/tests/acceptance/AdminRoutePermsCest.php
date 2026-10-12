@@ -126,6 +126,7 @@ class AdminRoutePermsCest
 	const ROUTE_PAGE_PREFS = '/e107_admin/cpage.php?mode=page&action=prefs';
 
 	/** Ban list routes, less the row id where they take one. */
+	const ROUTE_BANLIST = '/e107_admin/banlist.php?mode=main&action=list';
 	const ROUTE_BANLIST_EDIT = '/e107_admin/banlist.php?mode=main&action=edit&id=';
 	const ROUTE_WHITELIST_EDIT = '/e107_admin/banlist.php?mode=white&action=edit&id=';
 
@@ -1022,6 +1023,62 @@ class AdminRoutePermsCest
 
 		$I->dontSeeInSource('are no longer in this list');
 		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_intdata' => 254));
+	}
+
+	/** A list's batch copy and export run only where the list offers them. */
+	public function aBanListBatchCannotCopyOrExportWhatTheListDoesNotOffer(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a ban list batch copy and export, which the ban list does not offer');
+
+		$ban = (int) $I->haveInDatabase('e107_banlist', array(
+			'banlist_ip'         => '198.51.100.66',
+			'banlist_bantype'    => 1,
+			'banlist_datestamp'  => 1262304000,
+			'banlist_banexpires' => 0,
+			'banlist_admin'      => 1,
+			'banlist_reason'     => 'p7rp ban',
+			'banlist_notes'      => '',
+		));
+
+		$entries = $I->grabNumRecords('e107_banlist');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendBatch($I, self::ROUTE_BANLIST, 'copy', $ban, 'e-multiselect');
+		$I->seeNumRecords($entries, 'e107_banlist');
+
+		$this->sendBatch($I, self::ROUTE_BANLIST, 'export', $ban, 'e-multiselect');
+		$I->dontSeeInSource('e107Export');
+	}
+
+	/** A list's batch feature box item needs the feature box plugin's own permission. */
+	public function aPagesAdministratorWithoutTheFeatureBoxPermissionCannotBatchCreateAFeatureBoxItem(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a page list batch feature box item to a pages administrator who may not administer the feature box');
+
+		$I->havePluginInstalled('featurebox');
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+		$items = $I->grabNumRecords('e107_featurebox');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendBatch($I, self::ROUTE_PAGE_LIST, 'featurebox', $page);
+
+		$I->seeNumRecords($items, 'e107_featurebox');
+	}
+
+	/** Positive control: a pages administrator who also administers the feature box still batch-creates a feature box item. */
+	public function aPagesAdministratorWithTheFeatureBoxPermissionStillBatchCreatesAFeatureBoxItem(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the page list batch feature box item working for a pages administrator who administers the feature box');
+
+		$I->havePluginInstalled('featurebox');
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+		$plugin = $I->grabFromDatabase('e107_plugin', 'plugin_id', array('plugin_path' => 'featurebox'));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin', '.P'.$plugin);
+		$this->sendBatch($I, self::ROUTE_PAGE_LIST, 'featurebox', $page);
+
+		$I->seeInDatabase('e107_featurebox', array('fb_title' => 'p7rp page'));
 	}
 
 	/** A list's batch copy reaches only the rows its own query selects. */
@@ -3431,10 +3488,11 @@ class AdminRoutePermsCest
 	 * after each of them, so a cached user id outlives the user it names.
 	 *
 	 * @param string $loginName a key of self::DELEGATED_ADMINS
+	 * @param string $morePerms further permission codes, each led by its '.'
 	 */
-	private function loginAsDelegatedAdmin(AcceptanceTester $I, $loginName)
+	private function loginAsDelegatedAdmin(AcceptanceTester $I, $loginName, $morePerms = '')
 	{
-		$perms = self::DELEGATED_ADMINS[$loginName];
+		$perms = self::DELEGATED_ADMINS[$loginName].$morePerms;
 
 		$I->haveInDatabase('e107_user', array(
 			'user_name'      => $loginName,
@@ -3533,6 +3591,11 @@ switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 
 		// Stored by a create route this Cest posted to.
 		\$db->delete('generic', "gen_ip LIKE 'p7rp%'");
+
+		if(\$db->isTable('featurebox'))
+		{
+			\$db->delete('featurebox', "fb_title LIKE 'p7rp%'");
+		}
 
 		// Queued by resend_to_all(), which runs with mail_force_queue so nothing
 		// is actually sent, but the rows outlive the request that made them.
