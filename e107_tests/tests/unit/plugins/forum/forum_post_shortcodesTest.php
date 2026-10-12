@@ -31,6 +31,11 @@ class forum_post_shortcodesTest extends \Codeception\Test\Unit
 			$this->quoteBox('A [b]plain[/b] reply to quote'));
 	}
 
+	public function testAQuoteNamesAnAuthorWhoseNameHoldsAPercentSign()
+	{
+		self::assertStringContainsString("[quote=100%s]\nA reply\n[/quote]", $this->quoteBox('A reply', '100%s'));
+	}
+
 	public function testAPostStoredAsHtmlIsQuotedAsItsSource()
 	{
 		self::assertStringContainsString("[quote=admin]\n&lt;p&gt;An &lt;b&gt;HTML&lt;/b&gt; reply&lt;/p&gt;\n[/quote]",
@@ -128,15 +133,16 @@ class forum_post_shortcodesTest extends \Codeception\Test\Unit
 
 	/**
 	 * @param string $entry
+	 * @param string $author
 	 * @return string
 	 */
-	private function quoteBox($entry)
+	private function quoteBox($entry, $author = 'admin')
 	{
 		$sc = new plugin_forum_post_shortcodes();
 		$sc->setVars(array(
 			'action'         => 'quote',
 			'post_entry'     => $entry,
-			'user_name'      => 'admin',
+			'user_name'      => $author,
 			'post_user_anon' => '',
 		));
 

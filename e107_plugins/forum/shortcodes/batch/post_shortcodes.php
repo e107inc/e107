@@ -197,21 +197,26 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		}
 		
 		
+		$editorText = null;
+
 		if(!empty($_POST['post']))
 		{
 			$text = $tp->post_toForm($_POST['post']);
+			$editorText = (string) $_POST['post'];
 		}
 		elseif($this->var['action'] == 'quote')
 		{
 			$post = $this->quotablePost();
 			$quoteName = $tp->attributeValue($this->var['user_name'] ? $this->var['user_name'] : $this->var['post_user_anon']);
-			$text = $tp->post_toForm("[quote={$quoteName}]\n".$post."\n[/quote]\n");
-			$text .= "\n\n";
+			$quote = "[quote=%s]\n%s\n[/quote]\n";
+			$text = $tp->post_toForm(sprintf($quote, $quoteName, $post))."\n\n";
+			$editorText = sprintf($quote, $quoteName, $this->asTheEditorReadsIt($post))."\n\n";
 			$this->var['action'] = 'rp';
 		}
 		elseif($this->var['action'] == 'edit')
 		{
 			$text = $tp->toForm($this->var['post_entry']);
+			$editorText = $this->asTheEditorReadsIt($this->var['post_entry']);
 		}
 		else
 		{
@@ -222,6 +227,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 		//$wysiwyg = ($editor === 'bbcode') ? false : null;
 		$wysiwyg = is_null($editor) ? 'default' : $editor;
+
+		if($editorText !== null && e107::wysiwyg($wysiwyg, true) === 'tinymce4' && check_class(e107::getPref('post_html')))
+		{
+			$text = htmlspecialchars($editorText, ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8');
+		}
 
 		//return e107::getForm()->bbarea('post',$text,'forum','_common','large', array('wysiwyg' => $wysiwyg));
 		return e107::getForm()->bbarea('post',$text,'forum','forum','large', array('wysiwyg' => $wysiwyg));
@@ -243,6 +253,22 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		}
 
 		return str_replace(array('[html]', '[/html]'), '', $post);
+	}
+
+	/**
+	 * Give the rich-text editor the post's text as stored, with the quotes of a post stored as HTML decoded so that its attributes stay attributes.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function asTheEditorReadsIt($text)
+	{
+		if(strpos($this->var['post_entry'], '[html]') !== 0)
+		{
+			return $text;
+		}
+
+		return str_replace(array('&quot;', '&#039;', '&#092;'), array('"', "'", '\\'), $text);
 	}
 
 	function sc_forum_post_buttons()

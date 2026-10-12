@@ -177,6 +177,18 @@ Plain text paragraph 3<br />';
 
 
 
+		/**
+		 * Saving from the editor keeps text that the editor holds encoded as text, rather than decoding it into markup.
+		 */
+		public function testToDBKeepsEncodedTextAsText()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+
+			$result = $this->tm->toDB('<p>Look &lt;details open ontoggle=x&gt;y&lt;/details&gt; a &amp; b &eacute;</p>');
+
+			$this->assertSame('[html]<p>Look &lt;details open ontoggle=x&gt;y&lt;/details&gt; a &amp; b é</p>[/html]', $result);
+		}
+
 		function testtoDBOnScriptTags()
 		{
 			$this->tm->setHtmlClass(e_UC_ADMIN);
