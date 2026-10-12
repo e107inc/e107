@@ -87,6 +87,9 @@ if (!defined('e107_INIT'))
  */
 class e_parse_shortcode
 {
+	/** The $_SESSION key the front-end inline editor's maps are filed under, which {@see e107InlineEdit} reads them back from. */
+	const EDITABLE_SESSION_KEY = 'inline_editable';
+
 	protected $scList               = array();  // The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
 	protected $parseSCFiles         = true;     // True if individual shortcode files are to be used
 	protected $addedCodes           = null;     // Pointer to a class or array to be used on a single call
@@ -882,7 +885,7 @@ class e_parse_shortcode
 					// TODO use Library Manager...
 					e107::js('footer', '{e_WEB}js/jquery.contenteditable.js', 'jquery', 2);
 					$token = defset('e_TOKEN','token-missing');
-					$_SESSION['editable'][$token] = $this->editableCodes;
+					$_SESSION[self::EDITABLE_SESSION_KEY][$token] = $this->editableCodes;
 
 					e107::js('footer-inline', '$(".e-editable-front").each(function ()
 					{

@@ -199,6 +199,21 @@ class InlineEditPermsCest
 		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::ITEM_TITLE));
 	}
 
+	public function aMapFiledBeforeTheUpgradeIsNotHonoured(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a front-end inline save through a map an earlier release filed in the session');
+
+		$categoryId = $this->seedCategory($I);
+		$itemId = $this->seedNewsItem($I, $categoryId);
+
+		$this->loginAsAdminHolding($I, 'p7iecategory');
+		$I->probe('act=seedoldmap');
+
+		$this->postFrontEndSave($I, $itemId, 'news_title', self::ATTACK_VALUE);
+
+		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::ITEM_TITLE));
+	}
+
 	public function aCategoryAdministratorCannotSaveANewsItemInline(AcceptanceTester $I)
 	{
 		$I->wantTo('Refuse an inline news item save to an administrator who may only edit categories');
@@ -1126,7 +1141,22 @@ switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 			\$map['perms'] = \$_GET['perms'];
 		}
 
-		\$_SESSION['editable'][e107::getSession()->getFormToken()] = \$map;
+		\$_SESSION['inline_editable'][e107::getSession()->getFormToken()] = \$map;
+
+		echo "PROBE_OK\n";
+		break;
+
+	case 'seedoldmap':
+		// The news map as releases before the key's rename filed it, under the key they used.
+		\$_SESSION['editable'][e107::getSession()->getFormToken()] = array(
+			'table'      => 'news',
+			'pid'        => 'news_id',
+			'vars'       => 'news_item',
+			'perms'      => 'H|H4',
+			'shortcodes' => array(
+				'news_title' => array('field' => 'news_title', 'type' => 'text', 'container' => 'span'),
+			),
+		);
 
 		echo "PROBE_OK\n";
 		break;

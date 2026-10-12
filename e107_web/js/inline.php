@@ -25,7 +25,7 @@ class e107InlineEdit
 
 		$token = e107::getParser()->filter($_POST['token']);
 
-		$editable = isset($_SESSION['editable'][$token]) ? $_SESSION['editable'][$token] : array();
+		$editable = isset($_SESSION[e_parse_shortcode::EDITABLE_SESSION_KEY][$token]) ? $_SESSION[e_parse_shortcode::EDITABLE_SESSION_KEY][$token] : array();
 		$perms = isset($editable['perms']) ? trim((string) $editable['perms']) : '';
 
 		if(!ADMIN || !e_AJAX_REQUEST || empty($editable) || $perms === '' || !getperms($perms))
