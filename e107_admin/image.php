@@ -3259,7 +3259,7 @@ class media_admin_ui extends e_admin_ui
 		
 		
 		$fl->setFileInfo('all');
-		$rejectArray = array('^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp','.*\.xml$','^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
+		$rejectArray = array('^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^\.tmp','.*\.xml$','^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$','^\.htaccess$','index\.html','null\.txt');
 		$fl->setFileFilter($rejectArray);
 	//	$files = $fl->get_files(e_MEDIA."temp/");
 		$files = $fl->get_files(e_IMPORT);
