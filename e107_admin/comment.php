@@ -8,8 +8,6 @@
  *
  */
 
-use e107\Database\QueryBuilder;
-
 require_once(__DIR__.'/../class2.php');
 if (!getperms("B")) 
 {
@@ -142,14 +140,12 @@ class comments_admin_ui extends e_admin_ui
 
 		public function afterUpdate($new_data, $old_data, $id)
 		{
-			if(($new_data['comment_type'] == 0 || $new_data['comment_type'] == 'news' ))
+			$newsTypes = array('0', 'news');
+			if(in_array((string) $new_data['comment_type'], $newsTypes, true))
 			{
 				$total = e107::getDb()->createQueryBuilder()
 					->from('comments')
-					->where(function(QueryBuilder $q)
-					{
-						$q->where('comment_type', 0)->orWhere('comment_type', 'news');
-					})
+					->whereIn('comment_type', $newsTypes)
 					->where('comment_item_id', (int) $new_data['comment_item_id'])
 					->where('comment_blocked', 0)
 					->count('comment_id');
