@@ -11,6 +11,7 @@
 
 	class e_bbcodeTest extends \Test\Unit
 	{
+		use \Test\HideGlobals;
 
 		/** @var e_bbcode */
 		protected $bb;
@@ -306,6 +307,8 @@
 				'[b]bold[/b] and [size2]unclosed',
 				'[b]bold[/b] and [URL=https://example.com]a link',
 				'Our logo lives at [/img/logo.png] and here is [url=https://example.com/a?b=c]a link',
+				'[size2]hello[b]world[/size]',
+				'[h1]Title [b]bold[/h]',
 			);
 
 			$stored = array();
@@ -325,6 +328,76 @@
 
 			$this->assertStringContainsString('[color=#ff0000]unclosed', $display);
 			$this->assertStringNotContainsString('[color]', $display);
+		}
+
+
+		public function testParseBBCodesPairsAClosingCodeOnlyWithAnOpeningCodeOfTheSameDigits()
+		{
+			$tests = array(
+				'[h1]Title [b]bold[/h][/b][/h1]'           => "<h2 class='bbcode-h2'>Title <strong class='bbcode bold bbcode-b'>bold[/h]</strong></h2>",
+				'[size2=20]Big [b]bold[/size][/b][/size2]' => "<span class='bbcode-size' style='font-size:20px'>Big <strong class='bbcode bold bbcode-b'>bold[/size]</strong></span>",
+			);
+
+			foreach($tests as $text => $expected)
+			{
+				self::assertSame($expected, $this->bb->parseBBCodes($text), $text);
+			}
+		}
+
+
+		public function testAnOpenNumberedCodeInsideATableStillRendersTheTable()
+		{
+			$html = e107::getParser()->toHTML('[table][tr][td][h2]Title[/td][/tr][/table]', true);
+
+			self::assertStringContainsString('<td>Title</td>', $html, $html);
+		}
+
+
+		/**
+		 * @dataProvider hideBlocks
+		 * @param string $text
+		 */
+		public function testAHideBlockHidesItsContent($text)
+		{
+			$tp = e107::getParser();
+			$this->holdHideGlobals();
+
+			try
+			{
+				foreach(array($text, $tp->toDB($text)) as $row)
+				{
+					$this->allowHiddenContent(false);
+					$hidden = $tp->toHTML($row, true);
+					$this->allowHiddenContent(true);
+					$shown = $tp->toHTML($row, true);
+
+					self::assertStringNotContainsString('answer', $hidden, $row);
+					self::assertStringNotContainsString('[/hide', $hidden, $row);
+					self::assertStringContainsString('The answer is 42', $shown, $row);
+					self::assertStringNotContainsString('[/hide', $shown, $row);
+				}
+			}
+			finally
+			{
+				$this->restoreHideGlobals();
+			}
+		}
+
+
+		public function hideBlocks()
+		{
+			return array(
+				'a plain block'                                        => array('[hide]The answer is 42[/hide]'),
+				'a numbered code left open straight after the opening' => array('[hide][h2]The answer is 42[/hide]'),
+				'a parameter'                                          => array('[hide=x]The answer is 42[/hide]'),
+				'digits'                                               => array('[hide2]The answer is 42[/hide]'),
+				'digits with a leading zero'                           => array('[hide02]The answer is 42[/hide]'),
+				'digits and a parameter'                               => array('[hide2=x]The answer is 42[/hide]'),
+				'a longer word'                                        => array('[hideme]The answer is 42[/hide]'),
+				'digits closed by their own tag, then a plain block'   => array('[hide2]The answer is 42[/hide2] and [hide]more[/hide]'),
+				'digits closed by their own tag with a leading zero'   => array('[hide02]The answer is 42[/hide2] and [hide]more[/hide]'),
+				'digits holding a block of the same digits'            => array('[hide2]The answer is 42 [hide2]again[/hide2][/hide]'),
+			);
 		}
 
 	}
