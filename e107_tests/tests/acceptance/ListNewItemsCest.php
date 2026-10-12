@@ -1,9 +1,9 @@
 <?php
 
 /**
- * List New Items prints each item's heading as its section built it, on its page and in its menus, to a guest.
+ * List New Items prints each item's heading as its section built it, on its page and in its menus, and its info, on its page, to a guest.
  */
-class ListNewHeadingCest
+class ListNewItemsCest
 {
 	/** A thread name calling a shortcode, as the new-thread form stores it. */
 	const SHORTCODE_NAME = '{PRINT_ITEM=x&quot; autofocus onfocus=&quot;document.title=1^y} Fixture shortcode thread';
@@ -16,6 +16,9 @@ class ListNewHeadingCest
 
 	/** Three page comments' subjects, oldest first, as the comment form stores them, that together close a tag a cut heading left open. */
 	const CUT_SUBJECTS = array('&quot;onError=title=1//', '&quot;src x=&quot;', '[img]{e_MEDIA_IMAGE}x.png[/img]');
+
+	/** A chatbox message holding a link inside a link, as the chatbox form stores it. */
+	const CHATBOX_MESSAGE = 'http://x[url=//z/autofocus/onfocus=document.title=1//]q[/url]';
 
 	/** The recent menu's caption, so a case can see the menu is on the page. */
 	const MENU_CAPTION = 'Fixture recent menu';
@@ -32,10 +35,14 @@ class ListNewHeadingCest
 	/** @var int */
 	private $member;
 
+	/** @var string|null make_clickable as the site had it, while a case has it switched on */
+	private $clickableWas;
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveForumPluginInstalled();
 		$I->havePluginInstalled('list_new');
+		$I->havePluginInstalled('chatbox_menu');
 		$I->havePluginPrefs('list_new', $this->listPrefs(''));
 		$I->haveInDatabase('e107_core', array('e107_name' => 'emote_default', 'e107_value' => var_export(self::EMOTES, true)));
 
@@ -52,6 +59,14 @@ class ListNewHeadingCest
 	{
 		$I->havePluginPrefs('list_new', array());
 		$I->removeAppPath('e107_system/'.\Helper\Acceptance::INSTALL_SITE_PATH.'/cache/content/S_Config_emote.cache.php');
+
+		if($this->clickableWas !== null)
+		{
+			$I->haveSitePref('make_clickable', $this->clickableWas === '' ? null : $this->clickableWas);
+			$this->clickableWas = null;
+		}
+
+		$I->dropPluginInstall('chatbox_menu');
 		$I->dropForumProbe();
 		$I->dropPluginProbe();
 	}
@@ -128,6 +143,24 @@ class ListNewHeadingCest
 		$I->dontSeeInSource('<img class="img-roun');
 		$I->dontSeeInSource('>"onError=');
 		$I->seeInSource('&quot;onError=title=1//');
+	}
+
+	/**
+	 * The chatbox section renders a message once, making its links clickable, and the page prints what it built.
+	 */
+	public function aChatboxMessageIsPrintedAsItsSectionBuiltIt(AcceptanceTester $I)
+	{
+		$this->clickableWas = $I->haveSitePref('make_clickable', 1);
+		$I->haveInDatabase('e107_chatbox', array(
+			'cb_nick' => $this->member.'.listheadings', 'cb_message' => self::CHATBOX_MESSAGE,
+			'cb_datestamp' => time() - 60, 'cb_blocked' => 0, 'cb_ip' => '',
+		));
+
+		$this->amOnTheListPageAsAGuest($I);
+
+		$I->dontSeeInSource('href="//z/autofocus');
+		$I->dontSeeElement('[onfocus]');
+		$I->seeInSource('class="e-url" href="'.self::CHATBOX_MESSAGE.'"');
 	}
 
 	public function aDisplayNameIsPrintedAsTyped(AcceptanceTester $I)
@@ -210,7 +243,7 @@ class ListNewHeadingCest
 	}
 
 	/**
-	 * The comment, forum and members sections on the recent page, and the comment section in the recent menu.
+	 * The comment, forum, members and chatbox sections on the recent page, and the comment section in the recent menu.
 	 *
 	 * @param string $menuHeadingChars where the menu cuts a heading; empty leaves it whole
 	 * @return array
@@ -233,7 +266,7 @@ class ListNewHeadingCest
 			$prefs[$mode.'_welcometext'] = '';
 			$prefs[$mode.'_colomn'] = '1';
 
-			$sections = $mode === 'recent_menu' ? array('comment') : array('comment', 'forum', 'members');
+			$sections = $mode === 'recent_menu' ? array('comment') : array('comment', 'forum', 'members', 'chatbox_menu');
 
 			foreach($sections as $order => $section)
 			{
