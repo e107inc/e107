@@ -571,7 +571,7 @@ class poll
 		{
 			$sc->pollCommentTotal = $sql->createQueryBuilder()->from("comments")
 				->where('comment_item_id', (int) $pollArray['poll_id'])
-				->where('comment_type', 4)->count();
+				->where('comment_type', '4')->count();
 		}
 
 		$sc->pollCount 	    = $sql->createQueryBuilder()->from("polls")
