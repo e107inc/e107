@@ -931,14 +931,13 @@ class pageClass
 
 			if(!empty($this->template['page']))
 			{
-				$ret = str_replace(array('{PAGE}', '{PAGECOMMENTS}'), array($arr['text'], '[[PAGECOMMENTS]]'), $this->template['page']);
+				$page = str_replace(array('{PAGE}', '{PAGECOMMENTS}'), array('[[PAGE]]', '[[PAGECOMMENTS]]'), $this->template['page']);
+				$ret = str_replace('[[PAGE]]', $arr['text'], e107::getParser()->parseTemplate($page, true, $this->batch));
 			}
 			else
 			{
 				$ret = $arr['text'];
 			}
-
-			$ret = e107::getParser()->parseTemplate($ret, true, $this->batch);
 
 			if(is_object($vars) && $vars->cachecontrol) $this->setCache($ret, $this->batch->sc_cpagetitle(), $this->page['page_comment_flag']);
 			

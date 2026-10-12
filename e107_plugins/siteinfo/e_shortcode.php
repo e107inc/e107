@@ -52,15 +52,17 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	 */
 	function sc_sitedisclaimer($parm=array())
 	{
-		$class = !empty($parm['class']) ? " class='".$parm['class']."'" : '';
+		$tp = e107::getParser();
 
-		$default = "Proudly powered by <a".$class." href='https://e107.org'>e107 Bootstrap CMS</a> which is <a".$class." href='".e_HTTP."credits.php'>released</a> under the terms of the GNU GPL License.";
+		$default = "Proudly powered by <a href='https://e107.org'>e107 Bootstrap CMS</a> which is <a href='".e_HTTP."credits.php'>released</a> under the terms of the GNU GPL License.";
 
 		$text = deftrue('SITEDISCLAIMER',$default);
 
+		$class = ($text === $default && !empty($parm['class'])) ? " class='".$tp->toAttribute($parm['class'], true)."'" : '';
+
 		$text = str_replace("YYYY", date('Y'), $text);
 
-		return e107::getParser()->toHTML($text, true, 'SUMMARY');
+		return str_replace('<a href=', '<a'.$class.' href=', $tp->toHTML($text, true, 'SUMMARY'));
 	}
 
 	
