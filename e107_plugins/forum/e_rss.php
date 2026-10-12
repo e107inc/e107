@@ -247,7 +247,7 @@ class forum_rss // plugin-folder + '_rss'
 					$rss[$i]['title'] 			= $value['thread_name'];
 					//$rss[$i]['link'] 			= SITEURLBASE . e_PLUGIN_ABS . "forum/forum_viewtopic.php?" . $value['thread_id'];
 					$rss[$i]['link'] 			= $topic_link;
-					$rss[$i]['description'] 	= $value['post_entry'];
+					$rss[$i]['description'] 	= e107forum::withoutHiddenBlocks($value['post_entry']);
 					$rss[$i]['datestamp'] 		= $value['thread_datestamp'];
 
 					$i++;
@@ -325,7 +325,7 @@ class forum_rss // plugin-folder + '_rss'
 
 					$rss[$i]['title'] 		= $value['thread_name'];
 					$rss[$i]['link'] 		= $topic_link;
-					$rss[$i]['description'] = $value['post_entry'];
+					$rss[$i]['description'] = e107forum::withoutHiddenBlocks($value['post_entry']);
 					$rss[$i]['datestamp'] 	= $value['post_datestamp'];
 
 					$i++;
@@ -414,7 +414,7 @@ class forum_rss // plugin-folder + '_rss'
 
 				$rss[$i]['title'] 			= $topic['thread_name'];
 				$rss[$i]['link'] 			= $topic_link;
-				$rss[$i]['description'] 	= $topic['post_entry'];
+				$rss[$i]['description'] 	= e107forum::withoutHiddenBlocks($topic['post_entry']);
 				$rss[$i]['datestamp'] 		= $topic['thread_datestamp'];
 				$i++;
 
@@ -440,7 +440,7 @@ class forum_rss // plugin-folder + '_rss'
 					
 					$rss[$i]['title'] 			= "Re: " . $topic['thread_name'];
 					$rss[$i]['link'] 			= $topic_link;
-					$rss[$i]['description'] 	= $value['post_entry'];
+					$rss[$i]['description'] 	= e107forum::withoutHiddenBlocks($value['post_entry']);
 					$rss[$i]['datestamp'] 		= $value['post_datestamp'];
 					$i++;
 				}
@@ -512,7 +512,7 @@ class forum_rss // plugin-folder + '_rss'
 					
 					$rss[$i]['title'] 		= $value['thread_name'];
 					$rss[$i]['link'] 		= $topic_link;
-					$rss[$i]['description'] = $value['post_entry'];
+					$rss[$i]['description'] = e107forum::withoutHiddenBlocks($value['post_entry']);
 					$rss[$i]['datestamp'] 	= $value['thread_datestamp'];
 					
 					$i++;

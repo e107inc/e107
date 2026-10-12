@@ -77,7 +77,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		$tp = e107::getParser();
 		$pref = e107::getPref();
-		$post = strip_tags($tp->toHTML($this->var['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
+		$post = strip_tags($tp->toHTML(e107forum::withoutHiddenBlocks($this->var['post_entry']), true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
 
 		// A template parm wins over the menu preference, which newforumposts_menu
 		// always fills in, so testing the preference first would never reach it.

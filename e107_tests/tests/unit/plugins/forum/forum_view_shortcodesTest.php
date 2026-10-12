@@ -26,6 +26,9 @@ class forum_view_shortcodesTest extends \Test\Unit
 	/** @var string the forum's quickreply pref as this test found it */
 	private $quickreply;
 
+	/** @var array hide.bb's globals as this test found them, null for one that was not set */
+	private $hideGlobals = array();
+
 	protected function _before()
 	{
 		e107::lan('forum', 'front', true);
@@ -49,6 +52,127 @@ class forum_view_shortcodesTest extends \Test\Unit
 	protected function _after()
 	{
 		e107::getPlugConfig('forum')->set('quickreply', $this->quickreply);
+	}
+
+	/**
+	 * The latest-posts menu keeps what it renders for a minute and shows it to
+	 * every viewer of the same address with the same classes, so its excerpt
+	 * leaves a [hide] block out even where the page has revealed one to its own
+	 * viewer.
+	 *
+	 * @dataProvider hiddenBlocks
+	 * @param string $entry
+	 */
+	public function testTheLatestPostsExcerptLeavesOutAHiddenBlock($entry)
+	{
+		require_once(e_PLUGIN . 'forum/forum_class.php');
+
+		$this->sc->setVars(array('post_entry' => $entry));
+		$this->revealHiddenBlocks();
+
+		try
+		{
+			$page = e107::getParser()->toHTML($entry, true);
+			$excerpt = $this->sc->sc_post_content(array('truncate' => 500));
+		}
+		finally
+		{
+			$this->restoreHiddenBlocks();
+		}
+
+		self::assertStringContainsString('SECRET', $page, 'the page did not reveal the block, so nothing was measured');
+		self::assertStringContainsString('before', $excerpt);
+		self::assertStringContainsString('after', $excerpt);
+		self::assertStringNotContainsString('SECRET', $excerpt);
+	}
+
+	/**
+	 * Each spelling the topic page takes for a [hide] block, among them blocks
+	 * holding a tag the page reads differently from how it is spelt.
+	 *
+	 * @return array
+	 */
+	public function hiddenBlocks()
+	{
+		return array(
+			'plain'                           => array('before [hide]SECRET[/hide] after'),
+			'a parameter'                     => array('before [hide=x]SECRET[/hide] after'),
+			'numbered, across lines'          => array("before\n[hide2]\nSECRET\n[/hide2]\nafter"),
+			'nested, stored as HTML'          => array('[html]<p>before [hide]a [hide]b[/hide] SECRET[/hide] after</p>[/html]'),
+			'in a post stored as HTML'        => array('[html]<p>before [hide]SECRET[/hide] after</p>[/html]'),
+			'upper case, stored as HTML'      => array('[html]<p>before [HIDE=x]SECRET[/HIDE] after</p>[/html]'),
+			'a closer inside [code] inside'   => array('[html]<p>before [hide]type [code][/hide][/code] SECRET[/hide] after</p>[/html]'),
+			'an opener inside another tag'    => array('before [hide]SECRET [b=[hide]x[/b][/hide] after'),
+			'a newline inside an opener'      => array("before [hide]SECRET [hide\n]x[/hide] after"),
+			'a closer inside another tag'     => array('[html]<p>before [hide]x [b=[/hide] SECRET [/hide] after</p>[/html]'),
+			'an opener inside a closer'       => array('before [/hide x[hide]SECRET[/hide] after'),
+		);
+	}
+
+	/**
+	 * The topic page prints a box where a block was, so the excerpt keeps the
+	 * text either side of it apart rather than joining the two into one word.
+	 */
+	public function testTheLatestPostsExcerptKeepsTheTextEitherSideOfAHiddenBlockApart()
+	{
+		require_once(e_PLUGIN . 'forum/forum_class.php');
+
+		$this->sc->setVars(array('post_entry' => 'before[hide]SECRET[/hide]after'));
+
+		$excerpt = $this->sc->sc_post_content(array('truncate' => 500));
+
+		self::assertStringContainsString('before after', $excerpt);
+		self::assertStringNotContainsString('SECRET', $excerpt);
+	}
+
+	/**
+	 * A [hide] that is never closed is printed as typed on the topic page, and
+	 * the text after it is not a hidden block.
+	 */
+	public function testTheLatestPostsExcerptKeepsTheTextAfterAnUnclosedHide()
+	{
+		require_once(e_PLUGIN . 'forum/forum_class.php');
+
+		$this->sc->setVars(array('post_entry' => 'before [hide] after'));
+
+		self::assertStringContainsString('after', $this->sc->sc_post_content(array('truncate' => 500)));
+	}
+
+	/**
+	 * Set hide.bb's globals as the topic page sets them for a viewer who has
+	 * replied, with a query that finds a row.
+	 */
+	private function revealHiddenBlocks()
+	{
+		$reveal = array(
+			'sql'            => e107::getDb(),
+			'e_hide_query'   => 'SELECT 1',
+			'e_hide_hidden'  => 'hidden',
+			'e_hide_allowed' => true,
+		);
+
+		foreach($reveal as $name => $value)
+		{
+			$this->hideGlobals[$name] = array_key_exists($name, $GLOBALS) ? array($GLOBALS[$name]) : null;
+			$GLOBALS[$name] = $value;
+		}
+	}
+
+	/**
+	 * Put hide.bb's globals back as {@see revealHiddenBlocks()} found them.
+	 */
+	private function restoreHiddenBlocks()
+	{
+		foreach($this->hideGlobals as $name => $was)
+		{
+			if($was === null)
+			{
+				unset($GLOBALS[$name]);
+				continue;
+			}
+
+			$GLOBALS[$name] = $was[0];
+		}
 	}
 
 	/**

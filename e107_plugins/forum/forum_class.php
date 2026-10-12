@@ -1092,6 +1092,24 @@ class e107forum
 		return isset($permList[$type]) ? $permList[$type] : array();
 	}
 
+	/**
+	 * A post's text without the [hide] blocks {@see e_bbcode::hideBlocks()} finds, each left as a space, for a rendering that cannot decide who may read one.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	public static function withoutHiddenBlocks($text)
+	{
+		$text = (string) $text;
+
+		foreach(array_reverse(e107::getBB()->hideBlocks($text)) as $block)
+		{
+			$text = substr_replace($text, ' ', $block['start'], $block['length']);
+		}
+
+		return $text;
+	}
+
 
 
 	public function getForumPermList($what = null)
