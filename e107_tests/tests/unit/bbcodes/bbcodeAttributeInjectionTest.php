@@ -676,31 +676,65 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * The addresses a [flash] or [stream] player loads: the object's data, its movie or filename parameter, the embed's src.
+	 *
+	 * @param string $html
+	 * @return string[]
+	 */
+	private function playerUrlsIn($html)
+	{
+		$urls = array();
+
+		foreach($this->elementsOf($html) as $element)
+		{
+			if($element->tagName === 'object' && $element->hasAttribute('data'))
+			{
+				$urls[] = $element->getAttribute('data');
+			}
+			elseif($element->tagName === 'param' && in_array($element->getAttribute('name'), array('movie', 'filename'), true))
+			{
+				$urls[] = $element->getAttribute('value');
+			}
+			elseif($element->tagName === 'embed')
+			{
+				$urls[] = $element->getAttribute('src');
+			}
+		}
+
+		return $urls;
+	}
+
+	/**
 	 * @return array
 	 */
-	public function flashScriptUrls()
+	public function playerScriptUrls()
 	{
 		return array(
-			'constant'               => array('[flash=50,50]{e_CORE}javascript:alert(1)[/flash]'),
-			'shortcode'              => array('[flash=50,50]{SETSTYLE}javascript:alert(1)[/flash]'),
-			'printed by a shortcode' => array('[flash=50,50]{BBCODE_ATTRIBUTE_ECHO=javascript:alert(1)}[/flash]'),
+			'flash constant'                => array('[flash=50,50]{e_CORE}javascript:alert(1)[/flash]'),
+			'flash shortcode'               => array('[flash=50,50]{SETSTYLE}javascript:alert(1)[/flash]'),
+			'flash printed by a shortcode'  => array('[flash=50,50]{BBCODE_ATTRIBUTE_ECHO=javascript:alert(1)}[/flash]'),
+			'stream'                        => array('[stream]javascript:alert(1)[/stream]'),
+			'stream constant'               => array("[stream]{e_CORE}javascript:alert('1')[/stream]"),
+			'stream printed by a shortcode' => array('[stream]{BBCODE_ATTRIBUTE_ECHO=javascript:alert(1)}[/stream]'),
 		);
 	}
 
 	/**
-	 * @dataProvider flashScriptUrls
+	 * @dataProvider playerScriptUrls
 	 * @param string $bbcode
 	 */
-	public function testTheFlashBbcodeChecksTheUrlItPrints($bbcode)
+	public function testAPlayerBbcodeChecksTheUrlItPrints($bbcode)
 	{
 		foreach(array('', 'BODY', 'USER_BODY') as $modifiers)
 		{
-			$html = $this->renderStored($bbcode, null, $modifiers);
+			$urls = $this->playerUrlsIn($this->renderStored($bbcode, null, $modifiers));
 
-			$this->assertUrlCannotExecute($this->elementIn($html, 'object')->getAttribute('data'),
-				'A [flash] object carried a URL that can execute: '.$bbcode.' '.$modifiers);
-			$this->assertUrlCannotExecute($this->elementIn($html, 'param')->getAttribute('value'),
-				'A [flash] movie parameter carried a URL that can execute: '.$bbcode.' '.$modifiers);
+			self::assertCount(2, $urls, 'The player did not render both of its addresses: '.$bbcode.' '.$modifiers);
+
+			foreach($urls as $url)
+			{
+				$this->assertUrlCannotExecute($url, 'A player carried a URL that can execute: '.$bbcode.' '.$modifiers);
+			}
 		}
 	}
 
@@ -709,27 +743,33 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	 *
 	 * @return array
 	 */
-	public function flashUrls()
+	public function playerUrls()
 	{
 		return array(
-			'plain'         => array('[flash=60,40]http://example.com/a.swf[/flash]', 'http://example.com/a.swf'),
-			'path constant' => array('[flash=60,40]{e_MEDIA_FILE}a.swf[/flash]', 'a.swf', 'e_MEDIA_FILE'),
-			'site url'      => array('[flash=60,40]{SITEURL}a.swf[/flash]', 'a.swf', 'SITEURL'),
+			'flash'                => array('[flash=60,40]http://example.com/a.swf[/flash]', 'http://example.com/a.swf'),
+			'flash path constant'  => array('[flash=60,40]{e_MEDIA_FILE}a.swf[/flash]', 'a.swf', 'e_MEDIA_FILE'),
+			'flash site url'       => array('[flash=60,40]{SITEURL}a.swf[/flash]', 'a.swf', 'SITEURL'),
+			'stream'               => array('[stream width=60]http://example.com/a.wmv[/stream]', 'http://example.com/a.wmv'),
+			'stream path constant' => array('[stream width=60]{e_MEDIA_FILE}a.wmv[/stream]', 'a.wmv', 'e_MEDIA_FILE'),
+			'stream site url'      => array('[stream width=60]{SITEURL}a.wmv[/stream]', 'a.wmv', 'SITEURL'),
+			'flash rendered by a shortcode'  => array('[flash=60,40]{BBCODE_ATTRIBUTE_RENDERED=https://example.com/}a.swf[/flash]', 'https://example.com/a.swf'),
+			'stream rendered by a shortcode' => array('[stream width=60]{BBCODE_ATTRIBUTE_RENDERED=https://example.com/}a.wmv[/stream]', 'https://example.com/a.wmv'),
 		);
 	}
 
 	/**
-	 * @dataProvider flashUrls
+	 * @dataProvider playerUrls
 	 * @param string $bbcode
 	 * @param string $url
 	 * @param string $prefix
 	 */
-	public function testTheFlashBbcodeStillPlaysAnOrdinaryUrl($bbcode, $url, $prefix = null)
+	public function testAPlayerBbcodeStillPlaysAnOrdinaryUrl($bbcode, $url, $prefix = null)
 	{
-		$object = $this->elementIn($this->renderStored($bbcode, null, 'BODY'), 'object');
+		$html = $this->renderStored($bbcode, null, 'BODY');
+		$expected = ($prefix === null ? '' : constant($prefix)).$url;
 
-		self::assertSame(($prefix === null ? '' : constant($prefix)).$url, $object->getAttribute('data'));
-		self::assertSame('60', $object->getAttribute('width'));
+		self::assertSame(array($expected, $expected), $this->playerUrlsIn($html));
+		self::assertSame('60', $this->elementIn($html, 'object')->getAttribute('width'));
 	}
 
 	/**
