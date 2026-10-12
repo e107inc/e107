@@ -387,6 +387,35 @@ class adminUiBatchTriggerTest extends \Test\Unit
 			'Nor through a typed trigger.');
 	}
 
+	public function testAnAddonBatchCommandAsksTheEditRoute()
+	{
+		$refused = $this->makeProbe(array('e-multiselect' => array(1, 2)), 'AdminUiBatchRouteProbeFixture');
+		$refused->routes = array('list', 'create', 'delete');
+
+		$saved = e107::getPref('e_admin_list');
+		e107::getConfig()->set('e_admin_list', array('p7probe' => 'p7probe'));
+		p7probe_admin::$calls = array();
+
+		try
+		{
+			$refused->probeDispatch('batch_p7probe_stamp');
+
+			$this->assertSame(array(), p7probe_admin::$calls,
+				'A plugin\'s batch command writes the rows it is handed, so it must not run without the edit route.');
+
+			$allowed = $this->makeProbe(array('e-multiselect' => array(1, 2)), 'AdminUiBatchRouteProbeFixture');
+			$allowed->routes = array('edit');
+			$allowed->probeDispatch('batch_p7probe_stamp');
+
+			$this->assertSame(array(array('cmd' => 'stamp', 'ids' => array('1', '2'))), p7probe_admin::$calls,
+				'With the edit route, the command still reaches the plugin with the selection.');
+		}
+		finally
+		{
+			e107::getConfig()->set('e_admin_list', $saved);
+		}
+	}
+
 	public function testScreenDeclaringItsOwnFieldHandlerKeepsIt()
 	{
 		$dispatched = $this->dispatchOf('gen_chardata__x', 'AdminUiBatchCustomFieldProbeFixture');

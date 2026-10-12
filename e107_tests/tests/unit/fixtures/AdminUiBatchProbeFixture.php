@@ -82,6 +82,34 @@ class AdminUiBatchOverrideProbeFixture extends AdminUiBatchProbeFixture
 }
 
 /**
+ * A screen whose administrator holds only the routes a test names.
+ */
+class AdminUiBatchRouteProbeFixture extends AdminUiBatchProbeFixture
+{
+	/** @var string[] actions of the current mode this administrator holds */
+	public $routes = array();
+
+	protected function hasModeRouteAccess($action)
+	{
+		return in_array($action, $this->routes, true);
+	}
+}
+
+/**
+ * The e_admin addon of a plugin named p7probe, recording each batch command the list hands it.
+ */
+class p7probe_admin
+{
+	/** @var array one entry per process() call */
+	public static $calls = array();
+
+	public function process($ui, $data)
+	{
+		self::$calls[] = $data;
+	}
+}
+
+/**
  * Stand-in for {@see e_front_tree_model} recording what the batch dispatcher
  * asks it to update. Returns 0 so {@see e_admin_ui::handleListBatch()} skips
  * the success message and the list reload.
