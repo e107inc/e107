@@ -81,22 +81,26 @@ class page_admin extends e_admin_dispatcher
 		'page/list'     => '5',
 		'page/create'   => '5',
 		'page/edit'     => '5',
+		'page/delete'   => 'J1',
 		'page/prefs'    => '0',
 		'page/grid'     => '5',
 		'page/filter'   => '5',
 		'cat/list'      => '5',
 		'cat/create'    => '5',
 		'cat/edit'      => '5',
+		'cat/delete'    => 'J1',
 		'cat/grid'      => '5',
 		'cat/filter'    => '5',
 		'menu/list'     => 'J',
 		'menu/grid'     => 'J',
 		'menu/create'   => 'J',
 		'menu/edit'     => 'J',
+		'menu/delete'   => 'J1',
 		'menu/prefs'    => '0',
 		'menu/filter'   => 'J',
 		'overview/list' => '5|J',
 		'overview/edit' => '5|J',
+		'overview/delete' => 'J1',
 		'overview/prefs' => '0',
 	);
 
@@ -169,7 +173,9 @@ class page_admin_form_ui extends e_admin_form_ui
 			$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
 						".defset('ADMIN_EDIT_ICON')."</a>";
 
-			if($this->getController()->getMode() === 'overview' && getperms('J1')) // Page/Menu Delete Perms.
+			$controller = $this->getController();
+
+			if($controller->getMode() === 'overview' && $controller->getDispatcher()->hasRouteAccess('overview/delete'))
 			{
 				$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'));
 			}
@@ -613,7 +619,7 @@ class page_admin_ui extends e_admin_ui
 			}
 
 			
-			if(!empty($_POST['menu_delete'])) // Delete a Page/Menu combination (or rather, remove it's data )
+			if($mode === 'overview' && $this->getAction() === 'list' && !empty($_POST['menu_delete']) && $this->hasModeRouteAccess('delete')) // Delete a Page/Menu combination (or rather, remove it's data )
 			{
 				$key = key($_POST['menu_delete']);
 				

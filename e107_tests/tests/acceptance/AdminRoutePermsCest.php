@@ -148,6 +148,7 @@ class AdminRoutePermsCest
 	/** The custom page create route, the chapter create route and the custom page options. */
 	const ROUTE_PAGE_CREATE = '/e107_admin/cpage.php?mode=page&action=create';
 	const ROUTE_CHAPTER_CREATE = '/e107_admin/cpage.php?mode=cat&action=create';
+	const ROUTE_CHAPTER_LIST = '/e107_admin/cpage.php?mode=cat&action=list';
 	const ROUTE_PAGE_PREFS = '/e107_admin/cpage.php?mode=page&action=prefs';
 
 	/** Ban list routes, less the row id where they take one. */
@@ -241,6 +242,7 @@ class AdminRoutePermsCest
 		'p7rpMadmin'     => 'M',    // welcome messages, and nothing on the user list at all
 		'p7rp5admin'     => '5',    // custom pages
 		'p7rpJadmin'     => 'J',    // custom menus
+		'p7rp5J1admin'   => '5.J1', // custom pages, and deleting custom pages and menus
 	);
 
 	/** A second administrator, for the routes that act on somebody else's account. */
@@ -1762,6 +1764,115 @@ class AdminRoutePermsCest
 		$this->sendBatch($I, self::ROUTE_MENU_LIST, 'featurebox', $both);
 
 		$I->dontSeeInDatabase('e107_featurebox', array('fb_title' => 'p7rp both'));
+	}
+
+	/** The overview's delete key deletes nothing on any route but the overview list, even for an administrator who may delete. */
+	public function theOverviewDeleteKeyDeletesNothingOnAnyOtherRoute(AcceptanceTester $I)
+	{
+		$I->wantTo('Delete nothing for the overview delete key posted to any route but the overview list');
+
+		$page = $this->seedPageRow($I, 'p7rp page', 'p7rp menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5J1admin');
+
+		foreach(array(self::ROUTE_PAGE_LIST, self::ROUTE_PAGE_EDIT.$page, self::ROUTE_OVERVIEW_EDIT.$page, self::ROUTE_MENU_LIST) as $route)
+		{
+			$I->sendPostRequest($route, array(
+				'menu_delete' => array($page => $page),
+				'e-token'     => $this->grabTokenFrom($I, self::ROUTE_PAGE_LIST),
+			));
+		}
+
+		$I->seeInDatabase('e107_page', array('page_id' => $page));
+	}
+
+	/** The overview's delete button, and the key it posts, answer to the permission to delete custom pages and menus. */
+	public function aPagesAdministratorWhoMayNotDeleteCannotDeleteThroughTheOverview(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the overview delete to a custom-pages administrator who may not delete');
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$I->amOnPage(self::ROUTE_OVERVIEW_LIST);
+		$I->dontSeeElement("button[name='menu_delete[{$page}]']");
+
+		$I->sendPostRequest(self::ROUTE_OVERVIEW_LIST, array(
+			'menu_delete' => array($page => $page),
+			'e-token'     => $I->grabToken(),
+		));
+
+		$I->seeInDatabase('e107_page', array('page_id' => $page));
+	}
+
+	/** Positive control: an administrator who may delete still deletes a row with the overview's delete button. */
+	public function aPagesAdministratorWhoMayDeleteStillDeletesThroughTheOverview(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the overview delete button deleting for a custom-pages administrator who may delete');
+
+		$page = $this->seedPageRow($I, 'p7rp page', 'p7rp menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5J1admin');
+		$I->amOnPage(self::ROUTE_OVERVIEW_LIST);
+
+		$I->sendPostRequest(self::ROUTE_OVERVIEW_LIST, array(
+			$I->grabAttributeFrom("button.delete[value='{$page}']", 'name') => $page,
+			'e-token' => $I->grabToken(),
+		));
+
+		$I->dontSeeInDatabase('e107_page', array('page_id' => $page));
+	}
+
+	/** The page list's batch delete answers to the permission to delete custom pages and menus. */
+	public function aPagesAdministratorWhoMayNotDeleteCannotBatchDeleteACustomPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the page list batch delete to a custom-pages administrator who may not delete');
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendConfirmedBatchDelete($I, self::ROUTE_PAGE_LIST, $page);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $page));
+	}
+
+	/** Positive control: a custom-pages administrator who may delete still batch-deletes a custom page. */
+	public function aPagesAdministratorWhoMayDeleteStillBatchDeletesACustomPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the page list batch delete working for a custom-pages administrator who may delete');
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5J1admin');
+		$this->sendConfirmedBatchDelete($I, self::ROUTE_PAGE_LIST, $page);
+
+		$I->dontSeeInDatabase('e107_page', array('page_id' => $page));
+	}
+
+	/** The menu list's row delete answers to the permission to delete custom pages and menus. */
+	public function aMenusAdministratorWhoMayNotDeleteCannotDeleteACustomMenu(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a menu list row delete to a custom-menus administrator who may not delete');
+
+		$menu = $this->seedPageRow($I, '', 'p7rp menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->sendConfirmedRowDelete($I, self::ROUTE_MENU_LIST, $menu);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $menu));
+	}
+
+	/** The chapter list's row delete answers to the permission to delete custom pages and menus. */
+	public function aPagesAdministratorWhoMayNotDeleteCannotDeleteAChapter(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a chapter list row delete to a custom-pages administrator who may not delete');
+
+		$chapter = (int) $I->haveInDatabase('e107_page_chapters', array('chapter_name' => 'p7rp chapter', 'chapter_meta_description' => ''));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendConfirmedRowDelete($I, self::ROUTE_CHAPTER_LIST, $chapter);
+
+		$I->seeInDatabase('e107_page_chapters', array('chapter_id' => $chapter));
 	}
 
 	/**
