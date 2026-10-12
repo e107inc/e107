@@ -659,7 +659,6 @@ class eDispatcher
 			
 			default:
 				return null;
-			break;
 		}
 	}
 	
@@ -688,7 +687,6 @@ class eDispatcher
 			
 			default:
 				return null;
-			break;
 		}
 	}
 	
@@ -718,7 +716,6 @@ class eDispatcher
 			
 			default:
 				return null;
-			break;
 		}
 	}
 	
@@ -747,7 +744,6 @@ class eDispatcher
 			
 			default:
 				return null;
-			break;
 		}
 	}
 	
@@ -1392,8 +1388,8 @@ class eRouter
 	 * modules are registered, missing modules - removed. Additionally fallback to the default location 
 	 * is done if current user defined location is not readable
 	 * @see eDispatcher::adminReadModules()
-	 * @param array current configuration array (url_config core preference like)
-	 * @param array available URL modules as detected by {@link eDispatcher::adminReadModules()} and stored as url_modules core preference value
+	 * @param array $current current configuration array (url_config core preference like)
+	 * @param array $adminReadModules available URL modules as detected by {@link eDispatcher::adminReadModules()} and stored as url_modules core preference value
 	 * @return array new url_config array
 	 */
 	public static function adminBuildConfig($current, $adminReadModules = null)
@@ -1726,7 +1722,7 @@ class eRouter
 	
 	/**
 	 * Check if provided module is present in the rules config
-	 * @param string module
+	 * @param string $module
 	 * @return boolean
 	 */
 	public function isModule($module)
@@ -2986,7 +2982,6 @@ abstract class eUrlConfig
 	 * @param string $resolvedRoute
 	 * @param eRequest $request
 	 * @param string $callType 'route' - called once, when parsing the request, 'dispatch' - called inside the dispatch loop (in case of controller _forward)
-	 * @param void
 	 */
 	public function legacy($resolvedRoute, eRequest $request, $callType = 'route') 
 	{
@@ -3276,7 +3271,6 @@ class eController
 			
 			default:
 				return;
-			break;
 		}
 		
 		$request->addRouteHistory($oldRoute);
@@ -5033,44 +5027,34 @@ class eHelper
 		{
 			case 'dashl': //dasherize, to lower case
 				return self::dasherize($tp->ustrtolower($title));
-			break;
 			
 			case 'dashc': //dasherize, camel case
 				return self::dasherize(self::camelize($title, true, ' '));
-			break;
 			
 			case 'dash': //dasherize
 				return self::dasherize($title);
-			break;
 			
 			case 'underscorel': ///underscore, to lower case
 				return self::underscore($tp->ustrtolower($title));
-			break;
 			
 			case 'underscorec': ///underscore, camel case
 				return self::underscore(self::camelize($title, true, ' '));
-			break;
 			
 			case 'underscore': ///underscore
 				return self::underscore($title);
-			break;
 			
 			case 'plusl': ///plus separator, to lower case
 				return str_replace(' ', '+', $tp->ustrtolower($title));
-			break;
 			
 			case 'plusc': ///plus separator, to lower case
 				return str_replace(' ', '+', self::camelize($title, true, ' '));
-			break;
 			
 			case 'plus': ///plus separator
 				return str_replace(' ', '+', $title);
-			break;
 			
 			case 'none':
 			default:
 				return $title;
-			break;
 		}
 	}
 	

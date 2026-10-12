@@ -12,6 +12,9 @@
 // DIRTY - needs input validation, streaky
 
 require_once("class2.php");
+
+$tp = e107::getParser();
+
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 

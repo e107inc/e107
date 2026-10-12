@@ -10,6 +10,11 @@
  *
 */
 require_once(__DIR__.'/../class2.php');
+
+$tp = e107::getParser();
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 if (!getperms('X'))
 {
 	e107::redirect('admin');

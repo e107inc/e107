@@ -16,6 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$tp = e107::getParser();
+
 // TODO Rework all of this to v2 standards while maintaining BC.
 
 // advanced 

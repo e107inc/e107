@@ -546,16 +546,13 @@ class news_shortcodes extends e_shortcode
 
 			case 'meta':
 				return $tp->replaceConstants($imgTag, 'full');
-			break;
 
 			case 'url':
 				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
-			break;
 
 			case 'tag':
 			default:
 				return $imgTag; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
-			break;
 
 
 		}
@@ -966,7 +963,6 @@ class news_shortcodes extends e_shortcode
 		{
 			case 'src':
 				return $src;
-			break;
 
 			case 'tag':
 				return "<img class='news_image ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";

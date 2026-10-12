@@ -24,6 +24,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 define('ALT_AUTH_PATH', e_PLUGIN.'alt_auth/');
 
 if (e_PAGE == 'alt_auth_conf.php')

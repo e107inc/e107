@@ -1645,7 +1645,7 @@ class e107MailManager
 	 * Handle a bounce report.
 	 * @param string $bounceString - the string from header X-e107-id
 	 * @param string $emailAddress - optional email address string for checks
-	 * @return bool|array| - TRUE on success, FALSE on failure
+	 * @return bool|array TRUE on success, FALSE on failure
 	 */
 	public function markBounce($bounceString, $emailAddress = '')
 	{

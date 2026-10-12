@@ -329,7 +329,6 @@ class hero_form_ui extends e_admin_form_ui
 			$text .= "</table>";
 				return $text;
 
-			break;
 			
 			case 'write': // Edit Page
 
@@ -461,12 +460,10 @@ class hero_form_ui extends e_admin_form_ui
 
 
 				return $text;
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -566,16 +563,13 @@ class hero_form_ui extends e_admin_form_ui
 			case 'read': // List Page
 
 				return $this->renderHeroButton($value);
-			break;
 			
 			case 'write': // Edit Page
 				return $this->heroButtonInput('hero_button1', $value);
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 
@@ -594,16 +588,13 @@ class hero_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return $this->renderHeroButton($value);
-			break;
 			
 			case 'write': // Edit Page
 				return $this->heroButtonInput('hero_button2', $value);
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return  array();
-			break;
 		}
 	}
 

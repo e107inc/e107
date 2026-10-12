@@ -145,9 +145,9 @@ class e_form
 
 	/**
 	 * Open a new form
-	 * @param string name
+	 * @param string $name
 	 * @param $method - post|get  default is post
-	 * @param string target - e_REQUEST_URI by default
+	 * @param string $target e_REQUEST_URI by default
 	 * @param array|string $options
 	 * @return string
 	 */
@@ -1625,10 +1625,10 @@ class e_form
 	/**
 	 * File Picker
 	 *
-	 * @param string name  eg. 'myfield' or 'myfield[]'
-	 * @param mixed default
-	 * @param string label
-	 * @param mixed sc_parameters
+	 * @param string $name eg. 'myfield' or 'myfield[]'
+	 * @param mixed $default
+	 * @param string $label
+	 * @param mixed $sc_parameters
 	 * @return string
 	 */
 	public function filepicker($name, $default, $label = '', $sc_parameters = null)
@@ -1697,7 +1697,7 @@ class e_form
 	 * on Submit returns unix timestamp or string value.
 	 * @param string $name the name of the field
 	 * @param int|bool $datestamp UNIX timestamp - default value of the field
-	 * @param array|string {
+	 * @param array|string $options {
 	 *      @type string mode date or datetime
 	 *      @type string format strftime format eg. '%Y-%m-%d'
 	 *      @type string timezone eg. 'America/Los_Angeles' - intended timezone of the date/time entered. (offsets UTC value)
@@ -3538,12 +3538,10 @@ class e_form
 		{
 			case 'checkbox':
 				return e107::getUserClass()->uc_checkboxes($name, $curval, $optlist, null,false);
-			break;
 
 			case 'dropdown':
 			default:
 				return e107::getUserClass()->uc_dropdown($name, $curval, $optlist, $opt);
-			break;
 		}
 
 	}
@@ -5648,7 +5646,6 @@ var_dump($select_options);*/
 				}
 
 				return $value;
-			break;
 
 			case 'checkboxes':
 
@@ -6216,7 +6213,6 @@ var_dump($select_options);*/
 			case 'images':
 				$firstItem = !empty($value[0]['path']) ? $value[0]['path'] : null; // display first item.
 				return e107::getMedia()->previewTag($firstItem, $parms);
-			break;
 
 			case 'files':
 
@@ -6620,7 +6616,6 @@ var_dump($select_options);*/
 				}
 
 				return '';
-			break;
 
 			case 'language': // All Known Languages. 
 
@@ -6641,7 +6636,6 @@ var_dump($select_options);*/
 
 				return $value;
 
-			break;
 
 			case 'lanlist': // installed languages. 
 				$options = e107::getLanguage()->getLanSelectArray();
@@ -7065,7 +7059,6 @@ var_dump($select_options);*/
 				$ret .= '</div>';
 
 				return $ret;
-			break;
 
 			case 'files':
 
@@ -7169,7 +7162,6 @@ var_dump($select_options);*/
 
 				//$this->selectbox($key, $layouts, $value)
 			//	$ret =  (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value,array('sep'=>"<br />"), $info));
-			break;
 
 			case 'templates': //to do - exclude param (exact match)
 				$templates = array();
@@ -7224,7 +7216,6 @@ var_dump($select_options);*/
 
 				}
 				return $ret;
-			break;
 
 
 			case 'dropdown':
@@ -8387,8 +8378,8 @@ var_dump($select_options);*/
 
 	/**
 	 * Generic renderForm solution
-	 * @param @forms
-	 * @param @nocontainer
+	 * @param $forms
+	 * @param $nocontainer
 	 * @return string
 	 */
 	public function renderForm($forms, $nocontainer = false)

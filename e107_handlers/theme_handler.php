@@ -1190,7 +1190,7 @@ class e_theme
 		/**
 	 * Validate and return the name of the categories.
 	 *
-	 * @param string [optional] $categoryfromXML
+	 * @param string $categoryfromXML [optional]
 	 * @return string
 	 */
 	private static function getThemeCategory($categoryfromXML = '')

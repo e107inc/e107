@@ -26,6 +26,11 @@
 	 */
 
 	require_once('class2.php');
+
+	$tp = e107::getParser();
+	$sql = e107::getDb();
+	$ns = e107::getRender();
+
 	e107::coreLan('online');
 
 	require_once(HEADERF);

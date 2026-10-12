@@ -3513,19 +3513,15 @@ class e_parse
 		{
 			case 'sc':
 				return array_values($array);
-				break;
 
 			case 'raw':
 				return array_keys($array);
-				break;
 
 			case 'rev':
 				return array_reverse($array, true);
-				break;
 
 			case 'all':
 				return $array;
-				break;
 		}
 
 		return array();
@@ -3922,13 +3918,11 @@ class e_parse
 				$url = $this->createConstants($url, 1);
 
 				return $url;
-				break;
 
 			case 5: // nice urls - e.g. e_MEDIA_VIDEO/mystream.flv
 				$url = $this->createConstants($url, 4);
 
 				return str_replace($this->getUrlConstants('sc'), $this->getUrlConstants('raw'), $url);
-				break;
 
 			default:
 				$tmp = array();
@@ -4111,7 +4105,6 @@ class e_parse
 			default:
 				//	trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
 				return null;
-				break;
 		}
 
 
@@ -4223,7 +4216,7 @@ class e_parse
 	/**
 	 * Add Allowed Tags.
 	 *
-	 * @param string
+	 * @param string $tag
 	 */
 	public function addAllowedTag($tag)
 	{
@@ -4446,7 +4439,6 @@ class e_parse
 			$tmp = $doc->getElementsByTagName($find);
 
 			/**
-			 * @var             $k
 			 * @var DOMDocument $node
 			 */
 			foreach ($tmp as $k => $node)
@@ -4585,7 +4577,6 @@ class e_parse
 
 				return "<i class='" . $size . ' ' . $text . "'></i>";
 
-				break;
 
 
 			case "far":

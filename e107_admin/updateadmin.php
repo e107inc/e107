@@ -13,6 +13,9 @@
 
 require_once(__DIR__.'/../class2.php');
 
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 // include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 e107::lan('core','updateadmin',true);
 

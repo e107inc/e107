@@ -9,7 +9,10 @@
  */
 
 require_once(__DIR__.'/../../class2.php');
-if (!is_object($tp)) $tp = new e_parse;
+
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 if (!getperms("P") || !e107::isInstalled('poll')) 
 {
 	e107::redirect('admin');
