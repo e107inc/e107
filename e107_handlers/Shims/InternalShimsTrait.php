@@ -21,5 +21,7 @@ trait InternalShimsTrait
 	use Internal\SetcookieTrait;
 	use Internal\StrftimeTrait;
 	use Internal\StrptimeTrait;
+	use Internal\StrtolowerTrait;
+	use Internal\StrtoupperTrait;
 	use Internal\UsortTrait;
 }
