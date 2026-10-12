@@ -389,6 +389,14 @@
 			return array(
 				'a plain block'                                        => array('[hide]The answer is 42[/hide]'),
 				'a numbered code left open straight after the opening' => array('[hide][h2]The answer is 42[/hide]'),
+				'a parameter'                                          => array('[hide=x]The answer is 42[/hide]'),
+				'digits'                                               => array('[hide2]The answer is 42[/hide]'),
+				'digits with a leading zero'                           => array('[hide02]The answer is 42[/hide]'),
+				'digits and a parameter'                               => array('[hide2=x]The answer is 42[/hide]'),
+				'a longer word'                                        => array('[hideme]The answer is 42[/hide]'),
+				'digits closed by their own tag, then a plain block'   => array('[hide2]The answer is 42[/hide2] and [hide]more[/hide]'),
+				'digits closed by their own tag with a leading zero'   => array('[hide02]The answer is 42[/hide2] and [hide]more[/hide]'),
+				'digits holding a block of the same digits'            => array('[hide2]The answer is 42 [hide2]again[/hide2][/hide]'),
 			);
 		}
 
