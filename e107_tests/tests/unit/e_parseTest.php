@@ -3570,6 +3570,27 @@ Your browser does not support the audio tag.
 
 	}
 
+	public function testCleanHtmlRefusesAScriptSchemeWhateverTheLocale()
+	{
+		$previous = setlocale(LC_CTYPE, 0);
+
+		if (setlocale(LC_CTYPE, 'tr_TR.UTF-8', 'tr_TR.utf8') === false)
+		{
+			self::markTestSkipped('No Turkish locale is installed.');
+		}
+
+		try
+		{
+			$html = $this->tp->cleanHtml('<a href="JAVASCRIPT:document.title=1">notes</a>');
+		}
+		finally
+		{
+			setlocale(LC_CTYPE, $previous);
+		}
+
+		self::assertSame('<a href="#---sanitized---#">notes</a>', $html);
+	}
+
 	/**
 	 * The parser is a singleton and cleanHtml() reuses one DOMDocument, so the
 	 * node lists it fills while walking a document have to be emptied before it
