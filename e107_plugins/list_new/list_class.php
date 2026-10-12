@@ -33,7 +33,6 @@ class listclass
 	var $list_pref;
 	var $mode;
 	var $shortcodes = FALSE;
-	private $pf; // profanity filter class.
 	public $data;
 	public $plugin_dir;
 	public $e107;
@@ -601,18 +600,14 @@ class listclass
 			else
 			{
 				$listArray = $class->getListData();
-				if (e107::getPref('profanity_filter'))
+				if (e107::getPref('profanity_filter') && is_array(varset($listArray['records'])))
 				{
-					$tp = e107::getParser();
-					if (!is_object($this->pf))
-					{
-						$this->pf = new e_profanityFilter;
-					}
-					foreach ($listArray as $k => $v)
+					$pf = e107::getProfanity();
+					foreach ($listArray['records'] as $k => $v)
 					{
 						if (isset($v['heading']))
 						{
-							$listArray[$k]['heading'] = $this->pf->filterProfanities($v['heading']);
+							$listArray['records'][$k]['heading'] = $pf->filterProfanities($v['heading']);
 						}
 					}
 				}
