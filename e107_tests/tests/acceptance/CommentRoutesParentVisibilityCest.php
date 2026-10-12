@@ -339,6 +339,62 @@ class CommentRoutesParentVisibilityCest
 	}
 
 	/**
+	 * The pages of comments comment.php serves over AJAX hold comments only where the item's own page shows them.
+	 */
+	public function theAjaxCommentListRefusesWhatTheItemPageRefuses(AcceptanceTester $I)
+	{
+		$this->loginAsReader($I);
+
+		foreach($this->refusedToEveryone() as $marker => $table)
+		{
+			$this->amOnAjaxCommentList($I, $table, $marker);
+			$I->dontSeeInSource('Text of '.$marker);
+		}
+
+		$this->amOnAjaxCommentList($I, 'fixtureplugin', 'CMTPLUGIN');
+		$I->dontSeeInSource('Text of CMTPLUGIN');
+
+		foreach($this->readByEveryone() as $marker => $table)
+		{
+			$this->amOnAjaxCommentList($I, $table, $marker);
+			$I->seeInSource('Text of '.$marker);
+		}
+	}
+
+	/**
+	 * Where guests may comment, the list is served to them on the same terms, a locked page's comments once they have given its password.
+	 */
+	public function aGuestIsListedOnlyTheCommentsTheItemPageShows(AcceptanceTester $I)
+	{
+		$this->haveSitePref($I, 'anon_post', 1);
+
+		$this->amOnAjaxCommentList($I, 'news', 'CMTSTAFF');
+		$I->dontSeeInSource('Text of CMTSTAFF');
+		$this->amOnAjaxCommentList($I, 'page', 'CMTPAGEPASSWORD');
+		$I->dontSeeInSource('Text of CMTPAGEPASSWORD');
+
+		$this->unlockPage($I, 'CMTPAGEPASSWORD');
+
+		$this->amOnAjaxCommentList($I, 'page', 'CMTPAGEPASSWORD');
+		$I->seeInSource('Text of CMTPAGEPASSWORD');
+		$this->amOnAjaxCommentList($I, 'news', 'CMTPUBLIC');
+		$I->seeInSource('Text of CMTPUBLIC');
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $table the type segment the list is asked for
+	 * @param string $marker
+	 * @return void
+	 */
+	private function amOnAjaxCommentList(AcceptanceTester $I, $table, $marker)
+	{
+		$I->haveHttpHeader('X-Requested-With', 'XMLHttpRequest');
+		$I->amOnPage('/comment.php?mode=list&type='.$table.'&id='.$this->items[$marker].'&from=0');
+		$I->deleteHeader('X-Requested-With');
+	}
+
+	/**
 	 * Items each refused to a guest and to a signed-in member outside the staff class, by the condition named in the marker.
 	 *
 	 * @return string[] comment.php's table segment by marker
