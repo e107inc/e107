@@ -91,12 +91,7 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	 */
 	private function hrefOfFirstAnchor($html)
 	{
-		foreach($this->elementsOf($html) as $element)
-		{
-			if($element->tagName === 'a') return $element->getAttribute('href');
-		}
-
-		self::fail('No anchor was rendered from: '.$html);
+		return $this->elementIn($html, 'a')->getAttribute('href');
 	}
 
 	/**
@@ -143,6 +138,15 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 		}
 
 		self::fail('No '.$tagName.' was rendered from: '.$html);
+	}
+
+	/**
+	 * @param string $url
+	 * @param string $message
+	 */
+	private function assertUrlCannotExecute($url, $message)
+	{
+		self::assertSame(0, preg_match('#^javascript:#i', preg_replace('/[\x00-\x20\x7F]/', '', $url)), $message);
 	}
 
 	/**
@@ -230,6 +234,19 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 			'file shortcode' => array('[file={SETSTYLE}javascript:alert(1)]x[/file]'),
 			'file printed by a shortcode' => array('[file={BBCODE_ATTRIBUTE_ECHO=javascript:alert(1)}]x[/file]'),
 			'file completed by a shortcode' => array('[file=java{BBCODE_ATTRIBUTE_ECHO=script:alert(1)}]x[/file]'),
+			'url constant'   => array('[url={e_MENU}javascript:alert(1)]x[/url]'),
+			'url body constant' => array('[url]{e_MENU}javascript:alert(1)[/url]'),
+			'link constant'  => array('[link={e_MENU}javascript:alert(1)]x[/link]'),
+			'link body constant' => array('[link]{e_MENU}javascript:alert(1)[/link]'),
+			'url nested'     => array('[url={e_{e_MENU}CORE}javascript:alert(1)]x[/url]'),
+			'link nested'    => array('[link={e_{e_MENU}CORE}javascript:alert(1)]x[/link]'),
+			'link shortcode' => array('[link={SETSTYLE}javascript:alert(1)]x[/link]'),
+			'url printed by a shortcode' => array('[url={BBCODE_ATTRIBUTE_ECHO=javascript:alert(1)}]x[/url]'),
+			'url body printed by a shortcode' => array('[url]{BBCODE_ATTRIBUTE_ECHO=javascript:alert(1)}[/url]'),
+			'link printed by a shortcode' => array('[link={BBCODE_ATTRIBUTE_ECHO=javascript:alert(1)}]x[/link]'),
+			'link completed by a shortcode' => array('[link=java{BBCODE_ATTRIBUTE_ECHO=script:alert(1)}]x[/link]'),
+			'url shortcode'  => array('[url={SETSTYLE}javascript:alert(1)]x[/url]'),
+			'url completed by a shortcode' => array('[url=java{BBCODE_ATTRIBUTE_ECHO=script:alert(1)}]x[/url]'),
 		);
 	}
 
@@ -248,9 +265,7 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 			{
 				if($element->tagName !== 'a') continue;
 
-				self::assertSame(0, preg_match('#^javascript:#i',
-					preg_replace('/[\x00-\x20\x7F]/', '', $element->getAttribute('href'))),
-					'An anchor carried a URL that can execute: '.$bbcode.' '.$modifiers);
+				$this->assertUrlCannotExecute($element->getAttribute('href'), 'An anchor carried a URL that can execute: '.$bbcode.' '.$modifiers);
 			}
 		}
 	}
@@ -294,6 +309,8 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 			'file'                => array('[file=https://example.com/report.zip]x[/file]', 'https://example.com/report.zip'),
 			'file under e_BASE'   => array('[file={e_BASE}report.zip]x[/file]', 'report.zip', 'SITEURL'),
 			'file path constant'  => array('[file={e_MEDIA_FILE}report.zip]x[/file]', 'report.zip', 'e_MEDIA_FILE'),
+			'url path constant'   => array('[url={e_PLUGIN}forum/forum.php]x[/url]', 'forum/forum.php', 'e_PLUGIN'),
+			'link path constant'  => array('[link={e_PLUGIN}forum/forum.php]x[/link]', 'forum/forum.php', 'e_PLUGIN'),
 		);
 	}
 
@@ -322,6 +339,13 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 			'file printed address' => array('[file={BBCODE_ATTRIBUTE_ECHO=https://example.com/}report.zip]x[/file]', 'https://example.com/report.zip'),
 			'file in an html body' => array('[html]<p>[file={SITEURL}report.zip]x[/file]</p>[/html]', 'report.zip', 'SITEURL'),
 			'file in a table'      => array('[table][tr][td][file={SITEURL}report.zip]x[/file][/td][/tr][/table]', 'report.zip', 'SITEURL'),
+			'link site url'        => array('[link={SITEURL}page.php]x[/link]', 'page.php', 'SITEURL'),
+			'url site url'         => array('[url={SITEURL}page.php]x[/url]', 'page.php', 'SITEURL'),
+			'url body site url'    => array('[url]{SITEURL}page.php[/url]', 'page.php', 'SITEURL'),
+			'link printed address' => array('[link={BBCODE_ATTRIBUTE_ECHO=https://example.com/}page.php]x[/link]', 'https://example.com/page.php'),
+			'url printed address'  => array('[url={BBCODE_ATTRIBUTE_ECHO=https://example.com/}page.php]x[/url]', 'https://example.com/page.php'),
+			'link in an html body' => array('[html]<p>[link={SITEURL}page.php]x[/link]</p>[/html]', 'page.php', 'SITEURL'),
+			'link in a table'      => array('[table][tr][td][link={SITEURL}page.php]x[/link][/td][/tr][/table]', 'page.php', 'SITEURL'),
 		);
 	}
 
@@ -354,6 +378,9 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	{
 		return array(
 			'file' => array('[file={BBCODE_ATTRIBUTE_ECHO=x"y}]x[/file]'),
+			'url' => array('[url={BBCODE_ATTRIBUTE_ECHO=x"y}]x[/url]'),
+			'url body' => array('[url]{BBCODE_ATTRIBUTE_ECHO=x"y}[/url]'),
+			'link body' => array('[link]{BBCODE_ATTRIBUTE_ECHO=x"y}[/link]'),
 		);
 	}
 
@@ -379,6 +406,8 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	{
 		return array(
 			'file' => array('[file={BBCODE_ATTRIBUTE_RENDERED=https://example.com/}]Visit[/file]'),
+			'url'  => array('[url={BBCODE_ATTRIBUTE_RENDERED=https://example.com/}]Visit[/url]'),
+			'link' => array('[link={BBCODE_ATTRIBUTE_RENDERED=https://example.com/}]Visit[/link]'),
 		);
 	}
 
@@ -590,6 +619,63 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 
 		self::assertStringNotContainsString('javascript:', $html,
 			'A [flash] URL kept a scheme that can execute: '.$html);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function flashScriptUrls()
+	{
+		return array(
+			'constant'               => array('[flash=50,50]{e_CORE}javascript:alert(1)[/flash]'),
+			'shortcode'              => array('[flash=50,50]{SETSTYLE}javascript:alert(1)[/flash]'),
+			'printed by a shortcode' => array('[flash=50,50]{BBCODE_ATTRIBUTE_ECHO=javascript:alert(1)}[/flash]'),
+		);
+	}
+
+	/**
+	 * @dataProvider flashScriptUrls
+	 * @param string $bbcode
+	 */
+	public function testTheFlashBbcodeChecksTheUrlItPrints($bbcode)
+	{
+		foreach(array('', 'BODY', 'USER_BODY') as $modifiers)
+		{
+			$html = $this->renderStored($bbcode, null, $modifiers);
+
+			$this->assertUrlCannotExecute($this->elementIn($html, 'object')->getAttribute('data'),
+				'A [flash] object carried a URL that can execute: '.$bbcode.' '.$modifiers);
+			$this->assertUrlCannotExecute($this->elementIn($html, 'param')->getAttribute('value'),
+				'A [flash] movie parameter carried a URL that can execute: '.$bbcode.' '.$modifiers);
+		}
+	}
+
+	/**
+	 * Rows shaped as in {@see bbcodeAttributeInjectionTest::ordinaryLinks()}.
+	 *
+	 * @return array
+	 */
+	public function flashUrls()
+	{
+		return array(
+			'plain'         => array('[flash=60,40]http://example.com/a.swf[/flash]', 'http://example.com/a.swf'),
+			'path constant' => array('[flash=60,40]{e_MEDIA_FILE}a.swf[/flash]', 'a.swf', 'e_MEDIA_FILE'),
+			'site url'      => array('[flash=60,40]{SITEURL}a.swf[/flash]', 'a.swf', 'SITEURL'),
+		);
+	}
+
+	/**
+	 * @dataProvider flashUrls
+	 * @param string $bbcode
+	 * @param string $url
+	 * @param string $prefix
+	 */
+	public function testTheFlashBbcodeStillPlaysAnOrdinaryUrl($bbcode, $url, $prefix = null)
+	{
+		$object = $this->elementIn($this->renderStored($bbcode, null, 'BODY'), 'object');
+
+		self::assertSame(($prefix === null ? '' : constant($prefix)).$url, $object->getAttribute('data'));
+		self::assertSame('60', $object->getAttribute('width'));
 	}
 
 	/**
