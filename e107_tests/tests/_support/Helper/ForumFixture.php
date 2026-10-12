@@ -190,6 +190,34 @@ class ForumFixture extends AppFixture
 	}
 
 	/**
+	 * Run $run with the site's core prefs set as given, and put each back afterwards, whatever $run does.
+	 *
+	 * @param array $prefs pref name => value
+	 * @param callable $run
+	 * @return mixed what $run returns
+	 */
+	public function haveSitePrefsDuring(array $prefs, $run)
+	{
+		$was = array();
+		foreach ($prefs as $name => $value)
+		{
+			$was[$name] = $this->haveSitePref($name, $value);
+		}
+
+		try
+		{
+			return $run();
+		}
+		finally
+		{
+			foreach ($was as $name => $value)
+			{
+				$this->haveSitePref($name, $value === '' ? null : $value);
+			}
+		}
+	}
+
+	/**
 	 * Replace a plugin's preferences with $values.
 	 *
 	 * A plugin config is one serialised row rather than a column per setting,

@@ -22,6 +22,9 @@
 
 		private $_data = array();
 
+		/** @var int|null what the administrator who last saved $_data could store, as {@see e_customfields::authorTrust()} says; null for data saved before values were filtered */
+		private $_trust = null;
+
 		private $_field_limit = 30;
 
 		private $_tab = array();
@@ -117,6 +120,13 @@
 		public function loadData($data)
 		{
 			$this->_data = e107::unserialize($data);
+			$this->_trust = null;
+
+			if(is_array($this->_data) && isset($this->_data['__trust__']))
+			{
+				$this->_trust = in_array($this->_data['__trust__'], array(0, 1, 2), true) ? $this->_data['__trust__'] : null;
+				unset($this->_data['__trust__']);
+			}
 
 		//	e107::getDebug()->log($this->_data);
 
@@ -175,6 +185,9 @@
 				return null;
 			}
 
+			$text = is_string($value) ? $tp->attributeValue($value) : $value;
+			$shown = ($this->_trust === null) ? $text : $value;
+			$label = ($this->_trust === 2) ? $this->asScriptAuthorWrote($value) : $text;
 			$ret = null;
 
 			switch($fieldType)
@@ -182,14 +195,14 @@
 				case 'dropdown':
 				case 'checkboxes':
 				case 'radio':
-					$ret = ($raw) ? $value : e107::getForm()->renderValue($key,$value,$this->_config[$key]);
+					$ret = ($raw) ? $text : e107::getForm()->renderValue('customfield_'.$key,$this->decoded($value),$this->_config[$key]);
 				break;
 
 				case 'video':
 
 					if(!empty($value))
 					{
-						$ret = ($raw) ? 'https://www.youtube.com/watch?v='.str_replace('.youtube', '', $value) : $tp->toVideo($value);
+						$ret = ($raw) ? 'https://www.youtube.com/watch?v='.str_replace('.youtube', '', $text) : $tp->toVideo($value);
 					}
 				break;
 
@@ -198,73 +211,87 @@
 				case 'image':
 					if(!empty($value))
 					{
-						$ret = ($raw) ? $tp->thumbUrl($value,$parm) : $tp->toImage($value,$parm);
+						$ret = ($raw) ? $this->linkTo($tp->thumbUrl($value,$parm)) : $tp->toImage($value,$parm);
 					}
 					break;
 
 				case 'icon':
-					$ret = ($raw) ? str_replace('.glyph', '', $value) : $tp->toIcon($value);
+					$ret = ($raw) ? str_replace('.glyph', '', $text) : $tp->toIcon($label);
 					break;
 
 				case 'country':
-					$ret = ($raw) ? $value : e107::getForm()->getCountry($value);
+					$ret = ($raw) ? $text : e107::getForm()->getCountry($value);
 					break;
 
 				case 'tags':
-					$ret = ($raw) ? $value : $tp->toLabel($value,$type);
+					$ret = ($raw) ? $text : $tp->toLabel($label,$type);
 					break;
 
 				case 'lanlist':
 				case 'language':
-					$ret = ($raw) ? $value : e107::getLanguage()->convert($value);
+					$ret = ($raw) ? $text : e107::getLanguage()->convert($value);
 					break;
 
 				case 'datestamp':
-					$ret = ($raw) ? $value : $tp->toDate($value);
+					$ret = ($raw) ? $text : $tp->toDate($value);
 					break;
 
 				case 'file':
 					if(!empty($value))
 					{
-						$ret = ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
+						$ret = ($raw) ? $tp->toFile($text, array('raw'=>1)) : $tp->toFile($text);
 					}
 					break;
 
 				case 'url':
+					$ret = ($raw) ? $this->linkTo($value) : $tp->toHTML($shown);
+					break;
+
 				case 'email':
-					$ret = ($raw) ? $value : $tp->toHTML($value);
+					$ret = ($raw) ? $text : $tp->toHTML($shown);
 					break;
 
 				case 'user':
-					$ret = ($raw) ? $value : e107::getSystemUser($value,true)->getName();
+					$ret = ($raw) ? $text : e107::getSystemUser($value,true)->getName();
 					break;
 
 				case 'userclass':
-					$ret = ($raw) ? $value : e107::getUserClass()->getName($value);
+					$ret = ($raw) ? $text : e107::getUserClass()->getName($value);
 					break;
 
 				case 'progressbar':
 					if($raw)
 					{
-						$ret = (strpos($value, '/') === false) ? $value.'%' : $value;
+						$ret = (strpos($text, '/') === false) ? $text.'%' : $text;
 					}
 					else
 					{
-						$ret = e107::getForm()->progressBar($key,$value,$this->_config[$key]);
+						$ret = e107::getForm()->progressBar($key,$label,$this->_config[$key]);
 					}
 
 					break;
 
 				case 'textarea':
 				case 'bbarea':
-					$ret = ($raw) ? $value : $tp->toHTML($value, true, 'BODY');
+					if(!$raw)
+					{
+						$ret = $tp->toHTML($shown, true, 'BODY');
+					}
+					elseif($this->_trust === 1)
+					{
+						$ret = $tp->toHTML($value, false, 'WYSIWYG');
+					}
+					else
+					{
+						$ret = ($this->_trust === 2) ? $label : $shown;
+					}
 					break;
 
 
 				case 'boolean':
 					if($raw)
 					{
-						return $value;
+						return $text;
 					}
 					else
 					{
@@ -275,7 +302,7 @@
 				case 'checkbox':
 					if($raw)
 					{
-						$ret = $value;
+						$ret = $text;
 					}
 					elseif(is_numeric($value))
 					{
@@ -283,16 +310,92 @@
 					}
 					else
 					{
-						$ret = $value;
+						$ret = $label;
 					}
 					break;
 
 				default:
-					$ret = ($raw) ? $value : $tp->toHTML($value);
+					$ret = ($raw) ? $text : $tp->toHTML($shown);
 			}
 
 
 			return $ret;
+		}
+
+
+		/**
+		 * @param mixed $value as {@see e_parse::toDB()} stored it for an author with script access
+		 * @return mixed the markup that author wrote, with the quotes, dollar signs and backslashes
+		 *               {@see e_parse::toDB()} encoded, and a quote stored as an entity inside an attribute value kept
+		 *               as one
+		 */
+		private function asScriptAuthorWrote($value)
+		{
+			return is_string($value) ? strtr($value, array('&quot;' => '"', '&#039;' => "'", '&#036;' => '$', '&#092;' => '\\', '&amp;quot;' => '&quot;', '&amp;#039;' => '&#039;')) : $value;
+		}
+
+
+		/**
+		 * @return int what the current user's values may hold once {@see e_parse::toDB()} has stored them: 2 scripts
+		 *             and HTML (post_script), 1 HTML (post_html), 0 text
+		 */
+		private function authorTrust()
+		{
+			$pref = e107::getConfig();
+
+			if(check_class($pref->get('post_script', e_UC_NOBODY)))
+			{
+				return 2;
+			}
+
+			return check_class($pref->get('post_html', e_UC_MAINADMIN)) ? 1 : 0;
+		}
+
+
+		/**
+		 * @param mixed $value a stored value, or an array of them
+		 * @return mixed the value with the entities {@see e_parse::toDB()} wrote turned back into characters
+		 */
+		private function decoded($value)
+		{
+			if(is_array($value))
+			{
+				return array_map(array($this, 'decoded'), $value);
+			}
+
+			return is_string($value) ? html_entity_decode($value, ENT_QUOTES, 'UTF-8') : $value;
+		}
+
+
+		/**
+		 * @param mixed $key
+		 * @return bool whether $key can name a field, as the configuration form's pattern allows and the reserved '__tabs__' and '__trust__' do not
+		 */
+		private function isFieldKey($key)
+		{
+			return is_string($key) && strpos($key, '__') !== 0 && preg_match('/^[\w-]+$/u', $key) === 1;
+		}
+
+
+		/**
+		 * @param string $url the address as a page would print it, entities and all
+		 * @return string the address encoded for an href or src, its quotes and angle brackets percent-encoded so a
+		 *                script that reads it back into markup cannot end the attribute; nothing when it still holds an
+		 *                entity, which such a script would decode again, or a scheme
+		 *                {@see e_parse::toUrlAttribute()} refuses
+		 */
+		private function linkTo($url)
+		{
+			$url = html_entity_decode((string) $url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+			if(preg_match('/&#|&[a-z][a-z0-9]*;/i', $url))
+			{
+				return '';
+			}
+
+			$url = str_replace(array('"', "'", '<', '>', '`'), array('%22', '%27', '%3C', '%3E', '%60'), $url);
+
+			return e107::getParser()->toUrlAttribute($url);
 		}
 
 
@@ -308,7 +411,7 @@
 			foreach($this->_data as $ok=>$v)
 			{
 
-				$text .= '<tr><td>' .$ok. '</td><td>' .$this->getFieldTitle($ok). '</td><td>' .$this->getFieldValue($ok). '</td><td>' .$this->getFieldValue($ok, array('mode' =>'raw')). '</td></tr>';
+				$text .= '<tr><td>' .e107::getParser()->attributeValue($ok). '</td><td>' .$this->getFieldTitle($ok). '</td><td>' .$this->getFieldValue($ok). '</td><td>' .$this->getFieldValue($ok, array('mode' =>'raw')). '</td></tr>';
 			}
 
 			$text .= '</table>';
@@ -490,11 +593,9 @@
 
 			$ui->getModel()->set($fieldname, null);
 
-			$tp = e107::getParser();
-
 			foreach($this->_data as $key=>$value)
 			{
-				$ui->getModel()->set($fieldname.'__'.$key, $tp->toDB($value));
+				$ui->getModel()->set($fieldname.'__'.$key, ($this->_trust === null) ? e107::getParser()->toDB($value) : $value);
 			//	e107::getDebug()->log($fieldname.'__'.$key.": ".$value);
 			}
 
@@ -575,8 +676,13 @@
 			{
 				if(strpos($k, $fieldname) === 0)
 				{
-					list($tmp,$newkey) = explode('__',$k);
-					$new_data[$fieldname][$newkey] = $v;
+					list($tmp,$newkey) = array_pad(explode('__', $k), 2, null);
+
+					if($this->isFieldKey($newkey))
+					{
+						$new_data[$fieldname][$newkey] = e107::getParser()->toDB($v);
+					}
+
 					unset($new_data[$k]);
 
 
@@ -584,10 +690,10 @@
 
 			}
 
-		//	if(empty($new_data[$fieldname]))
-		//	{
-			//	$new_data[$fieldname] = array();
-		//	}
+			if(!empty($new_data[$fieldname]))
+			{
+				$new_data[$fieldname]['__trust__'] = $this->authorTrust();
+			}
 
 			return $new_data;
 
