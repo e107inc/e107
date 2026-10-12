@@ -27,6 +27,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		global $e_hide_allowed, $e_hide_query, $sql;
 
 		$this->tp = e107::getParser();
+		e107::getScParser()->registerShortcode(new bbcodeAttributeInjectionShortcodes(), true, '', true);
 		$this->originalMakeClickable = e107::getConfig()->get('make_clickable');
 
 		$this->originalHideGlobals = array($e_hide_allowed, $e_hide_query, $sql);
@@ -78,6 +79,20 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		}
 
 		return $elements;
+	}
+
+	/**
+	 * @param string $html
+	 * @return string
+	 */
+	private function hrefOfFirstAnchor($html)
+	{
+		foreach($this->elementsOf($html) as $element)
+		{
+			if($element->tagName === 'a') return $element->getAttribute('href');
+		}
+
+		self::fail('No anchor was rendered from: '.$html);
 	}
 
 	/**
@@ -204,6 +219,13 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'url body'       => array("[url]java\tscript:alert(1)[/url]"),
 			'url parameter'  => array("[url=java\tscript:alert(1)]x[/url]"),
 			'link parameter' => array("[link=java\tscript:alert(1)]x[/link]"),
+			'file parameter' => array('[file=javascript:alert(1)]x[/file]'),
+			'file tab'       => array("[file=java\tscript:alert(1)]x[/file]"),
+			'file constant'  => array('[file={e_MENU}javascript:alert(1)]x[/file]'),
+			'file nested'    => array('[file={e_{e_MENU}CORE}javascript:alert(1)]x[/file]'),
+			'file shortcode' => array('[file={SETSTYLE}javascript:alert(1)]x[/file]'),
+			'file printed by a shortcode' => array('[file={BBCODE_ATTRIBUTE_ECHO=javascript:alert(1)}]x[/file]'),
+			'file completed by a shortcode' => array('[file=java{BBCODE_ATTRIBUTE_ECHO=script:alert(1)}]x[/file]'),
 		);
 	}
 
@@ -216,41 +238,159 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	 */
 	public function testAnAnchorNeverCarriesAUrlThatCanExecute($bbcode)
 	{
-		foreach($this->elementsOf($this->renderStored($bbcode)) as $element)
+		foreach(array('', 'BODY', 'USER_BODY') as $modifiers)
 		{
-			if($element->tagName !== 'a') continue;
+			foreach($this->elementsOf($this->renderStored($bbcode, null, $modifiers)) as $element)
+			{
+				if($element->tagName !== 'a') continue;
 
-			self::assertSame(0, preg_match('#^javascript:#i',
-				preg_replace('/[\x00-\x20\x7F]/', '', $element->getAttribute('href'))),
-				'An anchor carried a URL that can execute: '.$bbcode);
+				self::assertSame(0, preg_match('#^javascript:#i',
+					preg_replace('/[\x00-\x20\x7F]/', '', $element->getAttribute('href'))),
+					'An anchor carried a URL that can execute: '.$bbcode.' '.$modifiers);
+			}
 		}
 	}
 
-	/** A scheme this bbcode will not link costs the link, never the words the member wrote. */
-	public function testARefusedSchemeStillRendersItsText()
+	/**
+	 * @return array
+	 */
+	public function refusedSchemes()
 	{
-		$html = $this->renderStored('[url=tel:+15551234567]Call us[/url]');
+		return array(
+			'url tel'         => array('[url=tel:+15551234567]Call us[/url]', 'Call us'),
+			'file script'     => array('[file=javascript:alert(1)]notes[/file]', 'notes'),
+			'file constant'   => array('[file={e_MENU}javascript:alert(1)]notes[/file]', 'notes'),
+		);
+	}
 
-		self::assertNotSame(false, strpos($html, 'Call us'), 'A refused scheme took the text with it.');
+	/**
+	 * A scheme a bbcode will not link costs the link, never the words the member wrote.
+	 *
+	 * @dataProvider refusedSchemes
+	 * @param string $bbcode
+	 * @param string $text
+	 */
+	public function testARefusedSchemeStillRendersItsText($bbcode, $text)
+	{
+		$html = $this->renderStored($bbcode);
+
+		self::assertNotSame(false, strpos($html, $text), 'A refused scheme took the text with it.');
 		self::assertSame(false, strpos($html, '<a'), 'A refused scheme was linked anyway: '.$html);
 	}
 
-	/** Without this the payload rows above would pass on a bbcode that rendered nothing at all. */
-	public function testAnOrdinaryUrlIsStillLinked()
+	/**
+	 * A third value names the constant the expected href starts with.
+	 *
+	 * @return array
+	 */
+	public function ordinaryLinks()
 	{
-		$html = $this->renderStored('[url=http://example.com/a?b=1]x[/url]');
+		return array(
+			'url'                 => array('[url=http://example.com/a?b=1]x[/url]', 'http://example.com/a?b=1'),
+			'file'                => array('[file=https://example.com/report.zip]x[/file]', 'https://example.com/report.zip'),
+			'file under e_BASE'   => array('[file={e_BASE}report.zip]x[/file]', 'report.zip', 'SITEURL'),
+			'file path constant'  => array('[file={e_MEDIA_FILE}report.zip]x[/file]', 'report.zip', 'e_MEDIA_FILE'),
+		);
+	}
 
-		foreach($this->elementsOf($html) as $element)
-		{
-			if($element->tagName === 'a')
-			{
-				self::assertSame('http://example.com/a?b=1', $element->getAttribute('href'), $html);
+	/**
+	 * Without this the payload rows above would pass on a bbcode that rendered nothing at all.
+	 *
+	 * @dataProvider ordinaryLinks
+	 * @param string $bbcode
+	 * @param string $href
+	 * @param string $prefix
+	 */
+	public function testAnOrdinaryUrlIsStillLinked($bbcode, $href, $prefix = null)
+	{
+		self::assertSame(($prefix === null ? '' : constant($prefix)).$href, $this->hrefOfFirstAnchor($this->renderStored($bbcode)));
+	}
 
-				return;
-			}
-		}
+	/**
+	 * Rows shaped as in {@see bbcodeAttributeInjectionTest::ordinaryLinks()}.
+	 *
+	 * @return array
+	 */
+	public function shortcodeLinks()
+	{
+		return array(
+			'file site url'        => array('[file={SITEURL}report.zip]x[/file]', 'report.zip', 'SITEURL'),
+			'file printed address' => array('[file={BBCODE_ATTRIBUTE_ECHO=https://example.com/}report.zip]x[/file]', 'https://example.com/report.zip'),
+			'file in an html body' => array('[html]<p>[file={SITEURL}report.zip]x[/file]</p>[/html]', 'report.zip', 'SITEURL'),
+			'file in a table'      => array('[table][tr][td][file={SITEURL}report.zip]x[/file][/td][/tr][/table]', 'report.zip', 'SITEURL'),
+		);
+	}
 
-		self::fail('An ordinary URL rendered no anchor at all: '.$html);
+	/**
+	 * @dataProvider shortcodeLinks
+	 * @param string $bbcode
+	 * @param string $href
+	 * @param string $prefix
+	 */
+	public function testAShortcodeInABodyUrlStillRenders($bbcode, $href, $prefix = null)
+	{
+		self::assertSame(($prefix === null ? '' : constant($prefix)).$href, $this->hrefOfFirstAnchor($this->renderStored($bbcode, null, 'BODY')));
+	}
+
+	/**
+	 * A member's post parses no shortcodes, so one in a bbcode's address prints as typed.
+	 *
+	 * @dataProvider shortcodeLinks
+	 * @param string $bbcode
+	 */
+	public function testAShortcodeInAMemberUrlPrintsAsTyped($bbcode)
+	{
+		self::assertSame('{', substr($this->hrefOfFirstAnchor($this->renderStored($bbcode, null, 'USER_BODY')), 0, 1));
+	}
+
+	/**
+	 * @return array
+	 */
+	public function shortcodeParameterQuotes()
+	{
+		return array(
+			'file' => array('[file={BBCODE_ATTRIBUTE_ECHO=x"y}]x[/file]'),
+		);
+	}
+
+	/**
+	 * The address renders before the body's own shortcodes, so its shortcode is the first one handed a parameter.
+	 *
+	 * @dataProvider shortcodeParameterQuotes
+	 * @param string $bbcode
+	 */
+	public function testAShortcodeInABodyUrlIsHandedNoQuote($bbcode)
+	{
+		bbcodeAttributeInjectionShortcodes::$handed = array();
+		$this->renderStored($bbcode, null, 'BODY');
+
+		self::assertNotEmpty(bbcodeAttributeInjectionShortcodes::$handed, 'No shortcode in the address rendered.');
+		self::assertSame(false, strpos(bbcodeAttributeInjectionShortcodes::$handed[0], '"'),
+			'The address\'s shortcode was handed: '.bbcodeAttributeInjectionShortcodes::$handed[0]);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function bbcodeRenderingShortcodeLinks()
+	{
+		return array(
+			'file' => array('[file={BBCODE_ATTRIBUTE_RENDERED=https://example.com/}]Visit[/file]'),
+		);
+	}
+
+	/**
+	 * A shortcode that renders bbcode in a link's address leaves the link its own text.
+	 *
+	 * @dataProvider bbcodeRenderingShortcodeLinks
+	 * @param string $bbcode
+	 */
+	public function testAShortcodeThatRendersBbcodeKeepsTheLinkText($bbcode)
+	{
+		$html = $this->renderStored($bbcode, null, 'BODY');
+
+		self::assertSame('https://example.com/', $this->hrefOfFirstAnchor($html));
+		self::assertSame('Visit', trim(strip_tags($html)), 'The link took the text of the bbcode its shortcode rendered: '.$html);
 	}
 
 	public function testTheQuoteBbcodeCannotAddAnAttributeToItsCitation()
@@ -997,5 +1137,36 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		$html = $this->renderStored($bbcode);
 
 		self::assertNotSame(false, strpos($html, $expected), 'An ordinary [video] stopped rendering: '.$bbcode.' Rendered: '.$html);
+	}
+}
+
+/**
+ * Print their parameter, as shortcodes that print stored or remote data would.
+ */
+class bbcodeAttributeInjectionShortcodes
+{
+	/** @var string[] */
+	public static $handed = array();
+
+	/**
+	 * @param string $parm
+	 * @return string
+	 */
+	public function sc_bbcode_attribute_echo($parm = '')
+	{
+		self::$handed[] = (string) $parm;
+
+		return (string) $parm;
+	}
+
+	/**
+	 * Renders its parameter as bbcode and prints the text, as a shortcode printing a member's field does.
+	 *
+	 * @param string $parm
+	 * @return string
+	 */
+	public function sc_bbcode_attribute_rendered($parm = '')
+	{
+		return strip_tags(e107::getParser()->toHTML('[b]'.$parm.'[/b]', true));
 	}
 }
