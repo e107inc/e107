@@ -459,14 +459,16 @@ class social_shortcodes extends e_shortcode
 		
 		if(vartrue($parm['dropdown']))
 		{
-			$dir = ($parm['dropdown'] == 'right') ? 'pull-right float-right' : '';
+			$right = ($parm['dropdown'] == 'right');
+			$dir = $right ? 'pull-right float-right float-end' : '';
+			$menuDir = $right ? ' dropdown-menu-right dropdown-menu-end' : '';
 			$class = varset($parm['class'],'btn-group');
 
 
 			$text = '<div class="social-share btn-group hidden-print '.$dir.'">
 				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-secondary btn-'.$size.' dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" title="'.LAN_SOCIAL_204.'">'.$label.'</a>
 				 
-				  <ul class="dropdown-menu" role="menu" >
+				  <ul class="dropdown-menu'.$menuDir.'" role="menu" >
 				  
 				    <li><div class="'.$class.'">'.implode("\n",$opt).'</div></li>
 				  </ul>

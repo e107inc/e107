@@ -18,7 +18,7 @@ $PAGE_WRAPPER = array();
 $PAGE_WRAPPER['default']['CPAGESUBTITLE']   = '<h4>{---}</h4>';
 $PAGE_WRAPPER['default']['CPAGEMESSAGE']    = '{---}<div class="clear"><!-- --></div>';
 $PAGE_WRAPPER['default']['CPAGEAUTHOR']     = "{---}, ";
-$PAGE_WRAPPER['default']['CPAGENAV']        = '<div class="f-right pull-right float-right col-md-3">{---}</div>';
+$PAGE_WRAPPER['default']['CPAGENAV']        = '<div class="f-right pull-right float-right float-end col-md-3">{---}</div>';
 
 
 #### default template - BC ####
