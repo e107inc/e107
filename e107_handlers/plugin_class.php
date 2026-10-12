@@ -2581,8 +2581,8 @@ class e107plugin
 
 	/**
 	 * @param $action
-	 * @param $comment_id
-	 * @return int|void
+	 * @param string|string[] $comment_id the comment types to act on; 'remove' refuses an empty list
+	 * @return int|false|void
 	 */
 	function manage_comments($action, $comment_id)
 	{
@@ -2593,12 +2593,20 @@ class e107plugin
 		$tmp = array();
 		if ($action == 'remove')
 		{
-			foreach ($comment_id as $com)
+			foreach ((array) $comment_id as $com)
 			{
-				$tmp[] = "comment_type='".$tp->toDB($com, true)."'";
+				if (is_scalar($com) && (string) $com !== '')
+				{
+					$tmp[] = "comment_type='".$tp->toDB($com, true)."'";
+				}
 			}
+
+			if (empty($tmp))
+			{
+				return false;
+			}
+
 			$qry = implode(" OR ", $tmp);
-			//			echo $qry."<br />";
 			return $sql->delete('comments', $qry);
 		}
 	}
@@ -3093,13 +3101,11 @@ class e107plugin
 
 		$this->manage_icons($this->plugFolder, $function);
 
-		//FIXME
-		//If any commentIDs are configured, we need to remove all comments on uninstall
-		if ($function == 'uninstall' && isset($plug_vars['commentID']))
+		if ($function == 'uninstall' && !empty($options['delete_tables']) && !empty($plug_vars['commentID']))
 		{
-			$txt .= 'Removing all plugin comments: ('.implode(', ', $plug_vars['commentID']).')<br />';
-			$commentArray = array();
-			$this->manage_comments('remove', $commentArray);
+			$commentIds = (array) $plug_vars['commentID'];
+			$txt .= 'Removing all plugin comments: ('.implode(', ', $commentIds).')<br />';
+			$this->manage_comments('remove', $commentIds);
 		}
 
 		$this->manage_search($function, $plug_vars['folder']);
