@@ -53,6 +53,7 @@ define("CUSLAN_79", "You must enter either a page title or a menu name.");
 define("CUSLAN_80", "Sub Title");
 define("CUSLAN_81", "Meta image");
 define("CUSLAN_82", "Optional. Used by social media when sharing this page.");
+define("CUSLAN_CHAPTER_ROWS_LEFT_OUT", "[x] selected record(s) were left in their chapter, which belongs to a custom page or menu this list does not edit.");
 
 
 

@@ -186,12 +186,9 @@ class page_shortcodes extends e_shortcode
 			$editable = array(
 				'table' => 'page',
 				'pid'   => 'page_id',
-				'perms' => '5',
+				'perms' => 'J',
 				'shortcodes' => array(
-					'cpagetitle' => array('field'=>'page_subtitle','type'=>'text', 'container'=>'span'),
-					'cpagebody' => array('field'=>'page_text','type'=>'html', 'container'=>'div'),
 					'cmenubody' => array('field'=>'menu_text','type'=>'html', 'container'=>'div'),
-
 				)
 			);
 

@@ -21,6 +21,9 @@ class InlineEditPermsCest
 	/** A news item on the public site. */
 	const ROUTE_NEWS_ITEM = '/news.php?extend.';
 
+	/** A custom page on the public site. */
+	const ROUTE_PAGE = '/page.php?id=';
+
 	/** The news item create form. */
 	const ROUTE_ITEM_CREATE = '/e107_admin/newspost.php?mode=main&action=create';
 
@@ -152,6 +155,36 @@ class InlineEditPermsCest
 		$this->saveOnTheFrontEnd($I, $itemId, 'news_title', self::ATTACK_VALUE);
 
 		$I->seeInDatabase('e107_news', array('news_id' => $itemId, 'news_title' => self::ITEM_TITLE));
+	}
+
+	public function aPagesAdministratorCannotSaveAChapterMenuOnTheFrontEnd(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a front-end save of a chapter menu to an administrator who may only edit custom pages');
+
+		list($pageId, $menuId) = $this->seedChapterMenusPage($I);
+
+		$I->probe('act=enable');
+		$this->loginAsAdministrator($I, 'p7iepages', '5.');
+
+		$I->amOnPage(self::ROUTE_PAGE.$pageId);
+		$this->postFrontEndSave($I, $menuId, 'cmenubody', self::ATTACK_VALUE);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $menuId, 'menu_text' => self::ITEM_TITLE));
+	}
+
+	public function aMenusAdministratorSavesAChapterMenuOnTheFrontEnd(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the front-end editor of a chapter menu working for an administrator who may edit custom menus');
+
+		list($pageId, $menuId) = $this->seedChapterMenusPage($I);
+
+		$I->probe('act=enable');
+		$this->loginAsAdministrator($I, 'p7iemenus', 'J.');
+
+		$I->amOnPage(self::ROUTE_PAGE.$pageId);
+		$this->postFrontEndSave($I, $menuId, 'cmenubody', self::SAVED_VALUE);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $menuId, 'menu_text' => '[html]'.self::SAVED_VALUE.'[/html]'));
 	}
 
 	public function aNewsItemAdministratorStillSavesANewsItemOnTheFrontEnd(AcceptanceTester $I)
@@ -1035,6 +1068,60 @@ class InlineEditPermsCest
 			'faq_author_ip' => '',
 			'faq_tags'      => '',
 		));
+	}
+
+	/**
+	 * Seed a chapter holding one custom menu, and a custom page whose body lists the chapter's menus through {CHAPTER_MENUS}.
+	 *
+	 * @return array the page's id, then the menu's
+	 */
+	private function seedChapterMenusPage(AcceptanceTester $I)
+	{
+		$chapterId = (int) $I->haveInDatabase('e107_page_chapters', array(
+			'chapter_parent'           => 0,
+			'chapter_name'             => 'p7ie chapter',
+			'chapter_sef'              => 'p7ie-chapter',
+			'chapter_meta_description' => '',
+			'chapter_meta_keywords'    => '',
+			'chapter_manager'          => 254,
+			'chapter_icon'             => '',
+			'chapter_image'            => '',
+			'chapter_order'            => 0,
+			'chapter_template'         => 'default',
+			'chapter_visibility'       => 0,
+		));
+
+		$row = array(
+			'page_sef'       => '',
+			'page_author'    => 1,
+			'page_datestamp' => self::PWCHANGE,
+			'page_class'     => '0',
+			'page_template'  => 'default',
+			'menu_image'     => '',
+			'menu_icon'      => '',
+			'menu_template'  => 'default',
+			'menu_class'     => '0',
+		);
+
+		$pageId = (int) $I->haveInDatabase('e107_page', array_merge($row, array(
+			'page_title'   => self::ITEM_TITLE,
+			'page_chapter' => 0,
+			'page_text'    => '{CHAPTER_MENUS: name=p7ie-chapter}',
+			'menu_name'    => '',
+			'menu_title'   => '',
+			'menu_text'    => '',
+		)));
+
+		$menuId = (int) $I->haveInDatabase('e107_page', array_merge($row, array(
+			'page_title'   => '',
+			'page_chapter' => $chapterId,
+			'page_text'    => '',
+			'menu_name'    => 'p7iemenu',
+			'menu_title'   => 'p7ie menu',
+			'menu_text'    => self::ITEM_TITLE,
+		)));
+
+		return array($pageId, $menuId);
 	}
 
 	/**

@@ -98,6 +98,58 @@ class AdminRoutePermsCest
 	/** The welcome-message list's inline editor, less the row id. */
 	const ROUTE_WMESSAGE_INLINE = '/e107_admin/wmessage.php?mode=main&action=inline&ajax_used=1&id=';
 
+	/** Custom page and menu edit routes, less the row id. */
+	const ROUTE_PAGE_EDIT = '/e107_admin/cpage.php?mode=page&action=edit&id=';
+	const ROUTE_MENU_EDIT = '/e107_admin/cpage.php?mode=menu&action=edit&id=';
+	const ROUTE_OVERVIEW_EDIT = '/e107_admin/cpage.php?mode=overview&action=edit&id=';
+
+	/** The custom page and custom menu lists, each its own permission's way in. */
+	const ROUTE_PAGE_LIST = '/e107_admin/cpage.php?mode=page&action=list';
+	const ROUTE_MENU_LIST = '/e107_admin/cpage.php?mode=menu&action=list';
+
+	/** The overview of every custom page and menu row, which either permission opens. */
+	const ROUTE_OVERVIEW_LIST = '/e107_admin/cpage.php?mode=overview&action=list';
+
+	/** The custom page and custom menu lists' inline editors, less the row id. */
+	const ROUTE_PAGE_INLINE = '/e107_admin/cpage.php?mode=page&action=inline&ajax_used=1&id=';
+	const ROUTE_MENU_INLINE = '/e107_admin/cpage.php?mode=menu&action=inline&ajax_used=1&id=';
+	const ROUTE_OVERVIEW_INLINE = '/e107_admin/cpage.php?mode=overview&action=inline&ajax_used=1&id=';
+
+	/** The custom menu create route, which the admin menu does not draw, and the custom page grid. */
+	const ROUTE_MENU_CREATE = '/e107_admin/cpage.php?mode=menu&action=create';
+	const ROUTE_PAGE_GRID = '/e107_admin/cpage.php?mode=page&action=grid';
+
+	/** The columns of the menu half a create form posts beside the titles, none of which takes NULL. */
+	const MENU_CREATE_COLUMNS = array(
+		'menu_template'     => 'default',
+		'menu_class'        => 0,
+		'menu_button_text'  => '',
+		'menu_button_url'   => '',
+		'menu_icon'         => '',
+		'menu_image'        => '',
+	);
+
+	/** The columns of both halves the custom page create form posts beside the titles, none of which takes NULL. */
+	const PAGE_CREATE_COLUMNS = array(
+		'page_subtitle'     => '',
+		'page_chapter'      => 0,
+		'page_template'     => 'default',
+		'page_author'       => 1,
+		'page_datestamp'    => 1262304000,
+		'page_class'        => 0,
+		'page_rating_flag'  => 0,
+		'page_comment_flag' => 0,
+		'page_password'     => '',
+		'page_metatitle'    => '',
+		'page_metakeys'     => '',
+		'page_metaimage'    => '',
+	) + self::MENU_CREATE_COLUMNS;
+
+	/** The custom page create route, the chapter create route and the custom page options. */
+	const ROUTE_PAGE_CREATE = '/e107_admin/cpage.php?mode=page&action=create';
+	const ROUTE_CHAPTER_CREATE = '/e107_admin/cpage.php?mode=cat&action=create';
+	const ROUTE_PAGE_PREFS = '/e107_admin/cpage.php?mode=page&action=prefs';
+
 	/** Ban list routes, less the row id where they take one. */
 	const ROUTE_BANLIST_EDIT = '/e107_admin/banlist.php?mode=main&action=edit&id=';
 	const ROUTE_WHITELIST_EDIT = '/e107_admin/banlist.php?mode=white&action=edit&id=';
@@ -187,6 +239,8 @@ class AdminRoutePermsCest
 		'p7rp4admin'     => '4',    // manage all user access and settings, but not admin perms
 		'p7rpPermsadmin' => '4.3',  // manage all users, and modify admin perms
 		'p7rpMadmin'     => 'M',    // welcome messages, and nothing on the user list at all
+		'p7rp5admin'     => '5',    // custom pages
+		'p7rpJadmin'     => 'J',    // custom menus
 	);
 
 	/** A second administrator, for the routes that act on somebody else's account. */
@@ -1188,6 +1242,526 @@ class AdminRoutePermsCest
 		$I->seeInDatabase('e107_page', array('page_id' => $page, 'page_order' => 6));
 		$I->assertNotContains((int) $I->grabFromDatabase('e107_page', 'page_order', array('page_id' => $unposted)), array(45, 999), 'The sort did not renumber an unposted custom menu.');
 		$I->seeInDatabase('e107_page', array('page_id' => $late, 'page_order' => 50));
+	}
+
+	/** No edit route a custom-menus administrator reaches writes the page half of a row. */
+	public function aMenusAdministratorCannotEditACustomPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-menus administrator every edit of a custom page');
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+
+		foreach(array(self::ROUTE_PAGE_EDIT.$page, self::ROUTE_OVERVIEW_EDIT.$page, self::ROUTE_MENU_EDIT.$page, self::ROUTE_PAGE_EDIT.$both, self::ROUTE_MENU_EDIT.$both) as $route)
+		{
+			$this->sendPageEdit($I, $route, 'p7rp edited', 'p7rp edited menu', self::ROUTE_MENU_LIST);
+		}
+
+		$I->seeInDatabase('e107_page', array('page_id' => $page, 'page_title' => 'p7rp page', 'page_text' => 'p7rp page'));
+		$I->seeInDatabase('e107_page', array('page_id' => $both, 'page_title' => 'p7rp both', 'page_text' => 'p7rp both'));
+	}
+
+	/** No edit route a custom-pages administrator reaches writes the menu half of a row. */
+	public function aPagesAdministratorCannotEditACustomMenu(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-pages administrator every edit of a custom menu');
+
+		$menu = $this->seedPageRow($I, '', 'p7rp menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+
+		foreach(array(self::ROUTE_MENU_EDIT.$menu, self::ROUTE_OVERVIEW_EDIT.$menu) as $route)
+		{
+			$this->sendPageEdit($I, $route, 'p7rp edited', 'p7rp edited menu', self::ROUTE_PAGE_LIST);
+		}
+
+		$I->seeInDatabase('e107_page', array('page_id' => $menu, 'menu_title' => 'p7rp menu'));
+	}
+
+	/** A custom-menus administrator still opens the overview, with an inline editor on a menu column and none on a page column. */
+	public function aMenusAdministratorStillOpensTheOverviewWithInlineEditorsOnMenuColumnsOnly(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the overview open to the custom-menus administrator, inline-editable on its menu columns alone');
+
+		$this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$I->amOnPage(self::ROUTE_OVERVIEW_LIST);
+
+		$I->see('p7rp both');
+		$I->seeElement('a.e-editable[data-name="menu_title"]');
+		$I->dontSeeElement('a.e-editable[data-name="page_title"]');
+	}
+
+	/** Positive control: the custom pages administrator still edits a custom page. */
+	public function aPagesAdministratorStillEditsACustomPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the custom page edit route open to the pages permission');
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendPageEdit($I, self::ROUTE_PAGE_EDIT.$page, 'p7rp edited page', '', self::ROUTE_PAGE_LIST);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $page, 'page_title' => 'p7rp edited page'));
+	}
+
+	/** Positive control: the custom menus administrator still edits a custom menu. */
+	public function aMenusAdministratorStillEditsACustomMenu(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the custom menu edit route open to the menus permission');
+
+		$menu = $this->seedPageRow($I, '', 'p7rp menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->sendPageEdit($I, self::ROUTE_MENU_EDIT.$menu, '', 'p7rp edited menu', self::ROUTE_MENU_LIST);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $menu, 'menu_title' => 'p7rp edited menu'));
+	}
+
+	/** The page list's inline editor refuses a custom-pages administrator a menu column. */
+	public function aPagesAdministratorCannotInlineEditACustomMenuColumn(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-pages administrator an inline write to a menu column of the page list');
+
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendInline($I, $both, 'menu_class', '254', self::ROUTE_PAGE_LIST, self::ROUTE_PAGE_INLINE);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $both, 'menu_class' => '0'));
+	}
+
+	/** The page list's batch refuses a custom-pages administrator a menu column. */
+	public function aPagesAdministratorCannotBatchWriteACustomMenuColumn(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-pages administrator a batch write to a menu column of the page list');
+
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendBatch($I, self::ROUTE_PAGE_LIST, 'menu_template__button', $both);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $both, 'menu_template' => ''));
+	}
+
+	/** The menu list's inline editor refuses a custom-menus administrator the chapter of a row that is a custom page. */
+	public function aMenusAdministratorCannotInlineEditTheChapterOfACustomPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-menus administrator an inline write to the chapter of a custom page on the menu list');
+
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->sendInline($I, $both, 'page_chapter', '7', self::ROUTE_MENU_LIST, self::ROUTE_MENU_INLINE);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $both, 'page_chapter' => 0));
+	}
+
+	/** On a menu-only row the chapter is a menu column: the menu list's inline editor and the menu edit form both write it for a custom-menus administrator. */
+	public function aMenusAdministratorStillPlacesACustomMenuInAChapter(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the chapter of a menu-only row writable to a custom-menus administrator');
+
+		$inline = $this->seedPageRow($I, '', 'p7rp inline menu');
+		$form = $this->seedPageRow($I, '', 'p7rp form menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->sendInline($I, $inline, 'page_chapter', '7', self::ROUTE_MENU_LIST, self::ROUTE_MENU_INLINE);
+
+		$this->postWithToken($I, self::ROUTE_MENU_EDIT.$form, array(
+			'etrigger_submit' => 'update',
+			'menu_name'       => 'p7rpmenu',
+			'menu_title'      => 'p7rp form menu',
+			'page_chapter'    => '7',
+		));
+
+		$I->seeInDatabase('e107_page', array('page_id' => $inline, 'page_chapter' => 7));
+		$I->seeInDatabase('e107_page', array('page_id' => $form, 'page_chapter' => 7));
+	}
+
+	/** A batch write of the chapter on the menu list reaches the menu-only rows of the selection and not the custom pages. */
+	public function aMenusAdministratorBatchPlacesOnlyTheCustomMenusInAChapter(AcceptanceTester $I)
+	{
+		$I->wantTo('Hold a custom-menus administrator\'s batch chapter write to the menu-only rows');
+
+		$menu = $this->seedPageRow($I, '', 'p7rp menu');
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->postWithToken($I, self::ROUTE_MENU_LIST, array(
+			'etrigger_batch'   => 'page_chapter__7',
+			'e__execute_batch' => 'Go',
+			'multiselect'      => array($menu => $menu, $both => $both),
+		));
+
+		$I->seeInDatabase('e107_page', array('page_id' => $menu, 'page_chapter' => 7));
+		$I->seeInDatabase('e107_page', array('page_id' => $both, 'page_chapter' => 0));
+	}
+
+	/** On the overview, the chapter of a menu-only row is a menu column, which a custom-pages administrator does not hold, and the chapter of a custom page is a page column, which it does. */
+	public function aPagesAdministratorPlacesOnlyCustomPagesInAChapterThroughTheOverview(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-pages administrator the chapter of a menu-only row on the overview, and keep the chapter of a custom page');
+
+		$menu = $this->seedPageRow($I, '', 'p7rp menu');
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendInline($I, $menu, 'page_chapter', '7', self::ROUTE_OVERVIEW_LIST, self::ROUTE_OVERVIEW_INLINE);
+		$this->sendInline($I, $page, 'page_chapter', '7', self::ROUTE_OVERVIEW_LIST, self::ROUTE_OVERVIEW_INLINE);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $menu, 'page_chapter' => 0));
+		$I->seeInDatabase('e107_page', array('page_id' => $page, 'page_chapter' => 7));
+	}
+
+	/** The batch commands that name the chapter after them reach only the rows whose chapter the route saves, however the field is spelled, so a custom-menus administrator moves no custom page through them. */
+	public function aMenusAdministratorCannotMoveACustomPageWithAnotherBatchCommand(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-menus administrator the chapter of a custom page through the batch commands that name a field');
+
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+		$attach = $this->seedPageRow($I, 'p7rp attach page', '');
+		$deattach = $this->seedPageRow($I, 'p7rp deattach page', '');
+		$padded = $this->seedPageRow($I, 'p7rp padded page', '');
+		$split = $this->seedPageRow($I, 'p7rp split page', '');
+		$I->updateInDatabase('e107_page', array('page_chapter' => 3), array('page_id' => $deattach));
+		$I->updateInDatabase('e107_page', array('page_chapter' => 3), array('page_id' => $padded));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->sendBatch($I, self::ROUTE_MENU_LIST, 'bool__page_chapter__1', $both);
+		$this->sendBatch($I, self::ROUTE_OVERVIEW_LIST, 'attach__page_chapter__7', $attach);
+		$this->sendBatch($I, self::ROUTE_OVERVIEW_LIST, 'deattach__page_chapter__3', $deattach);
+		$this->sendBatch($I, self::ROUTE_OVERVIEW_LIST, 'bool__page_chapter __0', $padded);
+		$this->sendBatch($I, self::ROUTE_OVERVIEW_LIST, "attach__page_\rchapter__7", $split);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $both, 'page_chapter' => 0));
+		$I->seeInDatabase('e107_page', array('page_id' => $attach, 'page_chapter' => 0));
+		$I->seeInDatabase('e107_page', array('page_id' => $deattach, 'page_chapter' => 3));
+		$I->seeInDatabase('e107_page', array('page_id' => $padded, 'page_chapter' => 3));
+		$I->seeInDatabase('e107_page', array('page_id' => $split, 'page_chapter' => 0));
+	}
+
+	/** The batch commands that name the chapter after them reach only the rows whose chapter the route saves, however the field is spelled, so a custom-pages administrator moves no custom menu through them. */
+	public function aPagesAdministratorCannotMoveACustomMenuWithAnotherBatchCommand(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-pages administrator the chapter of a custom menu through the batch commands that name a field');
+
+		$menu = $this->seedPageRow($I, '', 'p7rp menu');
+		$padded = $this->seedPageRow($I, '', 'p7rp padded menu');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendBatch($I, self::ROUTE_OVERVIEW_LIST, 'bool__page_chapter__1', $menu);
+		$this->sendBatch($I, self::ROUTE_OVERVIEW_LIST, 'bool__ page_chapter__1', $padded);
+
+		$I->seeInDatabase('e107_page', array('page_id' => $menu, 'page_chapter' => 0));
+		$I->seeInDatabase('e107_page', array('page_id' => $padded, 'page_chapter' => 0));
+	}
+
+	/** The menu list draws the chapter of a page-and-menu row, which only the page routes save, as plain text, and says when its batch leaves such a row in its chapter. */
+	public function theMenuListLeavesTheChapterOfACustomPageReadOnly(AcceptanceTester $I)
+	{
+		$I->wantTo('Draw no chapter editor on the menu list where the menu list does not save the chapter, and count the rows its batch leaves out');
+
+		$menu = $this->seedPageRow($I, '', 'p7rp menu');
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+
+		$I->loginAsAdmin();
+		$I->amOnPage(self::ROUTE_MENU_LIST);
+		$I->seeElement('a.e-editable[data-name="page_chapter"][data-pk="'.$menu.'"]');
+		$I->dontSeeElement('a.e-editable[data-name="page_chapter"][data-pk="'.$both.'"]');
+
+		$this->postWithToken($I, self::ROUTE_MENU_LIST, array(
+			'etrigger_batch'   => 'page_chapter__7',
+			'e__execute_batch' => 'Go',
+			'multiselect'      => array($menu => $menu, $both => $both),
+		));
+
+		$I->see('1 selected record(s) were left in their chapter');
+		$I->seeInDatabase('e107_page', array('page_id' => $menu, 'page_chapter' => 7));
+		$I->seeInDatabase('e107_page', array('page_id' => $both, 'page_chapter' => 0));
+	}
+
+	/** A custom-menus administrator's menu create takes its author, date and SEF URL from the request rather than the post, and keeps the chapter posted with it. */
+	public function aMenusAdministratorCreatesACustomMenuWithItsAuthorDateAndSefUrl(AcceptanceTester $I)
+	{
+		$I->wantTo('Fill in the author, date and SEF URL of a custom menu a custom-menus administrator creates');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$admin = (int) $I->grabFromDatabase('e107_user', 'user_id', array('user_loginname' => 'p7rpJadmin'));
+		$before = time();
+
+		$this->postWithToken($I, self::ROUTE_MENU_CREATE, array(
+			'etrigger_submit' => 'create',
+			'menu_name'       => 'p7rpcreated',
+			'menu_title'      => 'p7rp created menu',
+			'page_chapter'    => '7',
+			'page_author'     => '1',
+			'page_datestamp'  => '1',
+			'page_sef'        => 'p7rp-posted-sef',
+		) + self::MENU_CREATE_COLUMNS);
+
+		$I->seeInDatabase('e107_page', array('menu_title' => 'p7rp created menu', 'page_author' => $admin, 'page_sef' => 'p7rpcreated', 'page_chapter' => 7));
+		$I->assertGreaterThanOrEqual($before, (int) $I->grabFromDatabase('e107_page', 'page_datestamp', array('menu_title' => 'p7rp created menu')), 'The created menu carries no date of its own.');
+	}
+
+	/** A custom-pages administrator's create saves the page half of the row and not its menu half. */
+	public function aPagesAdministratorCreatesACustomPageWithoutItsMenuHalf(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the menu half out of a custom page a custom-pages administrator creates');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendPageEdit($I, self::ROUTE_PAGE_CREATE, 'p7rp new page', 'p7rp new menu', self::ROUTE_PAGE_LIST, self::PAGE_CREATE_COLUMNS);
+
+		$I->seeInDatabase('e107_page', array('page_title' => 'p7rp new page', 'menu_name' => '', 'menu_title' => ''));
+	}
+
+	/** The menu edit form shows a custom-menus administrator none of a custom page's custom-field values. */
+	public function aMenusAdministratorCannotReadACustomPagesFieldsThroughTheMenuEditForm(AcceptanceTester $I)
+	{
+		$I->wantTo("Keep a custom page's custom-field values off the menu edit form");
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+		$this->seedCustomFieldValue($I, $page, 'p7rphiddenvalue');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$I->amOnPage(self::ROUTE_MENU_EDIT.$page);
+
+		$I->seeElement('input[name="menu_title"]');
+		$I->dontSeeInSource('p7rphiddenvalue');
+	}
+
+	/** The page edit form shows no custom-field values for a row the page list leaves out. */
+	public function thePageEditFormShowsNoCustomFieldsForARowThePageListLeavesOut(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the custom-field values of a row the page list leaves out off the page edit form');
+
+		$menu = $this->seedPageRow($I, '', 'p7rp menu');
+		$this->seedCustomFieldValue($I, $menu, 'p7rphiddenvalue');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$I->amOnPage(self::ROUTE_PAGE_EDIT.$menu);
+
+		$I->seeElement('input[name="page_title"]');
+		$I->dontSeeInSource('p7rphiddenvalue');
+	}
+
+	/** The custom page list answers to the pages permission. */
+	public function aMenusAdministratorCannotOpenTheCustomPageList(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the custom page list to a custom-menus administrator');
+
+		$this->seedPageRow($I, 'p7rp page', '');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$I->amOnPage(self::ROUTE_PAGE_LIST);
+
+		$I->see('You do not have permission to view this page.');
+		$I->dontSee('p7rp page');
+	}
+
+	/** The chapter create route answers to the pages permission. */
+	public function aMenusAdministratorCannotCreateAChapter(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the chapter create route to a custom-menus administrator');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+
+		$I->sendPostRequest(self::ROUTE_CHAPTER_CREATE, array(
+			'etrigger_submit'          => 'create',
+			'chapter_name'             => 'p7rp chapter',
+			'chapter_parent'           => 0,
+			'chapter_sef'              => 'p7rp-chapter',
+			'chapter_meta_description' => '',
+			'chapter_meta_keywords'    => '',
+			'chapter_manager'          => 254,
+			'chapter_icon'             => '',
+			'chapter_image'            => '',
+			'chapter_order'            => 0,
+			'chapter_template'         => 'default',
+			'chapter_visibility'       => 0,
+			'e-token'                  => $this->grabTokenFrom($I, self::ROUTE_MENU_LIST),
+		));
+
+		$I->dontSeeInDatabase('e107_page_chapters', array('chapter_name' => 'p7rp chapter'));
+	}
+
+	/** The custom page options answer to the main administrator's permission, which the admin menu already marks them with, in every mode that serves them. */
+	public function aPagesAdministratorCannotOpenTheCustomPageOptionsInAnyMode(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the custom page options, in every mode, to a custom-pages administrator');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->seeTheCustomPageOptionsRefusedInEveryMode($I);
+	}
+
+	/** The custom page options answer to the main administrator's permission in every mode, the overview's included. */
+	public function aMenusAdministratorCannotOpenTheCustomPageOptionsInAnyMode(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the custom page options, in every mode, to a custom-menus administrator');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->seeTheCustomPageOptionsRefusedInEveryMode($I);
+	}
+
+	/** The custom page grid answers to the pages permission, as the custom page list does. */
+	public function aMenusAdministratorCannotReadCustomPagesThroughThePageGrid(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the custom page grid, and its export, to a custom-menus administrator');
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+		$I->updateInDatabase('e107_page', array('page_password' => 'p7rpsecretpw'), array('page_id' => $page));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$I->amOnPage(self::ROUTE_PAGE_GRID);
+		$I->see('You do not have permission to view this page.');
+
+		$I->sendPostRequest(self::ROUTE_PAGE_GRID, \Test\AdminListPost::batch('export', $page, 'multiselect') + array('e-token' => $this->grabTokenFrom($I, self::ROUTE_MENU_LIST)));
+		$I->dontSeeInSource('p7rpsecretpw');
+	}
+
+	/** The batch export leaves out the columns of a half the administrator does not hold, on the overview and on the menu list. */
+	public function aMenusAdministratorExportsNoPageColumns(AcceptanceTester $I)
+	{
+		$I->wantTo("Keep a custom page's password and body out of a custom-menus administrator's export");
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+		$I->updateInDatabase('e107_page', array('page_password' => 'p7rpsecretpw', 'page_text' => 'p7rpsecrettext'), array('page_id' => $page));
+		$I->updateInDatabase('e107_page', array('page_password' => 'p7rpbothpw', 'page_text' => 'p7rpbothtext'), array('page_id' => $both));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+
+		$this->sendBatch($I, self::ROUTE_OVERVIEW_LIST, 'export', $page);
+		$I->dontSeeInSource('p7rpsecretpw');
+		$I->dontSeeInSource('p7rpsecrettext');
+
+		$this->sendBatch($I, self::ROUTE_MENU_LIST, 'export', $both);
+		$I->seeInSource('p7rp both menu');
+		$I->dontSeeInSource('p7rpbothpw');
+		$I->dontSeeInSource('p7rpbothtext');
+	}
+
+	/** The overview lists no column of a half the administrator does not hold, whatever its column chooser is sent. */
+	public function aMenusAdministratorCannotListThePageColumnsOfTheOverview(AcceptanceTester $I)
+	{
+		$I->wantTo("Keep a custom page's password and body off a custom-menus administrator's overview");
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+		$I->updateInDatabase('e107_page', array('page_password' => 'p7rpsecretpw', 'page_text' => 'p7rpsecrettext'), array('page_id' => $page));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->postWithToken($I, self::ROUTE_OVERVIEW_LIST, array(
+			'etrigger_ecolumns' => 'Save',
+			'e-columns'         => array('page_id', 'page_title', 'page_password', 'page_text'),
+		));
+
+		$I->amOnPage(self::ROUTE_OVERVIEW_LIST);
+		$I->seeElement('input[name="multiselect['.$page.']"]');
+		$I->dontSeeInSource('p7rpsecretpw');
+		$I->dontSeeInSource('p7rpsecrettext');
+	}
+
+	/** The overview's search-in-field and filter reach no column of a half the administrator does not hold, so a guess at a page's password through either lists what any other guess lists. */
+	public function aMenusAdministratorCannotSearchThePasswordOfACustomPage(AcceptanceTester $I)
+	{
+		$I->wantTo("Keep a custom page's password out of a custom-menus administrator's list search and filter");
+
+		$page = $this->seedPageRow($I, 'p7rp page', '');
+		$I->updateInDatabase('e107_page', array('page_password' => 'p7rpsecretpw'), array('page_id' => $page));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+
+		foreach(array('searchquery=p7rpwrongguess&filter_options=searchfield__page_password', 'searchquery=&filter_options=page_password__p7rpwrongguess') as $query)
+		{
+			$I->amOnPage(self::ROUTE_OVERVIEW_LIST.'&'.$query);
+			$I->seeElement('input[name="multiselect['.$page.']"]');
+		}
+	}
+
+	/** The overview sorts by no column of a half the administrator does not hold, so it lists the same rows in the same order whatever the pages' passwords. */
+	public function aMenusAdministratorCannotSortTheOverviewByThePasswordOfACustomPage(AcceptanceTester $I)
+	{
+		$I->wantTo("Keep a custom page's password out of a custom-menus administrator's overview sort");
+
+		$first = $this->seedPageRow($I, 'p7rp first page', '');
+		$second = $this->seedPageRow($I, 'p7rp second page', '');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+
+		$orders = array();
+
+		foreach(array(array('p7rpaaaa', 'p7rpzzzz'), array('p7rpzzzz', 'p7rpaaaa')) as $passwords)
+		{
+			$I->updateInDatabase('e107_page', array('page_password' => $passwords[0]), array('page_id' => $first));
+			$I->updateInDatabase('e107_page', array('page_password' => $passwords[1]), array('page_id' => $second));
+
+			$I->amOnPage(self::ROUTE_OVERVIEW_LIST.'&field=page_password&asc=desc');
+			preg_match_all('/multiselect\[(\d+)\]/', $I->grabPageSource(), $listed);
+			$orders[] = $listed[1];
+		}
+
+		$I->assertNotEmpty($orders[0], 'The overview listed no rows.');
+		$I->assertSame($orders[0], $orders[1], "The overview sorted by the custom pages' passwords.");
+	}
+
+	/** A batch copy creates every half the selected rows have, so the custom-menus administrator copies no row that is a custom page. */
+	public function aMenusAdministratorCannotCopyACustomPage(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-menus administrator a batch copy of a page-and-menu row');
+
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+		$I->updateInDatabase('e107_page', array('page_sef' => 'p7rp-both'), array('page_id' => $both));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->sendBatch($I, self::ROUTE_MENU_LIST, 'copy', $both);
+
+		$I->seeNumRecords(1, 'e107_page', array('page_title' => 'p7rp both'));
+	}
+
+	/** A batch copy creates every half the selected rows have, so the custom-pages administrator copies no row that is a custom menu. */
+	public function aPagesAdministratorCannotCopyACustomMenu(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a custom-pages administrator a batch copy of a page-and-menu row');
+
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+		$I->updateInDatabase('e107_page', array('page_sef' => 'p7rp-both'), array('page_id' => $both));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
+		$this->sendBatch($I, self::ROUTE_PAGE_LIST, 'copy', $both);
+
+		$I->seeNumRecords(1, 'e107_page', array('menu_title' => 'p7rp both menu'));
+	}
+
+	/** Positive control: the custom-menus administrator still copies a menu-only row. */
+	public function aMenusAdministratorStillCopiesACustomMenu(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the batch copy of a custom menu working for a custom-menus administrator');
+
+		$menu = $this->seedPageRow($I, '', 'p7rp menu');
+		$I->updateInDatabase('e107_page', array('page_sef' => 'p7rp-menu'), array('page_id' => $menu));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin');
+		$this->sendBatch($I, self::ROUTE_MENU_LIST, 'copy', $menu);
+
+		$I->seeNumRecords(2, 'e107_page', array('menu_title' => 'p7rp menu'));
+	}
+
+	/** A feature box item carries a row's page title and body, so a custom-menus administrator who administers the feature box makes none from a custom page. */
+	public function aMenusAdministratorCannotCarryACustomPageIntoTheFeatureBox(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a feature box item made from a custom page to a custom-menus administrator');
+
+		$I->havePluginInstalled('featurebox');
+		$both = $this->seedPageRow($I, 'p7rp both', 'p7rp both menu');
+		$plugin = $I->grabFromDatabase('e107_plugin', 'plugin_id', array('plugin_path' => 'featurebox'));
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpJadmin', '.P'.$plugin);
+		$this->sendBatch($I, self::ROUTE_MENU_LIST, 'featurebox', $both);
+
+		$I->dontSeeInDatabase('e107_featurebox', array('fb_title' => 'p7rp both'));
 	}
 
 	/**
@@ -2438,6 +3012,102 @@ class AdminRoutePermsCest
 	}
 
 	/**
+	 * Open the custom page options in each mode that serves them and see each refused.
+	 *
+	 * @return void
+	 */
+	private function seeTheCustomPageOptionsRefusedInEveryMode(AcceptanceTester $I)
+	{
+		foreach(array('page', 'menu', 'overview') as $mode)
+		{
+			$I->amOnPage('/e107_admin/cpage.php?mode='.$mode.'&action=prefs');
+
+			$I->see('You do not have permission to view this page.');
+			$I->dontSeeElement('[name="listPages"]');
+		}
+	}
+
+	/**
+	 * Seed a custom page row, which is a page, a menu or both by which of its titles it has.
+	 *
+	 * @param string $pageTitle
+	 * @param string $menuTitle
+	 * @return int page_id
+	 */
+	private function seedPageRow(AcceptanceTester $I, $pageTitle, $menuTitle)
+	{
+		return (int) $I->haveInDatabase('e107_page', array(
+			'page_title'     => $pageTitle,
+			'page_sef'       => '',
+			'page_chapter'   => 0,
+			'page_text'      => $pageTitle,
+			'page_author'    => 1,
+			'page_datestamp' => 1262304000,
+			'page_class'     => 0,
+			'page_password'  => '',
+			'page_template'  => 'default',
+			'page_order'     => 0,
+			'menu_name'      => $menuTitle === '' ? '' : 'p7rpmenu',
+			'menu_title'     => $menuTitle,
+			'menu_text'      => $menuTitle,
+			'menu_image'     => '',
+			'menu_icon'      => '',
+		));
+	}
+
+	/**
+	 * Post what the custom page edit form posts for the two titles.
+	 *
+	 * @param string $route edit route with the row id
+	 * @param string $pageTitle
+	 * @param string $menuTitle
+	 * @param string $tokenRoute a list the administrator may open, to take the e-token from
+	 * @param array $more further columns to post
+	 * @return void
+	 */
+	private function sendPageEdit(AcceptanceTester $I, $route, $pageTitle, $menuTitle, $tokenRoute, array $more = array())
+	{
+		$I->sendPostRequest($route, array_merge(array(
+			'etrigger_submit' => 'update',
+			'page_title'      => $pageTitle,
+			'page_text'       => $pageTitle,
+			'menu_name'       => $menuTitle === '' ? '' : 'p7rpmenu',
+			'menu_title'      => $menuTitle,
+			'e-token'         => $this->grabTokenFrom($I, $tokenRoute),
+		), $more));
+	}
+
+	/**
+	 * Put a custom page row in a chapter that declares one custom field, with a value for it stored on the row.
+	 *
+	 * @param int $id page_id
+	 * @param string $value
+	 * @return void
+	 */
+	private function seedCustomFieldValue(AcceptanceTester $I, $id, $value)
+	{
+		$chapter = (int) $I->haveInDatabase('e107_page_chapters', array(
+			'chapter_parent'           => 0,
+			'chapter_name'             => 'p7rp fields chapter',
+			'chapter_sef'              => 'p7rp-fields-chapter',
+			'chapter_meta_description' => '',
+			'chapter_meta_keywords'    => '',
+			'chapter_manager'          => 254,
+			'chapter_icon'             => '',
+			'chapter_image'            => '',
+			'chapter_order'            => 0,
+			'chapter_template'         => 'default',
+			'chapter_visibility'       => 0,
+			'chapter_fields'           => json_encode(array(
+				'__tabs__' => array('additional' => 'Extra'),
+				'secret'   => array('title' => 'Secret', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+			)),
+		));
+
+		$I->updateInDatabase('e107_page', array('page_chapter' => $chapter, 'page_fields' => json_encode(array('secret' => $value))), array('page_id' => $id));
+	}
+
+	/**
 	 * Seed an account awaiting activation: user_ban = 2 is what resend_to_all()
 	 * selects on, and user_join has to be older than the age it is given.
 	 *
@@ -2583,6 +3253,10 @@ switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 
 		// Refusals from earlier tests in this Cest, which a later one asserts the absence of.
 		\$db->delete('admin_log', "dblog_remarks LIKE 'Refused %'");
+
+		// Custom pages created through the application, and the menus row each create adds.
+		\$db->delete('menus', "menu_path IN (SELECT page_id FROM ".MPREFIX."page WHERE page_sef LIKE 'p7rp%')");
+		\$db->delete('page', "page_sef LIKE 'p7rp%'");
 
 		\$core->set('user_new_period', $safe)->save(false, true, false);
 
