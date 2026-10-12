@@ -1774,14 +1774,32 @@ class e_parse
 			return $text;
 		}
 
-		$linktext = (!empty($textReplace)) ? $textReplace : '$3';
 		$target = $external ? 'target="_blank"' : '';
 		$break = '\n' . E_NL;
 		$start = $atStart ? '^|' : '';
 
-		$text = preg_replace("/(" . $start . "[" . $break . " \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"" . $break . "\r\t<]*)/is", '$1$2<a class="e-url" href="$3" ' . $target . '>' . $linktext . '</a>', $text);
-		$text = preg_replace("/(" . $start . "[" . $break . " \(])([\w]*?)((www)\.[^ \,\"\t" . $break . "\r\)<]*)/is", '$1$2<a class="e-url" href="http://$3" ' . $target . '>' . $linktext . '</a>', $text);
-		$text = preg_replace("/(" . $start . "[" . $break . " ])([\w]*?)((ftp)\.[^ \,\"\t" . $break . "\r<]*)/is", '$1$2<a class="e-url" href="$4://$3" ' . $target . '>' . $linktext . '</a>', $text);
+		$anchor = function ($href, $address) use ($textReplace, $target)
+		{
+			return '<a class="e-url" href="' . $href . '" ' . $target . '>' . (!empty($textReplace) ? $textReplace : $address) . '</a>';
+		};
+
+		$text = preg_replace_callback("/(" . $start . "[" . $break . " \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"" . $break . "\r\t<]*)/is", function ($match) use ($anchor)
+		{
+			if ($this->toUrlAttribute($match[3]) === '')
+			{
+				return $match[0];
+			}
+
+			return $match[1] . $match[2] . $anchor($match[3], $match[3]);
+		}, $text);
+		$text = preg_replace_callback("/(" . $start . "[" . $break . " \(])([\w]*?)((www)\.[^ \,\"\t" . $break . "\r\)<]*)/is", function ($match) use ($anchor)
+		{
+			return $match[1] . $match[2] . $anchor('http://' . $match[3], $match[3]);
+		}, $text);
+		$text = preg_replace_callback("/(" . $start . "[" . $break . " ])([\w]*?)((ftp)\.[^ \,\"\t" . $break . "\r<]*)/is", function ($match) use ($anchor)
+		{
+			return $match[1] . $match[2] . $anchor($match[4] . '://' . $match[3], $match[3]);
+		}, $text);
 
 		return $text;
 	}
