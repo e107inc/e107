@@ -293,6 +293,9 @@ $forend = $tp->parseTemplate($FORUMEND, true, $sc);
 $lastPostDetectionCounter = count($postList);
 $sc->setScVar('thisIsTheLastPost', false);
 
+$e_hide_hidden = LAN_FORUM_2008;
+$e_hide_allowed = $forum->mayReadHidden($thread->threadInfo['thread_id']);
+
 foreach ($postList as $c => $postInfo)
 {
 	$postInfo['thread_active'] = $thread->threadInfo['thread_active'];
@@ -311,13 +314,6 @@ foreach ($postList as $c => $postInfo)
 	$tnum = $i;
 
 	$i++;
-
-	//TODO: Look into fixing this, to limit to a single query per pageload
-	$threadId = $thread->threadInfo['thread_id'];
-	$e_hide_query = "SELECT post_id FROM `#forum_post` WHERE (`post_thread` = {$threadId} AND post_user= " . USERID . ' LIMIT 1';
-	$e_hide_hidden = LAN_FORUM_2008;
-	$e_hide_allowed = USER;
-
 
 	$sc->wrapper('forum_viewtopic/replies'); // default.
 
@@ -361,6 +357,7 @@ foreach ($postList as $c => $postInfo)
 
 }
 unset($loop_uid);
+$e_hide_allowed = false;
 
 
 
