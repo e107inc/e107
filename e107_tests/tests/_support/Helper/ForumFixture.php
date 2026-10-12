@@ -327,13 +327,14 @@ class ForumFixture extends AppFixture
 	 * @param int $viewClass 0 is e_UC_PUBLIC
 	 * @param int|null $postClass who may reply; null takes $viewClass
 	 * @param int|null $threadClass who may start a thread; null takes $viewClass
+	 * @param int $sub the forum a sub-forum hangs under, with $parent its category; 0 for a forum
 	 * @return int forum id
 	 */
-	public function haveForum($name, $sef, $parent, $moderatorClass, $order = 1, $viewClass = 0, $postClass = null, $threadClass = null)
+	public function haveForum($name, $sef, $parent, $moderatorClass, $order = 1, $viewClass = 0, $postClass = null, $threadClass = null, $sub = 0)
 	{
 		return $this->db()->haveInDatabase('e107_forum', array(
 			'forum_name' => $name, 'forum_description' => 'fixture',
-			'forum_parent' => $parent, 'forum_sub' => 0,
+			'forum_parent' => $parent, 'forum_sub' => (int) $sub,
 			'forum_moderators' => $moderatorClass,
 			'forum_class' => $viewClass,
 			'forum_postclass' => $postClass === null ? $viewClass : $postClass,

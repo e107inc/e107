@@ -400,11 +400,19 @@
 
 				foreach($subList[$this->var['forum_parent']][$forumId] as $subInfo)
 				{
+					if(!$forum->checkPerm($subInfo['forum_id'], 'view'))
+					{
+						continue;
+					}
+
 					$this->addVars($subInfo);
 					$sub_info .= $tp->parseTemplate($FORUM_VIEW_SUB, false, $this);
 				}
 
-				$text = $tp->parseTemplate($FORUM_VIEW_SUB_START) . $sub_info . $tp->parseTemplate($FORUM_VIEW_SUB_END);
+				if($sub_info !== '')
+				{
+					$text = $tp->parseTemplate($FORUM_VIEW_SUB_START) . $sub_info . $tp->parseTemplate($FORUM_VIEW_SUB_END);
+				}
 			}
 
 			return $text;
