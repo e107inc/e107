@@ -38,6 +38,9 @@ class ForumPostAuthorisationCest
 	/** @var int a thread in it */
 	private $adminStartedThread;
 
+	/** @var int a forum where only administrators (254) reply and members (253) start threads */
+	private $adminReplied;
+
 	/** @var string the site's flood switch before this Cest changed it */
 	private $antifloodWas;
 
@@ -70,14 +73,10 @@ class ForumPostAuthorisationCest
 		$I->updateInDatabase('e107_forum_thread', array('thread_sticky' => 1), array('thread_id' => $this->pinned));
 		$I->updateInDatabase('e107_forum_thread', array('thread_sticky' => 1), array('thread_id' => $this->memberThread));
 
-		$this->adminStarted = $I->haveInDatabase('e107_forum', array(
-			'forum_name' => 'Fixture Admin-Started Forum', 'forum_description' => 'fixture',
-			'forum_parent' => $this->ids['category'], 'forum_sub' => 0, 'forum_moderators' => \Helper\ForumFixture::CLASS_MOD_B,
-			'forum_class' => 0, 'forum_postclass' => 253, 'forum_threadclass' => 254,
-			'forum_order' => 4, 'forum_sef' => 'fixture-admin-started-forum', 'forum_datestamp' => time(),
-		));
+		$this->adminStarted = $I->haveForum('Fixture Admin-Started Forum', 'fixture-admin-started-forum', $this->ids['category'], \Helper\ForumFixture::CLASS_MOD_B, 4, 0, 253, 254);
 		$this->adminStartedThread = $I->haveForumThread('Fixture Admin-Started Thread', $this->adminStarted, 1);
 		$I->haveForumPost('Opening post in the admin-started thread', $this->adminStartedThread, $this->adminStarted, 1);
+		$this->adminReplied = $I->haveForum('Fixture Admin-Replied Forum', 'fixture-admin-replied-forum', $this->ids['category'], \Helper\ForumFixture::CLASS_MOD_B, 6, 0, 254, 253);
 
 		$I->purgeForumPermCache();
 		$I->logoutFromForum();
@@ -238,6 +237,36 @@ class ForumPostAuthorisationCest
 		$I->seeInSource('forum-post-unauthorized');
 	}
 
+	public function aMemberIsOfferedANewThreadOnATopicPageWhereMembersStartThreads(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
+
+		$I->seeElement($this->newThreadLink($this->ids['forumA']));
+	}
+
+	public function aMemberIsOfferedNoNewThreadOnATopicPageWhereOnlyAdministratorsStartThreads(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->adminStartedThread);
+
+		$I->dontSeeElement($this->newThreadLink($this->adminStarted));
+	}
+
+	/**
+	 * A new thread takes the posting class too, so a member outside it is offered none.
+	 */
+	public function aMemberWhoMayNotReplyIsOfferedNoNewThread(AcceptanceTester $I)
+	{
+		$I->loginToForum('authmember');
+
+		$I->amOnPage('/e107_plugins/forum/forum_viewforum.php?id='.$this->adminReplied);
+
+		$I->dontSeeElement($this->newThreadLink($this->adminReplied));
+	}
+
 	public function aModeratorSplitsPostsIntoAnotherForumTheyModerate(AcceptanceTester $I)
 	{
 		$I->loginToForum('authmoda');
@@ -271,6 +300,17 @@ class ForumPostAuthorisationCest
 			'forum_split'      => $toForum,
 			'new_thread_title' => $title,
 		));
+	}
+
+	/**
+	 * A link to the posting page's new-thread form for $forumId.
+	 *
+	 * @param int $forumId
+	 * @return string CSS selector
+	 */
+	private function newThreadLink($forumId)
+	{
+		return 'a[href$="?f=nt&id='.(int) $forumId.'"]';
 	}
 
 	/**

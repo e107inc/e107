@@ -1017,7 +1017,7 @@ class e107forum
 
 
 	/**
-	 * The forum ids checkPerm($id, $type) accepts for this caller.
+	 * The forum ids whose $type class column admits this caller.
 	 *
 	 * The list holds the id of every forum whose own class column admits the
 	 * caller and whose parent row's column admits them too, plus the ids of
@@ -1111,10 +1111,21 @@ class e107forum
 
 	
 	
+	/**
+	 * Whether the caller holds $type in a forum; starting a thread also takes the posting class.
+	 *
+	 * @param int $forumId
+	 * @param string $type view, post or thread
+	 * @return bool
+	 */
 	function checkPerm($forumId, $type='view')
 	{
-	//	print_a( $this->permList[$type]);
 		if(empty($this->permList[$type]))
+		{
+			return false;
+		}
+
+		if($type === 'thread' && !$this->checkPerm($forumId, 'post'))
 		{
 			return false;
 		}
