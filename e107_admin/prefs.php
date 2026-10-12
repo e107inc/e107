@@ -1608,9 +1608,7 @@ $text .= "
 
 					<tr>
 						<td><label for='disallowmultilogin'>".PRFLAN_129."</label>".$frm->help(PRFLAN_130)."</td>
-						<td>
-							".$frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO)."
-						</td>
+						".prefs_disallow_multi_login_cell($frm, $pref)."
 					</tr>
 
 					<tr>
@@ -1627,21 +1625,12 @@ $text .= "
 					</tr>
 					";
 
-//	if(e_DEVELOPER) // Experimental (translate terms after this check is removed)
-    {
-           //  $systemSaveMethod = ini_get('session.save_handler');
-           //  $saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
-            // $systemSaveMethod => PRFLAN_276,
-                $text .= "
-	                <tr>
-						<td><label for='session-save-method'>".PRFLAN_282."</label></td>
-						<td class='form-inline'>
-							".$frm->select('session_save_method', [ 'db'=>'Database', 'files'=>'Files'], varset($pref['session_save_method']))."
-
-						</td>
+    $text .= "
+					<tr>
+						<td><label for='session-save-method'>".PRFLAN_282."</label>".$frm->help(PRFLAN_SESSION_SAVE_METHOD_HELP)."</td>
+						".prefs_session_save_method_cell($frm, $pref)."
 					</tr>
-                    ";
-    }
+					";
 
     $text .= "
 					<tr>
@@ -2255,6 +2244,66 @@ $text .= "
 $ns->tablerender(null, $mes->render().$text);
 
 require_once(e_ADMIN."footer.php");
+
+/**
+ * The cell holding the Disallow multiple logins switch, with a warning while it is on and the database update that creates the account sessions table has not been run.
+ *
+ * @param e_form $frm
+ * @param array $pref
+ * @return string
+ */
+function prefs_disallow_multi_login_cell($frm, $pref)
+{
+	$switch = $frm->radio_switch('disallowMultiLogin', $pref['disallowMultiLogin'], LAN_YES, LAN_NO);
+
+	if(empty($pref['disallowMultiLogin']) || e107::getDb()->isTable(\e107\User\AccountSessions::TABLE))
+	{
+		return "<td>".$switch."</td>";
+	}
+
+	return "<td class='has-warning'>".$switch."<div class='text-warning'>".PRFLAN_MULTI_LOGIN_NEEDS_DATABASE_UPDATE."</div></td>";
+}
+
+/**
+ * The cell holding the Session Save Method select, with a warning while the method chosen is not the one running.
+ *
+ * @param e_form $frm
+ * @param array $pref
+ * @return string
+ */
+function prefs_session_save_method_cell($frm, $pref)
+{
+	$running = e107::getSession()->getSaveMethod();
+	$select = $frm->select('session_save_method', prefs_session_save_methods(), vartrue($pref['session_save_method'], $running));
+
+	if(varset($pref['session_save_method']) !== 'nonblocking' || $running === 'nonblocking')
+	{
+		return "<td class='form-inline'>".$select."</td>";
+	}
+
+	return "<td class='form-inline has-warning'>".$select."<div class='text-warning'>".PRFLAN_SESSION_SAVE_METHOD_NONBLOCKING_UNREACHABLE."</div></td>";
+}
+
+/**
+ * @return array save method => label: core's own, and the storage running now when it is none of them, so that saving the page never changes it unasked
+ */
+function prefs_session_save_methods()
+{
+	$methods = array(
+		'db'          => PRFLAN_SESSION_SAVE_METHOD_DATABASE,
+		'files'       => PRFLAN_SESSION_SAVE_METHOD_FILES,
+		'nonblocking' => PRFLAN_SESSION_SAVE_METHOD_NONBLOCKING,
+	);
+
+	$running = (string) e107::getSession()->getSaveMethod();
+
+	if(!isset($methods[$running]))
+	{
+		$methods[$running] = htmlspecialchars($running, ENT_QUOTES, 'UTF-8');
+	}
+
+	return $methods;
+}
 
 function pref_submit($post_id = '')
 {

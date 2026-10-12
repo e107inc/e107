@@ -13,6 +13,17 @@
 		/** @var userlogin */
 		protected $lg;
 
+		/** @var string|null online_user_id of a row a test put on the online list */
+		private $onlineUserId;
+
+		protected function _after()
+		{
+			if(null !== $this->onlineUserId)
+			{
+				e107::getDb()->createQueryBuilder()->delete('online')->where('online_user_id', $this->onlineUserId)->execute();
+			}
+		}
+
 		protected function _before()
 		{
 
@@ -188,6 +199,34 @@
 				$this->assertNotEmpty($var);
 			}
 
+		}
+
+		/**
+		 * #6302: with file sessions and Track Online on, an account on the online list was refused a sign-in, and every refusal counted towards the failed-login ban.
+		 */
+		public function testDisallowMultiLoginAdmitsAnAccountAlreadyOnline()
+		{
+			$admin = e107::getDb()->createQueryBuilder()->select('user_id', 'user_name')->from('user')
+				->where('user_loginname', \Helper\AdminLogin::ADMIN_USER)->fetchRow();
+			$this->onlineUserId = $admin['user_id'].'.'.$admin['user_name'];
+
+			e107::getDb()->createQueryBuilder()->insert('online')->values(array(
+				'online_timestamp' => time(),
+				'online_user_id'   => $this->onlineUserId,
+				'online_ip'        => e107::getIpHandler()->ipEncode('203.0.113.9'),
+				'online_location'  => '',
+			))->execute();
+
+			$restore = $this->withCorePrefs(array('disallowMultiLogin' => 1, 'session_save_method' => 'files', 'track_online' => 1));
+
+			try
+			{
+				$this->assertTrue($this->lg->login(\Helper\AdminLogin::ADMIN_USER, \Helper\AdminLogin::ADMIN_PASS, 0, '', true));
+			}
+			finally
+			{
+				$restore();
+			}
 		}
 
 

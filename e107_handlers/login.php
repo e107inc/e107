@@ -99,7 +99,6 @@ class userlogin
 	{
 		$pref = e107::getPref();
 		$tp = e107::getParser();
-		$sql = e107::getDb();
 
 		$e_event = e107::getEvent();
 		$_E107 = e107::getE107();
@@ -272,43 +271,8 @@ class userlogin
 
 		// Trigger events happy as well
 		$user_id = $this->userData['user_id'];
-		$user_name = $this->userData['user_name'];
 		$user_admin = $this->userData['user_admin'];
 		$user_email = $this->userData['user_email'];
-
-		/* restrict more than one person logging in using same us/pw */
-		if(!empty($pref['session_save_method']) && ($pref['session_save_method'] === 'db') && !empty($pref['disallowMultiLogin']) && !empty($user_id))
-		{
-			// logout any existing user of this account.
-			$mLog = '';
-			if($sql->createQueryBuilder()->delete('session')->where('session_user', $user_id)->where('session_expires', '>', time())->execute())
-			{
-				$mLog = 'Dropped existing user session: #' . $user_id. " ".$username;
-			}
-
-			$onlineUserId = $user_id.".".$user_name;
-			if(($onlineIP = $sql->createQueryBuilder()->select('online_ip')->from('online')->where('online_user_id', $onlineUserId)->fetchOne()))
-			{
-				$mLog .= ' ('. e107::getIpHandler()->ipDecode($onlineIP).')';
-				$sql->createQueryBuilder()->delete('online')->where('online_user_id', $onlineUserId)->execute();
-			}
-
-			if(!empty($mLog))
-			{
-				$this->logNote('LAN_ROLL_LOG_07', $mLog );
-			}
-
-		}
-		elseif(!empty($pref['track_online']) && !empty($pref['disallowMultiLogin']) && !empty($user_id))
-		{
-			if($sql->createQueryBuilder()->select('online_ip')->from('online')->where('online_user_id', $user_id.".".$user_name)->execute())
-			{
-				return $this->invalidLogin($username, LOGIN_MULTIPLE, $user_id);
-			}
-		}
-
-
-
 
 		// User login definitely accepted here
 
