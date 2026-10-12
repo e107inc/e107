@@ -13,18 +13,22 @@ function imageselector_shortcode($parm = '', $mod = '')
 		return null;
 	}
 
+	$names = array('name', 'path', 'default', 'width', 'height', 'multiple', 'label', 'subdirs', 'filter', 'fullpath', 'click_target', 'click_prefix', 'click_postfix', 'tabindex', 'class');
+
 	if (strpos($parm, "=") !== false)
 	{ // query style parms.
 		parse_str($parm, $parms);
-		extract($parms);
+		$strings = array_map(function ($value) { return is_string($value) ? $value : ''; }, $parms);
+		extract(array_intersect_key($strings, array_flip(array_merge($names, array('scaction')))));
 	}
 	else
 	{ // comma separated parms.
-		list($name, $path, $default, $width, $height, $multiple, $label, $subdirs, $filter, $fullpath, $click_target, $click_prefix, $click_postfix, $tabindex, $class) = explode(",", $parm);
+		extract(array_combine($names, array_slice(array_pad(explode(",", $parm), count($names), null), 0, count($names))));
 	}
 
 	
 	$paths = explode("|", $path);
+	$pvw_default = '';
 
 	if (trim($default[0]) == "{")
 	{
@@ -179,7 +183,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 	}
 	else
 	{
-		$text .= "<a href='{$pvw_default}'{$hide} rel='external shadowbox' title='Preview {$pvw_default}' class='e-image-preview'>";
+		$text .= "<a href='".$tp->toUrlAttribute($pvw_default, '#')."'{$hide} rel='external shadowbox' title='Preview {$pvw_default}' class='e-image-preview'>";
 	}
 	if (vartrue($height)) $height = intval($height);
 	if (vartrue($width)) $width = intval($width);

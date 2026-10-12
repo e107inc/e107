@@ -47,13 +47,57 @@ class imageselectorShortcodeTest extends \Codeception\Test\Unit
 		$this->assertStringContainsString('addtext('.$tp->toJsString('[img]').'+document.getElementById('.$tp->toJsString('x').').value+'.$tp->toJsString('[/img]').', true);', $handlers);
 	}
 
+	public function testThePreviewLinkRefusesAScriptAddress()
+	{
+		$html = $this->render('default=javascript:alert(1)');
+
+		$this->assertStringContainsString('e-image-preview', $html);
+		$this->assertStringNotContainsStringIgnoringCase("href='javascript:", $html);
+	}
+
+	public function testAParameterCannotReplaceThePreviewAddress()
+	{
+		$html = $this->render('default=a.png&pvw_default=/elsewhere.png');
+
+		$this->assertStringContainsString('e-image-preview', $html);
+		$this->assertStringNotContainsString("href='/elsewhere.png'", $html);
+	}
+
+	public function testTheCommaFormStillReadsEachParameterInItsPlace()
+	{
+		$html = e107::getParser()->parseTemplate('{IMAGESELECTOR=x,,a.png,40,,,,,,,,,,,c}', true);
+
+		$this->assertStringContainsString("class='c' name='x' id='x'", $html);
+		$this->assertStringContainsString(e107::getParser()->toJsString('imagepreview=x|40|0'), html_entity_decode($html, ENT_QUOTES, 'UTF-8'));
+	}
+
 	/**
-	 * @param string $parameters overriding a value for every parameter the shortcode reads
+	 * @return array
+	 */
+	public function hostileVariables()
+	{
+		return array(
+			'the parser'          => array('tp=x'),
+			'a value as an array' => array('path%5B%5D=a'),
+		);
+	}
+
+	/**
+	 * @dataProvider hostileVariables
+	 * @param string $parameters
+	 */
+	public function testAParameterCannotStopThePage($parameters)
+	{
+		$this->assertStringContainsString('e-image-preview', $this->render($parameters));
+	}
+
+	/**
+	 * @param string $parameters overriding a baseline that names every variable the shortcode has read from its parameters
 	 * @return string
 	 */
 	private function render($parameters)
 	{
-		$every = 'name=x&path=&default=%7Be_IMAGE%7Dgeneric/blank.gif&width=&height=&multiple=&label=&subdirs=&filter=&fullpath=&tabindex=&class=&click_target=';
+		$every = 'name=x&path=&default=%7Be_IMAGE%7Dgeneric/blank.gif&width=&height=&multiple=&label=&subdirs=&filter=&fullpath=&tabindex=&class=&click_target=&pvw_default=';
 
 		return e107::getParser()->parseTemplate('{IMAGESELECTOR='.$every.'&'.$parameters.'}', true);
 	}
