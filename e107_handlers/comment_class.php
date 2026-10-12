@@ -1714,7 +1714,7 @@ class comment
 			if ($comment_total = $sql->gen($query))
 			{
 				$width = 0;
-				while ($row = $sql->fetch())
+				foreach ($sql->rows() as $row)
 				{
 					$ret = array();
 					//date
@@ -1742,7 +1742,8 @@ class comment
 								AND news_class REGEXP '".e_CLASS_REGEXP."'
 								AND news_class NOT REGEXP '".e_NOBODY_REGEXP."'
 								AND news_start < ".$now."
-								AND (news_end = 0 OR news_end > ".$now.")";
+								AND (news_end = 0 OR news_end > ".$now.")
+								AND news_allow_comments = 0";
 
 							if ($sql2->gen($qryn))
 							{
@@ -1758,6 +1759,10 @@ class comment
 						case '1': //	article, review or content page - defunct category, but filter them out
 							break;
 						case '2': //	downloads
+							if (!e107::isInstalled('download'))
+							{
+								break;
+							}
 							// An inner join, so a download whose category has gone
 							// stops answering rather than answering with a null
 							// category and no class to test. The item's own
@@ -1770,7 +1775,8 @@ class comment
 								WHERE d.download_id=".intval($row['comment_item_id'])."
 								AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."'
 								AND d.download_visible IN (".$classList.")
-								AND d.download_active > 0";
+								AND d.download_active > 0
+								AND d.download_comment > 0";
 
 							if ($sql2->gen($qryd))
 							{
@@ -1784,6 +1790,10 @@ class comment
 							break;
 						// '3' was FAQ
 						case '4': //	poll
+							if (!e107::isInstalled('poll'))
+							{
+								break;
+							}
 							if ($sql2->select("polls", "*", "poll_id='".$row['comment_item_id']."' AND poll_type=1 "))
 							{
 								$row2 = $sql2->fetch();
@@ -1797,7 +1807,7 @@ class comment
 						// '6' was bugtracker
 						// 'ideas' was implemented
 						case 'profile': //	userprofile
-							if (USER)
+							if ($this->canReadComments('profile', $row['comment_item_id']))
 							{
 								$ret['comment_type'] = COMLAN_TYPE_8;
 								$ret['comment_title'] = $comment_author_name;

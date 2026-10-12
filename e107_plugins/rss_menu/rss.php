@@ -561,7 +561,8 @@ class rssCreate
 			case 'news':
 				$where .= " AND ".$this->classPermits('p.news_class')
 					." AND p.news_start < ".$now
-					." AND (p.news_end = 0 OR p.news_end > ".$now.")";
+					." AND (p.news_end = 0 OR p.news_end > ".$now.")"
+					." AND p.news_allow_comments = 0";
 				break;
 
 			case 'download':
@@ -571,7 +572,8 @@ class rssCreate
 				$where .= " AND p.download_visible IN (".$userclass.")"
 					." AND p.download_class IN (".$userclass.")"
 					." AND dc.download_category_class IN (".$userclass.")"
-					." AND p.download_active != 0";
+					." AND p.download_active != 0"
+					." AND p.download_comment > 0";
 				break;
 
 			case 'poll':
@@ -581,7 +583,8 @@ class rssCreate
 				break;
 
 			case 'page':
-				$where .= " AND ".$this->classPermits('p.page_class')." AND p.page_password = ''";
+				$where .= " AND ".$this->classPermits('p.page_class')." AND p.page_password = ''"
+					." AND p.page_comment_flag > 0";
 				break;
 		}
 

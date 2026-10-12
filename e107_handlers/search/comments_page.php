@@ -21,7 +21,7 @@ $comments_type_id = 'page';
 $comments_return['page'] = "cp.page_id, cp.page_title";
 $comments_table['page'] = "LEFT JOIN #page AS cp ON c.comment_type='page' AND cp.page_id = c.comment_item_id";
 $comments_class['page'] = array('cp.page_class');
-$comments_where['page'] = "cp.page_password = ''";
+$comments_where['page'] = "cp.page_password = '' AND cp.page_comment_flag > 0";
 	/**
 	 * @param $row
 	 * @return array
