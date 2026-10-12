@@ -61,5 +61,5 @@ function imagepreview_shortcode($parm)
 	{
 		$thpath = !varset($nothumb) ? e107::getParser()->thumbUrl($path, 'w='.$width.'h='.$height, true) : $path;
 	}
-	return "<a href='{$path}' rel='external shadowbox' class='e-image-preview'{$hide}><img src='{$thpath}' alt=\"\" class='image-selector' /></a>";
+	return "<a href='".e107::getParser()->toUrlAttribute($path, '#')."' rel='external shadowbox' class='e-image-preview'{$hide}><img src='".htmlspecialchars($thpath, ENT_QUOTES, 'UTF-8', false)."' alt=\"\" class='image-selector' /></a>";
 }
