@@ -1,4 +1,9 @@
-global $sql, $e_hide_query, $e_hide_hidden, $e_hide_allowed;
+global $sql, $e_hide_query, $e_hide_hidden, $e_hide_allowed, $e_hide_block;
+
+if(empty($e_hide_block))
+{
+	return '[hide'.(($parm !== '') ? '='.$parm : '').']'.$code_text.'[/hide]';
+}
 
 if(!$e_hide_allowed || !isset($e_hide_query) || !$sql->gen($e_hide_query))
 {
