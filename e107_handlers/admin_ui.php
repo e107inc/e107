@@ -4132,6 +4132,13 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if(strpos($batch_trigger, 'batch_') === 0)
 		{
+			if(!$this->hasModeRouteAccess('edit'))
+			{
+				e107::getMessage()->addError(LAN_NO_PERMISSIONS);
+
+				return $this;
+			}
+
 			list($tmp,$plugin,$command) = explode('_',$batch_trigger,3);
 			$this->setPosted(array());
 			$this->getRequest()->setAction('batch');
