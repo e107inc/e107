@@ -114,6 +114,7 @@ return [
     "LAN_FILE" => "File",
     "LAN_YOUTUBE_VIDEO" => "Youtube Video",
     "LAN_YOUTUBE_PLAYLIST" => "Youtube Playlist",
+    "LAN_SANITISED" => "Sanitised",
     "LAN_FILETYPES" => "Filetypes",
     "LAN_FILE_NOT_FOUND" => "File Not Found",
     "LAN_FILES" => "Files",
