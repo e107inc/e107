@@ -177,7 +177,26 @@ class hero_ui extends e_admin_ui
 
 		private function processGlyph($new_data)
 		{
-			foreach($new_data['hero_bullets'] as $key=>$row)
+			$tp = e107::getParser();
+			$trust = $this->authorTrust();
+
+			foreach(array('hero_button1', 'hero_button2') as $field)
+			{
+				if(isset($new_data[$field]) && is_array($new_data[$field]))
+				{
+					$new_data[$field] = $this->storedPart($new_data[$field], $trust);
+				}
+			}
+
+			if(isset($new_data['hero_bullets']) && is_array($new_data['hero_bullets']))
+			{
+				foreach($new_data['hero_bullets'] as $key => $row)
+				{
+					$new_data['hero_bullets'][$key] = is_array($row) ? $this->storedPart($row, $trust) : array();
+				}
+			}
+
+			foreach(varset($new_data['hero_bullets'], array()) as $key=>$row)
 			{
 				if(!empty($row['icon']) && strpos($row['icon'],".glyph")===false)
 				{
@@ -188,6 +207,41 @@ class hero_ui extends e_admin_ui
 
 			return $new_data;
 
+		}
+
+		/**
+		 * @param array $part one bullet or button as posted
+		 * @param int $trust what its author may post, as {@see hero_ui::authorTrust()} says
+		 * @return array the part stored through toDB(), its address as typed, and what its author may post recorded beside it
+		 */
+		private function storedPart(array $part, $trust)
+		{
+			$url = isset($part['url']) ? $part['url'] : null;
+			$part = e107::getParser()->toDB($part);
+
+			if($url !== null)
+			{
+				$part['url'] = $url;
+			}
+
+			$part['__trust__'] = $trust;
+
+			return $part;
+		}
+
+		/**
+		 * @return int what the current user may post once {@see e_parse::toDB()} has stored it: 2 scripts and HTML (post_script), 1 HTML (post_html), 0 text
+		 */
+		private function authorTrust()
+		{
+			$pref = e107::getConfig();
+
+			if(check_class($pref->get('post_script', e_UC_NOBODY)))
+			{
+				return 2;
+			}
+
+			return check_class($pref->get('post_html', e_UC_MAINADMIN)) ? 1 : 0;
 		}
 
 		public function afterUpdate($new_data, $old_data, $id)
@@ -320,9 +374,9 @@ class hero_form_ui extends e_admin_form_ui
 				foreach($value as $row)
 				{
 					$text .= "<tr><td style='width:30px;vertical-align:top'>";
-					$text .= $tp->toIcon($row['icon']);
+					$text .= $tp->toIcon($tp->attributeValue($row['icon']));
 					$text .= "</td><td>";
-					$text .= " ".$row['text'];
+					$text .= " ".$tp->attributeValue($row['text']);
 					$text .= "</td></tr>";
 
 				}
@@ -450,7 +504,7 @@ class hero_form_ui extends e_admin_form_ui
 					$text .= "<tr>
 								<td class='text-center'>".$this->glyphPicker($name.'[icon]', varset($val['icon']))."</td>
 								<td>".$this->btnClass($name.'[icon_style]', varset($val['icon_style']))."</td>
-								<td>".$this->textarea($name.'[text]', varset($val['text']),1,80,array('size'=>'block-level'))."</td>
+								<td>".$this->textarea($name.'[text]', e107::getParser()->attributeValue(varset($val['text'])),1,80,array('size'=>'block-level'))."</td>
 								<td>".$this->select($name.'[animation]',$optAnimation, varset($val['animation']), array( 'useValues'=>1), true)."</td>
 								<td>".$this->select($name.'[animation_delay]',$optDelay, varset($val['animation_delay']), array('size'=>'small'), true)."</td>
 							</tr>";
@@ -473,11 +527,12 @@ class hero_form_ui extends e_admin_form_ui
 
 	function glyphPicker($name,$value)
 	{
+		$tp = e107::getParser();
 		$ico = str_replace(".glyph", '', $value);
 
 		$pack = e107::pref('hero','icon_pack', 'fontawesome');
 
-		return '<button class="btn btn-block btn-default iconpicker" role="iconpicker" name="'.$name.'" data-iconset="'.$pack.'" data-icon="'.$ico.'"></button>';
+		return '<button class="btn btn-block btn-default iconpicker" role="iconpicker" name="'.$name.'" data-iconset="'.$tp->attributeValue($pack).'" data-icon="'.$tp->attributeValue($ico).'"></button>';
 
 	}
 
@@ -520,7 +575,7 @@ class hero_form_ui extends e_admin_form_ui
 
 					$text .= "<tr>
 								<td class='text-center'>".$this->glyphPicker($name.'[icon]', varset($val['icon']))."</td>
-								<td>".$this->text($name.'[label]', varset($val['label']), 255, array('size'=>'block-level', 'placeholder'=>LAN_HERO_ADMIN_006))."</td>
+								<td>".$this->renderElement($name.'[label]', varset($val['label']), array('type' => 'text', 'writeParms' => array('size'=>'block-level', 'placeholder'=>LAN_HERO_ADMIN_006)))."</td>
 								<td> ".$this->text($name.'[url]', varset($val['url']), 255, array('size'=>'block-level', 'placeholder'=>'URL'))."</td>
 								<td> ".$this->btnClass($name.'[class]', varset($val['class']))."</td>
 							</tr>";
@@ -541,9 +596,10 @@ class hero_form_ui extends e_admin_form_ui
 			return null;
 		}
 
-		$icon = e107::getParser()->toIcon($value['icon']);
+		$tp = e107::getParser();
+		$icon = $tp->toIcon($tp->attributeValue(varset($value['icon'])));
 
-		return "<a href='".$value['url']."' class='btn btn-sm btn-block btn-".$value['class']."'>".$icon." ".$value['label']."</a>";
+		return "<a href='".$tp->toUrlAttribute(varset($value['url']))."' class='btn btn-sm btn-block btn-".$tp->attributeValue(varset($value['class']))."'>".$icon." ".$tp->attributeValue(varset($value['label']))."</a>";
 
 	}
 
