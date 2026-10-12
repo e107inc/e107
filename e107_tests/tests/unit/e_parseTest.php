@@ -3224,6 +3224,51 @@ Your browser does not support the audio tag.
 
 	}
 
+	public function testMakeClickableLeavesAnAddressThatCanExecuteAsText()
+	{
+		foreach (array('javascript://x%0Aalert(1)', 'JavaScript://x%0Aalert(1)', 'vbscript://x%0Amsgbox(1)') as $address)
+		{
+			$sample = 'before ' . $address . ' after';
+
+			self::assertEquals($sample, $this->tp->makeClickable($sample, 'url'), 'Linked ' . $address);
+			self::assertEquals($sample, $this->tp->makeClickable($sample, 'url', array('sub' => '[link]', 'ext' => true)), 'Linked ' . $address . ' with a substitute');
+		}
+
+		$expected = 'before <a class="e-url" href="ftps://example.com/x" >ftps://example.com/x</a> after';
+		self::assertEquals($expected, $this->tp->makeClickable('before ftps://example.com/x after', 'url'), 'An ftps url stopped being linked');
+	}
+
+	public function testMakeClickablePrintsTheSubstituteLinkTextAsWritten()
+	{
+		$html = $this->tp->makeClickable('see http://x.example/p and www.y.example/q and ftp.z.example/r here', 'url', array('sub' => 'Price $5 \\1'));
+
+		$expected = 'see <a class="e-url" href="http://x.example/p" >Price $5 \\1</a>'
+			. ' and <a class="e-url" href="http://www.y.example/q" >Price $5 \\1</a>'
+			. ' and <a class="e-url" href="ftp://ftp.z.example/r" >Price $5 \\1</a> here';
+
+		self::assertSame($expected, $html);
+	}
+
+	public function testClickableLinksInPlaceNeverCarryAnAddressThatCanExecute()
+	{
+		$restore = $this->withCorePrefs(array('make_clickable' => 1, 'link_replace' => 1, 'links_new_window' => 0, 'link_text' => ''));
+
+		try
+		{
+			$tp = $this->make('e_parse');
+			$tp->__construct();
+
+			$html = $tp->toHTML($tp->toDB('Notes at javascript://x%0Aalert(1) and at https://example.com/notes'), true, 'USER_BODY');
+
+			self::assertStringNotContainsString('href="javascript', $html, 'A member\'s javascript: address was linked: ' . $html);
+			self::assertStringContainsString('<a class="e-url" href="https://example.com/notes" >', $html, 'An ordinary address stopped being linked: ' . $html);
+		}
+		finally
+		{
+			$restore();
+		}
+	}
+
 	public function testMakeClickableSkipsMarkup()
 	{
 		$tp = $this->tp;
