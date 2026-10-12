@@ -856,6 +856,39 @@ EXPECTED;
 
 	}
 
+	/**
+	 * Given an author, toDB() keeps that author's HTML but no script they may not post, whatever the current user may (the phpunit flag turns off check_class()'s command-line grant).
+	 */
+	public function testToDBKeepsNoScriptAnAuthorMayNotPost()
+	{
+		$config = e107::getConfig();
+		$prefs = array('post_html' => $config->get('post_html'), 'post_script' => $config->get('post_script'));
+		$phpunit = isset($GLOBALS['_E107']['phpunit']) ? $GLOBALS['_E107']['phpunit'] : null;
+		$config->set('post_html', e_UC_ADMIN)->set('post_script', e_UC_MAINADMIN);
+		$GLOBALS['_E107']['phpunit'] = true;
+		$sql = e107::getDb();
+		$author = (int) $sql->insert('user', array(
+			'user_name' => 'todb_author', 'user_loginname' => 'todb_author', 'user_password' => '', 'user_email' => 'todb_author@example.com',
+			'user_join' => time(), 'user_class' => '', 'user_admin' => 1, 'user_perms' => '',
+			'user_prefs' => '', 'user_signature' => '', 'user_realm' => '', 'user_xup' => '',
+		));
+		$this->tp->setScriptAccess(e_UC_PUBLIC);
+
+		try
+		{
+			$stored = $this->tp->toDB('<b onclick="x()">y</b>', false, false, false, $author);
+		}
+		finally
+		{
+			$sql->delete('user', 'user_id = '.$author);
+			$config->set('post_html', $prefs['post_html'])->set('post_script', $prefs['post_script']);
+			$GLOBALS['_E107']['phpunit'] = $phpunit;
+		}
+
+		self::assertStringContainsString('<b>y</b>', $stored);
+		self::assertStringNotContainsString('onclick', $stored);
+	}
+
 	public function testToDB()
 	{
 

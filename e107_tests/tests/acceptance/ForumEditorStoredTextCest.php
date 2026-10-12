@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The forum's editor box gives a rich-text editor a member's text as text.
+ * The forum's editor box gives a rich-text editor text stored as text, as text.
  */
 class ForumEditorStoredTextCest
 {
@@ -13,11 +13,15 @@ class ForumEditorStoredTextCest
 	/** @var int the member's post */
 	private $post;
 
+	/** @var int the same text in a post of the administrator's, the only kind the editor is offered for on Edit */
+	private $adminsPost;
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveForumPluginInstalled();
 		$this->ids = $I->haveForumStructure();
 		$this->post = $I->haveForumPost(self::STORED, $this->ids['threadA'], $this->ids['forumA'], $I->haveForumMember('tfeditor'));
+		$this->adminsPost = $I->haveForumPost(self::STORED, $this->ids['threadA'], $this->ids['forumA'], 1);
 		$I->purgeForumPermCache();
 	}
 
@@ -26,11 +30,11 @@ class ForumEditorStoredTextCest
 		$I->dropForumProbe();
 	}
 
-	public function anAdministratorsEditBoxHoldsAMembersPostAsStored(AcceptanceTester $I)
+	public function anAdministratorsEditBoxHoldsTheirPostAsStored(AcceptanceTester $I)
 	{
 		$I->loginAsAdmin();
 
-		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=edit&id='.$this->ids['threadA'].'&post='.$this->post);
+		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=edit&id='.$this->ids['threadA'].'&post='.$this->adminsPost);
 
 		$I->seeInSource('Look &amp;lt;details open ontoggle=x&amp;gt;y');
 	}
@@ -57,7 +61,7 @@ class ForumEditorStoredTextCest
 	public function anAdministratorsPreviewHoldsWhatTheEditorSent(AcceptanceTester $I)
 	{
 		$I->loginAsAdmin();
-		$url = '/e107_plugins/forum/forum_post.php?f=edit&id='.$this->ids['threadA'].'&post='.$this->post;
+		$url = '/e107_plugins/forum/forum_post.php?f=edit&id='.$this->ids['threadA'].'&post='.$this->adminsPost;
 		$token = $I->grabForumToken($url);
 
 		$I->sendPostRequest($url, array('post' => '[html]<p>Look &lt;details open ontoggle=x&gt;y&lt;/details&gt;</p>[/html]', 'fpreview' => 'Preview', 'e-token' => $token));
@@ -77,7 +81,7 @@ class ForumEditorStoredTextCest
 
 	public function anAdministratorsEditBoxKeepsPercentEscapesInAnHtmlPostAsText(AcceptanceTester $I)
 	{
-		$post = $I->haveForumPost('[html]<p>Hi %3Cdetails open ontoggle=x%3Ey%3C/details%3E a+b</p>[/html]', $this->ids['threadA'], $this->ids['forumA'], $I->haveForumMember('tfhtml'));
+		$post = $I->haveForumPost('[html]<p>Hi %3Cdetails open ontoggle=x%3Ey%3C/details%3E a+b</p>[/html]', $this->ids['threadA'], $this->ids['forumA'], 1);
 		$I->loginAsAdmin();
 
 		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=edit&id='.$this->ids['threadA'].'&post='.$post);
