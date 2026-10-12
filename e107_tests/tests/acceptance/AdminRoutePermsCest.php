@@ -991,6 +991,39 @@ class AdminRoutePermsCest
 		}
 	}
 
+	/** A batch that drops a selected row because the list no longer shows it says so. */
+	public function aBatchSaysWhichSelectedRowsTheListNoLongerShows(AcceptanceTester $I)
+	{
+		$I->wantTo('Tell the administrator that a batch left out rows that are no longer in the list');
+
+		$message = $this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+		$counter = $this->seedGenericRow($I, 'failed_login', '203.0.113.7');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+		$this->postWithToken($I, self::ROUTE_WMESSAGE, array(
+			'etrigger_batch'   => 'gen_intdata__254',
+			'e__execute_batch' => 'Go',
+			'e-multiselect'    => array($message => $message, $counter => $counter),
+		));
+
+		$I->seeInSource('selected record(s) are no longer in this list and were left unchanged.');
+		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_intdata' => 254));
+	}
+
+	/** Positive control: a batch whose rows are all in the list says nothing about rows left out. */
+	public function aBatchOfListedRowsSaysNothingAboutRowsLeftOut(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep a batch of listed rows free of the left-out warning');
+
+		$message = $this->seedGenericRow($I, 'wmessage', 'p7rp welcome');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+		$this->sendBatch($I, self::ROUTE_WMESSAGE, 'gen_intdata__254', $message, 'e-multiselect');
+
+		$I->dontSeeInSource('are no longer in this list');
+		$I->seeInDatabase('e107_generic', array('gen_id' => $message, 'gen_intdata' => 254));
+	}
+
 	/** A list's batch copy reaches only the rows its own query selects. */
 	public function aWelcomeMessageAdministratorCannotBatchCopyRowsAnotherListOwns(AcceptanceTester $I)
 	{
