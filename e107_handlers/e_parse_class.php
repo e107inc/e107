@@ -90,6 +90,9 @@ class e_parse
 	/** @var array Stored relative paths - used by replaceConstants() */
 	private $relativePaths = [];
 
+	/** @var bool Whether a shortcode pass will run over the bbcodes being parsed, for {@see e_parse::toBBCodeUrlAttribute()} */
+	private static $bbcodeShortcodes = false;
+
 
 	// BBcode that contain preformatted code.
 	private $preformatted = array('html', 'markdown');
@@ -1746,7 +1749,32 @@ class e_parse
 	public function parseBBCodes($text, $postID)
 	{
 
-		return e107::getBB()->parseBBCodes($text, $postID);
+		return $this->parseBBCodesBeforeShortcodes($text, $postID, self::$bbcodeShortcodes);
+	}
+
+	/**
+	 * Parse bbcodes, telling {@see e_parse::toBBCodeUrlAttribute()} whether a shortcode pass will run over their output.
+	 *
+	 * @param string $text
+	 * @param mixed  $postID
+	 * @param bool   $shortcodes
+	 * @param string $mode
+	 * @param mixed  $strip
+	 * @return string
+	 */
+	private function parseBBCodesBeforeShortcodes($text, $postID, $shortcodes, $mode = 'default', $strip = false)
+	{
+		$outer = self::$bbcodeShortcodes;
+		self::$bbcodeShortcodes = (bool) $shortcodes;
+
+		try
+		{
+			return e107::getBB()->parseBBCodes($text, $postID, $mode, $strip);
+		}
+		finally
+		{
+			self::$bbcodeShortcodes = $outer;
+		}
 	}
 
 	/**
@@ -2015,7 +2043,7 @@ class e_parse
 							$html_end = '<!-- bbcode-html-end -->';
 							$full_text = str_replace(array('[html]', '[/html]'), '', $code_text); // quick fix.. security issue?
 
-							$full_text = $this->parseBBCodes($this->restoreEntitiesOutsideCode($full_text, $opts['value']), $postID); // parse any embedded bbcodes eg. [img]
+							$full_text = $this->parseBBCodesBeforeShortcodes($this->restoreEntitiesOutsideCode($full_text, $opts['value']), $postID, $opts['parse_sc']); // parse any embedded bbcodes eg. [img]
 							$full_text = $this->replaceConstants($full_text, 'abs'); // parse any other paths using {e_....
 							$full_text = $html_start . $full_text . $html_end;
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
@@ -2032,7 +2060,7 @@ class e_parse
 
 						case 'hide' :
 							$proc_funcs = true;
-							$full_text = $this->parseBBCodes($this->restoreEntitiesOutsideCode($matches[0], $opts['value']), $postID);
+							$full_text = $this->parseBBCodesBeforeShortcodes($this->restoreEntitiesOutsideCode($matches[0], $opts['value']), $postID, $opts['parse_sc']);
 							$blockRendered = true;
 							break;
 
@@ -2481,6 +2509,24 @@ class e_parse
 		}
 
 		return $this->toAttribute($url, true);
+	}
+
+	/**
+	 * Encode a bbcode's URL for an href or src attribute once the constants and shortcodes toHTML() expands in it are expanded.
+	 *
+	 * @param string $url
+	 * @return string encoded with every opening brace as an entity, or '' when there is nothing {@see e_parse::toUrlAttribute()} will link
+	 */
+	public function toBBCodeUrlAttribute($url)
+	{
+		$url = $this->replaceConstants((string) $url);
+
+		if (self::$bbcodeShortcodes && strpos($url, '{') !== false)
+		{
+			$url = (string) $this->parseTemplate($this->disarmShortcodeParameters($url), true);
+		}
+
+		return str_replace('{', '&#123;', $this->toUrlAttribute($url));
 	}
 
 	/**
@@ -6622,6 +6668,41 @@ class e_parse
 	}
 
 	/**
+	 * Encode the quotes and angle brackets, typed or percent-encoded, in the parameters of each shortcode named in text that is not a template, so that no shortcode can print them as markup.
+	 * An opening brace, typed or percent-encoded, and a percent-encoded closing brace are encoded the same way.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function disarmShortcodeParameters($text)
+	{
+		$encoded = array('%27' => '%26%23x27%3B', '%22' => '%26%23x22%3B', '%3C' => '%26lt%3B', '%3E' => '%26%23x3E%3B', '%7B' => '%26%23x7B%3B', '%7D' => '%26%23x7D%3B');
+
+		return preg_replace_callback('#\{([A-Z][^\x02]*?\S)\}#', function ($match) use ($encoded)
+		{
+			if (preg_match('/^([A-Z_]*\d?):(.*)$/s', $match[1], $form))
+			{
+				$typed = array("'" => $encoded['%27'], '"' => $encoded['%22'], '<' => $encoded['%3C'], '>' => $encoded['%3E'], '{' => $encoded['%7B']);
+				$separator = ':';
+			}
+			elseif (strpos($match[1], '=') !== false)
+			{
+				$form = array(0, strstr($match[1], '=', true), (string) substr(strstr($match[1], '='), 1));
+				$typed = array("'" => '&#x27;', '"' => '&#x22;', '<' => '&lt;', '>' => '&#x3E;', '{' => '&#x7B;');
+				$separator = '=';
+			}
+			else
+			{
+				return $match[0];
+			}
+
+			$parameters = str_ireplace(array_keys($encoded), array_values($encoded), strtr($form[2], $typed));
+
+			return '{'.$form[1].$separator.$parameters.'}';
+		}, $text);
+	}
+
+	/**
 	 * @param array       $opts
 	 * @param string      $text
 	 * @param bool        $convertNL
@@ -6673,21 +6754,21 @@ class e_parse
 				// 'Normal' or 'legacy' processing
 				if ($modifiers === 'WYSIWYG')
 				{
-					$text = e107::getBB()->parseBBCodes($text, $postID, 'wysiwyg');
+					$text = $this->parseBBCodesBeforeShortcodes($text, $postID, $opts['parse_sc'], 'wysiwyg');
 				}
 				else
 				{
-					$text = e107::getBB()->parseBBCodes($text, $postID);
+					$text = $this->parseBBCodesBeforeShortcodes($text, $postID, $opts['parse_sc']);
 				}
 
 			}
 			elseif ($parseBB === 'STRIP') // Need to strip all BBCodes
 			{
-				$text = e107::getBB()->parseBBCodes($text, $postID, 'default', true);
+				$text = $this->parseBBCodesBeforeShortcodes($text, $postID, $opts['parse_sc'], 'default', true);
 			}
 			else // Need to strip just some BBCodes
 			{
-				$text = e107::getBB()->parseBBCodes($text, $postID, 'default', $parseBB);
+				$text = $this->parseBBCodesBeforeShortcodes($text, $postID, $opts['parse_sc'], 'default', $parseBB);
 			}
 		}
 
