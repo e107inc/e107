@@ -3,7 +3,7 @@
 
 // General purpose image bbcode. As well as the obvious insertion of a picture:
 // 	a) if filname begins with 'th_' or 'thumb_', creates link to main image opening in new window
-//	b) If filename contains '*', treats it as a wildcard, and displays a random image from all matching file names found ? really?
+//	b) If filename contains '*', treats it as a wildcard, and displays a random image from the matching files in that folder, which must be the site's image folder (e_IMAGE) or inside it
 //
 // Can use simple classes for float - e.g.:
 // .floatleft {clear: right; float: left; margin: 0px 5px 5px 0px; padding:2px; border: 0px;}
@@ -307,38 +307,16 @@
 			// Select a random file if required
 			if(strpos($img_file['basename'], '*') !== false)
 			{
-				$fileList = array();
 				$intFile = pathinfo($intName);        // N.B. - might still contain a constant such as e_IMAGE
-				$matchString = '#' . str_replace('*', '.*?', $intFile['basename']) . '#';
-				$dirName = $tp->replaceConstants($intFile['dirname'] . '/');            // we want server-relative directory
-				if(($h = opendir($dirName)) !== false)
-				{
-					while(($f = readdir($h)) !== false)
-					{
-						if(preg_match($matchString, $f))
-						{
-							$fileList[] = $f;        // Just need to note file names
-						}
-					}
-					closedir($h);
-				}
-				else
-				{
-					echo "Error opening directory: {$dirName}<br />";
+				$fileList = $this->imageFolderFiles($tp->replaceConstants($intFile['dirname'] . '/'), $intFile['basename']);
 
+				if(empty($fileList))
+				{
 					return '';
 				}
-				if(count($fileList))
-				{
-					$img_file['basename'] = $fileList[mt_rand(0, count($fileList) - 1)];        // Just change name of displayed file - no change on directory
-					$code_text = $img_file['dirname'] . "/" . $img_file['basename'];
-				}
-				else
-				{
-					echo 'No file: ' . $code_text;
 
-					return '';
-				}
+				$img_file['basename'] = $tp->toAttribute($fileList[mt_rand(0, count($fileList) - 1)], true);        // Just change name of displayed file - no change on directory
+				$code_text = $img_file['dirname'] . "/" . $img_file['basename'];
 			}
 
 
@@ -378,6 +356,28 @@
 			}
 
 			return "<img src='" . $code_text . "' {$parmStr} />";
+		}
+
+		/**
+		 * The files in $dir whose names match $pattern, a file name in which * stands for any run of characters.
+		 *
+		 * @param string $dir
+		 * @param string $pattern
+		 * @return string[] none when $dir is a network path, or is not the site's image folder or inside it
+		 */
+		private function imageFolderFiles($dir, $pattern)
+		{
+			$file = e107::getFile();
+			$dir = preg_match('#^[/\\\\]{2}#', $dir) ? false : $file->resolveSendRoot($dir, array(e_IMAGE));
+
+			if($dir === false)
+			{
+				return array();
+			}
+
+			$file->setMode('fname');
+
+			return $file->get_files($dir, '(?:' . str_replace('\\*', '.*?', preg_quote(preg_replace('/\\*+/', '*', $pattern), '#')) . ')');
 		}
 
 	}

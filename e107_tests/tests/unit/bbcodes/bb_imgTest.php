@@ -127,7 +127,95 @@
 			}
 		}
 
+		/**
+		 * @param string $path
+		 * @return string what rendering the [img] printed, its echoed output included
+		 */
+		private function renderWildcard($path)
+		{
+			ob_start();
 
+			try
+			{
+				$result = $this->bb->toHTML($path, '');
+			}
+			finally
+			{
+				$echoed = ob_get_clean();
+			}
 
+			return $echoed.$result;
+		}
+
+		/**
+		 * @return array
+		 */
+		public function wildcardImagesThatListNothing()
+		{
+			return array(
+				'outside the site'         => array('/etc/pass*'),
+				'a system folder'          => array('{e_SYSTEM}logs/*'),
+				'out of an image folder'   => array('{e_IMAGE}../e107_conf*'),
+				'an ftp address'           => array('ftp://127.0.0.1:1/*'),
+				'a phar archive'           => array('phar://e107_system/core_image.phar/*'),
+				'a missing image folder'   => array('{e_IMAGE}nowhere/*'),
+				'a bracket in the pattern' => array('{e_IMAGE}generic/(*'),
+				'a regex in the pattern'   => array('{e_IMAGE}generic/blank.?gif*'),
+				'a folder name'            => array('{e_IMAGE}generic/bbcod*'),
+				'an index page'            => array('{e_IMAGE}avatars/index*'),
+			);
+		}
+
+		/**
+		 * An [img] whose file name holds * shows a random matching file from the site's image folder, and prints nothing else.
+		 *
+		 * @dataProvider wildcardImagesThatListNothing
+		 * @param string $path
+		 */
+		public function testAWildcardImageListsOnlyTheSiteImageFolder($path)
+		{
+			$this->assertSame('', $this->renderWildcard($path));
+		}
+
+		/**
+		 * A path that starts with two separators names a network host on Windows, so it is refused before it is resolved.
+		 */
+		public function testAWildcardImageOnANetworkPathListsNothing()
+		{
+			$this->assertSame('', $this->renderWildcard('/'.realpath(e_IMAGE).'/generic/blank*'));
+		}
+
+		public function testAWildcardImageStillShowsAFileFromTheImageFolder()
+		{
+			$this->assertStringContainsString("src='".e_IMAGE_ABS."generic/blank.gif'", $this->renderWildcard('{e_IMAGE}generic/blank.gi*'));
+		}
+
+		public function testAWildcardImageEncodesTheNameItPicks()
+		{
+			$folder = e_IMAGE.'bb_img_test_'.md5(uniqid('', true));
+
+			try
+			{
+				mkdir($folder);
+				touch($folder."/it's.png");
+				$html = $this->renderWildcard('{e_IMAGE}'.basename($folder).'/it*');
+			}
+			finally
+			{
+				if(is_file($folder."/it's.png"))
+				{
+					unlink($folder."/it's.png");
+				}
+				if(is_dir($folder))
+				{
+					rmdir($folder);
+				}
+			}
+
+			$document = new DOMDocument();
+			$document->loadHTML('<div>'.$html.'</div>');
+
+			$this->assertSame(e_IMAGE_ABS.basename($folder)."/it's.png", $document->getElementsByTagName('img')->item(0)->getAttribute('src'));
+		}
 
 	}
