@@ -174,6 +174,47 @@ class redirectionTest extends \Test\Unit
 	}
 
 	/**
+	 * Signing in must not replay an address that acts: its e-token arrived with the link, from wherever the link was.
+	 */
+	public function testIsCapturableRefusesATokenMarkedAddress()
+	{
+		$serverBackup = $_SERVER;
+
+		try
+		{
+			unset($_SERVER['HTTP_SEC_FETCH_DEST']);
+			$_SERVER['QUERY_STRING'] = 'mode=installed&action=install&path=gsitemap&e-token=abc123';
+
+			$install = '/e107_admin/plugin.php?mode=installed&action=install&path=gsitemap';
+
+			foreach(array(
+				'&e-token=abc123'                     => 'plain',
+				'%26e-token=abc123'                   => 'separator spelled %26',
+				'&amp;e-token=abc123'                 => 'an entity the redirect unwraps',
+				'&amp;e-tok%7B%7Den=abc123'           => 'braces e107 strips',
+				'&amp;e-tokajax_used=1en=abc123'      => 'a marker e107 strips',
+				'&e%2Dtoken=abc123'                   => 'an encoded name',
+				'&e%%7B%7D2Dtoken=abc123'             => 'a name e107 decodes, strips and decodes again',
+				'&e-tokajax_used=1en=abc123'          => 'a name e107 joins by deleting ajax_used=1',
+			) as $tail => $label)
+			{
+				self::assertFalse($this->rd->isCapturable($install . $tail), $label);
+			}
+
+			self::assertFalse($this->rd->isCapturable('/e107_admin/plugin.php?%5Ben%5De-token=abc123%26mode=installed'), 'behind a language marker');
+			self::assertFalse($this->rd->isCapturable('/e107_admin/plugin.php/:99999/?mode=installed&action=install&path=gsitemap'), 'an address parse_url() cannot read');
+			self::assertFalse($this->rd->isCapturable('/forum/markread/5%26e%2Dtoken=abc123'), 'a token in the path');
+
+			$_SERVER['QUERY_STRING'] = 'mode=installed&action=list';
+			self::assertTrue($this->rd->isCapturable('/e107_admin/plugin.php?mode=installed&action=list'), 'the same page without a token remains capturable');
+		}
+		finally
+		{
+			$_SERVER = $serverBackup;
+		}
+	}
+
+	/**
 	 * A logout link now carries an e-token, so the query string it arrives on is
 	 * no longer the bare word the exception list held.
 	 */
@@ -445,6 +486,24 @@ class redirectionTest extends \Test\Unit
 		{
 			self::assertFalse($this->rd->verifyDestinationUrl($dest),
 				'Should be refused: '.var_export($dest, true));
+		}
+	}
+
+	/**
+	 * A destination sealed before the capture check existed is checked again when it is redeemed.
+	 */
+	public function testARedeemedDestinationIsCheckedAgain()
+	{
+		$_POST[redirection::LOGIN_DEST_FIELD] = e107::getSealedToken(redirection::LOGIN_DEST_PURPOSE)
+			->seal(array('dest' => '/e107_admin/plugin.php?mode=installed&action=install&path=gsitemap&e-token=abc123'), 60);
+
+		try
+		{
+			self::assertFalse($this->rd->getLoginDestination(true));
+		}
+		finally
+		{
+			unset($_POST[redirection::LOGIN_DEST_FIELD]);
 		}
 	}
 

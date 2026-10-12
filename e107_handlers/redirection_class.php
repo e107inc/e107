@@ -528,6 +528,11 @@ class redirection
 			return false;
 		}
 
+		if(!$this->isSafeLanding($url))
+		{
+			return false;
+		}
+
 		// Reject static assets by extension (issue #5218).
 		$path = parse_url($url, PHP_URL_PATH);
 		if(is_string($path) && $path !== '')
@@ -920,7 +925,7 @@ class redirection
 			}
 		}
 
-		return $this->verifyDestinationUrl($claims['dest']);
+		return $this->isSafeLanding($claims['dest']) ? $this->verifyDestinationUrl($claims['dest']) : false;
 	}
 
 	/**
