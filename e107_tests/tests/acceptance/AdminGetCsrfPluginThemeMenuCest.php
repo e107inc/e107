@@ -33,6 +33,9 @@ class AdminGetCsrfPluginThemeMenuCest
 	/** An installed plugin, so pullPage() gets past its e107::isInstalled() test. */
 	const PLUGGED = 'news';
 
+	/** A plugin on disk that a fresh install leaves uninstalled. */
+	const INSTALLABLE = 'gsitemap';
+
 	/** A plugin folder that ships no <folder>_sql.php, which is what the builder writes. */
 	const BUILT = 'admin_menu';
 
@@ -210,6 +213,21 @@ class AdminGetCsrfPluginThemeMenuCest
 
 		$I->seeInSource(self::UNAUTHORIZED);
 		$I->dontSeeInSource(self::PULLED);
+	}
+
+	/**
+	 * Spelled with %26 separators, the token is no part of PHP's $_GET, but the plugin manager's own parse of the
+	 * query still finds it, so attest() has to judge it too.
+	 */
+	public function aWrongTokenSpelledInsideAnotherParameterIsRefused(AcceptanceTester $I)
+	{
+		$I->seeInDatabase('e107_plugin', array('plugin_path' => self::INSTALLABLE, 'plugin_installflag' => 0));
+
+		$I->amOnPage(self::PLUGINS . '?mode=installed%26action=install%26path=' . self::INSTALLABLE
+			. '%26e-token=not-even-close');
+
+		$I->seeInSource(self::UNAUTHORIZED);
+		$I->seeInDatabase('e107_plugin', array('plugin_path' => self::INSTALLABLE, 'plugin_installflag' => 0));
 	}
 
 	/**

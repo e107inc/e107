@@ -406,6 +406,43 @@ class CsrfModeMatrixCest
 	}
 
 	/**
+	 * A token spelled inside another parameter, with %26 separators, is no part of PHP's $_GET, but an admin page's
+	 * own parse of the query finds it. Every mode has to judge it as it would judge it in $_GET.
+	 */
+	public function aTokenSpelledInsideAnotherParameterIsStillJudged(AcceptanceTester $I)
+	{
+		foreach(array(self::TOKEN_LOG, self::TOKEN_ENFORCE, self::TOKEN_OR_SITE) as $mode)
+		{
+			$this->setMode($I, $mode);
+			$I->amOnProbe('csrf_matrix_spelled=1%26e-token=not-the-token');
+			$I->seeInSource('Unauthorized access!');
+
+			// A single-entry route, which defines e_QUERY only after the check.
+			$I->amOnPage('/?csrf_matrix_spelled=1%26e-token=not-the-token');
+			$I->seeInSource('Unauthorized access!');
+		}
+
+		foreach(array(self::SAME_SITE, self::SAME_ORIGIN) as $mode)
+		{
+			$this->setMode($I, $mode);
+
+			$this->browserSays($I, array('same-origin', 'no-cors', 'image'));
+			$I->amOnProbe('csrf_matrix_spelled=1%26e-token=not-the-token');
+			$I->seeInSource('Unauthorized access!');
+			$I->amOnPage('/?csrf_matrix_spelled=1%26e-token=not-the-token');
+			$I->seeInSource('Unauthorized access!');
+
+			$this->browserSays($I, $this->navigation());
+			$I->amOnProbe('csrf_matrix_spelled=1%26e-token=not-the-token');
+			$I->seeInSource('PROBE_REACHED');
+			$I->amOnPage('/?csrf_matrix_spelled=1%26e-token=not-the-token');
+			$I->dontSeeInSource('Unauthorized access!');
+
+			$this->browserSays($I, array());
+		}
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @param array $data posted fields
 	 * @param string|array|null $secFetchSite the header's value, or that followed by Sec-Fetch-Mode, -Dest and -User, or null to send none
