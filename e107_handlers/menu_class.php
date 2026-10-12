@@ -718,6 +718,11 @@ class e_menu
 		}
 		else
 		{
+			if(!preg_match('#^[\w-]+(/[\w-]+)*/?$#', $mpath) || !preg_match('#^[\w-]+$#', $mname))
+			{
+				return $return ? ob_get_clean() : null;
+			}
+
 			// not sure what would break this, but it's good idea to go away
 			e107::loadLanFiles($mpath);
 			
