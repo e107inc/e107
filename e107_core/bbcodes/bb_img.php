@@ -370,14 +370,14 @@
 			}
 
 
-			if($addlink)
+			$href = $addlink ? $tp->toBBCodeUrlAttribute(htmlspecialchars_decode($main_name, ENT_QUOTES)) : '';
+
+			if($href !== '')
 			{
-				return "<a href='" . $main_name . "' rel='external'><img src='" . $code_text . "' {$parmStr} /></a>";
+				return "<a href='" . $href . "' rel='external'><img src='" . $code_text . "' {$parmStr} /></a>";
 			}
-			else
-			{
-				return "<img src='" . $code_text . "' {$parmStr} />";
-			}
+
+			return "<img src='" . $code_text . "' {$parmStr} />";
 		}
 
 	}
