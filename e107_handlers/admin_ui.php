@@ -488,7 +488,7 @@ class e_admin_request
 
 		foreach(explode('-', str_replace('_', '-', (string) $str)) as $segment)
 		{
-			$camel .= $this->foldAscii((string) substr($segment, 0, 1), true).(string) substr($segment, 1);
+			$camel .= eShims::strtoupper((string) substr($segment, 0, 1)).(string) substr($segment, 1);
 		}
 
 		return $camel;
@@ -509,7 +509,7 @@ class e_admin_request
 	 */
 	public function canonicalizeAction($action)
 	{
-		return $this->foldAscii($this->camelize((string) $action));
+		return eShims::strtolower($this->camelize((string) $action));
 	}
 
 	/**
@@ -521,22 +521,7 @@ class e_admin_request
 	 */
 	public function canonicalizeMode($mode)
 	{
-		return $this->foldAscii(str_replace('-', '_', (string) $mode));
-	}
-
-	/**
-	 * Change the case of ASCII letters alone, as PHP does when it resolves a method name.
-	 *
-	 * @param string $str
-	 * @param bool $upper
-	 * @return string
-	 */
-	private function foldAscii($str, $upper = false)
-	{
-		$lower = 'abcdefghijklmnopqrstuvwxyz';
-		$capitals = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-		return $upper ? strtr($str, $lower, $capitals) : strtr($str, $capitals, $lower);
+		return eShims::strtolower(str_replace('-', '_', (string) $mode));
 	}
 }
 
