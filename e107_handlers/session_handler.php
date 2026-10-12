@@ -1470,7 +1470,7 @@ class e_core_session extends e_session
 	 */
 	private static function hasSubmittedToken()
 	{
-		return (isset($_POST['e-token']) || isset($_GET['e-token'])
+		return (isset($_POST['e-token']) || (self::queryTokens() !== array())
 			|| isset($_SERVER['HTTP_X_E_TOKEN']) || isset($_POST['e_token']));
 	}
 
@@ -1543,7 +1543,7 @@ class e_core_session extends e_session
 		//
 		// Fetch Metadata can do what the token could not: protect a GET without
 		// every ordinary inbound link having to carry something.
-		if(!$usesToken && isset($_GET['e-token']) && self::hasAmbientAuthority())
+		if(!$usesToken && (self::queryTokens() !== array()) && self::hasAmbientAuthority())
 		{
 			return $navigated
 				|| ($vouched && self::fetchMetadataDescribes(array('cors', 'same-origin'), array('empty')))
@@ -1595,12 +1595,11 @@ class e_core_session extends e_session
 	 */
 	private function submittedTokenIsValid()
 	{
-		$submitted = array(
+		$submitted = array_merge(self::queryTokens(), array(
 			isset($_POST['e-token']) ? $_POST['e-token'] : null,
-			isset($_GET['e-token']) ? $_GET['e-token'] : null,
 			isset($_SERVER['HTTP_X_E_TOKEN']) ? $_SERVER['HTTP_X_E_TOKEN'] : null,
 			isset($_POST['e_token']) ? $_POST['e_token'] : null, // '-' is not allowed in jquery
-		);
+		));
 
 		$found = false;
 
@@ -1620,6 +1619,25 @@ class e_core_session extends e_session
 		}
 
 		return $found;
+	}
+
+	/**
+	 * Every e-token in the query, as PHP split it into $_GET and as e107 reads it decoded ({@see e_admin_request}, {@see eRequest::getQueryString()}).
+	 *
+	 * @return array
+	 */
+	private static function queryTokens()
+	{
+		$tokens = isset($_GET['e-token']) ? array($_GET['e-token']) : array();
+
+		parse_str(str_replace('&amp;', '&', defined('e_QUERY') ? e_QUERY : eRequest::getQueryString()), $parsed);
+
+		if(isset($parsed['e-token']) && !in_array($parsed['e-token'], $tokens, true))
+		{
+			$tokens[] = $parsed['e-token'];
+		}
+
+		return $tokens;
 	}
 
 	/**
