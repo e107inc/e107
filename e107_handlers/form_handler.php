@@ -1461,7 +1461,7 @@ class e_form
 			$parms['type'] = 'icon';
 		}
 
-		$preview = e107::getMedia()->previewTag($default,$parms);
+		$preview = e107::getMedia()->previewTag($tp->attributeValue($default), $parms);
 
 		$cat = $tp->toDB(vartrue($parms['media']));
 
@@ -1667,12 +1667,12 @@ class e_form
 		}	
 		else
 		{
-			$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' style='width:400px' />"; 	
+			$ret .=	"<input" . $this->attributes(['type' => 'hidden', 'name' => $name, 'id' => $name_id, 'value' => $default]) . " style='width:400px' />";
 		}
 
 
 		$default_label 				= ($default) ?: LAN_CHOOSE_FILE;
-		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-secondary btn-small'>".basename($default_label). '</span>';
+		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-secondary btn-small'>".$this->asElementContent(basename($default_label)). '</span>';
 
 		$sc_parameters['mode'] 		= 'main';
 		$sc_parameters['action'] 	= 'dialog';	
@@ -2432,6 +2432,15 @@ class e_form
 				'cols' => $cols,
 			]) . $this->get_attributes($options, $name) . ">{$value}</textarea>" .
 			($counter !== false ? $this->hidden('__' . $name . 'autoheight_opt', $counter) : '');
+	}
+
+	/**
+	 * @param string $value text with its entities decoded
+	 * @return string the text as an element's content, its markup characters encoded so it cannot close the element
+	 */
+	protected function asElementContent($value)
+	{
+		return str_replace(array('&', '<', '>'), array('&amp;', '&lt;', '&gt;'), (string) $value);
 	}
 
 	/**
@@ -6721,12 +6730,6 @@ var_dump($select_options);*/
 		{
 			$value = e107::unserialize($value);
 		}
-		elseif (is_string($value))
-		{
-			// Workaround for accepting poorly normalized values from the database where the data would have been stored
-			// with HTML entities escaped.
-			$value = html_entity_decode($value, ENT_QUOTES);
-		}
 
 		$tp = $this->tp;
 		$ret = '';
@@ -6770,6 +6773,15 @@ var_dump($select_options);*/
 			$value = $parms['default'];
 		}
 
+		$stored = $value;
+
+		if (is_string($value))
+		{
+			// Workaround for accepting poorly normalized values from the database where the data would have been stored
+			// with HTML entities escaped.
+			$value = html_entity_decode($value, ENT_QUOTES);
+		}
+
 		// Two modes of read-only. 1 = read-only, but only when there is a value, 2 = read-only regardless.
 		if(!empty($attributes['readonly']) && (!empty($value) || vartrue($attributes['readonly'])===2)) // quick fix (maybe 'noedit'=>'readonly'?)
 		{
@@ -6778,7 +6790,7 @@ var_dump($select_options);*/
 				$attributes['readParms'] = $attributes['writeParms'];
 			}
 
-			$ret = $this->renderValue($key, $value, $attributes);
+			$ret = $this->renderValue($key, $stored, $attributes);
 
 		//	if(!is_array($value)) // avoid value of 'Array'
 			{
@@ -6960,7 +6972,7 @@ var_dump($select_options);*/
 				{
 					$attributes['readParms'] = 'bb=1';
 
-					$text = $this->renderValue($key, $value, $attributes);					
+					$text = $this->renderValue($key, $stored, $attributes);
 					$text .= '<br />';
 					$value = '';
 
@@ -6996,14 +7008,14 @@ var_dump($select_options);*/
 						]) . ">" . $charMsg . "</small>";
 				}
 
-				$text .= vartrue($parms['pre']).$this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false)).vartrue($parms['post']);
+				$text .= vartrue($parms['pre']).$this->textarea($key, $this->asElementContent($value), vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false)).vartrue($parms['post']);
 				$ret =  $text;
 			break;
 
 			case 'bbarea':
 				$options = array('counter' => varset($parms['counter'], false)); 
 				// Media = media-category owner used by media-manager. 
-				$ret =  vartrue($parms['pre']).$this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['media'],'_common_image'), vartrue($parms['size'], 'medium'),$options ).vartrue($parms['post']);
+				$ret =  vartrue($parms['pre']).$this->bbarea($key, $this->asElementContent($value), vartrue($parms['template']), vartrue($parms['media'],'_common_image'), vartrue($parms['size'], 'medium'),$options ).vartrue($parms['post']);
 			break;
 
 			case 'video':
@@ -7423,15 +7435,17 @@ var_dump($select_options);*/
 
 			case 'hidden':
 
-				$value = (isset($parms['value'])) ? $parms['value'] : $value;
 				if(!empty($parms['show']))
 				{
-					$ret = ($value ?: varset($parms['empty'], $value));
+					$ret = isset($parms['value']) ? $parms['value'] : (is_string($value) ? $this->asElementContent($value) : $value);
+					$ret = ($ret ?: varset($parms['empty'], $ret));
 				}
 				else
 				{
 					$ret = '';
 				}
+
+				$value = (isset($parms['value'])) ? $parms['value'] : $value;
 
 				if(is_array($value) && ($attributes['data'] === 'json'))
 				{

@@ -351,6 +351,54 @@ class e_formTest extends \Test\Unit
 	}
 
 
+	/**
+	 * A stored value that renderElement() decodes reaches a text box, an editor and a picker as text.
+	 */
+	public function testADecodedValueStaysText()
+	{
+		foreach(array('textarea', 'bbarea') as $type)
+		{
+			$result = $this->_frm->renderElement('n2q7c_'.$type, '&lt;/textarea&gt;&lt;svg onload=alert(1)&gt;', array('type' => $type));
+			self::assertStringNotContainsString('<svg', $result, $type);
+
+			$result = $this->_frm->renderElement('n2q7c_'.$type, 'Q&amp;A &lt;b&gt;', array('type' => $type));
+			self::assertStringContainsString('>Q&amp;A &lt;b&gt;</textarea>', $result, $type);
+		}
+
+		$result = $this->_frm->renderElement('n2q7c_icon', 'x&#039; onerror=&#039;alert(1)&#039; y=&#039;.png', array('type' => 'icon'));
+		self::assertStringNotContainsString("onerror='", $result, 'icon');
+
+		$result = $this->_frm->renderElement('n2q7c_file', '&lt;img src=x onerror=alert(1)&gt;', array('type' => 'file'));
+		self::assertStringNotContainsString('<img src=x', $result, 'file');
+
+		$result = $this->_frm->renderElement('n2q7c_file', 'x&#039; accesskey=&#039;x&#039; onclick=&#039;alert(1)', array('type' => 'file'));
+		self::assertStringNotContainsString("value='x' ", $result, 'file value');
+
+		$result = $this->_frm->renderElement('n2q7c_hidden', '&lt;img src=x onerror=alert(1)&gt;', array('type' => 'hidden', 'writeParms' => array('show' => 1)));
+		self::assertStringNotContainsString('<img src=x', $result, 'hidden shown');
+
+		$result = $this->_frm->renderElement('n2q7c_hidden', '', array('type' => 'hidden', 'writeParms' => array('show' => 1, 'empty' => '<i>none</i>')));
+		self::assertStringContainsString('<i>none</i>', $result, 'hidden placeholder');
+
+		$result = $this->_frm->renderElement('n2q7c_append', 'Old &lt;img src=x onerror=alert(1)&gt;', array('type' => 'textarea', 'writeParms' => array('append' => 1)));
+		self::assertStringNotContainsString('<img src=x', $result, 'appended');
+
+		$result = $this->_frm->renderElement('n2q7c_ro', '&lt;img src=x onerror=alert(1)&gt;', array('type' => 'textarea', 'readonly' => 1));
+		self::assertStringNotContainsString('<img src=x', $result, 'read-only');
+	}
+
+	/**
+	 * A value renderElement() picks from a language array or a default reaches a text box encoded once.
+	 */
+	public function testALanguageValueOrDefaultIsEncodedOnce()
+	{
+		$result = $this->_frm->renderElement('n2q7c_ml', array(e_LANGUAGE => 'Tom &amp; Jerry &lt;b&gt;'), array('type' => 'textarea', 'multilan' => 1));
+		self::assertStringContainsString('>Tom &amp; Jerry &lt;b&gt;</textarea>', $result);
+
+		$result = $this->_frm->renderElement('n2q7c_def', '', array('type' => 'textarea', 'writeParms' => array('default' => 'A&amp;B')));
+		self::assertStringContainsString('>A&amp;B</textarea>', $result);
+	}
+
 	public function testDatepicker()
 	{
 		$prevTimeZone = date_default_timezone_get();
