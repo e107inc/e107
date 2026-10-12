@@ -6333,7 +6333,7 @@ class e_parse
 
 		$text = '<audio controls style="max-width:100%" ' . $autoplay . $controls . '>';
 		$text .= "\n";
-		$text .= '<source src="' . $file . '" type="' . $mime . '">';
+		$text .= '<source src="' . $this->attributeValue($file) . '" type="' . $mime . '">';
 		$text .= "\n";
 		$text .= 'Your browser does not support the audio tag.';
 		$text .= "\n";
@@ -6361,6 +6361,11 @@ class e_parse
 		$type = pathinfo($file, PATHINFO_EXTENSION);
 
 		$id = str_replace('.' . $type, '', $file);
+
+		if (($type === 'youtube' || $type === 'youtubepl') && !preg_match('#^[\w\-]+$#', $id))
+		{
+			return false;
+		}
 
 		$thumb = vartrue($parm['thumb']);
 		$mode = varset($parm['mode'], false); // tag, url
