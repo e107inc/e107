@@ -1730,20 +1730,18 @@ class e_core_session extends e_session
 	}
 
 	/**
-	 * @return bool whether the Origin header names a host this site serves
+	 * @return bool whether the Origin header, or on a request that carries none the Referer, names a host this site serves
 	 */
 	private static function originIsKnownHost()
 	{
-		if(empty($_SERVER['HTTP_ORIGIN']))
+		$source = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+
+		if(!empty($_SERVER['HTTP_ORIGIN']))
 		{
-			// Every browser that sends Sec-Fetch-Site sends Origin on a POST, so
-			// there is no ordinary request this rejects. It has already claimed
-			// same-site, and turning an unplaceable client into a refusal buys
-			// nothing over accepting the claim the browser made.
-			return true;
+			$source = $_SERVER['HTTP_ORIGIN'];
 		}
 
-		$host = parse_url($_SERVER['HTTP_ORIGIN'], PHP_URL_HOST);
+		$host = parse_url((string) $source, PHP_URL_HOST);
 
 		if(empty($host))
 		{
@@ -1809,6 +1807,9 @@ class e_core_session extends e_session
 				{
 					continue;
 				}
+
+				$hosts[] = $domain;
+				$hosts[] = 'www.' . $domain;
 
 				foreach(array_filter($languages) as $language)
 				{
