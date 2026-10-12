@@ -374,6 +374,28 @@ class redirectionTest extends \Test\Unit
 		}
 	}
 
+	public function testLeavesThisSiteReadsASchemeInAsciiWhateverTheLocale()
+	{
+		$previous = setlocale(LC_CTYPE, 0);
+
+		if (setlocale(LC_CTYPE, 'tr_TR.UTF-8', 'tr_TR.utf8') === false)
+		{
+			self::markTestSkipped('No Turkish locale is installed.');
+		}
+
+		try
+		{
+			foreach(array('JAVASCRIPT:alert(1)', 'MAILTO:someone@evil.example') as $url)
+			{
+				self::assertTrue($this->rd->leavesThisSite($url), "Should count as off site under a Turkish locale: $url");
+			}
+		}
+		finally
+		{
+			setlocale(LC_CTYPE, $previous);
+		}
+	}
+
 	/**
 	 * A URL parser deletes every ASCII tab, LF and CR from its input and trims
 	 * leading C0 controls and space before it looks for a scheme or an authority,

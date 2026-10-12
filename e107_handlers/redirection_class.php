@@ -776,7 +776,7 @@ class redirection
 
 		$probe = $this->normaliseAsUrlParser($url);
 
-		if(preg_match('#^([a-z][a-z0-9+.\-]*):#i', $probe, $scheme))
+		if(preg_match('#^([a-z][a-z0-9+.\-]*):#', eShims::strtolower($probe), $scheme))
 		{
 			if(strcasecmp($scheme[1], 'http') !== 0 && strcasecmp($scheme[1], 'https') !== 0)
 			{
