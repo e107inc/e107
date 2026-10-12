@@ -576,6 +576,7 @@ class e107ForumThread
 
 	public $message;
 	public $threadId;
+	public $threadInfo;
 	public $forumId;
 	public $perPage;
 	public $noInc;
@@ -600,42 +601,29 @@ class e107ForumThread
 		}
 		
 		
-		//If threadId doesn't exist, or not given, redirect to main forum page
-		if (!$this->threadId || !$this->threadInfo = $forum->threadGet($this->threadId))
-		{
-			if(E107_DEBUG_LEVEL > 0)
-			{
-				e107::getMessage()->addError("Thread not found or query error: ". __METHOD__ .' Line: '.__LINE__ );
-				return;
-			//	exit;
-			}
-
-			$url = e107::url('forum','index','full');
-			e107::getRedirect()->go($url);
-
-		//	header('Location:' . $e107->url->create('forum/forum/main', array(), 'encode=0&full=1'));
-			exit;
-		}
-
-		//If not permitted to view forum, redirect to main forum page
-		if (!$forum->checkPerm($this->threadInfo['thread_forum_id'], 'view'))
-		{
-
-			if(E107_DEBUG_LEVEL > 0)
-			{
-				echo __METHOD__ .' Line: '.__LINE__;
-				exit;
-			}
-			$url = e107::url('forum','index','full');
-			e107::getRedirect()->go($url);
-
-		//	header('Location:' . $e107->url->create('forum/forum/main', array(), 'encode=0&full=1'));
-			exit;
-		}
+		$this->threadInfo = $this->threadId ? $forum->threadGet($this->threadId) : false;
+		$this->refuseUnlessViewable($this->threadInfo);
 
 		$totalPosts = $this->threadInfo['thread_total_replies'] + 1; // add +1 for the original post. ie. not a reply.
 		$this->pages = ceil(($totalPosts)  / $this->perPage);
 		$this->noInc = false;
+	}
+
+	/**
+	 * Sends the caller to the forum index unless $threadInfo is a thread in a forum they may view.
+	 *
+	 * @param array|false $threadInfo a forum_thread row, false when there is none
+	 * @return void
+	 */
+	private function refuseUnlessViewable($threadInfo)
+	{
+		global $forum;
+
+		if(empty($threadInfo) || !$forum->checkPerm($threadInfo['thread_forum_id'], 'view'))
+		{
+			e107::getRedirect()->go(e107::url('forum', 'index'));
+			exit;
+		}
 	}
 
 /*
@@ -690,6 +678,8 @@ class e107ForumThread
 			case 'post':
 				$postId = varset($_GET['id']);
 				$postInfo = $forum->postGet($postId,'post');
+				$this->refuseUnlessViewable($forum->threadGet(varset($postInfo['post_thread'], 0), false));
+
 				$postNum = $forum->postGetPostNum($postInfo['post_thread'], $postId);
 				$postPage = ceil($postNum / $forum->prefs->get('postspage'));
 
