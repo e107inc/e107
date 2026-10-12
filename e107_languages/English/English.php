@@ -113,6 +113,7 @@ define("LAN_SCREENSHOT", "Screenshot");
 define("LAN_FILE", "File");
 define("LAN_YOUTUBE_VIDEO", "Youtube Video");
 define("LAN_YOUTUBE_PLAYLIST", "Youtube Playlist");
+define("LAN_SANITISED", "Sanitised");
 define("LAN_FILETYPES", "Filetypes");
 define("LAN_FILE_NOT_FOUND", "File Not Found");
 define("LAN_FILES","Files"); 
