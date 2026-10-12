@@ -4422,6 +4422,14 @@ class e_admin_controller_ui extends e_admin_controller
 			return array();
 		}
 		$filter = (array) $tp->toDB(explode('__', $filter_value));
+
+		$fields = $this->getFields();
+		$searched = ($this->getRequest()->canonicalizeAction($filter[0]) === 'searchfield') ? varset($filter[1]) : null;
+		if(isset($fields[$searched]) && $this->_refusesSearch($fields[$searched]))
+		{
+			return array();
+		}
+
 		$res = array();
 		switch($filter[0])
 		{
@@ -4666,7 +4674,7 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
-	 * Build ajax auto-complete filter response
+	 * Build ajax auto-complete filter response from the columns the list search reads, taking the term as text.
 	 * @return string response markup
 	 */
 	protected function renderAjaxFilterResponse($listQry = '')
@@ -4675,8 +4683,13 @@ class e_admin_controller_ui extends e_admin_controller
 		$srch = $this->getPosted('searchquery');
 		$this->getRequest()->setQuery('searchquery', $srch); //_modifyListQry() is requiring GET String
 
+		$escape = function ($text)
+		{
+			return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8', false);
+		};
+
 		$ret = '<ul>';
-		$ret .= '<li>'.$srch.'<span class="informal warning"> '.LAN_FILTER_LABEL_TYPED.'</span></li>'; // fix Enter - search for typed word only
+		$ret .= '<li>'.$escape($srch).'<span class="informal warning"> '.LAN_FILTER_LABEL_TYPED.'</span></li>'; // fix Enter - search for typed word only
 
 		$reswords = array();
 		if(trim($srch) !== '')
@@ -4686,6 +4699,16 @@ class e_admin_controller_ui extends e_admin_controller
 			$this->_log('Filter ListQry: ' .$qry);
 			//file_put_contents(e_LOG.'uiAjaxResponseSQL.log', $qry."\n\n", FILE_APPEND);
 
+			$term = str_replace(array('\\*', '\\?'), array('\\S*', '\\S'), preg_quote($srch, '#'));
+			$searched = array();
+			foreach($this->getFields() as $key => $field)
+			{
+				if($this->_isSearchField($field, $srch))
+				{
+					$searched[$key] = true;
+				}
+			}
+
 			// Make query
 			$sql = e107::getDb();
 			if($qry && $sql->gen($qry, $debug))
@@ -4693,7 +4716,7 @@ class e_admin_controller_ui extends e_admin_controller
 				while ($res = $sql->fetch())
 				{
 					$tmp1 = array();
-					$tmp = array_values(preg_grep('#'.$srch.'#i', $res));
+					$tmp = array_values(preg_grep('#'.$term.'#i', array_intersect_key($res, $searched)));
 					foreach ($tmp as $w)
 					{
 						if($w == $srch)
@@ -4701,7 +4724,7 @@ class e_admin_controller_ui extends e_admin_controller
 							array_unshift($reswords, $w); //exact match
 							continue;
 						}
-						preg_match('#[\S]*('.$srch.')[\S]*#i', $w, $tmp1);
+						preg_match('#[\S]*('.$term.')[\S]*#i', $w, $tmp1);
 						if($tmp1[0])
 						{
 							$reswords[] = $tmp1[0];
@@ -4714,7 +4737,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$reswords = array_unique($reswords);
 			if($reswords)
 			{
-				$ret .= '<li>'.implode("</li>\n\t<li>", $reswords).'</li>';
+				$ret .= '<li>'.implode("</li>\n\t<li>", array_map($escape, $reswords)).'</li>';
 			}
 		}
 
@@ -5012,6 +5035,12 @@ class e_admin_controller_ui extends e_admin_controller
 		$filterFrom = array();
 		$request  = $this->getRequest();
 		$tp = e107::getParser();
+
+		$sortField = $request->getQuery('field');
+		if(isset($this->fields[$sortField]) && $this->_refusesSearch($this->fields[$sortField]))
+		{
+			$request->setQuery('field', null);
+		}
 		$tablePath = $this->getIfTableAlias(true, true).'.';
 		$tableFrom = '`'.$this->getTableName(false, true).'`'.($this->getTableName(true) ? ' AS '.$this->getTableName(true) : '');
 		$tableSFieldsArr = array(); // FROM for main table
@@ -5037,7 +5066,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 			list($filterField, $filterValue) = $searchFilter;
 			
-			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
+			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]) && !$this->_refusesSearch($this->fields[$filterField]))
 			{
 				$_dataType = $this->fields[$filterField]['data'];
 				$_fieldType = $this->fields[$filterField]['type'];
@@ -5148,8 +5177,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$tableSFieldsArr[] = $tablePath.'*';
 		foreach($this->getFields() as $key => $var)
 		{
-			// disabled or system
-			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']) || empty($var['data']))
+			if(!$this->_isListColumn($var))
 			{
 				continue;
 			}
@@ -5161,14 +5189,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 
 			// filter for WHERE and FROM clauses
-			$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'safestr', 'string', 'number'); //method? 'user',
-			
-			if($var['type'] === 'method' && !empty($var['data']) && ($var['data'] === 'string' || $var['data'] === 'str' || $var['data'] === 'safestr' || $var['data'] === 'int'))
-			{
-				$searchable_types[] = 'method';
-			}
-			
-			if(!empty($var['__tableField']) && trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) )
+			if($this->_isSearchField($var, $searchQuery))
 			{
 				// Search for customer filter handler.
 				$cutomerSearchMethod = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($key).'Search';
@@ -5748,6 +5769,50 @@ class e_admin_controller_ui extends e_admin_controller
 		
 		return 'admin_'.strtolower($name).'_'.strtolower($type);
 
+	}
+
+	/**
+	 * Whether the list search matches the term against a field: a list column of a searchable type that does not refuse search.
+	 * @param array $field
+	 * @param string $searchQuery
+	 * @return bool
+	 */
+	private function _isSearchField($field, $searchQuery)
+	{
+		if(!$this->_isListColumn($field) || $this->_refusesSearch($field))
+		{
+			return false;
+		}
+
+		$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'safestr', 'string', 'number'); //method? 'user',
+
+		if($field['type'] === 'method' && !empty($field['data']) && ($field['data'] === 'string' || $field['data'] === 'str' || $field['data'] === 'safestr' || $field['data'] === 'int'))
+		{
+			$searchable_types[] = 'method';
+		}
+
+		return !empty($field['__tableField']) && trim($searchQuery) !== '' && in_array($field['type'], $searchable_types);
+
+	}
+
+	/**
+	 * Whether a field is a column the list reads, rather than a disabled or system entry.
+	 * @param array $field
+	 * @return bool
+	 */
+	private function _isListColumn($field)
+	{
+		return (empty($field['nolist']) || !empty($field['filter'])) && !empty($field['type']) && !empty($field['data']);
+	}
+
+	/**
+	 * Whether a field declares 'search' => false, which keeps request text from ever being matched against it.
+	 * @param array $field
+	 * @return bool
+	 */
+	private function _refusesSearch($field)
+	{
+		return isset($field['search']) && $field['search'] === false;
 	}
 }
 
