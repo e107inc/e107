@@ -98,7 +98,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 			$text .= '<div id="'.$name_id.'_cont">';
 		}
 
-		$text .= "\n<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name_id}' onchange=\"replaceSC('imagepreview={$name}|{$width}|{$height}',this.form,'{$name_id}_prev'); \">
+		$text .= "\n<select{$multi}{$tabindex}{$class} name='{$name}' id='{$name_id}' onchange='replaceSC(".$tp->toJsString('imagepreview='.$name.'|'.$width.'|'.$height).",this.form,".$tp->toJsString($name_id.'_prev')."); '>
 		<option value=''>".$label."</option>\n";
 
 
@@ -147,7 +147,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 			$text .= "</optgroup>\n";
 		}
 		$text .= "</select>";
-		$text .= "<a href='#'  onclick=\"replaceSC('imageselector=".rawurlencode($parm)."&amp;saction=select',\$('{$name_id}').up('form'),'{$name_id}_cont'); return false;\">refresh</a>";
+		$text .= "<a href='#'  onclick='replaceSC(".$tp->toJsString('imageselector='.rawurlencode($parm).'&saction=select').",\$(".$tp->toJsString($name_id).").up(\"form\"),".$tp->toJsString($name_id.'_cont')."); return false;'>refresh</a>";
 		if(!e_AJAX_REQUEST) $text .= '</div>';
 
 		if ($scaction == 'select') return $text;
@@ -183,9 +183,10 @@ function imageselector_shortcode($parm = '', $mod = '')
 	$text .= "<div class='imgselector-container' id='{$name_id}_prev'>";
 	if (varset($click_target))
 	{
-		$pre = varset($click_prefix);
-		$post = varset($click_postfix);
-		$text .= "<a href='#'{$hide} title='Select' onclick='addtext(\"{$pre}\"+document.getElementById(\"{$name_id}\").value+\"{$post}\", true);document.getElementById(\"{$name_id}\").selectedIndex = -1;return false;'>";
+		$pre = $tp->toJsString(varset($click_prefix));
+		$post = $tp->toJsString(varset($click_postfix));
+		$id = $tp->toJsString($name_id);
+		$text .= "<a href='#'{$hide} title='Select' onclick='addtext({$pre}+document.getElementById({$id}).value+{$post}, true);document.getElementById({$id}).selectedIndex = -1;return false;'>";
 	}
 	else
 	{
