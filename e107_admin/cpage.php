@@ -85,12 +85,17 @@ class page_admin extends e_admin_dispatcher
 		'page/prefs'    => '0',
 		'page/grid'     => '5',
 		'page/filter'   => '5',
+		'page/inline'   => '5',
+		'page/sort'     => '5',
+		'page/chapter-change' => '5',
 		'cat/list'      => '5',
 		'cat/create'    => '5',
 		'cat/edit'      => '5',
 		'cat/delete'    => 'J1',
 		'cat/grid'      => '5',
 		'cat/filter'    => '5',
+		'cat/inline'    => '5',
+		'cat/sort'      => '5',
 		'menu/list'     => 'J',
 		'menu/grid'     => 'J',
 		'menu/create'   => 'J',
@@ -98,10 +103,15 @@ class page_admin extends e_admin_dispatcher
 		'menu/delete'   => 'J1',
 		'menu/prefs'    => '0',
 		'menu/filter'   => 'J',
+		'menu/inline'   => 'J',
+		'menu/sort'     => 'J',
 		'overview/list' => '5|J',
+		'overview/create' => '5|J',
 		'overview/edit' => '5|J',
 		'overview/delete' => 'J1',
 		'overview/prefs' => '0',
+		'overview/filter' => '5|J',
+		'overview/inline' => '5|J',
 	);
 
 	protected $adminMenuIcon = 'e-custom-24';
@@ -127,7 +137,21 @@ class page_admin extends e_admin_dispatcher
 
 	}
 
+	/**
+	 * Refuse a route that names an action the permission map does not, which the dispatcher would open to everyone the file admits.
+	 *
+	 * @param string $route
+	 * @return bool
+	 */
+	public function hasRouteAccess($route)
+	{
+		if(varset(explode('/', (string) $route, 2)[1]) !== '' && !array_key_exists($this->canonicalizeRoute($route), $this->canonicalizeKeys($this->perm, array($this, 'canonicalizeRoute'))))
+		{
+			return false;
+		}
 
+		return parent::hasRouteAccess($route);
+	}
 
 }
 
@@ -770,7 +794,7 @@ class page_admin_ui extends e_admin_ui
 
 
 
-			if(e_AJAX_REQUEST && isset($_POST['page_chapter']) ) //&& $this->getAction() === 'chapter-change'
+			if(e_AJAX_REQUEST && isset($_POST['page_chapter']) && $this->getRequest()->canonicalizeAction($this->getAction()) === $this->getRequest()->canonicalizeAction('chapter-change'))
 			{
 
 				$this->initCustomFields($_POST['page_chapter']);
