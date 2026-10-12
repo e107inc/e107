@@ -192,21 +192,88 @@ class CommentRoutesParentVisibilityCest
 		$I->dontSeeInSource('Text of CMTFORUMPOLL');
 		$I->dontSeeInSource('Fixture Forum Poll');
 
-		$I->haveInDatabase('e107_rss', array(
-			'rss_name'      => 'Fixture feed comments',
-			'rss_url'       => 'comments',
-			'rss_topicid'   => '',
-			'rss_path'      => '',
-			'rss_text'      => 'fixture',
-			'rss_datestamp' => time(),
-			'rss_class'     => 0,
-			'rss_limit'     => 50,
-		));
-
-		$I->amOnPage('/e107_plugins/rss_menu/rss.php?comments.2.');
-		$I->seeInSource('</rss>');
+		$this->amOnCommentFeed($I);
 		$I->seeInSource('Text of CMTPOLL');
 		$I->dontSeeInSource('Text of CMTFORUMPOLL');
+	}
+
+	/**
+	 * Neither the menu nor the feed publishes a comment on an item whose comments are switched off, which its own page then hides.
+	 */
+	public function theMenuAndTheFeedSkipCommentsTheItemHasSwitchedOff(AcceptanceTester $I)
+	{
+		$I->amOnPage('/news.php?extend.'.$this->items['CMTNEWSOFF']);
+		$I->seeInSource('Body of Fixture Comments Off News');
+		$I->dontSeeInSource('Text of CMTNEWSOFF');
+
+		$this->haveCommentMenu($I);
+
+		$I->amOnPage('/news.php');
+		$I->seeInSource('Text of CMTPUBLIC');
+		$I->seeInSource('Text of CMTDLPUBLIC');
+		$I->dontSeeInSource('Text of CMTNEWSOFF');
+		$I->dontSeeInSource('Text of CMTDLNOCOMMENTS');
+
+		$this->amOnCommentFeed($I);
+		foreach(array('CMTPUBLIC', 'CMTDLPUBLIC', 'CMTPAGEPUBLIC') as $marker)
+		{
+			$I->seeInSource('Text of '.$marker);
+		}
+		foreach(array('CMTNEWSOFF', 'CMTDLNOCOMMENTS', 'CMTPAGENOCOMMENTS') as $marker)
+		{
+			$I->dontSeeInSource('Text of '.$marker);
+		}
+	}
+
+	/**
+	 * The menu prints a comment about a member only to a visitor the member's profile page shows it to, and only while profile comments are on, and asking about it costs the menu none of the comments listed after it.
+	 */
+	public function theMenuShowsCommentsAboutAMemberWhereTheProfileDoes(AcceptanceTester $I)
+	{
+		$owner = $I->haveMember('cmtrouteowner', self::READER_PASSWORD);
+		$this->haveComment($I, 'CMTMENUPROFILE', 'profile', $owner);
+		$now = time();
+		foreach(array('CMTMENUPROFILE' => $now, 'CMTPUBLIC' => $now - 1) as $marker => $datestamp)
+		{
+			$I->updateInDatabase('e107_comments', array('comment_datestamp' => $datestamp), array('comment_id' => $this->comments[$marker]));
+		}
+		$this->haveCommentMenu($I);
+		$this->haveSitePref($I, 'profile_comments', 0);
+		$this->loginAsReader($I);
+
+		$I->amOnPage('/news.php');
+		$I->seeInSource('Text of CMTPUBLIC');
+		$I->dontSeeInSource('Text of CMTMENUPROFILE');
+
+		$this->haveSitePref($I, 'profile_comments', 1);
+		$this->haveSitePref($I, 'memberlist_access', 254);
+		$I->amOnPage('/news.php');
+		$I->dontSeeInSource('Text of CMTMENUPROFILE');
+
+		$this->haveSitePref($I, 'memberlist_access', 253);
+		$I->amOnPage('/news.php');
+		$I->seeInSource('Text of CMTMENUPROFILE');
+		$I->seeInSource('Text of CMTPUBLIC');
+	}
+
+	/**
+	 * The menu prints no comment on a download or a poll while its plugin is not installed, as the item's own page then serves nothing.
+	 */
+	public function theMenuSkipsItemsWhosePluginIsNotInstalled(AcceptanceTester $I)
+	{
+		$this->haveCommentMenu($I);
+
+		foreach($this->readOnlyWhileInstalled() as $plugin => $marker)
+		{
+			$I->amOnPage('/news.php');
+			$I->seeInSource('Text of '.$marker);
+
+			$this->haveSitePref($I, 'plug_installed/'.$plugin, null);
+
+			$I->amOnPage('/news.php');
+			$I->dontSeeInSource('Text of '.$marker);
+			$I->dontSeeInSource($this->titles[$marker]);
+		}
 	}
 
 	/**
@@ -645,6 +712,29 @@ class CommentRoutesParentVisibilityCest
 		{
 			$this->prefs[$name] = $was;
 		}
+	}
+
+	/**
+	 * Publish the comments feed and read it.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return void
+	 */
+	private function amOnCommentFeed(AcceptanceTester $I)
+	{
+		$I->haveInDatabase('e107_rss', array(
+			'rss_name'      => 'Fixture feed comments',
+			'rss_url'       => 'comments',
+			'rss_topicid'   => '',
+			'rss_path'      => '',
+			'rss_text'      => 'fixture',
+			'rss_datestamp' => time(),
+			'rss_class'     => 0,
+			'rss_limit'     => 50,
+		));
+
+		$I->amOnPage('/e107_plugins/rss_menu/rss.php?comments.2.');
+		$I->seeInSource('</rss>');
 	}
 
 	/**

@@ -25,7 +25,8 @@ class CommentSearchParentVisibilityCest
 	private static $refused = array('CMTSTAFF', 'Fixture Staff News', 'CMTNOBODY', 'CMTFUTURE', 'CMTEXPIRED',
 		'CMTBLOCKED', 'CMTPENDING', 'CMTDLCATEGORY', 'CMTDLVISIBLE', 'CMTDLINACTIVE',
 		'CMTPAGECLASS', 'CMTPAGEPASSWORD', 'CMTFORUMPOLL', 'CMTPROFILE',
-		'CMTNOTGUEST', 'CMTMIXED', 'CMTMEMBERSNOTSTAFF', 'CMTDLMIXED', 'CMTDLCATMIXED', 'CMTPAGEMIXED');
+		'CMTNOTGUEST', 'CMTMIXED', 'CMTMEMBERSNOTSTAFF', 'CMTDLMIXED', 'CMTDLCATMIXED', 'CMTPAGEMIXED',
+		'CMTNEWSOFF', 'CMTDLOFF', 'CMTPAGEOFF');
 
 	/** Comments a member of the staff class can reach, one per rule that admits their class or a signed-in reader. */
 	private static $staffReachable = array('CMTPUBLIC', 'CMTSTAFF', 'CMTNOTGUEST', 'CMTMIXED',
@@ -33,7 +34,7 @@ class CommentSearchParentVisibilityCest
 
 	/** What the search must not publish to that member: one per rule that excludes their class, and what nobody is shown. */
 	private static $staffRefused = array('CMTNOTSTAFF', 'CMTMEMBERSNOTSTAFF', 'CMTDLNOTSTAFF', 'CMTDLCATNOTSTAFF',
-		'CMTPAGENOTSTAFF', 'CMTNOBODY', 'CMTBLOCKED', 'CMTPENDING');
+		'CMTPAGENOTSTAFF', 'CMTNOBODY', 'CMTBLOCKED', 'CMTPENDING', 'CMTNEWSOFF', 'CMTDLOFF', 'CMTPAGEOFF');
 
 	/** @var int */
 	private $publicNews;
@@ -58,6 +59,9 @@ class CommentSearchParentVisibilityCest
 
 	/** @var int[] page id by the marker of the comment left on it */
 	private $pages = array();
+
+	/** @var int[] id of the item whose comments are switched off, by the marker of the comment left on it */
+	private $switchedOff = array();
 
 	public function _before(AcceptanceTester $I)
 	{
@@ -121,6 +125,15 @@ class CommentSearchParentVisibilityCest
 		$this->haveComment($I, 'CMTFORUMPOLL', 4, $this->forumPoll, 0);
 
 		$this->haveComment($I, 'CMTPROFILE', 'profile', 1, 0);
+
+		$this->switchedOff['CMTNEWSOFF'] = $this->haveNews($I, 'Fixture Comments Off News', 0, 0, 0);
+		$I->updateInDatabase('e107_news', array('news_allow_comments' => 1), array('news_id' => $this->switchedOff['CMTNEWSOFF']));
+		$this->haveComment($I, 'CMTNEWSOFF', 0, $this->switchedOff['CMTNEWSOFF'], 0);
+		$this->switchedOff['CMTDLOFF'] = $this->haveDownload($I, 'Fixture Comments Off Download', $this->openCategory, 0, 0, 1);
+		$I->updateInDatabase('e107_download', array('download_comment' => 0), array('download_id' => $this->switchedOff['CMTDLOFF']));
+		$this->haveComment($I, 'CMTDLOFF', 2, $this->switchedOff['CMTDLOFF'], 0);
+		$this->switchedOff['CMTPAGEOFF'] = $this->havePageComment($I, 'CMTPAGEOFF', 0, '');
+		$I->updateInDatabase('e107_page', array('page_comment_flag' => 0), array('page_id' => $this->switchedOff['CMTPAGEOFF']));
 
 		$I->probe('act=seed');
 
@@ -194,6 +207,26 @@ class CommentSearchParentVisibilityCest
 
 		$I->amOnPage('/comment.php?comment.poll.'.$this->forumPoll);
 		$I->dontSeeInSource('CMTFORUMPOLL');
+	}
+
+	/**
+	 * An item whose comments are switched off is still shown, without its comments.
+	 */
+	public function anItemWithItsCommentsSwitchedOffShowsNoneOfThem(AcceptanceTester $I)
+	{
+		$I->resetAllCookies();
+
+		$I->amOnPage('/news.php?extend.'.$this->switchedOff['CMTNEWSOFF']);
+		$I->see('Fixture Comments Off News');
+		$I->dontSeeInSource('CMTNEWSOFF');
+
+		$I->amOnPage('/e107_plugins/download/download.php?view.'.$this->switchedOff['CMTDLOFF']);
+		$I->see('Fixture Comments Off Download');
+		$I->dontSeeInSource('CMTDLOFF');
+
+		$I->amOnPage('/page.php?id='.$this->switchedOff['CMTPAGEOFF']);
+		$I->seeInSource('Body of CMTPAGEOFF');
+		$I->dontSeeInSource(self::KEYWORD.' CMTPAGEOFF');
 	}
 
 	/**

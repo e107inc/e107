@@ -18,7 +18,8 @@ $comments_return['news'] = "n.news_title";
 $comments_table['news'] = "LEFT JOIN #news AS n ON c.comment_type=0 AND n.news_id = c.comment_item_id";
 $comments_class['news'] = array('n.news_class');
 $comments_where['news'] = "n.news_class NOT REGEXP '".e_NOBODY_REGEXP."'"
-	." AND n.news_start < ".time()." AND (n.news_end = 0 OR n.news_end > ".time().")";
+	." AND n.news_start < ".time()." AND (n.news_end = 0 OR n.news_end > ".time().")"
+	." AND n.news_allow_comments = 0";
 	/**
 	 * @param $row
 	 * @return array

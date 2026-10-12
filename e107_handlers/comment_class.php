@@ -1802,7 +1802,7 @@ class comment
 			if ($comment_total = $sql->execute($query))
 			{
 				$width = 0;
-				while ($row = $sql->fetch())
+				foreach ($sql->rows() as $row)
 				{
 					$ret = array();
 					//date
@@ -1832,6 +1832,7 @@ class comment
 									$nqb->expr()->eq('news_end', 0),
 									$nqb->expr()->gt('news_end', $now)
 								))
+								->where('news_allow_comments', 0)
 								->fetchRow();
 							if ($row2)
 							{
@@ -1846,6 +1847,10 @@ class comment
 						case '1': //	article, review or content page - defunct category, but filter them out
 							break;
 						case '2': //	downloads
+							if (!e107::isInstalled('download'))
+							{
+								break;
+							}
 							$dqb = $sql2->createQueryBuilder();
 							$row2 = $dqb->select('d.download_name', 'dc.download_category_class', 'dc.download_category_id', 'dc.download_category_name')
 								->from('download', 'd')
@@ -1854,6 +1859,7 @@ class comment
 								->where(\e107\Userclass\Membership::current()->predicate('dc.download_category_class'))
 								->where(\e107\Userclass\Membership::current()->predicate('d.download_visible'))
 								->where('d.download_active', '>', 0)
+								->where('d.download_comment', '>', 0)
 								->fetchRow();
 							if ($row2)
 							{
@@ -1866,6 +1872,10 @@ class comment
 							break;
 						// '3' was FAQ
 						case '4': //	poll
+							if (!e107::isInstalled('poll'))
+							{
+								break;
+							}
 							$row2 = $sql2->createQueryBuilder()
 								->select('*')->from('polls')
 								->where('poll_id', $row['comment_item_id'])
@@ -1883,7 +1893,7 @@ class comment
 						// '6' was bugtracker
 						// 'ideas' was implemented
 						case 'profile': //	userprofile
-							if (USER)
+							if ($this->canReadComments('profile', $row['comment_item_id']))
 							{
 								$ret['comment_type'] = COMLAN_TYPE_8;
 								$ret['comment_title'] = $comment_author_name;

@@ -63,7 +63,7 @@ class CommentFeedParentClassCest
 			'download_datestamp' => time() - 3600,
 			'download_thumb' => '',
 			'download_image' => '',
-			'download_comment' => 0,
+			'download_comment' => 1,
 			'download_class' => 0,
 			'download_mirror' => '',
 			'download_mirror_type' => 0,

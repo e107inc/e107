@@ -190,7 +190,8 @@ class rss_menu_rss
 					->where($qb->expr()->anyOf(
 						$qb->expr()->eq('p.news_end', 0),
 						$qb->expr()->gt('p.news_end', $now)
-					));
+					))
+					->where('p.news_allow_comments', 0);
 				break;
 
 			case 'download':
@@ -201,7 +202,8 @@ class rss_menu_rss
 					->where($visitor->predicate('p.download_visible'))
 					->where($visitor->predicate('p.download_class'))
 					->where($visitor->predicate('dc.download_category_class'))
-					->where('p.download_active', '!=', 0);
+					->where('p.download_active', '!=', 0)
+					->where('p.download_comment', '>', 0);
 				break;
 
 			case 'poll':
@@ -215,7 +217,8 @@ class rss_menu_rss
 
 			case 'page':
 				$this->whereClassPermits($qb, $visitor, 'p.page_class');
-				$qb->where('p.page_password', '');
+				$qb->where('p.page_password', '')
+					->where('p.page_comment_flag', '>', 0);
 				break;
 		}
 
