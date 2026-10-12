@@ -691,6 +691,24 @@ class ForumFixture extends AppFixture
 		return $m[1];
 	}
 
+	/**
+	 * Send a quick reply the way the topic page's script does, from the topic page of $onThread.
+	 *
+	 * @param int $onThread the topic page the request is made from
+	 * @param array $fields the form's own fields, such as thread and text
+	 */
+	public function sendForumQuickReply($onThread, array $fields)
+	{
+		$page = '/e107_plugins/forum/forum_viewtopic.php?id='.$onThread;
+
+		$fields['action'] = 'quickreply';
+		$fields['insert'] = 0;
+		$fields['e-token'] = $this->grabForumToken($page);
+
+		$this->browser()->haveHttpHeader('X-Requested-With', 'XMLHttpRequest');
+		$this->app()->sendPostRequest($page, $fields);
+	}
+
 	// -----------------------------------------------------------------
 
 	/**

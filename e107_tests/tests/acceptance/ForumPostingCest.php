@@ -94,7 +94,7 @@ class ForumPostingCest
 	 */
 	public function aMemberCanStillQuickReplyWhereTheyMayPost(AcceptanceTester $I)
 	{
-		$this->quickReply($I, $this->ids['threadA'], array(
+		$I->sendForumQuickReply($this->ids['threadA'], array(
 			'post'   => $this->ids['forumA'],
 			'thread' => $this->ids['threadA'],
 			'text'   => 'a perfectly ordinary reply',
@@ -113,7 +113,7 @@ class ForumPostingCest
 	 */
 	public function aQuickReplyCannotBeAimedAtAThreadInAForumYouCannotSee(AcceptanceTester $I)
 	{
-		$this->quickReply($I, $this->ids['threadA'], array(
+		$I->sendForumQuickReply($this->ids['threadA'], array(
 			'post'   => $this->ids['forumA'],
 			'thread' => $this->threadC,
 			'text'   => 'a reply that has no business being here',
@@ -130,7 +130,7 @@ class ForumPostingCest
 	 */
 	public function aReplyIsFiledUnderTheForumItsThreadIsIn(AcceptanceTester $I)
 	{
-		$this->quickReply($I, $this->ids['threadA'], array(
+		$I->sendForumQuickReply($this->ids['threadA'], array(
 			'post'   => $this->ids['forumB'],
 			'thread' => $this->ids['threadA'],
 			'text'   => 'a reply naming the wrong forum',
@@ -152,7 +152,7 @@ class ForumPostingCest
 	 */
 	public function aQuickReplyCannotBeAimedAtALockedThread(AcceptanceTester $I)
 	{
-		$this->quickReply($I, $this->ids['threadA'], array(
+		$I->sendForumQuickReply($this->ids['threadA'], array(
 			'post'   => $this->ids['forumA'],
 			'thread' => $this->lockedThread,
 			'text'   => 'a reply to a closed thread',
@@ -171,7 +171,7 @@ class ForumPostingCest
 		$I->logoutFromForum();
 		$I->loginToForum('postmoda');
 
-		$this->quickReply($I, $this->ids['threadA'], array(
+		$I->sendForumQuickReply($this->ids['threadA'], array(
 			'post'   => $this->ids['forumA'],
 			'thread' => $this->lockedThread,
 			'text'   => 'a moderator having the last word',
@@ -233,14 +233,14 @@ class ForumPostingCest
 	 */
 	public function aDuplicateReplyIsReportedAsOneRatherThanAsASuccess(AcceptanceTester $I)
 	{
-		$this->quickReply($I, $this->ids['threadA'], array(
+		$I->sendForumQuickReply($this->ids['threadA'], array(
 			'post'   => $this->ids['forumA'],
 			'thread' => $this->ids['threadA'],
 			'text'   => 'the very same words twice',
 		));
 		$I->seeInSource('"status":"ok"');
 
-		$this->quickReply($I, $this->threadA2, array(
+		$I->sendForumQuickReply($this->threadA2, array(
 			'post'   => $this->ids['forumA'],
 			'thread' => $this->threadA2,
 			'text'   => 'the very same words twice',
@@ -260,7 +260,7 @@ class ForumPostingCest
 	 */
 	public function anEmptyReplySaysSo(AcceptanceTester $I)
 	{
-		$this->quickReply($I, $this->ids['threadA'], array(
+		$I->sendForumQuickReply($this->ids['threadA'], array(
 			'post'   => $this->ids['forumA'],
 			'thread' => $this->ids['threadA'],
 			'text'   => '',
@@ -268,23 +268,6 @@ class ForumPostingCest
 
 		$I->seeInSource('"status":"error"');
 		$I->seeInSource('"msg"');
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param int $onThread the topic page the request is made from
-	 * @param array $fields
-	 */
-	private function quickReply(AcceptanceTester $I, $onThread, array $fields)
-	{
-		$page = '/e107_plugins/forum/forum_viewtopic.php?id='.$onThread;
-
-		$fields['action'] = 'quickreply';
-		$fields['insert'] = 0;
-		$fields['e-token'] = $I->grabForumToken($page);
-
-		$I->haveHttpHeader('X-Requested-With', 'XMLHttpRequest');
-		$I->sendPostRequest($page, $fields);
 	}
 
 	/**
