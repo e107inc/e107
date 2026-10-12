@@ -243,6 +243,9 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'link completed by a shortcode' => array('[link=java{BBCODE_ATTRIBUTE_ECHO=script:alert(1)}]x[/link]'),
 			'url shortcode'  => array('[url={SETSTYLE}javascript:alert(1)]x[/url]'),
 			'url completed by a shortcode' => array('[url=java{BBCODE_ATTRIBUTE_ECHO=script:alert(1)}]x[/url]'),
+			'img thumbnail'  => array('[img]javascript:alert(1)//th_x.png[/img]'),
+			'img thumb'      => array('[img]javascript:alert(1)//thumb_x.png[/img]'),
+			'img thumbnail constant' => array('[img]{e_MENU}javascript:alert(1)//th_x.png[/img]'),
 		);
 	}
 
@@ -275,6 +278,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'url tel'         => array('[url=tel:+15551234567]Call us[/url]', 'Call us'),
 			'file script'     => array('[file=javascript:alert(1)]notes[/file]', 'notes'),
 			'file constant'   => array('[file={e_MENU}javascript:alert(1)]notes[/file]', 'notes'),
+			'img thumbnail'   => array('[img]javascript:alert(1)//th_x.png[/img]', 'th_x.png'),
 		);
 	}
 
@@ -307,6 +311,8 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'file path constant'  => array('[file={e_MEDIA_FILE}report.zip]x[/file]', 'report.zip', 'e_MEDIA_FILE'),
 			'url path constant'   => array('[url={e_PLUGIN}forum/forum.php]x[/url]', 'forum/forum.php', 'e_PLUGIN'),
 			'link path constant'  => array('[link={e_PLUGIN}forum/forum.php]x[/link]', 'forum/forum.php', 'e_PLUGIN'),
+			'img thumbnail'       => array('[img]https://example.com/pics/th_cat.png[/img]', 'https://example.com/pics/cat.png'),
+			'img thumbnail path'  => array('[img]{e_IMAGE}custom/th_cat.png[/img]', 'custom/cat.png', 'e_IMAGE_ABS'),
 		);
 	}
 
@@ -321,6 +327,32 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	public function testAnOrdinaryUrlIsStillLinked($bbcode, $href, $prefix = null)
 	{
 		self::assertSame(($prefix === null ? '' : constant($prefix)).$href, $this->hrefOfFirstAnchor($this->renderStored($bbcode)));
+	}
+
+	/**
+	 * @return array
+	 */
+	public function thumbnailLinks()
+	{
+		return array(
+			'query'      => array('[img]https://example.com/pics/th_cat.png?a=1&b=2[/img]', 'th_'),
+			'apostrophe' => array("[img]https://example.com/it's/th_cat.png[/img]", 'th_'),
+			'thumb'      => array('[img]https://example.com/pics/thumb_cat.png?a=1&b=2[/img]', 'thumb_'),
+		);
+	}
+
+	/**
+	 * A thumbnail links to the address its own image was given, less the prefix.
+	 *
+	 * @dataProvider thumbnailLinks
+	 * @param string $bbcode
+	 * @param string $prefix
+	 */
+	public function testAThumbnailLinksToItsOwnImageWithoutThePrefix($bbcode, $prefix)
+	{
+		$html = $this->renderStored($bbcode);
+
+		self::assertSame(str_replace('/'.$prefix, '/', $this->elementIn($html, 'img')->getAttribute('src')), $this->hrefOfFirstAnchor($html));
 	}
 
 	/**
@@ -342,6 +374,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'url printed address'  => array('[url={BBCODE_ATTRIBUTE_ECHO=https://example.com/}page.php]x[/url]', 'https://example.com/page.php'),
 			'link in an html body' => array('[html]<p>[link={SITEURL}page.php]x[/link]</p>[/html]', 'page.php', 'SITEURL'),
 			'link in a table'      => array('[table][tr][td][link={SITEURL}page.php]x[/link][/td][/tr][/table]', 'page.php', 'SITEURL'),
+			'img thumbnail site url' => array('[img]{SITEURL}pics/th_cat.png[/img]', 'pics/cat.png', 'SITEURL'),
 		);
 	}
 
