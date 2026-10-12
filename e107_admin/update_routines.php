@@ -1729,7 +1729,7 @@ function update_706_to_800($type='')
 	$dl_files = $fl->get_files(e_FILE.'downloads', "","standard",5); // don't use e_DOWNLOAD or a loop may occur.
 
 	
-	$publicFilter = array('_FT', '^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^\.cvsignore$','^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp'); // Default file filter (regex format)
+	$publicFilter = array('_FT', '^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^\.cvsignore$','^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^\.tmp'); // Default file filter (regex format)
 //	$publicFilter = array(1);
 	$public_files = $fl->get_files(e_FILE.'public','',$publicFilter);
 	
