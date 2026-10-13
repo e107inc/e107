@@ -15,7 +15,10 @@ class forum_search extends e_search // include plugin-folder in the name.
 
 		$catList[] = array('id' => 'all', 'title' => LAN_PLUGIN_FORUM_ALLFORUMS);
 
-		if ($sql ->gen("SELECT f.forum_id, f.forum_name FROM #forum AS f LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent "))
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$visible = implode(',', array_map('intval', e107forum::visibleForumIds()));
+
+		if ($visible !== '' && $sql->gen("SELECT forum_id, forum_name FROM #forum WHERE forum_parent != 0 AND forum_id IN (".$visible.")"))
 		{
 			while($row = $sql->fetch())
 			{
