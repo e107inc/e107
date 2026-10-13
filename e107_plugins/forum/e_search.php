@@ -15,11 +15,13 @@ class forum_search extends e_search // include plugin-folder in the name.
 
 		$catList[] = array('id' => 'all', 'title' => LAN_PLUGIN_FORUM_ALLFORUMS);
 
-		$forumQb = $sql->createQueryBuilder();
-		$forums = $forumQb
-			->select('f.forum_id', 'f.forum_name')
-			->from('forum', 'f')
-			->leftJoin('forum', 'fp', $forumQb->expr()->compareColumns('fp.forum_id', 'f.forum_parent'))
+		require_once(e_PLUGIN.'forum/forum_class.php');
+
+		$forums = $sql->createQueryBuilder()
+			->select('forum_id', 'forum_name')
+			->from('forum')
+			->whereIn('forum_id', e107forum::visibleForumIds())
+			->where('forum_parent', '!=', 0)
 			->fetchAll();
 		foreach($forums as $row)
 		{
