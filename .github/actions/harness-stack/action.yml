@@ -85,10 +85,8 @@ runs:
       run: |
         . "$GITHUB_ACTION_PATH/retry.sh"
         "$GITHUB_ACTION_PATH/pull.sh" 'docker.io/library/php:${{ inputs.php }}-apache'
-        retry docker build \
-          --build-arg 'PHP_VERSION=${{ inputs.php }}' \
-          --build-arg 'WITH_XDEBUG=${{ inputs.xdebug }}' \
-          -t '${{ steps.key.outputs.tag }}' e107_tests/docker
+        retry ./e107_tests/bin/e107-tests image --build \
+          --php '${{ inputs.php }}' ${{ inputs.xdebug == 'yes' && '--xdebug' || '' }}
         docker save '${{ steps.key.outputs.tag }}' -o /tmp/e107-web.tar
 
     - name: Save the web image

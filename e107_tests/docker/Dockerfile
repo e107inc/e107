@@ -1,13 +1,25 @@
 #
 # e107 test harness — PHP + Apache image
 #
-# Build args:
-#   PHP_VERSION   Tag of the upstream php:<ver>-apache image (default: 8.5)
-#   WITH_XDEBUG   "yes" to install and enable Xdebug for code coverage
+# Two stages, both built from the repository root:
+#   harness   What e107-tests and CI run: no source code inside, the
+#             worktree is bind-mounted, and the database is a separate
+#             container.
+#   scanner   The default. A self-contained site: the checkout at /src,
+#             installed at build time against a bundled MariaDB, so it runs
+#             with no network. See "Self-contained mode" in README.md.
 #
-# Example:
+# Build args:
+#   PHP_VERSION       Tag of the upstream php:<ver>-apache image
+#   WITH_XDEBUG       "yes" to install and enable Xdebug for code coverage
+#   MARIADB_VERSION   scanner: MariaDB release bundled, with its tarball's
+#   MARIADB_SHA256    published SHA-256; the two move together
+#
+# Examples, from the repository root:
 #   docker build --build-arg PHP_VERSION=8.4 --build-arg WITH_XDEBUG=yes \
-#       -t "$(e107_tests/bin/e107-tests image --php 8.4 --xdebug)" e107_tests/docker
+#       --target harness -f e107_tests/docker/Dockerfile \
+#       -t "$(e107_tests/bin/e107-tests image --php 8.4 --xdebug)" .
+#   docker build -f e107_tests/docker/Dockerfile -t e107 .
 #
 # Notes:
 #   * The image installs every PHP extension e107 needs to install and run.
@@ -15,15 +27,15 @@
 #     end-to-end inside the container.
 #   * nftables fences the container off the Internet while a suite runs
 #     (lib/sandbox/Boundary.php).
-#   * No source code is COPY'd in. The worktree is bind-mounted at runtime,
-#     which is what makes the image reusable across worktrees.
+#   * The harness stage COPYs nothing but files from e107_tests/docker/, so
+#     the image tag e107-tests derives from that directory covers all of it.
 #   * An image whose Debian release has moved to archive.debian.org gets its
 #     apt sources moved there too (debian-archive.sh), so it keeps building
 #     after its base leaves support. gd/xdebug need version-appropriate
 #     builds on old PHP; those branches mirror release/v2.3.x CI.
 
-ARG PHP_VERSION=8.5
-FROM docker.io/library/php:${PHP_VERSION}-apache
+ARG PHP_VERSION=5.6
+FROM docker.io/library/php:${PHP_VERSION}-apache AS harness
 
 ARG WITH_XDEBUG=no
 
@@ -31,7 +43,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_NO_INTERACTION=1
 
-COPY debian-archive.sh /usr/local/bin/e107-debian-archive
+COPY e107_tests/docker/debian-archive.sh /usr/local/bin/e107-debian-archive
 RUN chmod +x /usr/local/bin/e107-debian-archive && /usr/local/bin/e107-debian-archive
 
 RUN set -eux; \
@@ -196,12 +208,80 @@ RUN for n in $(seq "$E107_SANDBOXES"); do \
         printf '<Directory /srv/sb/sb%s>\n    php_admin_value session.save_path /srv/sbstate/sessions/sb%s\n</Directory>\n' "$n" "$n"; \
     done > /etc/apache2/e107-sandbox-sessions.conf
 
-COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY php-overrides.ini /usr/local/etc/php/conf.d/zz-e107-overrides.ini
-COPY entrypoint.sh    /usr/local/bin/e107-entrypoint
+COPY e107_tests/docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY e107_tests/docker/php-overrides.ini /usr/local/etc/php/conf.d/zz-e107-overrides.ini
+COPY e107_tests/docker/entrypoint.sh    /usr/local/bin/e107-entrypoint
 RUN chmod +x /usr/local/bin/e107-entrypoint
 
 WORKDIR /var/www/html
 
 ENTRYPOINT ["/usr/local/bin/e107-entrypoint"]
 CMD ["apache2-foreground"]
+
+FROM harness AS scanner
+
+# MariaDB's own generic build rather than the PHP image's Debian package, which
+# on the oldest PHP images is a server far behind the maintained release lines.
+ARG MARIADB_VERSION=11.4.13
+ARG MARIADB_SHA256=3cebf63914df3154b7cb6d548337eb2be42c773aeb641110446b72e2746cfed7
+
+ENV PATH=/usr/local/mysql/bin:$PATH \
+    E107_DOCROOT=/src \
+    E107_DB_HOST=127.0.0.1 \
+    E107_DB_PORT=3306 \
+    E107_DB_NAME=e107 \
+    E107_DB_USER=e107 \
+    E107_DB_PASSWORD=e107
+
+COPY e107_tests/docker/mariadb.cnf /etc/my.cnf
+
+RUN set -eux; \
+    curl -fsSL -o /tmp/mariadb.tar.gz \
+        "https://archive.mariadb.org/mariadb-${MARIADB_VERSION}/bintar-linux-systemd-x86_64/mariadb-${MARIADB_VERSION}-linux-systemd-x86_64.tar.gz"; \
+    echo "${MARIADB_SHA256}  /tmp/mariadb.tar.gz" | sha256sum -c -; \
+    mkdir /usr/local/mysql; \
+    tar -xzf /tmp/mariadb.tar.gz -C /usr/local/mysql --strip-components=1 \
+        --exclude='*/mariadb-test' --exclude='*/mysql-test' --exclude='*/sql-bench' \
+        --exclude='*/include' --exclude='*/man'; \
+    rm /tmp/mariadb.tar.gz; \
+    getent passwd mysql >/dev/null || useradd --system --user-group --home-dir /var/lib/mysql --shell /usr/sbin/nologin mysql; \
+    mkdir -p /var/lib/mysql /var/log/mysql /run/mysqld; \
+    chown mysql:mysql /var/lib/mysql /var/log/mysql /run/mysqld; \
+    cd /usr/local/mysql; \
+    ./scripts/mariadb-install-db --user=mysql --skip-test-db; \
+    mariadbd --version
+
+COPY e107_tests/docker/e107-start.sh /usr/local/bin/e107-start
+COPY e107_tests/docker/e107-stop.sh  /usr/local/bin/e107-stop
+COPY e107_tests/docker/e107-unit.sh  /usr/local/bin/e107-unit
+COPY e107_tests/docker/sendmail.sh   /usr/local/bin/e107-sendmail
+
+# Apache serves the checkout, logging to files because e107-start runs it as a
+# daemon. PHP logs errors rather than showing them, as on a production host.
+RUN set -eux; \
+    chmod +x /usr/local/bin/e107-start /usr/local/bin/e107-stop /usr/local/bin/e107-unit /usr/local/bin/e107-sendmail; \
+    sed -i "s#/var/www/html#${E107_DOCROOT}#g" /etc/apache2/sites-available/000-default.conf; \
+    : > /etc/apache2/e107-base-path.conf; \
+    printf 'ServerName 127.0.0.1\n' > /etc/apache2/conf-available/e107-server-name.conf; \
+    a2enconf e107-server-name; \
+    rm -f /var/log/apache2/*.log; \
+    mkdir -p /var/mail/e107; \
+    chown www-data:www-data /var/mail/e107; \
+    printf '%s\n' \
+        'display_errors = Off' \
+        'display_startup_errors = Off' \
+        'sendmail_path = /usr/local/bin/e107-sendmail' \
+        > /usr/local/etc/php/conf.d/zz-e107-self-contained.ini
+
+# The suite's dependencies go outside the checkout, so that it stays as cloned.
+COPY e107_tests/composer.json e107_tests/composer*.lock e107_tests/docker/composer-install.sh /opt/e107-tests/
+RUN cd /opt/e107-tests && sh composer-install.sh composer.lock $(ls composer.php*.lock | sort -Vr)
+
+COPY . /src
+WORKDIR /src
+
+RUN sh e107_tests/docker/install-site.sh
+
+RUN sh e107_tests/docker/smoke-test.sh
+
+RUN if [ -d .git/info ]; then printf '.oss-scanner/\n' >> .git/info/exclude; fi

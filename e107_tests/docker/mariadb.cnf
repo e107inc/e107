@@ -1,0 +1,14 @@
+# The self-contained image's bundled MariaDB.
+
+[client-server]
+socket = /run/mysqld/mysqld.sock
+
+[mysqld]
+user = mysql
+datadir = /var/lib/mysql
+bind-address = 127.0.0.1
+skip-name-resolve
+character-set-server = utf8mb3
+collation-server = utf8mb3_general_ci
+max-allowed-packet = 64M
+log-error = /var/log/mysql/error.log

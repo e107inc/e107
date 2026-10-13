@@ -126,6 +126,16 @@ browser_image() {
     printf 'e107-browser:%s' "$(build_hash -name 'browser.*')"
 }
 
+# Build the image web_image names, into the local image store.
+build_web_image() {
+    local build=(docker build)
+    ! docker buildx version >/dev/null 2>&1 || build=(docker buildx build --load)
+    "${build[@]}" --target harness -f "$DOCKER_DIR/Dockerfile" \
+        --build-arg "PHP_VERSION=$E107_PHP_VERSION" \
+        --build-arg "WITH_XDEBUG=$WITH_XDEBUG" \
+        -t "$(web_image)" "$APP_PATH"
+}
+
 # Hash of the files in docker/ that match the find(1) tests given.
 build_hash() {
     (cd "$DOCKER_DIR" && find . -type f "$@" -print0 | LC_ALL=C sort -z | xargs -0 sha1sum | sha1sum | cut -c1-8)
@@ -640,61 +650,7 @@ deps_install() {
 }
 
 deps_install_once() {
-    tests_sh '
-        if [ ! -f composer.json ]; then
-            echo ">> no e107_tests/composer.json in this tree; skipping composer (old-tag mode)" >&2
-            exit 0
-        fi
-        META=vendor/.e107-meta
-        mkdir -p "$META/locks"
-        # Composer 2.2, the line PHP 5.6 and 7.0 get, fails when another install
-        # makes a directory in the cache under it, so installs take turns on it.
-        LOCKFILE=/root/.composer/cache/.e107-install.lock
-        touch "$LOCKFILE" 2>/dev/null || LOCKFILE=$META/.lock
-        exec 9> "$LOCKFILE"
-        flock -w 900 9
-        cp -f composer.json "$META/composer.json"
-        rm -f "$META"/locks/* "$META/composer.lock"
-        for lock in "$@"; do
-            if [ -f "$lock" ]; then
-                cp -f "$lock" "$META/locks/$lock"
-            fi
-        done
-        # Hash the frozen copies now: the stamp must describe what this
-        # install ran against, even if the worktree changes mid-install.
-        JSON_SHA=$(sha256sum "$META/composer.json" | cut -d" " -f1)
-        LOCK_SHA=$(cd "$META/locks" && cat "$@" 2>/dev/null | sha256sum | cut -d" " -f1)
-        export COMPOSER="$PWD/$META/composer.json"
-        export COMPOSER_VENDOR_DIR="$PWD/vendor"
-        PHPVER=$(php -r "echo PHP_MAJOR_VERSION.\".\".PHP_MINOR_VERSION;")
-        LOCK=
-        for lock in "$@"; do
-            [ -f "$META/locks/$lock" ] || continue
-            cp -f "$META/locks/$lock" "$META/composer.lock"
-            if composer check-platform-reqs --lock >/dev/null 2>&1; then
-                LOCK=$lock
-                break
-            fi
-        done
-        [ -n "$LOCK" ] || rm -f "$META/composer.lock"
-        [ "$LOCK" = composer.lock ] || composer config --unset platform.php
-        if [ -n "$LOCK" ]; then
-            echo ">> installing from $LOCK" >&2
-            composer install --prefer-dist --no-progress
-            MODE=install
-        else
-            echo "!! no committed lock ($*) installs on PHP $PHPVER; falling back to \"composer update\" (needs the network; run e107-tests relock after adding composer.php$PHPVER.lock)" >&2
-            composer update --prefer-dist --no-progress
-            MODE=update
-        fi
-        {
-            echo "E107_STAMP_JSON_SHA256=$JSON_SHA"
-            echo "E107_STAMP_LOCK_SHA256=$LOCK_SHA"
-            echo "E107_STAMP_PHP=$PHPVER"
-            echo "E107_STAMP_MODE=$MODE"
-            echo "E107_STAMP_LOCK=$LOCK"
-        } > "$META/stamp.env"
-    '
+    tests_sh 'exec sh docker/composer-install.sh "$@"'
 }
 
 # Fast drift check: did composer.json, a lock file, or the PHP version
@@ -740,14 +696,8 @@ install_site() {
     # harness's persistent config over it, against the same DB and site folder.
     note ">> Writing persistent e107_config.php"
     compose_exec_nostdin web sh -euc "
-        sed -e 's/{{ mySQLserver }}/db/' \
-            -e 's/{{ mySQLuser }}/$DEFAULT_DB_USER/' \
-            -e 's/{{ mySQLpassword }}/$DEFAULT_DB_PASSWORD/' \
-            -e 's/{{ mySQLdefaultdb }}/$DEFAULT_DB_NAME/' \
-            -e 's/{{ mySQLprefix }}/e107_/' \
-            -e 's/000000test/$(persistent_site_path)/' \
-            $WEB_TESTS_DIR/tests/_data/e107_config.php.sample \
-            > $WEB_APP_DIR/e107_config.php
+        sh $WEB_TESTS_DIR/docker/render-config.sh db '$DEFAULT_DB_USER' '$DEFAULT_DB_PASSWORD' \
+            '$DEFAULT_DB_NAME' e107_ '$(persistent_site_path)' > $WEB_APP_DIR/e107_config.php
     "
     # The admin credentials belong to the tree's own installer Cest: modern
     # trees define them in Helper\AdminLogin, older tags inline literals.
@@ -814,12 +764,14 @@ cmd_up() {
     # any existing image in place and the stack comes up on it, so a Dockerfile
     # that cannot build looks healthy: exactly how an openssl flag that Debian
     # Stretch does not have sat unnoticed in the php:5.6 image for two days.
-    if [ "$REBUILD" = yes ]; then
-        local images=(web)
-        [ "$WITH_BROWSER" != yes ] || images+=(browser)
-        note ">> Rebuilding images for PHP $PHP: ${images[*]}"
-        compose_up_cmd build "${images[@]}" \
-            || err "an image failed to build; the stack was left alone (see output above)"
+    if [ "$REBUILD" = yes ] || ! docker image inspect "$(web_image)" >/dev/null 2>&1; then
+        note ">> Building $(web_image)"
+        build_web_image || err "the web image failed to build; the stack was left alone (see output above)"
+    fi
+    if [ "$REBUILD" = yes ] && [ "$WITH_BROWSER" = yes ]; then
+        note ">> Rebuilding $(browser_image)"
+        compose_up_cmd build browser \
+            || err "the browser image failed to build; the stack was left alone (see output above)"
     fi
 
     # The WebDriver suite needs the browser; nothing else does, so CI legs
@@ -840,7 +792,7 @@ cmd_up() {
     else
         note ">> Bringing up env: $PROJECT (PHP $PHP / $DB)"
     fi
-    # `compose up` builds the web image only when it's missing, so a cached
+    # `compose up` builds the browser image only when it's missing, so a cached
     # image (CI) or an earlier build is reused automatically.
     if ! up_with_registry_fallback; then
         warn "compose up failed; current stack state:"
@@ -933,16 +885,21 @@ cmd_relock() {
 # Print the web or browser image `up` would use, so CI can cache or build it
 # under the same name.
 cmd_image() {
-    local image=web_image
+    local image=web_image build=no
     E107_PHP_VERSION=$DEFAULT_PHP
     while [ $# -gt 0 ]; do
         case $1 in
             --php) E107_PHP_VERSION=$2; shift 2 ;;
             --xdebug) WITH_XDEBUG=yes; shift ;;
             --browser) image=browser_image; shift ;;
+            --build) build=yes; shift ;;
             *) err "unknown flag: $1" ;;
         esac
     done
+    if [ "$build" = yes ]; then
+        [ "$image" = web_image ] || err "--build builds the web image only"
+        build_web_image >&2
+    fi
     $image
     echo
 }
@@ -1416,10 +1373,12 @@ LIFECYCLE:
                                      inside an env on the PHP it is resolved
                                      for (all of them by default). Review the
                                      diff, run the suites, commit.
-  image [--php X] [--xdebug]         Print the web image `up` uses, tagged by
+  image [--php X] [--xdebug] [--build]
+                                     Print the web image `up` uses, tagged by
                                      a hash of every file in docker/ but
                                      the compose files, the docs and
-                                     browser.Dockerfile.
+                                     browser.Dockerfile. --build builds it
+                                     first, as `up` would.
   image --browser                    Print the browser image `up` uses, tagged
                                      by a hash of browser.Dockerfile.
   gc [--dry-run] [--worktrees-gone]  Remove volumes of downed/orphaned envs;

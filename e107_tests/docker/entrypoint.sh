@@ -2,7 +2,8 @@
 # e107 test harness — container entrypoint
 #
 # Responsibilities:
-#   1. Wait for the database to accept connections (if E107_DB_HOST is set).
+#   1. Wait for the database to accept connections (if E107_DB_HOST is set),
+#      first starting the image's own when it has one and is pointed at it.
 #   2. Make sure www-data (Apache + PHP) can write to the directories e107
 #      writes to at runtime, regardless of who owns the bind-mounted worktree.
 #   3. Hand off to the upstream php-apache CMD.
@@ -14,6 +15,16 @@
 # so it works for any container UID, accepting that this is a test env.
 
 set -eu
+
+DOCROOT=${E107_DOCROOT:-/var/www/html}
+
+case ${E107_DB_HOST:-} in
+    127.0.0.1|localhost)
+        if command -v mariadbd >/dev/null 2>&1; then
+            e107-start db
+        fi
+        ;;
+esac
 
 if [ -n "${E107_DB_HOST:-}" ]; then
     echo "[entrypoint] Waiting for database at ${E107_DB_HOST}:${E107_DB_PORT:-3306}..."
@@ -67,24 +78,24 @@ fi
 # start on an IncludeOptional of a file that is not there.
 BASE_CONF=/etc/apache2/e107-base-path.conf
 if [ -n "${E107_BASE_PATH:-}" ]; then
-    printf 'Alias /%s /var/www/html\n' "$E107_BASE_PATH" > "$BASE_CONF"
-    echo "[entrypoint] Serving /var/www/html at /${E107_BASE_PATH}/ as well as /."
+    printf 'Alias /%s %s\n' "$E107_BASE_PATH" "$DOCROOT" > "$BASE_CONF"
+    echo "[entrypoint] Serving $DOCROOT at /${E107_BASE_PATH}/ as well as /."
 else
     : > "$BASE_CONF"
 fi
 
-if [ -d /var/www/html ]; then
+if [ -d "$DOCROOT" ]; then
     # The docroot itself must be writable: the acceptance test deployer
-    # creates and deletes /var/www/html/e107_config.php directly.
-    chmod a+rwx /var/www/html 2>/dev/null || true
+    # creates and deletes e107_config.php in it directly.
+    chmod a+rwx "$DOCROOT" 2>/dev/null || true
 
     # Directories e107 writes to at runtime (hash dirs under e107_system /
     # e107_media, media uploads, theme/plugin installs). Capital X only
     # adds execute on dirs and already-executable files, which is what
     # we want for traversal.
     for dir in e107_media e107_system e107_languages e107_themes e107_plugins; do
-        if [ -d "/var/www/html/$dir" ]; then
-            chmod -R a+rwX "/var/www/html/$dir" 2>/dev/null || true
+        if [ -d "$DOCROOT/$dir" ]; then
+            chmod -R a+rwX "$DOCROOT/$dir" 2>/dev/null || true
         fi
     done
 fi
