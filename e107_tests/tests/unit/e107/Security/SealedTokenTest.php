@@ -188,6 +188,16 @@ class SealedTokenTest extends \Test\Unit
 		$this->assertFalse($this->token->open($elsewhere->seal(array('a' => 'b'), 600)), 'this site accepted another site issuer');
 	}
 
+	public function testATokenBoundToTheKeyAloneOpensWhateverAddressSealedIt()
+	{
+		$anywhere = new SealedTokenAnywhere('unit-test');
+		$elsewhere = new SealedTokenElsewhere('unit-test');
+
+		$this->assertSame(array('a' => 'b'), array_intersect_key((array) $anywhere->open($elsewhere->seal(array('a' => 'b'), 600)), array('a' => 1)));
+		$this->assertSame(array('a' => 'b'), array_intersect_key((array) $anywhere->open($anywhere->seal(array('a' => 'b'), 600)), array('a' => 1)));
+		$this->assertFalse($this->token->open($anywhere->seal(array('a' => 'b'), 600)), 'a token bound to an address accepted one bound to none');
+	}
+
 	/**
 	 * One bit, in each part in turn, including the header and the empty
 	 * encrypted-key slot that alg=dir leaves behind.

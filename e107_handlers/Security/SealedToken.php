@@ -198,7 +198,7 @@ class SealedToken
 
 			$now = $this->now();
 			$payload = json_encode(array_merge($claims, array(
-				'iss' => $this->issuer(),
+				'iss' => (string) $this->issuer(),
 				'iat' => $now,
 				'nbf' => $now,
 				'exp' => $now + (int) $ttl,
@@ -423,9 +423,10 @@ class SealedToken
 	 *
 	 * A site that moves to a new address retires its tokens, which is a few
 	 * minutes of failed CAPTCHAs on the day of the move and a check worth
-	 * having on every other day.
+	 * having on every other day. A subclass whose tokens must outlive such a
+	 * move answers null, and its tokens are then bound by the key alone.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	protected function issuer()
 	{
@@ -473,14 +474,17 @@ class SealedToken
 	 *
 	 * Authenticity is already settled by the time this runs, so these are
 	 * questions about a token this site genuinely sealed: was it sealed by
-	 * this site under this address, and is now inside its window.
+	 * this site under this address, where the issuer names one, and is now
+	 * inside its window.
 	 *
 	 * @param array $claims
 	 * @return bool
 	 */
 	private function claimsHold(array $claims)
 	{
-		if(!isset($claims['iss']) || !is_string($claims['iss']) || !hash_equals($this->issuer(), $claims['iss']))
+		$issuer = $this->issuer();
+
+		if(($issuer !== null) && (!isset($claims['iss']) || !is_string($claims['iss']) || !hash_equals($issuer, $claims['iss'])))
 		{
 			return false;
 		}
