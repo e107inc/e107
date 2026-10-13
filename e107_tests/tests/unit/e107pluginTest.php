@@ -18,6 +18,9 @@
 		/** @var array<string,mixed> url_* core preferences before this test seeded them */
 		private $urlPrefState = array();
 
+		/** @var string[] comment types this test wrote comments for */
+		private $fixtureCommentTypes = array();
+
 		protected function _before()
 		{
 			try
@@ -63,6 +66,13 @@
 			}
 
 			$this->urlPrefState = array();
+
+			foreach($this->fixtureCommentTypes as $type)
+			{
+				e107::getDb()->delete('comments', "comment_type = '" . $type . "'");
+			}
+
+			$this->fixtureCommentTypes = array();
 		}
 
 
@@ -76,6 +86,78 @@
 			$this->assertEquals("LAN_PLUGIN_BANNER_NAME", $result['plugin_name']);
 
 
+		}
+
+		public function testManageCommentsRemovesOnlyTheGivenCommentTypes()
+		{
+			$types = array('e107_tests_cmt_a', 'e107_tests_cmt_b', 'e107_tests_cmt_kept');
+			$this->haveCommentsOfTypes($types);
+
+			e107::getPlugin()->manage_comments('remove', array('e107_tests_cmt_a', 'e107_tests_cmt_b'));
+
+			$this->assertSame(array('e107_tests_cmt_kept'), $this->remainingCommentTypes($types));
+		}
+
+		/**
+		 * An empty list names no comment type, so it must not reach the query as a delete without a condition.
+		 */
+		public function testManageCommentsRefusesAnEmptyList()
+		{
+			$types = array('e107_tests_cmt_kept');
+			$this->haveCommentsOfTypes($types);
+			$total = (int) e107::getDb()->count('comments');
+
+			$this->assertFalse(e107::getPlugin()->manage_comments('remove', array()));
+			$this->assertFalse(e107::getPlugin()->manage_comments('remove', array('')));
+			$this->assertSame($total, (int) e107::getDb()->count('comments'));
+			$this->assertSame($types, $this->remainingCommentTypes($types));
+		}
+
+		/**
+		 * @param string[] $types one comment is written for each, and removed again when the test ends
+		 * @return void
+		 */
+		private function haveCommentsOfTypes(array $types)
+		{
+			foreach($types as $type)
+			{
+				$written = e107::getDb()->insert('comments', array(
+					'comment_item_id'     => 1,
+					'comment_subject'     => 'Fixture',
+					'comment_author_id'   => 1,
+					'comment_author_name' => 'fixture',
+					'comment_datestamp'   => time(),
+					'comment_comment'     => 'Fixture comment',
+					'comment_blocked'     => 0,
+					'comment_ip'          => '127.0.0.1',
+					'comment_type'        => $type,
+					'comment_lock'        => 0,
+					'comment_share'       => 0,
+				));
+
+				$this->assertNotEmpty($written, 'The fixture comment of type ' . $type . ' was not written.');
+			}
+
+			$this->fixtureCommentTypes = array_merge($this->fixtureCommentTypes, $types);
+		}
+
+		/**
+		 * @param string[] $types
+		 * @return string[] those of $types that still have a comment
+		 */
+		private function remainingCommentTypes(array $types)
+		{
+			$remaining = array();
+
+			foreach($types as $type)
+			{
+				if(e107::getDb()->count('comments', '(*)', "WHERE comment_type = '" . $type . "'"))
+				{
+					$remaining[] = $type;
+				}
+			}
+
+			return $remaining;
 		}
 
 		public function testRebuildUrlConfig()
