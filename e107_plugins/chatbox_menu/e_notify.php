@@ -51,7 +51,7 @@ class chatbox_menu_notify extends notify // plugin-folder + '_notify'
 		$message = NT_LAN_CB_3.': '.USERNAME.' ('.LAN_IP.': '.e107::getIPHandler()->ipDecode($data['ip']).' )<br />';
 		$message .= NT_LAN_CB_5.':<br />'.$data['cmessage'].'<br /><br />';
 		
-		$this->send('cboxpost', NT_LAN_CB_6, $message);
+		$this->sendForAuthor(e107::getUser()->getId(), 'cboxpost', NT_LAN_CB_6, $message);
 	}
 	
 }

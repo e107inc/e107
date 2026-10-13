@@ -55,7 +55,7 @@ class comment_menu_shortcodes extends e_shortcode
 			$text = $this->var['comment_title'];
 		}
 
-		return e107::getParser()->toHTML($text,false,'TITLE');
+		return e107::getParser()->toHTML($text,false,'USER_TITLE');
 	}
 		
 	function sc_cm_url_pre()

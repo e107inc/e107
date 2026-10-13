@@ -1074,7 +1074,7 @@ class poll_shortcodes extends e_shortcode
 	function sc_question($parm = "")
 	{
 		$tp = e107::getParser();
-		return $tp->toHTML($this->var['poll_title'], true, "TITLE");
+		return $tp->toHTML($this->var['poll_title'], true, $tp->shortcodeModifiersForAuthor('TITLE', varset($this->var['poll_admin_id'], 0)));
 	}
 
 

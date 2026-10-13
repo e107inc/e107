@@ -70,7 +70,7 @@ if (isset($_POST['preview']))
 {
 	// Can't have everyone voting if tracking method is user ID
 	if (($_POST['pollUserclass'] == e_UC_PUBLIC) && ($_POST['storageMethod'] == 2)) $_POST['pollUserclass'] = e_UC_MEMBER;
-	$poll->render_poll($_POST, "preview");
+	$poll->render_poll(array('poll_admin_id' => ADMINID) + $_POST, "preview");
 }
 
 if (varset($_POST['edit']) || varset($_GET['mode'])=='create' && !varset($_POST['submit']))

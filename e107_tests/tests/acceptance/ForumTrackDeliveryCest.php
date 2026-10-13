@@ -240,6 +240,19 @@ class ForumTrackDeliveryCest
 	}
 
 	/**
+	 * A reply is mailed to its subscribers as the forum shows it, so its shortcodes are not expanded.
+	 */
+	public function aReplysShortcodesAreMailedAsWritten(AcceptanceTester $I)
+	{
+		$this->reply($I, 'a reply that names {SITENAME}', $this->forumD, $this->threadD);
+
+		$I->seeInDatabase('e107_mail_content', array(
+			'mail_title' => 'FORUM TRACKING',
+			'mail_body like' => '%a reply that names {SITENAME}%',
+		));
+	}
+
+	/**
 	 * The half of the control that a flat FIND_IN_SET would fail. These three
 	 * were never given the forum's class; they hold it because the class they
 	 * were given sits under it, which is what USERCLASS_LIST resolves for a

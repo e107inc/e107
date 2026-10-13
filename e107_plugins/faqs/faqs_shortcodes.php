@@ -92,7 +92,7 @@ class faqs_shortcodes extends e_shortcode
 
 			$id         = "faq_".$this->var['faq_id'];
 			$url        = e107::url('faqs','item', $this->var, 'full');
-			$question   = $tp->toHTML($this->var['faq_question'],true,'TITLE');
+			$question   = $tp->toHTML($this->var['faq_question'],true,'USER_TITLE');
 			$hide       = ($this->item != $this->var['faq_id']) ? 'e-hideme' : '';
 
 			$text = "
@@ -115,7 +115,7 @@ class faqs_shortcodes extends e_shortcode
 
 			if($this->share == true)
 			{
-				$text .= "<div class='faq-share'>".$tp->parseTemplate("{SOCIALSHARE: size=sm&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true)."</div>";
+				$text .= "<div class='faq-share'>".$this->sc_faq_share()."</div>";
 			}
 
 			$text .= "</div></div>
@@ -124,7 +124,7 @@ class faqs_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$text = $tp->toHTML($this->var['faq_question'],true, 'TITLE');
+			$text = $tp->toHTML($this->var['faq_question'],true, 'USER_TITLE');
 		}
 		return $text;
 	}
@@ -135,9 +135,9 @@ class faqs_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 
 		$url        = e107::url('faqs','item', $this->var, 'full');
-		$question   = $tp->toHTML($this->var['faq_question'],true,'TITLE');
+		$question   = $tp->toHTML($this->var['faq_question'],true,'USER_TITLE');
 
-		return $tp->parseTemplate("{SOCIALSHARE: size=sm&type=basic&url=".$url."&title=".$question."&tags=".$this->var['faq_tags']."}",true);
+		return $tp->parseTemplate('{SOCIALSHARE: '.http_build_query(array('size' => 'sm', 'type' => 'basic', 'url' => $url, 'title' => $question, 'tags' => $this->var['faq_tags'])).'}', true);
 
 	}
 
@@ -145,7 +145,7 @@ class faqs_shortcodes extends e_shortcode
 	function sc_faq_question_link($parm='')
 	{
 		$tp = e107::getParser();
-		return "<a class='faq-question' href='". e107::url('faqs', 'item', $this->var)."' >".$tp -> toHTML($this->var['faq_question'],true,'TITLE')."</a>";
+		return "<a class='faq-question' href='". e107::url('faqs', 'item', $this->var)."' >".$tp -> toHTML($this->var['faq_question'],true,'USER_TITLE')."</a>";
 	}
 	
 	function sc_faq_answer()

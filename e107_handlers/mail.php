@@ -930,7 +930,7 @@ class e107Email extends PHPMailer
 				{
 					$eml['shortcodes']['_WRAPPER_'] = 'email/'.$eml['template'];
 				}
-				$emailBody = varset($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']) . varset($tmpl['footer']);
+				$emailBody = varset($tmpl['header']) . $tmpl['body'] . varset($tmpl['footer']);
 				
 				$eml['body'] = $tp->parseTemplate($emailBody, true, $eml['shortcodes']);
 				

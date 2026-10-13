@@ -946,6 +946,7 @@ class mailout_main_ui extends e_admin_ui
 		}
 		
 		$other['mail_selectors'] = $this->mailAdmin->getAllSelectors();
+		$other['mail_body_author'] = (int) e107::getUser()->getId();
 		
 		
 		$ret['mail_attach']			= trim($new_data['mail_attach']);

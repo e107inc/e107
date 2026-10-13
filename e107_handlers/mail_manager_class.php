@@ -87,6 +87,8 @@
  * mail_include_images    TRUE if to embed images, FALSE to add link to them
  * mail_body_alt        If non-empty, use for alternate email text (generally the 'plain text' alternative)
  * mail_overrides        If non-empty, any overrides for the mailer, set by the template
+ * mail_body_author    User ID of whoever wrote the body; it expands shortcodes only for an administrator
+ * mail_body_parse     Expand the body's shortcodes whoever wrote it, as notify::send() always has
  *
  *
  *
@@ -210,7 +212,9 @@ class e107MailManager
 		'mail_selectors'      => 1,            // Only used internally
 		'mail_include_images' => 1,            // Used to determine whether to embed images, or link to them
 		'mail_body_alt'       => 1,            // If non-empty, use for alternate email text (generally the 'plain text' alternative)
-		'mail_overrides'      => 1
+		'mail_overrides'      => 1,
+		'mail_body_author'    => 1,            // User ID of whoever wrote the body; it expands shortcodes only for an administrator
+		'mail_body_parse'     => 1             // Expand the body's shortcodes whoever wrote it, as notify::send() always has
 	);
 
 	// List of fields which are the status counts of an email, and their titles
@@ -1000,7 +1004,15 @@ class e107MailManager
 			$replace[] = $v;
 		}
 
-		$result['email_body'] = str_replace($search, $replace, $this->currentMailBody);
+		$body = $this->currentMailBody;
+		$tp = e107::getParser();
+
+		if (e107::getCoreTemplate('email', varset($email['mail_send_style']), 'front', true) && (!empty($email['mail_body_parse']) || $tp->shortcodeModifiersForAuthor('BODY', varset($email['mail_body_author'], 0)) === 'BODY'))
+		{
+			$body = $tp->parseTemplate($body, true, $email['mail_target_info']);
+		}
+
+		$result['email_body'] = str_replace($search, $replace, $body);
 
 		if ($this->currentTextBody)
 		{
