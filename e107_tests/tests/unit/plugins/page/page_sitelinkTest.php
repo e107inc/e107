@@ -598,4 +598,53 @@ class page_sitelinkTest extends \Test\Unit
 		$this->assertStringContainsString('Article 4', $result);
 	}
 
+	/**
+	 * {PAGE_NAVIGATION: name=...} names a link from the page's menu title for a reader the menu admits, and otherwise from the page title.
+	 */
+	public function testPageNavigationNamesLinksOnlyFromATitleTheReaderMaySee()
+	{
+		$sql = e107::getDb();
+		$page = $sql->createQueryBuilder()
+			->select('page_id', 'page_chapter', 'page_title', 'page_password', 'menu_title', 'menu_class')->from('page')
+			->where('page_chapter', '>', 0)->where('page_title', '!=', '')
+			->orderBy('page_id')->limit(1)->fetchRow();
+		$set = function($values) use ($sql, $page)
+		{
+			$update = $sql->createQueryBuilder()->update('page');
+			foreach($values as $column => $value)
+			{
+				$update->set($column, $value);
+			}
+			$update->where('page_id', (int) $page['page_id'])->execute();
+		};
+		$navigation = function($name) use ($page)
+		{
+			return e107::getParser()->parseTemplate('{PAGE_NAVIGATION: chapter='.intval($page['page_chapter']).'&name='.$name.'}');
+		};
+
+		try
+		{
+			$set(array('page_password' => 'PageNavPassword', 'menu_title' => 'PageNavMenuTitle', 'menu_class' => '0'));
+			$password = $navigation('page_password');
+			$menuTitle = $navigation('menu_title');
+
+			$set(array('menu_class' => (string) e_UC_NOBODY));
+			$hiddenMenuTitle = $navigation('menu_title');
+
+			$set(array('menu_title' => '', 'menu_class' => '0'));
+			$emptyMenuTitle = $navigation('menu_title');
+		}
+		finally
+		{
+			$set(array('page_password' => $page['page_password'], 'menu_title' => $page['menu_title'], 'menu_class' => $page['menu_class']));
+		}
+
+		$this->assertStringNotContainsString('PageNavPassword', $password);
+		$this->assertStringContainsString($page['page_title'], $password);
+		$this->assertStringContainsString('PageNavMenuTitle', $menuTitle);
+		$this->assertStringNotContainsString('PageNavMenuTitle', $hiddenMenuTitle);
+		$this->assertStringContainsString($page['page_title'], $hiddenMenuTitle);
+		$this->assertStringContainsString($page['page_title'], $emptyMenuTitle);
+	}
+
 }

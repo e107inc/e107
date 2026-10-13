@@ -167,9 +167,10 @@ class page_sitelink // include plugin-folder in the name.
 	private function pageArray($row,$options=array())
 	{
 
-		if(!empty($options['name']))
+		$name = varset($options['name']);
+
+		if(($name === 'page_metatitle' || ($name === 'menu_title' && check_class($row['menu_class']))) && !empty($row[$name]))
 		{
-			$name = $options['name'];
 			$link_name = $row[$name];
 		}
 		else
