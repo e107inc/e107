@@ -66,3 +66,17 @@ class SealedTokenElsewhere extends SealedToken
 		return 'https://not-this-site.example/';
 	}
 }
+
+/**
+ * A purpose whose tokens are bound to the key alone, wherever the site answers.
+ */
+class SealedTokenAnywhere extends SealedToken
+{
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function issuer()
+	{
+		return null;
+	}
+}

@@ -87,6 +87,10 @@ class e107forum
 
 	/** @var array moderator rows keyed by userclass, for authorisation only */
 	private $moderatorsByClass = array();
+
+	/** @var string what {@see e107forum::sealHidden()} seals for, which keeps its key apart from every other sealed token */
+	private static $hiddenPurpose = 'forum hidden block';
+	private $hiddenToken = null;
 	private $forumData = array();
 
 	public function __construct($update= false)
@@ -3412,6 +3416,99 @@ class e107forum
 				}
 			}
 
+	}
+
+
+	/**
+	 * Whether the current reader may see what a [hide] block in thread $threadId holds: a member who may view its forum and has posted in it; with $postId, only while that post is still in the thread.
+	 *
+	 * @param int $threadId
+	 * @param int $postId
+	 * @return bool
+	 */
+	public function mayReadHidden($threadId, $postId = 0)
+	{
+		$reader = e107::getUser();
+
+		if(!$reader->isUser())
+		{
+			return false;
+		}
+
+		$db = e107::getDb();
+		$own = $db->createQueryBuilder()
+			->select('post_forum')
+			->from('forum_post')
+			->where('post_thread', (int) $threadId)
+			->where('post_user', (int) $reader->getId())
+			->limit(1)
+			->fetchRow();
+
+		if(empty($own) || !$this->checkPerm((int) $own['post_forum'], 'view'))
+		{
+			return false;
+		}
+
+		return empty($postId) || (bool) $db->createQueryBuilder()
+			->select('post_id')
+			->from('forum_post')
+			->where('post_id', (int) $postId)
+			->where('post_thread', (int) $threadId)
+			->limit(1)
+			->fetchRow();
+	}
+
+
+	/**
+	 * Seal the text of a [hide] block from post $postId in thread $threadId, so that a quote can carry it without showing it.
+	 *
+	 * @param int    $threadId
+	 * @param int    $postId
+	 * @param string $text
+	 * @return string|false the sealed text, or false when it could not be sealed or would be too long to open
+	 */
+	public function sealHidden($threadId, $postId, $text)
+	{
+		$claims = array('thread' => (int) $threadId, 'post' => (int) $postId, 'text' => (string) $text);
+		$sealed = $this->hiddenToken()->seal($claims, PHP_INT_MAX - time() - 3600);
+
+		return (is_string($sealed) && strlen($sealed) <= \e107\Security\Jwe\Compact::MAX_LENGTH) ? $sealed : false;
+	}
+
+
+	/**
+	 * The text {@see e107forum::sealHidden()} sealed in $token, when the current reader may see hidden blocks in the thread it came from and its post is still there.
+	 *
+	 * @param string $token
+	 * @return string|null
+	 */
+	public function unsealHidden($token)
+	{
+		$claims = $this->hiddenToken()->open($token);
+
+		if(!is_array($claims) || !isset($claims['thread'], $claims['post'], $claims['text']) || !is_int($claims['thread']) || !is_int($claims['post']) || !is_string($claims['text']))
+		{
+			return null;
+		}
+
+		return $this->mayReadHidden($claims['thread'], $claims['post']) ? $claims['text'] : null;
+	}
+
+
+	/**
+	 * The token that seals and opens [hide] blocks for quotes, bound to the site's key and not to the address it answers at.
+	 *
+	 * @return forum_hidden_token
+	 */
+	private function hiddenToken()
+	{
+		if($this->hiddenToken === null)
+		{
+			require_once(e_PLUGIN.'forum/forum_hidden_token.php');
+			$this->hiddenToken = new forum_hidden_token(self::$hiddenPurpose);
+		}
+
+		return $this->hiddenToken;
 	}
 
 }
