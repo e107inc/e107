@@ -157,6 +157,47 @@ class redirection
 	}
 
 	/**
+	 * Is $url safe to land on after sign-in, judged by its spelling alone and not its host: it parses, its query holds no character e107 rewrites before reading it, and once decoded it names neither e-token nor ajax_used?
+	 *
+	 * @param string $url
+	 * @return bool
+	 */
+	public function isSafeLanding($url)
+	{
+		$parts = is_string($url) ? parse_url($url) : false;
+
+		if($parts === false || !preg_match('#^[A-Za-z0-9_.,:=&-]*$#', isset($parts['query']) ? $parts['query'] : ''))
+		{
+			return false;
+		}
+
+		$plain = str_replace(array('{', '}', '.'), array('', '', '_'), self::fullyDecoded($url));
+
+		return (stripos($plain, 'e-token') === false) && (stripos($plain, 'ajax_used') === false);
+	}
+
+	/**
+	 * @param string $text
+	 * @return string $text with percent-encoding and HTML entities undone, up to ten times
+	 */
+	private static function fullyDecoded($text)
+	{
+		for($i = 0; $i < 10; $i++)
+		{
+			$decoded = html_entity_decode(rawurldecode($text), ENT_QUOTES, 'UTF-8');
+
+			if($decoded === $text)
+			{
+				break;
+			}
+
+			$text = $decoded;
+		}
+
+		return $text;
+	}
+
+	/**
 	 * Return the URL the admin was on, prior to being logged-out. 
 	 * @return string 
 	 */

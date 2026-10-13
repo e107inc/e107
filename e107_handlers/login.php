@@ -329,6 +329,13 @@ class userlogin
 		}
 
 		$redir = e_REQUEST_URL;
+
+		if(!e107::getRedirect()->isSafeLanding($redir))
+		{
+			$redir = (string) substr($redir, 0, strcspn($redir, '?'));
+			$redir = e107::getRedirect()->isSafeLanding($redir) ? $redir : SITEURL;
+		}
+
 		$class_list = $this->userMethods->addCommonClasses($this->userData, TRUE);
 		//$redir = e_SELF;
 		//if (e_QUERY) $redir .= '?'.str_replace('&amp;','&',e_QUERY);
