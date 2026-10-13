@@ -2248,7 +2248,7 @@ class e_parse
 		{
 			$markers[$block['marker']] = $block;
 			$core = (string) substr($block['marker'], 1, -1);
-			array_push($leftovers, $block['marker'], '&lt;' . $core . '&gt;', '%3C' . $core . '%3E');
+			array_push($leftovers, $block['marker'], '&lt;' . $core . '&gt;', '&lt;' . $core . '&#x3E;', '%3C' . $core . '%3E');
 		}
 
 		$parts = $this->splitOnTags($html);
@@ -2618,6 +2618,65 @@ class e_parse
 		$encoded = json_encode((string) $text, JSON_HEX_QUOT | JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP);
 
 		return $encoded === false ? '""' : $encoded;
+	}
+
+	/**
+	 * Expand the codes $marker opens in each quoted attribute value of a tag, one value at a time and encoded for that attribute, and leave $marker inert anywhere else a tag holds it.
+	 *
+	 * @param string   $text
+	 * @param string   $marker the character that opens a code
+	 * @param callable $expand expands one attribute value as it is written
+	 * @return string
+	 */
+	private function expandInsideTags($text, $marker, $expand)
+	{
+		if (strpos($text, $marker) === false)
+		{
+			return $text;
+		}
+
+		$inert = '&#' . ord($marker) . ';';
+		$segments = $this->splitOnTags($text);
+
+		if ($segments === false)
+		{
+			return str_replace($marker, $inert, $text);
+		}
+
+		foreach ($segments as $i => $segment)
+		{
+			if (strpos($segment, $marker) === false || !preg_match('#<[a-z]#i', $segment))
+			{
+				continue;
+			}
+
+			if ($i % 2 === 0 || !preg_match('#^</?[a-z]#i', $segment))
+			{
+				$segments[$i] = str_replace($marker, $inert, $segment);
+				continue;
+			}
+
+			$parts = preg_split('#("[^"]*"|\'[^\']*\'|&quot;.*?&quot;|&\#0?39;.*?&\#0?39;)#s', $segment, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+			foreach ($parts as $j => $part)
+			{
+				if ($j % 2 === 1 && strpos($part, $marker) !== false && preg_match('#([^\s"\'=<>/;]+)\s*=\s*$#', $parts[$j - 1], $name)
+					&& preg_match('#^("|\'|&quot;|&\#0?39;)(.*)\1$#s', $part, $quoted))
+				{
+					$value = html_entity_decode($expand($quoted[2]), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+					$value = in_array(strtolower($name[1]), array('action', 'background', 'cite', 'data', 'formaction', 'href', 'poster', 'src', 'xlink:href'), true)
+						? $this->toUrlAttribute($value, '#')
+						: $this->toAttribute($value, true);
+					$part = $quoted[1] . strtr($value, array('&quot;' => '&#x22;', '&#039;' => '&#x27;', '&gt;' => '&#x3E;')) . $quoted[1];
+				}
+
+				$parts[$j] = str_replace($marker, $inert, $part);
+			}
+
+			$segments[$i] = implode('', $parts);
+		}
+
+		return implode('', $segments);
 	}
 
 	/**
@@ -6946,7 +7005,10 @@ class e_parse
 		// Optional short-code conversion
 		if ($opts['parse_sc'])
 		{
-			$text = $this->parseTemplate($this->disarmShortcodeParameters($text), true);
+			$text = $this->parseTemplate($this->disarmShortcodeParameters($this->expandInsideTags($text, '{', function ($value)
+			{
+				return $this->parseTemplate($this->disarmShortcodeParameters($value), true);
+			})), true);
 		}
 
 		/**
