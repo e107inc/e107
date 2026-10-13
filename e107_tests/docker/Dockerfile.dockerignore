@@ -1,0 +1,17 @@
+# The build context is the repository root. .git stays in it: the
+# self-contained image keeps the checkout's history.
+
+**/node_modules
+e107_tests/vendor
+e107_tests/tests/_output
+e107_tests/config.docker.yml
+
+# A site installed in a working copy, which would shadow the image's own.
+.htaccess
+e107_config.php
+e107_media/*
+!e107_media/index.html
+e107_system/*
+!e107_system/.htaccess
+!e107_system/core_image.phar
+!e107_system/index.html

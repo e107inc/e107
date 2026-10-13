@@ -485,10 +485,85 @@ endpoint e107 contacts (#5687).
   where it left off; the active env is rediscovered from Docker labels and
   the `config.docker.yml` marker, with no flags to re-pass.
 
+## Self-contained mode
+
+The Dockerfile has two stages. `e107-tests` and CI build the `harness` stage
+described above. The default stage, `scanner`, builds an image that needs
+nothing else: the checkout is copied to `/src`, a MariaDB server is bundled,
+and the site is installed while the image is built, by e107's own unattended
+installer, with every bundled plugin. It then runs with no network at all,
+which is how automated security scanners such as Anthropic's OSS Scanner run
+e107.
+
+The PHP and MariaDB versions are the Dockerfile's `ARG` defaults, chosen as
+the oldest PHP e107's installer accepts and a MariaDB release whose generic
+Linux build runs on that PHP image. Override them with `--build-arg`; a
+different `MARIADB_VERSION` needs the `MARIADB_SHA256` MariaDB publishes
+beside it.
+
+```sh
+# From the repository root
+docker build -f e107_tests/docker/Dockerfile -t e107-self-contained .
+docker run --rm -it --network none e107-self-contained bash
+
+# Inside: there is no init system, so start the database and Apache first.
+# Safe to run again; e107-stop stops both.
+e107-start
+curl -s http://127.0.0.1/ | head
+```
+
+- **The site** is `/src`, served at `http://127.0.0.1/` and
+  `http://localhost/`, and over HTTPS with a self-signed certificate. Apache
+  serves the checkout itself, so an edit in `/src` shows on the next request.
+- **Accounts:**
+  - `admin` / `x107`: the main administrator;
+  - `editor` / `editor`: an administrator with the Pages permission only;
+  - `member` / `member`: a member with no admin rights.
+- **Form posts from curl.** On a loopback address e107 expects the browser's
+  `Sec-Fetch-Site` header rather than a token, as it would from a browser on a
+  trustworthy origin. Send `-H 'Sec-Fetch-Site: same-origin'` and keep a
+  cookie jar; the `smoke-test.sh` admin sign-in is a worked example.
+- **Database:** `mariadb` as root over the socket, or the site's own account,
+  `e107` / `e107`, on `127.0.0.1`. The site's database is `e107`; the unit
+  suite gets `e107_test`.
+- **Mail** never leaves the container: each message PHP sends is a file in
+  `/var/mail/e107/`.
+- **Logs:** PHP errors are logged, not shown, as on a production host, to
+  `/var/log/apache2/error.log`. The database logs to `/var/log/mysql/error.log`.
+- **Scheduled tasks:** `php /src/cron.php token=<token>`, or
+  `curl 'http://127.0.0.1/cron.php?token=<token>'`. As on any new site, the
+  token (the `e_cron_pwd` preference) is created the first time an
+  administrator opens Admin > Schedule Tasks, whose Setup tab then shows it.
+- **Unit tests:** `e107-unit` runs `codecept run unit` with its arguments, so
+  `e107-unit tests/unit/UserHandlerTest.php` runs one file. It runs on a copy
+  of `/src` taken at each call, because the suite rewrites the
+  `e107_config.php` of the tree it tests. Its dependencies were installed
+  when the image was built, as `e107-tests` installs them. For the whole
+  suite on an older PHP, pass the `--skip-group` options the unit workflow
+  passes for that PHP: some tests load tooling it cannot parse.
+- `docker run` without a command starts the database and Apache in the
+  foreground, through the same entrypoint as the harness.
+
+The build ends with a smoke test (`smoke-test.sh`): the login page, the
+refusal of `e107_system/`, an admin sign-in and one unit test file. A failed
+check prints a warning and does not fail the build.
+
 ## Files
 
 - `Dockerfile`: PHP + Apache + extensions, built once per `(PHP, xdebug)`
   combo and per state of the files here, the compose files and the docs aside.
+  Its `harness` stage is the test stack's web image; its default `scanner`
+  stage is the self-contained image. Both are built from the repository root,
+  and `Dockerfile.dockerignore` keeps local state and heavy test output out
+  of that context.
+- `composer-install.sh`: installs the suite's dependencies from the first
+  committed lock the PHP in use can take; see "One lock per PHP range".
+- `e107-start.sh`, `e107-stop.sh`, `e107-unit.sh`, `sendmail.sh`,
+  `mariadb.cnf`: the self-contained image's commands and configuration.
+- `install-site.sh`, `install-site.php`, `smoke-test.sh`: the self-contained
+  image's build-time install and its check.
+- `render-config.sh`: renders an `e107_config.php` from the suite's template,
+  for `up --install-site` and the self-contained image alike.
 - `debian-archive.sh`: moves apt to `archive.debian.org` once the image's
   Debian release is served there; see "Legacy PHP".
 - `compose.yml`: the db + web + browser services, parameterised by env,
