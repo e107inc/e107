@@ -147,7 +147,7 @@ class e_file
 	{
 
 		$this->dirFilter = array('/', 'CVS', '.svn'); // Default directory filter (exact matches only)
-		$this->fileFilter = array('^thumbs\.db$', '^Thumbs\.db$', '.*\._$', '^\.htaccess$', '^\.cvsignore$', '^\.ftpquota$', '^index\.html$', '^null\.txt$', '\.bak$', '^.tmp'); // Default file filter (regex format)
+		$this->fileFilter = array('^thumbs\.db$', '^Thumbs\.db$', '.*\._$', '^\.htaccess$', '^\.cvsignore$', '^\.ftpquota$', '^index\.html$', '^null\.txt$', '\.bak$', '^\.tmp'); // Default file filter (regex format)
 
 		return $this;
 	}

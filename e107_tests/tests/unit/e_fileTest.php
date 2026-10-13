@@ -768,12 +768,45 @@ class e_fileTest extends \Test\Unit
 
 
 				// test folder with ony a folder inside. (no files)
-				$publicFilter = array('_FT', '^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^\.cvsignore$','^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp'); // Default file filter (regex format)
+				$publicFilter = array('_FT', '^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^\.cvsignore$','^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^\.tmp'); // Default file filter (regex format)
 				$result = $this->fl->get_files(e_DOCS,'',$publicFilter);
 				$expected = array();
 
 				self::assertSame($expected, $result);
 
+			}
+
+			/**
+			 * The standard filter skips names that start with .tmp, and not a name that merely has tmp after its first character.
+			 */
+			public function testTheStandardFilterSkipsOnlyNamesStartingWithDotTmp()
+			{
+				$dir = e_TEMP . 'test_get_files_tmp_' . uniqid() . '/';
+				$names = array('stmp.jpg', '_tmp.png', '.tmp1234', 'photo.jpg');
+				mkdir($dir);
+
+				try
+				{
+					foreach($names as $name)
+					{
+						touch($dir . $name);
+					}
+
+					$fl = new e_file();
+					$fl->setMode('fname');
+					$found = $fl->get_files($dir);
+					sort($found);
+
+					self::assertSame(array('_tmp.png', 'photo.jpg', 'stmp.jpg'), $found);
+				}
+				finally
+				{
+					foreach($names as $name)
+					{
+						@unlink($dir . $name);
+					}
+					@rmdir($dir);
+				}
 			}
 
 			private static function readZipFile($filePath)
