@@ -594,7 +594,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 		if(options.loadingIcon != null && options.loadingTarget != null)
 		{
-			var loadHtml = '<i class="e-ajax-loading fa fa-spin '+ options.loadingIcon +'"></i>';
+			var loadHtml = $('<i class="e-ajax-loading fa fa-spin"></i>').addClass(options.loadingIcon);
 			$(options.loadingTarget).html(loadHtml);
 		}
 

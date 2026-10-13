@@ -100,7 +100,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var $iframe = $('<iframe id="e-modal-iframe" width="100%" frameborder="0" scrolling="auto" style="display:block;" allowtransparency="true" allowfullscreen></iframe>')
 						.attr({height: height + 'px', src: url});
 					$('#uiModal .modal-body').empty().append($('<div></div>').append($iframe));
-					$('#uiModal .modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+					$('#uiModal .modal-caption').text(caption).append(' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
 					$('#uiModal.modal').modal(modalOptions);
 
 					$("#e-modal-iframe").on("load", function ()

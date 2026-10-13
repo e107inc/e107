@@ -55,7 +55,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var $iframe = $('<iframe id="e-modal-iframe" width="100%" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true"></iframe>')
 						.attr({height: height + 'px', src: url});
 					$(target+' .modal-body').empty().append($('<div class="well"></div>').append($iframe));
-					$(target+' .modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+					$(target+' .modal-caption').text(caption).append(' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
 					$(target+'.modal').modal('show');
 
 
