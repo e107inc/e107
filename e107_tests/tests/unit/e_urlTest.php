@@ -161,4 +161,45 @@ class e_urlTest extends \Test\Unit
 
 		return strpos($path, '$') === false ? $path : null;
 	}
+
+	/**
+	 * A route rewrites the address after class2.php has judged its e-token, so it may pass a token on only if the request carried it.
+	 */
+	public function testARouteHandsOverOnlyTheTokenTheRequestCarried()
+	{
+		$restore = $this->withCorePrefs(array('url_config' => null, 'url_aliases' => null, 'e_url_list' => array('routeprobe' => 1)));
+		$get = $_GET;
+
+		try
+		{
+			self::assertSame(array('a' => '1'), $this->routedGet('probe/a=1', array()), 'no token');
+			self::assertSame(array('e-token' => 'carried', 'a' => '1'), $this->routedGet('probe/a=1&e-token=carried', array('e-token' => 'carried')), 'the carried token');
+			self::assertSame(array(), $this->routedGet('probe/a=1&e-token=routed', array()), 'a token only the route has');
+			self::assertSame(array('e-token' => 'carried'), $this->routedGet('probe/a=1&e-token=routed', array('e-token' => 'carried')), 'a token other than the carried one');
+			self::assertSame(array(), $this->routedGet('probe/a=1&amp;e-token=routed', array()), 'a token the page reads behind &amp;');
+			self::assertSame(array('e-token' => 'carried'), $this->routedGet('probe/a=1&e-token=routed&amp;e-token=carried', array('e-token' => 'carried')), 'a token only parse_str() reads, ahead of the carried one');
+		}
+		finally
+		{
+			$_GET = $get;
+			$restore();
+		}
+	}
+
+	/**
+	 * @return array $_GET after e_url::run() has routed $request, through a route whose page is not on disk, from $carried
+	 */
+	private function routedGet($request, array $carried)
+	{
+		$_GET = $carried;
+		$url = new e_url();
+		(new ReflectionProperty('e_url', '_request'))->setValue($url, $request);
+		(new ReflectionProperty('e_url', '_config'))->setValue($url, array('routeprobe' => array('probe' => array(
+			'regex'    => '^probe/(.*)',
+			'redirect' => '{e_PLUGIN}routeprobe/absent.php?$1',
+		))));
+		$url->run();
+
+		return $_GET;
+	}
 }
