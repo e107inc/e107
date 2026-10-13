@@ -631,5 +631,85 @@ class redirectionTest extends \Test\Unit
 		}
 	}
 
+	/**
+	 * The address a visitor returns to after signing in is the session's copy, checked as it is used, because a cookie of the same name can be written by a neighbouring host.
+	 */
+	public function testThePreviousUrlIsTheSessionsCopyAndSafeToLandOn()
+	{
+		$restore = $this->withNothingRemembered('_previousUrl');
 
+		try
+		{
+			$_COOKIE[e_COOKIE.'__previousUrl'] = '/news.php?extend.1';
+			self::assertFalse($this->rd->getPreviousUrl(), 'a cookie');
+
+			$this->rd->setCookie('_previousUrl', '/news.php?extend.1&e-token=abc123', 300);
+			self::assertFalse($this->rd->getPreviousUrl(), 'a token-marked address in the session');
+
+			$this->rd->setCookie('_previousUrl', '/news.php?extend.1&amp;e-token=abc123', 300);
+			self::assertFalse($this->rd->getPreviousUrl(), 'an address spelled to hide its token');
+
+			$this->rd->setCookie('_previousUrl', '/news.php?extend.1', 300);
+			self::assertSame('/news.php?extend.1', $this->rd->getPreviousUrl());
+
+			$this->rd->setPreviousUrl('/page.php?id=3', false, true);
+			self::assertSame('/page.php?id=3', $this->rd->getPreviousUrl(), 'an address also written to a cookie');
+		}
+		finally
+		{
+			$restore();
+		}
+	}
+
+	/**
+	 * A members-only site returns a signed-in visitor to the address it remembered, so that address is held to the same rule as the previous URL.
+	 */
+	public function testTheMembersOnlyReturnIsTheSessionsCopyAndSafeToLandOn()
+	{
+		$landed = array();
+		$rd = $this->make('redirection', array(
+			'redirect' => function($url) use (&$landed) { $landed[] = $url; },
+		));
+		$restorePrefs = $this->withCorePrefs(array('membersonly_enabled' => 1));
+		$restore = $this->withNothingRemembered('_afterlogin');
+
+		try
+		{
+			$_COOKIE[e_COOKIE.'__afterlogin'] = '/news.php?extend.1';
+			$rd->checkMembersOnly();
+			self::assertSame(array(), $landed, 'a cookie');
+
+			$rd->setCookie('_afterlogin', '/news.php?extend.1&e-token=abc123', 300);
+			$rd->checkMembersOnly();
+			self::assertSame(array(), $landed, 'a token-marked address in the session');
+
+			$rd->setCookie('_afterlogin', '/news.php?extend.1', 300);
+			$rd->checkMembersOnly();
+			self::assertSame(array('/news.php?extend.1'), $landed);
+		}
+		finally
+		{
+			$restore();
+			$restorePrefs();
+		}
+	}
+
+	/**
+	 * Clears the session's copy of a remembered address for one test; call what it returns in a finally block.
+	 *
+	 * @param string $name a name stored with {@see redirection::setCookie()}
+	 * @return callable puts $_COOKIE back as it was found and clears the session's copy again
+	 */
+	private function withNothingRemembered($name)
+	{
+		$session = e107::getSession();
+		$cookies = $_COOKIE;
+		$session->clear($name)->clear($name.'_expire');
+
+		return static function () use ($session, $cookies, $name)
+		{
+			$_COOKIE = $cookies;
+			$session->clear($name)->clear($name.'_expire');
+		};
+	}
 }

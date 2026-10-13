@@ -192,29 +192,57 @@ class redirection
 	 */
 	public function getPreviousUrl()
 	{
-		return $this->getCookie('_previousUrl');
+		return $this->rememberedAddress('_previousUrl');
+	}
+
+	/**
+	 * @param string $name a value stored with {@see redirection::setCookie()}
+	 * @return string|false the session's copy if it is current and {@see redirection::isSafeLanding()}, never a cookie's
+	 */
+	private function rememberedAddress($name)
+	{
+		$url = $this->sessionCopy($name);
+
+		return ($url && $this->isSafeLanding($url)) ? $url : false;
+	}
+
+	/**
+	 * @param string $name a value stored with {@see redirection::setCookie()}
+	 * @return mixed the session's copy, false once it has expired, null when the session holds none
+	 */
+	private function sessionCopy($name)
+	{
+		$session = e107::getSession();
+
+		if(!$session->has($name))
+		{
+			return null;
+		}
+
+		// expired - cookie like session implementation
+		if((int) $session->get($name.'_expire') < time())
+		{
+			$session->clear($name.'_expire')
+				->clear($name);
+			return false;
+		}
+
+		return $session->get($name);
 	}
 		
 	/**
-	 * Get value stored with self::setCookie()
+	 * Get a value stored with {@see redirection::setCookie()}: the session's copy, else a cookie that any host on the domain can write.
 	 * @param string $name
 	 * @return mixed
 	 */
 	public function getCookie($name) //TODO move to e107_class or a new user l class. 
 	{	
 		$cookiename = e_COOKIE."_".$name;
-		$session = e107::getSession();
-		
-		if($session->has($name))
+		$copy = $this->sessionCopy($name);
+
+		if($copy !== null)
 		{
-			// expired - cookie like session implementation
-			if((int) $session->get($name.'_expire') < time())
-			{
-				$session->clear($name.'_expire')
-					->clear($name);
-				return false;
-			}
-			return $session->get($name);
+			return $copy;
 		}
 		// fix - prevent null values
 		elseif(isset($_COOKIE[$cookiename]) && $_COOKIE[$cookiename])
@@ -237,13 +265,11 @@ class redirection
 		$cookiename = e_COOKIE."_".$name;
 		$session = e107::getSession();
 		
-		if(!$forceCookie && e107::getPref('cookie_name') != 'cookie')
-		{
-			// expired - cookie like session implementation
-			if(null !== $expire) $session->set($name.'_expire', time() + (int) $expire);
-			$session->set($name, $value);
-		}
-		else
+		// expired - cookie like session implementation
+		if(null !== $expire) $session->set($name.'_expire', time() + (int) $expire);
+		$session->set($name, $value);
+
+		if($forceCookie || e107::getPref('cookie_name') == 'cookie')
 		{
 			cookie($cookiename, $value, time() + (int) $expire, e_HTTP, e107::getLanguage()->getCookieDomain());
 		}
@@ -427,7 +453,7 @@ class redirection
 	 */
 	private function restoreMembersOnlyUrl()
 	{
-		$url = $this->getCookie('_afterlogin');
+		$url = $this->rememberedAddress('_afterlogin');
 		if(USER && $url)
 		{
 			//session_set(e_COOKIE.'_afterlogin', FALSE, -1000);
