@@ -359,6 +359,10 @@ function init()
 
 	$forum_view_forum = '';
 
+	$sc->setVars($forumSCvars);
+	$importantRow = empty($FORUM_IMPORTANT_ROW) ? '' : $tp->parseTemplate($FORUM_IMPORTANT_ROW, true, $sc);
+	$normalRow = empty($FORUM_NORMAL_ROW) ? '' : $tp->parseTemplate($FORUM_NORMAL_ROW, true, $sc);
+
 	if(count($threadList))
 	{
 		foreach($threadList as $thread_info)
@@ -381,7 +385,7 @@ function init()
 			{
 				if(!empty($FORUM_IMPORTANT_ROW))
 				{
-					$forum_view_forum .= $FORUM_IMPORTANT_ROW;
+					$forum_view_forum .= $importantRow;
 				}
 				else
 				{
@@ -404,7 +408,7 @@ function init()
 				}
 				elseif(!empty($FORUM_NORMAL_ROW))
 				{
-					$forum_view_forum .= $FORUM_NORMAL_ROW;
+					$forum_view_forum .= $normalRow;
 				}
 				else
 				{
@@ -437,7 +441,6 @@ function init()
 	$sc->setVars($forumSCvars);
 
 	$forum_view_start = $tp->parseTemplate($FORUM_VIEW_START_CONTAINER . $FORUM_VIEW_START, true, $sc);
-	$forum_view_forum = $tp->parseTemplate($forum_view_forum, true, $sc);
 	$forum_view_end = $tp->parseTemplate($FORUM_VIEW_END . $FORUM_VIEW_END_CONTAINER, true, $sc);
 
 
