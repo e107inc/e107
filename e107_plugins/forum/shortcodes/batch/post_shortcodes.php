@@ -275,7 +275,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			return $text;
 		}
 
-		return str_replace(array('&quot;', '&#039;', '&#092;'), array('"', "'", '\\'), $text);
+		return str_replace(array('&quot;', '&#039;', '&#092;', '&amp;quot;', '&amp;#039;'), array('"', "'", '\\', '&quot;', '&#039;'), $text);
 	}
 
 	/**

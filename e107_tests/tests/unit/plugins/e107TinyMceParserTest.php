@@ -187,6 +187,28 @@ Plain text paragraph 3<br />';
 			$this->assertSame('[html]<p>Look &lt;details open ontoggle=x&gt;y&lt;/details&gt; a &amp; b é</p>[/html]', $result);
 		}
 
+		/**
+		 * Saving from the editor keeps a quote that is part of an attribute value inside that value, through storage, display and the next edit.
+		 */
+		public function testToDBKeepsAQuoteInsideAnAttributeValue()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+			$tp = e107::getParser();
+
+			$saved = $this->tm->toDB('<p><cite title="x&quot; data-q=&quot;y\'s">n</cite></p>');
+			$stored = $tp->toDB($saved);
+			$shown = new DOMDocument();
+			$shown->loadHTML('<body>'.$tp->toHTML($stored, true).'</body>');
+			$cite = $shown->getElementsByTagName('cite')->item(0);
+			$edited = new DOMDocument();
+			$edited->loadHTML('<body>'.str_replace(array('[html]', '[/html]'), '', html_entity_decode($tp->toForm($stored), ENT_QUOTES | ENT_HTML5, 'UTF-8')).'</body>');
+
+			$this->assertSame('[html]<p><cite title="x&quot; data-q=&quot;y\'s">n</cite></p>[/html]', $saved);
+			$this->assertSame('x" data-q="y\'s', $cite->getAttribute('title'));
+			$this->assertFalse($cite->hasAttribute('data-q'));
+			$this->assertSame('x" data-q="y\'s', $edited->getElementsByTagName('cite')->item(0)->getAttribute('title'));
+		}
+
 		function testtoDBOnScriptTags()
 		{
 			$this->tm->setHtmlClass(e_UC_ADMIN);

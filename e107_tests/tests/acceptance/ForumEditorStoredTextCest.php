@@ -79,6 +79,16 @@ class ForumEditorStoredTextCest
 		$I->seeInSource('Mine &amp;lt;b&amp;gt;x&amp;lt;/b&amp;gt; &lt;b&gt;bold&lt;/b&gt;');
 	}
 
+	public function anAdministratorsEditBoxKeepsAQuoteInsideAnAttributeValue(AcceptanceTester $I)
+	{
+		$post = $I->haveForumPost('[html]<p><cite title=&quot;x&amp;quot; q&#039;s&quot;>n</cite></p>[/html]', $this->ids['threadA'], $this->ids['forumA'], 1);
+		$I->loginAsAdmin();
+
+		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=edit&id='.$this->ids['threadA'].'&post='.$post);
+
+		$I->seeInSource('&lt;cite title="x&amp;quot; q\'s"&gt;');
+	}
+
 	public function anAdministratorsEditBoxKeepsPercentEscapesInAnHtmlPostAsText(AcceptanceTester $I)
 	{
 		$post = $I->haveForumPost('[html]<p>Hi %3Cdetails open ontoggle=x%3Ey%3C/details%3E a+b</p>[/html]', $this->ids['threadA'], $this->ids['forumA'], 1);
