@@ -169,6 +169,48 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * POST a form to $target as a browser would write it, with no cookies, and return where the site sends the browser next.
+	 *
+	 * PhpBrowser percent-encodes characters such as [ and ] in a query, which a browser sends as they are.
+	 *
+	 * @param string $target path and query below the site's address, sent exactly as given
+	 * @param array $params form fields
+	 * @param array $headers more request headers, name => value
+	 * @return string the path and query of the Location below the site's address, or '' when the answer has none
+	 */
+	public function grabLandingAfterRawPost($target, array $params, array $headers = [])
+	{
+		$site = parse_url((string) $this->getModule('PhpBrowser')->_getConfig('url'));
+		$host = $site['host'].(isset($site['port']) ? ':'.$site['port'] : '');
+		$base = ($this->siteDirectory() === '') ? '' : '/'.$this->siteDirectory();
+		$socket = fsockopen($site['host'], isset($site['port']) ? $site['port'] : 80, $errno, $errstr, 10);
+		\PHPUnit\Framework\Assert::assertNotFalse($socket, $errstr);
+
+		$body = http_build_query($params);
+		$request = "POST ".$base.$target." HTTP/1.1\r\nHost: ".$host."\r\nConnection: close\r\n"
+			."Content-Type: application/x-www-form-urlencoded\r\nContent-Length: ".strlen($body)."\r\n";
+		foreach($headers as $name => $value)
+		{
+			$request .= $name.": ".$value."\r\n";
+		}
+		fwrite($socket, $request."\r\n".$body);
+		$response = stream_get_contents($socket);
+		fclose($socket);
+
+		$head = (string) substr($response, 0, (int) strpos($response, "\r\n\r\n"));
+
+		if(!preg_match('/^Location:[ \t]*(.*?)\r?$/mi', $head, $match))
+		{
+			return '';
+		}
+
+		$location = parse_url($match[1]);
+		$landing = (isset($location['path']) ? $location['path'] : '').(isset($location['query']) ? '?'.$location['query'] : '');
+
+		return (string) substr($landing, strlen($base));
+	}
+
+	/**
 	 * Empty the cookie jar.
 	 *
 	 * e_core_session::hasAmbientAuthority() asks whether a request carried any
@@ -315,6 +357,16 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * @return string the folder the suite's site is served from, without slashes, or '' at the docroot
+	 */
+	private function siteDirectory()
+	{
+		$base = parse_url((string) $this->getModule('PhpBrowser')->_getConfig('url'), PHP_URL_PATH);
+
+		return is_string($base) ? trim($base, '/') : '';
+	}
+
+	/**
 	 * The paths an application cookie can be sitting on in the jar.
 	 *
 	 * e107 scopes its cookies to e_HTTP, the app's base path: "/" on a docroot
@@ -329,8 +381,7 @@ class Acceptance extends E107Base
 	 */
 	private function siteCookiePaths()
 	{
-		$base = parse_url((string) $this->getModule('PhpBrowser')->_getConfig('url'), PHP_URL_PATH);
-		$dir  = is_string($base) ? trim($base, '/') : '';
+		$dir = $this->siteDirectory();
 
 		$paths = [];
 
