@@ -73,11 +73,11 @@ function uploadfile_shortcode($parm)
 {
 	if(!FILE_UPLOADS)
 	{
-		return LAN_UPLOAD_SERVEROFF;
+		return defset('LAN_UPLOAD_SERVEROFF', 'This option is disabled as file uploading is not enabled on your server');
 	}
-	if(deftrue('USER_AREA') && !check_class(e107::getPref('upload_class')))
+	if(!deftrue('e_ADMIN_AREA') && (!e107::getPref('upload_enabled') || !check_class(e107::getPref('upload_class'))))
 	{
-		return LAN_DISABLED;
+		return defset('LAN_DISABLED', 'Disabled');
 	}
 
 	if(empty($parm))
