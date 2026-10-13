@@ -11,7 +11,7 @@
 */
 
 // minimal software version
-define('MIN_PHP_VERSION',   '8.0');
+define('MIN_PHP_VERSION',   '5.6');
 define('MIN_MYSQL_VERSION', '4.1.2');
 define('MAKE_INSTALL_LOG', true);
 
@@ -90,9 +90,6 @@ class installLog
 		    case E_NOTICE:
 		    case E_USER_NOTICE:
 		        self::add($error, "notice");
-		        break;
-		    case E_STRICT:
-		        self::add($error, "debug");
 		        break;
 		    default:
 		        if(!empty($errno))

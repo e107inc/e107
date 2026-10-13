@@ -61,7 +61,7 @@ class installStage7HashTest extends \Test\Unit
 		);
 
 		$source = file_get_contents($installPhp);
-		$classBody = self::extractClassBody($source, 'e_install');
+		$classBody = \Test\Tokens::classSource($source, 'e_install');
 		self::assertNotNull(
 			$classBody,
 			'Unable to locate the e_install class definition in install.php'
@@ -242,96 +242,5 @@ class installStage7HashTest extends \Test\Unit
 		$method->invoke($instance);
 
 		return $fakeE107->e107_dirs;
-	}
-
-	/**
-	 * Walk install.php with the PHP tokenizer and return the source text
-	 * of the named class definition (from "class" keyword to its closing
-	 * brace, inclusive). Returns null if the class isn't found.
-	 *
-	 * @param string $source
-	 * @param string $className
-	 * @return string|null
-	 */
-	private static function extractClassBody($source, $className)
-	{
-		$tokens = token_get_all($source);
-		$count = count($tokens);
-
-		for ($i = 0; $i < $count; $i++)
-		{
-			$token = $tokens[$i];
-			if (!is_array($token) || $token[0] !== T_CLASS)
-			{
-				continue;
-			}
-
-			$j = \Test\Tokens::neighbourIndex($tokens, $i, 1);
-
-			if ($j === null || !is_array($tokens[$j])
-				|| $tokens[$j][0] !== T_STRING
-				|| $tokens[$j][1] !== $className)
-			{
-				continue;
-			}
-
-			// Find the opening brace of the class body, then walk to its
-			// matching closing brace by tracking nesting depth.
-			$start = $i;
-			$k = $j + 1;
-			while ($k < $count
-				&& !(is_string($tokens[$k]) && $tokens[$k] === '{'))
-			{
-				$k++;
-			}
-			if ($k >= $count)
-			{
-				return null;
-			}
-
-			$depth = 0;
-			$end = null;
-			for ($m = $k; $m < $count; $m++)
-			{
-				$cur = $tokens[$m];
-				if (is_string($cur))
-				{
-					if ($cur === '{')
-					{
-						$depth++;
-					}
-					elseif ($cur === '}')
-					{
-						$depth--;
-						if ($depth === 0)
-						{
-							$end = $m;
-							break;
-						}
-					}
-				}
-				elseif (is_array($cur) && $cur[0] === T_CURLY_OPEN)
-				{
-					// "${...}" / "{$...}" interpolation opener — counts
-					// as an open brace; its matching close is a plain '}'.
-					$depth++;
-				}
-			}
-
-			if ($end === null)
-			{
-				return null;
-			}
-
-			// Reassemble the class definition source text from tokens.
-			$body = '';
-			for ($n = $start; $n <= $end; $n++)
-			{
-				$body .= is_array($tokens[$n]) ? $tokens[$n][1] : $tokens[$n];
-			}
-			return $body;
-		}
-
-		return null;
 	}
 }

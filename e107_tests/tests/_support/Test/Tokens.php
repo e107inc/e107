@@ -88,6 +88,45 @@ final class Tokens
 	}
 
 	/**
+	 * @param string $source
+	 * @param string $className
+	 * @return string|null the named class's declaration, from its `class` keyword to its closing brace
+	 */
+	public static function classSource($source, $className)
+	{
+		$tokens = token_get_all($source);
+
+		foreach ($tokens as $i => $token)
+		{
+			if (self::id($token) !== T_CLASS || self::declaredName($tokens, $i) !== $className)
+			{
+				continue;
+			}
+
+			$text = '';
+			$depth = 0;
+
+			for ($j = $i; isset($tokens[$j]); $j++)
+			{
+				$text .= is_array($tokens[$j]) ? $tokens[$j][1] : $tokens[$j];
+
+				if (self::opensBrace($tokens[$j]))
+				{
+					$depth++;
+				}
+				elseif ($tokens[$j] === '}' && --$depth === 0)
+				{
+					return $text;
+				}
+			}
+
+			return null;
+		}
+
+		return null;
+	}
+
+	/**
 	 * @param array $tokens
 	 * @param int $i index of a name token
 	 * @return bool whether $tokens[$i] is a method called on a variable other than $this, which is how a Cest reaches a module

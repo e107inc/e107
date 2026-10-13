@@ -14,7 +14,7 @@
       * [Requirements](#requirements)
          * [Minimum](#minimum)
          * [Recommended](#recommended)
-         * [Release Lifecycle](#release-cycle-lifecycle)
+         * [Release Lifecycle](#release-lifecycle)
          * [PHP Compatibility](#php-compatibility)
       * [Installation](#installation)
          * [Standard Installation](#standard-installation)
@@ -27,18 +27,20 @@
 
 ## Requirements
 
+   The PHP versions e107 supports are listed under [PHP Compatibility](#php-compatibility). The installer (`install.php`) checks your server before it installs anything and tells you what is missing: the PHP version, the PHP extensions e107 needs, and file permissions.
+
    ### Minimum
 
-   * A web server (Apache or Microsoft IIS) running PHP 7.4 or newer
-   * MySQL 4.x or newer, or MariaDB
+   * A web server (Apache or Microsoft IIS) running PHP
+   * MySQL or MariaDB
    * FTP access to your web server and an FTP client (such as FileZilla)
    * Username and password to your MySQL database
 
    ### Recommended
 
    * Apache 2.4 or newer on Linux
-   * PHP 7.4 or newer
-   * MySQL 5.6 or newer, or MariaDB 10.3 or newer
+   * A PHP version that still receives security fixes and that your e107 version supports
+   * A MySQL or MariaDB version that still receives security fixes
    * A registered domain name
    * Access to a server control panel (such as cPanel)
 
@@ -71,16 +73,20 @@
 
 ### PHP Compatibility
 
-| Software Version    | Minimum PHP Version | Maximum PHP Version        | Cause of Compatibility Change                                                                                                                                                                                 |
-|---------------------|---------------------|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `~> 0.7`            | 4.3                 | _Unknown_                  | First explicit floor in `install.php` (`$required_php = '4.3'`).                                                                                                                                              |
-| `~> 1.0.0`          | 4.3                 | _Unknown_                  | Same install-time floor; no documented PHP version work between 0.7 and 1.0.                                                                                                                                  |
-| `>= 2.0.0, < 2.3.0` | 5.3                 | _Unknown_                  | `install.php` switched to a `MIN_PHP_VERSION` constant set to `5.3`.                                                                                                                                          |
-| `>= 2.3.0, < 2.3.4` | 5.6                 | 8.1.*                      | `MIN_PHP_VERSION` raised to `5.6`; `composer.json` introduced with platform `5.6` and `require.php` `>= 5.6`. PHP 8.2+ surfaces deprecations.                                                                 |
-| `~> 2.3.4`          | 5.6                 | _No known incompatibility_ | Bundled fixes for the PHP 8.5-promoted "`Cannot use bool as array`" warning and a libxml ≥ 2.13 normalization pass in `cleanHtml`. PHP 8.5 still surfaces remaining `setAccessible()` and other deprecations. |
-| `~> 2.4.0`          | _To be determined_  | _No known incompatibility_ |                                                                                                                                                                                                               |         
+| Software Version     | Minimum PHP Version | Maximum PHP Version | Cause of Compatibility Change                                                                                                                                                                                         |
+|----------------------|---------------------|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `~> 0.7`             | 4.3                 | _Unknown_           | First explicit floor in `install.php` (`$required_php = '4.3'`).                                                                                                                                                      |
+| `~> 1.0.0`           | 4.3                 | _Unknown_           | Same install-time floor; no documented PHP version work between 0.7 and 1.0.                                                                                                                                          |
+| `>= 2.0.0, < 2.1.4`  | 5.3                 | _Unknown_           | `install.php` switched to a `MIN_PHP_VERSION` constant set to `5.3`.                                                                                                                                                  |
+| `>= 2.1.4, < 2.2.0`  | 5.4                 | _Unknown_           | `MIN_PHP_VERSION` raised to `5.4`.                                                                                                                                                                                    |
+| `~> 2.2.0`           | 5.6                 | _Unknown_           | `MIN_PHP_VERSION` raised to `5.6`.                                                                                                                                                                                    |
+| `>= 2.3.0, < 2.3.1`  | 5.6                 | 7.4                 | PHP 7.4 support added; PHP 8.0 not yet supported.                                                                                                                                                                     |
+| `>= 2.3.1, < 2.3.3`  | 5.6                 | 8.1                 | PHP 8.0 and 8.1 support added ([#4554](https://github.com/e107inc/e107/pull/4554)).                                                                                                                                   |
+| `>= 2.3.3, < 2.3.12` | 5.6                 | 8.2                 | PHP 8.2 added to the tested versions.                                                                                                                                                                                 |
+| `~> 2.3.12`          | 5.6                 | 8.6                 | The engine deprecations the unit suite raised on PHP 8.5 and 8.6 are cleared ([#5951](https://github.com/e107inc/e107/pull/5951)).                                                                                    |
+| `~> 2.4.0`           | 5.6                 | 8.6                 | Downgraded to PHP 5.6 when committed ([#5898](https://github.com/e107inc/e107/pull/5898)); the engine deprecations the unit suite raised on PHP 8.6 are cleared ([#5941](https://github.com/e107inc/e107/pull/5941)). |
 
-**Software Version** uses Ruby-style version constraints. The constraint describes an inclusive range of e107 versions for which the next two columns hold. The maximum may be _No known incompatibility_ when no upper bound was hit at the time of release; subsequent PHP releases may surface deprecations not captured here.
+**Software Version** uses Ruby-style version constraints. Each row gives the PHP versions that the e107 versions it matches are meant to run on. _Unknown_ means no maximum was ever recorded for that range, and newer PHP releases may well break those versions.
 
 ## Installation
 
