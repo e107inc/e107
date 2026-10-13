@@ -903,6 +903,7 @@ function update_core_database($type = '')
 		require_once(e_HANDLER.'session_handler.php');
 
 		$sessionHashed = 0;
+		$sessionRemoved = 0;
 		$sessionSeen = 0;
 		$sessionSkipped = 0;
 
@@ -923,13 +924,25 @@ function update_core_database($type = '')
 			foreach($sessionLegacy as $sessionRow)
 			{
 				$sessionSeen++;
+				$sessionKey = e_session_db::storageKey($sessionRow['session_id']);
+
+				$sql->createQueryBuilder()->delete('session')
+					->where('session_id', $sessionKey)
+					->where('session_expires', '<=', time())
+					->execute();
 
 				if($sql->createQueryBuilder()->update('session')
-					->set('session_id', e_session_db::storageKey($sessionRow['session_id']))
+					->set('session_id', $sessionKey)
 					->where('session_id', $sessionRow['session_id'])
 					->execute())
 				{
 					$sessionHashed++;
+				}
+				elseif($sql->createQueryBuilder()->delete('session')
+					->where('session_id', $sessionRow['session_id'])
+					->execute())
+				{
+					$sessionRemoved++;
 				}
 				else
 				{
@@ -940,7 +953,7 @@ function update_core_database($type = '')
 
 		if($sessionSeen)
 		{
-			$log->addDebug('Stored session ids hashed: '.$sessionHashed.' of '.$sessionSeen);
+			$log->addDebug('Stored session ids hashed: '.$sessionHashed.', removed as unmovable: '.$sessionRemoved.', of '.$sessionSeen);
 		}
 
 
