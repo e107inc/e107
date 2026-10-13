@@ -61,6 +61,7 @@
  */
 
 use e107\Banlist\Entry;
+use e107\Database\NamedLock;
 use e107\Ip\Address;
 use e107\Ip\Range;
 use e107\Ip\RangeFile;
@@ -1180,7 +1181,7 @@ class eIPHandler
 	 * @param int    $ban_user
 	 * @param string $ban_notes
 	 *
-	 * @return boolean|int check result - FALSE if ban rejected. TRUE if ban added. 1 if IP address already banned
+	 * @return boolean|int check result - FALSE if ban rejected. TRUE if ban added. 1 if IP address already banned, or being banned by a request running alongside
 	 */
 	public function add_ban($bantype, $ban_message = '', $ban_ip = '', $ban_user = 0, $ban_notes = '')
 	{
@@ -1215,40 +1216,50 @@ class eIPHandler
 		{
 			return FALSE;
 		}
-		// See if address already in the banlist
-		$banRow = $sql->createQueryBuilder()
-			->select('banlist_bantype')->from('banlist')
-			->where('banlist_ip', $ban_ip)
-			->fetchRow();
-		if ($banRow && $banRow['banlist_bantype'] < eIPHandler::BAN_TYPE_WHITELIST)
+		$lock = new NamedLock($sql, 'e107_banlist_add_'.md5(e107::getMySQLConfig('defaultdb').'/'.e107::getMySQLConfig('prefix').'/'.$ban_ip));
+		$beingAddedAlongside = ($lock->take() === false);
+
+		try
 		{
-			return 1;		// Already in ban list
+			$banRow = $sql->createQueryBuilder()
+				->select('banlist_bantype')->from('banlist')
+				->where('banlist_ip', $ban_ip)
+				->fetchRow();
+			if ($banRow && $banRow['banlist_bantype'] < eIPHandler::BAN_TYPE_WHITELIST)
+			{
+				return 1;
+			}
+			if ($banRow || $this->isWhitelisted($ban_ip))
+			{
+				$log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
+				return FALSE;
+			}
+			if ($beingAddedAlongside)
+			{
+				return 1;
+			}
+			if(!empty($pref['enable_rdns_on_ban']))
+			{
+				$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
+			}
+			if(!$sql->createQueryBuilder()->insert('banlist')->valuesTyped(
+				array(
+					'banlist_id'			=> 0,
+					'banlist_ip' 			=> $ban_ip ,
+					'banlist_bantype' 		=> $bantype ,
+					'banlist_datestamp' 	=> time() ,
+					'banlist_banexpires' 	=> (vartrue($pref['ban_durations'][$bantype]) ? time()+($pref['ban_durations'][$bantype]*60*60) : 0) ,
+					'banlist_admin' 		=> $ban_user ,
+					'banlist_reason' 		=> $ban_message ,
+					'banlist_notes' 		=> $ban_notes
+				))->execute())
+			{
+				trigger_error("Error adding ban to banlist table", E_USER_WARNING);
+			}
 		}
-		if ($banRow || $this->isWhitelisted($ban_ip))
+		finally
 		{
-			$log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
-			return FALSE;
-		}
-		if(!empty($pref['enable_rdns_on_ban']))
-		{
-			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
-		}
-		// Add using an array - handles DB changes better. valuesTyped() applies the same
-		// per-column storage transform as the legacy array insert, so writes stay byte-identical.
-		if(!$sql->createQueryBuilder()->insert('banlist')->valuesTyped(
-			array(
-				'banlist_id'			=> 0,
-				'banlist_ip' 			=> $ban_ip ,
-				'banlist_bantype' 		=> $bantype ,
-				'banlist_datestamp' 	=> time() ,
-				'banlist_banexpires' 	=> (vartrue($pref['ban_durations'][$bantype]) ? time()+($pref['ban_durations'][$bantype]*60*60) : 0) ,
-				'banlist_admin' 		=> $ban_user ,
-				'banlist_reason' 		=> $ban_message ,
-				'banlist_notes' 		=> $ban_notes
-			))->execute())
-		{
-			trigger_error("Error adding ban to banlist table", E_USER_WARNING);;
-			// dbg("Error adding ban to banlist table");
+			$lock->release();
 		}
 
 		$this->regenerateFiles();
@@ -1434,7 +1445,6 @@ class banlistManager
 	const DELETE_GUARD_LAPSED = 'lapsed';
 
 	private $ourConfigDir = '';
-	private $replaceLockHeld = false;
 	public $banTypes = array();
 
 	public function __construct()
@@ -1612,10 +1622,11 @@ class banlistManager
 		$defaultExpiry = ($defaultHours > 0) ? time() + ($defaultHours * 3600) : 0;
 
 		$replacedIds = array();
+		$replaceLock = new NamedLock($sql, $this->replaceLockName());
 
 		if($replaceImported)
 		{
-			$lock = $this->takeReplaceLock();
+			$lock = $replaceLock->take();
 
 			if($lock !== true)
 			{
@@ -1787,38 +1798,8 @@ class banlistManager
 		}
 		finally
 		{
-			$this->releaseReplaceLock();
+			$replaceLock->release();
 		}
-	}
-
-	/**
-	 *	Take the lock that holds a replace-import's snapshot and delete together, without waiting for a run that already has it.
-	 *
-	 *	@return bool|null true where this run has the lock, false where another run holds it, null where the server did not say.
-	 */
-	private function takeReplaceLock()
-	{
-		$sql = e107::getDb();
-		$sql->execute('SELECT GET_LOCK(:name, 0) AS locked', array('name' => $this->replaceLockName()));
-		$row = $sql->fetch();
-		$locked = (is_array($row) && isset($row['locked'])) ? (string) $row['locked'] : null;
-		$this->replaceLockHeld = ($locked === '1');
-
-		return ($locked === null) ? null : $this->replaceLockHeld;
-	}
-
-	/**
-	 *	Release the replace-import lock where this run took it.
-	 */
-	private function releaseReplaceLock()
-	{
-		if(!$this->replaceLockHeld)
-		{
-			return;
-		}
-
-		$this->replaceLockHeld = false;
-		e107::getDb()->execute('SELECT RELEASE_LOCK(:name)', array('name' => $this->replaceLockName()));
 	}
 
 	/**
