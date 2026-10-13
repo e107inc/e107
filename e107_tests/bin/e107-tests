@@ -126,6 +126,16 @@ browser_image() {
     printf 'e107-browser:%s' "$(build_hash -name 'browser.*')"
 }
 
+# Build the image web_image names, into the local image store.
+build_web_image() {
+    local build=(docker build)
+    ! docker buildx version >/dev/null 2>&1 || build=(docker buildx build --load)
+    "${build[@]}" --target harness -f "$DOCKER_DIR/Dockerfile" \
+        --build-arg "PHP_VERSION=$E107_PHP_VERSION" \
+        --build-arg "WITH_XDEBUG=$WITH_XDEBUG" \
+        -t "$(web_image)" "$APP_PATH"
+}
+
 # Hash of the files in docker/ that match the find(1) tests given.
 build_hash() {
     (cd "$DOCKER_DIR" && find . -type f "$@" -print0 | LC_ALL=C sort -z | xargs -0 sha1sum | sha1sum | cut -c1-8)
@@ -814,12 +824,14 @@ cmd_up() {
     # any existing image in place and the stack comes up on it, so a Dockerfile
     # that cannot build looks healthy: exactly how an openssl flag that Debian
     # Stretch does not have sat unnoticed in the php:5.6 image for two days.
-    if [ "$REBUILD" = yes ]; then
-        local images=(web)
-        [ "$WITH_BROWSER" != yes ] || images+=(browser)
-        note ">> Rebuilding images for PHP $PHP: ${images[*]}"
-        compose_up_cmd build "${images[@]}" \
-            || err "an image failed to build; the stack was left alone (see output above)"
+    if [ "$REBUILD" = yes ] || ! docker image inspect "$(web_image)" >/dev/null 2>&1; then
+        note ">> Building $(web_image)"
+        build_web_image || err "the web image failed to build; the stack was left alone (see output above)"
+    fi
+    if [ "$REBUILD" = yes ] && [ "$WITH_BROWSER" = yes ]; then
+        note ">> Rebuilding $(browser_image)"
+        compose_up_cmd build browser \
+            || err "the browser image failed to build; the stack was left alone (see output above)"
     fi
 
     # The WebDriver suite needs the browser; nothing else does, so CI legs
@@ -840,7 +852,7 @@ cmd_up() {
     else
         note ">> Bringing up env: $PROJECT (PHP $PHP / $DB)"
     fi
-    # `compose up` builds the web image only when it's missing, so a cached
+    # `compose up` builds the browser image only when it's missing, so a cached
     # image (CI) or an earlier build is reused automatically.
     if ! up_with_registry_fallback; then
         warn "compose up failed; current stack state:"
@@ -933,16 +945,21 @@ cmd_relock() {
 # Print the web or browser image `up` would use, so CI can cache or build it
 # under the same name.
 cmd_image() {
-    local image=web_image
+    local image=web_image build=no
     E107_PHP_VERSION=$DEFAULT_PHP
     while [ $# -gt 0 ]; do
         case $1 in
             --php) E107_PHP_VERSION=$2; shift 2 ;;
             --xdebug) WITH_XDEBUG=yes; shift ;;
             --browser) image=browser_image; shift ;;
+            --build) build=yes; shift ;;
             *) err "unknown flag: $1" ;;
         esac
     done
+    if [ "$build" = yes ]; then
+        [ "$image" = web_image ] || err "--build builds the web image only"
+        build_web_image >&2
+    fi
     $image
     echo
 }
@@ -1416,10 +1433,12 @@ LIFECYCLE:
                                      inside an env on the PHP it is resolved
                                      for (all of them by default). Review the
                                      diff, run the suites, commit.
-  image [--php X] [--xdebug]         Print the web image `up` uses, tagged by
+  image [--php X] [--xdebug] [--build]
+                                     Print the web image `up` uses, tagged by
                                      a hash of every file in docker/ but
                                      the compose files, the docs and
-                                     browser.Dockerfile.
+                                     browser.Dockerfile. --build builds it
+                                     first, as `up` would.
   image --browser                    Print the browser image `up` uses, tagged
                                      by a hash of browser.Dockerfile.
   gc [--dry-run] [--worktrees-gone]  Remove volumes of downed/orphaned envs;

@@ -5,9 +5,10 @@
 #   PHP_VERSION   Tag of the upstream php:<ver>-apache image (default: 8.5)
 #   WITH_XDEBUG   "yes" to install and enable Xdebug for code coverage
 #
-# Example:
+# Example, from the repository root:
 #   docker build --build-arg PHP_VERSION=8.4 --build-arg WITH_XDEBUG=yes \
-#       -t "$(e107_tests/bin/e107-tests image --php 8.4 --xdebug)" e107_tests/docker
+#       --target harness -f e107_tests/docker/Dockerfile \
+#       -t "$(e107_tests/bin/e107-tests image --php 8.4 --xdebug)" .
 #
 # Notes:
 #   * The image installs every PHP extension e107 needs to install and run.
@@ -17,13 +18,15 @@
 #     (lib/sandbox/Boundary.php).
 #   * No source code is COPY'd in. The worktree is bind-mounted at runtime,
 #     which is what makes the image reusable across worktrees.
+#   * The harness stage COPYs nothing but files from e107_tests/docker/, so
+#     the image tag e107-tests derives from that directory covers all of it.
 #   * An image whose Debian release has moved to archive.debian.org gets its
 #     apt sources moved there too (debian-archive.sh), so it keeps building
 #     after its base leaves support. gd/xdebug need version-appropriate
 #     builds on old PHP; those branches mirror release/v2.3.x CI.
 
 ARG PHP_VERSION=8.5
-FROM docker.io/library/php:${PHP_VERSION}-apache
+FROM docker.io/library/php:${PHP_VERSION}-apache AS harness
 
 ARG WITH_XDEBUG=no
 
@@ -31,7 +34,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_NO_INTERACTION=1
 
-COPY debian-archive.sh /usr/local/bin/e107-debian-archive
+COPY e107_tests/docker/debian-archive.sh /usr/local/bin/e107-debian-archive
 RUN chmod +x /usr/local/bin/e107-debian-archive && /usr/local/bin/e107-debian-archive
 
 RUN set -eux; \
@@ -196,9 +199,9 @@ RUN for n in $(seq "$E107_SANDBOXES"); do \
         printf '<Directory /srv/sb/sb%s>\n    php_admin_value session.save_path /srv/sbstate/sessions/sb%s\n</Directory>\n' "$n" "$n"; \
     done > /etc/apache2/e107-sandbox-sessions.conf
 
-COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY php-overrides.ini /usr/local/etc/php/conf.d/zz-e107-overrides.ini
-COPY entrypoint.sh    /usr/local/bin/e107-entrypoint
+COPY e107_tests/docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY e107_tests/docker/php-overrides.ini /usr/local/etc/php/conf.d/zz-e107-overrides.ini
+COPY e107_tests/docker/entrypoint.sh    /usr/local/bin/e107-entrypoint
 RUN chmod +x /usr/local/bin/e107-entrypoint
 
 WORKDIR /var/www/html

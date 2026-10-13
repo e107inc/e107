@@ -59,13 +59,8 @@ services:
       - "127.0.0.1::3306"
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        PHP_VERSION: ${E107_PHP_VERSION:-8.5}
-        WITH_XDEBUG: ${E107_WITH_XDEBUG:-no}
     image: ${E107_WEB_IMAGE:?drive this file via e107_tests/bin/e107-tests}
+    pull_policy: never
     restart: unless-stopped
     labels: *e107-labels
     depends_on:
