@@ -2014,6 +2014,11 @@ class e_parse
 			return $text;
 		}
 
+		if (strpos($text, '<!--') !== false)
+		{
+			$text = $this->inertComments($text);
+		}
+
 		if (empty($this->pref)) // cache the prefs.
 		{
 			$prefsUsed = array('smiley_activate', 'make_clickable', 'link_replace', 'main_wordwrap', 'link_text',
@@ -2419,25 +2424,14 @@ class e_parse
 
 		while (($lt = strpos($html, '<', $pos)) !== false)
 		{
-			$tag = $this->scriptStyleStartTag($html, $lt);
+			$tag = $this->rawTextStartTag($html, $lt, array('script', 'style'));
 			if ($tag === false)
 			{
 				$pos = $lt + 1;
 				continue;
 			}
 
-			// Find the matching close tag. Browsers treat an unclosed
-			// <script>/<style> as running to the end of input, so do the same.
-			$close = stripos($html, '</' . $tag, $lt + 1);
-			if ($close === false)
-			{
-				$end = $length;
-			}
-			else
-			{
-				$gt = strpos($html, '>', $close);
-				$end = ($gt === false) ? $length : $gt + 1;
-			}
+			$end = $this->rawTextEnd($html, $lt, $tag);
 
 			if ($lt > $textStart)
 			{
@@ -2459,25 +2453,25 @@ class e_parse
 
 
 	/**
-	 * Test whether the `<` at $offset opens a <script> or <style> start tag.
+	 * Test whether the `<` at $offset opens a start tag with one of the given names.
 	 *
 	 * The tag name must be followed by a delimiter (`>`, `/` or whitespace) so a
 	 * name such as `<scripting>` is not mistaken for a script tag.
 	 *
-	 * @param string $html
-	 * @param int    $offset position of a `<` within $html
-	 * @return string|false 'script', 'style', or false
+	 * @param string   $html
+	 * @param int      $offset position of a `<` within $html
+	 * @param string[] $tags   names of elements whose content a browser reads as raw text
+	 * @return string|false the name found, or false
 	 */
-	private function scriptStyleStartTag($html, $offset)
+	private function rawTextStartTag($html, $offset, $tags)
 	{
-		foreach (array('script', 'style') as $tag)
+		foreach ($tags as $tag)
 		{
 			if (strcasecmp((string) substr($html, $offset + 1, strlen($tag)), $tag) !== 0)
 			{
 				continue;
 			}
-			$next = (string) substr($html, $offset + 1 + strlen($tag), 1);
-			if ($next === '>' || $next === '/' || ($next !== '' && ctype_space($next)))
+			if ($this->endsTagName($html, $offset + 1 + strlen($tag)))
 			{
 				return $tag;
 			}
@@ -2485,6 +2479,76 @@ class e_parse
 		return false;
 	}
 
+	/**
+	 * @param string $html
+	 * @param int    $offset just past a tag name
+	 * @return bool whether a browser ends the tag name there: at '>', '/', space, tab, line feed, form feed or carriage return
+	 */
+	private function endsTagName($html, $offset)
+	{
+		$next = (string) substr($html, $offset, 1);
+
+		return $next !== '' && strpos(" \t\n\f\r/>", $next) !== false;
+	}
+
+
+	/**
+	 * @param string $html
+	 * @param int    $offset where the start tag begins
+	 * @param string $tag    the name rawTextStartTag() found there
+	 * @return int the offset just past its closing tag, or the end of $html when it has none
+	 */
+	private function rawTextEnd($html, $offset, $tag)
+	{
+		$close = $offset;
+		while (($close = stripos($html, '</' . $tag, $close + 1)) !== false)
+		{
+			if ($this->endsTagName($html, $close + 2 + strlen($tag)))
+			{
+				$gt = strpos($html, '>', $close);
+
+				return ($gt === false) ? strlen($html) : $gt + 1;
+			}
+		}
+
+		return strlen($html);
+	}
+
+	/**
+	 * @param string $text stored HTML
+	 * @return string $text with the text of each comment encoded; script and style blocks unchanged, and none opened in iframe text
+	 */
+	private function inertComments($text)
+	{
+		$out = '';
+		$copied = 0;
+		$pos = 0;
+		$iframeEnd = 0;
+
+		while (($lt = strpos($text, '<', $pos)) !== false)
+		{
+			if ((string) substr($text, $lt, 4) === '<!--')
+			{
+				$close = strpos($text, '-->', $lt + 4);
+				$innerEnd = ($close === false) ? strlen($text) : $close;
+				$inner = (string) substr($text, $lt + 4, $innerEnd - $lt - 4);
+
+				$out .= substr($text, $copied, $lt - $copied) . '<!--'
+					. strtr($inner, array('&' => '&amp;', '<' => '&lt;', '>' => '&#62;', '[' => '&#91;', '{' => '&#123;')) . '-->';
+				$copied = $pos = ($close === false) ? strlen($text) : $close + 3;
+				continue;
+			}
+
+			$tag = ($lt < $iframeEnd) ? false : $this->rawTextStartTag($text, $lt, array('script', 'style', 'iframe'));
+			if ($tag === 'iframe')
+			{
+				$iframeEnd = $this->rawTextEnd($text, $lt, $tag);
+			}
+			$pos = ($tag === false || $tag === 'iframe') ? $lt + 1 : $this->rawTextEnd($text, $lt, $tag);
+		}
+
+		return $out . substr($text, $copied);
+	}
 
 	/**
 	 * Check if a string begins with a preformatter flag.
