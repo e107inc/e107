@@ -237,6 +237,20 @@ EXPECTED;
 	 * Behaviour that must hold before and after the script/style split rewrite:
 	 * well-formed <script>/<style> blocks are handled exactly as they always were.
 	 */
+	/**
+	 * Markup written inside a processing instruction meets the cleaner like any other markup.
+	 */
+	public function testAProcessingInstructionCarriesNothingPastTheCleaner()
+	{
+		foreach(array('<?x', "<\r?x") as $start)
+		{
+			$html = $this->tp->toHTML($this->tp->toDB('<p>Before'.$start.' <a id="inside" href="javascript:x()">L</a>?> after</p>'), true, 'BODY');
+
+			$this->assertStringNotContainsString('javascript:', $html, $start);
+			$this->assertStringContainsString('after', $html, $start);
+		}
+	}
+
 	public function testToHTMLPreservesScriptStyleHandling()
 	{
 		$tests = array(
