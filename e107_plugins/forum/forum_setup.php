@@ -27,6 +27,7 @@ class forum_setup
 		$mes = e107::getMessage();
 
 		$this->protectAttachments();
+		$this->reportRawEdits();
 
 		/*if($sql -> db_Update("user", "user_forums='0'")) // deprecated in 0.8
 		{
@@ -102,9 +103,61 @@ class forum_setup
 			return true;
 		}
 
+		if(!e107::getPlugConfig('forum')->get('edit_body_checked'))
+		{
+			return true;
+		}
+
 		return false;
 	}
-	
+
+	/**
+	 * Report how many edited posts hold markup that their author or their last editor may not post; nothing stored is changed.
+	 *
+	 * @return int|null the number of such posts, or null where check_class() grants every class and cannot tell
+	 */
+	public function reportRawEdits()
+	{
+		if(check_class(e_UC_NOBODY))
+		{
+			return null;
+		}
+
+		$query = e107::getDb()->createQueryBuilder();
+		$pairs = $query->select('post_user', 'post_edit_user')->selectAggregate('COUNT', '*', 'posts')->from('forum_post')
+			->where('post_edit_datestamp', '>', 0)->whereLike('post_entry', '%<%')
+			->groupBy(array('post_user', 'post_edit_user'))
+			->fetchAll();
+		$postsHtml = array();
+		$count = 0;
+
+		foreach($pairs ?: array() as $pair)
+		{
+			foreach(array((int) $pair['post_user'], (int) $pair['post_edit_user']) as $uid)
+			{
+				if(!isset($postsHtml[$uid]))
+				{
+					$user = e107::getSystemUser($uid, false);
+					$postsHtml[$uid] = $user->getId() && $user->checkClass(e107::getPref('post_html', e_UC_MAINADMIN), false);
+					e107::setRegistry('core/e107/user/'.$uid, null);
+				}
+			}
+
+			if(!$postsHtml[(int) $pair['post_user']] || !$postsHtml[(int) $pair['post_edit_user']])
+			{
+				$count += (int) $pair['posts'];
+			}
+		}
+
+		if($count > 0)
+		{
+			e107::getMessage()->addWarning('Edited forum posts that hold markup their author or last editor may not post: '.$count.'. Some may be legitimate HTML, written while their authors could still post it. This update changed none of them; the release notes say how to find and review them.');
+		}
+
+		e107::getPlugConfig('forum')->set('edit_body_checked', 1)->save(false, true, false);
+
+		return $count;
+	}
 
 	function upgrade_pre($var)
 	{
@@ -130,6 +183,7 @@ class forum_setup
 		$sql = e107::getDb();
 
 		$this->protectAttachments();
+		$this->reportRawEdits();
 
 		$config = e107::getPref('url_config');
 
