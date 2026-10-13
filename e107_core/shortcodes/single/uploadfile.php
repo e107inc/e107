@@ -144,7 +144,8 @@ function uploadfile_shortcode($parm)
 
 	// RENDER FORM
 	$onclickt = !isset($parms['nowarn']) ? " onclick=\"return jsconfirm('".LAN_UPLOAD_CONFIRM."')\"" : '';
-	$onclickd = " onclick=\"duplicateHTML('{$parms['up_row']}','{$parms['up_container']}');\"";
+	$tp = e107::getParser();
+	$onclickd = " onclick='duplicateHTML(".$tp->toJsString($parms['up_row']).",".$tp->toJsString($parms['up_container']).");'";
 	$name = $parms['name'].'[]';
 
 	$text ="
