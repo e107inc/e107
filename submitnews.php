@@ -101,7 +101,7 @@ class submitNews
 		}
 
 		// ==== Process File Upload ====
-		if (FILE_UPLOADS && !empty($_FILES['file_userfile']['name'][0]) && vartrue($pref['subnews_attach']) && vartrue($pref['upload_enabled']) && check_class($pref['upload_class']))
+		if (FILE_UPLOADS && !empty($_FILES['file_userfile']['name'][0]) && vartrue($pref['subnews_attach']) && e107::getFile()->currentUserMayUsePublicUploads())
 		{
 			$uploaded = e107::getFile()->getUploaded(e_UPLOAD, 'unique', array('file_mask' => 'jpg,gif,png', 'max_file_count' => 3));
 
@@ -321,7 +321,7 @@ class submitNews
 
 			}
 
-			if ($pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upload_class']) && FILE_UPLOADS)
+			if ($pref['subnews_attach'] && e107::getFile()->currentUserMayUsePublicUploads() && FILE_UPLOADS)
 			{
 				  $text .= "
 				  <tr>

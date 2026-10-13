@@ -47,6 +47,7 @@ class uploadFormTest extends \Codeception\Test\Unit
 			."\$_POST = array(); "
 			."\$pref['upload_enabled'] = 1; \$pref['upload_class'] = e_UC_PUBLIC; "
 			."e107::getConfig('core')->setPref('upload_class', e_UC_PUBLIC); "
+			."e107::getConfig('core')->setPref('upload_enabled', 1); "
 			."require '".addslashes(APP_PATH)."/upload.php'; "
 			."echo '".self::DONE."';";
 

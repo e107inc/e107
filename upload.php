@@ -77,9 +77,7 @@ class userUpload
 	{
 		$ns = e107::getRender();
 		
-		$uploadAccess = e107::pref('core','upload_class'); 
-		
-		if(!check_class($uploadAccess))
+		if(!e107::getFile()->currentUserMayUsePublicUploads())
 		{
 			$text = "<div style='text-align:center'>".LAN_UL_002."</div>";
 			$ns->tablerender(LAN_UL_020, $text);
