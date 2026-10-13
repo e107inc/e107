@@ -37,6 +37,8 @@ class e_parse
 
 	private $pref; // core prefs used in toHTML.
 
+	private static $hideMarkers = 0; // sets of [hide] markers handed out by setAsideHideBlocks(), so that no two renders share one
+
 	// 'Hooked' parsers (array)
 	private $e_hook = array();
 
@@ -1492,7 +1494,7 @@ class e_parse
 	private function splitOnTags($text)
 	{
 
-		return preg_split('#(<(?:[^<>"\']|"[^"]*"|\'[^\']*\')*>)#s', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+		return preg_split('#(<(?:[^<>"\']++|"[^"]*+"|\'[^\']*+\')*+>)#s', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 	}
 
 
@@ -1720,8 +1722,16 @@ class e_parse
 
 		// Set default modifiers to start
 		$opts = $this->getModifiers($modifiers);
+		$isHtml = $this->isHtml($text);
+		$hideBlocks = array();
+		$parseBlocksWith = $parseBB;
 
-		if ($this->isHtml($text)) //BC FIx for when HTML is saved without [html][/html]
+		if ($parseBB !== false)
+		{
+			$text = $this->setAsideHideBlocks($text, $hideBlocks);
+		}
+
+		if ($isHtml) //BC FIx for when HTML is saved without [html][/html]
 		{
 			$opts['nobreak'] = true;
 			$text = trim($text);
@@ -1849,11 +1859,6 @@ class e_parse
 							break;
 					}
 
-					if (($matches[2] === 'hide') && (strpos($full_text, $matches[1]) === 0)) // the parser left the opening tag unpaired
-					{
-						$full_text = $this->parseBBCodes(preg_replace('#^\[hide\w*#', '[hide', $matches[0]), $postID);
-					}
-
 				}
 			}
 
@@ -1911,6 +1916,11 @@ class e_parse
 			}
 		}
 
+		if (!empty($hideBlocks))
+		{
+			$ret_parser = $this->renderHideBlocks($ret_parser, $hideBlocks, $parseBlocksWith, $modifiers, $postID);
+		}
+
 		// Quick Fix - Remove trailing <br /> on block-level elements (eg. div, pre, table, etc. )
 		$srch = array();
 		$repl = array();
@@ -1924,6 +1934,90 @@ class e_parse
 		$ret_parser = str_replace($srch, $repl, $ret_parser);
 
 		return trim($ret_parser);
+	}
+
+
+	/**
+	 * Replace each [hide] block {@see e_bbcode::hideBlocks()} finds in $text with a marker shaped as a tag, so that no other step of toHTML() can make or break one, and none can carry it into an attribute unencoded.
+	 *
+	 * @param string $text
+	 * @param array  $blocks receives the blocks and their markers
+	 * @return string
+	 */
+	private function setAsideHideBlocks($text, &$blocks)
+	{
+		$found = e107::getBB()->hideBlocks($text);
+
+		if (empty($found))
+		{
+			return $text;
+		}
+
+		$set = ++self::$hideMarkers;
+
+		foreach (array_reverse($found, true) as $index => $block)
+		{
+			$block['marker'] = '<e_hide_' . $set . '_' . $index . '>';
+			$blocks[$index] = $block;
+			$text = substr_replace($text, $block['marker'], $block['start'], $block['length']);
+		}
+
+		return $text;
+	}
+
+
+	/**
+	 * Put each block {@see e_parse::setAsideHideBlocks()} set aside back into $html, rendered by the hide bbcode, where its marker stands as a tag of its own, and put a space in place of every marker left anywhere else, so that the text either side cannot join.
+	 *
+	 * @param string      $html
+	 * @param array       $blocks
+	 * @param bool|string $parseBB
+	 * @param string      $modifiers
+	 * @param mixed       $postID
+	 * @return string
+	 */
+	private function renderHideBlocks($html, $blocks, $parseBB, $modifiers, $postID)
+	{
+		global $e_hide_block;
+
+		$markers = array();
+		$leftovers = array();
+
+		foreach ($blocks as $block)
+		{
+			$markers[$block['marker']] = $block;
+			$core = substr($block['marker'], 1, -1);
+			array_push($leftovers, $block['marker'], '&lt;' . $core . '&gt;', '%3C' . $core . '%3E');
+		}
+
+		$parts = $this->splitOnTags($html);
+
+		if ($parts === false)
+		{
+			$parts = array($html);
+		}
+
+		foreach ($parts as $i => $part)
+		{
+			if (!isset($markers[$part]))
+			{
+				continue;
+			}
+
+			$was = $e_hide_block;
+			$e_hide_block = $markers[$part];
+			$box = e107::getBB()->parseBBCodes('[hide]' . $part . '[/hide]', $postID);
+			$e_hide_block = $was;
+
+			if (strpos($box, $part) !== false)
+			{
+				$box = str_replace($part, $this->toHTML($markers[$part]['content'], $parseBB, $modifiers, $postID), $box);
+			}
+
+			$parts[$i] = $box;
+		}
+
+		return str_replace($leftovers, ' ', implode('', $parts));
 	}
 
 

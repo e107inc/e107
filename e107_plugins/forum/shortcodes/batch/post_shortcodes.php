@@ -203,12 +203,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		}
 		elseif($this->var['action'] == 'quote')
 		{
-			$post = preg_replace('#\[hide].*?\[/hide]#s', '', trim($this->var['post_entry']));
+			$post = $this->quotablePost();
 			$quoteName = ($this->var['user_name'] ? $this->var['user_name'] : $this->var['post_user_anon']);
-			$text = $tp->toText("[quote={$quoteName}]\n".$post."\n[/quote]\n",true);
+			$text = $tp->post_toForm("[quote={$quoteName}]\n".$post."\n[/quote]\n");
 			$text .= "\n\n";
-
-		//	$text = $tp->toForm($text);
 			$this->var['action'] = 'rp';
 		}
 		elseif($this->var['action'] == 'edit')
@@ -228,6 +226,23 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		//return e107::getForm()->bbarea('post',$text,'forum','_common','large', array('wysiwyg' => $wysiwyg));
 		return e107::getForm()->bbarea('post',$text,'forum','forum','large', array('wysiwyg' => $wysiwyg));
 
+	}
+
+	/**
+	 * The post as written, without its [hide] blocks or [html] markers.
+	 *
+	 * @return string
+	 */
+	private function quotablePost()
+	{
+		$post = trim($this->var['post_entry']);
+
+		foreach(array_reverse(e107::getBB()->hideBlocks($post)) as $block)
+		{
+			$post = substr_replace($post, '', $block['start'], $block['length']);
+		}
+
+		return str_replace(array('[html]', '[/html]'), '', $post);
 	}
 
 	function sc_forum_post_buttons()

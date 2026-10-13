@@ -3301,6 +3301,27 @@ class e107forum
 
 	}
 
+
+	/**
+	 * Whether the current reader may see what a [hide] block in thread $threadId holds: a member who may view its forum and has posted in it.
+	 *
+	 * @param int $threadId
+	 * @return bool
+	 */
+	public function mayReadHidden($threadId)
+	{
+		$reader = e107::getUser();
+
+		if(!$reader->isUser())
+		{
+			return false;
+		}
+
+		$forumId = e107::getDb()->retrieve('forum_post', 'post_forum', 'post_thread='.(int) $threadId.' AND post_user='.(int) $reader->getId().' LIMIT 1');
+
+		return !empty($forumId) && $this->checkPerm((int) $forumId, 'view');
+	}
+
 }
 
 

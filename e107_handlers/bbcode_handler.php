@@ -37,6 +37,11 @@ class e_bbcode
 	private $class = false;
 	private $resizePrefs = array();
 	private static $bbPattern = '#^\[(/?)([A-Za-z_]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
+	private $blockCode = null;	// Set while hideBlocks() reads a text: the code whose pairs are recorded instead of rendered
+	private $blocks = array();	// The pairs recorded while $blockCode is set
+	private $codeLeftOpen = null;	// While $blockCode is set: the offset from which [code] protects nothing, as one there is left open
+	private $anySpelling = false;	// While $blockCode is set: whether any tag beginning with it is read as it
+	private $outermost = false;	// While $blockCode is set: whether a closing tag of it pairs with the oldest open one spelled otherwise than plain, rather than the newest
 
 	function __construct()
 	{
@@ -98,6 +103,91 @@ class e_bbcode
 
 
 	/**
+	 * The outermost [hide] blocks in $text: every span that {@see e_bbcode::parseBBCodes()} pairs as a hide block as typed, or with any tag beginning [hide or [/hide read as one, the second time with a closer taken by the oldest open opener spelled otherwise than plain; a [code] that is never closed, or that holds the [/hide] of a block left open, shields no tag from there on.
+	 *
+	 * @param string $text
+	 * @return array[] in order of position, each with the keys start and length (bytes into $text), open, content and close
+	 */
+	public function hideBlocks($text)
+	{
+		if (!is_string($text) || stripos($text, '[hide') === false)
+		{
+			return array();
+		}
+
+		global $postID;
+
+		$wasPostID = $postID;
+		$this->blockCode = 'hide';
+		$pairs = array_merge($this->pairsOfBlockCode($text, false, false), $this->pairsOfBlockCode($text, true, false), $this->pairsOfBlockCode($text, true, true));
+		$this->blockCode = null;
+		$postID = $wasPostID;
+
+		usort($pairs, function ($a, $b)
+		{
+			return ($a['start'] === $b['start']) ? $b['length'] - $a['length'] : $a['start'] - $b['start'];
+		});
+
+		$outer = array();
+
+		foreach ($pairs as $pair)
+		{
+			$last = count($outer) - 1;
+
+			if (($last < 0) || ($pair['start'] >= $outer[$last]['start'] + $outer[$last]['length']))
+			{
+				$outer[] = $pair;
+			}
+			elseif ($pair['start'] + $pair['length'] > $outer[$last]['start'] + $outer[$last]['length'])
+			{
+				$outer[$last]['length'] = $pair['start'] + $pair['length'] - $outer[$last]['start'];
+				$outer[$last]['close'] = $pair['close'];
+			}
+		}
+
+		foreach ($outer as $i => $block)
+		{
+			$outer[$i]['content'] = (string) substr($text, $block['start'] + strlen($block['open']), $block['length'] - strlen($block['open']) - strlen($block['close']));
+		}
+
+		return $outer;
+	}
+
+
+	/**
+	 * Every pair {@see e_bbcode::parseBBCodes()} makes of $this->blockCode in $text, read again once from the first [code] left open if there is one.
+	 *
+	 * @param string $text
+	 * @param bool   $anySpelling whether any tag beginning with the code is read as it
+	 * @param bool   $outermost whether a closing tag pairs with the oldest open code spelled otherwise than plain, rather than the newest
+	 * @return array[] each with the keys start, length, open and close
+	 */
+	private function pairsOfBlockCode($text, $anySpelling, $outermost)
+	{
+		$this->anySpelling = $anySpelling;
+		$this->outermost = $outermost;
+		$this->codeLeftOpen = null;
+		$this->blocks = array();
+
+		$this->parseBBCodes($text);
+
+		if ($this->codeLeftOpen !== null)
+		{
+			$this->blocks = array();
+			$this->parseBBCodes($text);
+		}
+
+		$pairs = $this->blocks;
+		$this->blocks = array();
+		$this->codeLeftOpen = null;
+		$this->anySpelling = false;
+		$this->outermost = false;
+
+		return $pairs;
+	}
+
+
+	/**
 	 *	Parse a string for bbcodes.
 	 *	Process using the 'pre-save' or 'display' routines as appropriate
 	 *
@@ -130,6 +220,8 @@ class e_bbcode
 		$result = '';										// Accumulates fully processed text
 		$stacktext = '';									// Accumulates text which might be subject to one or more bbcodes
 		$nopro = FALSE;										// Blocks processing within [code]...[/code] tags
+		$noproFrom = 0;										// Where the [code] that set $nopro begins
+		$swallowedFrom = null;								// Where a [code] begins that took in the closer of an open $this->blockCode
 		$this->preProcess = FALSE;
 
 		$strip_array = array();
@@ -163,9 +255,12 @@ class e_bbcode
 		// $matches[5] - any parameter
 
 		$content = preg_split('#(\[(?:\w|/\w).*?\])#ms', $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+		$offset = 0;
 
 		foreach ($content as $cont)
 		{  // Each chunk is either a bbcode or a piece of text
+			$contPos = $offset;
+			$offset += strlen($cont);
 			$is_proc = FALSE;
 			while (!$is_proc)
 			{
@@ -180,7 +275,22 @@ class e_bbcode
 						$bbsep = varset($matches[4]);
 					}
 					if ($force_lower) $bbword = strtolower($bbword);
+					if (($bbword !== '') && $this->anySpelling && (stripos($cont, '['.$matches[1].$this->blockCode) === 0))
+					{
+						$bbword = $this->blockCode;
+						$matches[3] = '';
+					}
 					if ($nopro && ($bbword == 'code') && ($matches[1] == '/')) $nopro = FALSE;		// End of code block
+					if ($nopro && ($bbword === $this->blockCode) && ($matches[1] == '/') && ($swallowedFrom === null))
+					{
+						foreach ($code_stack as $entry)
+						{
+							if (($entry['type'] == 'bbcode') && ($entry['code'] === $bbword))
+							{
+								$swallowedFrom = $noproFrom;
+							}
+						}
+					}
 					if (($bbword) && ($bbword == trim($bbword)) && !$nopro)
 					{  // Got a code to process here
 						if (($bbStrip === TRUE) || in_array($bbword,$strip_array))
@@ -194,21 +304,36 @@ class e_bbcode
 							{  // Closing code to process
 								$found = FALSE;
 								$i = 0;
-								while ($i < count($code_stack))
+								for ($j = 0; $j < count($code_stack); $j++)
 								{     // See if code is anywhere on the stack.
-									if (($code_stack[$i]['type'] == 'bbcode') && ($code_stack[$i]['code'] == $bbword) && ($code_stack[$i]['numbers'] == $matches[3]))
+									if (($code_stack[$j]['type'] == 'bbcode') && ($code_stack[$j]['code'] == $bbword) && ($code_stack[$j]['numbers'] == $matches[3]))
 									{
+										if (!$found || !preg_match('#^\['.preg_quote($bbword, '#').'(?![A-Za-z_\d])#i', $code_stack[$j]['block']))
+										{
+											$i = $j;
+										}
 										$found = TRUE;
-										break;
+										if (!$this->outermost || ($bbword !== $this->blockCode)) break;
 									}
-									$i++;
 								}
 
 								if ($found)
 								{
 									$found = FALSE;   // Use as 'done' variable now
 									// Code is on stack - $i has index number. Process text, discard unmatched open codes, process 'our' code
-									while ($i > 0) { $unmatch_stack[] = array_shift($code_stack); $i--; }    // Get required code to top of stack
+									while ($i > 0)
+									{    // Get required code to top of stack; on save, what lies above it stays inside the pair, as typed
+										if ($this->preProcess === 'toDB')
+										{
+											$stacktext = (($code_stack[0]['type'] == 'text') ? $code_stack[0]['code'] : $code_stack[0]['block']).$stacktext;
+											array_shift($code_stack);
+										}
+										else
+										{
+											$unmatch_stack[] = array_shift($code_stack);
+										}
+										$i--;
+									}
 
 									// Pull it off using array_shift - this keeps it as a zero-based array, newest first.
 									while (!$found && (count($code_stack) != 0))
@@ -222,6 +347,15 @@ class e_bbcode
 											case 'bbcode' :
 												if (($code_stack[0]['code'] == $bbword) && ($code_stack[0]['numbers'] == $matches[3]))
 												{
+													if ($bbword === $this->blockCode)
+													{
+														$this->blocks[] = array(
+															'start'  => $code_stack[0]['pos'],
+															'length' => $contPos + strlen($cont) - $code_stack[0]['pos'],
+															'open'   => $code_stack[0]['block'],
+															'close'  => $cont,
+														);
+													}
 													$stacktext = $this->proc_bbcode($bbword, $code_stack[0]['param'], $stacktext, $bbparam, $code_stack[0]['bbsep'], $code_stack[0]['block'].$stacktext.$cont);
 													array_shift($code_stack);
 													// Intentionally don't terminate here - may be some text we can clean up
@@ -266,8 +400,12 @@ class e_bbcode
 										array_unshift($code_stack,array('type' => 'text','code' => $stacktext));
 										$stacktext = '';
 									}
-									array_unshift($code_stack,array('type' => 'bbcode','code' => $bbword, 'numbers'=> $matches[3], 'param'=>$bbparam, 'bbsep' => $bbsep, 'block' => $cont));
-									if ($bbword == 'code') $nopro = TRUE;
+									array_unshift($code_stack,array('type' => 'bbcode','code' => $bbword, 'numbers'=> $matches[3], 'param'=>$bbparam, 'bbsep' => $bbsep, 'block' => $cont, 'pos' => $contPos));
+									if ($bbword == 'code')
+									{
+										$nopro = ($this->codeLeftOpen === null) || ($contPos < $this->codeLeftOpen);
+										$noproFrom = $contPos;
+									}
 									$is_proc = TRUE;
 								}
 							}
@@ -278,6 +416,7 @@ class e_bbcode
 					{
 						$oddtext = substr($cont,0,$temp);
 						$cont = substr($cont,$temp);
+						$contPos += $temp;
 					}
 				}
 
@@ -292,6 +431,19 @@ class e_bbcode
 					{  // Add to accumulator at this level
 						$stacktext .= $oddtext;
 					}
+				}
+			}
+		}
+
+		if (($this->blockCode !== null) && ($this->codeLeftOpen === null))
+		{
+			$this->codeLeftOpen = $nopro ? $noproFrom : null;
+
+			foreach ($code_stack as $entry)
+			{
+				if (($swallowedFrom !== null) && ($entry['type'] == 'bbcode') && ($entry['code'] === $this->blockCode) && ($entry['pos'] < $swallowedFrom))
+				{
+					$this->codeLeftOpen = $swallowedFrom;
 				}
 			}
 		}
@@ -330,6 +482,11 @@ class e_bbcode
 	 */
 	private function proc_bbcode($code, $param1='', $code_text_par='', $param2='', $sep='', $full_text='')
 	{
+		if ($this->blockCode !== null)
+		{
+			return $full_text;
+		}
+
 		global $tp, $postID, $code_text, $parm;
 
 		$parm = $param1;
