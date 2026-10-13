@@ -28,9 +28,10 @@ concurrency:
 # annotation and in the job summary, and its output is the log group of that
 # name in the step that failed.
 #
-# The matrix is the ends of the supported range rather than every point in it.
-# A version break is nearly always "too old to have it" or "too new to still
-# have it"; the middle of the range rarely disagrees with both ends.
+# The matrix is the oldest and the newest PHP this job runs the acceptance
+# tooling on, not the whole range e107 supports. A version break is nearly
+# always "too old to have it" or "too new to still have it"; the middle of a
+# range rarely disagrees with both ends.
 
 jobs:
   test-acceptance:
@@ -42,14 +43,6 @@ jobs:
         # read, and to add one to, than the rules for how `include` merges.
         # Old PHP is paired with old MySQL and new with new, which is how
         # these are actually deployed.
-        #
-        # The PHP floor is 8.1, not composer.json's declared 8.0, because the
-        # test suite cannot be installed on 8.0: every twig release that
-        # supports 8.0 is blocked by composer's security-advisory policy, and
-        # the only unaffected releases require 8.1. Testing on 8.0 would mean
-        # shipping CI a dependency with published vulnerabilities. e107 itself
-        # may well still run on 8.0 -- nothing here says otherwise -- but CI
-        # cannot demonstrate it, so treat ">=8.0" as unverified.
         #
         # The MySQL floor is 5.5, the oldest release the installer can build
         # the schema on, and this job is the only thing that checks: the unit
