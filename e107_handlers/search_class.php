@@ -602,19 +602,7 @@ class e_search
 
 
 	/**
-	 * Check whether a comment search handler is backed by an installed plugin.
-	 *
-	 * Handlers are keyed by the feature that provides them, and the entries
-	 * shipped for plugin-provided handlers claim 'core' as their directory, so
-	 * the plugin that has to be installed is named by the key whenever the
-	 * directory does not name one. A handler belonging to a plugin that
-	 * requires installation is only usable while that plugin is installed: its
-	 * title comes from the plugin's global language file, and core only
-	 * auto-loads those for installed plugins.
-	 *
-	 * Nothing prunes these prefs when a plugin is uninstalled or deleted, so
-	 * entries left behind by an old install are the norm rather than the
-	 * exception and must not be loaded blindly.
+	 * Check whether the plugin behind a comment search handler is on disk and either installed or declared usable without installation.
 	 *
 	 * @param string $key handler key from the search_prefs 'comments_handlers' array
 	 * @param array $value handler definition, eg. array('id' => 2, 'dir' => 'core', 'class' => '0')
@@ -626,12 +614,34 @@ class e_search
 		$dir = varset($value['dir'], 'core');
 		$plugin = ($dir === 'core') ? $key : $dir;
 
-		if(empty($plugin) || !e107::getPlug()->load($plugin)->getInstallRequired())
+		if(empty($plugin))
 		{
-			return true; // core feature, or a plugin that is usable without being installed
+			return true;
 		}
 
-		return e107::isInstalled($plugin);
+		if(!is_dir(e_PLUGIN.$plugin))
+		{
+			return false;
+		}
+
+		if(e107::isInstalled($plugin))
+		{
+			return true;
+		}
+
+		$file = e_PLUGIN.$plugin.'/plugin.xml';
+		$source = is_readable($file) ? (string) file_get_contents($file) : '';
+		$libxmlErrors = libxml_use_internal_errors(true);
+		$meta = ($source !== '') ? e107::getXml(false)->parseXml($source, false) : false;
+		libxml_clear_errors();
+		libxml_use_internal_errors($libxmlErrors);
+
+		if(empty($meta['@attributes']['name']))
+		{
+			return false;
+		}
+
+		return !e_plugin::isInstallRequired($meta);
 	}
 
 }
