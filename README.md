@@ -14,7 +14,7 @@
       * [Requirements](#requirements)
          * [Minimum](#minimum)
          * [Recommended](#recommended)
-         * [Release Cycle Lifecycle](#release-cycle-lifecycle)
+         * [Release Lifecycle](#release-lifecycle)
          * [PHP Compatibility](#php-compatibility)
       * [Installation](#installation)
          * [Standard Installation](#standard-installation)
@@ -45,23 +45,29 @@
 
 ### Release Lifecycle
 
-| Versions   | Maintainer                                                                        | Release    | End of New Features | End of Maintenance | End of Revival |
-|------------|-----------------------------------------------------------------------------------|------------|---------------------|--------------------|----------------|
-| `~> 0.5.4` | [@e107steved](https://github.com/e107steved)                                      | 2002-10-02 | 2003-06-13          | 2003-06-13         | 2003-08-04     |
-| `~> 0.6.0` | [@e107steved](https://github.com/e107steved)                                      | 2003-08-04 | 2004-09-17          | 2004-09-17         | 2006-01-24     |
-| `~> 0.7.0` | Contributors to the e107 project                                                  | 2006-01-24 | 2011-09-14          | 2011-09-14         | 2011-12-28     |
-| `~> 1.0`   | Contributors to the e107 project                                                  | 2011-12-28 | 2013-05-21          | 2013-05-21         | _(unset)_      |
-| `~> 2.0.0` | [@CaMer0n](https://github.com/CaMer0n)                                            | 2015-09-02 | 2015-09-02          | 2015-09-02         | 2016-03-18     |
-| `~> 2.1.0` | [@CaMer0n](https://github.com/CaMer0n)                                            | 2016-03-18 | 2018-08-22          | 2018-08-22         | 2019-05-18     |
-| `~> 2.2.0` | [@CaMer0n](https://github.com/CaMer0n)                                            | 2019-05-18 | 2019-05-29          | 2019-05-29         | 2020-11-30     |
-| `~> 2.3.0` | [@CaMer0n](https://github.com/CaMer0n) &amp; [@Deltik](https://github.com/Deltik) | 2020-11-30 | _(unset)_           | _(unset)_          | _(unset)_      |
-| `~> 2.4.0` | [@Deltik](https://github.com/Deltik)                                              | _(unset)_  | _(unset)_           | _(unset)_          | _(unset)_      |
+| Versions             | Maintainers                                                                                                                                                                | Release    | End of New Features | End of Maintenance | End of Revival |
+|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------------------|--------------------|----------------|
+| `~> 0.5.4`           | jalist                                                                                                                                                                     | 2002-10-02 | 2003-06-13          | 2003-06-13         | 2003-08-04     |
+| `~> 0.6.0, < 0.6.12` | jalist                                                                                                                                                                     | 2003-08-04 | 2004-01-25          | 2004-01-25         | 2004-02-04     |
+| `~> 0.6.12`          | jalist, McFly, chavo, [CaMer0n](https://github.com/CaMer0n), and Lolo_Irie                                                                                                 | 2004-02-04 | 2004-09-17          | 2005-12-31         | 2006-01-16     |
+| `~> 0.7.0, < 0.7.23` | McFly, [CaMer0n](https://github.com/CaMer0n), and [steved](https://github.com/e107steved)                                                                                  | 2006-01-16 | 2010-05-27          | 2010-05-27         | 2010-08-02     |
+| `~> 0.7.23`          | [CaMer0n](https://github.com/CaMer0n), [SecretR](https://github.com/myovchev), and [steved](https://github.com/e107steved)                                                 | 2010-08-20 | 2011-09-14          | 2011-09-14         | 2011-12-28     |
+| `~> 1.0`             | [CaMer0n](https://github.com/CaMer0n), [SecretR](https://github.com/myovchev), [steved](https://github.com/e107steved), bugrain, and [nlstart](https://github.com/nlstart) | 2011-12-28 | 2013-05-21          | 2013-05-21         | _(unset)_      |
+| `~> 2.0.0`           | [CaMer0n](https://github.com/CaMer0n)                                                                                                                                      | 2015-09-02 | 2015-09-02          | 2015-09-02         | 2016-03-18     |
+| `~> 2.1.0`           | [CaMer0n](https://github.com/CaMer0n)                                                                                                                                      | 2016-03-18 | 2018-08-22          | 2018-08-22         | 2019-05-18     |
+| `~> 2.2.0`           | [CaMer0n](https://github.com/CaMer0n)                                                                                                                                      | 2019-05-18 | 2019-05-29          | 2019-05-29         | 2020-11-30     |
+| `~> 2.3.0, < 2.3.4`  | [CaMer0n](https://github.com/CaMer0n) and [Deltik](https://github.com/Deltik)                                                                                              | 2020-11-30 | 2023-11-23          | 2023-11-23         | 2026-04-26     |
+| `~> 2.3.4`           | [Deltik](https://github.com/Deltik)                                                                                                                                        | 2026-04-26 | _(unset)_           | _(unset)_          | _(unset)_      |
+| `~> 2.4.0`           | [Deltik](https://github.com/Deltik)                                                                                                                                        | _(unset)_  | _(unset)_           | _(unset)_          | _(unset)_      |
 
 **Versions** uses [the Ruby pessimistic operator](https://guides.rubygems.org/patterns/#pessimistic-version-constraint): `~> 2.3.0` matches `>= 2.3.0, < 2.4.0`.
-- **Release** is the date on which the first release of the cycle was published.
+- **Release** is the date on which the first release in the listed version range was published.
+- **Maintainers** identifies the stewards of the listed versions.
 - **End of New Features** is the date past which no new features will be added in this cycle.
 - **End of Maintenance** is the date past which no further bug or security fixes will be made in this cycle.
 - **End of Revival** is the date past which the cycle is fully abandoned with no consideration of reviving it.
+
+<sup><sub>Attribution sources: [jalist's account of the formation of the development team](https://web.archive.org/web/20260710134513/https://userguide.e107.org/introduction/about-e107), [McFly's original 0.7 release announcement](https://web.archive.org/web/20060418095755/http://e107.org:80/comment.php?comment.news.772), [steved's August 2010 handover announcement](https://web.archive.org/web/20100911084627/http://www.e107.org/comment.php?comment.news.871), and [the January 2012 core development team roster](https://web.archive.org/web/20120103130647/http://e107.org/content/About-Us:The-Team). Versions are normalized, e.g., the historical 0.612 release is listed as [v0.6.12](https://github.com/e107inc/e107/releases/tag/v0.6.12).</sub></sup>
 
 ### PHP Compatibility
 
