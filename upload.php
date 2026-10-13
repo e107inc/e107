@@ -14,7 +14,7 @@ e107::coreLan('upload');
 $bcLans = ['LAN_417'=>'LAN_UL_040'];
 e107::getLanguage()->bcDefs($bcLans);
 
-if (!isset($pref['upload_enabled']) ||( varset($pref['upload_class']) == 255))
+if (empty($pref['upload_enabled']) || varset($pref['upload_class']) == 255)
 {
 	e107::redirect();
 	exit;
