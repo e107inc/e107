@@ -27,18 +27,20 @@
 
 ## Requirements
 
+   The installer (`install.php`) checks your server before it installs anything and tells you what is missing: the PHP version, the PHP extensions e107 needs, and file permissions.
+
    ### Minimum
 
-   * A web server (Apache or Microsoft IIS) running PHP 7.4 or newer
-   * MySQL 4.x or newer, or MariaDB
+   * A web server (Apache or Microsoft IIS) running PHP
+   * MySQL or MariaDB
    * FTP access to your web server and an FTP client (such as FileZilla)
    * Username and password to your MySQL database
 
    ### Recommended
 
    * Apache 2.4 or newer on Linux
-   * PHP 7.4 or newer
-   * MySQL 5.6 or newer, or MariaDB 10.3 or newer
+   * A PHP version that still receives security fixes
+   * A MySQL or MariaDB version that still receives security fixes
    * A registered domain name
    * Access to a server control panel (such as cPanel)
 
