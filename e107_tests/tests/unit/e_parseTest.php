@@ -174,6 +174,53 @@ EXPECTED;
 
 	}
 
+	/**
+	 * An HTML comment in stored text stays one comment, whatever its text holds.
+	 */
+	public function testAnHtmlCommentStaysOneComment()
+	{
+		$bodies = array(
+			'<p>Before<!-- --&gt;<b id="inside">x</b> --> after</p>',
+			'<p>Before<!-- --!&gt;<b id="inside">x</b> --> after</p>',
+			'<p>Before<!-- [html]<b id="inside">x</b>[/html] --> after</p>',
+			'<p>Before<!-- [block][/block]<b id="inside">x</b> --> after</p>',
+			'<noscript><!-- </noscript><b id="inside">x</b> --></noscript><p>after</p>',
+			'<iframe><!-- </iframe><b id="inside">x</b> --></iframe><p>after</p>',
+			'<p>Before<!--><b id="inside">x</b>--> after</p>',
+			'<p>Before<!---><b id="inside">x</b>--> after</p>',
+		);
+
+		foreach($bodies as $body)
+		{
+			foreach(array($this->tp->toDB($body), $body) as $stored)
+			{
+				$html = $this->tp->toHTML($stored, true, 'BODY');
+
+				$this->assertStringNotContainsString('<b id=', $html, $stored);
+				$this->assertStringContainsString('after', $html, $stored);
+			}
+		}
+
+		$storedAsWritten = array(
+			'<p>Before<!-- --!><b id="inside">x</b> --> after</p>',
+			'<iframe><style ></iframe><p>Before<!-- [html]<b id="inside">x</b>[/html] --> after</p>',
+			'<iframe></iframex><style ></iframe><p>Before<!-- [html]<b id="inside">x</b>[/html] --> after</p>',
+			"<iframe></iframe\x0b><style ></iframe><p>Before<!-- [html]<b id=\"inside\">x</b>[/html] --> after</p>",
+		);
+
+		foreach($storedAsWritten as $stored)
+		{
+			$html = $this->tp->toHTML($stored, true, 'BODY');
+
+			$this->assertStringNotContainsString('<b id=', $html, $stored);
+			$this->assertStringNotContainsString('--!>', $html, $stored);
+			$this->assertStringContainsString('after', $html, $stored);
+		}
+
+		$long = $this->tp->toHTML('<p>Before</p><!-- '.str_repeat('a', 1100000).' --><p>After</p>', true, 'BODY');
+		$this->assertStringContainsString('<p>After</p>', $long);
+	}
+
 	public function testToHTMLStripsTheBlockBbcodesAStripListNames()
 	{
 		foreach (array('table', 'html', 'php', 'code', 'scode', 'hide') as $code)
