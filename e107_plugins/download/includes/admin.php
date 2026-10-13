@@ -1409,7 +1409,7 @@ $columnInfo = array(
 	                  <tr>
 	                     <td >".DOWLAN_12."</td>
 	                     <td style='width:80%'>
-	                        <input class='form-control input-xxlarge' type='text' id='download-name' name='download_name' size='60' value=\"".$tp->toForm($download_name)."\" maxlength='200'/>
+	                        <input class='form-control input-xxlarge' type='text' id='download-name' name='download_name' size='60' value=\"".str_replace('"', '&quot;', (string) $tp->toForm($download_name))."\" maxlength='200'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
