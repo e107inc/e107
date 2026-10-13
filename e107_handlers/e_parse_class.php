@@ -914,8 +914,8 @@ class e_parse
 		if (is_string($text) && strpos($text, '[html]') === 0)
 		{
 			// $text = $this->toHTML($text,true);
-			$search = array('&quot;', '&#039;', '&#092;', '&',); // '&' must be last.
-			$replace = array('"', "'", "\\", '&amp;');
+			$search = array('&quot;', '&#039;', '&#092;', '&amp;quot;', '&amp;#039;', '&',); // '&' must be last.
+			$replace = array('"', "'", "\\", '&quot;', '&#039;', '&amp;');
 
 			//	return htmlspecialchars_decode($text);
 			$text = str_replace($search, $replace, $text);
