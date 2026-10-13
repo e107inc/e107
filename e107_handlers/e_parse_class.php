@@ -6427,6 +6427,7 @@ class e_parse
 		//  Part 1 of 2
 		// clean out windows line-breaks.
 		$html = str_replace(array('&nbsp;', "\r", "\n", '{', '}'), array('__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', '', '__E_PARSER_CLEAN_HTML_LINE_BREAK__', '__E_PARSER_CLEAN_HTML_CURLY_OPEN__', '__E_PARSER_CLEAN_HTML_CURLY_CLOSED__'), $html);
+		$html = str_replace('<?', '&lt;?', $html);
 
 
 		if (strpos($html, '<body') === false) // HTML Fragment
