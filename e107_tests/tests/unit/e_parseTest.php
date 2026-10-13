@@ -175,6 +175,30 @@ EXPECTED;
 	}
 
 	/**
+	 * The text inside an iframe, which a browser never shows, cannot become markup, a script block or a bbcode.
+	 */
+	public function testIframeTextStaysText()
+	{
+		$storedAsWritten = array(
+			'<iframe><script ></iframe><p>&lt;b id=&quot;inside&quot; onclick=&quot;x()&quot;&gt; after</p>',
+			'<iframe><script ></iframe><p>&lt;b id=&quot;inside&quot; onclick=&quot;x()&quot;&gt; after</p><iframe></script></iframe>',
+			'<iframe></iframex><script ></iframe><p>&lt;b id=&quot;inside&quot;&gt; after</p>',
+			'<iframe>[html]<b id="inside">x</b>[/html]</iframe><p>after</p>',
+		);
+
+		foreach($storedAsWritten as $stored)
+		{
+			$html = $this->tp->toHTML($stored, true, 'BODY');
+
+			$this->assertStringNotContainsString('<b id=', $html, $stored);
+			$this->assertStringContainsString('after', $html, $stored);
+		}
+
+		$embed = '<iframe src="https://www.example.com/" width="560" height="315"></iframe>';
+		$this->assertSame($embed, $this->tp->toHTML($embed, true, 'BODY'));
+	}
+
+	/**
 	 * Markup written inside a processing instruction meets the cleaner like any other markup.
 	 */
 	public function testAProcessingInstructionCarriesNothingPastTheCleaner()

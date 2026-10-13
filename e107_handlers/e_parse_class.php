@@ -1885,9 +1885,9 @@ class e_parse
 			return $text;
 		}
 
-		if (strpos($text, '<!--') !== false)
+		if (strpos($text, '<!--') !== false || stripos($text, '<iframe') !== false)
 		{
-			$text = $this->inertComments($text);
+			$text = $this->inertHiddenText($text);
 		}
 
 		if (empty($this->pref)) // cache the prefs.
@@ -2324,14 +2324,26 @@ class e_parse
 	 */
 	private function rawTextEnd($html, $offset, $tag)
 	{
+		$close = $this->rawTextClose($html, $offset, $tag);
+		$gt = ($close < strlen($html)) ? strpos($html, '>', $close) : false;
+
+		return ($gt === false) ? strlen($html) : $gt + 1;
+	}
+
+	/**
+	 * @param string $html
+	 * @param int    $offset where the start tag begins
+	 * @param string $tag    the name rawTextStartTag() found there
+	 * @return int where the closing tag that ends it begins, or the end of $html when it has none
+	 */
+	private function rawTextClose($html, $offset, $tag)
+	{
 		$close = $offset;
 		while (($close = stripos($html, '</' . $tag, $close + 1)) !== false)
 		{
 			if ($this->endsTagName($html, $close + 2 + strlen($tag)))
 			{
-				$gt = strpos($html, '>', $close);
-
-				return ($gt === false) ? strlen($html) : $gt + 1;
+				return $close;
 			}
 		}
 
@@ -2339,36 +2351,75 @@ class e_parse
 	}
 
 	/**
-	 * @param string $text stored HTML
-	 * @return string $text with the text of each comment encoded; script and style blocks unchanged, and none opened in iframe text
+	 * @param string $text
+	 * @return string $text with & < > [ { encoded, so that nothing later reads markup, a bbcode or a shortcode in it
 	 */
-	private function inertComments($text)
+	private function hiddenText($text)
+	{
+		return strtr($text, array('&' => '&amp;', '<' => '&lt;', '>' => '&#62;', '[' => '&#91;', '{' => '&#123;'));
+	}
+
+	/**
+	 * @param string $text stored HTML
+	 * @return string $text with the text of each comment and each iframe encoded, as hiddenText() does; script and style blocks unchanged
+	 */
+	private function inertHiddenText($text)
 	{
 		$out = '';
 		$copied = 0;
 		$pos = 0;
-		$iframeEnd = 0;
+		$iframeClose = null;
 
-		while (($lt = strpos($text, '<', $pos)) !== false)
+		while (true)
 		{
+			$lt = strpos($text, '<', $pos);
+
+			if ($iframeClose !== null && ($lt === false || $lt >= $iframeClose))
+			{
+				$out .= $this->hiddenText((string) substr($text, $copied, $iframeClose - $copied));
+				$copied = $pos = $iframeClose;
+				$iframeClose = null;
+				continue;
+			}
+
+			if ($lt === false)
+			{
+				break;
+			}
+
 			if ((string) substr($text, $lt, 4) === '<!--')
 			{
 				$close = strpos($text, '-->', $lt + 4);
 				$innerEnd = ($close === false) ? strlen($text) : $close;
-				$inner = (string) substr($text, $lt + 4, $innerEnd - $lt - 4);
+				$before = (string) substr($text, $copied, $lt - $copied);
 
-				$out .= substr($text, $copied, $lt - $copied) . '<!--'
-					. strtr($inner, array('&' => '&amp;', '<' => '&lt;', '>' => '&#62;', '[' => '&#91;', '{' => '&#123;')) . '-->';
+				$out .= (($iframeClose === null) ? $before : $this->hiddenText($before))
+					. '<!--' . $this->hiddenText((string) substr($text, $lt + 4, $innerEnd - $lt - 4)) . '-->';
 				$copied = $pos = ($close === false) ? strlen($text) : $close + 3;
+
+				if ($iframeClose !== null && $pos > $iframeClose)
+				{
+					$iframeClose = $this->rawTextClose($text, $pos - 1, 'iframe');
+				}
 				continue;
 			}
 
-			$tag = ($lt < $iframeEnd) ? false : $this->rawTextStartTag($text, $lt, array('script', 'style', 'iframe'));
+			$tag = ($iframeClose === null) ? $this->rawTextStartTag($text, $lt, array('script', 'style', 'iframe')) : false;
+
 			if ($tag === 'iframe')
 			{
-				$iframeEnd = $this->rawTextEnd($text, $lt, $tag);
+				$gt = strpos($text, '>', $lt);
+				if ($gt === false)
+				{
+					break;
+				}
+				$out .= substr($text, $copied, $gt + 1 - $copied);
+				$copied = $pos = $gt + 1;
+				$iframeClose = max($pos, $this->rawTextClose($text, $lt, 'iframe'));
+				continue;
 			}
-			$pos = ($tag === false || $tag === 'iframe') ? $lt + 1 : $this->rawTextEnd($text, $lt, $tag);
+
+			$pos = ($tag === false) ? $lt + 1 : $this->rawTextEnd($text, $lt, $tag);
 		}
 
 		return $out . substr($text, $copied);
