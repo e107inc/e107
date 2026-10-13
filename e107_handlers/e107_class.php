@@ -5284,7 +5284,8 @@ class e107
 				self::die_http_400();
 			}
 
-			$regex = "/(wget |curl -o |lwp-download|onmouse)/i";
+			// Match download commands (wget with an option or URL-like argument, curl -o), not the words in prose.
+			$regex = "/(\bwget\s+(?:-|\S*[:\/.])|\bcurl\s+(?:-\S+\s+)*-o\s|lwp-download|onmouse)/i";
 			if(preg_match($regex,$input))
 			{
 				self::die_http_400();
