@@ -1004,7 +1004,7 @@ class download_shortcodes extends e_shortcode
 
 	function sc_download_mirror_requests()
 	{
-		return (ADMIN && !empty($this->mirror['dlmirrorfile'][2])) ? LAN_dl_73 . $this->mirror['dlmirrorfile'][2] : "";
+		return (ADMIN && !empty($this->mirror['dlmirrorfile'][2])) ? LAN_dl_73 . (int) $this->mirror['dlmirrorfile'][2] : "";
 	}
 
 	function sc_download_total_mirror_requests()

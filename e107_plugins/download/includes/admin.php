@@ -347,7 +347,7 @@ class download_main_admin_ui extends e_admin_ui
 			'download_class' 			=> array('title'=> DOWLAN_113,			'type' => 'userclass',		'width' => 'auto', 'inline'=>true, 'data' => 'int','batch' => TRUE, 'filter'=>TRUE),		
 			'download_visible' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',	'inline'=>true,	'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
 			
-			'download_mirror' 			=> array('title'=> DOWLAN_128,			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
+			'download_mirror' 			=> array('title'=> DOWLAN_128,			'type' => 'method', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
 			'download_mirror_type' 		=> array('title'=> DOWLAN_195,			'type' => 'method', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
 		
 	
@@ -1360,8 +1360,8 @@ $columnInfo = array(
 	            }
 	
 	            $text .= "</select>
-	                           <input  class='form-control' type='text' name='download_mirror[]' style='width: 60%;' value=\"".$mirrorArray[($count-1)]['url']."\" maxlength='200'/>
-	                           <input  class='form-control' type='text' name='download_mirror_size[]' style='width: 15%;' value=\"".$mirrorArray[($count-1)]['filesize']."\" maxlength='10'/>";
+	                           <input  class='form-control' type='text' name='download_mirror[]' style='width: 60%;' value=\"".$tp->toAttribute($mirrorArray[($count-1)]['url'], true)."\" maxlength='200'/>
+	                           <input  class='form-control' type='text' name='download_mirror_size[]' style='width: 15%;' value=\"".$tp->toAttribute($mirrorArray[($count-1)]['filesize'], true)."\" maxlength='10'/>";
 	            if (DOWNLOAD_DEBUG)
 	            {
 	               if ($id)
@@ -1370,7 +1370,7 @@ $columnInfo = array(
 	               }
 	               else
 	               {
-	               $text .= "<input  class='form-control' type='text' name='download_mirror_requests[]' style='width: 10%;' value=\"".$mirrorArray[($count-1)]['requests']."\" maxlength='10'/>";
+	               $text .= "<input  class='form-control' type='text' name='download_mirror_requests[]' style='width: 10%;' value=\"".$tp->toAttribute($mirrorArray[($count-1)]['requests'], true)."\" maxlength='10'/>";
 	               }
 	            }
 	            $text .= "  </div>";
@@ -2573,6 +2573,16 @@ class download_main_admin_form_ui extends e_admin_form_ui
 	}
 	
 	
+	/**
+	 * @param string $curVal the stored mirror list, kept as it was posted
+	 * @param string $mode
+	 * @return string
+	 */
+	function download_mirror($curVal, $mode)
+	{
+		return ($mode === 'read') ? e107::getParser()->toAttribute($curVal, true) : '';
+	}
+
 	function download_mirror_type($curVal,$mode)
 	{
 		switch ($curVal)
