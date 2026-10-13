@@ -223,6 +223,7 @@ class e_bbcode
 		$nopro = FALSE;										// Blocks processing within [code]...[/code] tags
 		$noproFrom = 0;										// Where the [code] that set $nopro begins
 		$swallowedFrom = null;								// Where a [code] begins that took in the closer of an open $this->blockCode
+		$outerPreProcess = $this->preProcess;
 		$this->preProcess = FALSE;
 
 		$strip_array = array();
@@ -470,6 +471,7 @@ class e_bbcode
 			}
 		}
 		$result .= $stacktext;
+		$this->preProcess = $outerPreProcess;
 		return $result;
 	}
 

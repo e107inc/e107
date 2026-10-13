@@ -73,8 +73,7 @@ global $pref, $parm;
 	{
     	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && substr($link,0,1) != "/" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
     }
-	$text = $code_text;
 	$href = $tp->toBBCodeUrlAttribute($link);
-	if ($link !== '' && $href === '') return $text;
-	return "<a class='{$class}' href='".$href."' ".$insert.">".$text."</a>";
+	if ($link !== '' && $href === '') return $code_text;
+	return "<a class='{$class}' href='".$href."' ".$insert.">".$code_text."</a>";
 

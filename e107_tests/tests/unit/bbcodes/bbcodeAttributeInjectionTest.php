@@ -422,6 +422,30 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		self::assertSame('Visit', trim(strip_tags($html)), 'The link took the text of the bbcode its shortcode rendered: '.$html);
 	}
 
+	/**
+	 * @dataProvider bbcodeRenderingShortcodeLinks
+	 * @param string $bbcode
+	 */
+	public function testAShortcodeThatRendersBbcodeLeavesTheOuterGlobals($bbcode)
+	{
+		global $postID, $fromadmin;
+
+		$this->tp->toHTML($this->tp->toDB($bbcode), true, 'BODY, fromadmin', 'outer post');
+
+		self::assertSame('outer post', $postID);
+		self::assertTrue($fromadmin);
+	}
+
+	/**
+	 * A shortcode in a bbcode's address that stores text with a bbcode in it leaves the bbcodes after it rendering.
+	 */
+	public function testAShortcodeThatStoresBbcodeLeavesTheLaterBbcodesRendering()
+	{
+		$html = $this->renderStored('[url]{BBCODE_ATTRIBUTE_STORED=x[/b]1234}[/url] [b]after[/b]', null, 'BODY');
+
+		self::assertStringNotContainsString('[b]after[/b]', $html, 'A bbcode after the address was printed as stored: '.$html);
+	}
+
 	public function testTheQuoteBbcodeCannotAddAnAttributeToItsCitation()
 	{
 		$html = $this->renderStored('[quote=" onmouseover="alert(1)]hello[/quote]');
@@ -1254,5 +1278,18 @@ class bbcodeAttributeInjectionShortcodes
 	public function sc_bbcode_attribute_rendered($parm = '')
 	{
 		return strip_tags(e107::getParser()->toHTML('[b]'.$parm.'[/b]', true));
+	}
+
+	/**
+	 * Stores its parameter as a form would, as a shortcode saving a field does.
+	 *
+	 * @param string $parm
+	 * @return string
+	 */
+	public function sc_bbcode_attribute_stored($parm = '')
+	{
+		e107::getParser()->toDB((string) $parm);
+
+		return 'https://example.com/';
 	}
 }

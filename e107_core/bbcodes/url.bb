@@ -15,8 +15,7 @@ else
 	$url = $code_text;
 }
 
-$text = $code_text;
 $href = $tp->toBBCodeUrlAttribute($url);
-if ($url !== '' && $href === '') return $text;
+if ($url !== '' && $href === '') return $code_text;
 
-return '<a href="'.$href.'" class="bbcode '.$class.'"'.$external.'>'.$text.'</a>';
+return '<a href="'.$href.'" class="bbcode '.$class.'"'.$external.'>'.$code_text.'</a>';
