@@ -3745,7 +3745,7 @@ var_dump($select_options);*/
 
 		$ltitle = is_string($option_title) ? strtolower($option_title) : $option_title;
 
-		$label = ($ltitle === 'true' || $ltitle === 'false') ? $option_title : defset($option_title, $option_title);
+		$label = ($ltitle === 'true' || $ltitle === 'false') ? $option_title : $this->storedTextAsHtml(defset($option_title, $option_title));
 
 		return "<option" . $this->attributes(['value' => $value]) . $this->get_attributes($options) . '>'
 			. $label .
@@ -5351,6 +5351,26 @@ var_dump($select_options);*/
 	}
 
 	/**
+	 * @param mixed $value a text field's value as toDB() stored it, or a label built from one
+	 * @return mixed the value with each tag toDB() stored, its quotes written as entities, turned back into HTML; a tag that holds a quote is already HTML and is left as it is; all of it as text if the pattern fails
+	 */
+	protected function storedTextAsHtml($value)
+	{
+		if (!is_string($value) || strpos($value, '<') === false)
+		{
+			return $value;
+		}
+
+		$tp = $this->tp;
+		$html = preg_replace_callback('#<[a-z](?:[^<>"\'&]++|&quot;(?:[^"\'&]++|&(?!quot;))*+&quot;|&\#039;(?:[^"\'&]++|&(?!\#039;))*+&\#039;|&(?!quot;|\#039;))*+>#i', function ($tag) use ($tp)
+		{
+			return $tp->toHTML($tag[0], false, 'defaults_off,scripts_on,nobreak,retain_nl');
+		}, $value);
+
+		return ($html === null) ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : $html;
+	}
+
+	/**
 	 * Check if a value should be linked and wrap in <a> tag if required.
 	 * @todo global pref for the target option?
 	 * @param mixed $value
@@ -5841,7 +5861,7 @@ var_dump($select_options);*/
 					$value = $ret;
 				}
 
-				$value = ($value ? vartrue($parms['pre']).defset($value, $value).vartrue($parms['post']) : '');
+				$value = ($value ? vartrue($parms['pre']).$this->storedTextAsHtml(defset($value, $value)).vartrue($parms['post']) : '');
 
 				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{				
@@ -5903,7 +5923,8 @@ var_dump($select_options);*/
 					$value = $tp->htmlwrap($value, (int) $parms['wrap'], varset($parms['wrapChar'], ' '));
 				}
 
-				$value = $this->renderLink($value,$parms,$id);
+				$editValue = $value;
+				$value = $this->renderLink($this->storedTextAsHtml($value),$parms,$id);
 
 				if(empty($value))
 				{
@@ -5916,7 +5937,7 @@ var_dump($select_options);*/
 
 					if($attributes['type'] === 'tags' && !empty($value))
 					{
-						$setValue = $value;
+						$setValue = $editValue;
 						$value = str_replace(',', ', ', $value); // add spaces so it wraps, but don't change the actual values.
 					}
 				}
@@ -5934,7 +5955,7 @@ var_dump($select_options);*/
 					$maxlength = vartrue($parms['maxlength'], 80);
 					unset($parms['maxlength']);
 
-					$tpl = $this->text($field, $value, $maxlength, $options);
+					$tpl = $this->text($field, $editValue, $maxlength, $options);
 
 					$mode = preg_replace('/[\W]/', '', vartrue($_GET['mode']));
 					$value = "<a" . $this->attributes([
@@ -5981,7 +6002,8 @@ var_dump($select_options);*/
 					$value = $tp->htmlwrap($value, (int)$parms['wrap'], varset($parms['wrapChar'], ' '));
 				}
 
-				$value = $this->renderLink($value,$parms,$id);
+				$editValue = $value;
+				$value = $this->renderLink($this->storedTextAsHtml($value),$parms,$id);
 
 
 				if(empty($value))
@@ -5999,7 +6021,7 @@ var_dump($select_options);*/
 
 				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$value = $this->renderInline($field,$id,$attributes['title'],$value, $value);
+					$value = $this->renderInline($field,$id,$attributes['title'],$editValue, $value);
 				}
 
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
@@ -6013,7 +6035,7 @@ var_dump($select_options);*/
 
 				if($attributes['type'] === 'textarea' && !vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					return $this->renderInline($field,$id,$attributes['title'],$value,substr($value,0,50). '...','textarea'); //FIXME.
+					return $this->renderInline($field,$id,$attributes['title'],$value,substr(strip_tags($this->storedTextAsHtml($value)),0,50). '...','textarea'); //FIXME.
 				}
 
 
@@ -6270,7 +6292,7 @@ var_dump($select_options);*/
 			break;
 
 			case 'userclass':
-				$dispvalue = $this->_uc->getName($value);
+				$dispvalue = $this->storedTextAsHtml($this->_uc->getName($value));
 					// Inline Editing.  
 				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
@@ -6300,7 +6322,7 @@ var_dump($select_options);*/
 						continue;
 					}
 
-					$uv[] = $this->_uc->getName($cid);
+					$uv[] = $this->storedTextAsHtml($this->_uc->getName($cid));
 				}
 
 
@@ -6498,7 +6520,7 @@ var_dump($select_options);*/
 				{
 					break;
 				}
-				$ttl = $value;
+				$ttl = $this->storedTextAsHtml($value);
 				if (!empty($parms['href']))
 				{
 					return $tp->replaceConstants(vartrue($parms['pre']) . $value, varset($parms['replace_mod'], 'abs'));
@@ -6524,7 +6546,7 @@ var_dump($select_options);*/
 				{
 					break;
 				}
-				$ttl = $value;
+				$ttl = $this->storedTextAsHtml($value);
 				if (!empty($parms['truncate']))
 				{
 					$ttl = $tp->text_truncate($value, $parms['truncate'], '...');
