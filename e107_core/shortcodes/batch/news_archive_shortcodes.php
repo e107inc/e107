@@ -41,7 +41,7 @@ class news_archive_shortcodes extends e_shortcode
 	function sc_archive_link()
 	{
 		$url = e107::getUrl()->create('news/view/item', $this->var);
-		$title = e107::getParser()->toHTML($this->var['news_title'], TRUE, 'TITLE');
+		$title = e107::getParser()->toHTML($this->var['news_title'], TRUE, e107::getParser()->shortcodeModifiersForAuthor('TITLE', varset($this->var['news_author'], 0)));
 
 		return "<a href='".$url."'>".$title."</a>";
 	}

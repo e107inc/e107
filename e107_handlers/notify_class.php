@@ -111,7 +111,7 @@ class notify
         }
 
 		$message = print_a($data,true); 
-		$this->send($id, 'Event Triggered: '.$id, $message);	
+		$this->sendForAuthor(0, $id, 'Event Triggered: '.$id, $message);	
 	}
 
 
@@ -125,17 +125,52 @@ class notify
 	 * @param string $message - email message body
 	 * @param array  $media
 	 * @return array|bool
+	 * @see notify::sendForAuthor() for a subject and message a user wrote
 	 *
 	 * @todo handle 'everyone except' clauses (email address filter done)
 	 * @todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
 	 */
 	function send($id, $subject, $message, $media=array())
 	{
+		$tp = e107::getParser();
+
+		return $this->deliver($id, $tp->toEmail($subject), $message, $media, 0, true);
+	}
+
+
+	/**
+	 * Send an email notification whose subject and message a user wrote; they expand shortcodes only if that user is an administrator.
+	 *
+	 * @param int    $author  user ID of whoever wrote the subject and message, 0 for none
+	 * @param string $id      identifies event actions
+	 * @param string $subject subject for email
+	 * @param string $message email message body
+	 * @param array  $media
+	 * @return array|bool
+	 */
+	public function sendForAuthor($author, $id, $subject, $message, $media = array())
+	{
+		$tp = e107::getParser();
+
+		return $this->deliver($id, $tp->toEmail($subject, '', $tp->shortcodeModifiersForAuthor('parse_sc, no_make_clickable', $author)), $message, $media, (int) $author);
+	}
+
+
+	/**
+	 * @param string $id
+	 * @param string $subject rendered subject
+	 * @param string $message message body, expanded for each recipient only if $author is an administrator
+	 * @param array  $media
+	 * @param int    $author  user ID recorded as the message's author, 0 for none
+	 * @param bool   $parseBody expand the message's shortcodes for each recipient whoever wrote it, as send() always has
+	 * @return array|bool
+	 */
+	private function deliver($id, $subject, $message, $media, $author, $parseBody = false)
+	{
 
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-		$subject = $tp->toEmail($subject);
 		$message = $tp->replaceConstants($message, "full");
 	//	$message = $tp->toEmail($message);
 		$emailFilter = '';
@@ -277,6 +312,8 @@ class notify
 				'mail_sender_name'		=> e107::getPref('replyto_name',$siteadmin),
 				'mail_notify_complete' 	=> 0,			// NEVER notify when this email sent!!!!!
 				'mail_body' 			=> $message,
+				'mail_body_author'      => (int) $author,
+				'mail_body_parse'       => $parseBody ? 1 : 0,
 				'template'				=> 'notify',
 				'mail_send_style'       => 'notify'
 			);
@@ -331,7 +368,7 @@ class notify
 			}
 		}
 
-		$this->send('usersup', defset('NT_LAN_US_1'), $message);
+		$this->sendForAuthor(0, 'usersup', defset('NT_LAN_US_1'), $message);
 	}
 
 	/**
@@ -343,7 +380,7 @@ class notify
 		$msgtext .= NT_LAN_UV_3.' '.$data['user_loginname']."\n";
 		$msgtext .= NT_LAN_UV_4.' '.e107::getIPHandler()->getIP(FALSE);
 
-		$this->send('userveri', NT_LAN_UV_1, $msgtext);
+		$this->sendForAuthor(varset($data['user_id'], 0), 'userveri', NT_LAN_UV_1, $msgtext);
 	}
 
 
@@ -366,7 +403,7 @@ class notify
 			$message .= 'user_ip: '.$ip.'<br />';
 		}
 
-		$this->send('login', defset('NT_LAN_LI_1') . $user, $message);
+		$this->sendForAuthor(varset($data['user_id'], 0), 'login', defset('NT_LAN_LI_1') . $user, $message);
 	}
 
 	/**
@@ -374,7 +411,7 @@ class notify
 	 */
 	function notify_logout()
 	{
-		$this->send('logout', NT_LAN_LO_1, USERID.'. '.USERNAME.' '.NT_LAN_LO_2);
+		$this->sendForAuthor(0, 'logout', NT_LAN_LO_1, USERID.'. '.USERNAME.' '.NT_LAN_LO_2);
 	}
 
 	/**
@@ -383,7 +420,7 @@ class notify
 	 */
 	function notify_flood($data)
 	{
-		$this->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data, TRUE));
+		$this->sendForAuthor(0, 'flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data, TRUE));
 	}
 
 	/**
@@ -398,7 +435,7 @@ class notify
 			$message .= $key.': '.$value.'<br />';
 		}
 
-		$this->send('subnews', NT_LAN_SN_1, $message);
+		$this->sendForAuthor(varset($data['submitnews_user'], 0), 'subnews', NT_LAN_SN_1, $message);
 	}
 
 	/**
@@ -411,7 +448,7 @@ class notify
 		if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
 		if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
 		if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
-		$this->send('newspost', $data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
+		$this->sendForAuthor(varset($data['news_author'], 0), 'newspost', $data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
 	}
 
 	/**
@@ -424,7 +461,7 @@ class notify
 		if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
 		if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
 		if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
-		$this->send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
+		$this->sendForAuthor(varset($data['news_author'], 0), 'newsupd', NT_LAN_NU_1.': '.$data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
 	}
 
 	/**
@@ -433,7 +470,7 @@ class notify
 	 */
 	function notify_newsdel($data)
 	{
-		$this->send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
+		$this->sendForAuthor(0, 'newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
 	}
 
 
@@ -444,7 +481,7 @@ class notify
 	function notify_maildone($data)
 	{
 		$message = '<b>'.$data['mail_subject'].'</b><br /><br />'.$data['mail_body'];
-		$this->send('maildone', NT_LAN_ML_1.': '.$data['mail_subject'], $message);
+		$this->sendForAuthor(varset($data['mail_creator'], 0), 'maildone', NT_LAN_ML_1.': '.$data['mail_subject'], $message);
 	}
 
 
@@ -455,7 +492,7 @@ class notify
 	function notify_fileupload($data)
 	{
 		$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
-		$this->send('fileupload', $data['upload_name'], $message);
+		$this->sendForAuthor(varset($data['upload_user'], 0), 'fileupload', $data['upload_name'], $message);
 	}
 
 
@@ -494,7 +531,7 @@ class notify
 		$shortcodes = array(
 			'NEWS_URL'      => e107::getUrl()->create('news/view/item', $data,'full=1&encode=0'),
 			'NEWS_TITLE'    => $tp->toHTML($data['news_title']),
-			'NEWS_SUMMARY'  => $tp->toEmail($data['news_summary']),
+			'NEWS_SUMMARY'  => $tp->toEmail($data['news_summary'], '', 'no_make_clickable'),
 			'NEWS_AUTHOR'   => $tp->toHTML($author)
 		);
 
@@ -502,7 +539,7 @@ class notify
 
 		$message = $tp->simpleParse($template, $shortcodes);
 
-		$this->send('admin_news_notify', $data['news_title'], $message, $img);
+		$this->sendForAuthor($data['news_author'], 'admin_news_notify', $data['news_title'], $message, $img);
 
 
 	}

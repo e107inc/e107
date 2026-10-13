@@ -109,7 +109,7 @@ class news_front
 
 			case "news/view/item":
 
-				$itemName = e107::getParser()->toHTML(isset($this->currentRow['news_title']) ? $this->currentRow['news_title'] : '',true, 'TITLE');
+				$itemName = e107::getParser()->toHTML(isset($this->currentRow['news_title']) ? $this->currentRow['news_title'] : '',true, e107::getParser()->shortcodeModifiersForAuthor('TITLE', varset($this->currentRow['news_author'], 0)));
 
 				$breadcrumb[] = array('text'=> $categoryName, 'url'=>e107::getUrl()->create('news/list/category', $this->currentRow));
 				$breadcrumb[] = array('text'=> $itemName, 'url'=> null);

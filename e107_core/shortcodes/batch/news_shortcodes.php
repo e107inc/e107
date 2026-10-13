@@ -54,9 +54,15 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
+	/** {@see e_parse::shortcodeModifiersForAuthor()} for this news item's author. */
+	private function shortcodeModifiersForAuthor($modifiers)
+	{
+		return e107::getParser()->shortcodeModifiersForAuthor($modifiers, isset($this->news_item['news_author']) ? $this->news_item['news_author'] : 0);
+	}
+
 	function newsTitle($parm=null)
 	{
-		$text = e107::getParser()->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
+		$text = e107::getParser()->toHTML($this->news_item['news_title'], TRUE, $this->shortcodeModifiersForAuthor('TITLE'));
 
 		if(!empty($parm['attribute']))
 		{
@@ -89,12 +95,12 @@ class news_shortcodes extends e_shortcode
 
 		if($parm != 'extended')
 		{
-			$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
+			$news_body = $tp->toHTML($this->news_item['news_body'], true, $this->shortcodeModifiersForAuthor('BODY, fromadmin'), $this->news_item['news_author']);
 		}
 		
 		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $action === 'extend') && ($parm !== 'noextend' && $parm !== 'body'))
 		{
-			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
+			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, $this->shortcodeModifiersForAuthor('BODY, fromadmin'), $this->news_item['news_author']);
 		}
 
 		e107::getBB()->clearClass();
@@ -382,7 +388,7 @@ class news_shortcodes extends e_shortcode
 
 		if(!empty($user['user_signature']))
 		{
-			return e107::getParser()->toHTML($user['user_signature'], true, 'DESCRIPTION');
+			return e107::getParser()->toHTML($user['user_signature'], true, e107::getParser()->shortcodeModifiersForAuthor('DESCRIPTION', $this->news_item['user_id']));
 		}
 	}
 
@@ -811,13 +817,13 @@ class news_shortcodes extends e_shortcode
 
 	function sc_captionclass()
 	{
-		$news_title = e107::getParser()->toHTML($this->news_item['news_title'], TRUE,'TITLE');
+		$news_title = e107::getParser()->toHTML($this->news_item['news_title'], TRUE, $this->shortcodeModifiersForAuthor('TITLE'));
 		return "<div class='category".$this->news_item['news_category']."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
 	function sc_admincaption()
 	{
-		$news_title = e107::getParser()->toHTML($this->news_item['news_title'], TRUE,'TITLE');
+		$news_title = e107::getParser()->toHTML($this->news_item['news_title'], TRUE, $this->shortcodeModifiersForAuthor('TITLE'));
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 

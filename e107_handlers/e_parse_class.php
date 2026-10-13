@@ -1903,6 +1903,36 @@ class e_parse
 	}
 
 
+	/** @var bool[] whether each author id {@see e_parse::shortcodeModifiersForAuthor()} has looked up is an administrator */
+	private $adminAuthors = array();
+
+
+	/**
+	 * Add 'scparse_off' to $modifiers unless the author of the stored text is an administrator.
+	 *
+	 * @param string $modifiers {@see e_parse::toHTML()} modifiers for the field
+	 * @param int    $authorId  user id stored with the text
+	 * @return string
+	 */
+	public function shortcodeModifiersForAuthor($modifiers, $authorId)
+	{
+		$authorId = (int) $authorId;
+
+		if (!isset($this->adminAuthors[$authorId]))
+		{
+			$author = ($authorId > 0) ? e107::user($authorId) : array();
+			$this->adminAuthors[$authorId] = !empty($author['user_admin']);
+		}
+
+		if ($this->adminAuthors[$authorId])
+		{
+			return $modifiers;
+		}
+
+		return ltrim($modifiers . ',scparse_off', ',');
+	}
+
+
 	/**
 	 * Render stored content for display: bbcode, shortcodes, {e_XXX} constants,
 	 * emotes, clickable links and any hooked parser the site has enabled.
@@ -2875,8 +2905,35 @@ class e_parse
 	 * @param string  $text
 	 * @param boolean $tags [optional]
 	 * @return string
+	 * @see e_parse::toRssForAuthor() for text a user wrote
 	 */
 	public function toRss($text, $tags = false)
+	{
+		return $this->rssText($text, $tags, null);
+	}
+
+
+	/**
+	 * Convert text a user wrote for RSS/XML use; its shortcodes expand only if that user is an administrator.
+	 *
+	 * @param string  $text
+	 * @param int     $authorId user ID stored with the text
+	 * @param boolean $tags     [optional]
+	 * @return string
+	 */
+	public function toRssForAuthor($text, $authorId, $tags = false)
+	{
+		return $this->rssText($text, $tags, $this->shortcodeModifiersForAuthor('parse_sc, no_make_clickable', $authorId));
+	}
+
+
+	/**
+	 * @param string      $text
+	 * @param boolean     $tags
+	 * @param string|null $emailModifiers {@see e_parse::toEmail()} modifiers, NULL for its defaults
+	 * @return string
+	 */
+	private function rssText($text, $tags, $emailModifiers)
 	{
 
 		if ($tags != true)
@@ -2886,7 +2943,7 @@ class e_parse
 
 		}
 
-		$text = $this->toEmail($text);
+		$text = ($emailModifiers === null) ? $this->toEmail($text) : $this->toEmail($text, '', $emailModifiers);
 
 		$search = array('&amp;#039;', '&amp;#036;', '&#039;', '&#036;', e_BASE, "href='request.php", '<!-- bbcode-html-start -->', '<!-- bbcode-html-end -->');
 		$replace = array("'", '$', "'", '$', SITEURL, "href='" . SITEURL . 'request.php', '', '');

@@ -2620,7 +2620,7 @@ class e107forum
 		$thread_name = $tp->toText($threadData['thread_name']);
 	//	$thread_name = str_replace('&quot;', '"', $thread_name);		// This not picked up by toText();
 		$datestamp = $tp->toDate($post['post_datestamp']);
-		$email_post = $tp->toHTML($post['post_entry'], true);
+		$email_post = $tp->toHTML($post['post_entry'], true, 'USER_BODY');
 
 	//	$mail_link = "<a href='".SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent.".last'>".SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent.".last</a>";
 
@@ -2659,7 +2659,7 @@ class e107forum
 
 		$vars = array('x'=>USERNAME, 'y'=>$thread_name, 'z'=>$datestamp);
 
-		$message = "[html]".$tp->lanVars(LAN_FORUM_8001, $vars,true)."<br /><br /><blockquote>".$tp->toEmail($email_post, false)."</blockquote><br />".LAN_FORUM_8002."<br /><a href='".$mail_link."'>".$mail_link."</a>[/html]";
+		$message = "[html]".$tp->lanVars(LAN_FORUM_8001, $vars,true)."<br /><br /><blockquote>".$tp->toEmail($email_post, false, 'no_make_clickable')."</blockquote><br />".LAN_FORUM_8002."<br /><a href='".$mail_link."'>".$mail_link."</a>[/html]";
 
 
 			// Create the mail body

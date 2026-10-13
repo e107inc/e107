@@ -87,7 +87,7 @@ foreach($arr as $year=>$val)
 			{
 				$url = e107::getUrl()->create('news/view/item', $row, array('allow' => 'news_sef,news_title,news_id,category_sef,category_name,category_id'));
 		        $var = array('ITEM_URL'   => $url,
-		                     'ITEM_TITLE' => $tp->toHTML($row['news_title'],false,'TITLE'),
+		                     'ITEM_TITLE' => $tp->toHTML($row['news_title'],false,$tp->shortcodeModifiersForAuthor('TITLE', varset($row['news_author'], 0))),
 		        );
 		        $text .=  $tp->simpleParse($template['item'], $var);
 			}

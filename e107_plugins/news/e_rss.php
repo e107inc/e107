@@ -124,6 +124,7 @@ class news_rss // plugin-folder + '_rss'
 			$rss[$i]['title']           = $value['news_title'];
 			$rss[$i]['link']            = e107::getUrl()->create('news/view/item', $value, 'full=1');
 			$rss[$i]['author']          = $value['user_name'];
+			$rss[$i]['author_id']       = $value['news_author'];
 			$rss[$i]['author_email']    = $value['user_email'];
 			$rss[$i]['category_name']   = $tp->toHTML($value['category_name'],TRUE,'defs');
 			//category sef

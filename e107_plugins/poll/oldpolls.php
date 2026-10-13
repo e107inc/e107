@@ -148,7 +148,7 @@ class oldpolls_front
 			$from = $tp->toDate($row['poll_datestamp'], "short");
 			$to = $tp->toDate($row['poll_end_datestamp'], "short");
 
-			$poll_title = $tp->toHTML($row['poll_title'], true, 'TITLE');
+			$poll_title = $tp->toHTML($row['poll_title'], true, $tp->shortcodeModifiersForAuthor('TITLE', varset($row['poll_admin_id'], 0)));
 
 			$uparams = array('id' => $row['poll_admin_id'], 'name' => $row['user_name']);
 

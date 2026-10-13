@@ -1132,7 +1132,7 @@ class forum_post_handler
 		{
 			require_once(e_PLUGIN."poll/poll_class.php");
 			$poll = new poll;
-			$poll_text = $poll->render_poll($_POST, 'forum', 'notvoted', true);
+			$poll_text = $poll->render_poll(array('poll_admin_id' => USERID) + $_POST, 'forum', 'notvoted', true);
 		}
 		else
 		{

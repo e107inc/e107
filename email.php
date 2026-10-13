@@ -122,6 +122,8 @@ if (isset($_POST['emailsubmit']))
 //	}
 	$ip = e107::getIPHandler()->getIP(FALSE);
 	$message .= "\n\n".LAN_EMAIL_2." ".$ip."\n\n";
+	$sender = (int) e107::getUser()->getId();
+	$messageAuthor = 0;
 
 	if (substr($source,0,7) == 'plugin:')
 	{
@@ -148,6 +150,7 @@ if (isset($_POST['emailsubmit']))
 			exit;
 		}
 		$message .= strip_tags($_POST['referer']);
+		$messageAuthor = $sender;
 		$emailurl = strip_tags($_POST['referer']);
 	}
 	else
@@ -155,13 +158,13 @@ if (isset($_POST['emailsubmit']))
 		$emailurl = strip_tags($_POST['referer']);
 		$message = '';
 		$row = $sql->createQueryBuilder()
-			->select('news_title', 'news_body', 'news_extended')->from('news')
+			->select('news_title', 'news_body', 'news_extended', 'news_author')->from('news')
 			->where('news_id', (int) $parms)
 			->fetchRow();
 		if($row)
 		{
 			$message = "<h3 class='email_heading'>".$row['news_title']."</h3><br />".$row['news_body']."<br />".$row['news_extended']."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
-			$message = $tp->toEmail($message);
+			$message = $tp->toEmail($message, '', $tp->shortcodeModifiersForAuthor('parse_sc, no_make_clickable', $row['news_author']));
 		}
 
 		if($message == '')
@@ -176,8 +179,8 @@ if (isset($_POST['emailsubmit']))
 		// Load Mail Handler and Email Template.
 		require_once(e_HANDLER.'mail.php');
 
-		$email_body = (trim($comments) != '') ? $tp->toEmail($comments).'<hr />' : '';
-		$email_body .= $tp->toEmail($message);
+		$email_body = (trim($comments) != '') ? $tp->toEmail($comments, '', $tp->shortcodeModifiersForAuthor('parse_sc, no_make_clickable', $sender)).'<hr />' : '';
+		$email_body .= $tp->toEmail($message, '', $tp->shortcodeModifiersForAuthor('parse_sc, no_make_clickable', $messageAuthor));
 
 		if (sendemail($email_send, LAN_EMAIL_3.' '.SITENAME,$email_body))
 		{

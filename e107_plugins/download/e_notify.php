@@ -48,7 +48,7 @@ class download_notify extends notify // plugin-folder + '_notify'
 			$message .= str_replace($find, $replace, LAN_DL_NT_04); 
 		}
 		
-		$this->send('user_download_brokendownload_reported', LAN_DL_NT_01, $message);
+		$this->sendForAuthor(e107::getUser()->getId(), 'user_download_brokendownload_reported', LAN_DL_NT_01, $message);
 	}
 	
 }

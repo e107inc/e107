@@ -205,18 +205,19 @@ class userUpload
 	                $_POST['file_description'] = $tp->toDB($_POST['file_description']);
 					
 	                $file_time = time();
+	                $noShortcodes = array('{' => '&#123;', '}' => '&#125;');
 
 	                $insertQry = array(
 		                'upload_id'             => 0,
 		                'upload_poster'         => $poster,
-		                'upload_email'          => $postemail,
-		                'upload_website'        => $tp->toDB(varset($_POST['file_website'])),
+		                'upload_email'          => strtr($postemail, $noShortcodes),
+		                'upload_website'        => strtr($tp->toDB(varset($_POST['file_website'])), $noShortcodes),
 		                'upload_datestamp'      => $file_time,
-		                'upload_name'           => $tp->toDB($_POST['file_name']),
+		                'upload_name'           => strtr($tp->toDB($_POST['file_name']), $noShortcodes),
 		                'upload_version'        => $tp->toDB(varset($_POST['file_version'])),
 		                'upload_file'           => $file,
 		                'upload_ss'             => $image,
-		                'upload_description'    => $tp->toDB($_POST['file_description']),
+		                'upload_description'    => strtr($tp->toDB($_POST['file_description']), $noShortcodes),
 		                'upload_demo'           => $tp->toDB(varset($_POST['file_demo'])),
 		                'upload_filesize'       => $filesize,
 		                'upload_active'         => 0,

@@ -64,7 +64,7 @@ class notifyTest extends \Test\Unit
 		e107::coreLan('notify');
 
 		$sent = array();
-		$nt = $this->make('notify', array('send' => function($id, $subject, $message) use (&$sent) {
+		$nt = $this->make('notify', array('sendForAuthor' => function($author, $id, $subject, $message) use (&$sent) {
 			$sent[] = $message;
 		}));
 

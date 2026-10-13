@@ -216,6 +216,7 @@ class rssCreate
 	/** Every key {@see rssCreate::buildRss()} interpolates or tests, so a feed may carry only the ones it has; custom and media are not among them because it iterates those, and reaches custom through isset(). */
 	const ITEM = array(
 		'author'          => '',
+		'author_id'       => 0,
 		'author_email'    => '',
 		'title'           => '',
 		'link'            => '',
@@ -315,6 +316,7 @@ class rssCreate
 					foreach($rs as $k=>$row)
 					{
 						$this -> rssItems[$k]['author'] = varset($row['author']);
+						$this -> rssItems[$k]['author_id'] = (int) varset($row['author_id'], 0);
 						$this -> rssItems[$k]['author_email'] = varset($row['author_email']);
 						$this -> rssItems[$k]['title'] = varset($row['title']);
 
@@ -477,10 +479,10 @@ class rssCreate
 
 						echo "
 							<item>
-							<title>".$tp->toRss($value['title'])."</title>
-							<description>".substr($tp->toRss($value['description']),0,150);
+							<title>".$tp->toRssForAuthor($value['title'], (int) varset($value['author_id'], 0))."</title>
+							<description>".substr($tp->toRssForAuthor($value['description'], (int) varset($value['author_id'], 0)),0,150);
 						echo "</description>
-							<author>".$tp->toRss($value['author'])."&lt;".$this->nospam($value['author_email'])."&gt;</author>
+							<author>".$tp->toRssForAuthor($value['author'], 0)."&lt;".$this->nospam($value['author_email'])."&gt;</author>
 							<link>".$link."</link>
 							</item>";
 					}
@@ -556,23 +558,23 @@ class rssCreate
                     $catlink	= deftrue('e_LANQRY') ? str_replace("?","?".e_LANQRY,$value['category_link']) : $value['category_link'];
 
 					echo "<item>\n";
-					echo "<title>".$tp->toRss($value['title'])."</title>\n";
+					echo "<title>".$tp->toRssForAuthor($value['title'], (int) varset($value['author_id'], 0))."</title>\n";
 
 					if($link)
 					{
 						echo "<link>".$link."</link>\n";
 					}
 
-					echo "<description>".$tp->toRss($value['description'],true). "</description>\n";
+					echo "<description>".$tp->toRssForAuthor($value['description'], (int) varset($value['author_id'], 0), true). "</description>\n";
 
 					if($value['content_encoded'])
 					{
-						echo "<content:encoded>".$tp->toRss($value['content_encoded'],true)."</content:encoded>\n";
+						echo "<content:encoded>".$tp->toRssForAuthor($value['content_encoded'], (int) varset($value['author_id'], 0), true)."</content:encoded>\n";
 					}
 
 					if($value['category_name'] && $catlink)
 					{
-						echo "<category domain='".$catlink."'>".$tp->toRss($value['category_name'])."</category>\n";
+						echo "<category domain='".$catlink."'>".$tp->toRssForAuthor($value['category_name'], 0)."</category>\n";
 					}
 
 					if($value['comment'])
@@ -582,7 +584,7 @@ class rssCreate
 
 					if($value['author'])
 					{
-						echo "<dc:creator>".$tp->toRss($value['author'])."</dc:creator>\n"; // correct tag for author without email.
+						echo "<dc:creator>".$tp->toRssForAuthor($value['author'], 0)."</dc:creator>\n"; // correct tag for author without email.
 					}
 
 					// Enclosure support for podcasting etc.
@@ -602,7 +604,7 @@ class rssCreate
 					{
 						foreach($value['custom'] as $cKey => $cVal)
 						{
-							echo "<".$cKey.">".$tp->toRss($cVal)."</".$cKey.">\n";
+							echo "<".$cKey.">".$tp->toRssForAuthor($cVal, 0)."</".$cKey.">\n";
 						}
 					}
 
@@ -669,12 +671,12 @@ class rssCreate
 
 					echo "
 						<item rdf:about=\"".$link."\">
-						<title>".$tp->toRss($value['title'])."</title>
+						<title>".$tp->toRssForAuthor($value['title'], (int) varset($value['author_id'], 0))."</title>
 						<link>".$link."</link>
 						<dc:date>".$this->get_iso_8601_date($time)."</dc:date>
-						<dc:creator>".$tp->toRss($value['author'])."</dc:creator>
-						<dc:subject>".$tp->toRss($value['category_name'])."</dc:subject>
-						<description>".$tp->toRss($value['description']). "</description>
+						<dc:creator>".$tp->toRssForAuthor($value['author'], 0)."</dc:creator>
+						<dc:subject>".$tp->toRssForAuthor($value['category_name'], 0)."</dc:subject>
+						<description>".$tp->toRssForAuthor($value['description'], (int) varset($value['author_id'], 0)). "</description>
 						</item>";
 				}
 				echo "
@@ -730,11 +732,11 @@ class rssCreate
 						// Required
 						echo "
 						<id>".$value['link']."</id>\n
-						<title type='text'>".$tp->toRss($value['title'])."</title>\n
+						<title type='text'>".$tp->toRssForAuthor($value['title'], (int) varset($value['author_id'], 0))."</title>\n
 						<updated>".$this->get_iso_8601_date($value['pubdate'])."</updated>\n";
 
 						// Recommended
-                        $author = $tp->toRss($value['author']);
+                        $author = $tp->toRssForAuthor($value['author'], 0);
                         $author = ($author !== '') ? $author : "unknown";
 
 						echo "
@@ -746,12 +748,12 @@ class rssCreate
 						//<content>complete story here</content>\n
 						echo "
 						<link rel='alternate' type='text/html' href='".$value['link']."' />\n
-						<summary type='text'>".$tp->toRss($tp->toText($value['description'])). "</summary>\n";
+						<summary type='text'>".$tp->toRssForAuthor($tp->toText($value['description']), (int) varset($value['author_id'], 0)). "</summary>\n";
 
 						// Optional
 						if(!empty($value['category_name']))
 						{
-							echo "<category term='".$tp->toRss($value['category_name'])."'/>\n";
+							echo "<category term='".$tp->toRssForAuthor($value['category_name'], 0)."'/>\n";
 						}
 						//<contributor>
 						//	<name>Jane Doe</name>
@@ -801,7 +803,7 @@ class rssCreate
 		foreach($attributes as $att=>$attVal)
 		{
 
-			$text .= " ".$att."=\"".$tp->toRss($attVal)."\"";
+			$text .= " ".$att."=\"".$tp->toRssForAuthor($attVal, 0)."\"";
 		}
 
 		$text .= ">";
@@ -818,7 +820,7 @@ class rssCreate
 			}
 			else
 			{
-				$text .= $tp->toRss($value);
+				$text .= $tp->toRssForAuthor($value, 0);
 			}
 
 		}
