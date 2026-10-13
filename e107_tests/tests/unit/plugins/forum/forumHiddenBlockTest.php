@@ -15,6 +15,8 @@
  */
 class forumHiddenBlockTest extends \Test\Unit
 {
+	use \Test\HtmlAttributes;
+
 	/** @var array the hide bbcode's opener and hidden-text globals as they were found */
 	private $saved = array();
 
@@ -86,6 +88,19 @@ class forumHiddenBlockTest extends \Test\Unit
 
 		self::assertSame(1, $opened);
 		self::assertStringContainsString('q', $html);
+	}
+
+	public function testAnOpenedBlockHoldingATagLeftOpenCannotAddAttributes()
+	{
+		global $e_hide_unseal;
+
+		$post = '<p>[hide]' . $this->forum(false)->sealHidden(7, 11, '<p>x <b title=&quot;y</p>') . '[/hide] [url]http://e107.org/ tabindex=0 autofocus onfocus=alert(1) x[/url]</p>';
+		$e_hide_unseal = array($this->forum(true), 'unsealHidden');
+
+		$html = e107::getParser()->toHTML($post, true);
+
+		self::assertStringContainsString('x &lt;b', $html);
+		self::assertSame(array(), $this->handlerAttributes($html), 'An opened block added a handler: '.$html);
 	}
 
 	public function testABlockSealedWhileTheSiteAnsweredAtAnotherAddressStillOpens()

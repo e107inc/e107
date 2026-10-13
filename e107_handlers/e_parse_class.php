@@ -2026,6 +2026,11 @@ class e_parse
 
 		global $fromadmin;
 
+		if ($parseBB !== false)
+		{
+			$text = $this->inertInsideTags($text, '#\[(?=/?(?:table|html|php|code|scode))#i', '&#91;', true);
+		}
+
 		// Set default modifiers to start
 		$opts = $this->getModifiers($modifiers);
 		$isHtml = $this->isHtml($text);
@@ -2120,6 +2125,10 @@ class e_parse
 					$proc_funcs = false;
 					$full_text = '';
 					$code_text = $matches[4];
+					$bbcodes = function ($value) use ($postID)
+					{
+						return $this->parseBBCodesBeforeShortcodes($value, $postID, false);
+					};
 					//	$parm = $matches[3] ? substr($matches[3], 1) : '';
 					$last_bbcode = $matches[2];
 
@@ -2142,7 +2151,7 @@ class e_parse
 							$html_end = '<!-- bbcode-html-end -->';
 							$full_text = str_replace(array('[html]', '[/html]'), '', $code_text); // quick fix.. security issue?
 
-							$full_text = $this->parseBBCodesBeforeShortcodes($this->restoreEntitiesOutsideCode($full_text, $opts['value']), $postID, $opts['parse_sc']); // parse any embedded bbcodes eg. [img]
+							$full_text = $this->parseBBCodesBeforeShortcodes($this->expandInsideTags($this->restoreEntitiesOutsideCode($full_text, $opts['value']), '[', $bbcodes), $postID, $opts['parse_sc']); // parse any embedded bbcodes eg. [img]
 							$full_text = $this->replaceConstants($full_text, 'abs'); // parse any other paths using {e_....
 							$full_text = $html_start . $full_text . $html_end;
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
@@ -2159,7 +2168,8 @@ class e_parse
 
 						case 'hide' :
 							$proc_funcs = true;
-							$full_text = $this->parseBBCodesBeforeShortcodes($this->restoreEntitiesOutsideCode($matches[0], $opts['value']), $postID, $opts['parse_sc']);
+							$full_text = $this->restoreEntitiesOutsideCode($matches[1], $opts['value']) . $this->expandInsideTags($this->restoreEntitiesOutsideCode($matches[4], $opts['value']), '[', $bbcodes) . $matches[5];
+							$full_text = $this->parseBBCodesBeforeShortcodes($full_text, $postID, $opts['parse_sc']);
 							$blockRendered = true;
 							break;
 
@@ -2237,7 +2247,7 @@ class e_parse
 
 
 	/**
-	 * Replace each [hide] block {@see e_bbcode::hideBlocks()} finds in $text with a marker shaped as a tag, so that no other step of toHTML() can make or break one, and none can carry it into an attribute unencoded.
+	 * Replace each [hide] block {@see e_bbcode::hideBlocks()} finds in $text, and that lies either within one tag or wholly outside tags, with a marker shaped as a tag, so that no other step of toHTML() can make or break one, and none can carry it into an attribute unencoded; write as an entity the bracket of every other [hide] or [/hide] a tag holds, and look once more for the blocks a refused one held.
 	 *
 	 * @param string $text
 	 * @param array  $blocks receives the blocks and their markers
@@ -2245,20 +2255,83 @@ class e_parse
 	 */
 	private function setAsideHideBlocks($text, &$blocks)
 	{
-		$found = e107::getBB()->hideBlocks($text);
+		$bracket = '#\[(?=/?hide)#i';
 
-		if (empty($found))
+		if (!preg_match($bracket, $text))
 		{
 			return $text;
 		}
 
-		$set = ++self::$hideMarkers;
+		for ($pass = 1; ; $pass++)
+		{
+			$pieces = $this->tagPieces($text, true);
+			$found = ($pieces === false) ? array() : e107::getBB()->hideBlocks($text);
+			$taken = array();
+			$refused = false;
 
-		foreach (array_reverse($found, true) as $index => $block)
+			foreach ($found as $index => $block)
+			{
+				$first = $this->tagPieceAt($pieces, $block['start']);
+				$last = $this->tagPieceAt($pieces, $block['start'] + $block['length'] - 1);
+
+				if ($first !== $last && ($pieces[$first]['tag'] || $pieces[$last]['tag']))
+				{
+					$refused = true;
+					continue;
+				}
+
+				$taken[$index] = $block;
+			}
+
+			$edits = array();
+			$span = reset($taken);
+			preg_match_all($bracket, $text, $brackets, PREG_OFFSET_CAPTURE);
+
+			foreach ($brackets[0] as $match)
+			{
+				$at = $match[1];
+
+				while ($span !== false && $span['start'] + $span['length'] <= $at)
+				{
+					$span = next($taken);
+				}
+
+				if (($span === false || $at < $span['start']) && ($pieces === false || $pieces[$this->tagPieceAt($pieces, $at)]['inTag']))
+				{
+					$edits[$at] = array(1, '&#91;');
+				}
+			}
+
+			if (!$refused || $pass === 2 || empty($edits))
+			{
+				break;
+			}
+
+			krsort($edits);
+
+			foreach ($edits as $at => $edit)
+			{
+				$text = substr_replace($text, $edit[1], $at, $edit[0]);
+			}
+		}
+
+		if (!empty($taken))
+		{
+			$set = ++self::$hideMarkers;
+		}
+
+		foreach ($taken as $index => $block)
 		{
 			$block['marker'] = '<e_hide_' . $set . '_' . $index . '>';
 			$blocks[$index] = $block;
-			$text = substr_replace($text, $block['marker'], $block['start'], $block['length']);
+			$edits[$block['start']] = array($block['length'], $block['marker']);
+		}
+
+		krsort($edits);
+
+		foreach ($edits as $at => $edit)
+		{
+			$text = substr_replace($text, $edit[1], $at, $edit[0]);
 		}
 
 		return $text;
@@ -2311,7 +2384,7 @@ class e_parse
 
 			if (strpos($box, $part) !== false)
 			{
-				$box = str_replace($part, $this->toHTML($content, $parseBB, $modifiers, $postID), $box);
+				$box = str_replace($part, $this->toHTML($this->inertInsideTags($content, '#<#', '&lt;', false), $parseBB, $modifiers, $postID), $box);
 			}
 
 			$parts[$i] = $box;
@@ -2659,6 +2732,102 @@ class e_parse
 	}
 
 	/**
+	 * Write as $entity each match of $pattern in text holding a tag the parser cannot read, and in the tags it reads when $tagsToo, so that the match can neither cut a tag in two nor open one; in all of $text when it defeats the pattern engine.
+	 *
+	 * @param string $text
+	 * @param string $pattern
+	 * @param string $entity
+	 * @param bool   $tagsToo
+	 * @return string
+	 */
+	private function inertInsideTags($text, $pattern, $entity, $tagsToo)
+	{
+		if (!preg_match($pattern, $text))
+		{
+			return $text;
+		}
+
+		$pieces = $this->tagPieces($text, true);
+
+		if ($pieces === false)
+		{
+			return preg_replace($pattern, $entity, $text);
+		}
+
+		$text = '';
+
+		foreach ($pieces as $piece)
+		{
+			$text .= ($piece['inTag'] && ($tagsToo || !$piece['tag'])) ? preg_replace($pattern, $entity, $piece['text']) : $piece['text'];
+		}
+
+		return $text;
+	}
+
+	/**
+	 * The pieces {@see e_parse::splitOnTags()} cuts $text into, each with its byte offset, whether it is a tag, and whether a browser may read it as part of one: a tag, or text holding a tag the pattern cannot read, outside the [code] blocks when the bbcode parser reads them.
+	 *
+	 * @param string $text
+	 * @param bool   $codeRead whether the bbcode parser reads the text's [code] blocks, which escape what they hold
+	 * @return array[]|false each with the keys text, offset, tag and inTag; false when the text defeats the pattern engine
+	 */
+	private function tagPieces($text, $codeRead)
+	{
+		$segments = $this->splitOnTags($text);
+
+		if ($segments === false)
+		{
+			return false;
+		}
+
+		$pieces = array();
+		$offset = 0;
+
+		foreach ($segments as $i => $segment)
+		{
+			$tag = ($i % 2 === 1);
+			$pieces[] = array(
+				'text'   => $segment,
+				'offset' => $offset,
+				'tag'    => $tag,
+				'inTag'  => $tag || (preg_match('#<[a-z]#i', $segment) === 1 && (!$codeRead || preg_match('#<[a-z]#i', (string) preg_replace('#(\[code(?![a-z_])(\d*)(?!\d)[^\]\n]*\].*?\[/code(?![a-z_])\2(?!\d)[^\]\n]*\])#is', '', $segment)) === 1)),
+			);
+			$offset += strlen($segment);
+		}
+
+		return $pieces;
+	}
+
+	/**
+	 * The index of the piece {@see e_parse::tagPieces()} made that holds byte $at.
+	 *
+	 * @param array[] $pieces
+	 * @param int     $at
+	 * @return int
+	 */
+	private function tagPieceAt($pieces, $at)
+	{
+		$low = 0;
+		$high = count($pieces) - 1;
+
+		while ($low < $high)
+		{
+			$middle = (int) (($low + $high + 1) / 2);
+
+			if ($pieces[$middle]['offset'] <= $at)
+			{
+				$low = $middle;
+			}
+			else
+			{
+				$high = $middle - 1;
+			}
+		}
+
+		return $low;
+	}
+
+	/**
 	 * Expand the codes $marker opens in each quoted attribute value of a tag, one value at a time and encoded for that attribute, and leave $marker inert anywhere else a tag holds it.
 	 *
 	 * @param string   $text
@@ -2674,21 +2843,25 @@ class e_parse
 		}
 
 		$inert = '&#' . ord($marker) . ';';
-		$segments = $this->splitOnTags($text);
+		$pieces = $this->tagPieces($text, $marker === '[');
 
-		if ($segments === false)
+		if ($pieces === false)
 		{
 			return str_replace($marker, $inert, $text);
 		}
 
-		foreach ($segments as $i => $segment)
+		$segments = array();
+
+		foreach ($pieces as $i => $piece)
 		{
-			if (strpos($segment, $marker) === false || !preg_match('#<[a-z]#i', $segment))
+			$segment = $segments[$i] = $piece['text'];
+
+			if (strpos($segment, $marker) === false || !$piece['inTag'] || !preg_match('#<[a-z]#i', $segment))
 			{
 				continue;
 			}
 
-			if ($i % 2 === 0 || !preg_match('#^</?[a-z]#i', $segment))
+			if (!$piece['tag'] || !preg_match('#^</?[a-z]#i', $segment))
 			{
 				$segments[$i] = str_replace($marker, $inert, $segment);
 				continue;
@@ -7021,27 +7194,29 @@ class e_parse
 		//   BBCode processing (other than the four already done, which shouldn't appear at all in the text)
 		if ($parseBB !== false)
 		{
-			if ($parseBB === true)
+			$bbcodes = function ($text, $shortcodes = false) use ($parseBB, $modifiers, $postID)
 			{
-				// 'Normal' or 'legacy' processing
-				if ($modifiers === 'WYSIWYG')
+				if ($parseBB === true)
 				{
-					$text = $this->parseBBCodesBeforeShortcodes($text, $postID, $opts['parse_sc'], 'wysiwyg');
-				}
-				else
-				{
-					$text = $this->parseBBCodesBeforeShortcodes($text, $postID, $opts['parse_sc']);
+					// 'Normal' or 'legacy' processing
+					if ($modifiers === 'WYSIWYG')
+					{
+						return $this->parseBBCodesBeforeShortcodes($text, $postID, $shortcodes, 'wysiwyg');
+					}
+
+					return $this->parseBBCodesBeforeShortcodes($text, $postID, $shortcodes);
 				}
 
-			}
-			elseif ($parseBB === 'STRIP') // Need to strip all BBCodes
-			{
-				$text = $this->parseBBCodesBeforeShortcodes($text, $postID, $opts['parse_sc'], 'default', true);
-			}
-			else // Need to strip just some BBCodes
-			{
-				$text = $this->parseBBCodesBeforeShortcodes($text, $postID, $opts['parse_sc'], 'default', $parseBB);
-			}
+				if ($parseBB === 'STRIP') // Need to strip all BBCodes
+				{
+					return $this->parseBBCodesBeforeShortcodes($text, $postID, $shortcodes, 'default', true);
+				}
+
+				// Need to strip just some BBCodes
+				return $this->parseBBCodesBeforeShortcodes($text, $postID, $shortcodes, 'default', $parseBB);
+			};
+
+			$text = $bbcodes($this->expandInsideTags($text, '[', $bbcodes), $opts['parse_sc']);
 		}
 
 
