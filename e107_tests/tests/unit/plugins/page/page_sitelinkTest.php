@@ -599,4 +599,50 @@ class page_sitelinkTest extends \Codeception\Test\Unit
 		$this->assertStringContainsString('Article 4', $result);
 	}
 
+	/**
+	 * {PAGE_NAVIGATION: name=...} names a link from the page's menu title for a reader the menu admits, and otherwise from the page title.
+	 */
+	public function testPageNavigationNamesLinksOnlyFromATitleTheReaderMaySee()
+	{
+		global $_E107;
+
+		$sql = e107::getDb();
+		$page = $sql->retrieve('page', 'page_id, page_chapter, page_title, page_password, menu_title, menu_class', "page_chapter > 0 AND page_title != '' ORDER BY page_id");
+		$set = function($values) use ($sql, $page)
+		{
+			$sql->update('page', array('data' => $values, 'WHERE' => 'page_id = '.intval($page['page_id'])));
+		};
+		$navigation = function($name) use ($page)
+		{
+			return e107::getParser()->parseTemplate('{PAGE_NAVIGATION: chapter='.intval($page['page_chapter']).'&name='.$name.'}');
+		};
+
+		$_E107['phpunit'] = true;
+
+		try
+		{
+			$set(array('page_password' => 'PageNavPassword', 'menu_title' => 'PageNavMenuTitle', 'menu_class' => '0'));
+			$password = $navigation('page_password');
+			$menuTitle = $navigation('menu_title');
+
+			$set(array('menu_class' => (string) e_UC_NOBODY));
+			$hiddenMenuTitle = $navigation('menu_title');
+
+			$set(array('menu_title' => '', 'menu_class' => '0'));
+			$emptyMenuTitle = $navigation('menu_title');
+		}
+		finally
+		{
+			unset($_E107['phpunit']);
+			$set(array('page_password' => $page['page_password'], 'menu_title' => $page['menu_title'], 'menu_class' => $page['menu_class']));
+		}
+
+		$this->assertStringNotContainsString('PageNavPassword', $password);
+		$this->assertStringContainsString($page['page_title'], $password);
+		$this->assertStringContainsString('PageNavMenuTitle', $menuTitle);
+		$this->assertStringNotContainsString('PageNavMenuTitle', $hiddenMenuTitle);
+		$this->assertStringContainsString($page['page_title'], $hiddenMenuTitle);
+		$this->assertStringContainsString($page['page_title'], $emptyMenuTitle);
+	}
+
 }
