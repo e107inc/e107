@@ -6923,7 +6923,9 @@ class e_parse
 			$this->scriptAccess = e107::getConfig()->get('post_script', e_UC_NOBODY); // Pref to Allow <script> tags11;
 		}
 
-		if (check_class($this->scriptAccess))
+		$scriptAccess = check_class($this->scriptAccess);
+
+		if ($scriptAccess)
 		{
 			$this->grantScriptAccess();
 		}
@@ -6997,7 +6999,7 @@ class e_parse
 				if (!in_array($name, $allow))
 				{
 
-					if ($this->scriptAccess == true && strpos($name, 'data-') === 0)
+					if ($scriptAccess && strpos($name, 'data-') === 0)
 					{
 						continue;
 					}
