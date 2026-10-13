@@ -308,6 +308,8 @@ class page_chapters_form_ui extends e_admin_form_ui
 			$linkQ = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";	
 			$level_image = $parent ? '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="icon" alt="" style="margin-left: '.($level * 20).'px" />&nbsp;' : '';
 
+			$curVal = $this->storedTextAsHtml($curVal);
+
 			return ($parent) ?  $level_image."<a href='".$linkQ."' >".$curVal."</a>" : $curVal;
 		}
 			

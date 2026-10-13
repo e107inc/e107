@@ -913,6 +913,133 @@ class e_formTest extends \Codeception\Test\Unit
 
 	}
 
+	/**
+	 * A list cell prints an HTML author's stored text with each attribute value quoted.
+	 */
+	public function testAListCellPrintsStoredHtmlQuoted()
+	{
+		$stored = 'Title <b title=&quot;x autofocus onfocus=alert(1) y&quot;>T</b>';
+
+		foreach(array('text' => array(), 'inline' => array('editable' => 1), 'tags' => array()) as $case => $readParms)
+		{
+			$attributes = array('type' => ($case === 'tags') ? 'tags' : 'text', 'title' => 'Title', 'readParms' => $readParms);
+			$b = $this->parsedCell($this->_frm->renderValue('page_title', $stored, $attributes, 5))->getElementsByTagName('b')->item(0);
+
+			self::assertNotNull($b, $case);
+			self::assertSame(1, $b->attributes->length, $case);
+			self::assertSame('x autofocus onfocus=alert(1) y', $b->getAttribute('title'), $case);
+		}
+
+		$cells = array(
+			'textarea inline' => array('type' => 'textarea', 'title' => 'Tooltip', 'readParms' => array('editable' => 1)),
+			'url'             => array('type' => 'url', 'title' => 'URL'),
+			'email'           => array('type' => 'email', 'title' => 'Email'),
+		);
+		foreach($cells as $case => $attributes)
+		{
+			$doc = $this->parsedCell($this->_frm->renderValue('lw_tooltip', 'https://example.com/ '.$stored, $attributes, 5));
+			self::assertSame(0, (new DOMXPath($doc))->query('//*[@onfocus]')->length, $case);
+		}
+
+		$html = '<span title="a &quot; tabindex=1 autofocus onfocus=x() b">S</span>';
+		$labels = array(
+			'option'         => $this->_frm->option($html, 'v'),
+			'dropdown label' => $this->_frm->renderValue('page_chapter', 2, array('type' => 'dropdown', 'title' => 'Chapter', 'writeParms' => array('optArray' => array(2 => $html))), 5),
+		);
+		$joined = array(
+			'option after a quote'   => $this->_frm->option("Ajouter l' ".$stored, 'v'),
+			'quoted wrapper'         => $this->_frm->renderValue('page_chapter', 2, array('type' => 'dropdown', 'title' => 'Chapter', 'writeParms' => array('optArray' => array(2 => "<span class='badge'>".$stored.'</span>'))), 5),
+			'json text'              => $this->_frm->renderValue('page_title', json_encode(array($stored)), array('type' => 'text', 'title' => 'Title'), 5),
+			'raw < in a stored url'  => $this->_frm->renderValue('page_title', 'Title <a href=&quot;x<&quot; title=&quot;y autofocus onfocus=x() z&quot;>T</a>', array('type' => 'text', 'title' => 'Title'), 5),
+			'raw > in a stored url'  => $this->_frm->option('Title <a href=&quot;x>&quot;>A</a><b title=&quot;y autofocus onfocus=x() z&quot;>T</b>', 'v'),
+		);
+		foreach($joined as $case => $cell)
+		{
+			self::assertSame(0, (new DOMXPath($this->parsedCell($cell)))->query('//*[@onfocus]')->length, $case);
+		}
+
+		$long = $this->_frm->renderValue('page_title', '<b title=&quot;'.str_repeat('x', 30000).' autofocus onfocus=x() y&quot;>L</b>', array('type' => 'text', 'title' => 'Title'), 5);
+		self::assertStringContainsString('<b title="'.str_repeat('x', 30000).' autofocus onfocus=x() y">L</b>', $long, 'long attribute value');
+
+		$jit = ini_get('pcre.jit');
+		$limit = ini_get('pcre.backtrack_limit');
+		ini_set('pcre.jit', '0');
+		ini_set('pcre.backtrack_limit', '1');
+		try
+		{
+			$failed = $this->_frm->renderValue('page_title', $stored, array('type' => 'text', 'title' => 'Title'), 5);
+		}
+		finally
+		{
+			ini_set('pcre.backtrack_limit', $limit);
+			if ($jit !== false)
+			{
+				ini_set('pcre.jit', $jit);
+			}
+		}
+		self::assertSame(0, (new DOMXPath($this->parsedCell($failed)))->query('//*[@onfocus]')->length, 'pattern failure');
+		self::assertStringContainsString('&lt;b title=', $failed, 'pattern failure prints text');
+
+		foreach($labels as $case => $label)
+		{
+			$span = $this->parsedCell($label)->getElementsByTagName('span')->item(0);
+			self::assertSame(1, $span->attributes->length, $case);
+			self::assertSame('a " tabindex=1 autofocus onfocus=x() b', $span->getAttribute('title'), $case);
+		}
+
+		$preview = $this->_frm->renderValue('lw_tooltip', 'Tip <b title=&quot;'.str_repeat('a', 60).' b&quot;>X</b>', $cells['textarea inline'], 5);
+		self::assertSame(0, $this->parsedCell($preview)->getElementsByTagName('b')->length, 'textarea preview cut');
+
+		$uc = e107::getUserClass();
+		$tree = $uc->class_tree;
+
+		try
+		{
+			e107::getDb()->insert('userclass_classes', array('userclass_id' => 77, 'userclass_name' => $stored, 'userclass_description' => '', 'userclass_accum' => '77', 'userclass_perms' => ''));
+			$uc->clearCache();
+			$uc->readTree(true);
+			$classCells = array(
+				'userclass'   => $this->_frm->renderValue('page_class', 77, array('type' => 'userclass', 'title' => 'Visibility'), 5),
+				'userclasses' => $this->_frm->renderValue('page_class', '77', array('type' => 'userclasses', 'title' => 'Visibility'), 5),
+			);
+		}
+		finally
+		{
+			e107::getDb()->delete('userclass_classes', 'userclass_id = 77');
+			$uc->clearCache();
+			$uc->class_tree = $tree;
+		}
+
+		foreach($classCells as $case => $html)
+		{
+			self::assertStringContainsString('<b title="x autofocus onfocus=alert(1) y">T</b>', $html, $case);
+		}
+
+		$label = $this->_frm->renderValue('page_chapter', 2, array('type' => 'dropdown', 'title' => 'Chapter', 'writeParms' => array('optArray' => array(2 => $stored)), 'readParms' => array('editable' => 1)), 5);
+		self::assertStringContainsString('<b title="x autofocus onfocus=alert(1) y">T</b>', $label, 'dropdown label');
+
+		$shortened = $this->_frm->renderValue('page_title', '<b title=&quot;a&gt;b&quot;>autofocus tabindex=1 onfocus=x() </b>'.str_repeat('z', 80), array('type' => 'text', 'title' => 'Title', 'readParms' => array('htmltruncate' => 50)), 5);
+		self::assertStringContainsString('<b title="a>b">autofocus', $shortened, 'htmltruncate');
+
+		$inline = $this->_frm->renderValue('page_title', 'How onerror works', array('type' => 'text', 'title' => 'Title', 'readParms' => array('editable' => 1)), 5);
+		self::assertStringContainsString("data-value='How onerror works'", $inline, 'inline editor value');
+	}
+
+	/**
+	 * @param string $html
+	 * @return DOMDocument $html parsed as the body of a page
+	 */
+	private function parsedCell($html)
+	{
+		$doc = new DOMDocument();
+		$errors = libxml_use_internal_errors(true);
+		$doc->loadHTML('<!DOCTYPE html><html><body>'.$html.'</body></html>');
+		libxml_clear_errors();
+		libxml_use_internal_errors($errors);
+
+		return $doc;
+	}
+
 	public function testRenderValueInline()
 	{
 		foreach($this->_fields as $field=>$att)
