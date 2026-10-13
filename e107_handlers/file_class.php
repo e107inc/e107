@@ -2952,6 +2952,16 @@ class e_file
 
 
 	/**
+	 * Whether public uploads are switched on and the current user is in the class allowed to use them.
+	 *
+	 * @return bool
+	 */
+	public function currentUserMayUsePublicUploads()
+	{
+		return (bool) e107::getPref('upload_enabled') && check_class(e107::getPref('upload_class'));
+	}
+
+	/**
 	 * File-class wrapper for upload handler. (Preferred for v2.x)
 	 * Process files uploaded in a form post. ie. $_FILES.
 	 * Routine processes the array of uploaded files according to both specific options set by the caller,

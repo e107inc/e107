@@ -148,7 +148,7 @@ class submitnews_shortcodes extends e_shortcode
 	{
 		$pref = e107::pref('core');
 
-		if(empty($pref['subnews_attach']) || empty($pref['upload_enabled']) || !check_class($pref['upload_class']) || !deftrue('FILE_UPLOADS'))
+		if(empty($pref['subnews_attach']) || !e107::getFile()->currentUserMayUsePublicUploads() || !deftrue('FILE_UPLOADS'))
 		{
 			return '';
 		}

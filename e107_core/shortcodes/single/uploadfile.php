@@ -77,7 +77,7 @@ function uploadfile_shortcode($parm)
 	{
 		return LAN_UPLOAD_SERVEROFF;
 	}
-	if(!deftrue('e_ADMIN_AREA') && (!e107::getPref('upload_enabled') || !check_class(e107::getPref('upload_class'))))
+	if(!deftrue('e_ADMIN_AREA') && !e107::getFile()->currentUserMayUsePublicUploads())
 	{
 		return LAN_DISABLED;
 	}
