@@ -53,6 +53,27 @@ class e_url
 	}
 
 	/**
+	 * @param array $get the route's query as parse_str() reads it
+	 * @param string|null $query the same query as text, which a page may also read with &amp; taken as &
+	 * @return bool whether any e-token it gives the page it includes is the one the request carried, which class2.php has judged
+	 */
+	private static function handsOverOnlyTheCarriedToken(array $get, $query)
+	{
+		$carried = isset($_GET['e-token']) ? $_GET['e-token'] : null;
+		parse_str(str_replace('&amp;', '&', (string) $query), $decoded);
+
+		foreach(array($get, $decoded) as $read)
+		{
+			if(isset($read['e-token']) && $read['e-token'] !== $carried)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Detect older e_url system.
 	 * @return bool
 	 */
@@ -181,6 +202,10 @@ class e_url
 						parse_str($query,$get);
 					}
 
+					if(!self::handsOverOnlyTheCarriedToken($get, $query))
+					{
+						continue;
+					}
 
 					foreach($get as $gk=>$gv)
 					{

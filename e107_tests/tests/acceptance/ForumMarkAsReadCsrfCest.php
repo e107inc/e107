@@ -16,11 +16,10 @@
  * and everything under it, gone with no record that anything happened.
  * Repeatable from an <img> tag on any page the member opens.
  *
- * The route is search-engine-friendly, /forum/markread/<forum>, and route
- * parameters land in $_GET through eRouter::populateRequestParams(). That
- * merges the redirect's own f and id into $_GET without disturbing what the
- * request really carried, so a token in the query string survives the rewrite
- * and both spellings of the URL reach the same guard.
+ * The route is search-engine-friendly, /forum/markread/<forum>, and
+ * e_url::run() merges the redirect's own f and id into $_GET, so a token in
+ * the query string survives the rewrite and both spellings of the URL reach
+ * the same guard.
  *
  * @see e107_plugins/forum/forum_class.php  e107forum::threadMarkAsRead()
  */
@@ -85,6 +84,18 @@ class ForumMarkAsReadCsrfCest
 		$I->amOnPage(self::FORUM.'?f=mfar&id='.$this->forumId);
 
 		$I->seeInSource(self::REFUSED);
+		$I->seeInDatabase('e107_user_extended', array(
+			'user_extended_id' => $this->memberId,
+			'user_plugin_forum_viewed' => '',
+		));
+	}
+
+	public function aTokenWrittenIntoTheRoutedPathIsNotHandedOver(AcceptanceTester $I)
+	{
+		$I->wantTo('refuse a mark-as-read whose token only the router could see');
+
+		$I->amOnPage('/forum/markread/'.$this->forumId.'&e-token=not-even-close');
+
 		$I->seeInDatabase('e107_user_extended', array(
 			'user_extended_id' => $this->memberId,
 			'user_plugin_forum_viewed' => '',
