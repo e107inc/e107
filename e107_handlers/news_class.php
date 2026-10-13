@@ -813,8 +813,13 @@ class e_news_tree extends e_front_tree_model
 			
 		$db_order = vartrue($params['db_order'], 'n.news_datestamp DESC');
 		$db_limit = vartrue($params['db_limit'], '0,10');
-		
-		
+
+		$safeOrder = \e107\Database\IdentifierFilter::orderBy($db_order);
+		$db_order = ($safeOrder !== false) ? $safeOrder : '`n`.`news_datestamp` DESC';
+
+		$limitParts = array_map('intval', explode(',', (string) $db_limit, 2));
+		$db_limit = (count($limitParts) > 1) ? $limitParts[0] . ',' . $limitParts[1] : (string) $limitParts[0];
+
 		$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id

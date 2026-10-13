@@ -57,4 +57,27 @@ class news_classTest extends \Codeception\Test\Unit
 
 		self::assertTrue(true, 'render_newsgrid() returned without leaking an array into defined()');
 	}
+
+	public function testLoadJoinRefusesAnOrderByThatIsNotAColumnList()
+	{
+		$tree = new e_news_tree();
+		$tree->loadJoin(0, true, array(
+			'db_order' => 'n.news_datestamp DESC,(SELECT SLEEP(5))',
+			'db_limit' => '0,10 PROCEDURE ANALYSE(1,1)',
+		));
+
+		$query = (string) $tree->getParam('db_query');
+
+		$this->assertStringNotContainsString('SLEEP', $query);
+		$this->assertStringNotContainsString('PROCEDURE', $query);
+		$this->assertStringContainsString('ORDER BY `n`.`news_datestamp` DESC LIMIT 0,10', $query);
+	}
+
+	public function testLoadJoinKeepsAnOrdinaryOrderAndLimit()
+	{
+		$tree = new e_news_tree();
+		$tree->loadJoin(0, true, array('db_order' => 'n.news_title ASC, n.news_id desc', 'db_limit' => '5, 20'));
+
+		$this->assertStringContainsString('ORDER BY `n`.`news_title` ASC, `n`.`news_id` DESC LIMIT 5,20', (string) $tree->getParam('db_query'));
+	}
 }
