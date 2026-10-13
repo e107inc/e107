@@ -68,6 +68,18 @@ class ForumEditStorageCest
 		$I->dontSeeElement('img[data-feb]');
 	}
 
+	public function anAdministratorsSaveCleansAPostWhoseAuthorIsGone(AcceptanceTester $I)
+	{
+		$post = $I->haveForumPost('Gone <img src=x data-feb=5> end', $this->ids['threadA'], $this->ids['forumA'], 987654321);
+		$I->loginAsAdmin();
+
+		$I->amOnPage('/e107_plugins/forum/forum_post.php?f=edit&id='.$this->ids['threadA'].'&post='.$post);
+		$I->dontSeeInSource('tinymce.min.js');
+		$this->saveUnchanged($I, $post);
+
+		$I->assertStringNotContainsString('<img', $I->grabFromDatabase('e107_forum_post', 'post_entry', array('post_id' => $post)));
+	}
+
 	public function aModeratorsSaveKeepsAnAdministratorsHtml(AcceptanceTester $I)
 	{
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_A, 'fixture_mod_a');
