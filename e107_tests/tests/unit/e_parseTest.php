@@ -1022,6 +1022,32 @@ EXPECTED;
 	}
 
 	/**
+	 * cleanHtml() keeps data-* attributes only for a user with script access (the phpunit flag turns off check_class()'s command-line grant on v2.3.x).
+	 */
+	public function testCleanHtmlKeepsDataAttributesOnlyWithScriptAccess()
+	{
+		$phpunit = isset($GLOBALS['_E107']['phpunit']) ? $GLOBALS['_E107']['phpunit'] : null;
+		$GLOBALS['_E107']['phpunit'] = true;
+		$html = '<a class="e-modal" href="#" data-modal-caption="c">x</a>';
+
+		try
+		{
+			$this->tp->setScriptAccess(e_UC_NOBODY);
+			$without = $this->tp->cleanHtml($html);
+			$this->tp->setScriptAccess(e_UC_PUBLIC);
+			$with = $this->tp->cleanHtml($html);
+		}
+		finally
+		{
+			$GLOBALS['_E107']['phpunit'] = $phpunit;
+		}
+
+		self::assertStringNotContainsString('data-modal-caption', $without);
+		self::assertStringContainsString('e-modal', $without);
+		self::assertStringContainsString('data-modal-caption', $with);
+	}
+
+	/**
 	 * A quote inside an attribute value stays inside it on its way through toDB() and toHTML().
 	 */
 	public function testAQuoteInsideAnAttributeValueStaysInIt()
