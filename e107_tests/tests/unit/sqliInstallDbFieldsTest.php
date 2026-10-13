@@ -48,7 +48,7 @@ class sqliInstallDbFieldsTest extends \Test\Unit
 		self::assertNotFalse($installPhp, 'install.php must exist at the expected location');
 
 		$source = file_get_contents($installPhp);
-		$classBody = self::extractClassBody($source, 'e_install');
+		$classBody = \Test\Tokens::classSource($source, 'e_install');
 		self::assertNotNull($classBody, 'Unable to locate the e_install class definition in install.php');
 
 		$renamed = preg_replace('/\bclass\s+e_install\b/', 'class ' . self::$renamedClass, $classBody, 1);
@@ -135,86 +135,5 @@ class sqliInstallDbFieldsTest extends \Test\Unit
 			$this->installer()->checkDbFields(array('db' => 'sitedb', 'prefix' => 'e1`07')),
 			'A backtick in the prefix must be rejected.'
 		);
-	}
-
-	/**
-	 * Token-walk the class definition out of install.php so it can be eval'd
-	 * without running the file's top-level installer bootstrap. Copied from
-	 * installStage7HashTest.
-	 */
-	private static function extractClassBody($source, $className)
-	{
-		$tokens = token_get_all($source);
-		$count = count($tokens);
-
-		for ($i = 0; $i < $count; $i++)
-		{
-			$token = $tokens[$i];
-			if (!is_array($token) || $token[0] !== T_CLASS)
-			{
-				continue;
-			}
-
-			$j = \Test\Tokens::neighbourIndex($tokens, $i, 1);
-
-			if ($j === null || !is_array($tokens[$j])
-				|| $tokens[$j][0] !== T_STRING
-				|| $tokens[$j][1] !== $className)
-			{
-				continue;
-			}
-
-			$start = $i;
-			$k = $j + 1;
-			while ($k < $count && !(is_string($tokens[$k]) && $tokens[$k] === '{'))
-			{
-				$k++;
-			}
-			if ($k >= $count)
-			{
-				return null;
-			}
-
-			$depth = 0;
-			$end = null;
-			for ($m = $k; $m < $count; $m++)
-			{
-				$cur = $tokens[$m];
-				if (is_string($cur))
-				{
-					if ($cur === '{')
-					{
-						$depth++;
-					}
-					elseif ($cur === '}')
-					{
-						$depth--;
-						if ($depth === 0)
-						{
-							$end = $m;
-							break;
-						}
-					}
-				}
-				elseif (is_array($cur) && $cur[0] === T_CURLY_OPEN)
-				{
-					$depth++;
-				}
-			}
-
-			if ($end === null)
-			{
-				return null;
-			}
-
-			$body = '';
-			for ($n = $start; $n <= $end; $n++)
-			{
-				$body .= is_array($tokens[$n]) ? $tokens[$n][1] : $tokens[$n];
-			}
-			return $body;
-		}
-
-		return null;
 	}
 }
