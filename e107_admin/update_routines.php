@@ -630,6 +630,7 @@ function update_core_database($type = '')
 		// Live session rows still keyed by the raw session id.
 		require_once(e_HANDLER.'session_handler.php');
 		$sessionHashed = 0;
+		$sessionRemoved = 0;
 		$sessionSeen = 0;
 		$sessionSkipped = 0;
 		$sessionPending = "`session_id` NOT LIKE '".e_session_db::KEY_ALGO."$%' AND `session_expires` > ".time()." ORDER BY `session_id` LIMIT ";
@@ -651,14 +652,21 @@ function update_core_database($type = '')
 			foreach($sessionLegacy as $sessionId)
 			{
 				$sessionSeen++;
+				$sessionKey = e_session_db::storageKey($sessionId);
+
+				$sql->delete('session', "`session_id`='".$sql->escape($sessionKey)."' AND `session_expires` <= ".time());
 
 				if($sql->update('session', array(
-					'data' => array('session_id' => e_session_db::storageKey($sessionId)),
+					'data' => array('session_id' => $sessionKey),
 					'_FIELD_TYPES' => array('session_id' => 'str'),
 					'WHERE' => "`session_id`='".$sql->escape($sessionId)."'",
 				)))
 				{
 					$sessionHashed++;
+				}
+				elseif($sql->delete('session', "`session_id`='".$sql->escape($sessionId)."'"))
+				{
+					$sessionRemoved++;
 				}
 				else
 				{
@@ -669,7 +677,7 @@ function update_core_database($type = '')
 
 		if($sessionSeen)
 		{
-			$log->addDebug('Stored session ids hashed: '.$sessionHashed.' of '.$sessionSeen);
+			$log->addDebug('Stored session ids hashed: '.$sessionHashed.', removed as unmovable: '.$sessionRemoved.', of '.$sessionSeen);
 		}
 
 
