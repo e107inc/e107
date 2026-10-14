@@ -3034,7 +3034,7 @@ class users_admin_form_ui extends e_admin_form_ui
 	//	$foot = "</select>";
 	//	$foot = "</div>";
 
-		$btn =  '<div class="btn-group pull-right">
+		$btn =  '<div class="btn-group pull-right float-right float-end">
 
 		<button aria-expanded="false" class="btn btn-default btn-secondary btn-user-action dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
 		<span class="user-action-indicators" id="user-action-indicator-'.$user_id.'">'.e107::getParser()->toGlyph('fa-cog').'</span>
