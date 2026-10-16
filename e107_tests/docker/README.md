@@ -450,7 +450,11 @@ $this->tester->expectOutboundRequest('e107.org'); // a unit test
 
 The host is what the attempt carried: the HTTP `Host`, the TLS server name, the
 name a lookup asked for, or the address it went to when it carried none of
-these. A declared attempt is still refused, so the test sees what a site with
+these. A client that is slow to say where it is going, or gives up first,
+leaves only that address, so a declared name also covers a connection that
+named nothing and went to one of the name's addresses, as the name resolves
+when the run ends.
+A declared attempt is still refused, so the test sees what a site with
 no route to that host sees, and a declaration permits without demanding:
 whether a test makes an attempt can depend on what e107 cached before it. A
 test answers for what happens from its start until the next test on its worker
