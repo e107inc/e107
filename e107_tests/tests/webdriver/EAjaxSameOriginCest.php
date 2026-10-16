@@ -7,8 +7,6 @@ class EAjaxSameOriginCest
 {
 	const POST = 'Links <span id=&quot;ea-away&quot;></span><a id=&quot;ea-xo&quot; class=&quot;e-ajax&quot; href=&quot;http://attacker.example/x#ea-away&quot;>away</a> <span id=&quot;ea-file&quot;></span><a id=&quot;ea-txt&quot; class=&quot;e-ajax&quot; data-ajax-type=&quot;GET&quot; href=&quot;/ea-probe.txt#ea-file&quot;>file</a> <a id=&quot;ea-js&quot; class=&quot;e-ajax&quot; data-ajax-type=&quot;GET&quot; href=&quot;/ea-probe.js#ea-file&quot;>script</a> <span id=&quot;ea-here&quot;></span><a id=&quot;ea-so&quot; class=&quot;e-ajax&quot; data-ajax-type=&quot;GET&quot; href=&quot;/ea-probe.html#ea-here&quot;>here</a> end';
 
-	const RECORD_REQUESTS = "window.__opened = []; window.__done = 0; var open = XMLHttpRequest.prototype.open; XMLHttpRequest.prototype.open = function (method, url) { window.__opened.push(String(url)); this.addEventListener('loadend', function () { window.__done++; }); return open.apply(this, arguments); };";
-
 	/** @var array */
 	private $ids;
 
@@ -36,7 +34,7 @@ class EAjaxSameOriginCest
 		$I->click('#ea-so');
 		$I->waitForJS("return document.getElementById('ea-here').textContent.indexOf('here') !== -1;", 10);
 
-		$opened = implode(' ', $I->executeJS('return window.__opened;'));
+		$opened = $I->grabRequestsOpened();
 		$I->assertStringContainsString('/ea-probe.html', $opened);
 		$I->assertStringNotContainsString('attacker.example', $opened, 'the link to another site was requested');
 		$I->assertSame('', $I->executeJS("return document.getElementById('ea-away').innerHTML;"));
@@ -48,7 +46,7 @@ class EAjaxSameOriginCest
 
 		$I->click('#ea-txt');
 		$I->click('#ea-js');
-		$I->waitForJS('return window.__done > 1;', 10);
+		$I->waitForRequestsEnded(2);
 		$I->click('#ea-so');
 		$I->waitForJS("return document.getElementById('ea-here').textContent.indexOf('here') !== -1;", 10);
 
@@ -62,6 +60,6 @@ class EAjaxSameOriginCest
 	private function openTopic(WebDriverTester $I)
 	{
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
-		$I->executeJS(self::RECORD_REQUESTS);
+		$I->startRecordingRequests();
 	}
 }
