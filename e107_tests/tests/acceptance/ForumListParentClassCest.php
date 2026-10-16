@@ -41,7 +41,7 @@ class ForumListParentClassCest
 	{
 		$I->haveForumPluginInstalled();
 		$I->havePluginInstalled('list_new');
-		$I->havePluginPrefs('list_new', $this->listPrefs());
+		$I->havePluginPrefs('list_new', \Test\ListNewPrefs::showing(array('recent_page', 'new_page'), array('forum')));
 
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_A, 'fixture_mod_a');
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_B, 'fixture_mod_b');
@@ -128,43 +128,5 @@ class ForumListParentClassCest
 		$I->seeNoRedirectTo('example.invalid');
 		$I->seeResponseCodeIs(200);
 		$I->startFollowingRedirects();
-	}
-
-	// -----------------------------------------------------------------
-
-	/**
-	 * Enough of list_new's configuration to render the forum section on both
-	 * pages, and no more.
-	 *
-	 * Written rather than left to the plugin's own defaults because
-	 * getListPrefs() builds those from a section list it has not populated
-	 * yet, which on PHP 8 is a TypeError rather than an empty page.
-	 *
-	 * @return array
-	 */
-	private function listPrefs()
-	{
-		$prefs = array();
-
-		foreach (array('recent_page', 'new_page') as $mode)
-		{
-			$prefs[$mode.'_welcometext'] = '';
-			// The section counter is divided by this one.
-			$prefs[$mode.'_colomn'] = '1';
-
-			$prefs['forum_'.$mode.'_caption'] = 'Fixture forum '.$mode;
-			$prefs['forum_'.$mode.'_display'] = '1';
-			$prefs['forum_'.$mode.'_open'] = '1';
-			$prefs['forum_'.$mode.'_author'] = '1';
-			$prefs['forum_'.$mode.'_category'] = '1';
-			$prefs['forum_'.$mode.'_date'] = '1';
-			$prefs['forum_'.$mode.'_icon'] = '';
-			$prefs['forum_'.$mode.'_amount'] = '20';
-			$prefs['forum_'.$mode.'_order'] = '1';
-		}
-
-		$prefs['new_page_timelapse'] = '0';
-
-		return $prefs;
 	}
 }

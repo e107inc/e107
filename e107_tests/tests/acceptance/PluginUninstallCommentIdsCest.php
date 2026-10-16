@@ -77,19 +77,16 @@ class PluginUninstallCommentIdsCest
 
 		foreach(array_merge($types, self::$keptTypes) as $type)
 		{
-			$I->haveInDatabase('e107_comments', array(
+			$I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
 				'comment_item_id'     => 1,
 				'comment_subject'     => 'Fixture',
 				'comment_author_id'   => 1,
 				'comment_author_name' => 'fixture',
 				'comment_datestamp'   => time(),
 				'comment_comment'     => self::MARKER,
-				'comment_blocked'     => 0,
 				'comment_ip'          => '127.0.0.1',
 				'comment_type'        => $type,
-				'comment_lock'        => 0,
-				'comment_share'       => 0,
-			));
+			)));
 		}
 
 		$I->havePluginInstalled($folder);

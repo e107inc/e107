@@ -15,9 +15,6 @@ class AccountSessionsCest
 	/** Rolling log title of a sign-in that ended the account's other sessions. */
 	const DROPPED = 'LAN_ROLL_LOG_07';
 
-	/** @var string[] site preferences a test changed, and what they were */
-	private $prefsWere = array();
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
@@ -25,12 +22,7 @@ class AccountSessionsCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		foreach($this->prefsWere as $name => $was)
-		{
-			$I->haveSitePref($name, $was === '' ? null : $was);
-		}
-
-		$this->prefsWere = array();
+		$I->restoreSitePrefs();
 	}
 
 	public function aSignInIsRecordedUntilItSignsOut(AcceptanceTester $I)
@@ -153,7 +145,7 @@ class AccountSessionsCest
 	 */
 	public function withoutDisallowMultipleLoginsBothBrowsersStaySignedIn(AcceptanceTester $I)
 	{
-		$this->havePref($I, 'disallowMultiLogin', 0);
+		$I->haveSitePrefUntilAfter('disallowMultiLogin', 0);
 		$userId = $I->haveMember('sessionsboth', self::PASSWORD);
 
 		$I->loginAsMember('sessionsboth', self::PASSWORD);
@@ -166,8 +158,8 @@ class AccountSessionsCest
 
 	public function aLiveSessionOfTheAccountIsEndedAndNoted(AcceptanceTester $I)
 	{
-		$this->havePref($I, 'disallowMultiLogin', 1);
-		$this->havePref($I, 'roll_log_active', 1);
+		$I->haveSitePrefUntilAfter('disallowMultiLogin', 1);
+		$I->haveSitePrefUntilAfter('roll_log_active', 1);
 		$userId = $I->haveMember('sessionslive', self::PASSWORD);
 		$other = $this->haveSessionOf($I, $userId, 'a', time());
 		$lastLog = $this->lastLogId($I);
@@ -183,8 +175,8 @@ class AccountSessionsCest
 	 */
 	public function anIdleSessionOfTheAccountIsNotNotedAsEnded(AcceptanceTester $I)
 	{
-		$this->havePref($I, 'disallowMultiLogin', 1);
-		$this->havePref($I, 'roll_log_active', 1);
+		$I->haveSitePrefUntilAfter('disallowMultiLogin', 1);
+		$I->haveSitePrefUntilAfter('roll_log_active', 1);
 		$userId = $I->haveMember('sessionsidle', self::PASSWORD);
 		$this->haveSessionOf($I, $userId, 'b', 1);
 		$lastLog = $this->lastLogId($I);
@@ -197,8 +189,8 @@ class AccountSessionsCest
 
 	public function aSessionFromBeforeRecordsWereKeptIsSignedOutByANewerSignIn(AcceptanceTester $I)
 	{
-		$this->havePref($I, 'disallowMultiLogin', 1);
-		$this->havePref($I, 'session_save_method', 'files');
+		$I->haveSitePrefUntilAfter('disallowMultiLogin', 1);
+		$I->haveSitePrefUntilAfter('session_save_method', 'files');
 		$I->haveMember('sessionsolder', self::PASSWORD);
 
 		$I->loginAsMember('sessionsolder', self::PASSWORD);
@@ -216,7 +208,7 @@ class AccountSessionsCest
 	 */
 	public function aSessionFromBeforeRecordsWereKeptIsNotSignedOutByAnotherOneBeingRecorded(AcceptanceTester $I)
 	{
-		$this->havePref($I, 'disallowMultiLogin', 1);
+		$I->haveSitePrefUntilAfter('disallowMultiLogin', 1);
 		$userId = $I->haveMember('sessionssibling', self::PASSWORD);
 		$I->loginAsMember('sessionssibling', self::PASSWORD);
 		$I->probe('act=unrecord');
@@ -237,7 +229,7 @@ class AccountSessionsCest
 	 */
 	public function theSecurityPageShowsTheSaveMethodRunningWhenNoneIsStored(AcceptanceTester $I)
 	{
-		$this->havePref($I, 'session_save_method', null);
+		$I->haveSitePrefUntilAfter('session_save_method', null);
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
 
@@ -248,7 +240,7 @@ class AccountSessionsCest
 
 	public function theSecurityPageSaysTheDatabaseUpdateIsNeededWhileTheTableIsMissing(AcceptanceTester $I)
 	{
-		$this->havePref($I, 'disallowMultiLogin', 1);
+		$I->haveSitePrefUntilAfter('disallowMultiLogin', 1);
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
 		$I->amOnPage('/e107_admin/prefs.php');
@@ -276,8 +268,8 @@ class AccountSessionsCest
 	 */
 	private function signInFromTwoBrowsers(AcceptanceTester $I, $method, $handler)
 	{
-		$this->havePref($I, 'disallowMultiLogin', 1);
-		$this->havePref($I, 'session_save_method', $method);
+		$I->haveSitePrefUntilAfter('disallowMultiLogin', 1);
+		$I->haveSitePrefUntilAfter('session_save_method', $method);
 		$name = 'sessions'.$method;
 		$userId = $I->haveMember($name, self::PASSWORD);
 
@@ -296,21 +288,6 @@ class AccountSessionsCest
 
 		$this->returnAs($I, $second);
 		$I->assertSame((string) $userId, $this->probe($I)['USER_ID'], 'the second browser stays signed in');
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 * @param string|int $value
-	 */
-	private function havePref(AcceptanceTester $I, $name, $value)
-	{
-		$was = $I->haveSitePref($name, $value);
-
-		if(!array_key_exists($name, $this->prefsWere))
-		{
-			$this->prefsWere[$name] = $was;
-		}
 	}
 
 	/**

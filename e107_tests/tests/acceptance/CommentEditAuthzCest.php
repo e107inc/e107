@@ -716,15 +716,14 @@ class CommentEditAuthzCest
 	 */
 	private function haveComment(AcceptanceTester $I, $text, $authorId, $authorName, $lock = 0, $itemId = null)
 	{
-		return $I->haveInDatabase('e107_comments', array(
-			'comment_pid' => 0, 'comment_item_id' => $itemId === null ? $this->newsId : $itemId,
+		return $I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
+			'comment_item_id' => $itemId === null ? $this->newsId : $itemId,
 			'comment_subject' => 'Comment authz fixture',
 			'comment_author_id' => $authorId, 'comment_author_name' => $authorName,
-			'comment_author_email' => '', 'comment_datestamp' => time() - 1800,
-			'comment_comment' => $text, 'comment_blocked' => 0, 'comment_ip' => '127.0.0.1',
+			'comment_datestamp' => time() - 1800, 'comment_comment' => $text, 'comment_ip' => '127.0.0.1',
 			// getCommentType('news') is 0, and that is what enter_comment() stores.
-			'comment_type' => '0', 'comment_lock' => $lock, 'comment_share' => 0,
-		));
+			'comment_type' => '0', 'comment_lock' => $lock,
+		)));
 	}
 
 	/**

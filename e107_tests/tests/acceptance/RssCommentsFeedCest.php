@@ -156,21 +156,15 @@ class RssCommentsFeedCest
 	 */
 	private function seedComment(AcceptanceTester $I, $newsId, $marker, $type = '0', $author = '1.admin')
 	{
-		$I->haveInDatabase('e107_comments', array(
-			'comment_pid'          => 0,
-			'comment_item_id'      => $newsId,
-			'comment_subject'      => 'SUBJ'.$marker,
-			'comment_author_id'    => 1,
-			'comment_author_name'  => $author,
-			'comment_author_email' => '',
-			'comment_datestamp'    => time(),
-			'comment_comment'      => 'BODY'.$marker,
-			'comment_blocked'      => 0,
-			'comment_ip'           => '',
-			'comment_type'         => $type,
-			'comment_lock'         => 0,
-			'comment_share'        => 0,
-		));
+		$I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
+			'comment_item_id'     => $newsId,
+			'comment_subject'     => 'SUBJ'.$marker,
+			'comment_author_id'   => 1,
+			'comment_author_name' => $author,
+			'comment_datestamp'   => time(),
+			'comment_comment'     => 'BODY'.$marker,
+			'comment_type'        => $type,
+		)));
 	}
 
 	/**

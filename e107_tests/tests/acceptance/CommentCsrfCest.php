@@ -85,21 +85,16 @@ class CommentCsrfCest
 
 	private function seedComment(AcceptanceTester $I, $blocked)
 	{
-		return $I->haveInDatabase('e107_comments', array(
-			'comment_pid'          => 0,
-			'comment_item_id'      => 1,
-			'comment_subject'      => 'CSRF regression seed',
-			'comment_author_id'    => 0,
-			'comment_author_name'  => 'Anon',
-			'comment_author_email' => '',
-			'comment_datestamp'    => time(),
-			'comment_comment'      => 'csrf regression target',
-			'comment_blocked'      => $blocked,
-			'comment_ip'           => '127.0.0.1',
-			'comment_type'         => 'news',
-			'comment_lock'         => 0,
-			'comment_share'        => 0,
-		));
+		return $I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
+			'comment_item_id'     => 1,
+			'comment_subject'     => 'CSRF regression seed',
+			'comment_author_name' => 'Anon',
+			'comment_datestamp'   => time(),
+			'comment_comment'     => 'csrf regression target',
+			'comment_blocked'     => $blocked,
+			'comment_ip'          => '127.0.0.1',
+			'comment_type'        => 'news',
+		)));
 	}
 
 	private function grabFreshToken(AcceptanceTester $I)

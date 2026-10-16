@@ -43,6 +43,9 @@ class ForumFixture extends AppFixture
 	/** @var bool */
 	private $pluginInstalled = false;
 
+	/** @var string[] what each preference set through {@see ForumFixture::haveSitePrefUntilAfter()} was before this test */
+	private $prefsWere = array();
+
 	// -----------------------------------------------------------------
 	// the probe
 	// -----------------------------------------------------------------
@@ -181,6 +184,38 @@ class ForumFixture extends AppFixture
 	public function resetForumMailQueue()
 	{
 		$this->probe('act=mailreset');
+	}
+
+	/**
+	 * Write a core preference for this test alone; {@see ForumFixture::restoreSitePrefs()}, called from the Cest's own teardown, puts back what it was before the test's first change.
+	 *
+	 * @param string $name
+	 * @param string|int|null $value null removes it
+	 * @return void
+	 */
+	public function haveSitePrefUntilAfter($name, $value)
+	{
+		$was = $this->haveSitePref($name, $value);
+
+		if (!array_key_exists($name, $this->prefsWere))
+		{
+			$this->prefsWere[$name] = $was;
+		}
+	}
+
+	/**
+	 * Put back every preference {@see ForumFixture::haveSitePrefUntilAfter()} changed in this test.
+	 *
+	 * @return void
+	 */
+	public function restoreSitePrefs()
+	{
+		foreach ($this->prefsWere as $name => $was)
+		{
+			$this->haveSitePref($name, $was === '' ? null : $was);
+		}
+
+		$this->prefsWere = array();
 	}
 
 	/**

@@ -26,21 +26,10 @@ class NewsPaginationCest
 	const NEWEST_BODY = 'PaginationNewsNewestBody';
 	const OLDEST_BODY = 'PaginationNewsOldestBody';
 
-	/** @var array the prefs this Cest replaced, captured on the first _before only */
-	private $restore = array();
-
 	public function _before(AcceptanceTester $I)
 	{
-
-		$replaced = array(
-			'news_pagination' => $I->haveSitePref('news_pagination', 'page'),
-			'newsposts'       => $I->haveSitePref('newsposts', 1),
-		);
-
-		if(empty($this->restore))
-		{
-			$this->restore = $replaced;
-		}
+		$I->haveSitePrefUntilAfter('news_pagination', 'page');
+		$I->haveSitePrefUntilAfter('newsposts', 1);
 
 		$this->haveNews($I, self::OLDEST, time() - 60);
 		$this->haveNews($I, self::NEWEST, time());
@@ -48,10 +37,7 @@ class NewsPaginationCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		foreach($this->restore as $name => $value)
-		{
-			$I->haveSitePref($name, $value === '' ? null : $value);
-		}
+		$I->restoreSitePrefs();
 	}
 
 	public function aScannedPageParameterStillRendersTheNewsPage(AcceptanceTester $I)

@@ -56,9 +56,6 @@ class OnlineMemberListLinkCest
 	/** @var string */
 	private $newestLink;
 
-	/** @var string|null the url_config/user value the site was found on */
-	private $previousProfile;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
@@ -66,11 +63,7 @@ class OnlineMemberListLinkCest
 
 		$this->newestId = $I->haveForumMember(self::NEWEST_NAME, '253', time() + 60);
 
-		$found = $I->haveSitePref(self::PROFILE_PREF, self::REWRITE_PROFILE);
-		if($this->previousProfile === null)
-		{
-			$this->previousProfile = $found;
-		}
+		$I->haveSitePrefUntilAfter(self::PROFILE_PREF, self::REWRITE_PROFILE);
 
 		$this->newestLink = $this->grabNewestLink($I);
 	}
@@ -79,10 +72,7 @@ class OnlineMemberListLinkCest
 	{
 		try
 		{
-			if($this->previousProfile !== null)
-			{
-				$I->haveSitePref(self::PROFILE_PREF, $this->previousProfile);
-			}
+			$I->restoreSitePrefs();
 		}
 		finally
 		{

@@ -45,6 +45,7 @@ class AdminDashboardFeedSessionCest
 
 	public function _after(AcceptanceTester $I)
 	{
+		$I->restoreSitePrefs();
 		$I->probe('act=reset');
 	}
 
@@ -77,24 +78,17 @@ class AdminDashboardFeedSessionCest
 	 */
 	public function theDashboardShowsTheUpdateTheCheckFound(AcceptanceTester $I)
 	{
-		$style = $I->haveSitePref('adminstyle', 'infopanel');
+		$I->haveSitePrefUntilAfter('adminstyle', 'infopanel');
 
-		try
-		{
-			$I->amOnProbe('act=handler&mode=addons&type=update');
-			$I->seeInSource(self::UPDATE_NAME);
+		$I->amOnProbe('act=handler&mode=addons&type=update');
+		$I->seeInSource(self::UPDATE_NAME);
 
-			$token = $I->grabProbe('act=token');
-			$I->amOnPage('/e107_admin/admin.php');
+		$token = $I->grabProbe('act=token');
+		$I->amOnPage('/e107_admin/admin.php');
 
-			$I->seeInSource(self::UPDATE_NAME);
-			$I->seeInSource('action=download&amp;e-token='.$token);
-			$I->dontSeeInSource('mode=addons&type=update');
-		}
-		finally
-		{
-			$I->haveSitePref('adminstyle', $style === '' ? null : $style);
-		}
+		$I->seeInSource(self::UPDATE_NAME);
+		$I->seeInSource('action=download&amp;e-token='.$token);
+		$I->dontSeeInSource('mode=addons&type=update');
 	}
 
 	/**
@@ -102,24 +96,17 @@ class AdminDashboardFeedSessionCest
 	 */
 	public function theDashboardRunsTheCheckAgainOnceTheAnswerIsGone(AcceptanceTester $I)
 	{
-		$style = $I->haveSitePref('adminstyle', 'infopanel');
+		$I->haveSitePrefUntilAfter('adminstyle', 'infopanel');
 
-		try
-		{
-			$I->amOnProbe('act=handler&mode=addons&type=update');
-			$I->seeInSource(self::UPDATE_NAME);
+		$I->amOnProbe('act=handler&mode=addons&type=update');
+		$I->seeInSource(self::UPDATE_NAME);
 
-			$I->probe('act=reset');
-			$I->amOnPage('/e107_admin/admin.php');
+		$I->probe('act=reset');
+		$I->amOnPage('/e107_admin/admin.php');
 
-			$I->dontSeeInSource(self::UPDATE_NAME);
-			$I->seeInSource("id='e-admin-addons-update'");
-			$I->seeInSource('mode=addons&type=update');
-		}
-		finally
-		{
-			$I->haveSitePref('adminstyle', $style === '' ? null : $style);
-		}
+		$I->dontSeeInSource(self::UPDATE_NAME);
+		$I->seeInSource("id='e-admin-addons-update'");
+		$I->seeInSource('mode=addons&type=update');
 	}
 
 	/**
@@ -143,37 +130,30 @@ class AdminDashboardFeedSessionCest
 	 */
 	public function aStaleCopyIsShownAndThenReplaced(AcceptanceTester $I)
 	{
-		$style = $I->haveSitePref('adminstyle', 'infopanel');
+		$I->haveSitePrefUntilAfter('adminstyle', 'infopanel');
 
-		try
-		{
-			$I->probe('act=keep&feed=core&age='.self::EXPIRED);
-			$I->probe('act=keep&feed=plugin&age='.self::EXPIRED);
+		$I->probe('act=keep&feed=core&age='.self::EXPIRED);
+		$I->probe('act=keep&feed=plugin&age='.self::EXPIRED);
 
-			$I->amOnPage('/e107_admin/admin.php');
-			$I->seeNumberOfElements('#e-adminfeed .'.self::KEPT, 1);
-			$I->seeNumberOfElements('#e-adminfeed-plugin .'.self::KEPT, 1);
-			$I->seeInSource(self::CORE_RENEWAL);
-			$I->seeInSource(self::PLUGIN_RENEWAL);
+		$I->amOnPage('/e107_admin/admin.php');
+		$I->seeNumberOfElements('#e-adminfeed .'.self::KEPT, 1);
+		$I->seeNumberOfElements('#e-adminfeed-plugin .'.self::KEPT, 1);
+		$I->seeInSource(self::CORE_RENEWAL);
+		$I->seeInSource(self::PLUGIN_RENEWAL);
 
-			$I->amOnProbe('act=handler&mode=core&type=feed');
-			$I->seeInSource(self::RELEASED);
-			$I->dontSeeInSource(self::KEPT);
+		$I->amOnProbe('act=handler&mode=core&type=feed');
+		$I->seeInSource(self::RELEASED);
+		$I->dontSeeInSource(self::KEPT);
 
-			$I->amOnProbe('act=handler&mode=addons&type=plugin');
-			$I->seeInSource(self::RELEASED);
-			$I->dontSeeInSource(self::KEPT);
+		$I->amOnProbe('act=handler&mode=addons&type=plugin');
+		$I->seeInSource(self::RELEASED);
+		$I->dontSeeInSource(self::KEPT);
 
-			$I->amOnPage('/e107_admin/admin.php');
-			$I->dontSeeInSource(self::KEPT);
-			$I->seeInSource(self::RELEASED);
-			$I->dontSeeInSource(self::CORE_RENEWAL);
-			$I->dontSeeInSource(self::PLUGIN_RENEWAL);
-		}
-		finally
-		{
-			$I->haveSitePref('adminstyle', $style === '' ? null : $style);
-		}
+		$I->amOnPage('/e107_admin/admin.php');
+		$I->dontSeeInSource(self::KEPT);
+		$I->seeInSource(self::RELEASED);
+		$I->dontSeeInSource(self::CORE_RENEWAL);
+		$I->dontSeeInSource(self::PLUGIN_RENEWAL);
 	}
 
 	/**

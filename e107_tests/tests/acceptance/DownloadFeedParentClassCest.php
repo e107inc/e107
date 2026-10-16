@@ -66,7 +66,7 @@ class DownloadFeedParentClassCest
 		$I->haveForumMember($this->staffReader, '253,'.self::CLASS_STAFF);
 
 		$I->havePluginInstalled('list_new');
-		$I->havePluginPrefs('list_new', $this->listPrefs());
+		$I->havePluginPrefs('list_new', \Test\ListNewPrefs::showing(array('recent_page', 'new_page'), array('download')));
 
 		$I->haveInDatabase('e107_rss', array(
 			'rss_name' => 'Fixture feed download',
@@ -247,38 +247,5 @@ class DownloadFeedParentClassCest
 			'download_mirror_type' => 0,
 			'download_visible' => $visible,
 		));
-	}
-
-	/**
-	 * Enough of list_new's configuration to render the download section, and no
-	 * more. Mirrors 0042's, which explains why it is written out rather than
-	 * left to the plugin's own defaults.
-	 *
-	 * @return array
-	 */
-	private function listPrefs()
-	{
-		$prefs = array();
-
-		foreach (array('recent_page', 'new_page') as $mode)
-		{
-			$prefs[$mode.'_welcometext'] = '';
-			// The section counter is divided by this one.
-			$prefs[$mode.'_colomn'] = '1';
-
-			$prefs['download_'.$mode.'_caption'] = 'Fixture download '.$mode;
-			$prefs['download_'.$mode.'_display'] = '1';
-			$prefs['download_'.$mode.'_open'] = '1';
-			$prefs['download_'.$mode.'_author'] = '1';
-			$prefs['download_'.$mode.'_category'] = '1';
-			$prefs['download_'.$mode.'_date'] = '1';
-			$prefs['download_'.$mode.'_icon'] = '';
-			$prefs['download_'.$mode.'_amount'] = '20';
-			$prefs['download_'.$mode.'_order'] = '1';
-		}
-
-		$prefs['new_page_timelapse'] = '0';
-
-		return $prefs;
 	}
 }

@@ -38,21 +38,16 @@ class CommentAdminNewsRecountCest
 
 		foreach(array('0', 'page', 'profile', 'fixtureplugin') as $type)
 		{
-			$this->comments[$type] = $I->haveInDatabase('e107_comments', array(
-				'comment_pid'          => 0,
-				'comment_item_id'      => $this->newsId,
-				'comment_subject'      => 'Subject of '.$type,
-				'comment_author_id'    => 1,
-				'comment_author_name'  => 'fixture',
-				'comment_author_email' => '',
-				'comment_datestamp'    => time() - 60,
-				'comment_comment'      => 'Text of '.$type,
-				'comment_blocked'      => 0,
-				'comment_ip'           => '127.0.0.1',
-				'comment_type'         => $type,
-				'comment_lock'         => 0,
-				'comment_share'        => 0,
-			));
+			$this->comments[$type] = $I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
+				'comment_item_id'     => $this->newsId,
+				'comment_subject'     => 'Subject of '.$type,
+				'comment_author_id'   => 1,
+				'comment_author_name' => 'fixture',
+				'comment_datestamp'   => time() - 60,
+				'comment_comment'     => 'Text of '.$type,
+				'comment_ip'          => '127.0.0.1',
+				'comment_type'        => $type,
+			)));
 		}
 
 		$I->loginAsAdmin();

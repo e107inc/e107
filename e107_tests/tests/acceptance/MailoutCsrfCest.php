@@ -416,25 +416,8 @@ class MailoutCsrfCest
 	 */
 	private function loginAsDelegatedAdmin(AcceptanceTester $I)
 	{
-		$I->haveInDatabase('e107_user', array(
-			'user_name'      => self::DELEGATED_ADMIN,
-			'user_loginname' => self::DELEGATED_ADMIN,
-			'user_email'     => self::DELEGATED_ADMIN . '@example.com',
-			'user_password'  => \Test\Password::hash(self::DELEGATED_ADMIN),
-			'user_join'      => 1262304000,
-			'user_class'     => '',
-			'user_admin'     => 1,
-			'user_perms'     => self::DELEGATED_PERMS,
-			'user_pwchange'  => self::PWCHANGE,
-			'user_xup'       => '',
-			'user_prefs'     => '',
-			'user_signature' => '',
-			'user_realm'     => '',
-		));
-
 		$I->resetAllCookies();
-		$I->loginAsAdmin(self::DELEGATED_ADMIN, self::DELEGATED_ADMIN);
-		$I->dontSeeElement('input[name=authpass]');
+		$I->loginAsDelegatedAdmin(self::DELEGATED_ADMIN, self::DELEGATED_PERMS, array('user_pwchange' => self::PWCHANGE));
 	}
 
 	/**

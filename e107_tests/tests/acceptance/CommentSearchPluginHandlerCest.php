@@ -48,19 +48,15 @@ class CommentSearchPluginHandlerCest
 			'news_sticky'         => 0,
 		));
 
-		$I->haveInDatabase('e107_comments', array(
+		$I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
 			'comment_item_id'     => $news,
 			'comment_subject'     => self::MARKER,
 			'comment_author_id'   => 1,
 			'comment_author_name' => 'fixture',
 			'comment_datestamp'   => time() - 3600,
 			'comment_comment'     => self::KEYWORD.' '.self::MARKER,
-			'comment_blocked'     => 0,
 			'comment_ip'          => '127.0.0.1',
-			'comment_type'        => 0,
-			'comment_lock'        => 0,
-			'comment_share'       => 0,
-		));
+		)));
 
 		$I->probe('act=seed');
 		$I->resetAllCookies();

@@ -1062,25 +1062,7 @@ class AdminPreAuthCest
 	 */
 	private function loginAsDelegatedAdmin(AcceptanceTester $I, $loginName)
 	{
-		$perms = self::DELEGATED_ADMINS[$loginName];
-
-		$I->haveInDatabase('e107_user', array(
-			'user_name'      => $loginName,
-			'user_loginname' => $loginName,
-			'user_email'     => $loginName.'@example.com',
-			'user_password'  => \Test\Password::hash($loginName),
-			'user_join'      => 1262304000,
-			'user_class'     => '',
-			'user_admin'     => 1,
-			'user_perms'     => $perms,
-			'user_xup'       => '',
-			'user_prefs'     => '',
-			'user_signature' => '',
-			'user_realm'     => '',
-		));
-
-		$I->loginAsAdmin($loginName, $loginName);
-		$I->dontSeeElement('input[name=authpass]');
+		$I->loginAsDelegatedAdmin($loginName, self::DELEGATED_ADMINS[$loginName]);
 	}
 
 	/**
