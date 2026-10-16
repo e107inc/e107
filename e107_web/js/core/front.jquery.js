@@ -279,11 +279,15 @@ $(document).ready(function()
             return false;
         }
 
-        $(id).attr('contentEditable',true);
-        $(id).after("<div class='e-comment-edit-save'><input data-target='"+url+"' data-token='"+token+"' id='e-comment-edit-save-"+sp[3]+"' class='button btn btn-success e-comment-edit-save' type='button' value='Save' /></div>");
+        var comment = $(document).find(id);
+        var save = $("<input class='button btn btn-success e-comment-edit-save' type='button' value='Save' />")
+            .attr({'data-target': url, 'data-token': token, id: 'e-comment-edit-save-' + sp[3]});
+
+        comment.attr('contentEditable',true);
+        comment.after($("<div class='e-comment-edit-save'></div>").append(save));
         $('div.e-comment-edit-save').hide().fadeIn(800);
-        $(id).addClass("e-comment-edit-active");
-        $(id).focus();
+        comment.addClass("e-comment-edit-active");
+        comment.focus();
         return false;
 	});
 
@@ -294,10 +298,11 @@ $(document).ready(function()
 			var token 	= $(this).attr("data-token");
 			var sp 		= $(this).attr('id').split("-");
 			var id 		= "#comment-" + sp[4] + "-edit";
-			var comment = $(id).text();
+			var edited 	= $(document).find(id);
+			var comment = edited.text();
 
 
-			$(id).attr('contentEditable',false);
+			edited.attr('contentEditable',false);
 
 		        $.ajax({
 		            url: url + '?ajax_used=1&mode=edit',
@@ -331,7 +336,7 @@ $(document).ready(function()
 		                    .delay(1500)
 		                    .fadeOut('slow');				
 						}
-		            	$(id).removeClass("e-comment-edit-active");
+		            	edited.removeClass("e-comment-edit-active");
 		            	
 		            	setTimeout(function() {
 						  $('div.e-comment-edit-save').remove();
