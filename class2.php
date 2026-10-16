@@ -1876,6 +1876,13 @@ function message_handler($mode, $message, $line = 0, $file = '')
 
 
 
+/**
+ * List a user's classes by id, with the fixed classes their account gives them; without a $uid, only the classes assigned to the current user directly, none that they hold through the class tree.
+ *
+ * @deprecated v2.3.13 Its two forms disagree: given a $uid it reads the classes through e107::user(), inherited ones included, but without one it reads USERCLASS, which leaves them out. Use {@see e_user_model::getClassList()}, or {@see e_user_model::checkClass()} with $allowMain false, on e107::getSystemUser($uid, false) instead; with $allowMain true, checkClass() counts the main administrator in every class.
+ * @param int|string $uid a user id, or '' for the current user
+ * @return string comma-separated class ids
+ */
 function class_list($uid = '')
 {
 	$clist = array();
