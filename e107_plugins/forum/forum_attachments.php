@@ -242,10 +242,10 @@ class forum_attachments
 	/**
 	 * The file a stored entry names, from either shape an entry is stored in.
 	 *
-	 * @param array|string $entry
+	 * @param mixed $entry one entry of a stored post_attachments value
 	 * @return mixed
 	 */
-	private static function fileName($entry)
+	public static function fileName($entry)
 	{
 		return is_array($entry) ? varset($entry['file'], '') : $entry;
 	}
@@ -481,7 +481,7 @@ class forum_attachments
 	{
 		if(is_array($entry))
 		{
-			$name = !empty($entry['name']) ? $entry['name'] : varset($entry['file'], '');
+			$name = !empty($entry['name']) ? $entry['name'] : self::fileName($entry);
 		}
 		else
 		{

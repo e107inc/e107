@@ -429,10 +429,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				{
 					$name = forum_attachments::label($file, $tp);
 
-					if(is_array($file))
-					{
-						$file = varset($file['file'], '');
-					}
+					$file = forum_attachments::fileName($file);
 
 					switch($type)
 					{
