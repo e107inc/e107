@@ -270,7 +270,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						return true;
 					}
 
-					$(href).slideToggle('slow', function ()
+					$(document).find(href).slideToggle('slow', function ()
 					{
 						if($(this).is(':visible'))
 						{
@@ -408,7 +408,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	{
 		try
 		{
-			var $element = $(selector);
+			$(document).find(selector);
 		} catch(error)
 		{
 			return false;
@@ -1078,7 +1078,7 @@ $(document).ready(function()
 				var id = $(this).attr("href");   	
 			}
 			      		    		     				
-			$(id).show("slow");
+			$(document).find(id).show("slow");
 			return false;
 		}); 
 		
@@ -1118,7 +1118,7 @@ $(document).ready(function()
 				var id = $(this).attr("href");   	
 			}
 					
-			$(id).hide("slow");
+			$(document).find(id).hide("slow");
 			return false;
 		});
 		
