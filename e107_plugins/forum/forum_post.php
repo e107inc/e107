@@ -1912,7 +1912,7 @@ class forum_post_handler
 
 			foreach($entries as $index => $entry)
 			{
-				$name = (string) (is_array($entry) ? varset($entry['file'], '') : $entry);
+				$name = (string) forum_attachments::fileName($entry);
 
 				if($name === '' || strpos($name, "\0") !== false || $name !== basename($name))
 				{
@@ -1963,7 +1963,7 @@ class forum_post_handler
 			{
 				foreach((array) $entries as $entry)
 				{
-					$allowed[] = (string) (is_array($entry) ? varset($entry['file'], '') : $entry);
+					$allowed[] = (string) forum_attachments::fileName($entry);
 				}
 			}
 		}
@@ -1972,7 +1972,7 @@ class forum_post_handler
 		{
 			foreach((array) $entries as $index => $entry)
 			{
-				$name = (string) (is_array($entry) ? varset($entry['file'], '') : $entry);
+				$name = (string) forum_attachments::fileName($entry);
 
 				if(!in_array($name, $allowed, true))
 				{
@@ -1994,13 +1994,13 @@ class forum_post_handler
 			$attachmentsJsonErrors = json_last_error();
 			if($attachmentsJsonErrors === JSON_ERROR_NONE)
 			{
+				require_once(e_PLUGIN.'forum/forum_attachments.php');
+
 				$postedAttachments = $this->filterAttachmentNames($postedAttachments);
 				$postedAttachments = $this->filterGuestAttachmentNames($postedAttachments, $existingValues, $uploaded);
 
 		        if($existingValues)
 		        {
-		          require_once(e_PLUGIN.'forum/forum_attachments.php');
-
 		          $existingValues = forum_attachments::asServed(e107::unserialize($existingValues));
 		          return e107::serialize(array_merge_recursive($existingValues,$postedAttachments));
 		        }

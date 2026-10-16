@@ -334,8 +334,7 @@ class e107forum
         $attach = forum_attachments::asServed(e107::unserialize($array['post_attachments']));
         $entry  = isset($attach['file'][$file_id]) ? $attach['file'][$file_id] : '';
 
-        $filename = is_array($entry) ? varset($entry['file'], '') : $entry;
-        $filename = basename((string) $filename);
+        $filename = basename((string) forum_attachments::fileName($entry));
 
         $file 	= $this->getAttachmentPath($array['post_user']).$filename;
 
@@ -1811,12 +1810,7 @@ class e107forum
 	 */
 	private function unlinkAttachment($baseDir, $entry, $kind, $log)
 	{
-		if(is_array($entry))
-		{
-			$entry = isset($entry['file']) ? $entry['file'] : '';
-		}
-
-		$entry = (string) $entry;
+		$entry = (string) forum_attachments::fileName($entry);
 
 		if($entry === '' || strpos($entry, "\0") !== false || $entry !== basename($entry)
 			|| $entry === '.' || $entry === '..')
