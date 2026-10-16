@@ -97,7 +97,7 @@ class list_classTest extends \Codeception\Test\Unit
 		$printed = $this->probe($php);
 		$matches = array();
 
-		self::assertSame(0, preg_match('/Undefined array key/i', $printed),
+		self::assertReadNoMissingKey('[^"\s]*', $printed,
 			"the template reads fields the empty section's row does not carry:\n".$printed);
 
 		self::assertSame(1, preg_match('/<<(.*)>>/s', $printed, $matches), "the probe printed nothing:\n".$printed);

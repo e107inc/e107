@@ -65,19 +65,19 @@ class forum_postTest extends \Codeception\Test\Unit
 	{
 		$printed = $this->openThePostForm(array('f' => 'nt', 'id' => '1'));
 
-		self::assertSame(0, preg_match('/Undefined array key "post"/i', $printed),
+		self::assertReadNoMissingKey('post', $printed,
 			"starting a topic carries no post id:\n".$printed);
 	}
 
 	/**
 	 * A link that names only the thread leaves out the action as well, and the
-	 * action is handed to trim(), which has refused null since PHP 8.1.
+	 * action is handed to trim(), which has deprecated a null argument since PHP 8.1.
 	 */
 	public function testOpeningTheFormWithoutAnActionReadsNoActionEither()
 	{
 		$printed = $this->openThePostForm(array('id' => '1'));
 
-		self::assertSame(0, preg_match('/Undefined array key "(f|post)"/i', $printed),
+		self::assertReadNoMissingKey('f|post', $printed,
 			"the form reads query keys that are not there:\n".$printed);
 
 		self::assertSame(0, preg_match('/trim\(\): Passing null/i', $printed),
