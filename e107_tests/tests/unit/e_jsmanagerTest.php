@@ -38,6 +38,18 @@ class e_jsmanagerTest extends \Test\Unit
 		$this->restoreParserState($this->foundParserState);
 	}
 
+	public function testTheCombinedFileIsNamedForTheRelease()
+	{
+		$paths = array('{e_WEB}js/core/all.jquery.js', '{e_WEB}js/rate/js/jquery.raty.js');
+		$token = new ReflectionMethod('e_jsmanager', 'cacheToken');
+		$token->setAccessible(true);
+		$fileId = new ReflectionMethod('e_jsmanager', 'getCacheFileId');
+		$fileId->setAccessible(true);
+
+		self::assertSame(hash('crc32', implode('', $paths).$token->invoke($this->js)), $fileId->invoke($this->js, $paths));
+		self::assertNotSame(hash('crc32', implode('', $paths).$this->js->getCacheId()), $fileId->invoke($this->js, $paths), 'the name would not change with the release');
+	}
+
 	public function testIsInAdmin()
 	{
 		$result = $this->js->isInAdmin();

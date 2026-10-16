@@ -1941,7 +1941,7 @@ class e_jsmanager
 
 
 	/**
-	 * Generate a Cache-File ID from path list.
+	 * Generate a Cache-File ID from the path list and the release, so that an update builds a new file rather than serving the last release's.
 	 * @param array $paths
 	 * @return string
 	 */
@@ -1953,7 +1953,7 @@ class e_jsmanager
 			$id .= str_replace("../","",$p);
 		}
 
-		$id .= $this->getCacheId();
+		$id .= $this->cacheToken();
 
 		return hash('crc32', $id) ;
 
