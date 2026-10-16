@@ -10,23 +10,17 @@ class DisallowMultiLoginCest
 	/** Rolling log title of a login that ended the account's other sessions. */
 	const DROPPED = 'LAN_ROLL_LOG_07';
 
-	/** @var string[] */
-	private $prefsWere = array();
-
 	public function _before(AcceptanceTester $I)
 	{
 		foreach(array('disallowMultiLogin' => 1, 'roll_log_active' => 1) as $name => $value)
 		{
-			$this->prefsWere[$name] = $I->haveSitePref($name, $value);
+			$I->haveSitePrefUntilAfter($name, $value);
 		}
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		foreach($this->prefsWere as $name => $was)
-		{
-			$I->haveSitePref($name, $was === '' ? null : $was);
-		}
+		$I->restoreSitePrefs();
 	}
 
 	public function aLiveSessionOfTheAccountIsEndedAndNoted(AcceptanceTester $I)

@@ -498,18 +498,10 @@ class CommentPostAuthzCest
 	 */
 	private function havePage(AcceptanceTester $I, $title, $sef, $commentFlag)
 	{
-		return $I->haveInDatabase('e107_page', array(
-			'page_title' => $title, 'page_sef' => $sef, 'page_subtitle' => '',
-			'page_chapter' => 0, 'page_metatitle' => '', 'page_metakeys' => '',
-			'page_metadscr' => '', 'page_metaimage' => '', 'page_metarobots' => '',
-			'page_text' => 'fixture', 'page_author' => 1, 'page_datestamp' => time() - 3600,
-			'page_rating_flag' => 0, 'page_comment_flag' => $commentFlag,
-			'page_password' => '', 'page_class' => '0', 'page_ip_restrict' => '',
-			'page_template' => '', 'page_order' => 9999, 'page_fields' => '',
-			'menu_name' => '', 'menu_title' => '', 'menu_text' => '', 'menu_image' => '',
-			'menu_icon' => '', 'menu_template' => '', 'menu_class' => '0',
-			'menu_button_url' => '', 'menu_button_text' => '',
-		));
+		return $I->haveInDatabase('e107_page', \Test\Rows::page(array(
+			'page_title' => $title, 'page_sef' => $sef, 'page_text' => 'fixture', 'page_author' => 1,
+			'page_datestamp' => time() - 3600, 'page_comment_flag' => $commentFlag,
+		)));
 	}
 
 	/**
@@ -563,15 +555,13 @@ class CommentPostAuthzCest
 	 */
 	private function haveComment(AcceptanceTester $I, $text, $itemId)
 	{
-		return $I->haveInDatabase('e107_comments', array(
-			'comment_pid' => 0, 'comment_item_id' => $itemId,
-			'comment_subject' => 'vhf5 subject',
+		return $I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
+			'comment_item_id' => $itemId, 'comment_subject' => 'vhf5 subject',
 			'comment_author_id' => 1, 'comment_author_name' => 'admin',
-			'comment_author_email' => '', 'comment_datestamp' => time() - 1800,
-			'comment_comment' => $text, 'comment_blocked' => 0, 'comment_ip' => '127.0.0.1',
+			'comment_datestamp' => time() - 1800, 'comment_comment' => $text, 'comment_ip' => '127.0.0.1',
 			// getCommentType('news') is 0, and that is what enter_comment() stores.
-			'comment_type' => '0', 'comment_lock' => 0, 'comment_share' => 0,
-		));
+			'comment_type' => '0',
+		)));
 	}
 
 	/**

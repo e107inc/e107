@@ -8,17 +8,14 @@ class ChapLoginDiscontinuedCest
 	/** "CHAP, plaintext fallback", the setting that left the admin login unable to submit (#6652). */
 	const CHAP_WITH_FALLBACK = 1;
 
-	/** @var string */
-	private $chapWas = '';
-
 	public function _before(AcceptanceTester $I)
 	{
-		$this->chapWas = $I->haveSitePref('password_CHAP', self::CHAP_WITH_FALLBACK);
+		$I->haveSitePrefUntilAfter('password_CHAP', self::CHAP_WITH_FALLBACK);
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->haveSitePref('password_CHAP', $this->chapWas === '' ? null : $this->chapWas);
+		$I->restoreSitePrefs();
 	}
 
 	public function theAdminLoginPageSendsNoChapHooks(AcceptanceTester $I)

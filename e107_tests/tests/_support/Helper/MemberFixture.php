@@ -34,6 +34,29 @@ class MemberFixture extends AppFixture
 	}
 
 	/**
+	 * Seed an administrator with $perms whose password is its login name, and sign it into the admin area, past the re-authentication prompt.
+	 *
+	 * @param string $name login name and password
+	 * @param string $perms user_perms
+	 * @param array $row columns to set differently
+	 * @return int user_id
+	 */
+	public function loginAsDelegatedAdmin($name, $perms, array $row = array())
+	{
+		$id = $this->haveMember($name, $name, array_merge(array(
+			'user_join'  => 1262304000,
+			'user_class' => '',
+			'user_admin' => 1,
+			'user_perms' => $perms,
+		), $row));
+
+		$this->getModule('\Helper\AdminLogin')->loginAsAdmin($name, $name);
+		$this->browser()->dontSeeElement('input[name=authpass]');
+
+		return $id;
+	}
+
+	/**
 	 * Log in through the front-end form from a fresh cookie jar, and prove it by reading the member's own settings page.
 	 *
 	 * @param string $name login name

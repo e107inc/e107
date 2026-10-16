@@ -24,6 +24,7 @@ class AdminDashboardFeedSessionCest
 
 	public function _after(AcceptanceTester $I)
 	{
+		$I->restoreSitePrefs();
 		$I->probe('act=reset');
 	}
 
@@ -56,24 +57,17 @@ class AdminDashboardFeedSessionCest
 	 */
 	public function theDashboardShowsTheUpdateTheCheckFound(AcceptanceTester $I)
 	{
-		$style = $I->haveSitePref('adminstyle', 'infopanel');
+		$I->haveSitePrefUntilAfter('adminstyle', 'infopanel');
 
-		try
-		{
-			$I->amOnProbe('act=handler&mode=addons&type=update');
-			$I->seeInSource(self::UPDATE_NAME);
+		$I->amOnProbe('act=handler&mode=addons&type=update');
+		$I->seeInSource(self::UPDATE_NAME);
 
-			$token = $I->grabProbe('act=token');
-			$I->amOnPage('/e107_admin/admin.php');
+		$token = $I->grabProbe('act=token');
+		$I->amOnPage('/e107_admin/admin.php');
 
-			$I->seeInSource(self::UPDATE_NAME);
-			$I->seeInSource('action=download&amp;e-token='.$token);
-			$I->dontSeeInSource('mode=addons&type=update');
-		}
-		finally
-		{
-			$I->haveSitePref('adminstyle', $style === '' ? null : $style);
-		}
+		$I->seeInSource(self::UPDATE_NAME);
+		$I->seeInSource('action=download&amp;e-token='.$token);
+		$I->dontSeeInSource('mode=addons&type=update');
 	}
 
 	/**
@@ -81,24 +75,17 @@ class AdminDashboardFeedSessionCest
 	 */
 	public function theDashboardRunsTheCheckAgainOnceTheAnswerIsGone(AcceptanceTester $I)
 	{
-		$style = $I->haveSitePref('adminstyle', 'infopanel');
+		$I->haveSitePrefUntilAfter('adminstyle', 'infopanel');
 
-		try
-		{
-			$I->amOnProbe('act=handler&mode=addons&type=update');
-			$I->seeInSource(self::UPDATE_NAME);
+		$I->amOnProbe('act=handler&mode=addons&type=update');
+		$I->seeInSource(self::UPDATE_NAME);
 
-			$I->probe('act=reset');
-			$I->amOnPage('/e107_admin/admin.php');
+		$I->probe('act=reset');
+		$I->amOnPage('/e107_admin/admin.php');
 
-			$I->dontSeeInSource(self::UPDATE_NAME);
-			$I->seeInSource("id='e-admin-addons-update'");
-			$I->seeInSource('mode=addons&type=update');
-		}
-		finally
-		{
-			$I->haveSitePref('adminstyle', $style === '' ? null : $style);
-		}
+		$I->dontSeeInSource(self::UPDATE_NAME);
+		$I->seeInSource("id='e-admin-addons-update'");
+		$I->seeInSource('mode=addons&type=update');
 	}
 
 	/**

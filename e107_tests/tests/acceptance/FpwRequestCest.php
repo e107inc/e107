@@ -25,21 +25,18 @@ class FpwRequestCest
 	/** @var int */
 	private $memberId;
 
-	/** @var string */
-	private $mailLogWas = '';
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveProbe(self::PROBE_FILE, $this->probeSource());
 		$I->probe('act=clear');
-		$this->mailLogWas = $I->haveSitePref('mail_log_options', '1,1');
+		$I->haveSitePrefUntilAfter('mail_log_options', '1,1');
 
 		$this->memberId = $I->haveMember(self::MEMBER, self::PASSWORD, array('user_email' => self::MEMBER_EMAIL));
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->haveSitePref('mail_log_options', $this->mailLogWas === '' ? null : $this->mailLogWas);
+		$I->restoreSitePrefs();
 		$I->probe('act=clear');
 	}
 

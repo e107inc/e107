@@ -171,18 +171,15 @@ class CommentFeedParentClassCest
 	 */
 	private function haveComment(AcceptanceTester $I, $subject, $type, $itemId)
 	{
-		return $I->haveInDatabase('e107_comments', array(
+		return $I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
 			'comment_item_id' => $itemId,
 			'comment_subject' => $subject,
 			'comment_author_id' => 1,
 			'comment_author_name' => 'fixture',
 			'comment_datestamp' => time() - 3600,
 			'comment_comment' => 'Body of '.$subject,
-			'comment_blocked' => 0,
 			'comment_ip' => '127.0.0.1',
 			'comment_type' => $type,
-			'comment_lock' => 0,
-			'comment_share' => 0,
-		));
+		)));
 	}
 }
