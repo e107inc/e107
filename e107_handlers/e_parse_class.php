@@ -648,6 +648,11 @@ class e_parse
 			$replace = array('>', '<');
 			$data = str_replace($search, $replace, $data); // prevent &amp;gt; etc.
 
+			if ($mod !== 'pReFs')
+			{
+				$data = preg_replace('/&amp;(?!#\d*;)/', '&', $data);
+			}
+
 			$data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
 			$data = str_replace('\\', '&#092;', $data);
 
