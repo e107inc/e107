@@ -638,6 +638,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			type: options.type || 'POST',
 			url: options.url,
 			data: data,
+			sameOriginOnly: true,
 			complete: function ()
 			{
 				if(loadHtml)
@@ -915,7 +916,8 @@ $.ajaxSetup({
 });
 
 /**
- * Attach the CSRF token to same-origin POST requests.
+ * Attach the CSRF token to same-origin POST requests, and keep a request that is
+ * meant for this site alone from going anywhere else.
  *
  * A form built by JavaScript after load never passes through the output buffer,
  * so it never gets a token from e_token_injector. jQuery has already resolved
@@ -950,6 +952,45 @@ $.ajaxSetup({
 
 		return (anchor.protocol + '//' + anchor.host) === (window.location.protocol + '//' + window.location.host);
 	}
+
+	/**
+	 * An e-ajax element takes its address from markup an author may have written,
+	 * and puts whatever comes back into the page, scripts included, so it only
+	 * fetches from this site and only takes a page or JSON back: not an answer that
+	 * a redirect brought from elsewhere, not a file sent as it was uploaded, and
+	 * never a script, which jQuery would otherwise run while reading the answer.
+	 */
+	$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+		if (!options.sameOriginOnly) {
+			return;
+		}
+
+		if (!isSameOrigin(options.url)) {
+			jqXHR.abort();
+			return;
+		}
+
+		options.contents.script = false;
+
+		var request = null;
+		var createRequest = options.xhr;
+		var success = options.success;
+
+		options.xhr = function () {
+			request = createRequest.apply(this, arguments);
+			return request;
+		};
+
+		options.success = function () {
+			var type = jqXHR.getResponseHeader('Content-Type') || '';
+
+			if (!request || !request.responseURL || !isSameOrigin(request.responseURL) || !/^(text\/html|application\/json)\s*(;|$)/i.test(type)) {
+				return;
+			}
+
+			return success.apply(this, arguments);
+		};
+	});
 
 	$.ajaxPrefilter(function (options) {
 		if (!options.type || options.type.toUpperCase() !== 'POST') {
