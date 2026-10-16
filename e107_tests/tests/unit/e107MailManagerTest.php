@@ -9,13 +9,25 @@
  */
 
 /**
- * What e107MailManager::sendEmails() answers for a send it makes at once, rather than through the queue.
+ * What e107MailManager::sendEmails() answers for a send it makes at once, rather than through the queue, and what
+ * the queue reads back of an email it saved.
  */
 class e107MailManagerTest extends \Codeception\Test\Unit
 {
+	/** @var int[] */
+	private $saved = array();
+
 	protected function _before()
 	{
 		require_once(e_HANDLER . 'mail_manager_class.php');
+	}
+
+	protected function _after()
+	{
+		foreach($this->saved as $id)
+		{
+			e107::getDb()->delete('mail_content', 'mail_source_id = ' . (int) $id);
+		}
 	}
 
 	/**
@@ -30,6 +42,53 @@ class e107MailManagerTest extends \Codeception\Test\Unit
 	public function testAnEmailTheMailerSentIsReportedAsSent()
 	{
 		self::assertTrue($this->sendThrough(true));
+	}
+
+	/**
+	 * @dataProvider senderNames
+	 * @param string $name
+	 */
+	public function testAQueuedEmailReadsBackTheSenderNameItWasSavedWith($name)
+	{
+		foreach($this->readBack(array('mail_sender_name' => $name)) as $reader => $email)
+		{
+			self::assertSame($name, varset($email['mail_sender_name']), $reader);
+			self::assertSame('', varset($email['mail_bcopy_to']), $reader);
+		}
+	}
+
+	/**
+	 * @return array[]
+	 */
+	public function senderNames()
+	{
+		return array(
+			'an apostrophe' => array("O'Brien Ltd"),
+			'a quoted key'  => array("Acme', 'mail_bcopy_to' => 'copy@example.invalid"),
+		);
+	}
+
+	/**
+	 * @param array $other the email's sender, copies and other details
+	 * @return array[] the saved email, as each reader of the queue returns it
+	 */
+	private function readBack(array $other)
+	{
+		$manager = new e107MailManager();
+		$id = $manager->saveEmail(array_merge(array(
+			'mail_create_app' => 'core',
+			'mail_title'      => 'Mail manager test',
+			'mail_subject'    => 'Mail manager test',
+			'mail_body'       => 'Mail manager test body',
+		), $other), true);
+		$this->saved[] = (int) $id;
+
+		$row = e107::getDb()->retrieve('mail_content', '*', 'mail_source_id = ' . (int) $id);
+
+		return array(
+			'retrieveEmail()' => $manager->retrieveEmail($id),
+			'dbToBoth()'      => $manager->dbToBoth($row),
+		);
 	}
 
 	/**

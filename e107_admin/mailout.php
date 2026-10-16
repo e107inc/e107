@@ -1608,11 +1608,20 @@ class mailout_main_ui extends e_admin_ui
 
 class mailout_admin_form_ui extends e_admin_form_ui
 {
-	
+	/**
+	 * @param e_admin_model $model
+	 * @return array the email the model's row holds, its sender, copies and attachment included {@see e107MailManager::dbToMail()}
+	 */
+	private function storedEmail($model)
+	{
+		$row = $model->getData();
+
+		return $this->getController()->mailAdmin->dbToMail($row);
+	}
+
 	public function mail_selectors($curval, $mode)
 	{
-		$val 	= stripslashes($this->getController()->getModel()->get('mail_other'));		
-		$data 	= e107::unserialize($val);
+		$data 	= $this->storedEmail($this->getController()->getModel());
 		
 		switch($mode)
 		{
@@ -1639,8 +1648,7 @@ class mailout_admin_form_ui extends e_admin_form_ui
 	
 	public function mail_send_style($curVal, $mode)
 	{
-		$val 	= stripslashes($this->getController()->getModel()->get('mail_other'));		
-		$data 	= e107::unserialize($val);
+		$data 	= $this->storedEmail($this->getController()->getModel());
 		
 		switch($mode)
 		{
@@ -1669,14 +1677,12 @@ class mailout_admin_form_ui extends e_admin_form_ui
 		switch($mode)
 		{
 			case 'read':
-				$val 	= stripslashes($this->getController()->getListModel()->get('mail_other'));		
-				$data 	= e107::unserialize($val);
+				$data 	= $this->storedEmail($this->getController()->getListModel());
 				return $data[$field];
 			break;
 
 			case 'write':
-				$val 	= stripslashes($this->getController()->getModel()->get('mail_other'));		
-				$data 	= e107::unserialize($val);
+				$data 	= $this->storedEmail($this->getController()->getModel());
 				
 				if($field == 'mail_sender_name' && !vartrue($data['mail_sender_name']))
 				{
@@ -1725,15 +1731,13 @@ class mailout_admin_form_ui extends e_admin_form_ui
 	{
 		if($mode == 'read')
 		{
-			$val 	= stripslashes($this->getController()->getListModel()->get('mail_other'));		
-			$data 	= e107::unserialize($val);
+			$data 	= $this->storedEmail($this->getController()->getListModel());
 			return basename($data['mail_attach']);	
 		}
 		
 		if($mode == 'write')
 		{
-			$val 	= stripslashes($this->getController()->getModel()->get('mail_other'));		
-			$data 	= e107::unserialize($val);
+			$data 	= $this->storedEmail($this->getController()->getModel());
 			return $this->filepicker('mail_attach',$data['mail_attach'], $mode);	
 		}
 		

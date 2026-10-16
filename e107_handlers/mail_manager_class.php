@@ -341,7 +341,7 @@ class e107MailManager
 		if (isset($data['mail_other']))
 		{
 
-			$tmp = e107::unserialize(str_replace('\\\'', '\'', $data['mail_other']));    // May have escaped data
+			$tmp = e107::unserialize($data['mail_other']);
 			if (is_array($tmp))
 			{
 				$res = array_merge($res, $tmp);
@@ -474,7 +474,7 @@ class e107MailManager
 		// Now array fields
 		if (isset($data['mail_other']))
 		{
-			$tmp = e107::unserialize(str_replace('\\\'', '\'', $data['mail_other']));    // May have escaped data
+			$tmp = e107::unserialize($data['mail_other']);
 			if (is_array($tmp))
 			{
 				$res = array_merge($res, $tmp);
