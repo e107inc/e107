@@ -49,9 +49,11 @@ Guests are untrusted.
 
 A member acts only within the user classes they hold. A member who reaches content, actions or settings outside those classes is in scope.
 
-### Posting HTML
+### Posting HTML and Script
 
-The permission to post HTML is a grant of trust equivalent to running script; whom to grant it to is the site owner's decision. Script from a holder of that permission is by design, and a report that needs the attacker to hold it is not a vulnerability.
+Posting HTML and posting script are separate permissions, and whom to grant each to is the site owner's decision. Script from a holder of the script permission is by design.
+
+A holder of the HTML permission who does not hold the script permission must not be able to make script run for any reader. A report showing that they can is in scope.
 
 Content is judged by its author's permissions, never by the reader's.
 
@@ -59,7 +61,7 @@ Content is judged by its author's permissions, never by the reader's.
 
 The main administrator holds every permission. A delegated administrator holds only the areas they were granted.
 
-Some permissions already let their holder run arbitrary code: posting HTML, and installing or uploading plugins or themes (see [Trusted by Design](#trusted-by-design)). A delegated administrator who holds one of them can already do anything on the site, so using it to gain more is not a vulnerability.
+Some permissions already let their holder run arbitrary code: posting script, and installing or uploading plugins or themes (see [Trusted by Design](#trusted-by-design)). A delegated administrator who holds one of them can already do anything on the site, so using it to gain more is not a vulnerability.
 
 It is a vulnerability when a delegated administrator who holds none of those permissions:
 
@@ -71,7 +73,7 @@ It is a vulnerability when a delegated administrator who holds none of those per
 
 The following already give their holder control of the site. A defect reachable only by someone who holds one of them is hardening:
 
-- the permission to post HTML (see [Posting HTML](#posting-html));
+- the permission to post script (see [Posting HTML and Script](#posting-html-and-script));
 - the permission to install or upload plugins or themes;
 - access from outside e107: the configuration file, the database, or a shell on the server.
 
