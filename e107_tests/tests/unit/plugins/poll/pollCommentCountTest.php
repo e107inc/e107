@@ -14,6 +14,8 @@
  */
 class pollCommentCountTest extends \Codeception\Test\Unit
 {
+	use \Test\PollRows;
+
 	const POLL_ID = 9407;
 
 	/** @var int[] */
@@ -57,23 +59,7 @@ class pollCommentCountTest extends \Codeception\Test\Unit
 		}
 
 		$poll = new poll();
-		$text = $poll->render_poll(array(
-			'poll_id'              => self::POLL_ID,
-			'poll_datestamp'       => time(),
-			'poll_start_datestamp' => 0,
-			'poll_end_datestamp'   => 0,
-			'poll_admin_id'        => 1,
-			'poll_title'           => 'Fixture poll',
-			'poll_options'         => "Yes\x01No\x01",
-			'poll_votes'           => "1\x011",
-			'poll_ip'              => '',
-			'poll_type'            => 1,
-			'poll_comment'         => 1,
-			'poll_allow_multiple'  => 0,
-			'poll_result_type'     => 0,
-			'poll_vote_userclass'  => 0,
-			'poll_storage_method'  => 0,
-		), 'menu', 'oldpolls', true);
+		$text = $poll->render_poll($this->pollRow(array('poll_id' => self::POLL_ID)), 'menu', 'oldpolls', true);
 
 		$this->assertStringContainsString(LAN_COMMENTS.': 2</a>', $text);
 	}
