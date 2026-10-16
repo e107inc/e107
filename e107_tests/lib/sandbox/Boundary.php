@@ -34,16 +34,33 @@ class Boundary
 	/** @var bool whether the recorder has had the fence up */
 	private $raised = false;
 
+	/** @var callable a host's name to the addresses it resolves to */
+	private $resolve;
+
+	/** @var array<string,string[]> each declared host's addresses, looked up at most once a run, and only for a connection that named nothing */
+	private $addresses = array();
+
 	/**
 	 * @param string $dir where the recorder keeps its journal, log and rules: a directory of the run's own
 	 * @param Shell $shell
 	 * @param ProcNet $net
+	 * @param callable|null $resolve a host's name to the addresses it resolves to, as the recorder writes an address down; the name servers unless a test says otherwise
 	 */
-	public function __construct($dir, Shell $shell, ProcNet $net)
+	public function __construct($dir, Shell $shell, ProcNet $net, $resolve = null)
 	{
 		$this->dir = $dir;
 		$this->shell = $shell;
 		$this->net = $net;
+		$this->resolve = $resolve ?: function ($name)
+		{
+			$addresses = gethostbynamel($name) ?: array();
+			foreach (@dns_get_record($name, DNS_AAAA) ?: array() as $record)
+			{
+				$addresses[] = inet_ntop(inet_pton($record['ipv6']));
+			}
+
+			return $addresses;
+		};
 	}
 
 	/**
@@ -132,7 +149,7 @@ class Boundary
 				if ($test['start'] <= $attempt['t'] && $attempt['t'] <= $test['end'])
 				{
 					$during[] = $test['name'];
-					$declared = $declared || in_array($attempt['host'], $test['expect'], true);
+					$declared = $declared || $this->declares($test['expect'], $attempt);
 				}
 			}
 			if ($declared)
@@ -149,6 +166,36 @@ class Boundary
 		}
 
 		return array_values($undeclared);
+	}
+
+	/**
+	 * @param string[] $expect the hosts a test declared
+	 * @param array $attempt what the recorder wrote down
+	 * @return bool whether a declared host is the name the attempt carried or, for a connection the recorder closed before it named anything, one of the addresses the name resolves to when the run ends
+	 */
+	private function declares(array $expect, array $attempt)
+	{
+		if (in_array($attempt['host'], $expect, true))
+		{
+			return true;
+		}
+		if ($attempt['protocol'] !== 'tcp' || filter_var($attempt['host'], FILTER_VALIDATE_IP) === false)
+		{
+			return false;
+		}
+		foreach ($expect as $name)
+		{
+			if (!isset($this->addresses[$name]))
+			{
+				$this->addresses[$name] = call_user_func($this->resolve, $name);
+			}
+			if (in_array($attempt['host'], $this->addresses[$name], true))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
