@@ -249,7 +249,9 @@
 
 			// Reproduce the admin context: core admin LAN loaded, plugin globals
 			// NOT autoloaded (plugLan flat=false does not define the array keys).
-			$code = "e107::includeLan('" . addslashes($lanAdminPath) . "'); ";
+			// A page boot keeps notices back in e107's own error handler, and on PHP 5.6 the constant read is a notice.
+			$code = "restore_error_handler(); error_reporting(E_ALL); ";
+			$code .= "e107::includeLan('" . addslashes($lanAdminPath) . "'); ";
 			$code .= "e107::plugLan('faqs', 'global'); ";
 			$code .= "e107::getConfig()->setPref('plug_installed/faqs', 1); ";
 			$code .= "require_once '" . addslashes($adminConfig) . "'; ";
@@ -257,7 +259,7 @@
 			list($output, $exitCode) = $this->runInBootedCli($code, '', array());
 			$out = implode("\n", $output);
 
-			$this->assertStringNotContainsString('Undefined constant "LAN_PLUGIN_FAQS', $out,
+			self::assertReadNoUndefinedConstant('LAN_PLUGIN_FAQS\w*', $out,
 				"faqs/admin_config.php must load its own global LAN before the class-property defaults are evaluated (#5738).\n" . $out);
 			$this->assertSame(0, $exitCode,
 				"Requiring faqs/admin_config.php should not fatal on PHP 8.\n" . $out);
