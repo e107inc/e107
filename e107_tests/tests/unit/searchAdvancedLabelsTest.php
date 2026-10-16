@@ -115,7 +115,7 @@ class searchAdvancedLabelsTest extends \Test\Unit
 	{
 		$html = $this->renderSearchPage('_blank');
 		$xpath = $this->searchPageXPath($html);
-		$fields = $xpath->query("//*[@id='search-advanced']//input[@name='author_name']");
+		$fields = $xpath->query("//*[@id='search-advanced']//input[@name='author']");
 
 		$this->assertSame(1, $fields->length,
 			"The author field did not render, so there is nothing to bind a label to.\n".$html);
