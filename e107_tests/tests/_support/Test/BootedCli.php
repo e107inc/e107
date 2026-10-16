@@ -119,4 +119,76 @@ trait BootedCli
 
 		return array($output, $status);
 	}
+
+	/**
+	 * Asserts that a child's output reports no read of a missing array key, in the wording of any PHP the suite runs on.
+	 *
+	 * @param string $keys the keys, as a regular expression alternation
+	 * @param string $printed what the child wrote
+	 * @param string $message
+	 * @return void
+	 */
+	protected static function assertReadNoMissingKey($keys, $printed, $message)
+	{
+		self::assertSame(0, preg_match(self::missingKeyNotice($keys), $printed), $message);
+	}
+
+	/**
+	 * The notice for a read of a missing key: PHP 8 prints `Undefined array key "name"` or `Undefined array key 0`, PHP 7 and 5.6 `Undefined index: name` or `Undefined offset: 0`.
+	 *
+	 * @param string $keys the keys, as a regular expression alternation
+	 * @return string
+	 */
+	protected static function missingKeyNotice($keys)
+	{
+		return '/Undefined (?:array key (?:"(?:'.$keys.')"|(?:'.$keys.')(?!\w))|(?:index|offset): (?:'.$keys.')(?!\w))/i';
+	}
+
+	/**
+	 * Asserts that a child's output reports no read of an undefined variable, in the wording of any PHP the suite runs on.
+	 *
+	 * @param string $names the variable names, as a regular expression alternation
+	 * @param string $printed what the child wrote
+	 * @param string $message
+	 * @return void
+	 */
+	protected static function assertReadNoUndefinedVariable($names, $printed, $message)
+	{
+		self::assertSame(0, preg_match(self::undefinedVariableNotice($names), $printed), $message);
+	}
+
+	/**
+	 * The notice for a read of an undefined variable: PHP 8 prints `Undefined variable $name`, PHP 7 and 5.6 `Undefined variable: name`.
+	 *
+	 * @param string $names the variable names, as a regular expression alternation
+	 * @return string
+	 */
+	protected static function undefinedVariableNotice($names)
+	{
+		return '/Undefined variable:? \$?(?:'.$names.')(?!\w)/i';
+	}
+
+	/**
+	 * Asserts that a child's output reports no read of an undefined constant, in the wording of any PHP the suite runs on.
+	 *
+	 * @param string $names the constant names, as a regular expression alternation
+	 * @param string $printed what the child wrote
+	 * @param string $message
+	 * @return void
+	 */
+	protected static function assertReadNoUndefinedConstant($names, $printed, $message)
+	{
+		self::assertSame(0, preg_match(self::undefinedConstantNotice($names), $printed), $message);
+	}
+
+	/**
+	 * The notice for a read of an undefined constant: PHP 8 prints `Undefined constant "NAME"`, PHP 7 and 5.6 `Use of undefined constant NAME - assumed 'NAME'`, and PHP 7 `Undefined constant 'NAME'` where a constant expression reads it.
+	 *
+	 * @param string $names the constant names, as a regular expression alternation
+	 * @return string
+	 */
+	protected static function undefinedConstantNotice($names)
+	{
+		return '/undefined constant ["\']?(?:'.$names.')(?!\w)/i';
+	}
 }
