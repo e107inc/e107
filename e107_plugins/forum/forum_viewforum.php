@@ -226,9 +226,7 @@ function init()
 // SEO - meta description (auto)
 	if(!empty($forumInfo['forum_description']))
 	{
-		define("META_DESCRIPTION", str_replace(array('"', "'"), '',
-			$tp->text_truncate($tp->toText($forumInfo['forum_description']), 250, '...')
-		));
+		e107::meta('description', $tp->text_truncate($tp->toText($forumInfo['forum_description']), 250, '...'));
 	}
 
 	$moderatorUserIds = $forum->getModeratorUserIdsByForumId($forumId);

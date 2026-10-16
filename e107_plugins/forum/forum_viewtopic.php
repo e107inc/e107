@@ -175,9 +175,7 @@ $postList = $forum->PostGet($thread->threadId, $num * $thread->perPage, $thread-
 // SEO - meta description (auto)
 if(count($postList))
 {
-	define("META_DESCRIPTION", str_replace(array('"', "'"), '',
-		$tp->text_truncate($tp->toText($postList[0]['post_entry']), 250, '...')
-	));
+	e107::meta('description', $tp->text_truncate($tp->toText($postList[0]['post_entry']), 250, '...'));
 }
 
 //---- Orphan $gen????
