@@ -71,7 +71,7 @@ class social_event
 		/** @note DESCRIPTION */
 		if(empty($meta['og:description']))
 		{
-			$description = e107::getSingleton('eResponse')->getMetaDescription();
+			$description = isset($meta['description']['content']) ? $meta['description']['content'] : e107::getSingleton('eResponse')->getMetaDescription();
 
 			if(empty($description))
 			{
