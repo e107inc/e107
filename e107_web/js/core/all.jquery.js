@@ -1480,18 +1480,13 @@ $(document).ready(function()
 			var label 		= '#e-rate-'+ table + '-' + id;
 			var styles		= { 0: ' ', 0.5: 'label-important', 1: 'label-important', 1.5: 'label-warning', 2: 'label-warning', 2.5: 'label-default', 3: 'label-default' , 3.5: 'label-info', 4: 'label-info', 4.5: 'label-success', 5: 'label-success'};
 			
-			if($('#e-rate-'+tmp).length == 0)
-			{
-				var target = undefined;	
-			}
-			else
-			{
-				var target 		= '#e-rate-'+tmp;	
-			}
+			var $rate		= $(this);
+			var $status		= $rate.siblings('[id="e-rate-' + tmp + '"]');
+			var target		= $status.length ? $status : undefined;
 			
 			
 		
-    		$('#'+tmp).raty({
+    		$rate.raty({
     			path		: path,
     			half  		: true,
     			score    	: score,
@@ -1507,7 +1502,7 @@ $(document).ready(function()
   				targetFormat: '{score}',
   				targetKeep: true,
   			//	targetType : 'number',
-  				targetText : $('#e-rate-'+tmp).text(),			
+  				targetText : $('<span>').text($status.text()).html(),
     		//	cancel		: true,
     		//	css			: 'e-rate-star',
     		
@@ -1551,10 +1546,10 @@ $(document).ready(function()
 						bla = msg.split('|');
 						$(label).addClass(styles[score]);	
 											
-						$('#e-rate-'+tmp).text(bla[0]);
+						$status.text(bla[0]);
 						if(bla[1])
 						{
-							$('#e-rate-votes-'+tmp).text(bla[1]);	
+							$rate.siblings('[id="e-rate-votes-' + tmp + '"]').text(bla[1]);
 						}
 						
 					});
