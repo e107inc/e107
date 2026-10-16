@@ -343,6 +343,12 @@ class e_menuManager
 		}
 
 		$file = urldecode($_GET['path']).".php";
+
+		if(!preg_match('#^(?:[\w-]+/)*(?:config|[\w-]*_menu_config)\.php$#', $file))
+		{
+			return;
+		}
+
 		$file = e107::getParser()->filter($file);
 		$newurl = e_PLUGIN_ABS.$file."?id=".intval($_GET['id']).'&iframe=1';
 

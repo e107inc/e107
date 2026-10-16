@@ -198,10 +198,20 @@ TEMPL;
 			$('.e-menumanager-option').on('click', function(){
 				var link = $(this).attr('href');
 				var caption = $(this).attr('data-modal-caption');
+				var address = document.createElement('a');
+
+				address.href = link;
+
+				if(address.href.split(/[?#]/)[0] !== window.parent.location.href.split(/[?#]/)[0])
+				{
+					return false;
+				}
 
 				window.parent.$('#uiModal .modal-caption').text(caption);	
 
-				window.parent.$('#uiModal .modal-body').load(link, function(){
+				window.parent.$.ajax({url: link, dataType: 'html', sameOriginOnly: true, success: function(html){
+					window.parent.$('#uiModal .modal-body').html(html);
+
 					window.parent.$('.modal-body :input').on('change', function(){
 						var target 	= window.parent.$('#e-save-form').attr('action');
 						var data 	= window.parent.$('#e-save-form').serialize();
@@ -224,7 +234,7 @@ TEMPL;
 
 					// Attach all registered behaviors to the new content.
 					window.parent.e107.attachBehaviors();
-				});
+				}});
 	
 				window.parent.$('#uiModal').modal('show');
 					
