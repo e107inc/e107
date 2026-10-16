@@ -43,6 +43,15 @@ class RatingTargetTextCest
 		$I->assertSame(0, $I->executeJS("return ".$this->statuses()."[0].children.length;"));
 	}
 
+	public function aBareRateClassLeavesThePageRatingWorking(WebDriverTester $I)
+	{
+		$I->updateInDatabase('e107_page', array('page_text' => '<p>Bare <span class=&quot;e-rate&quot;>stars</span> end</p>'), array('page_id' => $this->page));
+		$I->amSignedInAs();
+		$I->amOnPage('/page.php?id='.$this->page);
+
+		$I->waitForElement('#page-'.$this->page.'-rate img', 10);
+	}
+
 	/**
 	 * @return string JavaScript for every element under the status line's id, in document order
 	 */
