@@ -1131,6 +1131,40 @@ EXPECTED;
 
 	}
 
+	public function testToDBEncodesTheAmpersandOfAnAuthorWithoutHtmlOnce()
+	{
+		$restore = $this->withCorePrefs(array('post_html' => e_UC_NOBODY));
+		$inputs = array(
+			'plain'             => 'Tom & Jerry',
+			'typed entity'      => 'Tom &amp; Jerry',
+			'code'              => '[code]if (a && b) {}[/code]',
+			'code reference'    => '[code]it&#x27;s[/code]',
+			'numeric reference' => 'x&amp;#38;y',
+		);
+		$stored = array();
+
+		try
+		{
+			foreach ($inputs as $name => $input)
+			{
+				$saved = $this->tp->toDB($input);
+				$stored[$name] = array($saved, $this->tp->toDB(html_entity_decode($this->tp->toForm($saved), ENT_QUOTES, 'UTF-8')));
+			}
+		}
+		finally
+		{
+			$restore();
+		}
+
+		self::assertSame(array(
+			'plain'             => array('Tom &amp; Jerry', 'Tom &amp; Jerry'),
+			'typed entity'      => array('Tom &amp; Jerry', 'Tom &amp; Jerry'),
+			'code'              => array('[code]if (a &amp;&amp; b) {}[/code]', '[code]if (a &amp;&amp; b) {}[/code]'),
+			'code reference'    => array('[code]it&amp;#x27;s[/code]', '[code]it&amp;#x27;s[/code]'),
+			'numeric reference' => array('x&amp;amp;#38;y', 'x&amp;amp;#38;y'),
+		), $stored);
+	}
+
 	public function testPostToForm()
 	{
 		$text = "<div class='something'>My Test</div>";
