@@ -14,9 +14,6 @@ class ForumGuestNameCest
 	/** @var array ids from Helper\ForumFixture::haveForumStructure() */
 	private $ids;
 
-	/** @var string the site's flood switch before this Cest changed it */
-	private $antifloodWas;
-
 	/** @var bool whether a case configured List New Items */
 	private $listConfigured = false;
 
@@ -27,7 +24,7 @@ class ForumGuestNameCest
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_B, 'fixture_mod_b');
 
 		$this->ids = $I->haveForumStructure();
-		$this->antifloodWas = $I->haveSitePref('antiflood1', 0);
+		$I->haveSitePrefUntilAfter('antiflood1', 0);
 
 		$I->purgeForumPermCache();
 		$I->logoutFromForum();
@@ -35,7 +32,7 @@ class ForumGuestNameCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->haveSitePref('antiflood1', $this->antifloodWas === '' ? null : $this->antifloodWas);
+		$I->restoreSitePrefs();
 
 		if($this->listConfigured)
 		{

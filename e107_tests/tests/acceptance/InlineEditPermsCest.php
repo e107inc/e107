@@ -13,7 +13,12 @@
  */
 class InlineEditPermsCest
 {
+	use \Test\AdminListPosting;
+
 	const PROBE_FILE = 'e107_tests_inlineperms_probe.php';
+
+	/** The news list's checkbox column, which a batch names its rows by. */
+	const SELECTION = 'news_selected';
 
 	/** The front-end editor's save endpoint, which takes the row id from the request. */
 	const ROUTE_FRONT_SAVE = '/e107_web/js/inline.php';
@@ -891,11 +896,10 @@ class InlineEditPermsCest
 	 */
 	private function saveInline(AcceptanceTester $I, $route, $field, $value)
 	{
-		$I->sendPostRequest($route, array(
-			'name'    => $field,
-			'value'   => $value,
-			'token'   => $this->inlineToken($I),
-			'e-token' => $this->sessionToken($I),
+		$this->postWithToken($I, $route, array(
+			'name'  => $field,
+			'value' => $value,
+			'token' => $this->inlineToken($I),
 		));
 	}
 
@@ -911,7 +915,7 @@ class InlineEditPermsCest
 	 */
 	private function submitNewsForm(AcceptanceTester $I, $route, $submit, $categoryId, $title, $extra = array())
 	{
-		$I->sendPostRequest($route, array_merge(array(
+		$this->postWithToken($I, $route, array_merge(array(
 			'news_title'            => $title,
 			'news_category'         => $categoryId,
 			'news_body'             => array('Posted by InlineEditPermsCest.'),
@@ -932,59 +936,7 @@ class InlineEditPermsCest
 			'news_allow_comments'   => '0',
 			'news_meta_robots'      => '',
 			'etrigger_submit'       => $submit,
-			'e-token'               => $this->sessionToken($I),
 		), $extra));
-	}
-
-	/**
-	 * Post what a list's batch menu posts.
-	 *
-	 * @param string $route
-	 * @param string $trigger etrigger_batch value
-	 * @param int $id the one row the selection carries
-	 * @param string $selection name of the list's checkbox column
-	 * @return void
-	 */
-	private function sendBatch(AcceptanceTester $I, $route, $trigger, $id, $selection = 'news_selected')
-	{
-		$this->postWithSessionToken($I, $route, \Test\AdminListPost::batch($trigger, $id, $selection));
-	}
-
-	/**
-	 * @param string $route
-	 * @param array $payload posted keys, which the session's form token is added to
-	 * @return void
-	 */
-	private function postWithSessionToken(AcceptanceTester $I, $route, array $payload)
-	{
-		$payload['e-token'] = $this->sessionToken($I);
-
-		$I->sendPostRequest($route, $payload);
-	}
-
-	/**
-	 * Post what a row delete's confirm screen posts.
-	 *
-	 * @param string $route
-	 * @param int $id row to delete
-	 * @return void
-	 */
-	private function sendConfirmedRowDelete(AcceptanceTester $I, $route, $id)
-	{
-		$this->postWithSessionToken($I, $route, \Test\AdminListPost::confirmedRowDelete($id));
-	}
-
-	/**
-	 * Post what a batch delete's confirm screen posts.
-	 *
-	 * @param string $route
-	 * @param int $id row to delete
-	 * @param string $command the batch command, as the confirm screen or a caller spells it
-	 * @return void
-	 */
-	private function sendConfirmedBatchDelete(AcceptanceTester $I, $route, $id, $command = 'delete')
-	{
-		$this->postWithSessionToken($I, $route, \Test\AdminListPost::confirmedBatchDelete($id, $command));
 	}
 
 	/**
@@ -995,10 +947,15 @@ class InlineEditPermsCest
 	 */
 	private function sortCategories(AcceptanceTester $I, $id)
 	{
-		$I->sendPostRequest(self::ROUTE_CATEGORY_SORT, array(
-			'all'     => array('row-'.$id),
-			'e-token' => $this->sessionToken($I),
+		$this->postWithToken($I, self::ROUTE_CATEGORY_SORT, array(
+			'all' => array('row-'.$id),
 		));
+	}
+
+	/** The session's form token, whatever the route. */
+	protected function tokenFor(AcceptanceTester $I, $route)
+	{
+		return $this->sessionToken($I);
 	}
 
 	/**
@@ -1205,24 +1162,7 @@ class InlineEditPermsCest
 	 */
 	private function loginAsAdministrator(AcceptanceTester $I, $loginName, $perms)
 	{
-		$I->haveInDatabase('e107_user', array(
-			'user_name'      => $loginName,
-			'user_loginname' => $loginName,
-			'user_email'     => $loginName.'@example.com',
-			'user_password'  => \Test\Password::hash($loginName),
-			'user_join'      => self::PWCHANGE,
-			'user_class'     => '',
-			'user_admin'     => 1,
-			'user_perms'     => $perms,
-			'user_pwchange'  => self::PWCHANGE,
-			'user_xup'       => '',
-			'user_prefs'     => '',
-			'user_signature' => '',
-			'user_realm'     => '',
-		));
-
-		$I->loginAsAdmin($loginName, $loginName);
-		$I->dontSeeElement('input[name=authpass]');
+		$I->loginAsDelegatedAdmin($loginName, $perms, array('user_pwchange' => self::PWCHANGE));
 	}
 
 	/**

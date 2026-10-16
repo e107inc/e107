@@ -8,9 +8,6 @@ class ForumPostTargetCest
 	/** @var array */
 	private $ids;
 
-	/** @var string the site's flood switch before this Cest changed it */
-	private $antifloodWas;
-
 	/** @var int a forum the member may neither read nor post in */
 	private $staffForum;
 
@@ -33,7 +30,7 @@ class ForumPostTargetCest
 
 		$I->haveForumPost('A post in no thread, so that post ids and thread ids differ', 0, 0, 1);
 		$this->ids = $I->haveForumStructure();
-		$this->antifloodWas = $I->haveSitePref('antiflood1', 0);
+		$I->haveSitePrefUntilAfter('antiflood1', 0);
 
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_B, 'fixture_mod_b');
 		$this->staffForum = $I->haveForum('Fixture Staff Forum', 'fixture-staff-forum', $this->ids['category'],
@@ -54,7 +51,7 @@ class ForumPostTargetCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->haveSitePref('antiflood1', $this->antifloodWas === '' ? null : $this->antifloodWas);
+		$I->restoreSitePrefs();
 		$I->haveForumCsrfMode('default');
 		$I->dropForumProbe();
 	}

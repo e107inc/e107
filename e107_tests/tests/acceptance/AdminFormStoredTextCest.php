@@ -11,12 +11,11 @@ class AdminFormStoredTextCest
 	public function aMembersCommentStaysTextInTheCommentsManager(AcceptanceTester $I)
 	{
 		$author = $I->haveMember('n2q7cmember', 'N2q7cMemberPass');
-		$id = $I->haveInDatabase('e107_comments', array(
-			'comment_pid' => 0, 'comment_item_id' => 1, 'comment_subject' => 'Re: news', 'comment_author_id' => $author,
+		$id = $I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
+			'comment_item_id' => 1, 'comment_subject' => 'Re: news', 'comment_author_id' => $author,
 			'comment_author_name' => 'n2q7cmember', 'comment_author_email' => 'n2q7cmember@example.com',
-			'comment_datestamp' => time() - 60, 'comment_comment' => self::STORED, 'comment_blocked' => 0,
-			'comment_ip' => '127.0.0.1', 'comment_type' => '0', 'comment_lock' => 0, 'comment_share' => 0,
-		));
+			'comment_datestamp' => time() - 60, 'comment_comment' => self::STORED, 'comment_ip' => '127.0.0.1',
+		)));
 
 		$I->loginAsAdmin();
 		$I->amOnPage('/e107_admin/comment.php?mode=main&action=edit&id='.$id);

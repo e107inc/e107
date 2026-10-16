@@ -28,9 +28,6 @@ class CommentRoutesParentVisibilityCest
 	/** @var string[] item title by fixture name */
 	private $titles = array();
 
-	/** @var string[] core preferences a test changed, by name, with the value to put back */
-	private $prefs = array();
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled('download');
@@ -68,10 +65,7 @@ class CommentRoutesParentVisibilityCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		foreach(array_reverse($this->prefs, true) as $name => $value)
-		{
-			$I->haveSitePref($name, $value === '' ? null : $value);
-		}
+		$I->restoreSitePrefs();
 
 		$I->haveSitePref('cachestatus', null);
 		$I->dropPluginProbe();
@@ -238,19 +232,19 @@ class CommentRoutesParentVisibilityCest
 			$I->updateInDatabase('e107_comments', array('comment_datestamp' => $datestamp), array('comment_id' => $this->comments[$marker]));
 		}
 		$this->haveCommentMenu($I);
-		$this->haveSitePref($I, 'profile_comments', 0);
+		$I->haveSitePrefUntilAfter('profile_comments', 0);
 		$this->loginAsReader($I);
 
 		$I->amOnPage('/news.php');
 		$I->seeInSource('Text of CMTPUBLIC');
 		$I->dontSeeInSource('Text of CMTMENUPROFILE');
 
-		$this->haveSitePref($I, 'profile_comments', 1);
-		$this->haveSitePref($I, 'memberlist_access', 254);
+		$I->haveSitePrefUntilAfter('profile_comments', 1);
+		$I->haveSitePrefUntilAfter('memberlist_access', 254);
 		$I->amOnPage('/news.php');
 		$I->dontSeeInSource('Text of CMTMENUPROFILE');
 
-		$this->haveSitePref($I, 'memberlist_access', 253);
+		$I->haveSitePrefUntilAfter('memberlist_access', 253);
 		$I->amOnPage('/news.php');
 		$I->seeInSource('Text of CMTMENUPROFILE');
 		$I->seeInSource('Text of CMTPUBLIC');
@@ -268,7 +262,7 @@ class CommentRoutesParentVisibilityCest
 			$I->amOnPage('/news.php');
 			$I->seeInSource('Text of '.$marker);
 
-			$this->haveSitePref($I, 'plug_installed/'.$plugin, null);
+			$I->haveSitePrefUntilAfter('plug_installed/'.$plugin, null);
 
 			$I->amOnPage('/news.php');
 			$I->dontSeeInSource('Text of '.$marker);
@@ -361,7 +355,7 @@ class CommentRoutesParentVisibilityCest
 		$owner = $I->haveMember('cmtrouteowner', self::READER_PASSWORD);
 		$this->haveComment($I, 'CMTPROFILE', 'profile', $owner);
 		$this->haveComment($I, 'CMTNOPROFILE', 'profile', $owner + 1000);
-		$this->haveSitePref($I, 'profile_comments', 1);
+		$I->haveSitePrefUntilAfter('profile_comments', 1);
 
 		$I->stopFollowingRedirects();
 		$this->amOnReplyPage($I, 'profile', 'CMTPROFILE');
@@ -375,13 +369,13 @@ class CommentRoutesParentVisibilityCest
 		$this->askAjaxReplyForm($I, 'CMTNOPROFILE', $token);
 		$I->dontSeeInSource('CMTNOPROFILE');
 
-		$this->haveSitePref($I, 'memberlist_access', 254);
+		$I->haveSitePrefUntilAfter('memberlist_access', 254);
 		$this->askAjaxReplyForm($I, 'CMTPROFILE', $token);
 		$I->dontSeeInSource('CMTPROFILE');
 		$this->askAjaxReplyForm($I, 'CMTOWNPROFILE', $token);
 		$I->seeInSource('CMTOWNPROFILE');
 
-		$this->haveSitePref($I, 'profile_comments', 0);
+		$I->haveSitePrefUntilAfter('profile_comments', 0);
 		$this->askAjaxReplyForm($I, 'CMTOWNPROFILE', $token);
 		$I->dontSeeInSource('CMTOWNPROFILE');
 	}
@@ -398,7 +392,7 @@ class CommentRoutesParentVisibilityCest
 			$this->askAjaxReplyForm($I, $marker, $token);
 			$I->seeInSource($marker);
 
-			$this->haveSitePref($I, 'plug_installed/'.$plugin, null);
+			$I->haveSitePrefUntilAfter('plug_installed/'.$plugin, null);
 
 			$this->askAjaxReplyForm($I, $marker, $token);
 			$I->dontSeeInSource($marker);
@@ -433,7 +427,7 @@ class CommentRoutesParentVisibilityCest
 	 */
 	public function aGuestIsListedOnlyTheCommentsTheItemPageShows(AcceptanceTester $I)
 	{
-		$this->haveSitePref($I, 'anon_post', 1);
+		$I->haveSitePrefUntilAfter('anon_post', 1);
 
 		$this->amOnAjaxCommentList($I, 'news', 'CMTSTAFF');
 		$I->dontSeeInSource('Text of CMTSTAFF');
@@ -494,7 +488,7 @@ class CommentRoutesParentVisibilityCest
 		$this->amOnCommentPage($I, 'user', 'CMTUSER');
 		$I->dontSeeInSource('Text of CMTUSER');
 
-		$this->haveSitePref($I, 'profile_comments', 1);
+		$I->haveSitePrefUntilAfter('profile_comments', 1);
 
 		$this->amOnCommentPage($I, 'user', 'CMTUSER');
 		$I->dontSeeInSource('Text of CMTUSER');
@@ -537,7 +531,7 @@ class CommentRoutesParentVisibilityCest
 		{
 			$this->seeCommentPage($I, $plugin, $marker, null);
 
-			$this->haveSitePref($I, 'plug_installed/'.$plugin, null);
+			$I->haveSitePrefUntilAfter('plug_installed/'.$plugin, null);
 
 			$this->dontSeeCommentPage($I, $plugin, $marker, $this->titles[$marker]);
 		}
@@ -694,24 +688,6 @@ class CommentRoutesParentVisibilityCest
 
 		$this->amOnCustomPage($I, $marker);
 		$I->seeInSource('Text of '.$marker);
-	}
-
-	/**
-	 * Write a core preference for this test alone; _after() puts the first value back.
-	 *
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 * @param string|int|null $value null removes it
-	 * @return void
-	 */
-	private function haveSitePref(AcceptanceTester $I, $name, $value)
-	{
-		$was = $I->haveSitePref($name, $value);
-
-		if(!array_key_exists($name, $this->prefs))
-		{
-			$this->prefs[$name] = $was;
-		}
 	}
 
 	/**
@@ -995,7 +971,7 @@ class CommentRoutesParentVisibilityCest
 			$this->items[$marker] = $itemId;
 		}
 
-		$this->comments[$marker] = $I->haveInDatabase('e107_comments', array(
+		$this->comments[$marker] = $I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
 			'comment_item_id'     => $this->items[$marker],
 			'comment_subject'     => $marker,
 			'comment_author_id'   => 1,
@@ -1005,8 +981,6 @@ class CommentRoutesParentVisibilityCest
 			'comment_blocked'     => $blocked,
 			'comment_ip'          => '127.0.0.1',
 			'comment_type'        => $type,
-			'comment_lock'        => 0,
-			'comment_share'       => 0,
-		));
+		)));
 	}
 }

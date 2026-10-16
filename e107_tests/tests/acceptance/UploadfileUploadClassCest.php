@@ -12,22 +12,15 @@
  */
 class UploadfileUploadClassCest
 {
-	/** @var string */
-	private $enabledWas = '';
-
-	/** @var string */
-	private $classWas = '';
-
 	public function _before(AcceptanceTester $I)
 	{
-		$this->enabledWas = $I->haveSitePref('upload_enabled', 0);
-		$this->classWas = $I->haveSitePref('upload_class', 255);
+		$I->haveSitePrefUntilAfter('upload_enabled', 0);
+		$I->haveSitePrefUntilAfter('upload_class', 255);
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->haveSitePref('upload_enabled', $this->enabledWas === '' ? null : $this->enabledWas);
-		$I->haveSitePref('upload_class', $this->classWas === '' ? null : $this->classWas);
+		$I->restoreSitePrefs();
 		$I->dropForumProbe();
 	}
 

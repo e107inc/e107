@@ -53,14 +53,11 @@ class ForumPostAuthorisationCest
 	/** @var int its opening post */
 	private $vipPost;
 
-	/** @var string the site's flood switch before this Cest changed it */
-	private $antifloodWas;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveForumPluginInstalled();
 		$I->haveForumCsrfMode(2);
-		$this->antifloodWas = $I->haveSitePref('antiflood1', 0);
+		$I->haveSitePrefUntilAfter('antiflood1', 0);
 
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_A, 'fixture_mod_a');
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_B, 'fixture_mod_b');
@@ -102,7 +99,7 @@ class ForumPostAuthorisationCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->haveSitePref('antiflood1', $this->antifloodWas === '' ? null : $this->antifloodWas);
+		$I->restoreSitePrefs();
 		$I->haveForumCsrfMode('default');
 		$I->dropForumProbe();
 	}
