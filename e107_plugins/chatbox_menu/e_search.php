@@ -80,7 +80,8 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 
 		if (vartrue($parm['author'])) 
 		{
-			$qry .= " cb_nick LIKE '%".$tp -> toDB($parm['author'])."%' AND";
+			$authorId = $this->authorId($parm['author']);
+			$qry .= $authorId ? " cb_nick LIKE '".$authorId.".%' AND" : " cb_nick LIKE '%".$tp -> toDB($parm['author'])."%' AND";
 		}
 		
 		return $qry;

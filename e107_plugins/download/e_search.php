@@ -133,7 +133,9 @@ class download_search extends e_search // include plugin-folder in the name.
 		
 		if (isset($parm['author']) && $parm['author'] != '') 
 		{
-			$qry .= " (d.download_author = '".$tp -> toDB($parm['author'])."') AND";
+			$authorId = $this->authorId($parm['author']);
+			$member = $authorId ? e107::user($authorId) : array();
+			$qry .= " (d.download_author = '".$tp -> toDB(isset($member['user_name']) ? $member['user_name'] : $parm['author'])."') AND";
 		}
 		
 		return $qry;

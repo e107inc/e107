@@ -873,14 +873,10 @@
 		private static function seedNewsItem()
 		{
 			$category = "'" . self::CATEGORY_NAME . "'";
-			$title = "'" . self::NEWS_TITLE . "'";
 
 			$php = "\$category = e107::getDb()->insert('news_category', array('category_name' => " . $category
 				. ", 'category_meta_description' => '')); ";
-			$php .= "e107::getDb()->insert('news', array('news_title' => " . $title . ", 'news_body' => '', "
-				. "'news_extended' => '', 'news_summary' => '', 'news_meta_description' => '', "
-				. "'news_thumbnail' => '', 'news_category' => \$category, 'news_datestamp' => time() - 60, "
-				. "'news_start' => 0, 'news_end' => 0, 'news_class' => 0, 'news_render_type' => 0)); ";
+			$php .= \Test\NewsSeed::php(self::NEWS_TITLE, '$category');
 
 			return $php;
 		}
@@ -1252,5 +1248,33 @@
 
 			self::assertSame($rows['page']['page_text'], $res['summary'],
 				'A custom page that left its meta description empty must still be summarised from its body.');
+		}
+
+		/**
+		 * @dataProvider authorValues
+		 * @param mixed $author
+		 * @param int $expected
+		 */
+		public function testAnAuthorValueIsAUserIdOnlyWhenItIsOne($author, $expected)
+		{
+			self::assertSame($expected, (new e_search(''))->authorId($author));
+		}
+
+		/**
+		 * @return array[]
+		 */
+		public function authorValues()
+		{
+			return array(
+				'a user id'          => array('12', 12),
+				'a name'             => array('Zebedee', 0),
+				'a name with digits' => array('12monkeys', 0),
+				'zero'               => array('0', 0),
+				'an exponent'        => array('1e3', 0),
+				'an array'           => array(array('1'), 0),
+				'an integer id'      => array(12, 12),
+				'a trailing newline' => array("12\n", 0),
+				'too long for an id' => array('99999999999999999999', 0),
+			);
 		}
 	}

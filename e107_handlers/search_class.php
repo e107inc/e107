@@ -93,6 +93,17 @@ class e_search
 		return $this->params;
 	}
 
+	/**
+	 * The member an advanced author filter picked: the author field sends a user id, and an address may still carry a name.
+	 *
+	 * @param mixed $author the filter's value
+	 * @return int the user id, or 0 when the value is not one
+	 */
+	public function authorId($author)
+	{
+		return ((is_string($author) || is_int($author)) && preg_match('/^[1-9][0-9]{0,9}$/D', (string) $author)) ? (int) $author : 0;
+	}
+
 
 	/**
 	 * Escape a keyword so the server matches it as text rather than compiling it

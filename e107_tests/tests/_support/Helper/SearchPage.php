@@ -39,6 +39,11 @@ trait SearchPage
 
 		foreach($types as $type)
 		{
+			if(!is_readable(e_PLUGIN.$type.'/e_search.php'))
+			{
+				continue;
+			}
+
 			$php .= "\$searchConfig->setPref('plug_handlers/".$type."', ".$handler."); ";
 			$php .= "e107::getConfig()->setPref('e_search_list/".$type."', ".var_export($type, true)."); ";
 		}

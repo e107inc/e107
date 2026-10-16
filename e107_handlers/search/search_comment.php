@@ -34,7 +34,8 @@ if (isset($_GET['time']) && is_numeric($_GET['time'])) {
 }
 
 if (isset($_GET['author']) && $_GET['author'] != '') {
-	$advanced_where .= " c.comment_author_name LIKE '%".$tp -> toDB($_GET['author'])."%' AND";
+	$authorId = $sch->authorId($_GET['author']);
+	$advanced_where .= $authorId ? " c.comment_author_id = ".$authorId." AND" : " c.comment_author_name LIKE '%".$tp -> toDB($_GET['author'])."%' AND";
 }
 
 //basic

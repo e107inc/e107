@@ -80,7 +80,8 @@ class _blank_search extends e_search // include plugin-folder in the name.
 
 		if (vartrue($parm['author'])) 
 		{
-			$qry .= " blank_nick LIKE '%".$tp -> toDB($parm['author'])."%' AND";
+			$authorId = $this->authorId($parm['author']);
+			$qry .= $authorId ? " blank_nick LIKE '".$authorId.".%' AND" : " blank_nick LIKE '%".$tp -> toDB($parm['author'])."%' AND";
 		}
 		
 		return $qry;
