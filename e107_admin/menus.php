@@ -170,8 +170,15 @@ if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['vis']) || vartrue($_GET['parm
                 caption = '';
             }
 
-    		window.parent.$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="'+height+'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
-    		window.parent.$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+            if(!e107.callbacks.isWebAddress(url))
+            {
+                return;
+            }
+
+    		var frame = window.parent.$('<iframe id="e-modal-iframe" width="100%" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true"></iframe>')
+    			.attr({height: height + 'px', src: url});
+    		window.parent.$('.modal-body').empty().append(window.parent.$('<div class="well"></div>').append(frame));
+    		window.parent.$('.modal-caption').text(caption).append(' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
     		window.parent.$('.modal').modal('show');
 
     		window.parent.$("#e-modal-iframe").on("load", function () {

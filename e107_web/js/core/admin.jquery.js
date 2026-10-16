@@ -33,6 +33,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var target = $this.attr('data-modal-target');
 					var customClass = $this.attr('data-modal-class');
 
+					if(!e107.callbacks.isWebAddress(url))
+					{
+						return false;
+					}
+
 					if(caption === undefined)
 					{
 						caption = '';
@@ -53,7 +58,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						 $(target + ' .modal-dialog').addClass(customClass);
 					 }
 
-					$(target+' .modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
+					var $iframe = $('<iframe id="e-modal-iframe" width="100%" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true"></iframe>')
+						.attr({height: height + 'px', src: url});
+					$(target+' .modal-body').empty().append($('<div class="well"></div>').append($iframe));
 					$(target+' .modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
 					$(target+'.modal').modal('show');
 

@@ -473,6 +473,34 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	};
 
 	/**
+	 * Check if a link's target is a web address that core may load for it: http, https, or relative to the page.
+	 *
+	 * @param {string} url
+	 * @returns {boolean}
+	 */
+	e107.callbacks.isWebAddress = function (url)
+	{
+		if(typeof url !== 'string' || url === '')
+		{
+			return false;
+		}
+
+		var link = document.createElement('a');
+
+		try
+		{
+			link.href = url;
+			link.href = link.href;
+		}
+		catch(error)
+		{
+			return false;
+		}
+
+		return link.protocol === 'http:' || link.protocol === 'https:';
+	};
+
+	/**
 	 * Get a reasonable default event handler for a (jQuery) element.
 	 *
 	 * @param $element
@@ -916,7 +944,7 @@ $.ajaxSetup({
 			return false;
 		}
 
-		if (anchor.protocol !== 'http:' && anchor.protocol !== 'https:') {
+		if (!e107.callbacks.isWebAddress(url)) {
 			return false;
 		}
 
