@@ -1473,6 +1473,12 @@ $(document).ready(function()
 			var readonly	= parseInt($(this).attr("data-readonly"));
 			var tmp 		= $(this).attr('id');
 			var hint		= $(this).attr("data-hint");
+
+			if(hint === undefined)
+			{
+				return;
+			}
+
 			var hintArray	= hint.split(',');
 			var t	 		= tmp.split('-');
 			var table 		= t[0];
