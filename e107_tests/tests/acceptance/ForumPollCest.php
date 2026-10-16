@@ -29,9 +29,6 @@ class ForumPollCest
 	/** @var string the forum's poll class before this Cest changed it */
 	private $pollClassWas;
 
-	/** @var string the site's flood switch before this Cest changed it */
-	private $antifloodWas;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveForumPluginInstalled();
@@ -50,7 +47,7 @@ class ForumPollCest
 
 		// Each test starts a thread, and the flood check refuses one that follows
 		// the newest thread in the table within seconds, whoever started it.
-		$this->antifloodWas = $I->haveSitePref('antiflood1', 0);
+		$I->haveSitePrefUntilAfter('antiflood1', 0);
 		$this->pollClassWas = $I->havePluginPref('forum', 'poll', self::CLASS_MEMBER);
 
 		$I->haveForumMember('pollmember');
@@ -63,7 +60,7 @@ class ForumPollCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->havePluginPref('forum', 'poll', $this->pollClassWas === '' ? null : $this->pollClassWas);
-		$I->haveSitePref('antiflood1', $this->antifloodWas === '' ? null : $this->antifloodWas);
+		$I->restoreSitePrefs();
 		$I->haveForumCsrfMode('default');
 		$I->dropForumProbe();
 		$I->dropPluginProbe();

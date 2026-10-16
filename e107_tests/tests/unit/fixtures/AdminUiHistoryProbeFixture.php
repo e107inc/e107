@@ -185,6 +185,8 @@ class AdminUiHistorySpyModel
  */
 class AdminUiHistoryDeleteProbeFixture extends e_admin_ui
 {
+	use \Test\HoldsEveryAdminRoute;
+
 	/** @var array one entry per backupToHistory() call */
 	public $backups = array();
 
@@ -213,12 +215,6 @@ class AdminUiHistoryDeleteProbeFixture extends e_admin_ui
 	public function probeBatchDelete(array $selected)
 	{
 		return $this->handleListDeleteBatch($selected);
-	}
-
-	/** This administrator holds every route the probe exercises. */
-	protected function hasModeRouteAccess($action)
-	{
-		return true;
 	}
 
 	protected function backupToHistory($table, $pid, $id, $action, $data, $posted = true)

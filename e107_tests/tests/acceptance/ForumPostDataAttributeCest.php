@@ -26,6 +26,7 @@ class ForumPostDataAttributeCest
 
 	public function _after(AcceptanceTester $I)
 	{
+		$I->restoreSitePrefs();
 		$I->dropForumProbe();
 	}
 
@@ -45,16 +46,8 @@ class ForumPostDataAttributeCest
 
 	public function anAuthorWithScriptAccessKeepsThem(AcceptanceTester $I)
 	{
-		$was = $I->haveSitePref('post_script', '250');
-
-		try
-		{
-			$stored = $this->replyAsAdmin($I);
-		}
-		finally
-		{
-			$I->haveSitePref('post_script', $was);
-		}
+		$I->haveSitePrefUntilAfter('post_script', '250');
+		$stored = $this->replyAsAdmin($I);
 
 		$I->assertStringContainsString('data-modal-caption', $stored);
 	}

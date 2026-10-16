@@ -61,7 +61,12 @@
  */
 class AdminRoutePermsCest
 {
+	use \Test\AdminListPosting;
+
 	const PROBE_FILE = 'e107_tests_routeperms_probe.php';
+
+	/** The users list's checkbox column, which a batch names its rows by. */
+	const SELECTION = 'multiselect';
 
 	/** Quick Add User. users.php:37-40 says this route needs '4|U1|U0'. */
 	const ROUTE_ADD = '/e107_admin/users.php?mode=main&action=add';
@@ -3032,20 +3037,6 @@ class AdminRoutePermsCest
 	// -----------------------------------------------------------------
 
 	/**
-	 * Post a batch the way the user list posts one.
-	 *
-	 * @param string $route
-	 * @param string $trigger etrigger_batch value
-	 * @param int $id row to apply it to
-	 * @param string $selection name of the checkbox column, which each list declares for itself
-	 * @return void
-	 */
-	private function sendBatch(AcceptanceTester $I, $route, $trigger, $id, $selection = 'multiselect')
-	{
-		$this->postWithToken($I, $route, \Test\AdminListPost::batch($trigger, $id, $selection));
-	}
-
-	/**
 	 * Post what the inline editor posts: the field, its new value, the session's CSRF token, and
 	 * the inline token {@see e_form::renderInline()} puts on every inline link of the page.
 	 *
@@ -3086,18 +3077,6 @@ class AdminRoutePermsCest
 	}
 
 	/**
-	 * Post the request a batch delete is finished by.
-	 *
-	 * @param string $route
-	 * @param int $id row to delete
-	 * @return void
-	 */
-	private function sendConfirmedBatchDelete(AcceptanceTester $I, $route, $id)
-	{
-		$this->postWithToken($I, $route, \Test\AdminListPost::confirmedBatchDelete($id));
-	}
-
-	/**
 	 * Post the shape a confirm screen's Cancel button posts for a selection of two or more: the
 	 * ids and the cancel key, and not the confirm key, because a browser sends the button that
 	 * was clicked and not its sibling. A one-row selection posts etrigger_delete keyed by the id
@@ -3132,18 +3111,6 @@ class AdminRoutePermsCest
 	}
 
 	/**
-	 * Post the request a single-row delete is finished by.
-	 *
-	 * @param string $route
-	 * @param int $id row to delete
-	 * @return void
-	 */
-	private function sendConfirmedRowDelete(AcceptanceTester $I, $route, $id)
-	{
-		$this->postWithToken($I, $route, \Test\AdminListPost::confirmedRowDelete($id));
-	}
-
-	/**
 	 * Post the Set user class page the way its own form posts: the checkboxes
 	 * are userclass[], the row id is both on the query string and in the hidden
 	 * field, and the submission is the update button.
@@ -3159,18 +3126,6 @@ class AdminRoutePermsCest
 			'userid'               => $id,
 			'userclass'            => $classes,
 		));
-	}
-
-	/**
-	 * @param string $route
-	 * @param array $payload posted keys, which the route's own e-token is added to
-	 * @return void
-	 */
-	private function postWithToken(AcceptanceTester $I, $route, array $payload)
-	{
-		$payload['e-token'] = $this->grabTokenFrom($I, $route);
-
-		$I->sendPostRequest($route, $payload);
 	}
 
 	/**
@@ -3240,6 +3195,12 @@ class AdminRoutePermsCest
 			'user_ban'              => 0,
 			'e-token'               => $I->grabToken(),
 		);
+	}
+
+	/** The route's own e-token, the one its page renders. */
+	protected function tokenFor(AcceptanceTester $I, $route)
+	{
+		return $this->grabTokenFrom($I, $route);
 	}
 
 	/**
@@ -3492,26 +3453,7 @@ class AdminRoutePermsCest
 	 */
 	private function loginAsDelegatedAdmin(AcceptanceTester $I, $loginName, $morePerms = '')
 	{
-		$perms = self::DELEGATED_ADMINS[$loginName].$morePerms;
-
-		$I->haveInDatabase('e107_user', array(
-			'user_name'      => $loginName,
-			'user_loginname' => $loginName,
-			'user_email'     => $loginName.'@example.com',
-			'user_password'  => \Test\Password::hash($loginName),
-			'user_join'      => 1262304000,
-			'user_class'     => '',
-			'user_admin'     => 1,
-			'user_perms'     => $perms,
-			'user_pwchange'  => self::PWCHANGE,
-			'user_xup'       => '',
-			'user_prefs'     => '',
-			'user_signature' => '',
-			'user_realm'     => '',
-		));
-
-		$I->loginAsAdmin($loginName, $loginName);
-		$I->dontSeeElement('input[name=authpass]');
+		$I->loginAsDelegatedAdmin($loginName, self::DELEGATED_ADMINS[$loginName].$morePerms, array('user_pwchange' => self::PWCHANGE));
 	}
 
 	/**

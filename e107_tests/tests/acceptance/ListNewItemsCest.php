@@ -35,9 +35,6 @@ class ListNewItemsCest
 	/** @var int */
 	private $member;
 
-	/** @var string|null make_clickable as the site had it, while a case has it switched on */
-	private $clickableWas;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveForumPluginInstalled();
@@ -60,11 +57,7 @@ class ListNewItemsCest
 		$I->havePluginPrefs('list_new', array());
 		$I->removeAppPath('e107_system/'.\Helper\Acceptance::INSTALL_SITE_PATH.'/cache/content/S_Config_emote.cache.php');
 
-		if($this->clickableWas !== null)
-		{
-			$I->haveSitePref('make_clickable', $this->clickableWas === '' ? null : $this->clickableWas);
-			$this->clickableWas = null;
-		}
+		$I->restoreSitePrefs();
 
 		$I->dropPluginInstall('chatbox_menu');
 		$I->dropForumProbe();
@@ -150,7 +143,7 @@ class ListNewItemsCest
 	 */
 	public function aChatboxMessageIsPrintedAsItsSectionBuiltIt(AcceptanceTester $I)
 	{
-		$this->clickableWas = $I->haveSitePref('make_clickable', 1);
+		$I->haveSitePrefUntilAfter('make_clickable', 1);
 		$I->haveInDatabase('e107_chatbox', array(
 			'cb_nick' => $this->member.'.listheadings', 'cb_message' => self::CHATBOX_MESSAGE,
 			'cb_datestamp' => time() - 60, 'cb_blocked' => 0, 'cb_ip' => '',
@@ -210,18 +203,10 @@ class ListNewItemsCest
 	 */
 	private function havePage(AcceptanceTester $I)
 	{
-		return $I->haveInDatabase('e107_page', array(
-			'page_title' => 'Fixture commented page', 'page_sef' => 'fixture-commented-page', 'page_subtitle' => '',
-			'page_chapter' => 0, 'page_metatitle' => '', 'page_metakeys' => '',
-			'page_metadscr' => '', 'page_metaimage' => '', 'page_metarobots' => '',
-			'page_text' => 'fixture', 'page_author' => 1, 'page_datestamp' => time() - 3600,
-			'page_rating_flag' => 0, 'page_comment_flag' => 1,
-			'page_password' => '', 'page_class' => '0', 'page_ip_restrict' => '',
-			'page_template' => '', 'page_order' => 9999, 'page_fields' => '',
-			'menu_name' => '', 'menu_title' => '', 'menu_text' => '', 'menu_image' => '',
-			'menu_icon' => '', 'menu_template' => '', 'menu_class' => '0',
-			'menu_button_url' => '', 'menu_button_text' => '',
-		));
+		return $I->haveInDatabase('e107_page', \Test\Rows::page(array(
+			'page_title' => 'Fixture commented page', 'page_sef' => 'fixture-commented-page', 'page_text' => 'fixture',
+			'page_author' => 1, 'page_datestamp' => time() - 3600, 'page_comment_flag' => 1,
+		)));
 	}
 
 	/**
@@ -234,12 +219,11 @@ class ListNewItemsCest
 	 */
 	private function haveComment(AcceptanceTester $I, $page, $subject, $age)
 	{
-		$I->haveInDatabase('e107_comments', array(
-			'comment_pid' => 0, 'comment_item_id' => $page, 'comment_subject' => $subject,
-			'comment_author_id' => $this->member, 'comment_author_name' => 'listheadings', 'comment_author_email' => '',
-			'comment_datestamp' => time() - $age, 'comment_comment' => 'Fixture comment', 'comment_blocked' => 0,
-			'comment_ip' => '', 'comment_type' => 'page', 'comment_lock' => 0, 'comment_share' => 0,
-		));
+		$I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
+			'comment_item_id' => $page, 'comment_subject' => $subject,
+			'comment_author_id' => $this->member, 'comment_author_name' => 'listheadings',
+			'comment_datestamp' => time() - $age, 'comment_comment' => 'Fixture comment', 'comment_type' => 'page',
+		)));
 	}
 
 	/**

@@ -57,19 +57,16 @@ class CommentTypeSharedItemIdCest
 
 		foreach(array('CMTTYPENEWS' => '0', 'CMTTYPEPAGE' => 'page', 'CMTTYPEPROFILE' => 'profile', 'CMTTYPEPLUGIN' => 'fixtureplugin') as $marker => $type)
 		{
-			$I->haveInDatabase('e107_comments', array(
+			$I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
 				'comment_item_id'     => $this->id,
 				'comment_subject'     => $marker,
 				'comment_author_id'   => 1,
 				'comment_author_name' => 'fixture',
 				'comment_datestamp'   => time() - 3600,
 				'comment_comment'     => 'Text of '.$marker,
-				'comment_blocked'     => 0,
 				'comment_ip'          => '127.0.0.1',
 				'comment_type'        => $type,
-				'comment_lock'        => 0,
-				'comment_share'       => 0,
-			));
+			)));
 		}
 
 		$I->resetAllCookies();

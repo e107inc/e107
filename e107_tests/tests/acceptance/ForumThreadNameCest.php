@@ -20,12 +20,6 @@ class ForumThreadNameCest
 	/** @var array ids from Helper\ForumFixture::haveForumStructure() */
 	private $ids;
 
-	/** @var string the site's flood switch before this Cest changed it */
-	private $antifloodWas;
-
-	/** @var array the site preferences a case changed, as they were before it */
-	private $prefsWas = array();
-
 	/** @var int */
 	private $member;
 
@@ -44,7 +38,7 @@ class ForumThreadNameCest
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_A, 'fixture_mod_a');
 
 		$this->ids = $I->haveForumStructure();
-		$this->antifloodWas = $I->haveSitePref('antiflood1', 0);
+		$I->haveSitePrefUntilAfter('antiflood1', 0);
 
 		$this->member = $I->haveForumMember('namemember');
 		$this->thread = $I->haveForumThread('Fixture Named Thread', $this->ids['forumA'], $this->member);
@@ -57,12 +51,7 @@ class ForumThreadNameCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->haveSitePref('antiflood1', $this->antifloodWas === '' ? null : $this->antifloodWas);
-
-		foreach($this->prefsWas as $name => $was)
-		{
-			$I->haveSitePref($name, $was === '' ? null : $was);
-		}
+		$I->restoreSitePrefs();
 		$I->dropForumProbe();
 	}
 
@@ -196,9 +185,9 @@ class ForumThreadNameCest
 	 */
 	public function theTrackedTopicsListFiltersAStoredName(AcceptanceTester $I)
 	{
-		$this->haveSitePrefUntilAfter($I, 'profanity_filter', 1);
-		$this->haveSitePrefUntilAfter($I, 'profanity_words', 'darn');
-		$this->haveSitePrefUntilAfter($I, 'profanity_replace', '[censored]');
+		$I->haveSitePrefUntilAfter('profanity_filter', 1);
+		$I->haveSitePrefUntilAfter('profanity_words', 'darn');
+		$I->haveSitePrefUntilAfter('profanity_replace', '[censored]');
 		$this->haveStoredName($I, 'darn spammers');
 		$I->haveForumSubscriber($this->member, $this->thread);
 		$I->loginToForum('namemember');
@@ -248,7 +237,7 @@ class ForumThreadNameCest
 	 */
 	public function theOnlinePagePrintsAStoredNameAsText(AcceptanceTester $I)
 	{
-		$this->haveSitePrefUntilAfter($I, 'track_online', 1);
+		$I->haveSitePrefUntilAfter('track_online', 1);
 		$I->haveSitePref('antiflood1', 1);
 		$this->haveStoredName($I, self::STORED_MARKUP);
 
@@ -404,23 +393,6 @@ class ForumThreadNameCest
 	private function seeLegacyNameOn(AcceptanceTester $I, $thread)
 	{
 		$I->assertSame(self::LEGACY_NAME, $I->grabFromDatabase('e107_forum_thread', 'thread_name', array('thread_id' => $thread)));
-	}
-
-	/**
-	 * Set a site preference for this case alone; _after() puts it back.
-	 *
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 * @param mixed $value
-	 */
-	private function haveSitePrefUntilAfter(AcceptanceTester $I, $name, $value)
-	{
-		$was = $I->haveSitePref($name, $value);
-
-		if(!array_key_exists($name, $this->prefsWas))
-		{
-			$this->prefsWas[$name] = $was;
-		}
 	}
 
 	/**

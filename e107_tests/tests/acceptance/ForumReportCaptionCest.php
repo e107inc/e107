@@ -11,14 +11,11 @@ class ForumReportCaptionCest
 	/** @var array ids from Helper\ForumFixture::haveForumStructure() */
 	private $ids;
 
-	/** @var string the site's flood switch before this Cest changed it */
-	private $antifloodWas;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveForumPluginInstalled();
 		$this->ids = $I->haveForumStructure();
-		$this->antifloodWas = $I->haveSitePref('antiflood1', 0);
+		$I->haveSitePrefUntilAfter('antiflood1', 0);
 		$I->haveForumMember('captionmember');
 
 		$I->purgeForumPermCache();
@@ -27,7 +24,7 @@ class ForumReportCaptionCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->haveSitePref('antiflood1', $this->antifloodWas === '' ? null : $this->antifloodWas);
+		$I->restoreSitePrefs();
 		$I->dropForumProbe();
 	}
 

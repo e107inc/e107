@@ -9,6 +9,8 @@
  */
 class AdminUiBatchProbeFixture extends e_admin_ui
 {
+	use \Test\HoldsEveryAdminRoute;
+
 	/** @var AdminUiBatchSpyTree */
 	public $spyTree;
 
@@ -20,12 +22,6 @@ class AdminUiBatchProbeFixture extends e_admin_ui
 	public function getTreeModel()
 	{
 		return $this->spyTree;
-	}
-
-	/** This administrator holds every route the probe exercises. */
-	protected function hasModeRouteAccess($action)
-	{
-		return true;
 	}
 
 	/** @var array one entry per batch handler the dispatcher reached */
