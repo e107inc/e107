@@ -14,7 +14,8 @@ class forumMetaDescriptionTest extends \Test\Unit
 {
 	use \Test\ForumRows;
 
-	const MARK = '@@e107help-meta-description@@';
+	/** The attributes a meta description is printed with; anything else came out of the text. */
+	const OWN_ATTRIBUTES = array('property', 'name', 'content');
 
 	protected function _before()
 	{
@@ -26,21 +27,21 @@ class forumMetaDescriptionTest extends \Test\Unit
 		$this->dropForumRows();
 	}
 
-	public function testATopicDescriptionCarriesNoQuoteFromAMembersPost()
+	public function testAMembersPostAddsNoAttributeToTheTopicDescription()
 	{
 		$threadId = $this->haveTopicOpenedWith('0;url=//example.com/ &quot; http-equiv=&quot;refresh&quot; x=&quot; [/&#039;b]' . str_repeat(' padding', 40));
 
-		self::assertStringNotContainsString('"', $this->metaDescriptionOf('forum_viewtopic.php', $threadId));
+		$this->assertOnlyOwnAttributes($this->metaDescriptionOf('forum_viewtopic.php', $threadId));
 	}
 
-	public function testATopicDescriptionCarriesNoQuoteFromAPostHtmlPost()
+	public function testAPostHtmlPostAddsNoAttributeToTheTopicDescription()
 	{
 		$threadId = $this->haveTopicOpenedWith($this->postHtmlBreakout());
 
-		self::assertStringNotContainsString('"', $this->metaDescriptionOf('forum_viewtopic.php', $threadId));
+		$this->assertOnlyOwnAttributes($this->metaDescriptionOf('forum_viewtopic.php', $threadId));
 	}
 
-	public function testAForumDescriptionCarriesNoQuote()
+	public function testAForumDescriptionAddsNoAttributeToItsOwnMetaDescription()
 	{
 		$forumId = $this->haveForum('e107help probe forum', $this->haveForum('e107help probe category'));
 		e107::getDb()->createQueryBuilder()->update('forum')
@@ -48,7 +49,7 @@ class forumMetaDescriptionTest extends \Test\Unit
 			->where('forum_id', $forumId)
 			->execute();
 
-		self::assertStringNotContainsString('"', $this->metaDescriptionOf('forum_viewforum.php', $forumId));
+		$this->assertOnlyOwnAttributes($this->metaDescriptionOf('forum_viewforum.php', $forumId));
 	}
 
 	/**
@@ -73,23 +74,46 @@ class forumMetaDescriptionTest extends \Test\Unit
 	}
 
 	/**
+	 * @param string[] $attributes the meta description of a page whose text ends in padding
+	 */
+	private function assertOnlyOwnAttributes(array $attributes)
+	{
+		self::assertStringContainsString('padding', varset($attributes['content'], ''),
+			'the meta description does not carry the text it was made from: '.var_export($attributes, true));
+		self::assertSame(array(), array_values(array_diff(array_keys($attributes), self::OWN_ATTRIBUTES)),
+			'the description text added attributes of its own to the meta tag: '.var_export($attributes, true));
+	}
+
+	/**
 	 * @param string $page the page file under e107_plugins/forum/
 	 * @param int $id the thread or forum it is opened on
-	 * @return string the page's META_DESCRIPTION
+	 * @return string[] the attributes of the meta description the page printed, by name
 	 */
 	private function metaDescriptionOf($page, $id)
 	{
-		$php = "register_shutdown_function(function() { echo '".self::MARK."', defined('META_DESCRIPTION') ? META_DESCRIPTION : '', '".self::MARK."'; }); ";
-		$php .= "\$_REQUEST = \$_GET; ";
+		$php = "\$_REQUEST = \$_GET; ";
 		$php .= "require_once('".addslashes(APP_PATH.'/e107_plugins/forum/'.$page)."'); ";
 
 		list($output, ) = $this->bootPluginInCli('forum', '2.0', array('id' => $id), $php);
 		$printed = implode("\n", $output);
-		$mark = preg_quote(self::MARK, '/');
 
-		self::assertSame(1, preg_match('/'.$mark.'(.+?)'.$mark.'/s', $printed, $match),
-			"the page never defined its meta description:\n".$printed);
+		$previous = libxml_use_internal_errors(true);
+		$dom = new DOMDocument();
+		$dom->loadHTML($printed);
+		libxml_clear_errors();
+		libxml_use_internal_errors($previous);
 
-		return $match[1];
+		$metas = (new DOMXPath($dom))->query("//meta[@name='description']");
+
+		self::assertSame(1, $metas->length, "the page did not print exactly one meta description:\n".$printed);
+
+		$attributes = array();
+
+		foreach($metas->item(0)->attributes as $attribute)
+		{
+			$attributes[$attribute->name] = $attribute->value;
+		}
+
+		return $attributes;
 	}
 }
