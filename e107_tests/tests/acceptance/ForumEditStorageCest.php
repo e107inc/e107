@@ -42,11 +42,11 @@ class ForumEditStorageCest
 		$post = $I->haveForumPost('Original reply', $this->ids['threadA'], $this->ids['forumA'], 1);
 		$I->loginAsAdmin();
 
-		$this->edit($I, $post, 'Edited <b data-feb=2>bold</b>');
+		$this->edit($I, $post, 'Edited <b title=feb2>bold</b>');
 
-		$I->assertStringContainsString('<b data-feb=', $I->grabFromDatabase('e107_forum_post', 'post_entry', array('post_id' => $post)));
+		$I->assertStringContainsString('<b title=', $I->grabFromDatabase('e107_forum_post', 'post_entry', array('post_id' => $post)));
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
-		$I->seeElement('b[data-feb="2"]');
+		$I->seeElement('b[title="feb2"]');
 	}
 
 	public function anAdministratorsUnchangedSaveKeepsAMembersPostFreeOfMarkup(AcceptanceTester $I)
@@ -85,13 +85,13 @@ class ForumEditStorageCest
 	{
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_A, 'fixture_mod_a');
 		$I->haveForumMember('tfmod', '253,'.\Helper\ForumFixture::CLASS_MOD_A);
-		$post = $I->haveForumPost('Admin <b data-feb=&quot;4&quot;>bold</b>', $this->ids['threadA'], $this->ids['forumA'], 1);
+		$post = $I->haveForumPost('Admin <b title=&quot;feb4&quot;>bold</b>', $this->ids['threadA'], $this->ids['forumA'], 1);
 		$I->purgeForumPermCache();
 		$I->loginToForum('tfmod');
 
 		$this->saveUnchanged($I, $post);
 
-		$I->assertSame('Admin <b data-feb=&quot;4&quot;>bold</b>', $I->grabFromDatabase('e107_forum_post', 'post_entry', array('post_id' => $post)));
+		$I->assertSame('Admin <b title=&quot;feb4&quot;>bold</b>', $I->grabFromDatabase('e107_forum_post', 'post_entry', array('post_id' => $post)));
 	}
 
 	public function theRichTextEditorIsOfferedOnlyForAnAuthorWhoMayPostHtml(AcceptanceTester $I)
