@@ -45,21 +45,26 @@ class PageCustomFieldValuesCest
 		));
 	}
 
+	public function _after(AcceptanceTester $I)
+	{
+		$I->restoreSitePrefs();
+	}
+
 	public function aPagesAdministratorsValuesAreStoredAsThePageBodyIs(AcceptanceTester $I)
 	{
 		$page = $this->havePage($I, 'Posted cfq7', array('mytext' => 'Text', 'myicon' => 'fa-check.glyph'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $page)
-		{
-			$I->resetAllCookies();
-			$I->loginAsAdmin(self::PAGES_ADMIN, self::PAGES_ADMIN_PASS);
-			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
-			$I->submitForm('#core-page-form', array(
-				'page_fields__mytext'   => 'Text'.self::MARKUP,
-				'page_fields__mybbarea' => 'Rich'.self::MARKUP,
-				'page_fields__myicon'   => '<i class="fa"></i>'.self::MARKUP,
-			), 'etrigger_submit');
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$I->resetAllCookies();
+		$I->loginAsAdmin(self::PAGES_ADMIN, self::PAGES_ADMIN_PASS);
+		$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+		$I->submitForm('#core-page-form', array(
+			'page_fields__mytext'   => 'Text'.self::MARKUP,
+			'page_fields__mybbarea' => 'Rich'.self::MARKUP,
+			'page_fields__myicon'   => '<i class="fa"></i>'.self::MARKUP,
+		), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$stored = $I->grabFromDatabase('e107_page', 'page_fields', array('page_id' => $page));
 
@@ -73,18 +78,18 @@ class PageCustomFieldValuesCest
 		$I->haveSiteTheme('bootstrap3');
 		$page = $this->havePage($I, 'Kept cfq7', array('mytext' => 'Text'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 250), function () use ($I, $page)
-		{
-			$I->resetAllCookies();
-			$I->loginAsAdmin();
-			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
-			$I->submitForm('#core-page-form', array(
-				'page_fields__mytext'  => 'Plain <b id="cfq7k" onclick="cfq7()">kept</b>',
-				'page_fields__myemail' => 'a@example.com <b id="cfq7e" onclick="cfq7()">e</b>',
-			), 'etrigger_submit');
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 250);
+		$I->resetAllCookies();
+		$I->loginAsAdmin();
+		$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+		$I->submitForm('#core-page-form', array(
+			'page_fields__mytext'  => 'Plain <b id="cfq7k" onclick="cfq7()">kept</b>',
+			'page_fields__myemail' => 'a@example.com <b id="cfq7e" onclick="cfq7()">e</b>',
+		), 'etrigger_submit');
 
-			$this->saveAsPagesAdmin($I, $page, array('page_fields__myemail' => 'b@example.com <b id="cfq7c" onclick="cfq7()">c</b>'));
-		});
+		$this->saveAsPagesAdmin($I, $page, array('page_fields__myemail' => 'b@example.com <b id="cfq7c" onclick="cfq7()">c</b>'));
+		$I->restoreSitePrefs();
 
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
@@ -102,20 +107,20 @@ class PageCustomFieldValuesCest
 		$I->haveSiteTheme('bootstrap3');
 		$page = $this->havePage($I, 'Typed cfq7', array('mytext' => 'Text'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 250), function () use ($I, $page)
-		{
-			$this->saveAsPagesAdmin($I, $page, array('page_fields__mytext' => '&lt;b id="cfq7p" onclick="cfq7()"&gt;typed&lt;/b&gt;'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 250);
+		$this->saveAsPagesAdmin($I, $page, array('page_fields__mytext' => '&lt;b id="cfq7p" onclick="cfq7()"&gt;typed&lt;/b&gt;'));
+		$I->restoreSitePrefs();
 
-		$I->haveSitePrefsDuring(array('post_html' => 250, 'post_script' => 250), function () use ($I, $page)
-		{
-			$this->saveAsPagesAdmin($I, $page, array('page_fields__myemail' => '&#60;b id="cfq7q" onclick="cfq7()"&#62;typed&#60;/b&#62;'));
+		$I->haveSitePrefUntilAfter('post_html', 250);
+		$I->haveSitePrefUntilAfter('post_script', 250);
+		$this->saveAsPagesAdmin($I, $page, array('page_fields__myemail' => '&#60;b id="cfq7q" onclick="cfq7()"&#62;typed&#60;/b&#62;'));
 
-			$I->resetAllCookies();
-			$I->loginAsAdmin();
-			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
-			$I->submitForm('#core-page-form', array(), 'etrigger_submit');
-		});
+		$I->resetAllCookies();
+		$I->loginAsAdmin();
+		$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+		$I->submitForm('#core-page-form', array(), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$I->amOnPage('/page.php?id='.$page);
 		$I->seeInSource('custom-fields-example');
@@ -132,18 +137,18 @@ class PageCustomFieldValuesCest
 		$I->haveSiteTheme('bootstrap3');
 		$page = $this->havePage($I, 'Rewritten cfq7', array('mytext' => 'Text'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 250), function () use ($I, $page)
-		{
-			$this->saveAsPagesAdmin($I, $page, array('page_fields__mytext' => '&lt;b id="cfq7z" onclick="cfq7()"&gt;1+1&lt;/b&gt;%3Cb id="cfq7y" onclick="cfq7()"%3Ey'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 250);
+		$this->saveAsPagesAdmin($I, $page, array('page_fields__mytext' => '&lt;b id="cfq7z" onclick="cfq7()"&gt;1+1&lt;/b&gt;%3Cb id="cfq7y" onclick="cfq7()"%3Ey'));
+		$I->restoreSitePrefs();
 
-		$I->haveSitePrefsDuring(array('post_html' => 250, 'post_script' => 250), function () use ($I, $page)
-		{
-			$I->resetAllCookies();
-			$I->loginAsAdmin();
-			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
-			$I->submitForm('#core-page-form', array(), 'etrigger_submit');
-		});
+		$I->haveSitePrefUntilAfter('post_html', 250);
+		$I->haveSitePrefUntilAfter('post_script', 250);
+		$I->resetAllCookies();
+		$I->loginAsAdmin();
+		$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+		$I->submitForm('#core-page-form', array(), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$I->amOnPage('/page.php?id='.$page);
 		$I->seeInSource('custom-fields-example');
@@ -161,13 +166,13 @@ class PageCustomFieldValuesCest
 		$value = '[html]x&#039; id=&#039;cfq7w&#039; onerror=&#039;cfq7()&#039; y&amp;.png';
 		$page = $this->havePage($I, 'Icon cfq7', array('myicon' => $value, '__trust__' => array('myicon' => 1)));
 
-		$I->haveSitePrefsDuring(array('post_html' => 250, 'post_script' => 250), function () use ($I, $page)
-		{
-			$I->resetAllCookies();
-			$I->loginAsAdmin();
-			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
-			$I->submitForm('#core-page-form', array(), 'etrigger_submit');
-		});
+		$I->haveSitePrefUntilAfter('post_html', 250);
+		$I->haveSitePrefUntilAfter('post_script', 250);
+		$I->resetAllCookies();
+		$I->loginAsAdmin();
+		$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+		$I->submitForm('#core-page-form', array(), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$I->amOnPage('/page.php?id='.$page);
 		$I->seeInSource('custom-fields-example');
@@ -186,11 +191,11 @@ class PageCustomFieldValuesCest
 		$value = 'Kept<script id=&quot;cfq7w&quot;>var cfq7 = 3;</script>';
 		$page = $this->havePage($I, 'Script cfq7', array('mytext' => $value, '__trust__' => array('mytext' => 2)));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 250), function () use ($I, $page)
-		{
-			$this->saveAsPagesAdmin($I, $page, array());
-			$I->dontSee('permission to use');
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 250);
+		$this->saveAsPagesAdmin($I, $page, array());
+		$I->dontSee('permission to use');
+		$I->restoreSitePrefs();
 
 		$stored = json_decode($I->grabFromDatabase('e107_page', 'page_fields', array('page_id' => $page)), true);
 		$I->assertSame(array($value, 2), array($stored['mytext'], $stored['__trust__']['mytext']));
@@ -214,13 +219,13 @@ class PageCustomFieldValuesCest
 		$page = $this->havePage($I, 'Author cfq7', array('mytext' => 'Text'));
 		$scripted = $this->havePage($I, 'Author script cfq7', array('mytext' => 'Text'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $page)
-		{
-			$this->saveAsPagesAdmin($I, $page, array(
-				'page_fields__mytext'   => 'Plain <b id="cfq7b">bold</b>',
-				'page_fields__mybbarea' => 'Rich <script id="cfq7s">var cfq7 = 1;</script><img id="cfq7o" src="x.png" onload="cfq7()">',
-			));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$this->saveAsPagesAdmin($I, $page, array(
+			'page_fields__mytext'   => 'Plain <b id="cfq7b">bold</b>',
+			'page_fields__mybbarea' => 'Rich <script id="cfq7s">var cfq7 = 1;</script><img id="cfq7o" src="x.png" onload="cfq7()">',
+		));
+		$I->restoreSitePrefs();
 
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
@@ -230,10 +235,10 @@ class PageCustomFieldValuesCest
 		$I->dontSeeInSource('<script id="cfq7s"');
 		$I->dontSeeElement('#cfq7o[onload]');
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $scripted)
-		{
-			$this->saveAsPagesAdmin($I, $scripted, array('page_fields__mybbarea' => 'Rich <script id="cfq7s">var cfq7 = 1;</script>'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveAsPagesAdmin($I, $scripted, array('page_fields__mybbarea' => 'Rich <script id="cfq7s">var cfq7 = 1;</script>'));
+		$I->restoreSitePrefs();
 
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
@@ -246,15 +251,14 @@ class PageCustomFieldValuesCest
 		$I->haveSiteTheme('bootstrap3');
 		$page = $this->havePage($I, 'Main admin cfq7', array('mytext' => 'Text'));
 
-		$I->haveSitePrefsDuring(array('post_script' => 255), function () use ($I, $page)
-		{
-			$I->resetAllCookies();
-			$I->loginAsAdmin();
-			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
-			$I->submitForm('#core-page-form', array(
-				'page_fields__mybbarea' => 'Rich <script id="cfq7m">var cfq7 = 2;</script><img id="cfq7n" src="x.png" onload="cfq7()">',
-			), 'etrigger_submit');
-		});
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$I->resetAllCookies();
+		$I->loginAsAdmin();
+		$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+		$I->submitForm('#core-page-form', array(
+			'page_fields__mybbarea' => 'Rich <script id="cfq7m">var cfq7 = 2;</script><img id="cfq7n" src="x.png" onload="cfq7()">',
+		), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$I->amOnPage('/page.php?id='.$page);
 		$I->seeInSource('custom-fields-example');

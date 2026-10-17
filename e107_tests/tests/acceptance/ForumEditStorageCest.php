@@ -17,6 +17,7 @@ class ForumEditStorageCest
 
 	public function _after(AcceptanceTester $I)
 	{
+		$I->restoreSitePrefs();
 		$I->dropForumProbe();
 	}
 
@@ -52,17 +53,10 @@ class ForumEditStorageCest
 	public function anAdministratorsUnchangedSaveKeepsAMembersPostFreeOfMarkup(AcceptanceTester $I)
 	{
 		$post = $I->haveForumPost('Member &lt;img src=x data-feb=3 onerror=alert(1)&gt; end', $this->ids['threadA'], $this->ids['forumA'], $I->haveForumMember('tfeditor'));
-		$wysiwyg = $I->haveSitePref('wysiwyg', '0');
+		$I->haveSitePrefUntilAfter('wysiwyg', '0');
 		$I->loginAsAdmin();
-
-		try
-		{
-			$this->saveUnchanged($I, $post);
-		}
-		finally
-		{
-			$I->haveSitePref('wysiwyg', $wysiwyg);
-		}
+		$this->saveUnchanged($I, $post);
+		$I->restoreSitePrefs();
 
 		$I->assertStringNotContainsString('<img', $I->grabFromDatabase('e107_forum_post', 'post_entry', array('post_id' => $post)));
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);

@@ -43,7 +43,7 @@ class ForumFixture extends AppFixture
 	/** @var bool */
 	private $pluginInstalled = false;
 
-	/** @var string[] what each preference set through {@see ForumFixture::haveSitePrefUntilAfter()} was before this test */
+	/** @var array[] per plugin ('' for the core), what each preference set through {@see ForumFixture::havePluginPrefUntilAfter()} was before this test */
 	private $prefsWere = array();
 
 	// -----------------------------------------------------------------
@@ -181,24 +181,40 @@ class ForumFixture extends AppFixture
 	 */
 	public function haveSitePrefUntilAfter($name, $value)
 	{
-		$was = $this->haveSitePref($name, $value);
+		$this->havePluginPrefUntilAfter('', $name, $value);
+	}
 
-		if (!array_key_exists($name, $this->prefsWere))
+	/**
+	 * Write one setting of a plugin's config for this test alone; {@see ForumFixture::restoreSitePrefs()}, called from the Cest's own teardown, puts back what it was before the test's first change.
+	 *
+	 * @param string $plugin plugin folder name; empty for the core preferences
+	 * @param string $name
+	 * @param string|int|null $value null removes it
+	 * @return void
+	 */
+	public function havePluginPrefUntilAfter($plugin, $name, $value)
+	{
+		$was = $this->havePluginPref($plugin, $name, $value);
+
+		if (!isset($this->prefsWere[$plugin]) || !array_key_exists($name, $this->prefsWere[$plugin]))
 		{
-			$this->prefsWere[$name] = $was;
+			$this->prefsWere[$plugin][$name] = $was;
 		}
 	}
 
 	/**
-	 * Put back every preference {@see ForumFixture::haveSitePrefUntilAfter()} changed in this test.
+	 * Put back every preference {@see ForumFixture::havePluginPrefUntilAfter()} changed in this test.
 	 *
 	 * @return void
 	 */
 	public function restoreSitePrefs()
 	{
-		foreach ($this->prefsWere as $name => $was)
+		foreach ($this->prefsWere as $plugin => $prefs)
 		{
-			$this->haveSitePref($name, $was === '' ? null : $was);
+			foreach ($prefs as $name => $was)
+			{
+				$this->havePluginPref($plugin, $name, $was === '' ? null : $was);
+			}
 		}
 
 		$this->prefsWere = array();
@@ -237,34 +253,6 @@ class ForumFixture extends AppFixture
 			.'&value='.urlencode($value === null ? '' : (string) $value));
 
 		return preg_match('/^PROBE_PREF_WAS (.*)$/m', $body, $matches) ? $matches[1] : '';
-	}
-
-	/**
-	 * Run $run with the site's core prefs set as given, and put each back afterwards, whatever $run does.
-	 *
-	 * @param array $prefs pref name => value
-	 * @param callable $run
-	 * @return mixed what $run returns
-	 */
-	public function haveSitePrefsDuring(array $prefs, $run)
-	{
-		$was = array();
-		foreach ($prefs as $name => $value)
-		{
-			$was[$name] = $this->haveSitePref($name, $value);
-		}
-
-		try
-		{
-			return $run();
-		}
-		finally
-		{
-			foreach ($was as $name => $value)
-			{
-				$this->haveSitePref($name, $value === '' ? null : $value);
-			}
-		}
 	}
 
 	/**

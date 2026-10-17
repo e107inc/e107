@@ -234,7 +234,8 @@ class ListNewItemsCest
 	 */
 	private function listPrefs($menuHeadingChars)
 	{
-		$prefs = array();
+		$prefs = \Test\ListNewPrefs::showing(array('recent_page'), array('comment', 'forum', 'members', 'chatbox_menu'))
+			+ \Test\ListNewPrefs::showing(array('recent_menu'), array('comment'));
 
 		foreach(array('recent_page', 'recent_menu') as $mode)
 		{
@@ -247,23 +248,6 @@ class ListNewItemsCest
 			$prefs[$mode.'_datestyletoday'] = '%H:%M';
 			$prefs[$mode.'_showempty'] = '1';
 			$prefs[$mode.'_openifrecords'] = '';
-			$prefs[$mode.'_welcometext'] = '';
-			$prefs[$mode.'_colomn'] = '1';
-
-			$sections = $mode === 'recent_menu' ? array('comment') : array('comment', 'forum', 'members', 'chatbox_menu');
-
-			foreach($sections as $order => $section)
-			{
-				$prefs[$section.'_'.$mode.'_caption'] = 'Fixture '.$section;
-				$prefs[$section.'_'.$mode.'_display'] = '1';
-				$prefs[$section.'_'.$mode.'_open'] = '1';
-				$prefs[$section.'_'.$mode.'_author'] = '1';
-				$prefs[$section.'_'.$mode.'_category'] = '1';
-				$prefs[$section.'_'.$mode.'_date'] = '1';
-				$prefs[$section.'_'.$mode.'_icon'] = '';
-				$prefs[$section.'_'.$mode.'_amount'] = '10';
-				$prefs[$section.'_'.$mode.'_order'] = $order + 1;
-			}
 		}
 
 		return $prefs;

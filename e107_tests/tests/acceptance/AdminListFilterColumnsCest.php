@@ -34,13 +34,7 @@ class AdminListFilterColumnsCest
 			'user_class'    => '',
 		));
 
-		$I->haveMember(self::DELEGATED, self::DELEGATED, array(
-			'user_admin' => 1,
-			'user_perms' => '4',
-			'user_class' => '',
-		));
-
-		$I->loginAsAdmin(self::DELEGATED, self::DELEGATED);
+		$I->loginAsDelegatedAdmin(self::DELEGATED, '4');
 	}
 
 	public function theFilterDoesNotHandBackThePasswordHashesForAPatternTerm(AcceptanceTester $I)
@@ -113,13 +107,8 @@ class AdminListFilterColumnsCest
 		try
 		{
 			$plugin = (int) $I->grabFromDatabase('e107_plugin', 'plugin_id', array('plugin_path' => 'faqs'));
-			$I->haveMember(self::FAQS_ADMIN, self::FAQS_ADMIN, array(
-				'user_admin' => 1,
-				'user_perms' => 'P' . $plugin,
-				'user_class' => '',
-			));
 			$I->resetAllCookies();
-			$I->loginAsAdmin(self::FAQS_ADMIN, self::FAQS_ADMIN);
+			$I->loginAsDelegatedAdmin(self::FAQS_ADMIN, 'P' . $plugin);
 
 			$I->sendPostRequest(self::FAQS_FILTER, array(
 				'searchquery' => '.',

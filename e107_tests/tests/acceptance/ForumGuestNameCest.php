@@ -106,7 +106,7 @@ class ForumGuestNameCest
 	public function theListingPrintsAStoredNameAsText(AcceptanceTester $I)
 	{
 		$I->havePluginInstalled('list_new');
-		$I->havePluginPrefs('list_new', $this->listPrefs());
+		$I->havePluginPrefs('list_new', \Test\ListNewPrefs::showing(array('recent_page'), array('forum')));
 		$this->listConfigured = true;
 
 		$this->seeStoredNameAsText($I, '/e107_plugins/list_new/list.php');
@@ -151,24 +151,5 @@ class ForumGuestNameCest
 
 		$I->dontSeeInSource('<guest-x');
 		$I->seeInSource('&lt;guest-x');
-	}
-
-	/**
-	 * List New Items' recent page with the forum section and its authors, the least it renders on PHP 8.
-	 *
-	 * @return array
-	 */
-	private function listPrefs()
-	{
-		return array(
-			'recent_page_welcometext'   => '',
-			'recent_page_colomn'        => '1',
-			'forum_recent_page_caption' => 'Fixture forum',
-			'forum_recent_page_display' => '1',
-			'forum_recent_page_open'    => '1',
-			'forum_recent_page_author'  => '1',
-			'forum_recent_page_amount'  => '20',
-			'forum_recent_page_order'   => '1',
-		);
 	}
 }

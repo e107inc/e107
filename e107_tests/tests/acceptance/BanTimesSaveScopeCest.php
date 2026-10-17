@@ -31,8 +31,7 @@ class BanTimesSaveScopeCest
 
 	public function aBanModeratorCannotRewriteTheBanMessagesAndDurations(AcceptanceTester $I)
 	{
-		$I->haveMember('p7rpbantimes', 'p7rpbantimes', array('user_admin' => 1, 'user_perms' => '4', 'user_class' => ''));
-		$I->loginAsAdmin('p7rpbantimes', 'p7rpbantimes');
+		$I->loginAsDelegatedAdmin('p7rpbantimes', '4');
 
 		$this->postTheBanTimes($I);
 

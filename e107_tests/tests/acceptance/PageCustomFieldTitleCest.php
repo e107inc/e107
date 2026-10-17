@@ -22,25 +22,30 @@ class PageCustomFieldTitleCest
 		$I->haveMember(self::PAGES_ADMIN, self::PAGES_ADMIN_PASS, array('user_admin' => 1, 'user_perms' => '5.'));
 	}
 
+	public function _after(AcceptanceTester $I)
+	{
+		$I->restoreSitePrefs();
+	}
+
 	public function aPagesAdministratorsFieldSettingsAreStoredAsAFieldsOwn(AcceptanceTester $I)
 	{
 		$chapter = $this->haveChapter($I, array('mytext' => array('title' => 'Text', 'type' => 'text', 'writeParms' => '', 'help' => '')));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $chapter)
-		{
-			$I->resetAllCookies();
-			$I->loginAsAdmin(self::PAGES_ADMIN, self::PAGES_ADMIN_PASS);
-			$I->amOnPage('/e107_admin/cpage.php?mode=cat&action=edit&id='.$chapter);
-			$I->submitForm('#core-page-chapters-form', array(
-				'chapter_fields[0][key]'   => 'mytext',
-				'chapter_fields[0][title]' => 'Text 2',
-				'chapter_fields[0][type]'  => 'text',
-				'chapter_fields[0][note]'  => 'Note'.self::MARKUP,
-				'chapter_fields[1][key]'   => 'mymethod',
-				'chapter_fields[1][title]' => 'Method',
-				'chapter_fields[1][type]'  => 'method',
-			), 'etrigger_submit');
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$I->resetAllCookies();
+		$I->loginAsAdmin(self::PAGES_ADMIN, self::PAGES_ADMIN_PASS);
+		$I->amOnPage('/e107_admin/cpage.php?mode=cat&action=edit&id='.$chapter);
+		$I->submitForm('#core-page-chapters-form', array(
+			'chapter_fields[0][key]'   => 'mytext',
+			'chapter_fields[0][title]' => 'Text 2',
+			'chapter_fields[0][type]'  => 'text',
+			'chapter_fields[0][note]'  => 'Note'.self::MARKUP,
+			'chapter_fields[1][key]'   => 'mymethod',
+			'chapter_fields[1][title]' => 'Method',
+			'chapter_fields[1][type]'  => 'method',
+		), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$stored = json_decode($I->grabFromDatabase('e107_page_chapters', 'chapter_fields', array('chapter_id' => $chapter)), true);
 
@@ -54,15 +59,15 @@ class PageCustomFieldTitleCest
 		$chapter = $this->haveChapter($I, array('mytext' => array('title' => 'Text', 'type' => 'text', 'writeParms' => '', 'help' => '')));
 		$page = $this->havePage($I, $chapter, array('mytext' => 'Some text'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $chapter)
-		{
-			$this->saveChapterAsPagesAdmin($I, $chapter, array('chapter_fields[0][title]' => 'Text <b id="cfq7tk" onclick="cfq7t()">kept</b>'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveChapterAsPagesAdmin($I, $chapter, array('chapter_fields[0][title]' => 'Text <b id="cfq7tk" onclick="cfq7t()">kept</b>'));
+		$I->restoreSitePrefs();
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $chapter)
-		{
-			$this->saveChapterAsPagesAdmin($I, $chapter, array('chapter_fields[0][help]' => 'Help <b id="cfq7tc" onclick="cfq7t()">changed</b>'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$this->saveChapterAsPagesAdmin($I, $chapter, array('chapter_fields[0][help]' => 'Help <b id="cfq7tc" onclick="cfq7t()">changed</b>'));
+		$I->restoreSitePrefs();
 
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
@@ -77,15 +82,15 @@ class PageCustomFieldTitleCest
 		$chapter = $this->haveChapter($I, array('mytext' => array('title' => 'Text', 'type' => 'text', 'writeParms' => '', 'help' => '')));
 		$page = $this->havePage($I, $chapter, array('mytext' => 'Some text'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $chapter)
-		{
-			$this->saveChapterAsPagesAdmin($I, $chapter, array('chapter_fields[0][title]' => 'Text &lt;b id="cfq7tp" onclick="cfq7t()"&gt;typed&lt;/b&gt;'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$this->saveChapterAsPagesAdmin($I, $chapter, array('chapter_fields[0][title]' => 'Text &lt;b id="cfq7tp" onclick="cfq7t()"&gt;typed&lt;/b&gt;'));
+		$I->restoreSitePrefs();
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $chapter)
-		{
-			$this->saveChapterAsPagesAdmin($I, $chapter, array());
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveChapterAsPagesAdmin($I, $chapter, array());
+		$I->restoreSitePrefs();
 
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
@@ -108,12 +113,12 @@ class PageCustomFieldTitleCest
 		$key = '<b id="cfq7tc" onclick="cfq7t()">t</b>';
 		$chapter = $this->haveChapter($I, array('d' => array('title' => 'D', 'type' => 'dropdown', 'writeParms' => json_encode(array('optArray' => array($key => 'T', 'b' => 'B'))), 'help' => '')));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $chapter, $key)
-		{
-			$I->loginAsAdmin();
-			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=create');
-			$I->submitForm('#core-page-form', array('page_chapter' => $chapter, 'page_title' => 'Created cfq7t', 'page_fields__d' => $key), 'etrigger_submit');
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$I->loginAsAdmin();
+		$I->amOnPage('/e107_admin/cpage.php?mode=page&action=create');
+		$I->submitForm('#core-page-form', array('page_chapter' => $chapter, 'page_title' => 'Created cfq7t', 'page_fields__d' => $key), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$stored = json_decode($I->grabFromDatabase('e107_page', 'page_fields', array('page_title' => 'Created cfq7t')), true);
 		$I->assertStringContainsString('cfq7tc', $stored['d']);
@@ -139,18 +144,18 @@ class PageCustomFieldTitleCest
 		$chapter = $this->haveChapter($I, array('mytext' => array('title' => 'Text', 'type' => 'text', 'writeParms' => '', 'help' => '')));
 		$page = $this->havePage($I, $chapter, array('mytext' => 'Some text'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $chapter)
-		{
-			$I->resetAllCookies();
-			$I->loginAsAdmin(self::PAGES_ADMIN, self::PAGES_ADMIN_PASS);
-			$I->amOnPage('/e107_admin/cpage.php?mode=cat&action=edit&id='.$chapter);
-			$I->submitForm('#core-page-chapters-form', array(
-				'chapter_fields[0][key]'   => 'mytext',
-				'chapter_fields[0][title]' => 'Text <b id="cfq7tb">bold</b>',
-				'chapter_fields[0][type]'  => 'text',
-				'chapter_fields[0][help]'  => 'Help <script id="cfq7ts">var cfq7t = 1;</script><img id="cfq7ti" src="x.png" onload="cfq7t()"><svg id=cfq7t onload=alert(1)>',
-			), 'etrigger_submit');
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$I->resetAllCookies();
+		$I->loginAsAdmin(self::PAGES_ADMIN, self::PAGES_ADMIN_PASS);
+		$I->amOnPage('/e107_admin/cpage.php?mode=cat&action=edit&id='.$chapter);
+		$I->submitForm('#core-page-chapters-form', array(
+			'chapter_fields[0][key]'   => 'mytext',
+			'chapter_fields[0][title]' => 'Text <b id="cfq7tb">bold</b>',
+			'chapter_fields[0][type]'  => 'text',
+			'chapter_fields[0][help]'  => 'Help <script id="cfq7ts">var cfq7t = 1;</script><img id="cfq7ti" src="x.png" onload="cfq7t()"><svg id=cfq7t onload=alert(1)>',
+		), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
