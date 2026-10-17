@@ -2192,6 +2192,10 @@ EXPECTED;
 		self::assertSame(str_repeat('&#1234567;', 10), $this->tp->text_truncate($entities, 10, ''));
 		self::assertSame('<p>' . str_repeat('&#1234567;', 10) . '</p>', $this->tp->html_truncate('<p>' . $entities . '</p>', 10, ''));
 		self::assertSame("&\xC5\xBF", $this->tp->text_truncate(str_repeat("&\xC5\xBF\xC5\xBF;", 4) . 'tail', 2, ''));
+		self::assertSame('x&Aacute;', $this->tp->text_truncate('x&Aacute;yz and more text here', 2, ''));
+		self::assertSame('x&thetasym;', $this->tp->text_truncate('x&thetasym;yz and more text here', 2, ''));
+		self::assertSame('ab...', $this->tp->text_truncate('abc&def ghijkl', 5, '...'));
+		self::assertSame('Tom & J...', $this->tp->text_truncate('Tom & Jerry go far', 10, '...'));
 	}
 
 	public function testTruncatingAVeryLongTextStaysWithinASmallMemoryLimit()
