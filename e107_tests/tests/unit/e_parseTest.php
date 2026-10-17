@@ -1722,6 +1722,19 @@ EXPECTED;
 		$this->assertEquals($expected, $actual);
 	}
 
+	public function testToAttributeEncodesWhatAConstantExpandsTo()
+	{
+		if (!defined('e_ATTRIBUTEPROBE'))
+		{
+			define('e_ATTRIBUTEPROBE', 'x" autofocus onfocus="alert(1)\' x');
+		}
+
+		$actual = $this->tp->toAttribute('Forum: {e_ATTRIBUTEPROBE}');
+
+		self::assertStringNotContainsString('"', $actual, 'a constant must not end a double-quoted attribute');
+		self::assertStringNotContainsString("'", $actual, 'a constant must not end a single-quoted attribute');
+	}
+
 	public function testToAttributeExplicitPure()
 	{
 		$input = "{e_THEME} <-- Not e_THEME";
