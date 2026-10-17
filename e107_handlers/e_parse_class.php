@@ -3478,23 +3478,16 @@ class e_parse
 	 */
 	public function toAttribute($text, $pure = false)
 	{
+		$text = (string) $text;
 
-		// URLs posted without HTML access may have an &amp; in them.
-
-		// Xhtml compliance.
-		$text = htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8');
-
-		if (!$pure)
+		if (!$pure && strpos($text, "'") === false)
 		{
-			if (!preg_match('/&#|\'|"|<|>/s', $text))
-			{
-				$text = $this->expandConstants($text, self::$webPathConstants);
-			}
-
-			$text = $this->disarmConstantPlaceholders($text);
+			$text = $this->expandConstants($text, self::$webPathConstants);
 		}
 
-		return $text;
+		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+
+		return $pure ? $text : $this->disarmConstantPlaceholders($text);
 	}
 
 	/**
