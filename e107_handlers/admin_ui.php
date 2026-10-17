@@ -4501,7 +4501,8 @@ class e_admin_controller_ui extends e_admin_controller
 			$actionName = 'List';
 		}
 
-		if($this->isTypedBatchTrigger($trigger[0]) && !$this->isBatchField(varset($trigger[1], '')))
+		if($this->isTypedBatchTrigger($trigger[0]) && (!$this->isBatchField(varset($trigger[1], ''))
+			|| $this->getFieldAttr($trigger[1], 'linkAddress')))
 		{
 			return $this;
 		}
@@ -5591,6 +5592,69 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 	/**
+	 * Refuse a save whose link fields hold an address the current user may not save, saying so on each such field.
+	 *
+	 * @param array $fields   the link fields' names
+	 * @param array $new_data the record as posted, or the one field an inline edit sends
+	 * @param array $old_data the record as stored, empty for a new one
+	 * @return bool whether every address posted may be saved
+	 */
+	protected function maySaveLinkAddresses(array $fields, $new_data, $old_data)
+	{
+		$tp = e107::getParser();
+		$allowed = true;
+
+		foreach ($fields as $field)
+		{
+			if (!isset($new_data[$field]) || $tp->maySaveLinkAddress($new_data[$field], isset($old_data[$field]) ? $old_data[$field] : null))
+			{
+				continue;
+			}
+
+			$title = $this->getFieldAttr($field, 'title', $field);
+			$this->getModel()->addValidationError(LAN_LINK_SCRIPT_SCHEME_REFUSED, defset($title, $title));
+			$this->getUI()->addWarning($field);
+			$allowed = false;
+		}
+
+		if (!$allowed)
+		{
+			$this->getModel()->setMessages();
+		}
+
+		return $allowed;
+	}
+
+	/**
+	 * @return string[] the fields declared with 'linkAddress' => true, whose value is a link address {@see e_admin_controller_ui::maySaveLinkAddresses()} judges on every save
+	 * @throws LogicException when the model would store such a field in a form the check does not judge: under a data path, or as a type other than a string
+	 */
+	private function linkAddressFields()
+	{
+		$fields = array();
+
+		foreach ($this->getFields() as $name => $field)
+		{
+			if (!empty($field['linkAddress']))
+			{
+				$fields[$name] = $field;
+			}
+		}
+
+		$types = $fields ? $this->getModel()->getDataFields() : array();
+
+		foreach ($fields as $name => $field)
+		{
+			if (!empty($field['dataPath']) || (isset($types[$name]) && !in_array($types[$name], array('str', 'string'), true)))
+			{
+				throw new LogicException(get_class($this).' declares '.$name.' a link address, but the model would store it unjudged, under a data path or as a type other than a string.');
+			}
+		}
+
+		return array_keys($fields);
+	}
+
+	/**
 	 * Manage submit item
 	 * Note: $callbackBefore will break submission if returns false
 	 *
@@ -5638,6 +5702,12 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 				$_posted = array_merge($_posted, $data);
 			}
+		}
+
+		if(!$this->maySaveLinkAddresses($this->linkAddressFields(), $_posted, $old_data))
+		{
+			$model->setPostedData($_posted);
+			return false;
 		}
 
 	//	$model->addMessageDebug(print_a($_posted,true));
@@ -7440,6 +7510,11 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 
 
+		if($this->getFieldAttr($field, 'linkAddress') && !$this->maySaveLinkAddresses(array($field), array($field => $value), array()))
+		{
+			return null;
+		}
+
 		// $val is a literal (already toDB'd upstream): batchUpdate() binds it, so
 		// sanitize=false only means "do not re-encode", never "splice raw".
 		$cnt = $this->getTreeModel()->batchUpdate($field, $val, $selected, true, false);
@@ -7621,10 +7696,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	private function refuseAjaxWrite($reason)
 	{
-		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-
-		header($protocol.' 403 Forbidden', true, 403);
-		header('Status: 403 Forbidden', true, 403);
+		$this->sendAjaxStatus(403, 'Forbidden');
 		echo defset('ADLAN_86', 'Forbidden');
 
 		$this->logajax($reason);
@@ -7638,11 +7710,9 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->logajax('Inline Ajax Triggered');
 
-		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
 		if(!vartrue($_POST['name']) || !vartrue($this->fields[$_POST['name']]))
 		{
-			header($protocol.': 404 Not Found', true, 404);
-			header('Status: 404 Not Found', true, 404);
+			$this->sendAjaxStatus(404, 'Not Found');
 			echo LAN_FIELD. ': ' .$this->fields[$_POST['name']]. ': ' .LAN_NOT_FOUND; // Field: x: not found!
 			$this->logajax('Field not found');
 			return;
@@ -7705,32 +7775,52 @@ class e_admin_ui extends e_admin_controller_ui
 
 		if($model->hasError())
 		{
-			// using 400
-			header($protocol.': 400 Bad Request', true, 400);
-			header('Status: 400 Bad Request', true, 400);
-			$this->logajax('Bad Request');
-			// DEBUG e107::getMessage()->addError('Error test.', $model->getMessageStackName())->addError('Another error test.', $model->getMessageStackName());
-
-
-			if(E107_DEBUG_LEVEL)
-			{
-				$message = e107::getMessage()->get('debug', $model->getMessageStackName(), true);
-			}
-			else
-			{
-				$message = e107::getMessage()->get('error', $model->getMessageStackName(), true);
-			}
-
-			if(!empty($message))
-			{
-				echo implode(' ', $message);
-			}
-			$this->logajax(implode(' ', $message));
+			$this->refuseInlineEdit($model->getMessageStackName());
 			return;
 		}
 
 		//TODO ? afterInline trigger?
-		$res = $this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit');
+		if($this->_manageSubmit('beforeUpdate', 'afterUpdate', 'onUpdateError', 'edit') === false)
+		{
+			$this->refuseInlineEdit('default');
+		}
+	}
+
+	/**
+	 * Answer an inline edit that was not saved with 400 Bad Request and, as text for the editor to show, the messages that say why.
+	 *
+	 * @param string $stack the message stack that holds them
+	 * @return void
+	 */
+	private function refuseInlineEdit($stack)
+	{
+		$this->sendAjaxStatus(400, 'Bad Request');
+		$this->logajax('Bad Request');
+
+		$messages = (array) e107::getMessage()->get('error', $stack, true);
+
+		if(E107_DEBUG_LEVEL)
+		{
+			$messages = array_merge($messages, (array) e107::getMessage()->get('debug', $stack, true));
+		}
+
+		$message = html_entity_decode(strip_tags(implode(' ', $messages)), ENT_QUOTES, 'UTF-8');
+
+		echo $message;
+		$this->logajax($message);
+	}
+
+	/**
+	 * @param int    $code   the HTTP status an ajax request is answered with
+	 * @param string $reason its reason phrase
+	 * @return void
+	 */
+	private function sendAjaxStatus($code, $reason)
+	{
+		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+
+		header($protocol.' '.$code.' '.$reason, true, $code);
+		header('Status: '.$code.' '.$reason, true, $code);
 	}
 
 	// Temporary - but useful. :-)
@@ -8174,6 +8264,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 * Save the options this screen declares, {@see e_admin_ui::getPrefs()}, and no other posted key.
 	 *
 	 * @return void
+	 * @throws LogicException for a preference declared a link address, which this save does not judge
 	 */
 	public function PrefsSaveTrigger()
 	{
@@ -8189,8 +8280,13 @@ class e_admin_ui extends e_admin_controller_ui
 			$data = $tmp;
 		}
 
-		foreach($this->prefs as $k=>$v) // fix for empty checkboxes - need to save a value.
+		foreach($this->getPrefs() as $k=>$v) // fix for empty checkboxes - need to save a value.
 		{
+			if(!empty($v['linkAddress']))
+			{
+				throw new LogicException(get_class($this).' declares the preference '.$k.' a link address, which a preferences save does not judge.');
+			}
+
 			if(!isset($data[$k]) && $v['data'] !== false && ($v['type'] === 'checkboxes' || $v['type'] === 'checkbox'))
 			{
 				$data[$k] = null;

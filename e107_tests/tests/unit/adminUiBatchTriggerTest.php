@@ -19,6 +19,9 @@
  * The two sides of that dropdown must also agree on the batch options a field's optArray asks
  * for: the menu spells them attach_all__<field> and deattach_all__<field>, and what it offers
  * one at a time is what those two entries write.
+ *
+ * A field declared a link address takes no typed trigger at all: only the default batch, which
+ * judges the address it sets, may write one.
  */
 class adminUiBatchTriggerTest extends \Test\Unit
 {
@@ -187,6 +190,42 @@ class adminUiBatchTriggerTest extends \Test\Unit
 			'ucadd names a column the batch dropdown never offers and must not be dispatched.');
 		$this->assertSame(array(), $this->dispatchOf('ucremove__gen_chardata__253'),
 			'ucremove names a column the batch dropdown never offers and must not be dispatched.');
+	}
+
+	/**
+	 * @dataProvider typedTriggersOnALinkAddress
+	 * @param string $trigger
+	 */
+	public function testTypedTriggerRefusesALinkAddressField($trigger)
+	{
+		$this->stubUserRegistry();
+
+		$probe = $this->makeProbe(array('e-multiselect' => array(1, 2)));
+		$probe->setFields(array_merge($probe->getFields(), array(
+			'gen_link' => array('title' => 'Link', 'type' => 'comma', 'data' => 'str', 'batch' => true, 'linkAddress' => true,
+				'writeParms' => array('optArray' => array('news.php' => 'News', 'addAll' => 1, 'clearAll' => 1),
+					'classlist' => 'member', 'sef' => 'gen_ip')),
+		)));
+
+		$this->assertSame(array(), $probe->probeDispatch($trigger),
+			$trigger . ' writes a value no link-address check has judged into a field declared a link address.');
+	}
+
+	public function typedTriggersOnALinkAddress()
+	{
+		return array(
+			'sefgen'       => array('sefgen__gen_link__gen_ip'),
+			'bool'         => array('bool__gen_link__1'),
+			'boolreverse'  => array('boolreverse__gen_link'),
+			'attach'       => array('attach__gen_link__javascript:alert(1)'),
+			'deattach'     => array('deattach__gen_link__news.php'),
+			'attach_all'   => array('attach_all__gen_link'),
+			'deattach_all' => array('deattach_all__gen_link'),
+			'ucadd'        => array('ucadd__gen_link__253'),
+			'ucremove'     => array('ucremove__gen_link__253'),
+			'ucaddall'     => array('ucaddall__gen_link'),
+			'ucdelall'     => array('ucdelall__gen_link'),
+		);
 	}
 
 	public function testUserclassTriggerStillReachesItsHandlerForABatchField()

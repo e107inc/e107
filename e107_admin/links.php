@@ -79,7 +79,7 @@ class links_admin_ui extends e_admin_ui
 
 		'link_parent'		=> array('title'=> LAN_PARENT,		'type' => 'method',		'data'=>'int',		'width'=>'auto',		'batch'=>true,		'filter'=>true,		'thclass'=>'left first', 'writeParms'=>array('size'=>'xlarge')),
 		'link_preset'		=> array('title'=> LAN_LINKS_PRESET,	'type'=>'method', 'data'=>false, 'nolist'=>true, 'help'=>LAN_LINKS_PRESET_HELP),
-		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge', 'help'=>LAN_LINKS_URL_HELP, 'error'=>LAN_LINKS_URL_REQUIRED),
+		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'linkAddress'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge', 'help'=>LAN_LINKS_URL_HELP, 'error'=>LAN_LINKS_URL_REQUIRED),
 		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>LCLAN_107),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?

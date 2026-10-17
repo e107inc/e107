@@ -150,5 +150,6 @@ return [
     "LAN_PLEASEWAIT" => "Please Wait",
     "LAN_CHOOSE_FILE" => "Choose a file",
     "LAN_REQUIRED" => "Required",
+    "LAN_LINK_SCRIPT_SCHEME_REFUSED" => "Only members of the class that can post &lt;script&gt; and similar tags may save an address that starts with javascript:, vbscript: or data:.",
     "LAN_DEVELOPERMODE_CHECK" => "[b]Developer mode is currently enabled. Use this mode only when developing![/b] [br]Please disable developer mode when using your website in live production. When developer mode is enabled, sensitive information may be shown to the public!"
 ];
