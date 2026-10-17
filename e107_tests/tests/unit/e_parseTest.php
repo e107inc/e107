@@ -3826,6 +3826,25 @@ Your browser does not support the audio tag.
 		self::assertStringContainsString('Your browser does not support the video tag.', $serialized, 'promoted text must survive serialization');
 	}
 
+	public function testCleanHtmlKeepsABareLessThanBesideMarkup()
+	{
+		$this->tp->setScriptAccess(e_UC_NOBODY);
+
+		self::assertSame('a &lt; b <b>c</b> d', $this->tp->cleanHtml('a < b <b>c</b> d'));
+		self::assertSame('<p>1 &lt;2 and 3 &lt;= 4</p>', $this->tp->cleanHtml('<p>1 <2 and 3 <= 4</p>'));
+		self::assertSame('<i>x</i> &lt;', $this->tp->cleanHtml('<i>x</i> <'));
+		self::assertSame('a &lt; b <img src="x">', $this->tp->cleanHtml('a < b <img src="x" onerror="y">'));
+		self::assertSame('<b>a</b><p title="1 &lt; 2">x &lt; y</p>', $this->tp->cleanHtml('<b>a</b><p title="1 < 2">x < y</p>'));
+		self::assertSame('<p>x &lt; y &amp;#0000060; z</p>', $this->tp->cleanHtml('<p>x < y &#38;#0000060; z</p>'));
+		self::assertSame('<p>x</p><!-- a < b -->', $this->tp->cleanHtml('<p>x</p><!-- a < b -->'));
+	}
+
+	public function testCleanHtmlLeavesALessThanReferenceTheAuthorTypedAlone()
+	{
+		self::assertStringContainsString('<!-- &#0000060; -->', $this->tp->cleanHtml('<p>x < y</p><!-- &#0000060; -->'));
+		self::assertStringNotContainsString('a < b', $this->tp->cleanHtml("<p>x < y</p><!-- a &#000\x010060; b -->"));
+	}
+
 
 		private function avatarTag($html)
 	{
