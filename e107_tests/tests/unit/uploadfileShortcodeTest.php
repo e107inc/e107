@@ -12,18 +12,17 @@
  */
 class uploadfileShortcodeTest extends \Test\Unit
 {
-	/** @var mixed */
-	private $uploadClass;
+	/** @var callable puts the upload preferences back */
+	private $restorePrefs;
 
 	protected function _before()
 	{
-		$this->uploadClass = e107::getPref('upload_class');
-		e107::getConfig()->set('upload_class', e_UC_PUBLIC);
+		$this->restorePrefs = $this->withCorePrefs(array('upload_enabled' => 1, 'upload_class' => e_UC_PUBLIC));
 	}
 
 	protected function _after()
 	{
-		e107::getConfig()->set('upload_class', $this->uploadClass);
+		call_user_func($this->restorePrefs);
 	}
 
 	/**
