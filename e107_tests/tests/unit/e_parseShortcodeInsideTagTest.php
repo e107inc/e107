@@ -55,6 +55,13 @@ class e_parseShortcodeInsideTagTest extends \Test\Unit
 		self::assertStringContainsString('Welcome to '.SITENAME.'.', $html);
 	}
 
+	public function testAShortcodeBesideACodeBlockNoBbcodePassRendersCannotAddAttributes()
+	{
+		$html = e107::getParser()->toHTML("<p>[code]<b title='x[/code] {GLYPH: type=fa-star&class=a tabindex=1 autofocus onfocus=alert(1) b} y</p>", false, 'BODY');
+
+		self::assertSame(array(), $this->handlerAttributes($html), 'A shortcode beside a [code] block left unrendered added a handler: '.$html);
+	}
+
 	public function testAHiddenBlockBesideAShortcodeLeavesNoMarker()
 	{
 		$html = e107::getParser()->toHTML('<p><b title="{SITENAME} [hide]secret[/hide]">B</b></p>', true, 'BODY');
