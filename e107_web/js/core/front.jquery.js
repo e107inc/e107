@@ -173,11 +173,8 @@ $(document).ready(function()
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=submit',
 			  data: data,
-			  success: function(data) {
-			  	
-			//  	alert(data);
-			 // 	console.log(data);
-			  	var a = $.parseJSON(data);
+			  dataType: 'json',
+			  success: function(a) {
 
 				$(input).val('');
 				
@@ -243,10 +240,8 @@ $(document).ready(function()
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=reply',
 			  data: { itemid: sp[3], table: table },
-			  success: function(data) {
-
-			 // 	alert(url);
-			  	var a = $.parseJSON(data);
+			  dataType: 'json',
+			  success: function(a) {
 
 				if(!a.error)
 				{
@@ -312,9 +307,8 @@ $(document).ready(function()
 		            	itemid: sp[4],
 		            	'e-token': token
 		            },
-		            success:function (data) {
-		            
-		            	var a = $.parseJSON(data);
+		            dataType: 'json',
+		            success:function (a) {
 		            
 		            	if(!a.error)
 		            	{
@@ -342,8 +336,6 @@ $(document).ready(function()
 						  $('div.e-comment-edit-save').remove();
 						}, 2000);
 
-		            //	.delay(1000);
-		            //	alert(data);
 		            	return;
 		            }
 		        });
@@ -367,9 +359,8 @@ $(document).ready(function()
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=delete',
 			  data: { id: sp[3], itemid: itemid, table: table, 'e-token': token },
-			  success: function(data) {
-			var a = $.parseJSON(data);
-			  
+			  dataType: 'json',
+			  success: function(a) {
 				if(!a.error)
 				{
 					$(id).hide('slow');
@@ -394,12 +385,8 @@ $(document).ready(function()
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=approve',
 			  data: { itemid: sp[3], 'e-token': token },
-			  success: function(data) {
-	
-			  
-			var a = $.parseJSON(data);
-			
-	
+			  dataType: 'json',
+			  success: function(a) {
 				if(!a.error)
 				{		
 					//TODO modify status of html on page 	

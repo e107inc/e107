@@ -67,7 +67,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 		$ret['msg'] 	= COMLAN_332;
 		$ret['error'] 	= ($status) ? false : true;
 		$ret['html']	= $status;
-		echo json_encode($ret);
+		e107::getAjax()->response($ret);
 		exit;
 	}
 
@@ -77,7 +77,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 		$status 		= e107::getComment()->deleteComment($_POST['id'],$_POST['table'],$_POST['itemid']);
 		$ret['msg'] 	= ($status) ? 'Ok' : COMLAN_332;
 		$ret['error'] 	= ($status) ? false : true;
-		echo json_encode($ret);
+		e107::getAjax()->response($ret);
 		exit;
 	}
 
@@ -87,7 +87,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 		$ret['msg'] 	= ($status) ? COMLAN_333 : COMLAN_334;
 		$ret['error'] 	= ($status) ? false : true;
 		$ret['html']	= COMLAN_335;
-		echo json_encode($ret);
+		e107::getAjax()->response($ret);
 		exit;
 	}
 
@@ -95,8 +95,8 @@ if(e_AJAX_REQUEST) // TODO improve security
 	if(!vartrue($_POST['comment']) && varset($_GET['mode']) == 'submit')
 	{
 		$ret['error'] 	= true;
-		$ret['msg'] 	= COMLAN_336." - ".implode(" ",$_GET);
-		echo json_encode($ret);
+		$ret['msg'] 	= COMLAN_336;
+		e107::getAjax()->response($ret);
 		exit;
 	}
 
@@ -108,7 +108,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 		$ret['error'] 	= ($error) ? true : false;
 		$ret['msg'] 	= ($error) ? $error : COMLAN_337;
 
-		echo json_encode($ret);
+		e107::getAjax()->response($ret);
 		exit;
 	}
 	
@@ -168,7 +168,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 			$ret['msg'] = $newid;			
 		}
 		
-		echo json_encode($ret);
+		e107::getAjax()->response($ret);
 	}
 	exit;
 }
