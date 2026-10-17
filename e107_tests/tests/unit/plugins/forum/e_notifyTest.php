@@ -67,7 +67,7 @@ class e_notifyTest extends \Codeception\Test\Unit
 	public function testANotificationPrintsTheThreadNameAsText($event, $shape)
 	{
 		$message = '';
-		$notify = $this->make('forum_notify', array('send' => function ($id, $subject, $body) use (&$message)
+		$notify = $this->make('forum_notify', array('sendForAuthor' => function ($author, $id, $subject, $body) use (&$message)
 		{
 			$message = $body;
 		}));

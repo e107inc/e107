@@ -90,22 +90,28 @@ class forumGuestNameTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * Quoting a guest's post offers their name in the box as the text it is.
+	 * Quoting a guest's post offers their name as the text it is, in the box and to the rich-text editor alike.
 	 */
 	public function testTheQuoteFormOffersAGuestsNameAsText()
 	{
 		require_once(e_PLUGIN.'forum/shortcodes/batch/post_shortcodes.php');
 
-		$sc = new plugin_forum_post_shortcodes();
-		$sc->setVars(array(
+		$vars = array(
 			'action'         => 'quote',
 			'post_entry'     => 'Quoted words',
 			'user_name'      => '',
 			'post_user_anon' => 'Ann <b',
-		));
+		);
 
-		$box = $sc->sc_forum_post_textarea();
+		$sc = new plugin_forum_post_shortcodes();
+		$sc->setVars($vars);
+		$sc->setScVar('forum', $this->make('e107forum', array('prefs' => $this->make('e_plugin_pref', array('get' => 'bbcode')))));
+		self::assertStringContainsString('[quote=Ann &lt;b]', $sc->sc_forum_post_textarea());
 
-		self::assertStringContainsString('Ann &lt;b', $box);
+		$sc = new plugin_forum_post_shortcodes();
+		$sc->setVars($vars);
+		$editor = $sc->sc_forum_post_textarea();
+		self::assertStringContainsString('[quote=Ann &amp;lt;b]', $editor);
+		self::assertStringNotContainsString('[quote=Ann &lt;b]', $editor);
 	}
 }
