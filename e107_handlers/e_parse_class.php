@@ -1946,8 +1946,9 @@ class e_parse
 		$isHtml = $this->isHtml($text);
 		$hideBlocks = array();
 		$parseBlocksWith = $parseBB;
+		$stripCodes = is_string($parseBB) ? explode(',', $parseBB) : array();
 
-		if ($parseBB !== false)
+		if (($parseBB !== false) && !in_array('hide', $stripCodes, true))
 		{
 			$text = $this->setAsideHideBlocks($text, $hideBlocks);
 		}
@@ -1992,7 +1993,7 @@ class e_parse
 		$saveOpts = $opts;
 
 
-		$keyCodes = implode('|', array_diff(array('table', 'html', 'php', 'code', 'scode', 'hide'), is_string($parseBB) ? explode(',', $parseBB) : array()));
+		$keyCodes = implode('|', array_diff(array('table', 'html', 'php', 'code', 'scode', 'hide'), $stripCodes));
 
 		if ($parseBB == false || $keyCodes === '')
 		{
