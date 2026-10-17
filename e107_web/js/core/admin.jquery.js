@@ -566,9 +566,8 @@ $(document).ready(function()
 				  type: 'POST',
 				  url: url + '?ajax_used=1&mode='+action,
 				  data: { itemid: id },
-				  success: function(data) {
-				  	var a = $.parseJSON(data);
-				 // 	alert(data);
+				  dataType: 'json',
+				  success: function(a) {
 					if(!a.error)
 					{
 						$('#comment-'+ id).hide(800, function () {
