@@ -4515,6 +4515,9 @@ Your browser does not support the audio tag.
 	{
 		self::assertStringContainsString('<!-- &#0000060; -->', $this->tp->cleanHtml('<p>x < y</p><!-- &#0000060; -->'));
 		self::assertStringNotContainsString('a < b', $this->tp->cleanHtml("<p>x < y</p><!-- a &#000\x010060; b -->"));
+
+		$this->tp->setScriptAccess(e_UC_PUBLIC);
+		self::assertStringNotContainsString('a < b', $this->tp->cleanHtml("<p>x < y</p><script>a &#000\x010060; b</script>"));
 	}
 
 	public function testToUTF8()
