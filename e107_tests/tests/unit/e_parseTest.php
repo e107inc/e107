@@ -3848,6 +3848,16 @@ Your browser does not support the audio tag.
 		self::assertStringNotContainsString('a < b', $this->tp->cleanHtml("<p>x < y</p><script>a &#000\x010060; b</script>"));
 	}
 
+	public function testCleanHtmlTreatsABareLessThanAfterTheBodyLikeALetter()
+	{
+		$this->tp->setScriptAccess(e_UC_NOBODY);
+
+		foreach (array('<p>a</p></body> q<!-- c --> d', '<p>a</p></body> q<?x </body>b <i>c</i> d') as $letter)
+		{
+			self::assertSame(str_replace('q', '&lt;', $this->tp->cleanHtml($letter)), $this->tp->cleanHtml(str_replace('q', '<', $letter)));
+		}
+	}
+
 
 		private function avatarTag($html)
 	{
