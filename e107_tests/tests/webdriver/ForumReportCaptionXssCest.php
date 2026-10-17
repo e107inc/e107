@@ -33,7 +33,7 @@ class ForumReportCaptionXssCest
 
 	public function openingAReportedThreadRunsNothingItsNameCarries(WebDriverTester $I)
 	{
-		$I->loginAsAdmin();
+		$I->amSignedInAs();
 		$I->amOnPage('/e107_plugins/forum/forum_admin.php?mode=report&action=list');
 		$I->click('a.e-modal[href*="mode=post&action=list&id='.$this->thread.'"]');
 		$I->waitForText('caption probe', 10, '.modal-caption');
