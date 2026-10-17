@@ -5833,6 +5833,108 @@ class e_parse
 
 
 	/**
+	 * Whether a value a form posted back is the stored value the form showed, unchanged.
+	 *
+	 * @param mixed      $posted  the value as posted, or an array of them
+	 * @param mixed      $shown   the stored value as the form showed it, after the form's own decoding, or an array of them
+	 * @param array|null $element the element that showed it, as array('type' => an e_form element type, 'maxItems' => the tag widget's limit as {@see e_form::tags()} takes it), to compare as a browser posts that element back; null to compare as stored
+	 * @return bool
+	 * @throws InvalidArgumentException when $element is neither null nor an array naming a type
+	 */
+	public function isUnchangedPost($posted, $shown, $element = null)
+	{
+		if ($element !== null && (!is_array($element) || !isset($element['type']) || !is_string($element['type'])))
+		{
+			throw new InvalidArgumentException("isUnchangedPost() takes the element that showed the value as array('type' => an e_form element type), or null.");
+		}
+
+		if (is_array($posted) || is_array($shown))
+		{
+			if (!is_array($posted) || !is_array($shown) || count($posted) !== count($shown))
+			{
+				return false;
+			}
+
+			foreach ($shown as $key => $value)
+			{
+				if (!array_key_exists($key, $posted) || !$this->isUnchangedPost($posted[$key], $value, $element))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		if ((!is_scalar($posted) && $posted !== null) || (!is_scalar($shown) && $shown !== null))
+		{
+			return false;
+		}
+
+		$posted = str_replace(array("\r\n", "\r"), "\n", (string) $posted);
+		$shown = str_replace(array("\r\n", "\r"), "\n", (string) $shown);
+
+		if ($element === null)
+		{
+			return $posted === $shown;
+		}
+
+		$type = $element['type'];
+		$limit = empty($element['maxItems']) ? 7 : (is_numeric($element['maxItems']) ? (int) ceil($element['maxItems']) : null);
+
+		return $this->postedBack($posted, $type) === $this->postedBack($shown, $type)
+			|| ($type === 'tags' && $posted === $this->tagsPostedBack($shown, $limit));
+	}
+
+	/**
+	 * @param string $value a value with its line breaks as LF
+	 * @param string $type  the e_form element type that shows it
+	 * @return string the value as a browser posts it back from that element: a NUL as U+FFFD, without the line breaks that open a text area, without any line break from a one-line input, and an email input's addresses without the white space around them
+	 */
+	private function postedBack($value, $type)
+	{
+		$value = str_replace("\0", "\xEF\xBF\xBD", $value);
+
+		if ($type === 'textarea' || $type === 'bbarea')
+		{
+			return ltrim($value, "\n");
+		}
+
+		$value = str_replace("\n", '', $value);
+
+		return ($type === 'email') ? preg_replace('/[\t\f ]*,[\t\f ]*/', ',', trim($value, " \t\f")) : $value;
+	}
+
+	/**
+	 * @param string   $value a tag list with its line breaks as LF
+	 * @param int|null $limit how many tags the widget keeps, null for no limit
+	 * @return string|null the list as the tag widget posts it back: trimmed as JavaScript trims, each tag once, none named '__proto__', none past $limit; null when it is not UTF-8
+	 */
+	private function tagsPostedBack($value, $limit)
+	{
+		$space = '[\x{9}-\x{d}\x{20}\x{a0}\x{1680}\x{2000}-\x{200a}\x{2028}\x{2029}\x{202f}\x{205f}\x{3000}\x{feff}]+';
+		$value = preg_replace('/^'.$space.'|'.$space.'$/u', '', $this->postedBack($value, 'tags'));
+
+		if (!is_string($value))
+		{
+			return null;
+		}
+
+		$tags = array();
+
+		foreach (($value === '') ? array() : explode(',', $value) as $tag)
+		{
+			if ($tag !== '__proto__' && ($limit === null || count($tags) < $limit) && !in_array($tag, $tags, true))
+			{
+				$tags[] = $tag;
+			}
+		}
+
+		return implode(',', $tags);
+	}
+
+
+	/**
 	 * Check if a string contains bbcode.
 	 *
 	 * @param $text
