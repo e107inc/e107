@@ -580,14 +580,14 @@ EXPECTED;
 	 */
 	public function testToHTMLDoesNotDecodeHandlerQuotesInsideTable()
 	{
-		$stored = $this->tp->toDB("[table][img]x.png' tabindex='0' autofocus onfocus='window.vanny=1[/img][/table]");
+		$stored = $this->tp->toDB("[table][img]x.png' tabindex='0' autofocus onfocus='window.probe=1[/img][/table]");
 
 		foreach (array('', 'USER_BODY', 'USER_TITLE', 'BODY', 'TITLE', 'WYSIWYG') as $modifiers)
 		{
 			$result = $this->tp->toHTML($stored, true, $modifiers);
 			$context = "modifiers '$modifiers'";
 
-			$this->assertStringNotContainsString("onfocus='window.vanny=1", $result, "the handler quote must stay encoded with $context");
+			$this->assertStringNotContainsString("onfocus='window.probe=1", $result, "the handler quote must stay encoded with $context");
 			$this->assertStringContainsString("x.png&#039;", $result, "the encoded quote must survive rendering with $context");
 		}
 	}
@@ -597,14 +597,14 @@ EXPECTED;
 	 */
 	public function testToHTMLDoesNotDecodeHandlerQuotesInsideHtmlBlock()
 	{
-		$stored = '[html ][img]x.png&#039; tabindex=&#039;0&#039; autofocus onfocus=&#039;window.vanny=1[/img][/HTML]';
+		$stored = '[html ][img]x.png&#039; tabindex=&#039;0&#039; autofocus onfocus=&#039;window.probe=1[/img][/HTML]';
 
 		foreach (array('', 'USER_BODY') as $modifiers)
 		{
 			$result = $this->tp->toHTML($stored, true, $modifiers);
 			$context = "modifiers '$modifiers'";
 
-			$this->assertStringNotContainsString("onfocus='window.vanny=1", $result, "the handler quote must stay encoded with $context");
+			$this->assertStringNotContainsString("onfocus='window.probe=1", $result, "the handler quote must stay encoded with $context");
 			$this->assertStringContainsString("x.png&#039;", $result, "the encoded quote must survive rendering with $context");
 		}
 	}

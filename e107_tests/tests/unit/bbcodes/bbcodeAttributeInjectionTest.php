@@ -490,7 +490,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	/** A quote a bbcode handler encoded inside a [hide] block stays encoded for a reader the block is shown to. */
 	public function testAHandlerQuoteInsideAHiddenBlockStaysEncoded()
 	{
-		$html = $this->renderStored("[hide][img]x.png' tabindex='0' autofocus onfocus='window.vanny=1[/img][/hide]", null, 'USER_BODY');
+		$html = $this->renderStored("[hide][img]x.png' tabindex='0' autofocus onfocus='window.probe=1[/img][/hide]", null, 'USER_BODY');
 
 		$this->elementIn($html, 'img');
 		$this->assertNoEventHandler($html, 'A quote a handler encoded inside a [hide] block was decoded.');
