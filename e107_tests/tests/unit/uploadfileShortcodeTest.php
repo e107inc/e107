@@ -12,18 +12,24 @@
  */
 class uploadfileShortcodeTest extends \Codeception\Test\Unit
 {
-	/** @var mixed */
-	private $uploadClass;
+	/** @var array the upload preferences as the test found them */
+	private $prefs = array();
 
 	protected function _before()
 	{
-		$this->uploadClass = e107::getPref('upload_class');
-		e107::getConfig()->set('upload_class', e_UC_PUBLIC);
+		foreach(array('upload_enabled' => 1, 'upload_class' => e_UC_PUBLIC) as $key => $value)
+		{
+			$this->prefs[$key] = e107::getPref($key);
+			e107::getConfig()->set($key, $value);
+		}
 	}
 
 	protected function _after()
 	{
-		e107::getConfig()->set('upload_class', $this->uploadClass);
+		foreach($this->prefs as $key => $value)
+		{
+			e107::getConfig()->set($key, $value);
+		}
 	}
 
 	/**
