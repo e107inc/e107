@@ -17,10 +17,10 @@
 class ForumBBcodeTableEntityCest
 {
 	/** The quote-carrying image address that broke out before the fix. */
-	const STORED_TABLE_PAYLOAD = "[table][img]{e_IMAGE}generic/blank.gif' autofocus onfocus='window.__vanny=1[/img][/table] weekly notes";
+	const STORED_TABLE_PAYLOAD = "[table][img]{e_IMAGE}generic/blank.gif' autofocus onfocus='window.__probe=1[/img][/table] weekly notes";
 
 	/** The same address in an [html] block whose tags toDB() does not strip, which took the same path. */
-	const STORED_HTML_PAYLOAD = "[html ][img]{e_IMAGE}generic/blank.gif' autofocus onfocus='window.__vanny=2[/img][/HTML] html notes";
+	const STORED_HTML_PAYLOAD = "[html ][img]{e_IMAGE}generic/blank.gif' autofocus onfocus='window.__probe=2[/img][/HTML] html notes";
 
 	/** A benign reply, so a fix that stopped rendering bbcode would fail here too. */
 	const BENIGN_PAYLOAD = '[b]ordinary reply[/b]';
@@ -76,7 +76,7 @@ class ForumBBcodeTableEntityCest
 		// The quote the image handler encoded stays encoded, so it cannot close
 		// src='...' and open a handler.
 		$I->dontSeeElement('[onfocus]');
-		$I->dontSeeInSource("onfocus='window.__vanny=1");
+		$I->dontSeeInSource("onfocus='window.__probe=1");
 	}
 
 	/**
@@ -91,7 +91,7 @@ class ForumBBcodeTableEntityCest
 
 		$I->seeInSource('html notes');
 		$I->dontSeeElement('[onfocus]');
-		$I->dontSeeInSource("onfocus='window.__vanny=2");
+		$I->dontSeeInSource("onfocus='window.__probe=2");
 	}
 
 	private function reply(AcceptanceTester $I, $body)
