@@ -6804,7 +6804,7 @@ class e_parse
 		//	$doc->encoding = 'utf-8';
 		$doc = $this->domObj;
 		$opts = defined('LIBXML_HTML_NOIMPLIED') ? LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD : 0;
-		$doc->loadHTML($html, $opts);
+		$this->loadHtmlKeepingBareLessThan($doc, $html, $opts);
 
 		$this->nodesToConvert = array(); // required.
 		$this->nodesToDelete = array(); // required.
@@ -6991,6 +6991,43 @@ class e_parse
 		); // filter out tags.
 
 		return trim($cleaned);
+	}
+
+	/**
+	 * Load $html into $doc so that every libxml2 version keeps a "<" that cannot open markup as text.
+	 *
+	 * @param DOMDocument $doc
+	 * @param string      $html
+	 * @param int         $options
+	 * @return void
+	 */
+	private function loadHtmlKeepingBareLessThan($doc, $html, $options)
+	{
+		$reference = '&#0000060;';
+		$escaped = 0;
+
+		if (strpos(preg_replace('/[\x01-\x08\x0B\x0C\x0E-\x1F]/', '', $html), $reference) === false)
+		{
+			$html = preg_replace('#<(?![A-Za-z/!?])#', $reference, $html, -1, $escaped);
+		}
+
+		$doc->loadHTML($html, $options);
+
+		if ($escaped === 0)
+		{
+			return;
+		}
+
+		$xpath = new DOMXPath($doc);
+		$holds = '[contains(., "' . $reference . '")]';
+
+		foreach ($xpath->query('//text()' . $holds . ' | //comment()' . $holds . ' | //processing-instruction()' . $holds) as $node)
+		{
+			if ($node->nodeType !== XML_TEXT_NODE)
+			{
+				$node->nodeValue = str_replace($reference, '<', $node->nodeValue);
+			}
+		}
 	}
 
 	/**
