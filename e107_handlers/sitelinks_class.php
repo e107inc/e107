@@ -353,6 +353,22 @@ class sitelinks
 
 
 	/**
+	 * Open a link's address in the popup window its link_open mode sizes, as an open_window() call
+	 *
+	 * @param e_parse $tp
+	 * @param string $url the address as stored or rendered, HTML entities included
+	 * @param int $mode link_open: 4 for 600x400, 5 for 800x600
+	 * @return string script for a single-quoted HTML attribute, the address in it a JavaScript string
+	 */
+	public static function popupScript(e_parse $tp, $url, $mode)
+	{
+		$size = ((int) $mode === 5) ? '800,600' : '600,400';
+
+		return 'open_window('.$tp->toJsString(html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8')).','.$size.')';
+	}
+
+
+	/**
 	 * @param $linkInfo
 	 * @param $submenu
 	 * @param $style
@@ -458,8 +474,7 @@ class sitelinks
 
 			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5)
 			{
-				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
-				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."',{$dimen})\"";
+				$href = " href='".$tp->toJsUrl(self::popupScript($tp, $linkInfo['link_url'], $linkInfo['link_open']))."'";
 			}
 			else
 			{

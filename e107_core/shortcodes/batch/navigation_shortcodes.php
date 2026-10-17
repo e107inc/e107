@@ -223,11 +223,8 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 					break;
 
 				case 4:
-					$text = " onclick=\"open_window('" . $this->var['link_url'] . "',600,400); return false;\"";
-					break;
-
 				case 5:
-					$text = " onclick=\"open_window('" . $this->var['link_url'] . "',800,600); return false;\"";
+					$text = " onclick='".sitelinks::popupScript(e107::getParser(), $this->sc_nav_link_url(), $type)."; return false;'";
 					break;
 			}
 

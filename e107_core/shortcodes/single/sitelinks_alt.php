@@ -110,8 +110,7 @@ class sitelinks_alt
 			
 			if ($cat_open == 4 || $cat_open == 5)
 			{
-				$dimen = ($cat_open == 4) ? "600,400" : "800,600";
-				$href = " href=\"javascript:open_window('".$cat_link."',".$dimen.")\"";
+				$href = " href='".$tp->toJsUrl(sitelinks::popupScript($tp, $cat_link, $cat_open))."'";
 			}
 			else
 			{
@@ -146,8 +145,7 @@ class sitelinks_alt
 			
 			if ($cat_open == 4 || $cat_open == 5)
 			{
-				$dimen = ($cat_open == 4) ? "600,400" : "800,600";
-				$href = " href=\"javascript:open_window('".$cat_link."',".$dimen.")\"";
+				$href = " href='".$tp->toJsUrl(sitelinks::popupScript($tp, $cat_link, $cat_open))."'";
 			}
 			else
 			{

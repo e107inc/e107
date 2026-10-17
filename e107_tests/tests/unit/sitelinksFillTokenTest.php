@@ -9,6 +9,7 @@
  */
 class sitelinksFillTokenTest extends \Codeception\Test\Unit
 {
+	use \Test\SitelinkRows;
 	use \Test\BootedCli;
 
 	/**
@@ -25,23 +26,14 @@ class sitelinksFillTokenTest extends \Codeception\Test\Unit
 	 *
 	 * @return array
 	 */
-	private static function linkRow()
+	private static function logoutRow()
 	{
-		return array(
-			'link_id'          => 1,
-			'link_name'        => 'Logout',
-			'link_url'         => self::STORED_URL,
-			'link_description' => '',
-			'link_button'      => '',
-			'link_category'    => 1,
-			'link_parent'      => 0,
-			'link_open'        => 0,
-			'link_class'       => 0,
-			'link_order'       => 1,
-			'link_function'    => '',
-			'link_sefurl'      => '',
-			'link_owner'       => '',
-		);
+		return self::linkRow(array(
+			'link_name'     => 'Logout',
+			'link_url'      => self::STORED_URL,
+			'link_category' => 1,
+			'link_function' => '',
+		));
 	}
 
 	/**
@@ -90,7 +82,7 @@ class sitelinksFillTokenTest extends \Codeception\Test\Unit
 
 	public function testANavigationLinkCarriesTheTokenInItsUrl()
 	{
-		$url = $this->withToken('$row = '.var_export(self::linkRow(), true).'; '
+		$url = $this->withToken('$row = '.var_export(self::logoutRow(), true).'; '
 			."echo '@@'.e107::getScBatch('navigation')->setVars(\$row)->sc_nav_link_url().'@@';");
 
 		self::assertStringContainsString('e-token='.self::TOKEN, $url, 'the stored placeholder has to reach the href as a token');
@@ -101,7 +93,7 @@ class sitelinksFillTokenTest extends \Codeception\Test\Unit
 	public function testASitelinkCarriesTheTokenInItsHref()
 	{
 		$markup = $this->withToken('$GLOBALS[\'tp\'] = e107::getParser(); '
-			.'$row = '.var_export(self::linkRow(), true).'; '
+			.'$row = '.var_export(self::logoutRow(), true).'; '
 			."echo '@@'.e107::getSitelinks()->makeLink(\$row, false, array('linkstart' => '', 'linkclass' => '', 'linkend' => '')).'@@';");
 
 		self::assertStringContainsString('e-token='.self::TOKEN, $markup, 'the legacy renderer fills a stored URL too');
