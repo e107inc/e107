@@ -110,7 +110,7 @@ class AdminOptionsSaveScopeCest
 	 */
 	private function dontSeeTheOptionsSaveSetACorePreference(AcceptanceTester $I, $perms, $tokenPage, $route)
 	{
-		$this->loginAsDelegatedAdministrator($I, $perms);
+		$I->loginAsDelegatedAdmin('p7rpopt'.preg_replace('/\W/', '', $perms), $perms);
 
 		$I->sendPostRequest($route, array(
 			'etrigger_save' => 'save',
@@ -123,24 +123,6 @@ class AdminOptionsSaveScopeCest
 
 		$I->assertNotSame(self::SITENAME_ATTACK, $stored['sitename'], 'The options save of '.$route.' set the site name.');
 		$I->assertFalse($stored['new_pref'], 'The options save of '.$route.' added a core preference.');
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $perms
-	 * @return void
-	 */
-	private function loginAsDelegatedAdministrator(AcceptanceTester $I, $perms)
-	{
-		$name = 'p7rpopt'.preg_replace('/\W/', '', $perms);
-
-		$I->haveMember($name, $name, array(
-			'user_admin' => 1,
-			'user_perms' => $perms,
-			'user_class' => '',
-		));
-
-		$I->loginAsAdmin($name, $name);
 	}
 
 	/**

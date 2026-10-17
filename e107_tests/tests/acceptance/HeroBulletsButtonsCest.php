@@ -26,6 +26,7 @@ class HeroBulletsButtonsCest
 
 	public function _after(AcceptanceTester $I)
 	{
+		$I->restoreSitePrefs();
 		$I->dropPluginProbe();
 	}
 
@@ -55,16 +56,16 @@ class HeroBulletsButtonsCest
 	{
 		$id = $this->haveSlide($I, 'Q7C author', array('icon' => 'fa-sun-o.glyph', 'text' => 'Bullet'), array('label' => 'Go', 'url' => '', 'class' => 'primary'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $id)
-		{
-			$I->amSignedInAs(self::HERO_ADMIN);
-			$I->amOnPage('/e107_plugins/hero/admin_config.php?mode=main&action=edit&id='.$id);
-			$I->submitForm('#plugin-hero-form', array(
-				'hero_bullets[0][text]' => 'Bullet <b id="q7chb">bold</b><img id="q7chi" src="x.png" onload="q7c()">',
-				'hero_button1[label]'   => 'Call <b id="q7chl">us</b>',
-				'hero_button1[url]'     => 'tel:+15555550100',
-			), 'etrigger_submit');
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$I->amSignedInAs(self::HERO_ADMIN);
+		$I->amOnPage('/e107_plugins/hero/admin_config.php?mode=main&action=edit&id='.$id);
+		$I->submitForm('#plugin-hero-form', array(
+			'hero_bullets[0][text]' => 'Bullet <b id="q7chb">bold</b><img id="q7chi" src="x.png" onload="q7c()">',
+			'hero_button1[label]'   => 'Call <b id="q7chl">us</b>',
+			'hero_button1[url]'     => 'tel:+15555550100',
+		), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$I->assertSame(1, json_decode($I->grabFromDatabase('e107_hero', 'hero_button1', array('hero_id' => $id)), true)['__trust__']['label']);
 
@@ -79,15 +80,15 @@ class HeroBulletsButtonsCest
 	{
 		$id = $this->haveSlide($I, 'Q7C outside', array('icon' => 'fa-sun-o.glyph', 'text' => 'Bullet'), array('label' => 'Go', 'url' => '', 'class' => 'primary'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 250, 'post_script' => 255), function () use ($I, $id)
-		{
-			$I->amSignedInAs(self::HERO_ADMIN);
-			$I->amOnPage('/e107_plugins/hero/admin_config.php?mode=main&action=edit&id='.$id);
-			$I->submitForm('#plugin-hero-form', array(
-				'hero_bullets[0][text]' => 'Bullet <b id="q7cho">bold</b>',
-				'hero_button1[label]'   => 'Call <b id="q7cho2">us</b>',
-			), 'etrigger_submit');
-		});
+		$I->haveSitePrefUntilAfter('post_html', 250);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$I->amSignedInAs(self::HERO_ADMIN);
+		$I->amOnPage('/e107_plugins/hero/admin_config.php?mode=main&action=edit&id='.$id);
+		$I->submitForm('#plugin-hero-form', array(
+			'hero_bullets[0][text]' => 'Bullet <b id="q7cho">bold</b>',
+			'hero_button1[label]'   => 'Call <b id="q7cho2">us</b>',
+		), 'etrigger_submit');
+		$I->restoreSitePrefs();
 
 		$I->assertSame(0, json_decode($I->grabFromDatabase('e107_hero', 'hero_button1', array('hero_id' => $id)), true)['__trust__']['label']);
 
@@ -102,19 +103,19 @@ class HeroBulletsButtonsCest
 		$I->haveSiteTheme('bootstrap5');
 		$id = $this->haveSlide($I, 'Q7C kept', array('icon' => 'fa-sun-o.glyph', 'text' => 'Bullet'), array('label' => 'Go', 'url' => '', 'class' => 'primary'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $id)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array(
-				'hero_bullets[0][text]' => 'Bullet <b id="q7chk" onclick="q7c()">kept</b>',
-				'hero_button1[label]'   => 'Call <b id="q7chl">us</b>',
-				'hero_button1[url]'     => 'tel:+15555550100',
-			));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveSlideAsHeroAdmin($I, $id, array(
+			'hero_bullets[0][text]' => 'Bullet <b id="q7chk" onclick="q7c()">kept</b>',
+			'hero_button1[label]'   => 'Call <b id="q7chl">us</b>',
+			'hero_button1[url]'     => 'tel:+15555550100',
+		));
+		$I->restoreSitePrefs();
 
-		$I->haveSitePrefsDuring(array('post_html' => 250, 'post_script' => 255), function () use ($I, $id)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array('hero_bullets[1][text]' => 'Second <b id="q7chc">changed</b>'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 250);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$this->saveSlideAsHeroAdmin($I, $id, array('hero_bullets[1][text]' => 'Second <b id="q7chc">changed</b>'));
+		$I->restoreSitePrefs();
 
 		$I->amOnPage('/');
 		$I->seeElement('#q7chk[onclick]');
@@ -129,15 +130,15 @@ class HeroBulletsButtonsCest
 		$I->haveSiteTheme('bootstrap5');
 		$id = $this->haveSlide($I, 'Q7C typed', array('icon' => 'fa-sun-o.glyph', 'text' => 'Bullet'), array('label' => 'Go', 'url' => '', 'class' => 'primary'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $id)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array('hero_bullets[0][text]' => '&lt;b id="q7chp" onclick="q7c()"&gt;typed&lt;/b&gt;'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$this->saveSlideAsHeroAdmin($I, $id, array('hero_bullets[0][text]' => '&lt;b id="q7chp" onclick="q7c()"&gt;typed&lt;/b&gt;'));
+		$I->restoreSitePrefs();
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $id)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array());
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveSlideAsHeroAdmin($I, $id, array());
+		$I->restoreSitePrefs();
 
 		$I->amOnPage('/');
 		$I->seeInSource('Q7C typed');
@@ -153,10 +154,10 @@ class HeroBulletsButtonsCest
 		$id = $this->haveSlide($I, 'Q7C decoded', array('icon' => 'fa-sun-o.glyph', 'text' => '&#128;<b id="q7chg" onclick="q7c()">legacy</b>'),
 			array('label' => 'Go', 'url' => '', 'class' => 'primary'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $id)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array());
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveSlideAsHeroAdmin($I, $id, array());
+		$I->restoreSitePrefs();
 
 		$I->amOnPage('/');
 		$I->seeInSource('Q7C decoded');
@@ -173,11 +174,11 @@ class HeroBulletsButtonsCest
 		$id = $this->haveSlide($I, 'Q7C line breaks', array('icon' => 'fa-sun-o.glyph', 'text' => 'Bullet'),
 			array('label' => $label, 'url' => "tel:+1555\r\n5550100", 'class' => 'primary', '__trust__' => array('label' => 0, 'url' => 0)));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $id, $label)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array('hero_button1[label]' => str_replace("\r", '', html_entity_decode($label, ENT_QUOTES)),
-				'hero_button1[url]' => 'tel:+15555550100'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveSlideAsHeroAdmin($I, $id, array('hero_button1[label]' => str_replace("\r", '', html_entity_decode($label, ENT_QUOTES)),
+			'hero_button1[url]' => 'tel:+15555550100'));
+		$I->restoreSitePrefs();
 
 		$I->amOnPage('/');
 		$I->seeInSource('Q7C line breaks');
@@ -194,17 +195,17 @@ class HeroBulletsButtonsCest
 		$id = $this->haveSlide($I, 'Q7C lower altered', array('icon' => 'fa-sun-o.glyph', 'text' => 'Bullet'), array('label' => 'Go', 'url' => '', 'class' => 'primary'));
 		$label = "Call\n<b id=\"q7chm\" onclick=\"q7c()\">us</b>";
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $id, $label)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array('hero_button1[label]' => $label, 'hero_button1[url]' => "tel:+1555\n5550100"));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveSlideAsHeroAdmin($I, $id, array('hero_button1[label]' => $label, 'hero_button1[url]' => "tel:+1555\n5550100"));
+		$I->restoreSitePrefs();
 
 		$stored = json_decode($I->grabFromDatabase('e107_hero', 'hero_button1', array('hero_id' => $id)), true);
 
-		$I->haveSitePrefsDuring(array('post_html' => 250, 'post_script' => 255), function () use ($I, $id, $label)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array('hero_button1[label]' => str_replace("\n", '', $label), 'hero_button1[url]' => 'tel:+15555550100'));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 250);
+		$I->haveSitePrefUntilAfter('post_script', 255);
+		$this->saveSlideAsHeroAdmin($I, $id, array('hero_button1[label]' => str_replace("\n", '', $label), 'hero_button1[url]' => 'tel:+15555550100'));
+		$I->restoreSitePrefs();
 
 		$kept = json_decode($I->grabFromDatabase('e107_hero', 'hero_button1', array('hero_id' => $id)), true);
 		ksort($stored);
@@ -226,10 +227,10 @@ class HeroBulletsButtonsCest
 		$text = "\r\n\n<b id=\"q7chy\" onclick=\"q7c()\">legacy</b>";
 		$id = $this->haveSlide($I, 'Q7C breaks', array('icon' => 'fa-sun-o.glyph', 'text' => $text), array('label' => 'Go', 'url' => '', 'class' => 'primary'));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $id, $text)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array('hero_bullets[0][text]' => "\r\n".substr($text, 3)));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveSlideAsHeroAdmin($I, $id, array('hero_bullets[0][text]' => "\r\n".substr($text, 3)));
+		$I->restoreSitePrefs();
 
 		$bullets = json_decode($I->grabFromDatabase('e107_hero', 'hero_bullets', array('hero_id' => $id)), true);
 		$I->assertSame(array($text, array()), array($bullets[0]['text'], $bullets[0]['__trust__']));
@@ -249,14 +250,14 @@ class HeroBulletsButtonsCest
 		$id = $this->haveSlide($I, 'Q7C nul', array('icon' => 'fa-sun-o.glyph', 'text' => 'Bullet'),
 			array('label' => $label, 'url' => $url, 'class' => 'primary', '__trust__' => array('url' => 0)));
 
-		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $id, $label, $url)
-		{
-			$this->saveSlideAsHeroAdmin($I, $id, array(
-				'hero_button1[icon]'  => 'fa-star',
-				'hero_button1[label]' => str_replace("\0", "\xEF\xBF\xBD", html_entity_decode($label, ENT_QUOTES)),
-				'hero_button1[url]'   => str_replace("\0", "\xEF\xBF\xBD", $url),
-			));
-		});
+		$I->haveSitePrefUntilAfter('post_html', 254);
+		$I->haveSitePrefUntilAfter('post_script', 254);
+		$this->saveSlideAsHeroAdmin($I, $id, array(
+			'hero_button1[icon]'  => 'fa-star',
+			'hero_button1[label]' => str_replace("\0", "\xEF\xBF\xBD", html_entity_decode($label, ENT_QUOTES)),
+			'hero_button1[url]'   => str_replace("\0", "\xEF\xBF\xBD", $url),
+		));
+		$I->restoreSitePrefs();
 
 		$button = json_decode($I->grabFromDatabase('e107_hero', 'hero_button1', array('hero_id' => $id)), true);
 		$I->assertSame(array('fa-star', $label, $url, 0), array($button['icon'], $button['label'], $button['url'], $button['__trust__']['url']));

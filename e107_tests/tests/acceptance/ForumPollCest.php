@@ -26,9 +26,6 @@ class ForumPollCest
 	/** @var int the site's main poll, made by an administrator */
 	private $mainPoll;
 
-	/** @var string the forum's poll class before this Cest changed it */
-	private $pollClassWas;
-
 	public function _before(AcceptanceTester $I)
 	{
 		$I->haveForumPluginInstalled();
@@ -48,7 +45,7 @@ class ForumPollCest
 		// Each test starts a thread, and the flood check refuses one that follows
 		// the newest thread in the table within seconds, whoever started it.
 		$I->haveSitePrefUntilAfter('antiflood1', 0);
-		$this->pollClassWas = $I->havePluginPref('forum', 'poll', self::CLASS_MEMBER);
+		$I->havePluginPrefUntilAfter('forum', 'poll', self::CLASS_MEMBER);
 
 		$I->haveForumMember('pollmember');
 
@@ -59,7 +56,6 @@ class ForumPollCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->havePluginPref('forum', 'poll', $this->pollClassWas === '' ? null : $this->pollClassWas);
 		$I->restoreSitePrefs();
 		$I->haveForumCsrfMode('default');
 		$I->dropForumProbe();
@@ -245,8 +241,7 @@ class ForumPollCest
 		$pluginId = $I->grabFromDatabase('e107_plugin', 'plugin_id', array('plugin_path' => $plugin));
 
 		$I->logoutFromForum();
-		$I->haveMember($name, $name, array('user_admin' => 1, 'user_perms' => 'P'.$pluginId));
-		$I->loginAsAdmin($name, $name);
+		$I->loginAsDelegatedAdmin($name, 'P'.$pluginId);
 	}
 
 	/**
