@@ -1010,22 +1010,14 @@ class InlineEditPermsCest
 	 */
 	private function seedNewsItem(AcceptanceTester $I, $categoryId)
 	{
-		return (int) $I->haveInDatabase('e107_news', array(
-			'news_title'            => self::ITEM_TITLE,
-			'news_sef'              => 'p7ie-item',
-			'news_body'             => 'Seeded by InlineEditPermsCest.',
-			'news_extended'         => '',
-			'news_meta_title'       => '',
-			'news_meta_keywords'    => '',
-			'news_meta_description' => '',
-			'news_datestamp'        => self::PWCHANGE,
-			'news_author'           => 1,
-			'news_category'         => $categoryId,
-			'news_class'            => '0',
-			'news_render_type'      => '0',
-			'news_summary'          => '',
-			'news_thumbnail'        => '',
-		));
+		return (int) $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'     => self::ITEM_TITLE,
+			'news_sef'       => 'p7ie-item',
+			'news_body'      => 'Seeded by InlineEditPermsCest.',
+			'news_datestamp' => self::PWCHANGE,
+			'news_author'    => 1,
+			'news_category'  => $categoryId,
+		)));
 	}
 
 	/**

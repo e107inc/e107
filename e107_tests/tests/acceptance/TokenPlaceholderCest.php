@@ -171,26 +171,13 @@ class TokenPlaceholderCest
 	 */
 	public function aMemberWrittenImageTagNeverCarriesTheToken(AcceptanceTester $I)
 	{
-		$id = $I->haveInDatabase('e107_news', array(
-			'news_title'            => 'TokenPlaceholderPayload',
-			'news_sef'              => 'tokenplaceholderpayload',
-			'news_body'             => '[img]'.self::PAYLOAD_URL.'[/img]',
-			'news_extended'         => '',
-			'news_meta_title'       => '',
-			'news_meta_keywords'    => '',
-			'news_meta_description' => '',
-			'news_datestamp'        => 1,
-			'news_author'           => 1,
-			'news_category'         => 0,
-			'news_allow_comments'   => 0,
-			'news_sticky'           => 0,
-			'news_start'            => 0,
-			'news_end'              => 0,
-			'news_class'            => '0',
-			'news_render_type'      => '0',
-			'news_summary'          => '',
-			'news_thumbnail'        => '',
-		));
+		$id = $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'     => 'TokenPlaceholderPayload',
+			'news_sef'       => 'tokenplaceholderpayload',
+			'news_body'      => '[img]'.self::PAYLOAD_URL.'[/img]',
+			'news_datestamp' => 1,
+			'news_author'    => 1,
+		)));
 
 		$I->loginAsAdmin();
 		$I->amOnPage('/news.php?extend.'.$id);
