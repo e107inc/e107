@@ -3565,6 +3565,17 @@ class e_parse
 	}
 
 	/**
+	 * Turn script into a javascript: address for a single-quoted href, percent-encoding what the attribute or the address would change.
+	 *
+	 * @param string $script
+	 * @return string
+	 */
+	public function toJsUrl($script)
+	{
+		return 'javascript:'.strtr((string) $script, array('%' => '%25', "'" => '%27', '&' => '%26', "\t" => '%09', "\n" => '%0A', "\r" => '%0D', "\0" => '%00'));
+	}
+
+	/**
 	 * Write as $entity each match of $pattern in text holding a tag the parser cannot read, and in the tags it reads when $tagsToo, so that the match can neither cut a tag in two nor open one; in all of $text when it defeats the pattern engine.
 	 *
 	 * @param string $text

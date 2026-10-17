@@ -14,30 +14,12 @@
  */
 class sitelinksLinkUrlTest extends \Test\Unit
 {
+	use \Test\SitelinkRows;
 
 	/**
 	 * @var array every diagnostic the last quietly() raised
 	 */
 	private $diagnostics = array();
-
-	/**
-	 * makeLink() reads the $tp global that class2.php defines on a real
-	 * request and the suite's bootstrap does not.
-	 *
-	 * @return void
-	 */
-	protected function _before()
-	{
-		$GLOBALS['tp'] = e107::getParser();
-	}
-
-	/**
-	 * @return void
-	 */
-	protected function _after()
-	{
-		unset($GLOBALS['tp']);
-	}
 
 	/**
 	 * A row of the shape plugin installation writes: a stored URL, plus the
@@ -47,19 +29,12 @@ class sitelinksLinkUrlTest extends \Test\Unit
 	 */
 	private static function pluginRow()
 	{
-		return array(
-			'link_id'          => 1,
-			'link_name'        => 'My plugin file',
-			'link_url'         => '{e_PLUGIN}myplugin/myfile.php',
-			'link_owner'       => 'myplugin',
-			'link_sefurl'      => 'index',
-			'link_description' => '',
-			'link_button'      => '',
-			'link_parent'      => 0,
-			'link_open'        => 0,
-			'link_class'       => 0,
-			'link_order'       => 1,
-		);
+		return self::linkRow(array(
+			'link_name'   => 'My plugin file',
+			'link_url'    => '{e_PLUGIN}myplugin/myfile.php',
+			'link_owner'  => 'myplugin',
+			'link_sefurl' => 'index',
+		));
 	}
 
 	/**
@@ -77,14 +52,6 @@ class sitelinksLinkUrlTest extends \Test\Unit
 		$row['link_sefurl'] = '';
 
 		return $row;
-	}
-
-	/**
-	 * @return array the three style keys makeLink() reads unguarded
-	 */
-	private static function style()
-	{
-		return array('linkstart' => '', 'linkclass' => '', 'linkend' => '');
 	}
 
 	/**
@@ -164,18 +131,9 @@ class sitelinksLinkUrlTest extends \Test\Unit
 		return array_values(preg_grep('/offset/i', $this->diagnostics));
 	}
 
-	/**
-	 * @param array $row
-	 * @return string the markup makeLink() rendered for it
-	 */
-	private function renderLink($row)
-	{
-		return e107::getSitelinks()->makeLink($row, false, self::style(), false);
-	}
-
 	public function testAnUnresolvedSefRouteKeepsTheStoredUrlInTheSitelinkHref()
 	{
-		$markup = $this->renderLink(self::pluginRow());
+		$markup = self::makeLink(self::pluginRow());
 
 		self::assertStringEndsWith('e107_plugins/myplugin/myfile.php', self::href($markup),
 			"an e_url key the registry does not hold must not cost the link its stored URL:\n".$markup);
@@ -190,7 +148,7 @@ class sitelinksLinkUrlTest extends \Test\Unit
 
 		try
 		{
-			$markup = $this->renderLink(self::pluginRow());
+			$markup = self::makeLink(self::pluginRow());
 		}
 		finally
 		{
@@ -240,7 +198,7 @@ class sitelinksLinkUrlTest extends \Test\Unit
 
 		$markup = $this->quietly(function () use ($row)
 		{
-			return $this->renderLink($row);
+			return self::makeLink($row);
 		});
 
 		self::assertSame(array(), $this->offsetDiagnostics(),
