@@ -34,6 +34,8 @@ class e_parseBBCodeInsideTagTest extends \Codeception\Test\Unit
 			'table block, single-quoted, beside a hidden block' => array('[table][tr][td]<b title=&#39;x [hide]s[/hide] [img]http://e107.org/x.png tabindex=0 autofocus onfocus=alert(1) x[/img]&#39;>B</b>[/td][/tr][/table]'),
 			'code block in a title'                             => array('<p><b title=&quot;x [code]a[/code] [url]http://e107.org/ tabindex=0 autofocus onfocus=alert(1) x[/url]&quot;>B</b></p>'),
 			'code block in a title, quotes typed'               => array('<p><b title="x [code]a[/code] [url]http://e107.org/ tabindex=0 autofocus onfocus=alert(1) x[/url]">B</b></p>'),
+			'link in a title inside an scode block'             => array('<p>[scode]<b title=&quot;x [url]http://e107.org/ tabindex=0 autofocus onfocus=alert(1) x[/url]&quot;>B</b>[/scode]</p>'),
+			'link in a title after a broken code opener'        => array("<p>[code\n]<b title=&quot;x [url]http://e107.org/ tabindex=0 autofocus onfocus=alert(1) x[/url]&quot;>B</b>[/code]</p>"),
 			'scode block in a title'                            => array('<p><b title=&quot;x [scode]a[/scode] [url]http://e107.org/ tabindex=0 autofocus onfocus=alert(1) x[/url]&quot;>B</b></p>'),
 			'scode opened in a title, closed after the tag'     => array('<p><b title=&quot;x [scode]a [url]http://e107.org/ tabindex=0 autofocus onfocus=alert(1) x[/url]&quot;>B</b>[/scode]</p>'),
 			'table block in a title in a table block'           => array('[table][tr][td]<b title=&quot;x [table]a[/table] [url]http://e107.org/ tabindex=0 autofocus onfocus=alert(1) x[/url]&quot;>B</b>[/td][/tr][/table]'),
