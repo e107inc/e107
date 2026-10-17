@@ -216,7 +216,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		}
 		elseif($this->var['action'] == 'edit')
 		{
-			$text = $tp->toForm($authorPostsHtml ? $this->var['post_entry'] : $this->codeAsTyped($this->var['post_entry']));
+			$text = $tp->toForm($this->var['post_entry']);
 			$editorText = $this->asTheEditorReadsIt($this->var['post_entry']);
 		}
 		else
@@ -270,20 +270,6 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		}
 
 		return str_replace(array('&quot;', '&#039;', '&#092;', '&amp;quot;', '&amp;#039;'), array('"', "'", '\\', '&quot;', '&#039;'), $text);
-	}
-
-	/**
-	 * Take back the level of encoding that a [code] block of an author outside post_html gains on top of the rest of their post.
-	 *
-	 * @param string $text
-	 * @return string
-	 */
-	private function codeAsTyped($text)
-	{
-		return preg_replace_callback('#(\[code(?:=[^\]]*)?])(.*?)(\[/code])#s', function ($match)
-		{
-			return $match[1].html_entity_decode($match[2], ENT_QUOTES, 'UTF-8').$match[3];
-		}, $text);
 	}
 
 	function sc_forum_post_buttons()
