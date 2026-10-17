@@ -15,26 +15,16 @@ class CommentAdminNewsRecountCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$this->newsId = $I->haveInDatabase('e107_news', array(
-			'news_title'            => 'Fixture Recount News',
-			'news_sef'              => 'fixture-recount-news',
-			'news_body'             => 'Body of Fixture Recount News',
-			'news_extended'         => '',
-			'news_meta_keywords'    => '',
-			'news_meta_description' => '',
-			'news_datestamp'        => time() - 3600,
-			'news_author'           => 1,
-			'news_category'         => 1,
-			'news_allow_comments'   => 0,
-			'news_start'            => 0,
-			'news_end'              => 0,
-			'news_class'            => 0,
-			'news_render_type'      => 0,
-			'news_comment_total'    => 7,
-			'news_summary'          => '',
-			'news_thumbnail'        => '',
-			'news_sticky'           => 0,
-		));
+		$this->newsId = $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'          => 'Fixture Recount News',
+			'news_sef'            => 'fixture-recount-news',
+			'news_body'           => 'Body of Fixture Recount News',
+			'news_datestamp'      => time() - 3600,
+			'news_author'         => 1,
+			'news_category'       => 1,
+			'news_allow_comments' => 0,
+			'news_comment_total'  => 7,
+		)));
 
 		foreach(array('0', 'page', 'profile', 'fixtureplugin') as $type)
 		{

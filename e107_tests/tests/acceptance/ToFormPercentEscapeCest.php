@@ -36,13 +36,14 @@ class ToFormPercentEscapeCest
 
 	public function theCommentPagePrintsANewsTitlesEscapesAsText(AcceptanceTester $I)
 	{
-		$news = $I->haveInDatabase('e107_news', array(
-			'news_title' => 'Title %3C/title%3E%3Cb data-tfud=1%3E', 'news_body' => 'body', 'news_extended' => '',
-			'news_datestamp' => time() - 60, 'news_author' => 1, 'news_category' => 1, 'news_allow_comments' => 0,
-			'news_start' => 0, 'news_end' => 0, 'news_class' => '0', 'news_render_type' => '0', 'news_comment_total' => 0,
-			'news_summary' => '', 'news_thumbnail' => '', 'news_sticky' => 0, 'news_meta_keywords' => '',
-			'news_meta_description' => '', 'news_sef' => 'tofrom-percent-title',
-		));
+		$news = $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'     => 'Title %3C/title%3E%3Cb data-tfud=1%3E',
+			'news_body'      => 'body',
+			'news_datestamp' => time() - 60,
+			'news_author'    => 1,
+			'news_category'  => 1,
+			'news_sef'       => 'tofrom-percent-title',
+		)));
 
 		$I->amOnPage('/comment.php?comment.news.'.$news);
 

@@ -140,26 +140,16 @@ class CommentFeedParentClassCest
 	 */
 	private function haveNews(AcceptanceTester $I, $title, $class)
 	{
-		return $I->haveInDatabase('e107_news', array(
-			'news_title' => $title,
-			'news_sef' => strtolower(str_replace(' ', '-', $title)),
-			'news_body' => 'Body of '.$title,
-			'news_extended' => '',
-			'news_meta_keywords' => '',
-			'news_meta_description' => '',
-			'news_datestamp' => time() - 3600,
-			'news_author' => 1,
-			'news_category' => 1,
+		return $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'          => $title,
+			'news_sef'            => strtolower(str_replace(' ', '-', $title)),
+			'news_body'           => 'Body of '.$title,
+			'news_datestamp'      => time() - 3600,
+			'news_author'         => 1,
+			'news_category'       => 1,
 			'news_allow_comments' => 0,
-			'news_start' => 0,
-			'news_end' => 0,
-			'news_class' => $class,
-			'news_render_type' => 0,
-			'news_comment_total' => 0,
-			'news_summary' => '',
-			'news_thumbnail' => '',
-			'news_sticky' => 0,
-		));
+			'news_class'          => $class,
+		)));
 	}
 
 	/**

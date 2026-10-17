@@ -478,15 +478,14 @@ class CommentPostAuthzCest
 	 */
 	private function haveNews(AcceptanceTester $I, $title, $sef, $allowComments)
 	{
-		return $I->haveInDatabase('e107_news', array(
-			'news_title' => $title, 'news_sef' => $sef,
-			'news_body' => 'fixture', 'news_extended' => '',
-			'news_meta_title' => '', 'news_meta_keywords' => '', 'news_meta_description' => '',
-			'news_datestamp' => time() - 3600, 'news_author' => 1, 'news_category' => 0,
+		return $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'          => $title,
+			'news_sef'            => $sef,
+			'news_body'           => 'fixture',
+			'news_datestamp'      => time() - 3600,
+			'news_author'         => 1,
 			'news_allow_comments' => $allowComments,
-			'news_start' => 0, 'news_end' => 0, 'news_class' => '0', 'news_render_type' => '0',
-			'news_summary' => '', 'news_thumbnail' => '',
-		));
+		)));
 	}
 
 	/**

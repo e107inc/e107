@@ -693,16 +693,15 @@ class CommentEditAuthzCest
 	 */
 	private function haveNews(AcceptanceTester $I, $title, $sef)
 	{
-		return $I->haveInDatabase('e107_news', array(
-			'news_title' => $title, 'news_sef' => $sef,
-			'news_body' => 'fixture', 'news_extended' => '',
-			'news_meta_title' => '', 'news_meta_keywords' => '', 'news_meta_description' => '',
-			'news_datestamp' => time() - 3600, 'news_author' => 1, 'news_category' => 0,
+		return $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'          => $title,
+			'news_sef'            => $sef,
+			'news_body'           => 'fixture',
+			'news_datestamp'      => time() - 3600,
+			'news_author'         => 1,
 			// 0 means comments are allowed. comment.php requires it.
 			'news_allow_comments' => 0,
-			'news_start' => 0, 'news_end' => 0, 'news_class' => '0', 'news_render_type' => '0',
-			'news_summary' => '', 'news_thumbnail' => '',
-		));
+		)));
 	}
 
 	/**

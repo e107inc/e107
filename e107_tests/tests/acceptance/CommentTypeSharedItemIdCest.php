@@ -19,27 +19,16 @@ class CommentTypeSharedItemIdCest
 			$I->grabColumnFromDatabase('e107_page', 'page_id')
 		));
 
-		$I->haveInDatabase('e107_news', array(
-			'news_id'               => $this->id,
-			'news_title'            => 'Fixture Shared Id News',
-			'news_sef'              => 'fixture-shared-id-news',
-			'news_body'             => 'Body of Fixture Shared Id News',
-			'news_extended'         => '',
-			'news_meta_keywords'    => '',
-			'news_meta_description' => '',
-			'news_datestamp'        => time() - 3600,
-			'news_author'           => 1,
-			'news_category'         => 1,
-			'news_allow_comments'   => 0,
-			'news_start'            => 0,
-			'news_end'              => 0,
-			'news_class'            => '0',
-			'news_render_type'      => 0,
-			'news_comment_total'    => 0,
-			'news_summary'          => '',
-			'news_thumbnail'        => '',
-			'news_sticky'           => 0,
-		));
+		$I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_id'             => $this->id,
+			'news_title'          => 'Fixture Shared Id News',
+			'news_sef'            => 'fixture-shared-id-news',
+			'news_body'           => 'Body of Fixture Shared Id News',
+			'news_datestamp'      => time() - 3600,
+			'news_author'         => 1,
+			'news_category'       => 1,
+			'news_allow_comments' => 0,
+		)));
 
 		$I->haveInDatabase('e107_page', array(
 			'page_id'           => $this->id,

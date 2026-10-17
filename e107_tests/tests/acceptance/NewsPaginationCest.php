@@ -91,14 +91,13 @@ class NewsPaginationCest
 	 */
 	private function haveNews(AcceptanceTester $I, $title, $datestamp)
 	{
-		return $I->haveInDatabase('e107_news', array(
-			'news_title' => $title, 'news_sef' => strtolower($title),
-			'news_body' => $title . 'Body', 'news_extended' => '',
-			'news_meta_title' => '', 'news_meta_keywords' => '', 'news_meta_description' => '',
-			'news_datestamp' => $datestamp, 'news_author' => 1, 'news_category' => 0,
-			'news_allow_comments' => 1, 'news_sticky' => 0,
-			'news_start' => 0, 'news_end' => 0, 'news_class' => '0', 'news_render_type' => '0',
-			'news_summary' => '', 'news_thumbnail' => '',
-		));
+		return $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'          => $title,
+			'news_sef'            => strtolower($title),
+			'news_body'           => $title . 'Body',
+			'news_datestamp'      => $datestamp,
+			'news_author'         => 1,
+			'news_allow_comments' => 1,
+		)));
 	}
 }

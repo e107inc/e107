@@ -845,26 +845,18 @@ class CommentRoutesParentVisibilityCest
 	private function haveNewsComment(AcceptanceTester $I, $marker, $title, $class, $start, $end, $allowComments = 0)
 	{
 		$this->titles[$marker] = $title;
-		$this->items[$marker] = $I->haveInDatabase('e107_news', array(
-			'news_title'            => $title,
-			'news_sef'              => strtolower($marker),
-			'news_body'             => 'Body of '.$title,
-			'news_extended'         => '',
-			'news_meta_keywords'    => '',
-			'news_meta_description' => '',
-			'news_datestamp'        => time() - 3600,
-			'news_author'           => 1,
-			'news_category'         => 1,
-			'news_allow_comments'   => $allowComments,
-			'news_start'            => $start,
-			'news_end'              => $end,
-			'news_class'            => $class,
-			'news_render_type'      => 0,
-			'news_comment_total'    => 0,
-			'news_summary'          => '',
-			'news_thumbnail'        => '',
-			'news_sticky'           => 0,
-		));
+		$this->items[$marker] = $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'          => $title,
+			'news_sef'            => strtolower($marker),
+			'news_body'           => 'Body of '.$title,
+			'news_datestamp'      => time() - 3600,
+			'news_author'         => 1,
+			'news_category'       => 1,
+			'news_allow_comments' => $allowComments,
+			'news_start'          => $start,
+			'news_end'            => $end,
+			'news_class'          => $class,
+		)));
 
 		$this->haveComment($I, $marker, 0);
 	}

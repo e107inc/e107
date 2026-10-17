@@ -61,24 +61,14 @@ class RssCommentsFeedCest
 	 */
 	private function seedNews(AcceptanceTester $I, $title, $class, $start)
 	{
-		return $I->haveInDatabase('e107_news', array(
-			'news_title'            => $title,
-			'news_sef'              => '',
-			'news_body'             => 'body of '.$title,
-			'news_extended'         => '',
-			'news_meta_title'       => '',
-			'news_meta_keywords'    => '',
-			'news_meta_description' => '',
-			'news_datestamp'        => time() - 3600,
-			'news_author'           => 1,
-			'news_category'         => 0,
-			'news_start'            => $start,
-			'news_end'              => 0,
-			'news_class'            => $class,
-			'news_render_type'      => '0',
-			'news_summary'          => '',
-			'news_thumbnail'        => '',
-		));
+		return $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'     => $title,
+			'news_body'      => 'body of '.$title,
+			'news_datestamp' => time() - 3600,
+			'news_author'    => 1,
+			'news_start'     => $start,
+			'news_class'     => $class,
+		)));
 	}
 
 	/**
