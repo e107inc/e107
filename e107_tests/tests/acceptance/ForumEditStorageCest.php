@@ -25,11 +25,12 @@ class ForumEditStorageCest
 		$post = $I->haveForumPost('Original reply', $this->ids['threadA'], $this->ids['forumA'], $I->haveForumMember('tfeditor'));
 		$I->loginToForum('tfeditor');
 
-		$this->edit($I, $post, 'Edited a < b <details open data-feb=1 ontoggle=x>d</details>');
+		$this->edit($I, $post, 'Edited text <details open data-feb=1 ontoggle=x>d</details>');
 
 		$stored = $I->grabFromDatabase('e107_forum_post', 'post_entry', array('post_id' => $post));
-		$I->assertStringStartsWith('Edited a &lt; b', $stored);
+		$I->assertStringStartsWith('Edited text', $stored);
 		$I->assertStringNotContainsString('<details', $stored);
+		$I->assertStringNotContainsString('ontoggle', $stored);
 		$I->logoutFromForum();
 		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
 		$I->see('Edited');
