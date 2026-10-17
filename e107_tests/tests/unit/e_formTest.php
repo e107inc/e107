@@ -340,6 +340,53 @@ class e_formTest extends \Codeception\Test\Unit
 		);
 	}
 
+	/**
+	 * @return array the element type of a link field and a stored address a form would show altered if it decoded it
+	 */
+	public function linkAddressesAFormCouldDecode()
+	{
+		return array(
+			'a percent-encoded line break in a text box'   => array('text', 'javascript://%0Avoid(0)'),
+			'a percent-encoded colon in an address box'    => array('url', 'javascript%3Avoid(0)'),
+			'a percent-encoded plus sign'                  => array('url', 'search.php?q=a%2Bb'),
+			'a stored quote'                               => array('url', 'javascript:alert(&quot;e107&quot;)'),
+			'a stored dollar sign'                         => array('text', 'page.php?x=&#036;1'),
+			'an encoded ampersand'                         => array('url', 'news.php?a=1&amp;b=2'),
+		);
+	}
+
+	/**
+	 * @dataProvider linkAddressesAFormCouldDecode
+	 * @param string $type
+	 * @param string $address
+	 */
+	public function testALinkAddressFieldShowsTheAddressAsItIsStoredOrPosted($type, $address)
+	{
+		$model = new e_admin_model();
+		$model->setData(array('address' => $address));
+
+		self::assertSame($address, $this->shownLinkAddress($model, $type), 'as stored');
+
+		$model->setPostedData('address', $address.'#posted');
+
+		self::assertSame($address.'#posted', $this->shownLinkAddress($model, $type), 'as posted, when the form comes back from a save it refused');
+	}
+
+	/**
+	 * @param e_admin_model $model
+	 * @param string $type
+	 * @return string the value a browser reads from the address box of the model's edit form
+	 */
+	private function shownLinkAddress($model, $type)
+	{
+		$fields = array('address' => array('title' => 'Address', 'type' => $type, 'data' => 'str', 'linkAddress' => true));
+		$form = $this->_frm->renderCreateFieldset('link-address', array('fields' => $fields), $model);
+
+		self::assertSame(1, preg_match("/<input type='text' name='address' value='([^']*)'/", $form, $match), "the form has no address box:\n".$form);
+
+		return html_entity_decode($match[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	}
+
 
 	/**
 	 * A stored value that renderElement() decodes reaches a text box, an editor and a picker as text.

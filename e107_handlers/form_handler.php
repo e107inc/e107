@@ -6743,7 +6743,7 @@ var_dump($select_options);*/
 
 		$stored = $value;
 
-		if (is_string($value))
+		if (is_string($value) && empty($attributes['linkAddress']))
 		{
 			// Workaround for accepting poorly normalized values from the database where the data would have been stored
 			// with HTML entities escaped.
@@ -8143,7 +8143,7 @@ var_dump($select_options);*/
 				
 				if(empty($writeParms['show'])) // hidden field and not displayed. Render element after the field-set.
 				{
-					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
+					$hidden_fields[] = $this->renderElement($keyName, $this->createFieldValue($model, $valPath, $att), $att, varset($model_required[$key], array()));
 
 					continue;
 				}
@@ -8188,7 +8188,7 @@ var_dump($select_options);*/
 				$leftCell = "<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title'])). '</span>' .$required.$label;
 
 				$leftCell .= $this->help(varset($att['help']));
-				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId());
+				$rightCell = $this->renderElement($keyName, $this->createFieldValue($model, $valPath, $att), $att, varset($model_required[$key], array()), $model->getId());
 
 
 				$att['writeParms'] = $writeParms;
@@ -8227,6 +8227,17 @@ var_dump($select_options);*/
 		return false;
 		
 
+	}
+
+	/**
+	 * @param e_front_model $model
+	 * @param string        $path the field's data path
+	 * @param array         $att  the field's declaration
+	 * @return mixed the field's value as its create or edit form shows it: a link address as posted or stored, byte for byte, any other value through {@see e_front_model::getIfPosted()}
+	 */
+	private function createFieldValue($model, $path, $att)
+	{
+		return empty($att['linkAddress']) ? $model->getIfPosted($path) : $model->getPostedData($path, $model->getData($path));
 	}
 
 

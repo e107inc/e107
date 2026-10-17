@@ -3324,12 +3324,9 @@ class e_parse
 	public function toUrlAttribute($url, $fallback = '')
 	{
 		$url = (string) $url;
+		$scheme = $this->urlScheme($url);
 
-		// Browsers skip control characters and whitespace while reading a scheme.
-		$probe = eShims::strtolower(preg_replace('/[\x00-\x20\x7F]/', '', $url));
-
-		if (preg_match('#^([a-z][a-z0-9+.\-]*):#', $probe, $match)
-			&& !in_array($match[1], array('http', 'https', 'ftp', 'ftps', 'mailto'), true))
+		if ($scheme !== '' && !in_array($scheme, array('http', 'https', 'ftp', 'ftps', 'mailto'), true))
 		{
 			$url = $fallback;
 		}
@@ -3364,6 +3361,87 @@ class e_parse
 		}
 
 		return str_replace('{', '&#123;', $this->toUrlAttribute($url));
+	}
+
+	/**
+	 * Whether the current user may save a link address: one that can run script needs the post_script class, unless it is the stored address sent back as it is and the save would store it unchanged.
+	 *
+	 * @param string|array      $address the address as posted, or an array of them
+	 * @param string|array|null $shown   the address as stored, byte for byte, never a decoded form value, or an array of them, or null when nothing is stored
+	 * @return bool
+	 */
+	public function maySaveLinkAddress($address, $shown = null)
+	{
+		if (is_array($address))
+		{
+			foreach ($address as $key => $value)
+			{
+				if (!$this->maySaveLinkAddress($value, (is_array($shown) && isset($shown[$key])) ? $shown[$key] : null))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		if ($this->hasScriptAccess())
+		{
+			return true;
+		}
+
+		$address = (string) $address;
+
+		foreach (array($address, $this->toDB($address), $this->toDB($address, false, false, 'model', array('type' => null, 'field' => null))) as $form)
+		{
+			if (($shown === null || !$this->isUnchangedPost($form, $shown)) && $this->mayRunScript((string) $form))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param string $address an address as posted or as stored
+	 * @return bool whether a browser may read a script scheme at its start once its entities are decoded and e107 has filled in its constants and shortcodes
+	 */
+	private function mayRunScript($address)
+	{
+		do
+		{
+			$previous = $address;
+			$address = preg_replace_callback('/&#(x[0-9a-f]+|[0-9]+);?/i', function ($match)
+			{
+				$codePoint = (strtolower($match[1][0]) === 'x') ? hexdec((string) substr($match[1], 1)) : (int) $match[1];
+
+				return (($codePoint > 0 && $codePoint < 0x20) || $codePoint === 0x7F) ? chr($codePoint) : html_entity_decode('&#'.$match[1].';', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+			}, $address);
+			$address = html_entity_decode($address, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+			if (preg_match('/^[^:\/?#]*\{(?!e_)/', $address))
+			{
+				return true;
+			}
+
+			$address = preg_replace('/\{[^{}]*\}/', '', $address);
+		}
+		while ($address !== $previous);
+
+		return in_array($this->urlScheme($address), array('javascript', 'vbscript', 'data'), true);
+	}
+
+	/**
+	 * @param string $url
+	 * @return string the scheme a browser reads at the start of the URL, in lower case, or '' when it names none
+	 */
+	private function urlScheme($url)
+	{
+		// Browsers skip control characters and whitespace while reading a scheme.
+		$probe = eShims::strtolower(preg_replace('/[\x00-\x20\x7F]/', '', $url));
+
+		return preg_match('#^([a-z][a-z0-9+.\-]*):#', $probe, $match) ? $match[1] : '';
 	}
 
 	/**
@@ -5559,6 +5637,19 @@ class e_parse
 	}
 
 	/**
+	 * @return bool whether the current user is in the class that may post script
+	 */
+	private function hasScriptAccess()
+	{
+		if ($this->scriptAccess === false)
+		{
+			$this->scriptAccess = e107::getConfig()->get('post_script', e_UC_NOBODY); // Pref to Allow <script> tags11;
+		}
+
+		return check_class($this->scriptAccess);
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getRemoved()
@@ -7323,12 +7414,7 @@ class e_parse
 		}
 
 
-		if ($this->scriptAccess === false)
-		{
-			$this->scriptAccess = e107::getConfig()->get('post_script', e_UC_NOBODY); // Pref to Allow <script> tags11;
-		}
-
-		$scriptAccess = check_class($this->scriptAccess);
+		$scriptAccess = $this->hasScriptAccess();
 
 		if ($scriptAccess)
 		{
