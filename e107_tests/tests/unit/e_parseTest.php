@@ -587,6 +587,79 @@ EXPECTED;
 		$this->assertStringContainsString('<td>Tom\'s "weekly" notes</td>', $result);
 	}
 
+	/**
+	 * A tag inside an [scode] block keeps the quotes around its attribute values, alone or inside a block.
+	 *
+	 * @dataProvider scodeWrapProvider
+	 */
+	public function testToHTMLRestoresQuotesInsideScodeBlock($wrap)
+	{
+		$tag = '<b title="x onfocus=print()//">B</b>';
+		$stored = $this->tp->toDB(sprintf($wrap, '[scode]' . $tag . '[/scode]'));
+
+		foreach (array('', 'USER_BODY', 'BODY', 'WYSIWYG') as $modifiers)
+		{
+			self::assertStringContainsString($tag, $this->tp->toHTML($stored, true, $modifiers), "$stored with modifiers '$modifiers'");
+		}
+	}
+
+	public function scodeWrapProvider()
+	{
+		return array(
+			'alone'        => array('%s'),
+			'inside html'  => array('[html]<p>%s</p>[/html]'),
+			'inside table' => array('[table][tr][td]%s[/td][/tr][/table]'),
+		);
+	}
+
+	/**
+	 * A [code] block inside an [scode] block still shows its source as typed.
+	 */
+	public function testToHTMLLeavesCodeInsideScodeUnrestored()
+	{
+		$result = $this->tp->toHTML($this->tp->toDB('[scode]see [code]img.onerror = handler;[/code][/scode]'), true, 'USER_BODY');
+
+		self::assertStringContainsString('img.onerror = handler;', $result);
+		self::assertStringContainsString('&lt;b title=&quot;x&quot;&gt;B&lt;/b&gt;', $this->tp->toHTML($this->tp->toDB('[scode]see [code]<b title="x">B</b>[/code][/scode]'), true, 'USER_BODY'));
+	}
+
+	/**
+	 * No tag leaves toHTML() with an attribute value quoted by an entity, which a browser reads as unquoted.
+	 *
+	 * @dataProvider entityQuotedTagProvider
+	 */
+	public function testToHTMLLeavesNoAttributeQuotedByAnEntity($typed)
+	{
+		$stored = $this->tp->toDB($typed);
+
+		foreach (array('', 'USER_BODY', 'BODY', 'WYSIWYG') as $modifiers)
+		{
+			$result = $this->tp->toHTML($stored, true, $modifiers);
+
+			self::assertSame(0, preg_match('#<[a-z][^<>]*=\s*&quot;#i', $result), "$stored with modifiers '$modifiers' gave $result");
+		}
+	}
+
+	public function entityQuotedTagProvider()
+	{
+		$tag = '<b title="x onfocus=print()//">B</b>';
+
+		return array(
+			'scode'                                        => array("[scode]{$tag}[/scode]"),
+			'scode inside html'                            => array("[html]<p>[scode]{$tag}[/scode]</p>[/html]"),
+			'scode inside table'                           => array("[table][tr][td][scode]{$tag}[/scode][/td][/tr][/table]"),
+			'code opener broken by a line'                 => array("[code\n]{$tag}[/code]"),
+			'code opener broken by a line, in scode'       => array("[scode][code\n]{$tag}[/code][/scode]"),
+			'code opener broken by a line, in table'       => array("[table][tr][td][code\n]{$tag}[/code][/td][/tr][/table]"),
+			'code opener reaching its closer, in scode'    => array("[scode][code {$tag} [/code][/scode]"),
+			'code opener reaching its closer, in html'     => array("[html]<p>[code {$tag} [/code]</p>[/html]"),
+			'longer word than code'                        => array("[codex]{$tag}[/code]"),
+			'numbered code closed without its number'      => array("[code2]{$tag}[/code]"),
+			'code taken into an earlier bracket, in scode' => array("[scode][b [code]{$tag}[/code][/scode]"),
+			'code taken into an earlier bracket, in html'  => array("[html]<p>[b [code]{$tag}[/code]</p>[/html]"),
+		);
+	}
+
 	public function testParseTemplateWithEnabledCoreShortcodes()
 	{
 		$needle = '<ul class="nav navbar-nav nav-main ml-auto">';

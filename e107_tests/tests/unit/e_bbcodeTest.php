@@ -531,6 +531,32 @@
 
 
 		/**
+		 * A [hide] block the parser pairs inside what toHTML() takes for a [code] block renders as its box, never as its marker.
+		 */
+		public function testAHideBlockAfterACodeTagClosedWithOtherDigitsRendersItsBox()
+		{
+			$tp = e107::getParser();
+			$this->holdHideGlobals();
+
+			try
+			{
+				foreach(array(true, false) as $allowed)
+				{
+					$this->allowHiddenContent($allowed);
+					$html = $tp->toHTML('[code][/code2][hide]The answer is 42[/hide][HIDE][/code]', true);
+
+					self::assertStringNotContainsString('e_hide_', $html);
+					self::assertSame($allowed, strpos($html, 'The answer is 42') !== false, $html);
+				}
+			}
+			finally
+			{
+				$this->restoreHideGlobals();
+			}
+		}
+
+
+		/**
 		 * The topic page decides blocks on the text as stored, before any of its own rewriting.
 		 *
 		 * @dataProvider postsRewrittenBeforeRendering

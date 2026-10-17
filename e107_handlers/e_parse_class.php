@@ -39,6 +39,9 @@ class e_parse
 
 	private static $hideMarkers = 0; // sets of [hide] markers handed out by setAsideHideBlocks(), so that no two renders share one
 
+	/** @var string a [code] block as the bbcode parser pairs one, the number its tags carry captured second */
+	private static $codeBlockPattern = '#(\[code(?![a-z_])(\d*)(?!\d)[^\]\n]*\].*?\[/code(?![a-z_])\2(?!\d)[^\]\n]*\])#is';
+
 	/**
 	 * Matches one HTML entity, the unit both truncators count as a single character.
 	 *
@@ -2046,7 +2049,7 @@ class e_parse
 
 						case 'scode':
 						case 'code' :
-							$full_text = $this->parseBBCodes($matches[0], $postID);
+							$full_text = $this->parseBBCodes($this->expandInsideTags($this->restoreEntitiesOutsideCode($matches[0], $opts['value']), '[', $bbcodes), $postID);
 							break;
 					}
 
@@ -2580,7 +2583,7 @@ class e_parse
 				'text'   => $segment,
 				'offset' => $offset,
 				'tag'    => $tag,
-				'inTag'  => $tag || (preg_match('#<[a-z]#i', $segment) === 1 && (!$codeRead || preg_match('#<[a-z]#i', (string) preg_replace('#(\[code(?![a-z_])(\d*)(?!\d)[^\]\n]*\].*?\[/code(?![a-z_])\2(?!\d)[^\]\n]*\])#is', '', $segment)) === 1)),
+				'inTag'  => $tag || (preg_match('#<[a-z]#i', $segment) === 1 && (!$codeRead || preg_match('#<[a-z]#i', (string) preg_replace(self::$codeBlockPattern, '', $segment)) === 1)),
 			);
 			$offset += strlen($segment);
 		}
@@ -6754,7 +6757,7 @@ class e_parse
 	}
 
 	/**
-	 * Apply {@see e_parse::restoreEntities()} to body text only, skipping the [code], [scode], <script> and <style> blocks toHTML() never runs it over.
+	 * Apply {@see e_parse::restoreEntities()} to body text only, skipping <script> and <style> blocks and [code] blocks, whose `<` is written as `&lt;` unless it opens a [hide] block's marker.
 	 *
 	 * @param string $text
 	 * @param bool   $forAttributeValue
@@ -6762,14 +6765,14 @@ class e_parse
 	 */
 	private function restoreEntitiesOutsideCode($text, $forAttributeValue)
 	{
-		$parts = preg_split('#(\[(code|scode)\b.*?\[/\2\])#is', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+		$parts = preg_split(self::$codeBlockPattern, $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 		$result = '';
 
 		foreach ($parts as $index => $part)
 		{
 			if ($index % 3 === 1)
 			{
-				$result .= $part;
+				$result .= preg_replace('#<(?!e_hide_\d+_\d+>)#', '&lt;', $part);
 			}
 			elseif ($index % 3 === 0)
 			{
