@@ -428,7 +428,7 @@ class sitelinks
 		// Check for screentip regardless of URL.
 		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
 		{
-			$screentip = " title = \"".$tp->toHTML($linkInfo['link_description'],"","value, emotes_off, defs, no_hook")."\"";
+			$screentip = " title = \"".$tp->toAttribute($linkInfo['link_description'], true)."\"";
 		}
 
 		// Check if its expandable first. It should override its URL.
