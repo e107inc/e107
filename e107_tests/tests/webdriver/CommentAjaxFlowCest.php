@@ -8,39 +8,25 @@ class CommentAjaxFlowCest
 	/** @var int news item with news_allow_comments 0, which is comments on */
 	private $news;
 
-	/** @var string what allowCommentEdit was before this test */
-	private $allowCommentEdit;
-
-	/** @var string|null what adminstyle was before a test that changed it */
-	private $adminstyle;
-
 	public function _before(WebDriverTester $I)
 	{
-		$this->allowCommentEdit = $I->haveSitePref('allowCommentEdit', 1);
+		$I->haveSitePrefUntilAfter('allowCommentEdit', 1);
 
-		$this->news = $I->haveInDatabase('e107_news', array(
-			'news_title' => 'csgr news', 'news_sef' => 'csgr-news',
-			'news_body' => 'fixture', 'news_extended' => '',
-			'news_meta_keywords' => '', 'news_meta_description' => '',
-			'news_datestamp' => time() - 3600, 'news_author' => 1, 'news_category' => 0,
+		$this->news = $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'          => 'csgr news',
+			'news_sef'            => 'csgr-news',
+			'news_body'           => 'fixture',
+			'news_datestamp'      => time() - 3600,
+			'news_author'         => 1,
 			'news_allow_comments' => 0,
-			'news_start' => 0, 'news_end' => 0, 'news_class' => '0', 'news_render_type' => '0',
-			'news_summary' => '', 'news_thumbnail' => '',
-		));
+		)));
 
 		$I->amSignedInAs();
 	}
 
 	public function _after(WebDriverTester $I)
 	{
-		$I->haveSitePref('allowCommentEdit', $this->allowCommentEdit);
-
-		if ($this->adminstyle !== null)
-		{
-			$I->haveSitePref('adminstyle', $this->adminstyle);
-			$this->adminstyle = null;
-		}
-
+		$I->restoreSitePrefs();
 		$I->dropForumProbe();
 	}
 
@@ -112,7 +98,7 @@ class CommentAjaxFlowCest
 
 	public function aDashboardApprovalStillHidesTheComment(WebDriverTester $I)
 	{
-		$this->adminstyle = $I->haveSitePref('adminstyle', 'infopanel');
+		$I->haveSitePrefUntilAfter('adminstyle', 'infopanel');
 		$comment = $this->haveComment($I, 'csgr pending on the dashboard', 2);
 		$I->amOnPage('/e107_admin/admin.php');
 		$I->click('button[data-comment-action="approve"][data-comment-id="'.$comment.'"]');
@@ -129,13 +115,15 @@ class CommentAjaxFlowCest
 	 */
 	private function haveComment(WebDriverTester $I, $text, $blocked)
 	{
-		return $I->haveInDatabase('e107_comments', array(
-			'comment_pid' => 0, 'comment_item_id' => $this->news,
-			'comment_subject' => 'csgr subject',
-			'comment_author_id' => 1, 'comment_author_name' => 'admin',
-			'comment_author_email' => '', 'comment_datestamp' => time() - 1800,
-			'comment_comment' => $text, 'comment_blocked' => $blocked, 'comment_ip' => '127.0.0.1',
-			'comment_type' => '0', 'comment_lock' => 0, 'comment_share' => 0,
-		));
+		return $I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
+			'comment_item_id'     => $this->news,
+			'comment_subject'     => 'csgr subject',
+			'comment_author_id'   => 1,
+			'comment_author_name' => 'admin',
+			'comment_datestamp'   => time() - 1800,
+			'comment_comment'     => $text,
+			'comment_blocked'     => $blocked,
+			'comment_ip'          => '127.0.0.1',
+		)));
 	}
 }

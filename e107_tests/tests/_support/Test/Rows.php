@@ -30,6 +30,32 @@ final class Rows
 	}
 
 	/**
+	 * @param array $columns the columns this news item is about
+	 * @return array an e107_news row, every other column empty or at its default
+	 */
+	public static function news(array $columns)
+	{
+		return array_merge(array(
+			'news_title'            => '',
+			'news_sef'              => '',
+			'news_body'             => '',
+			'news_extended'         => '',
+			'news_meta_keywords'    => '',
+			'news_meta_description' => '',
+			'news_datestamp'        => 0,
+			'news_author'           => 0,
+			'news_category'         => 0,
+			'news_allow_comments'   => 0,
+			'news_start'            => 0,
+			'news_end'              => 0,
+			'news_class'            => '0',
+			'news_render_type'      => '0',
+			'news_summary'          => '',
+			'news_thumbnail'        => '',
+		), $columns);
+	}
+
+	/**
 	 * @param array $columns the columns this page is about
 	 * @return array an e107_page row, every other column empty or at its default
 	 */

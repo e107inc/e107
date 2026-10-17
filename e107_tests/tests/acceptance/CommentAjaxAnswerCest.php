@@ -13,22 +13,18 @@ class CommentAjaxAnswerCest
 	/** @var string */
 	private $token;
 
-	/** @var string what allowCommentEdit was before this test */
-	private $allowCommentEdit;
-
 	public function _before(AcceptanceTester $I)
 	{
-		$this->allowCommentEdit = $I->haveSitePref('allowCommentEdit', 1);
+		$I->haveSitePrefUntilAfter('allowCommentEdit', 1);
 
-		$this->news = $I->haveInDatabase('e107_news', array(
-			'news_title' => 'csgr news', 'news_sef' => 'csgr-news',
-			'news_body' => 'fixture', 'news_extended' => '',
-			'news_meta_title' => '', 'news_meta_keywords' => '', 'news_meta_description' => '',
-			'news_datestamp' => time() - 3600, 'news_author' => 1, 'news_category' => 0,
+		$this->news = $I->haveInDatabase('e107_news', \Test\Rows::news(array(
+			'news_title'          => 'csgr news',
+			'news_sef'            => 'csgr-news',
+			'news_body'           => 'fixture',
+			'news_datestamp'      => time() - 3600,
+			'news_author'         => 1,
 			'news_allow_comments' => 0,
-			'news_start' => 0, 'news_end' => 0, 'news_class' => '0', 'news_render_type' => '0',
-			'news_summary' => '', 'news_thumbnail' => '',
-		));
+		)));
 
 		$I->loginAsAdmin();
 		$this->token = $this->grabCommentToken($I);
@@ -36,7 +32,7 @@ class CommentAjaxAnswerCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->haveSitePref('allowCommentEdit', $this->allowCommentEdit);
+		$I->restoreSitePrefs();
 		$I->dropForumProbe();
 	}
 
@@ -169,13 +165,15 @@ class CommentAjaxAnswerCest
 	 */
 	private function haveComment(AcceptanceTester $I, $text, $blocked)
 	{
-		return $I->haveInDatabase('e107_comments', array(
-			'comment_pid' => 0, 'comment_item_id' => $this->news,
-			'comment_subject' => 'csgr subject',
-			'comment_author_id' => 1, 'comment_author_name' => 'admin',
-			'comment_author_email' => '', 'comment_datestamp' => time() - 1800,
-			'comment_comment' => $text, 'comment_blocked' => $blocked, 'comment_ip' => '127.0.0.1',
-			'comment_type' => '0', 'comment_lock' => 0, 'comment_share' => 0,
-		));
+		return $I->haveInDatabase('e107_comments', \Test\Rows::comment(array(
+			'comment_item_id'     => $this->news,
+			'comment_subject'     => 'csgr subject',
+			'comment_author_id'   => 1,
+			'comment_author_name' => 'admin',
+			'comment_datestamp'   => time() - 1800,
+			'comment_comment'     => $text,
+			'comment_blocked'     => $blocked,
+			'comment_ip'          => '127.0.0.1',
+		)));
 	}
 }
