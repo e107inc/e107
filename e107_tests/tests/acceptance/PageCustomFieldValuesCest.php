@@ -65,7 +65,147 @@ class PageCustomFieldValuesCest
 
 		$I->assertStringContainsString('Text', $stored);
 		$I->assertStringNotContainsString('<svg', $stored);
-		$I->assertSame(1, json_decode($stored, true)['__trust__']);
+		$I->assertSame(1, json_decode($stored, true)['__trust__']['mytext']);
+	}
+
+	public function aLowerAdministratorsSaveKeepsTheValuesTheyLeftAlone(AcceptanceTester $I)
+	{
+		$I->haveSiteTheme('bootstrap3');
+		$page = $this->havePage($I, 'Kept cfq7', array('mytext' => 'Text'));
+
+		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 250), function () use ($I, $page)
+		{
+			$I->resetAllCookies();
+			$I->loginAsAdmin();
+			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+			$I->submitForm('#core-page-form', array(
+				'page_fields__mytext'  => 'Plain <b id="cfq7k" onclick="cfq7()">kept</b>',
+				'page_fields__myemail' => 'a@example.com <b id="cfq7e" onclick="cfq7()">e</b>',
+			), 'etrigger_submit');
+
+			$this->saveAsPagesAdmin($I, $page, array('page_fields__myemail' => 'b@example.com <b id="cfq7c" onclick="cfq7()">c</b>'));
+		});
+
+		$I->resetAllCookies();
+		$I->loginAsAdmin();
+		$I->amOnPage('/page.php?id='.$page);
+		$I->seeElement('#cfq7k[onclick]');
+		$I->seeElement('#cfq7c');
+		$I->dontSeeElement('#cfq7c[onclick]');
+
+		$stored = json_decode($I->grabFromDatabase('e107_page', 'page_fields', array('page_id' => $page)), true);
+		$I->assertSame(array(2, 1), array($stored['__trust__']['mytext'], $stored['__trust__']['myemail']));
+	}
+
+	public function aHigherAdministratorsSaveDoesNotPromoteTextTheyLeftAlone(AcceptanceTester $I)
+	{
+		$I->haveSiteTheme('bootstrap3');
+		$page = $this->havePage($I, 'Typed cfq7', array('mytext' => 'Text'));
+
+		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 250), function () use ($I, $page)
+		{
+			$this->saveAsPagesAdmin($I, $page, array('page_fields__mytext' => '&lt;b id="cfq7p" onclick="cfq7()"&gt;typed&lt;/b&gt;'));
+		});
+
+		$I->haveSitePrefsDuring(array('post_html' => 250, 'post_script' => 250), function () use ($I, $page)
+		{
+			$this->saveAsPagesAdmin($I, $page, array('page_fields__myemail' => '&#60;b id="cfq7q" onclick="cfq7()"&#62;typed&#60;/b&#62;'));
+
+			$I->resetAllCookies();
+			$I->loginAsAdmin();
+			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+			$I->submitForm('#core-page-form', array(), 'etrigger_submit');
+		});
+
+		$I->amOnPage('/page.php?id='.$page);
+		$I->seeInSource('custom-fields-example');
+		$I->dontSeeElement('#cfq7p');
+		$I->dontSeeElement('#cfq7q');
+	}
+
+	/**
+	 * Text holding the '+' and '%3C' the page form's {@see e_parse::toForm()} would rewrite stays text after the main
+	 * administrator saves the page untouched, whichever state the editor is in.
+	 */
+	public function aHigherAdministratorsSaveDoesNotPromoteTextTheFormWouldRewrite(AcceptanceTester $I)
+	{
+		$I->haveSiteTheme('bootstrap3');
+		$page = $this->havePage($I, 'Rewritten cfq7', array('mytext' => 'Text'));
+
+		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 250), function () use ($I, $page)
+		{
+			$this->saveAsPagesAdmin($I, $page, array('page_fields__mytext' => '&lt;b id="cfq7z" onclick="cfq7()"&gt;1+1&lt;/b&gt;%3Cb id="cfq7y" onclick="cfq7()"%3Ey'));
+		});
+
+		$I->haveSitePrefsDuring(array('post_html' => 250, 'post_script' => 250), function () use ($I, $page)
+		{
+			$I->resetAllCookies();
+			$I->loginAsAdmin();
+			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+			$I->submitForm('#core-page-form', array(), 'etrigger_submit');
+		});
+
+		$I->amOnPage('/page.php?id='.$page);
+		$I->seeInSource('custom-fields-example');
+		$I->dontSeeElement('#cfq7z');
+		$I->dontSeeElement('#cfq7y');
+	}
+
+	/**
+	 * An icon starting with '[html]', whose entities the page form shows as they are written, keeps the level its
+	 * author stored it at after the main administrator saves the page untouched, so its quotes go on printing encoded.
+	 */
+	public function aHigherAdministratorsSaveDoesNotPromoteAnHtmlValueTheFormShowsEncoded(AcceptanceTester $I)
+	{
+		$I->haveSiteTheme('bootstrap3');
+		$value = '[html]x&#039; id=&#039;cfq7w&#039; onerror=&#039;cfq7()&#039; y&amp;.png';
+		$page = $this->havePage($I, 'Icon cfq7', array('myicon' => $value, '__trust__' => array('myicon' => 1)));
+
+		$I->haveSitePrefsDuring(array('post_html' => 250, 'post_script' => 250), function () use ($I, $page)
+		{
+			$I->resetAllCookies();
+			$I->loginAsAdmin();
+			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+			$I->submitForm('#core-page-form', array(), 'etrigger_submit');
+		});
+
+		$I->amOnPage('/page.php?id='.$page);
+		$I->seeInSource('custom-fields-example');
+		$I->dontSeeElement('#cfq7w[onerror]');
+
+		$stored = json_decode($I->grabFromDatabase('e107_page', 'page_fields', array('page_id' => $page)), true);
+		$I->assertSame(array($value, 1), array($stored['myicon'], $stored['__trust__']['myicon']));
+	}
+
+	/**
+	 * A value holding a script, saved untouched by an administrator without script access, is kept with no warning that
+	 * it was refused.
+	 */
+	public function aLowerAdministratorsUntouchedSaveKeepsAScriptWithoutWarningOfIt(AcceptanceTester $I)
+	{
+		$value = 'Kept<script id=&quot;cfq7w&quot;>var cfq7 = 3;</script>';
+		$page = $this->havePage($I, 'Script cfq7', array('mytext' => $value, '__trust__' => array('mytext' => 2)));
+
+		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 250), function () use ($I, $page)
+		{
+			$this->saveAsPagesAdmin($I, $page, array());
+			$I->dontSee('permission to use');
+		});
+
+		$stored = json_decode($I->grabFromDatabase('e107_page', 'page_fields', array('page_id' => $page)), true);
+		$I->assertSame(array($value, 2), array($stored['mytext'], $stored['__trust__']['mytext']));
+	}
+
+	public function anUntouchedSaveStoresEachValueAgainByteForByte(AcceptanceTester $I)
+	{
+		$values = array('mytext' => 'java[p][/p]script:cfq7() [p][/p]<b>bold</b>', 'myurl' => 'https://example.com/cfq7[h][/h]', 'myemail' => 'a@example.com [p][/p]');
+		$page = $this->havePage($I, 'Bytes cfq7', $values + array('__trust__' => array('mytext' => 2, 'myurl' => 1)));
+
+		$this->saveAsPagesAdmin($I, $page, array());
+
+		$stored = json_decode($I->grabFromDatabase('e107_page', 'page_fields', array('page_id' => $page)), true);
+		$I->assertSame($values, array_intersect_key($stored, $values));
+		$I->assertSame(array('mytext' => 2, 'myurl' => 1), array_intersect_key($stored['__trust__'], $values));
 	}
 
 	public function anAuthorsHtmlPrintsAndTheirScriptOnlyWithScriptAccess(AcceptanceTester $I)

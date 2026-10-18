@@ -176,7 +176,9 @@
 		    "user": "1",
 		    "userclass": "0",
 		    "progressbar": "75",
-		    "__trust__": 1
+		    "__trust__": {"image": 1, "video": 1, "bbarea": 1, "boolean": 1, "checkboxes": 1, "country": 1, "datestamp": 1, "dropdown": 1,
+		        "email": 1, "file": 1, "icon": 1, "language": 1, "lanlist": 1, "number": 1, "password": 1, "tags": 1, "textarea": 1, "url": 1,
+		        "user": 1, "userclass": 1, "progressbar": 1}
 		}';
 
 		protected $posted = array ('__e_customfields_tabs__'=>"My New Tab", 'e-token' => '1dbda78672ac3b1bd8f73f8c158d0291', 'chapter_icon' => '', 'mediameta_chapter_icon' => '', 'chapter_parent' => '1', 'chapter_name' => 'Chapter 1', 'chapter_template' => 'default', 'chapter_meta_description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut nunc ac neque egestas ullamcorper. In convallis semper hendrerit. Etiam non dolor nisl, varius facilisis dui. Nunc egestas massa nunc.', 'chapter_meta_keywords' => '', 'chapter_sef' => 'chapter-1', 'chapter_manager' => '0', 'chapter_order' => '0', 'chapter_visibility' => '0', 'chapter_fields' => array ( 0 => array ( 'key' => 'image', 'title' => 'Image', 'type' => 'image', 'writeParms' => '', 'help' => '', ), 1 => array ( 'key' => 'video', 'title' => 'Video', 'type' => 'video', 'writeParms' => '', 'help' => 'Youtube', ), 2 => array ( 'key' => 'bbarea', 'title' => 'WYSWIYG', 'type' => 'bbarea', 'writeParms' => '', 'help' => '', ), 3 => array ( 'key' => 'boolean', 'title' => 'Boolean', 'type' => 'boolean', 'writeParms' => '', 'help' => '', ), 4 => array ( 'key' => 'checkboxes', 'title' => 'Checkboxes', 'type' => 'checkboxes', 'writeParms' => '{ "default": "blank", "optArray": { "car": "Car", "boat": "Boat", "plane": "Plane" } }', 'help' => '', ), 5 => array ( 'key' => 'country', 'title' => 'Country', 'type' => 'country', 'writeParms' => '', 'help' => '', ), 6 => array ( 'key' => 'datestamp', 'title' => 'Datestamp', 'type' => 'datestamp', 'writeParms' => '', 'help' => '', ), 7 => array ( 'key' => 'dropdown', 'title' => 'Dropdown', 'type' => 'dropdown', 'writeParms' => '{ "default": "blank", "optArray": { "blue": "Blue", "green": "Green", "red": "Red" } }', 'help' => '', ), 8 => array ( 'key' => 'email', 'title' => 'Email', 'type' => 'email', 'writeParms' => '', 'help' => '', ), 9 => array ( 'key' => 'file', 'title' => 'File', 'type' => 'file', 'writeParms' => '', 'help' => '', ), 10 => array ( 'key' => 'icon', 'title' => 'Icon', 'type' => 'icon', 'writeParms' => '', 'help' => '', ), 11 => array ( 'key' => 'language', 'title' => 'Language', 'type' => 'language', 'writeParms' => '', 'help' => '', ), 12 => array ( 'key' => 'lanlist', 'title' => 'LanList', 'type' => 'lanlist', 'writeParms' => '', 'help' => '', ), 13 => array ( 'key' => 'number', 'title' => 'Number', 'type' => 'number', 'writeParms' => '', 'help' => '', ), 14 => array ( 'key' => 'password', 'title' => 'Password', 'type' => 'password', 'writeParms' => '', 'help' => '', ), 15 => array ( 'key' => 'radio', 'title' => 'Radio', 'type' => 'radio', 'writeParms' => '{ "optArray": { "yes": "Yes", "no": "No", "maybe": "Maybe" } }', 'help' => '', ), 16 => array ( 'key' => 'tags', 'title' => 'Tags', 'type' => 'tags', 'writeParms' => '', 'help' => '', ), 17 => array ( 'key' => 'textarea', 'title' => 'Textarea', 'type' => 'textarea', 'writeParms' => 'size=block-level', 'help' => '', ), 18 => array ( 'key' => 'url', 'title' => 'Url', 'type' => 'url', 'writeParms' => '', 'help' => '', ), 19 => array ( 'key' => 'user', 'title' => 'User', 'type' => 'user', 'writeParms' => '', 'help' => '', ), 20 => array ( 'key' => 'userclass', 'title' => 'Userclass', 'type' => 'userclass', 'writeParms' => '', 'help' => '', ), ), 'etrigger_submit' => 'update', '__after_submit_action' => 'list', 'submit_value' => '2', 'mode' => NULL, );
@@ -342,7 +344,7 @@
 			}
 
 			$this->cf->loadConfig(array('options' => array('title' => 'Options', 'type' => 'dropdown', 'writeParms' => json_encode(array('optArray' => array('a' => 'A'))), 'help' => '')));
-			foreach(array('x'.$markup, json_encode(array('options' => '&lt;img src=x onerror=alert(1)&gt;', '__trust__' => 0))) as $stored)
+			foreach(array('x'.$markup, json_encode(array('options' => '&lt;img src=x onerror=alert(1)&gt;', '__trust__' => array('options' => 0)))) as $stored)
 			{
 				$this->cf->loadData(($stored[0] === '{') ? $stored : json_encode(array('options' => $stored)));
 				$this->assertNoMarkupIn((string) $this->cf->getFieldValue('options'), 'a field keyed options');
@@ -391,17 +393,229 @@
 
 			for($i = 0; $i < 2; $i++)
 			{
-				$seen = array();
-				$model = $this->make('e_admin_model', array('set' => function ($key, $value = null) use (&$seen) { $seen[$key] = $value; }));
-				$ui = $this->make('e_admin_ui', array('getModel' => $model));
-				$this->cf->loadData(json_encode($stored['page_fields']))->setAdminUIData('page_fields', $ui);
-				unset($seen['page_fields']);
-
-				$submitted = array_map(function ($value) { return is_string($value) ? html_entity_decode($value, ENT_QUOTES) : $value; }, $seen);
+				$submitted = $this->postedBack($stored['page_fields']);
 				$this->assertSame($stored, $this->cf->processDataPost('page_fields', $submitted), 'save '.($i + 1));
 			}
 
 			$this->assertSame('0', $stored['page_fields']['number']);
+		}
+
+		/**
+		 * A value the page form posts back as it showed it is stored again byte for byte, though {@see e_parse::toDB()}
+		 * would change it, whether a level is recorded for it or not and whoever saves.
+		 */
+		public function testAnUntouchedValueIsStoredAgainByteForByte()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+			$this->cf->loadConfig($this->config);
+			$values = array('textarea' => 'Lead [p][/p]<b>bold</b>', 'url' => 'https://example.com/[h][/h]cfq300', 'tags' => 'java[p][/p]script:cfq300()');
+
+			foreach(array(array('textarea' => 2, 'url' => 1, 'tags' => 0), null) as $levels)
+			{
+				$stored = $values + (($levels === null) ? array() : array('__trust__' => $levels));
+
+				foreach(array(e_UC_PUBLIC, e_UC_NOBODY) as $saver)
+				{
+					$resaved = $this->withPostClasses($saver, $saver, function () use ($stored, $values)
+					{
+						foreach($values as $value)
+						{
+							$this->assertNotSame($value, e107::getParser()->toDB($value), 'toDB() keeps '.$value);
+						}
+
+						return $this->cf->processDataPost('page_fields', $this->postedBack($stored));
+					});
+
+					$this->assertSame($stored, $resaved['page_fields'], 'levels '.json_encode($levels).', saver '.$saver);
+				}
+			}
+		}
+
+		/**
+		 * A value is stored again byte for byte, its level kept, on an untouched save however a browser posts it back,
+		 * whoever saves.
+		 */
+		public function testAValueABrowserPostsBackAlteredIsStoredAgainByteForByte()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+			$config = json_decode($this->config, true);
+			$config['email']['writeParms'] = '{"multiple": 1}';
+			$config['tags']['writeParms'] = '{"maxItems": "3"}';
+			$config['__trust__'] = array('tags' => array('writeParms' => 2));
+			$this->cf->loadConfig($config);
+			$values = array(
+				'url'      => "Col\nour &lt;b onclick=cfq300()&gt;y&lt;/b&gt;",
+				'tags'     => "\xC2\xA0&lt;i onclick=cfq300()&gt;x&lt;/i&gt;,b\r\n\0,&lt;i onclick=cfq300()&gt;x&lt;/i&gt;,c,d,e,f,g,h",
+				'textarea' => "\nLead &lt;i onclick=cfq300()&gt;x&lt;/i&gt;\nend",
+				'email'    => "a@example.com , &lt;b onclick=cfq300()&gt;@example.com",
+			);
+
+			foreach(array(array_fill_keys(array_keys($values), 0), array_fill_keys(array_keys($values), 2), null) as $levels)
+			{
+				$stored = $values + (($levels === null) ? array() : array('__trust__' => $levels));
+				$posted = $this->postedBack($stored);
+
+				foreach($values as $key => $value)
+				{
+					$this->assertNotSame(html_entity_decode($value, ENT_QUOTES), $posted['page_fields__'.$key], 'the browser posts '.$key.' back as shown');
+				}
+
+				foreach(array(e_UC_PUBLIC, e_UC_NOBODY) as $saver)
+				{
+					$resaved = $this->withPostClasses($saver, $saver, function () use ($stored, $posted)
+					{
+						return $this->cf->loadData(json_encode($stored))->processDataPost('page_fields', $posted);
+					});
+
+					$this->assertSame($stored, $resaved['page_fields'], 'levels '.json_encode($levels).', saver '.$saver);
+				}
+			}
+		}
+
+		/**
+		 * An untouched value is stored again byte for byte, its level kept, whoever saves, however the page form shows
+		 * it and its elements post it back: one in a text input whose name gives the id a tag list's name gives, one in
+		 * an input the field's parameters make an email input, and one holding the '+' and '%' {@see e_parse::toForm()}
+		 * would rewrite.
+		 */
+		public function testAValueIsKeptHoweverThePageFormsElementsPostItBack()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+			$this->cf->loadConfig(array(
+				'a'  => array('title' => 'A', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+				'a-' => array('title' => 'Tags', 'type' => 'tags', 'writeParms' => '', 'help' => ''),
+				'b'  => array('title' => 'B', 'type' => 'text', 'writeParms' => '{"type": "email", "multiple": 1}', 'help' => ''),
+				'c'  => array('title' => 'C', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+			));
+			$typed = '&lt;i onclick=cfq300()&gt;x&lt;/i&gt;';
+
+			$stored = $this->withPostClasses(e_UC_PUBLIC, e_UC_NOBODY, function () use ($typed)
+			{
+				return $this->cf->loadData('')->processDataPost('page_fields', array('page_fields__a' => $typed.','.$typed,
+					'page_fields__a-' => 'x', 'page_fields__b' => $typed.' , '.$typed, 'page_fields__c' => '&lt;i onclick=cfq300()&gt;1+1&lt;/i&gt;%3Ci onclick=cfq300()%3E'));
+			});
+			$posted = $this->postedFromPageForm($stored['page_fields']);
+
+			$this->assertNotSame(html_entity_decode($stored['page_fields']['b'], ENT_QUOTES), $posted['page_fields__b'], 'the browser posts b back as shown');
+
+			foreach(array(e_UC_PUBLIC, e_UC_NOBODY) as $saver)
+			{
+				$resaved = $this->withPostClasses($saver, $saver, function () use ($stored, $posted)
+				{
+					return $this->cf->loadData(json_encode($stored['page_fields']))->processDataPost('page_fields', $posted);
+				});
+
+				$this->assertSame($stored['page_fields'], $resaved['page_fields'], 'saver '.$saver);
+			}
+		}
+
+		/**
+		 * An untouched value starting with '[html]', which {@see e_parse::toForm()} shows with every entity but those
+		 * of its quotes and backslashes as written, is stored again byte for byte with its level, or with none, and
+		 * goes on printing as its author may post it after an administrator with script access saves the page.
+		 */
+		public function testAnUntouchedHtmlValueKeepsItsLevel()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+			$this->cf->loadConfig(array(
+				'i0' => array('title' => 'Text icon', 'type' => 'icon', 'writeParms' => '', 'help' => ''),
+				'i1' => array('title' => 'HTML icon', 'type' => 'icon', 'writeParms' => '', 'help' => ''),
+				'in' => array('title' => 'Legacy icon', 'type' => 'icon', 'writeParms' => '', 'help' => ''),
+				't1' => array('title' => 'HTML text', 'type' => 'textarea', 'writeParms' => '', 'help' => ''),
+				'r1' => array('title' => 'HTML rich text', 'type' => 'bbarea', 'writeParms' => '', 'help' => ''),
+				'f1' => array('title' => 'HTML file', 'type' => 'file', 'writeParms' => '', 'help' => ''),
+			));
+			$stored = array(
+				'i0'        => '[html]x&#039; onerror=&#039;cfq300()&#039; y+.png',
+				'i1'        => '[html]x&#039; onerror=&#039;cfq300()&#039; y&amp;.png',
+				'in'        => "[html]x' onerror='cfq300()' 50% y.png",
+				't1'        => '[html]&lt;b id=cfq300t onclick=cfq300()&gt;t',
+				'r1'        => '[html]&lt;b id=cfq300r onclick=cfq300()&gt;r',
+				'f1'        => '[html]x&quot; onclick=&quot;cfq300()&quot; &amp;lt;y.zip',
+				'__trust__' => array('i0' => 0, 'i1' => 1, 't1' => 1, 'r1' => 1, 'f1' => 1),
+			);
+
+			$resaved = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function () use ($stored)
+			{
+				$posted = $this->postedFromPageForm($stored);
+
+				return $this->cf->loadData(json_encode($stored))->processDataPost('page_fields', $posted);
+			});
+
+			$this->assertSame($stored, $resaved['page_fields']);
+			$this->cf->loadData(json_encode($resaved['page_fields']));
+
+			foreach(array('i0', 'i1', 'in', 't1', 'r1', 'f1') as $key)
+			{
+				$this->assertNoMarkupIn((string) $this->cf->getFieldValue($key), $key);
+			}
+		}
+
+		/**
+		 * The widget {@see e_form} puts on a tag list's or a user field's input attaches to that input, though the name
+		 * of the field before it gives the id its own name gives.
+		 */
+		public function testAFieldsWidgetAttachesToItsOwnInput()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+			$this->cf->loadConfig(array(
+				'a'  => array('title' => 'A', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+				'a-' => array('title' => 'Tags', 'type' => 'tags', 'writeParms' => '', 'help' => ''),
+				'u'  => array('title' => 'U', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+				'u-' => array('title' => 'User', 'type' => 'user', 'writeParms' => '', 'help' => ''),
+			));
+
+			$this->assertSame(array('page_fields__a-' => 'page_fields__a-', 'page_fields__u-' => 'page_fields__u-'),
+				$this->widgetTargets($this->renderedPageForm(array('a' => 'x,x', 'u' => 'x,x'))));
+		}
+
+		/**
+		 * A post that carries the custom field column itself, and none of its fields, stores nothing of what
+		 * it carried.
+		 */
+		public function testAPostedColumnIsNotStoredAsPosted()
+		{
+			$result = $this->cf->processDataPost('page_fields', array(
+				'page_title'  => 'x',
+				'page_fields' => array('url' => '<b id="cfq3c" onclick="cfq300()">r</b>', '__trust__' => array('url' => 2)),
+			));
+
+			$this->assertSame('x', $result['page_title']);
+			$this->assertArrayHasKey('page_fields', $result);
+			$this->assertNull($result['page_fields']);
+		}
+
+		/**
+		 * A level recorded as anything but the integer an administrator's save records is no level: the value prints
+		 * as text.
+		 */
+		public function testALevelNotRecordedAsAnIntegerIsNone()
+		{
+			foreach(array('"2"', '2.0', 'true', '"1"') as $level)
+			{
+				$this->cf->loadConfig($this->config)->loadData('{"url": "<b id=\\"cfq3l\\" onclick=\\"cfq300()\\">r</b>", "__trust__": {"url": '.$level.'}}');
+				$this->assertNoMarkupIn((string) $this->cf->getFieldValue('url'), 'level '.$level);
+			}
+		}
+
+		/**
+		 * A stored value that does not decode to an array loads as no values, so the page form still opens.
+		 */
+		public function testValuesThatDoNotDecodeLoadAsNone()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+			$seen = array();
+			$model = $this->make('e_admin_model', array('set' => function ($key, $value = null) use (&$seen) { $seen[$key] = $value; }));
+			$ui = $this->make('e_admin_ui', array('getModel' => $model));
+
+			foreach(array('{', 'not json') as $stored)
+			{
+				$seen = array();
+				$this->cf->loadData($stored)->setAdminUIData('page_fields', $ui);
+
+				$this->assertSame(array(), $this->cf->getData(), $stored);
+				$this->assertSame(array('page_fields' => null), $seen, $stored);
+			}
 		}
 
 		/**
@@ -437,20 +651,20 @@
 				'icon'     => '<i class=&quot;fa fa-check&quot;></i>',
 			);
 
-			$this->cf->loadConfig($this->config)->loadData(json_encode($values + array('__trust__' => 1)));
+			$this->cf->loadConfig($this->config)->loadData(json_encode($values + array('__trust__' => array_fill_keys(array_keys($values), 1))));
 			$this->assertStringContainsString('<p class="lead">Lead <b>bold</b></p>', $this->cf->getFieldValue('textarea'));
 			$this->assertSame('<p class="lead">Lead <b>bold</b></p>', $this->cf->getFieldValue('textarea', array('mode' => 'raw')));
 			$this->assertStringContainsString('<b>this</b>', $this->cf->getFieldValue('url'));
 			$this->assertStringStartsNotWith('<i class="fa fa-check">', $this->cf->getFieldValue('icon'));
 			$this->assertSame(array_keys($values), array_keys($this->cf->getData()));
 
-			$this->cf->loadData(json_encode(array('textarea' => '<img alt=&quot;x onerror=alert(1)&quot; src=&quot;/e107_images/e107_icon_32.png&quot;>', '__trust__' => 1)));
+			$this->cf->loadData(json_encode(array('textarea' => '<img alt=&quot;x onerror=alert(1)&quot; src=&quot;/e107_images/e107_icon_32.png&quot;>', '__trust__' => array('textarea' => 1))));
 			$this->assertNoMarkupIn($this->cf->getFieldValue('textarea', array('mode' => 'raw')), 'raw rich text');
 
-			$this->cf->loadData(json_encode($values + array('__trust__' => 2)));
+			$this->cf->loadData(json_encode($values + array('__trust__' => array_fill_keys(array_keys($values), 2))));
 			$this->assertSame('<i class="fa fa-check"></i>', $this->cf->getFieldValue('icon'));
 
-			$this->cf->loadData(json_encode(array('textarea' => '<script>&#036;(&quot;#x&quot;).text(&quot;a&#092;nb&quot;);</script>', '__trust__' => 2)));
+			$this->cf->loadData(json_encode(array('textarea' => '<script>&#036;(&quot;#x&quot;).text(&quot;a&#092;nb&quot;);</script>', '__trust__' => array('textarea' => 2))));
 			$this->assertSame('<script>$("#x").text("a\nb");</script>', $this->cf->getFieldValue('textarea', array('mode' => 'raw')));
 
 			$this->cf->loadData(json_encode($values));
@@ -458,7 +672,7 @@
 			$this->assertStringNotContainsString('<b>', $this->cf->getFieldValue('url'));
 			$this->assertStringStartsNotWith('<i class="fa fa-check">', $this->cf->getFieldValue('icon'));
 
-			$this->cf->loadData(json_encode(array('textarea' => '&lt;b&gt;bold&lt;/b&gt;', '__trust__' => 0)));
+			$this->cf->loadData(json_encode(array('textarea' => '&lt;b&gt;bold&lt;/b&gt;', '__trust__' => array('textarea' => 0))));
 			$this->assertStringNotContainsString('<b>', $this->cf->getFieldValue('textarea'));
 		}
 
@@ -479,7 +693,250 @@
 			$this->assertStringStartsWith('Text', $result['page_fields']['text']);
 			$this->assertStringNotContainsString('<svg', $result['page_fields']['text']);
 			$this->assertSame(array('text', 'video', 'icon', 'цена', '__trust__'), array_keys($result['page_fields']));
-			$this->assertContains($result['page_fields']['__trust__'], array(0, 1, 2));
+			$this->assertSame(array('text', 'video', 'icon', 'цена'), array_keys($result['page_fields']['__trust__']));
+			$this->assertContains($result['page_fields']['__trust__']['text'], array(0, 1, 2));
+		}
+
+		/**
+		 * Saving a page again keeps every value the administrator left as the form showed it exactly as its author
+		 * stored it, so one who may post only text does not strip the markup and scripts of one with script access; the
+		 * value they change is stored as they may post it.
+		 */
+		public function testALowerAdministratorsSaveKeepsTheValuesTheyLeftAlone()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+			$this->cf->loadConfig($this->config);
+
+			$stored = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function ()
+			{
+				return $this->cf->loadData('')->processDataPost('page_fields', array(
+					'page_fields__textarea' => '<p onclick="cfq300()">Lead</p><script>var cfq300 = 1;</script>',
+					'page_fields__icon'     => '<i class="fa fa-check"></i>',
+					'page_fields__url'      => 'See <b>this</b>',
+				));
+			});
+
+			$posted = $this->postedBack($stored['page_fields']);
+			$posted['page_fields__url'] = 'Now <b>that</b>';
+
+			$resaved = $this->withPostClasses(e_UC_NOBODY, e_UC_NOBODY, function () use ($stored, $posted)
+			{
+				return $this->cf->loadData(json_encode($stored['page_fields']))->processDataPost('page_fields', $posted);
+			});
+
+			$this->assertSame($stored['page_fields']['textarea'], $resaved['page_fields']['textarea']);
+			$this->assertSame($stored['page_fields']['icon'], $resaved['page_fields']['icon']);
+
+			$this->cf->loadData(json_encode($resaved['page_fields']));
+			$this->assertStringContainsString('<p onclick="cfq300()">Lead</p><script>var cfq300 = 1;</script>', $this->cf->getFieldValue('textarea', array('mode' => 'raw')));
+			$this->assertSame('<i class="fa fa-check"></i>', $this->cf->getFieldValue('icon'));
+			$this->assertStringContainsString('Now', $this->cf->getFieldValue('url'));
+			$this->assertStringNotContainsString('<b>', $this->cf->getFieldValue('url'));
+		}
+
+		/**
+		 * Text an author who may post HTML, or only text, wrote with entities in it keeps printing as text after an
+		 * administrator with script access saves the page without changing it, though the form shows those
+		 * entities decoded.
+		 */
+		public function testAHigherAdministratorsSaveDoesNotPromoteTextTheyLeftAlone()
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+			$this->cf->loadConfig($this->config);
+
+			foreach(array(array(e_UC_PUBLIC, '&lt;i onclick=cfq300()&gt;x&lt;/i&gt;'), array(e_UC_NOBODY, '&#60;i onclick=cfq300()&#62;x&#60;/i&#62;')) as $author)
+			{
+				list($html, $typed) = $author;
+
+				$stored = $this->withPostClasses($html, e_UC_NOBODY, function () use ($typed)
+				{
+					return $this->cf->loadData('')->processDataPost('page_fields', array('page_fields__textarea' => $typed, 'page_fields__icon' => $typed,
+						'page_fields__tags' => '__proto__,'.$typed.','.$typed));
+				});
+
+				$posted = $this->postedBack($stored['page_fields']);
+
+				$resaved = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function () use ($stored, $posted)
+				{
+					return $this->cf->loadData(json_encode($stored['page_fields']))->processDataPost('page_fields', $posted);
+				});
+
+				$this->cf->loadData(json_encode($resaved['page_fields']));
+
+				foreach(array('textarea', 'icon', 'tags') as $key)
+				{
+					$this->assertNoMarkupIn((string) $this->cf->getFieldValue($key), $key.' '.$typed);
+					$this->assertNoMarkupIn((string) $this->cf->getFieldValue($key, array('mode' => 'raw')), $key.' raw '.$typed);
+				}
+			}
+		}
+
+		/**
+		 * @param array $stored a page's custom field values as {@see e_customfields::processDataPost()} stored them
+		 * @return array what the page form posts back for them untouched: each value it is given, as a browser reads it
+		 *               once decoded and posts it back from the field's input or text area
+		 */
+		private function postedBack(array $stored)
+		{
+			$config = $this->cf->getConfig();
+			$posted = array();
+
+			foreach($this->formValues($stored) as $name => $value)
+			{
+				$key = (string) substr($name, strlen('page_fields__'));
+				$type = isset($config[$key]['type']) ? $config[$key]['type'] : 'text';
+				$parms = isset($config[$key]['writeParms']) ? json_decode($config[$key]['writeParms'], true) : null;
+				$limit = !empty($parms['maxItems']) ? (int) $parms['maxItems'] : 7;
+				$posted[$name] = is_string($value) ? $this->asBrowserPosts(html_entity_decode($value, ENT_QUOTES), $type, $limit) : $value;
+			}
+
+			return $posted;
+		}
+
+		/**
+		 * @param string $value a value as a form element shows it
+		 * @param string $type the field type whose element shows it
+		 * @param int $limit how many tags a tag widget keeps
+		 * @return string the value as a browser posts it back from that element, a tag list as the tag widget
+		 *                rewrites it
+		 */
+		private function asBrowserPosts($value, $type, $limit = 7)
+		{
+			$value = str_replace(array("\r\n", "\r", "\0"), array("\n", "\n", "\xEF\xBF\xBD"), $value);
+
+			if($type === 'textarea' || $type === 'bbarea')
+			{
+				return str_replace("\n", "\r\n", preg_replace('/^\n/', '', $value));
+			}
+
+			$value = str_replace("\n", '', $value);
+
+			if($type === 'tags')
+			{
+				$value = preg_replace('/^[\s\x{a0}\x{feff}]+|[\s\x{a0}\x{feff}]+$/u', '', $value);
+
+				$tags = array_diff(explode(',', $value), array('__proto__'));
+
+				return ($value === '') ? '' : implode(',', array_slice(array_values(array_unique($tags)), 0, $limit));
+			}
+
+			return ($type === 'email') ? implode(',', array_map(function ($address) { return trim($address, " \t\f"); }, explode(',', $value))) : $value;
+		}
+
+		/**
+		 * @param array $stored a page's custom field values as {@see e_customfields::processDataPost()} stored them
+		 * @return array the values {@see e_customfields::setAdminUIData()} gives the page form's model for them, keyed
+		 *               by name
+		 */
+		private function formValues(array $stored)
+		{
+			$seen = array();
+			$model = $this->make('e_admin_model', array('set' => function ($key, $value = null) use (&$seen) { $seen[$key] = $value; }));
+			$ui = $this->make('e_admin_ui', array('getModel' => $model));
+			$this->cf->loadData(json_encode($stored))->setAdminUIData('page_fields', $ui);
+			unset($seen['page_fields']);
+
+			return $seen;
+		}
+
+		/**
+		 * @param array $stored a page's custom field values as {@see e_customfields::processDataPost()} stored them
+		 * @return array the page form's custom fields for the loaded configuration ('fields'), and a {@see DOMXPath}
+		 *               over the elements {@see e_form} renders for them and $stored ('xpath')
+		 */
+		private function renderedPageForm(array $stored)
+		{
+			$fields = array();
+			$ui = $this->make('e_admin_ui', array(
+				'addTab'       => function () {},
+				'setFieldAttr' => function ($attributes) use (&$fields) { $fields = $attributes; },
+			));
+			$this->cf->setAdminUIConfig('page_fields', $ui);
+			$values = $this->formValues($stored);
+			$html = '';
+
+			foreach($fields as $name => $field)
+			{
+				$html .= '<div>'.e107::getForm()->renderElement($name, e107::getParser()->toForm(isset($values[$name]) ? $values[$name] : null), $field).'</div>';
+			}
+
+			return array('fields' => $fields, 'xpath' => new DOMXPath($this->htmlDocument($html)));
+		}
+
+		/**
+		 * @param array $form a page form as {@see e_customfieldsTest::renderedPageForm()} gives it
+		 * @return array for each tag list and user field, keyed by its name, the name of the element the widget
+		 *               {@see e_form} puts on its input attaches to: the first element with that input's id
+		 */
+		private function widgetTargets(array $form)
+		{
+			$targets = array();
+
+			foreach($form['fields'] as $name => $field)
+			{
+				if($field['type'] === 'tags' || $field['type'] === 'user')
+				{
+					$input = $form['xpath']->query('//input[@name="'.$name.'"]')->item(0);
+					$targets[$name] = $form['xpath']->query('//*[@id="'.$input->getAttribute('id').'"]')->item(0)->getAttribute('name');
+				}
+			}
+
+			return $targets;
+		}
+
+		/**
+		 * @param array $stored a page's custom field values as {@see e_customfields::processDataPost()} stored them
+		 * @return array what the page form posts back for them untouched, read from the elements {@see e_form} renders
+		 *               for the loaded configuration, each as a browser posts it from that element, the element a tag
+		 *               widget attaches to as the widget rewrites it
+		 */
+		private function postedFromPageForm(array $stored)
+		{
+			$form = $this->renderedPageForm($stored);
+			$tagged = array_flip(array_intersect_key($this->widgetTargets($form), array_filter($form['fields'], function ($field) { return $field['type'] === 'tags'; })));
+			$posted = array();
+
+			foreach($form['xpath']->query('//input[@name]|//textarea[@name]') as $element)
+			{
+				$name = $element->getAttribute('name');
+				$textarea = ($element->nodeName === 'textarea');
+				$email = ($element->getAttribute('type') === 'email');
+				$value = $this->asBrowserPosts($textarea ? $element->textContent : $element->getAttribute('value'),
+					$textarea ? 'textarea' : (($email && $element->hasAttribute('multiple')) ? 'email' : 'text'));
+				$value = ($email && !$element->hasAttribute('multiple')) ? trim($value, " \t\n\f\r") : $value;
+				$posted[$name] = isset($tagged[$name]) ? $this->asBrowserPosts($value, 'tags') : $value;
+			}
+
+			return $posted;
+		}
+
+		/**
+		 * Run $run as an author whose post_html and post_script classes are the ones given.
+		 *
+		 * @param int $html
+		 * @param int $script
+		 * @param callable $run
+		 * @return mixed what $run returns
+		 */
+		private function withPostClasses($html, $script, $run)
+		{
+			global $_E107;
+			$pref = e107::getConfig();
+			$was = array($pref->get('post_html'), $pref->get('post_script'));
+			$pref->set('post_html', $html)->set('post_script', $script);
+			$_E107['phpunit'] = true;
+			e107::getParser()->setScriptAccess(false);
+
+			try
+			{
+				return $run();
+			}
+			finally
+			{
+				unset($_E107['phpunit']);
+				$pref->set('post_html', $was[0])->set('post_script', $was[1]);
+				e107::getParser()->setScriptAccess(false);
+			}
 		}
 
 		/**
@@ -488,13 +945,7 @@
 		 */
 		private function assertNoMarkupIn($html, $label)
 		{
-			$doc = new DOMDocument();
-			$errors = libxml_use_internal_errors(true);
-			$doc->loadHTML('<!DOCTYPE html><html><body>'.$html.'</body></html>');
-			libxml_clear_errors();
-			libxml_use_internal_errors($errors);
-
-			foreach($doc->getElementsByTagName('*') as $element)
+			foreach($this->htmlDocument($html)->getElementsByTagName('*') as $element)
 			{
 				$this->assertNotSame('svg', $element->nodeName, $label.': '.$html);
 
@@ -506,5 +957,20 @@
 					$this->assertStringStartsNotWith('javascript:', strtolower(preg_replace('/[\x00-\x20]/', '', $value)), $label.': '.$html);
 				}
 			}
+		}
+
+		/**
+		 * @param string $html markup for a page's body
+		 * @return DOMDocument the page as an HTML parser reads it
+		 */
+		private function htmlDocument($html)
+		{
+			$doc = new DOMDocument();
+			$errors = libxml_use_internal_errors(true);
+			$doc->loadHTML('<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'.$html.'</body></html>');
+			libxml_clear_errors();
+			libxml_use_internal_errors($errors);
+
+			return $doc;
 		}
 	}
