@@ -639,14 +639,11 @@ class social_ui extends e_admin_ui
 		$provider_type = $slcm->getTypeOfProvider($provider_name);
 		if (empty($provider_type)) $provider_type = "<em>" . LAN_UNKNOWN . "</em>";
 
-		$normalized_provider_name = $slcm->normalizeProviderName($provider_name);
-		list($pretty_provider_name,) = array_pad(explode("-", $normalized_provider_name), 2, "");
-
 		$frm = e107::getForm();
 		$textKeys = '';
 		$textScope = '';
-		$label = !empty(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
-		$radio_label = strtolower($provider_name);
+		$label = $this->getProviderLabelFor($provider_name);
+		$radio_label = $this->getControlIdFor($provider_name);
 
 		$text = "<table class='table adminform'>
 				<colgroup>
@@ -699,14 +696,11 @@ class social_ui extends e_admin_ui
 		$provider_type = $slcm->getTypeOfProvider($provider_name);
 		if (empty($provider_type)) $provider_type = "<em>" . LAN_UNKNOWN . "</em>";
 
-		$normalized_provider_name = $slcm->normalizeProviderName($provider_name);
-		list($pretty_provider_name,) = array_pad(explode("-", $normalized_provider_name), 2, "");
-
 		$frm = e107::getForm();
 		$textKeys = '';
 		$textScope = '';
-		$label = !empty(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
-		$radio_label = strtolower($provider_name);
+		$label = $this->getProviderLabelFor($provider_name);
+		$radio_label = $this->getControlIdFor($provider_name);
 		$text = "
 					<tr id='social-login-row-" . $radio_label."'>
 						<td><label for='social-login-" . $radio_label . "-enabled'>" . $label . "</label></td>
@@ -754,6 +748,32 @@ class social_ui extends e_admin_ui
 					";
 
 		return $text;
+	}
+
+	/**
+	 * The label the provider's row and form show: its name, linked to its API documentation where Hybridauth has any.
+	 *
+	 * @param string $providerName
+	 * @return string HTML
+	 */
+	private function getProviderLabelFor($providerName)
+	{
+		list($prettyName,) = array_pad(explode("-", $this->social_login_config_manager->normalizeProviderName($providerName)), 2, "");
+		$prettyName = e107::getParser()->toAttribute($prettyName, true);
+		$documentation = self::getApiDocumentationUrlFor($providerName);
+
+		return empty($documentation) ? $prettyName : "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . $documentation . "'>" . $prettyName . "</a>";
+	}
+
+	/**
+	 * The part of the ids of the provider's row and controls that names it.
+	 *
+	 * @param string $providerName
+	 * @return string encoded for an attribute
+	 */
+	private function getControlIdFor($providerName)
+	{
+		return e107::getParser()->toAttribute(strtolower($providerName), true);
 	}
 
 	private static function getPlaceholderFor($providerName, $fieldSlash)
