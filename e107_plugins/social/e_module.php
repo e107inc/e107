@@ -13,9 +13,9 @@ if(e_ADMIN_AREA !==true)
 
 	if(!empty($social) && is_array($social))
 	{
-		if(!empty($social['Facebook']['keys']['id']))
+		if(!empty($social['Facebook']['keys']['id']) && is_scalar($social['Facebook']['keys']['id']))
 		{
-			$appID = $social['Facebook']['keys']['id'];
+			$appID = trim($social['Facebook']['keys']['id']);
 		}
 
 	}
@@ -26,7 +26,7 @@ if(e_ADMIN_AREA !==true)
 		e107::meta('twitter:site','@'.$screenName);
 	}
 
-	if(!empty($appID))
+	if(!empty($appID) && preg_match('/^[0-9]+$/D', $appID))
 	{
 		e107::meta('fb:app_id', $appID);
 
@@ -36,7 +36,7 @@ if(e_ADMIN_AREA !==true)
 
 			window.fbAsyncInit = function() {
 	            FB.init({
-	            appId      : '".$appID."',
+	            appId      : ".e107::getParser()->toJsString($appID).",
 	            xfbml      : true,
 	            version    : 'v2.3'
 	            });
