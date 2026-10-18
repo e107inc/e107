@@ -74,6 +74,9 @@ class social_shortcodes extends e_shortcode
 
 		$social = array(
 			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed'),
+		);
+
+		$pages = array(
 			'facebook'		=> array('href'=> deftrue('XURL_FACEBOOK'), 	'title'=>'Facebook'),
 			'twitter'		=> array('href'=> deftrue('XURL_TWITTER'),		'title'=>'Twitter'),
 		//	'google-plus'	=> array('href'=> deftrue('XURL_GOOGLE'),		'title'=>'Google Plus'),
@@ -88,7 +91,12 @@ class social_shortcodes extends e_shortcode
 			'twitch'		=> array('href'=> deftrue('XURL_TWITCH'),		'title'=>'Twitch'),
 			'vk'			=> array('href'=> deftrue('XURL_VK'),			'title'=>'VK (Vkontakte)')
 		);
- 			
+
+		foreach($pages as $id => $page)
+		{
+			$social[$id] = array('href'=> $tp->toAttribute($page['href'], true), 'title'=> $page['title']);
+		}
+
 		// print_a($social);
 
 
@@ -302,9 +310,9 @@ class social_shortcodes extends e_shortcode
 				$shareUrl .= "&amp;hashtags=".rawurlencode($options['hashtags']);
 			}
 
-			if(!empty($options['twitterAccount']))
+			if(self::isDestination(varset($options['twitterAccount'])))
 			{
-				$shareUrl .= "&amp;via=".$options['twitterAccount'];
+				$shareUrl .= "&amp;via=".rawurlencode($options['twitterAccount']);
 			}
 
 		}
@@ -485,10 +493,11 @@ class social_shortcodes extends e_shortcode
 	function sc_twitter_timeline($parm=null)
 	{
 		$ns = e107::getRender();
+		$tp = e107::getParser();
 		
 		$account = basename(XURL_TWITTER);
 		//data-related="twitterapi,twitter"
-		$text = '<a class="twitter-timeline" href="'.XURL_TWITTER.'" data-widget-id="'.varset($parm['id']).'" data-theme="'.varset($parm['theme'],'light').'" data-link-color="#cc0000"   data-aria-polite="assertive" width="100%" height="'.varset($parm['height'],300).'" lang="'.e_LAN.'">'.LAN_SOCIAL_201.'@'.$account.'</a>';
+		$text = '<a class="twitter-timeline" href="'.$tp->toAttribute(XURL_TWITTER, true).'" data-widget-id="'.varset($parm['id']).'" data-theme="'.varset($parm['theme'],'light').'" data-link-color="#cc0000"   data-aria-polite="assertive" width="100%" height="'.varset($parm['height'],300).'" lang="'.e_LAN.'">'.LAN_SOCIAL_201.'@'.$tp->toAttribute($account, true).'</a>';
 
 		$text .= <<<TMPL
 		
