@@ -17,7 +17,7 @@ class Outbound extends Module
 	/**
 	 * Declare that this test may make e107 try to reach $host: the attempt is refused and recorded as usual, and does not fail the run.
 	 *
-	 * @param string $host the name the attempt carries (an HTTP Host header, a TLS server name), or the address it was sent to when it carries none
+	 * @param string $host the name the attempt carries (an HTTP Host header, a TLS server name), which also covers a connection that named nothing and went to one of the name's addresses, or the address it was sent to when it carries none
 	 * @return void
 	 */
 	public function expectOutboundRequest($host)
