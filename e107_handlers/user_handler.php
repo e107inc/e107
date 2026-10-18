@@ -1330,7 +1330,7 @@ class e_user_provider
 	}
 
 	/**
-	 * @return array {@see social_login_config::getSupportedConfiguredProviderConfigs()} without the options only code may choose, or a key file outside the server's own files
+	 * @return array {@see social_login_config::getSupportedConfiguredProviderConfigs()} without the options only code may choose, or a key file outside the server's own files, and with requests kept to the web
 	 */
 	private function storedProviderConfigs()
 	{
@@ -1352,6 +1352,7 @@ class e_user_provider
 				unset($providerConfig['keys']['key_file']);
 			}
 
+			$providerConfig['curl_options'] = e_file::webOnlyCurlOptions();
 			$providerConfigs[$providerName] = $providerConfig;
 		}
 
