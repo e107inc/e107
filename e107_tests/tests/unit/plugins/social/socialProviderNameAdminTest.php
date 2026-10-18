@@ -10,12 +10,15 @@
 /**
  * @group plugins
  *
- * Provider names in the social plugin's login configuration, as its admin pages and its update print them; the save keeps any name posted to it, so the Unsupported page lists names no provider has.
+ * Provider names in the social plugin's login configuration: which names the save the login forms share keeps, and how the admin pages and the update print the names a site holds, including names no provider has.
  */
 class socialProviderNameAdminTest extends \Test\Unit
 {
-	/** A name holding a quote and a markup tag, as a hand-made post to the login forms' save stores it. */
+	/** A name holding a quote and a markup tag, as a hand-made post could store before the save refused names no provider has. */
 	const POSTED_NAME = "Old'Provider<b>";
+
+	/** What the add form posts for Facebook. */
+	const FACEBOOK_POST = array('enabled' => '1', 'keys' => array('id' => '1234567890123456', 'secret' => 'a-secret'));
 
 	protected function _after()
 	{
@@ -115,6 +118,33 @@ class socialProviderNameAdminTest extends \Test\Unit
 		self::assertStringContainsString($this->facebookLabel($page), $page);
 	}
 
+	public function testTheSaveKeepsNoNameThatNoProviderHas()
+	{
+		$stored = $this->save(array(self::POSTED_NAME => array('enabled' => '1'), 'Facebook' => self::FACEBOOK_POST), array());
+
+		self::assertSame(array('Facebook-OAuth2' => self::FACEBOOK_POST), $stored, 'The save kept a name no provider has.');
+	}
+
+	public function testTheSaveStoresASupportedProviderAsBefore()
+	{
+		self::assertSame(array('Facebook-OAuth2' => self::FACEBOOK_POST), $this->save(array('Facebook' => self::FACEBOOK_POST), array()));
+	}
+
+	/**
+	 * The add form posts the name its address names, which a hand-typed address can give in another case.
+	 */
+	public function testTheSaveStoresAProviderPostedInAnotherCaseAsBefore()
+	{
+		self::assertSame(array('Facebook-OAuth2' => self::FACEBOOK_POST), $this->save(array('facebook' => self::FACEBOOK_POST), array()));
+	}
+
+	public function testTheSaveLeavesAStoredNameThatNoProviderHasAsItIs()
+	{
+		$stored = $this->save(array('Facebook' => self::FACEBOOK_POST), array('AOL' => array('enabled' => '1')));
+
+		self::assertSame(array('AOL' => array('enabled' => '1'), 'Facebook-OAuth2' => self::FACEBOOK_POST), $stored);
+	}
+
 	/**
 	 * @param string $page
 	 * @return string the label a page prints for Facebook, linked to the documentation Hybridauth names for it
@@ -132,9 +162,10 @@ class socialProviderNameAdminTest extends \Test\Unit
 	 *
 	 * @param string $query the page's query string less its mode
 	 * @param array  $login what the social_login preference holds, by stored provider name
+	 * @param string $php   more for the child to run before the page
 	 * @return string everything the page wrote
 	 */
-	private function page($query, array $login)
+	private function page($query, array $login, $php = '')
 	{
 		putenv('QUERY_STRING=mode=main&'.$query);
 
@@ -143,11 +174,31 @@ class socialProviderNameAdminTest extends \Test\Unit
 		$seed .= "register_shutdown_function(function() { \$docs = (new ReflectionClass('Hybridauth\\\\Provider\\\\Facebook'))->getDefaultProperties(); ";
 		$seed .= "echo \"\\nFACTS:\".json_encode(array('title' => LAN_SOCIAL_ADMIN_10, 'href' => \$docs['apiDocumentation'])).\"\\n\"; }); ";
 
-		$page = $this->renderInBootedCli('e107_plugins/social/admin_config.php', $seed);
+		$page = $this->renderInBootedCli('e107_plugins/social/admin_config.php', $seed.$php);
 
 		self::assertStringNotContainsString('Fatal error', $page, "The page died:\n".$page);
 
 		return $page;
+	}
+
+	/**
+	 * Posts to the save the login forms share, as the add form does and as the main admin, with the social login configuration held in memory and the save itself refused, so nothing is written.
+	 *
+	 * @param array $posted what the form posts as social_login, by provider name
+	 * @param array $login  what the social_login preference holds before the save, by stored provider name
+	 * @return array what the social_login preference holds once the save has run
+	 */
+	private function save(array $posted, array $login)
+	{
+		$php = "\$_POST = ".var_export(array('save_social_logins' => '1', 'social_login' => $posted), true)."; ";
+		$php .= "e107::getConfig()->addValidationError('forced by socialProviderNameAdminTest'); ";
+		$php .= "register_shutdown_function(function() { echo \"\\nSTORED:\".json_encode(e107::getConfig()->get('social_login')).\"\\n\"; }); ";
+
+		$page = $this->page('action=add', $login, $php);
+
+		self::assertSame(1, preg_match('/^STORED:(.*)$/m', $page, $match), "The save did not report what it kept:\n".$page);
+
+		return json_decode($match[1], true);
 	}
 
 	/**
