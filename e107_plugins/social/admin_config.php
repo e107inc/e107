@@ -270,9 +270,14 @@ class social_ui extends e_admin_ui
 
 			if(!empty($_POST['save_social_pages']) && isset($_POST['xurl']))
 			{
-				$cfg = e107::getConfig();
-				$cfg->setPref('xurl', $_POST['xurl']);
-				$cfg->save(true, true, true);
+				$xurl = array_intersect_key((array) $_POST['xurl'], array_flip(preg_grep('/^[a-z0-9_]+$/D', array_keys((array) $_POST['xurl']))));
+
+				if($this->maySaveLinkAddresses(array_keys($xurl), $xurl, (array) e107::pref('core', 'xurl')))
+				{
+					$cfg = e107::getConfig();
+					$cfg->setPref('xurl', $xurl);
+					$cfg->save(true, true, true);
+				}
 			}
 
 			$tp = e107::getParser();
