@@ -848,6 +848,78 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	}
 
 	/**
+	 * @return e_parse storing as an author who may post HTML but not script
+	 */
+	private function htmlAuthor()
+	{
+		$parser = new e_parse();
+		$parser->setScriptAccess(e_UC_NOBODY);
+
+		return $parser;
+	}
+
+	/**
+	 * A post as the editor's Insert e107 BBcode item writes it: each bbcode as typed, base64-encoded in an x-bbcode alt.
+	 *
+	 * @param string[] $bbcodes inserted in one paragraph, a word apart
+	 * @return string
+	 */
+	private function insertedBbcode(array $bbcodes)
+	{
+		$elements = array();
+
+		foreach ($bbcodes as $bbcode)
+		{
+			$elements[] = '<x-bbcode alt="'.base64_encode($bbcode).'">x</x-bbcode>';
+		}
+
+		return '[html]<p>Before '.implode(' middle ', $elements).'   after</p>[/html]';
+	}
+
+	/**
+	 * @return string an x-bbcode element whose alt decodes to markup, as an author who may post HTML but not script stores it
+	 */
+	private function storedMarkupAlt()
+	{
+		return $this->htmlAuthor()->toDB('[html]<p><x-bbcode alt="PHUgdGFiaW5kZXg9MCBhdXRvZm9jdXMgb25mb2N1cz1wcmludCgpIGlkPT54PC91Pg==">x</x-bbcode></p>[/html]');
+	}
+
+	public function testAnXBbcodeAltCannotAddAHandler()
+	{
+		$html = $this->htmlAuthor()->toHTML($this->storedMarkupAlt(), true);
+
+		$this->assertNoEventHandler($html, 'An x-bbcode alt added a handler to the page.');
+		self::assertNotSame(false, strpos($html, '&lt;u tabindex=0'), 'An x-bbcode alt was not shown as text: '.$html);
+	}
+
+	/**
+	 * @return array the bbcodes typed in one paragraph, and as the page shows them
+	 */
+	public function insertedBbcodes()
+	{
+		return array(
+			'plain'                => array(array('[b]bold[/b]'), '[b]bold[/b]'),
+			'a dollar sign'        => array(array('[b]costs $10[/b]'), '[b]costs $10[/b]'),
+			'a plus in the alt'    => array(array('[b]a ~[/b]'), '[b]a ~[/b]'),
+			'a slash in the alt'   => array(array('[link=https://e107.org/?a=1&b=2]e107[/link]'), '[link=https://e107.org/?a=1&amp;b=2]e107[/link]'),
+			'two in one paragraph' => array(array('[b]one[/b]', '[i]two[/i]'), '[b]one[/b] middle [i]two[/i]'),
+		);
+	}
+
+	/**
+	 * @dataProvider insertedBbcodes
+	 * @param string[] $bbcodes
+	 * @param string $shown
+	 */
+	public function testAnInsertedBbcodeReadsAsTyped(array $bbcodes, $shown)
+	{
+		$author = $this->htmlAuthor();
+
+		self::assertSame('<!-- bbcode-html-start --><p>Before '.$shown.'   after</p><!-- bbcode-html-end -->',
+			$author->toHTML($author->toDB($this->insertedBbcode($bbcodes)), true));
+	}
+
+	/**
 	 * autofocus is what makes the handler fire without the reader touching
 	 * anything, and a post has no business taking the caret off the page.
 	 */

@@ -289,6 +289,40 @@ Plain text paragraph 3<br />';
 		}
 
 
+		public function testTheEditorIsGivenAnXBbcodeAltAsText()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+			$alt = 'PHUgdGFiaW5kZXg9MCBhdXRvZm9jdXMgb25mb2N1cz1wcmludCgpIGlkPT54PC91Pg==';
+
+			$this->assertSame('<p><x-bbcode alt=&quot;'.$alt.'&quot;>&lt;u tabindex=0 autofocus onfocus=print() id=&gt;x&lt;/u&gt;</x-bbcode></p>',
+				$this->tm->toHTML('[html]<p><x-bbcode alt=&quot;'.$alt.'&quot;>x</x-bbcode></p>[/html]'));
+		}
+
+		public function testTheEditorStillRendersAnInsertedBbcode()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+			$html = $this->tm->toHTML('[html]<p>Before <x-bbcode alt=&quot;W2JdYm9sZFsvYl0=&quot;>x</x-bbcode>   after</p>[/html]');
+
+			$this->assertSame(1, preg_match("#^<p>Before <x-bbcode alt=&quot;W2JdYm9sZFsvYl0=&quot;><strong class='bbcode bold bbcode-b[^']*'>bold</strong></x-bbcode>   after</p>$#", $html), $html);
+		}
+
+		public function testTheEditorKeepsTwoBbcodesInsertedInOneParagraph()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+			$html = $this->tm->toHTML('[html]<p>Before <x-bbcode alt=&quot;W2Jdb25lWy9iXQ==&quot;>x</x-bbcode> middle <x-bbcode alt=&quot;W2lddHdvWy9pXQ==&quot;>x</x-bbcode>   after</p>[/html]');
+
+			$this->assertSame(1, preg_match("#^<p>Before <x-bbcode alt=&quot;W2Jdb25lWy9iXQ==&quot;><strong class='bbcode bold bbcode-b[^']*'>one</strong></x-bbcode> middle <x-bbcode alt=&quot;W2lddHdvWy9pXQ==&quot;><em class='bbcode italic bbcode-i[^']*'>two</em></x-bbcode>   after</p>$#", $html), $html);
+		}
+
+		public function testTheEditorAddsNoEncodingToAnInsertedLink()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+			$html = $this->tm->toHTML('[html]<p><x-bbcode alt=&quot;W2xpbms9aHR0cHM6Ly9lMTA3Lm9yZy9uZXdzLnBocD9hPTEmYj0yXWUxMDdbL2xpbmtd&quot;>x</x-bbcode></p>[/html]');
+
+			$this->assertSame(1, preg_match("#^<p><x-bbcode alt=&quot;W2xpbms9aHR0cHM6Ly9lMTA3Lm9yZy9uZXdzLnBocD9hPTEmYj0yXWUxMDdbL2xpbmtd&quot;><a class='bbcode bbcode-link[^']*' href='https://e107\.org/news\.php\?a=1&amp;amp;b=2' [^>]*>e107</a></x-bbcode></p>$#", $html), $html);
+		}
+
+
 		public function testParsingofTable()
 		{
 				// -----------
