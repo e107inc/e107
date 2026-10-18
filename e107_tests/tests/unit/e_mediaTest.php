@@ -12,6 +12,9 @@
 	class e_mediaTest extends \Test\Unit
 	{
 
+		/** @var string a name of a type that may not be uploaded, which the rename tests ask for */
+		const REFUSED = 'media-rename-test.svg';
+
 		/** @var e_media  */
 		protected $md;
 
@@ -164,6 +167,49 @@
 			}
 
 
+		}
+
+		public function testProcessAjaxImportRefusesARenameToATypeThatMayNotBeUploaded()
+		{
+			list($result, $left) = $this->importStaged(self::REFUSED);
+
+			$this->assertSame(array(false, false), $left, 'the upload was kept, or stored under the name of a type that may not be uploaded');
+			$this->assertSame(120, $result['error']['code']);
+		}
+
+		public function testProcessAjaxImportKeepsAnUploadsOwnNameWhenTheRenameIsNotAName()
+		{
+			list($result, $left) = $this->importStaged(array(self::REFUSED));
+
+			$this->assertArrayNotHasKey('error', $result);
+			$this->assertSame(array(true, false), $left, 'the upload was not kept under its own name');
+		}
+
+		/**
+		 * @param mixed $rename what processAjaxImport() is asked to rename an uploaded JPEG to
+		 * @return array the decoded reply, and whether a file is left under the upload's own name and under self::REFUSED
+		 */
+		private function importStaged($rename)
+		{
+			$source = e_PLUGIN.'gallery/images/horse.jpg';
+			$paths = array(e_IMPORT.'media-rename-test.jpg', e_IMPORT.self::REFUSED);
+
+			copy($source, $paths[0]);
+
+			try
+			{
+				return array(json_decode($this->md->processAjaxImport($paths[0], array('rename' => $rename)), true), array_map('file_exists', $paths));
+			}
+			finally
+			{
+				foreach($paths as $path)
+				{
+					if(is_file($path))
+					{
+						unlink($path);
+					}
+				}
+			}
 		}
 
 		public function testImportFile()
