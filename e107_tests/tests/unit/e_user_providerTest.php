@@ -285,6 +285,22 @@ class e_user_providerTest extends \Test\Unit
 		$this::assertSame('error', $level->getValue($logger));
 	}
 
+	public function testStoredCurlOptionsLeaveTheRequestsAsHybridauthMakesThem()
+	{
+		$restore = $this->withStoredFacebook(array('curl_options' => array(CURLOPT_USERAGENT => 'stored-agent')));
+		try
+		{
+			$client = $this->facebookAdapterProperty('httpClient');
+		}
+		finally
+		{
+			$restore();
+		}
+
+		$options = new \e107\Reflection\ReflectionProperty('Hybridauth\HttpClient\Curl', 'curlOptions');
+		$this::assertSame($options->getValue(new \Hybridauth\HttpClient\Curl()), $options->getValue($client));
+	}
+
 	/**
 	 * @param string $property one of {@see \Hybridauth\Adapter\AbstractAdapter}'s
 	 * @return mixed what it holds in the Facebook adapter e107 builds from the stored settings
