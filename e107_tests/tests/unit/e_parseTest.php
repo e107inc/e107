@@ -869,20 +869,28 @@ EXPECTED;
 
 		$db = $this->tp->toDB($orig);
 
-		e107::getConfig()->updatePref('wysiwyg', true);
-		e107::wysiwyg('default');
-		$actual = $this->tp->toForm($db);
-		$expected = 'lr.src = window._lr.url %2B &#039;/Scripts/api.js&#039;;';
-		$this->assertEquals($expected, $actual);
+		$restorePrefs = $this->withCorePrefs(array('wysiwyg' => true));
 
-		e107::getConfig()->updatePref('wysiwyg', false);
-		$actual = $this->tp->toForm($db);
-		$expected = 'lr.src = window._lr.url + &#039;/Scripts/api.js&#039;;';
-		$this->assertEquals($expected, $actual);
+		try
+		{
+			e107::wysiwyg('default');
+			$actual = $this->tp->toForm($db);
+			$expected = 'lr.src = window._lr.url %2B &#039;/Scripts/api.js&#039;;';
+			$this->assertEquals($expected, $actual);
+
+			e107::getConfig()->updatePref('wysiwyg', false);
+			$actual = $this->tp->toForm($db);
+			$expected = 'lr.src = window._lr.url + &#039;/Scripts/api.js&#039;;';
+			$this->assertEquals($expected, $actual);
 
 
-		$actual = $this->tp->toForm("[html]Something &quot;hi&quot;[/html]");
-		$this->assertSame('[html]Something "hi"[/html]', $actual);
+			$actual = $this->tp->toForm("[html]Something &quot;hi&quot;[/html]");
+			$this->assertSame('[html]Something "hi"[/html]', $actual);
+		}
+		finally
+		{
+			$restorePrefs();
+		}
 
 	}
 
