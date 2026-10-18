@@ -11,12 +11,15 @@
 
 class e_user_providerTest extends \Codeception\Test\Unit
 {
+	use \Test\CorePrefs;
 
 	/** @var e_user_provider */
 	protected $e_user_provider;
 
 	protected function _before()
 	{
+		e_user_providerTestAdapter::$constructed = 0;
+
 		try
 		{
 			include_once(e_HANDLER . 'user_handler.php');
@@ -183,4 +186,120 @@ class e_user_providerTest extends \Codeception\Test\Unit
 			false
 		);
 	}
+
+	public function testAStoredAdapterOptionChoosesNoClass()
+	{
+		$restore = $this->withStoredFacebook(array('adapter' => 'e_user_providerTestAdapter'));
+		try
+		{
+			new e_user_provider('Facebook');
+		}
+		finally
+		{
+			$restore();
+		}
+
+		$this::assertSame(0, e_user_providerTestAdapter::$constructed);
+	}
+
+	public function testAFacebookLoginLeavesForFacebookWhateverAdapterIsStored()
+	{
+		$address = $this->facebookSignInAddress(array('adapter' => 'e_user_providerTestAdapter'));
+
+		parse_str((string) parse_url($address, PHP_URL_QUERY), $query);
+		$this::assertSame('www.facebook.com', parse_url($address, PHP_URL_HOST));
+		$this::assertSame('123456789012345', isset($query['client_id']) ? $query['client_id'] : null);
+		$this::assertSame(0, e_user_providerTestAdapter::$constructed);
+	}
+
+	/**
+	 * @param array $options saved for Facebook as {@see e_user_providerTest::withStoredFacebook()} saves them
+	 * @return string the address a visitor signing in with Facebook is sent to
+	 */
+	private function facebookSignInAddress(array $options)
+	{
+		$restore = $this->withStoredFacebook($options);
+		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$address = '';
+		\Hybridauth\HttpClient\Util::setRedirectHandler(function ($url) use (&$address)
+		{
+			$address = $url;
+			throw new \LogicException('The visitor would leave here.');
+		});
+		try
+		{
+			$provider = new e_user_provider('Facebook');
+			$provider->login(false);
+		}
+		catch (\LogicException $leaving)
+		{
+		}
+		finally
+		{
+			\Hybridauth\HttpClient\Util::setRedirectHandler(null);
+			if ($method === null)
+			{
+				unset($_SERVER['REQUEST_METHOD']);
+			}
+			else
+			{
+				$_SERVER['REQUEST_METHOD'] = $method;
+			}
+			$restore();
+		}
+
+		return $address;
+	}
+
+	/**
+	 * @param array $options saved for an enabled Facebook beside its app id and secret, as the social plugin saves them
+	 * @return callable puts the social login preferences back and forgets what Facebook's adapter kept in the session
+	 */
+	private function withStoredFacebook(array $options)
+	{
+		$restorePrefs = $this->withCorePrefs(array('social_login' => array(), 'social_login_active' => 1));
+
+		include_once(e_PLUGIN . 'social/includes/social_login_config.php');
+		$manager = new social_login_config(e107::getConfig());
+		$manager->setProviderConfig('Facebook', array_merge(
+			array('enabled' => 1, 'keys' => array('id' => '123456789012345', 'secret' => 'app-secret')),
+			$options
+		));
+
+		return function () use ($restorePrefs)
+		{
+			$storage = new \Hybridauth\Storage\Session();
+			$storage->deleteMatch('Facebook.');
+			$restorePrefs();
+		};
+	}
 }
+
+/**
+ * Counts its constructions, standing in for any class a stored option could name.
+ */
+class e_user_providerTestAdapter
+{
+	public static $constructed = 0;
+
+	public function __construct()
+	{
+		self::$constructed++;
+	}
+
+	public function isConnected()
+	{
+		return false;
+	}
+
+	public function authenticate()
+	{
+	}
+
+	public function getUserProfile()
+	{
+		return new \Hybridauth\User\Profile();
+	}
+}
+
