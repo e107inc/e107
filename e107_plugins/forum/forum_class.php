@@ -84,7 +84,7 @@ class e107forum
 	public $modArray, $prefs;
 	public $e107;
 
-	/** @var array moderator rows keyed by userclass, for authorisation only */
+	/** @var array moderator rows keyed by userclass */
 	private $moderatorsByClass = array();
 	private $forumData = array();
 
@@ -660,18 +660,10 @@ class e107forum
 
 
 	/**
-	 * Moderators of one userclass, for deciding permission.
-	 *
-	 * Kept apart from forumGetMods(), which memoises a single list on the
-	 * instance whatever class it is asked for. Templates read that memo to
-	 * render a forum's moderator list, so it cannot simply be keyed without
-	 * changing what they show. The page also primes it before any write is
-	 * authorised, which meant every permission question in the request was
-	 * answered for the forum named in the URL rather than for the thread or
-	 * post being acted on.
+	 * Moderators of one userclass, memoised per class; permission checks read this, never $modArray.
 	 *
 	 * @param int|string $uclass value of forum.forum_moderators
-	 * @return array moderator rows keyed by user id
+	 * @return array moderator rows keyed by user id, none for a class a guest holds
 	 */
 	private function moderatorsOfClass($uclass)
 	{
@@ -696,9 +688,18 @@ class e107forum
 				}
 			}
 		}
-		else
+		elseif(!in_array((int) $uclass, array(e_UC_PUBLIC, e_UC_READONLY, e_UC_GUEST), true))
 		{
-			$mods = e107::getUserClass()->getUsersInClass($uclass, 'user_name', true);
+			$sql = e107::getDb('sql_r');
+
+			if($sql->gen("SELECT u.user_id, u.user_name FROM `#user` AS u WHERE ".$this->trackClassHeld($uclass)." ORDER BY u.user_id ASC"))
+			{
+				while($row = $sql->fetch())
+				{
+					$row['user_id'] = (int) $row['user_id'];
+					$mods[$row['user_id']] = $row;
+				}
+			}
 		}
 
 		return $this->moderatorsByClass[$key] = $mods;
@@ -2115,24 +2116,17 @@ class e107forum
 
 	function forumGetMods($uclass = e_UC_ADMIN, $force=false)
 	{
-		$sql = e107::getDb();
 		if(count($this->modArray) && !$force)
 		{
 			return $this->modArray;
 		}
-		if($uclass == e_UC_ADMIN || trim($uclass) == '')
+
+		if($force)
 		{
-			$sql->select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
-			while($row = $sql->fetch())
-			{
-				$this->modArray[$row['user_id']] = $row;
-			}
-		}
-		else
-		{
-			$this->modArray = e107::getUserClass()->getUsersInClass($uclass, 'user_name', true);
+			unset($this->moderatorsByClass[(string) $uclass]);
 		}
 
+		$this->modArray = $this->moderatorsOfClass($uclass);
 
 		return $this->modArray;
 	}
@@ -2458,18 +2452,17 @@ class e107forum
 
 
 	/**
-	 * "The recipient, aliased u, holds user class $classId", as SQL.
+	 * "The user, aliased u, holds user class $classId", as SQL.
 	 *
 	 * The rule being answered is e_user_model::_setClassList(): a signed-in user
 	 * holds every class written in user_class along with everything those
 	 * inherit, plus the fixed classes their own row answers for. So the
 	 * predicate is a match against user_class, ORed with whichever property of
 	 * the user row the class is a name for, shaped after
-	 * user_class::getUsersInClass(). It answers readability and nothing else;
-	 * whether an address is worth writing to is the mailer's question.
+	 * user_class::getUsersInClass(). It answers holding and nothing else.
 	 *
-	 * e_UC_PUBLIC, e_UC_READONLY and e_UC_MEMBER are held by every account, and
-	 * the join to user is what establishes that there is one.
+	 * e_UC_PUBLIC, e_UC_READONLY and e_UC_MEMBER are held by every account, so
+	 * every row of user answers them.
 	 *
 	 * e_UC_GUEST and e_UC_NOBODY answer nobody rather than being matched against
 	 * user_class, one being the absence of an account and the other the refusal
@@ -2477,7 +2470,7 @@ class e107forum
 	 * to a row carrying the id literally, and deliberately so.
 	 *
 	 * @param int $classId
-	 * @return string a predicate over the recipient aliased u, without the WHERE
+	 * @return string a predicate over the user aliased u, without the WHERE
 	 */
 	private function trackClassHeld($classId)
 	{
