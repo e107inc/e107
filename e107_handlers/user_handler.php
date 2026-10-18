@@ -1312,13 +1312,32 @@ class e_user_provider
 		{
 			$this->_config = array(
 				"callback"   => $this->generateCallbackUrl(),
-				"providers"  => $this->social_login_config_manager->getSupportedConfiguredProviderConfigs(),
+				"providers"  => $this->storedProviderConfigs(),
 				"debug_mode" => 'error',
 				"debug_file" => e_LOG . "hybridAuth.log"
 			);
 		}
 
 		return $this->_config;
+	}
+
+	/**
+	 * @return array {@see social_login_config::getSupportedConfiguredProviderConfigs()} without the options only code may choose
+	 */
+	private function storedProviderConfigs()
+	{
+		$codeOnlyOptions = array_flip(array('adapter'));
+		$providerConfigs = $this->social_login_config_manager->getSupportedConfiguredProviderConfigs();
+
+		foreach ($providerConfigs as $providerName => $providerConfig)
+		{
+			if (is_array($providerConfig))
+			{
+				$providerConfigs[$providerName] = array_diff_key($providerConfig, $codeOnlyOptions);
+			}
+		}
+
+		return $providerConfigs;
 	}
 
 	/**
