@@ -481,12 +481,13 @@
 		public function testAValueIsKeptHoweverThePageFormsElementsPostItBack()
 		{
 			require_once(e_HANDLER.'admin_ui.php');
-			$this->cf->loadConfig(array(
+			$config = array(
 				'a'  => array('title' => 'A', 'type' => 'text', 'writeParms' => '', 'help' => ''),
 				'a-' => array('title' => 'Tags', 'type' => 'tags', 'writeParms' => '', 'help' => ''),
 				'b'  => array('title' => 'B', 'type' => 'text', 'writeParms' => '{"type": "email", "multiple": 1}', 'help' => ''),
 				'c'  => array('title' => 'C', 'type' => 'text', 'writeParms' => '', 'help' => ''),
-			));
+			);
+			$this->cf->loadConfig($config);
 			$typed = '&lt;i onclick=cfq300()&gt;x&lt;/i&gt;';
 
 			$stored = $this->withPostClasses(e_UC_PUBLIC, e_UC_NOBODY, function () use ($typed)
@@ -494,7 +495,7 @@
 				return $this->cf->loadData('')->processDataPost('page_fields', array('page_fields__a' => $typed.','.$typed,
 					'page_fields__a-' => 'x', 'page_fields__b' => $typed.' , '.$typed, 'page_fields__c' => '&lt;i onclick=cfq300()&gt;1+1&lt;/i&gt;%3Ci onclick=cfq300()%3E'));
 			});
-			$posted = $this->postedFromPageForm($stored['page_fields']);
+			$posted = $this->postedFromPageForm($config, $stored['page_fields']);
 
 			$this->assertNotSame(html_entity_decode($stored['page_fields']['b'], ENT_QUOTES), $posted['page_fields__b'], 'the browser posts b back as shown');
 
@@ -517,14 +518,15 @@
 		public function testAnUntouchedHtmlValueKeepsItsLevel()
 		{
 			require_once(e_HANDLER.'admin_ui.php');
-			$this->cf->loadConfig(array(
+			$config = array(
 				'i0' => array('title' => 'Text icon', 'type' => 'icon', 'writeParms' => '', 'help' => ''),
 				'i1' => array('title' => 'HTML icon', 'type' => 'icon', 'writeParms' => '', 'help' => ''),
 				'in' => array('title' => 'Legacy icon', 'type' => 'icon', 'writeParms' => '', 'help' => ''),
 				't1' => array('title' => 'HTML text', 'type' => 'textarea', 'writeParms' => '', 'help' => ''),
 				'r1' => array('title' => 'HTML rich text', 'type' => 'bbarea', 'writeParms' => '', 'help' => ''),
 				'f1' => array('title' => 'HTML file', 'type' => 'file', 'writeParms' => '', 'help' => ''),
-			));
+			);
+			$this->cf->loadConfig($config);
 			$stored = array(
 				'i0'        => '[html]x&#039; onerror=&#039;cfq300()&#039; y+.png',
 				'i1'        => '[html]x&#039; onerror=&#039;cfq300()&#039; y&amp;.png',
@@ -535,9 +537,9 @@
 				'__trust__' => array('i0' => 0, 'i1' => 1, 't1' => 1, 'r1' => 1, 'f1' => 1),
 			);
 
-			$resaved = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function () use ($stored)
+			$resaved = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function () use ($config, $stored)
 			{
-				$posted = $this->postedFromPageForm($stored);
+				$posted = $this->postedFromPageForm($config, $stored);
 
 				return $this->cf->loadData(json_encode($stored))->processDataPost('page_fields', $posted);
 			});
@@ -557,16 +559,43 @@
 		 */
 		public function testAFieldsWidgetAttachesToItsOwnInput()
 		{
-			require_once(e_HANDLER.'admin_ui.php');
-			$this->cf->loadConfig(array(
+			$config = array(
 				'a'  => array('title' => 'A', 'type' => 'text', 'writeParms' => '', 'help' => ''),
 				'a-' => array('title' => 'Tags', 'type' => 'tags', 'writeParms' => '', 'help' => ''),
 				'u'  => array('title' => 'U', 'type' => 'text', 'writeParms' => '', 'help' => ''),
 				'u-' => array('title' => 'User', 'type' => 'user', 'writeParms' => '', 'help' => ''),
-			));
+			);
 
 			$this->assertSame(array('page_fields__a-' => 'page_fields__a-', 'page_fields__u-' => 'page_fields__u-'),
-				$this->widgetTargets($this->renderedPageForm(array('a' => 'x,x', 'u' => 'x,x'))));
+				$this->widgetTargets($this->renderedPageForm($config, array('a' => 'x,x', 'u' => 'x,x'))));
+		}
+
+		/**
+		 * A dropdown's value, new or changed, keeps no level, so the option its select posts, which the author of the
+		 * field's options wrote, prints as text whoever saved it, when the field becomes a text field.
+		 */
+		public function testAChoiceAmongAFieldsOptionsKeepsNoLevel()
+		{
+			$config = array('d' => array('title' => 'D', 'type' => 'dropdown', 'writeParms' => json_encode(array('optArray' => array('<b id="cfq57" onclick="cfq57()">t</b>' => 'T', 'b' => 'B'))), 'help' => ''));
+
+			foreach(array(array('d' => 'zzz', '__trust__' => array('d' => 0)), array()) as $stored)
+			{
+				$this->cf->loadConfig($config);
+				$posted = $this->postedFromPageForm($config, $stored);
+				$this->assertSame('<b id="cfq57" onclick="cfq57()">t</b>', $posted['page_fields__d'], 'the select posts its first option');
+
+				$resaved = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function () use ($stored, $posted)
+				{
+					return $this->cf->loadData(json_encode($stored))->processDataPost('page_fields', $posted);
+				});
+
+				$this->assertArrayNotHasKey('__trust__', $resaved['page_fields'], json_encode($stored));
+
+				$config['d']['type'] = 'text';
+				$this->cf->loadConfig($config)->loadData(json_encode($resaved['page_fields']));
+				$this->assertNoMarkupIn((string) $this->cf->getFieldValue('d'), json_encode($stored));
+				$config['d']['type'] = 'dropdown';
+			}
 		}
 
 		/**
@@ -885,10 +914,8 @@
 		 */
 		public function testStoredMarkupInAFieldsSettingsReachesTheFormAsText()
 		{
-			require_once(e_HANDLER.'admin_ui.php');
-
 			$markup = '"><svg onload=alert(1)>';
-			$this->cf->loadConfig(array(
+			$seen = $this->pageFormConfig(array(
 				'__tabs__' => array('additional' => 'Tab'.$markup),
 				'colour'   => array(
 					'title'      => 'Colour'.$markup,
@@ -905,14 +932,6 @@
 				'unknown'  => array('title' => 'Unknown', 'type' => 'method', 'writeParms' => '', 'help' => ''),
 				'x'.$markup => array('title' => 'Bad key', 'type' => 'text', 'writeParms' => '', 'help' => ''),
 			));
-
-			$seen = array();
-			$ui = $this->make('e_admin_ui', array(
-				'addTab'       => function ($key, $label) use (&$seen) { $seen['tab'] = $label; },
-				'setFieldAttr' => function ($fields) use (&$seen) { $seen['fields'] = $fields; },
-			));
-
-			$this->cf->setAdminUIConfig('page_fields', $ui);
 
 			$this->assertSame(array('page_fields__colour', 'page_fields__shape', 'page_fields__count', 'page_fields__answer', 'page_fields__tone'), array_keys($seen['fields']));
 			$this->assertSame(array("Don't know", 'R&D'), array_keys($seen['fields']['page_fields__answer']['writeParms']['optArray']));
@@ -944,22 +963,12 @@
 		 */
 		public function testAStoredTabKeyIsNotTheTabId()
 		{
-			require_once(e_HANDLER.'admin_ui.php');
-
-			$this->cf->loadConfig(array(
+			$seen = $this->pageFormConfig(array(
 				'__tabs__' => array('x"><svg onload=alert(1)>' => 'Tab'),
 				'shape'    => array('title' => 'Shape', 'type' => 'text', 'writeParms' => '', 'help' => ''),
 			));
 
-			$seen = array();
-			$ui = $this->make('e_admin_ui', array(
-				'addTab'       => function ($key, $label) use (&$seen) { $seen['tab'] = array($key => $label); },
-				'setFieldAttr' => function ($fields) use (&$seen) { $seen['fields'] = $fields; },
-			));
-
-			$this->cf->setAdminUIConfig('page_fields', $ui);
-
-			$this->assertSame(array('additional' => 'Additional'), $seen['tab']);
+			$this->assertSame(array('additional' => 'Additional'), array($seen['tabKey'] => $seen['tab']));
 			$this->assertSame('additional', $seen['fields']['page_fields__shape']['tab']);
 		}
 
@@ -967,20 +976,16 @@
 		{
 			$result = $this->withPostClasses(e_UC_NOBODY, e_UC_NOBODY, function () { return $this->cf->processConfigPost('chapter_fields', $this->postedConfig()); });
 
-			// A command-line run of release/v2.3.x passes every class check, so there the author can post scripts.
-			$trust = check_class(e_UC_NOBODY) ? 2 : 0;
-
 			$this->assertSame('Chapter', $result['chapter_name']);
 			$this->assertArrayNotHasKey('__e_customfields_tabs__', $result);
 			$this->assertSame(array(
 				'__tabs__'  => array('additional' => 'My Tab'),
-				'colour'    => array('title' => 'Colour', 'type' => 'dropdown', 'writeParms' => '{ "optArray": { "blue": "Blue" } }', 'help' => 'Pick one')
-					+ (($trust === 2) ? array('note' => 'n', 'validate' => true) : array()),
-				'__trust__' => $trust,
+				'colour'    => array('title' => 'Colour', 'type' => 'dropdown', 'writeParms' => '{ "optArray": { "blue": "Blue" } }', 'help' => 'Pick one'),
+				'__trust__' => array('__tabs__' => 0, 'colour' => array('title' => 0, 'writeParms' => 0, 'help' => 0)),
 			), $result['chapter_fields']);
 
 			$result = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function () { return $this->cf->processConfigPost('chapter_fields', $this->postedConfig()); });
-			$this->assertSame(2, $result['chapter_fields']['__trust__']);
+			$this->assertSame(2, $result['chapter_fields']['__trust__']['colour']['writeParms']);
 			$this->assertSame('n', $result['chapter_fields']['colour']['note']);
 		}
 
@@ -991,8 +996,6 @@
 		 */
 		public function testAFieldsSettingsPrintAsTheirAuthorMayPostThem()
 		{
-			require_once(e_HANDLER.'admin_ui.php');
-
 			$config = array(
 				'__tabs__' => array('additional' => 'Tab <b>bold</b>'),
 				'colour'   => array('title' => 'Colour <b>bold</b>', 'type' => 'dropdown', 'help' => 'Help <b>bold</b>', 'note' => 'Note',
@@ -1001,12 +1004,7 @@
 
 			foreach(array(1 => false, 2 => true) as $trust => $everyParameter)
 			{
-				$seen = array();
-				$ui = $this->make('e_admin_ui', array(
-					'addTab'       => function ($key, $label) use (&$seen) { $seen['tab'] = $label; },
-					'setFieldAttr' => function ($fields) use (&$seen) { $seen['fields'] = $fields; },
-				));
-				$this->cf->loadConfig($config + array('__trust__' => $trust))->setAdminUIConfig('page_fields', $ui);
+				$seen = $this->pageFormConfig($config + array('__trust__' => array('__tabs__' => $trust, 'colour' => array('title' => $trust, 'help' => $trust, 'writeParms' => $trust))));
 				$colour = $seen['fields']['page_fields__colour'];
 
 				$this->assertSame('Tab <b>bold</b>', $seen['tab']);
@@ -1021,11 +1019,257 @@
 			$this->assertNoMarkupIn($this->cf->getFieldTitle('colour'), 'unrecorded title');
 			$this->assertNoMarkupIn($this->cf->getTabLabel(), 'unrecorded tab label');
 
-			$this->cf->loadConfig(array('colour' => array('title' => 'e_ROOT', 'type' => 'text', 'writeParms' => '', 'help' => ''), '__trust__' => 1));
+			$this->cf->loadConfig(array('colour' => array('title' => 'e_ROOT', 'type' => 'text', 'writeParms' => '', 'help' => ''), '__trust__' => array('colour' => array('title' => 1))));
 			$this->assertSame('e_ROOT', $this->cf->getFieldTitle('colour'), 'a constant name stays a name');
 
-			$this->cf->loadConfig(array('colour' => array('title' => 'Colour&#039; <b>bold</b>', 'type' => 'text', 'writeParms' => '', 'help' => ''), '__trust__' => 0));
+			$this->cf->loadConfig(array('colour' => array('title' => 'Colour&#039; <b>bold</b>', 'type' => 'text', 'writeParms' => '', 'help' => ''), '__trust__' => array('colour' => array('title' => 0))));
 			$this->assertSame('Colour&#039; &lt;b&gt;bold&lt;/b&gt;', $this->cf->getFieldTitle('colour'));
+		}
+
+		/**
+		 * Saving a chapter again keeps every title, help text, parameter list and tab label the administrator left as
+		 * the form showed it exactly as its author stored it, so one who may post only text does not strip what one
+		 * with script access wrote; the help text they change is stored as they may post it.
+		 */
+		public function testALowerAdministratorsSaveKeepsTheSettingsTheyLeftAlone()
+		{
+			$stored = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function ()
+			{
+				return $this->cf->processConfigPost('chapter_fields', array(
+					'__e_customfields_tabs__' => 'Tab <b onclick="cfq300()">tab</b>',
+					'chapter_fields'          => array(array('key' => 'colour', 'title' => 'Colour <b onclick="cfq300()">title</b>', 'type' => 'dropdown',
+						'writeParms' => json_encode(array('optArray' => array('blue' => 'Blue'), 'trClass' => 'row-class')), 'help' => 'Help')),
+				));
+			});
+
+			$posted = $this->postedConfigForm($stored['chapter_fields']);
+			$posted['chapter_fields'][0]['help'] = 'Help <b onclick="cfq300()">changed</b>';
+
+			$resaved = $this->withPostClasses(e_UC_NOBODY, e_UC_NOBODY, function () use ($stored, $posted)
+			{
+				return $this->cf->loadConfig($stored['chapter_fields'])->processConfigPost('chapter_fields', $posted);
+			});
+
+			$seen = $this->pageFormConfig($resaved['chapter_fields']);
+			$colour = $seen['fields']['page_fields__colour'];
+
+			$this->assertSame('Tab <b onclick="cfq300()">tab</b>', $seen['tab']);
+			$this->assertSame('Colour <b onclick="cfq300()">title</b>', $colour['title']);
+			$this->assertSame('row-class', varset($colour['writeParms']['trClass']));
+			$this->assertStringContainsString('changed', $colour['help']);
+			$this->assertNoMarkupIn($colour['help'], 'changed help');
+		}
+
+		/**
+		 * Settings an author who may post HTML, or only text, wrote with entities in them, and the parameters the
+		 * whitelist holds them to, stay as they were after an administrator with script access saves the chapter
+		 * without changing them, though the form shows those entities decoded.
+		 */
+		public function testAHigherAdministratorsSaveDoesNotPromoteSettingsTheyLeftAlone()
+		{
+			foreach(array(array(e_UC_PUBLIC, '&lt;i onclick=cfq300()&gt;x&lt;/i&gt;'), array(e_UC_NOBODY, '&#60;i onclick=cfq300()&#62;x&#60;/i&#62;')) as $author)
+			{
+				list($html, $typed) = $author;
+
+				$stored = $this->withPostClasses($html, e_UC_NOBODY, function () use ($typed)
+				{
+					return $this->cf->processConfigPost('chapter_fields', array(
+						'__e_customfields_tabs__' => 'Tab '.$typed,
+						'chapter_fields'          => array(array('key' => 'colour', 'title' => 'Colour '.$typed, 'type' => 'dropdown',
+							'writeParms' => json_encode(array('optArray' => array('blue' => 'Blue'), 'trClass' => 'row-class')), 'help' => 'Help '.$typed)),
+					));
+				});
+
+				$posted = $this->postedConfigForm($stored['chapter_fields']);
+
+				$resaved = $this->withPostClasses(e_UC_PUBLIC, e_UC_PUBLIC, function () use ($stored, $posted)
+				{
+					return $this->cf->loadConfig($stored['chapter_fields'])->processConfigPost('chapter_fields', $posted);
+				});
+
+				$seen = $this->pageFormConfig($resaved['chapter_fields']);
+				$colour = $seen['fields']['page_fields__colour'];
+
+				$this->assertNoMarkupIn($seen['tab'], 'tab '.$typed);
+				$this->assertNoMarkupIn($colour['title'], 'title '.$typed);
+				$this->assertNoMarkupIn($colour['help'], 'help '.$typed);
+				$this->assertNoMarkupIn($this->cf->getFieldTitle('colour'), 'page title '.$typed);
+				$this->assertArrayNotHasKey('trClass', $colour['writeParms'], $typed);
+			}
+		}
+
+		/**
+		 * A title, help text, parameter list or tab label the chapter form posts back as it showed it is stored again
+		 * byte for byte, though {@see e_parse::toDB()} would change it, whether a level is recorded for it or not and
+		 * whoever saves.
+		 */
+		public function testAnUntouchedSettingIsStoredAgainByteForByte()
+		{
+			$settings = array(
+				'__tabs__' => array('additional' => 'Tab [p][/p]<b>tab</b>'),
+				'colour'   => array('title' => 'java[p][/p]script:cfq300()', 'type' => 'dropdown', 'writeParms' => '{"optArray":{"blue":"Blue &amp; [h][/h]"}}',
+					'help' => 'Help [h][/h]<b>help</b>'),
+			);
+
+			foreach(array(array('__tabs__' => 2, 'colour' => array('title' => 1, 'writeParms' => 2, 'help' => 0)), null) as $levels)
+			{
+				$stored = $settings + (($levels === null) ? array() : array('__trust__' => $levels));
+
+				foreach(array(e_UC_PUBLIC, e_UC_NOBODY) as $saver)
+				{
+					$resaved = $this->withPostClasses($saver, $saver, function () use ($stored, $settings)
+					{
+						foreach(array($settings['__tabs__']['additional'], $settings['colour']['title'], $settings['colour']['help']) as $value)
+						{
+							$this->assertNotSame($value, e107::getParser()->toDB($value), 'toDB() keeps '.$value);
+						}
+
+						return $this->cf->loadConfig($stored)->processConfigPost('chapter_fields', $this->postedConfigForm($stored));
+					});
+
+					$this->assertSame($stored, $resaved['chapter_fields'], 'levels '.json_encode($levels).', saver '.$saver);
+				}
+			}
+		}
+
+		/**
+		 * A setting is stored again byte for byte, its level kept, on an untouched save though a browser posts it back
+		 * without the line breaks it drops from the chapter form's one-line inputs, whoever saves.
+		 */
+		public function testASettingABrowserPostsBackWithoutItsLineBreaksIsStoredAgainByteForByte()
+		{
+			$typed = "Col\nour &lt;b onclick=cfq300()&gt;y&lt;/b&gt;";
+			$settings = array(
+				'__tabs__' => array('additional' => "Tab\r\n".$typed),
+				'colour'   => array('title' => $typed, 'type' => 'dropdown', 'writeParms' => "{\"optArray\":{\"blue\":\"Blue\"},\n\"post\":\"<b onclick=cfq300()>x</b>\"}",
+					'help' => "Help\n".$typed),
+			);
+
+			foreach(array(array('__tabs__' => 0, 'colour' => array('title' => 0, 'writeParms' => 0, 'help' => 0)),
+				array('__tabs__' => 2, 'colour' => array('title' => 2, 'writeParms' => 2, 'help' => 2)), null) as $levels)
+			{
+				$stored = $settings + (($levels === null) ? array() : array('__trust__' => $levels));
+				$posted = $this->postedConfigForm($stored);
+				$this->assertSame('Colour <b onclick=cfq300()>y</b>', $posted['chapter_fields'][0]['title'], 'the browser posts the title without its line break');
+
+				foreach(array(e_UC_PUBLIC, e_UC_NOBODY) as $saver)
+				{
+					$resaved = $this->withPostClasses($saver, $saver, function () use ($stored, $posted)
+					{
+						return $this->cf->loadConfig($stored)->processConfigPost('chapter_fields', $posted);
+					});
+
+					$this->assertSame($stored, $resaved['chapter_fields'], 'levels '.json_encode($levels).', saver '.$saver);
+				}
+			}
+		}
+
+		/**
+		 * When two posted rows name the same field, the one that is stored decides its levels alone, so an untouched
+		 * setting saved before levels were recorded keeps none.
+		 */
+		public function testARowNamingAnotherRowsFieldTakesNoLevelFromIt()
+		{
+			$stored = array(
+				'b' => array('title' => 'Bee', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+				'a' => array('title' => '<b id="cfq3d" onclick="cfq300()">legacy</b>', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+			);
+			$posted = $this->postedConfigForm($stored);
+			array_unshift($posted['chapter_fields'], array('key' => 'a', 'title' => 'Changed', 'type' => 'text', 'writeParms' => '', 'help' => 'Changed'));
+
+			foreach(array(e_UC_PUBLIC, e_UC_NOBODY) as $saver)
+			{
+				$resaved = $this->withPostClasses($saver, $saver, function () use ($stored, $posted)
+				{
+					return $this->cf->loadConfig($stored)->processConfigPost('chapter_fields', $posted);
+				});
+
+				$this->assertSame($stored['a'], $resaved['chapter_fields']['a'], 'saver '.$saver);
+				$this->assertArrayNotHasKey('a', varset($resaved['chapter_fields']['__trust__'], array()), 'saver '.$saver);
+				$this->assertNoMarkupIn((string) $this->cf->loadConfig($resaved['chapter_fields'])->getFieldTitle('a'), 'saver '.$saver);
+			}
+		}
+
+		/**
+		 * Loading a configuration replaces the fields and levels loaded before, an empty one included, so a new
+		 * chapter's field settings are never compared with another chapter's.
+		 */
+		public function testLoadingAConfigurationForgetsTheOneBefore()
+		{
+			$other = array('colour' => array('title' => '<b id="cfq3o" onclick="cfq300()">other</b>', 'type' => 'text', 'writeParms' => '', 'help' => ''),
+				'__trust__' => array('colour' => array('title' => 2)));
+			$posted = array('chapter_fields' => array(array('key' => 'colour', 'title' => '<b id="cfq3o" onclick="cfq300()">other</b>', 'type' => 'text',
+				'writeParms' => '', 'help' => '')));
+
+			foreach(array(null, '', '[]', array()) as $empty)
+			{
+				$saved = $this->withPostClasses(e_UC_PUBLIC, e_UC_NOBODY, function () use ($other, $empty, $posted)
+				{
+					return $this->cf->loadConfig($other)->loadConfig($empty)->processConfigPost('chapter_fields', $posted);
+				});
+
+				$this->assertSame(array(), $this->cf->getConfig(), var_export($empty, true));
+				$this->assertSame(array('colour' => array('title' => 1, 'writeParms' => 1, 'help' => 1)), $saved['chapter_fields']['__trust__'], var_export($empty, true));
+			}
+		}
+
+		/**
+		 * @param array|string $config a chapter's custom field settings as stored
+		 * @return array the page form's field tab id ('tabKey') and label ('tab'), and the fields ('fields') the
+		 *               settings give it
+		 */
+		private function pageFormConfig($config)
+		{
+			require_once(e_HANDLER.'admin_ui.php');
+
+			$seen = array();
+			$ui = $this->make('e_admin_ui', array(
+				'addTab'       => function ($key, $label) use (&$seen) { $seen['tabKey'] = $key; $seen['tab'] = $label; },
+				'setFieldAttr' => function ($fields) use (&$seen) { $seen['fields'] = $fields; },
+			));
+			$this->cf->loadConfig($config)->setAdminUIConfig('page_fields', $ui);
+
+			return $seen;
+		}
+
+		/**
+		 * @param array $stored a chapter's custom field settings as {@see e_customfields::processConfigPost()}
+		 *                      stored them
+		 * @return array what the chapter form posts back for them untouched, read from its markup and posted from its
+		 *               inputs as a browser posts them
+		 */
+		private function postedConfigForm(array $stored)
+		{
+			$xpath = new DOMXPath($this->htmlDocument($this->cf->loadConfig($stored)->renderConfigForm('chapter_fields')));
+			$pairs = array();
+
+			foreach($xpath->query('//input[@name]') as $input)
+			{
+				$pairs[] = rawurlencode($input->getAttribute('name')).'='.rawurlencode($this->asBrowserPosts($input->getAttribute('value'), 'text'));
+			}
+
+			foreach($xpath->query('//select[@name]') as $select)
+			{
+				$pairs[] = rawurlencode($select->getAttribute('name')).'='.rawurlencode($this->selectPosts($xpath, $select));
+			}
+
+			parse_str(implode('&', $pairs), $posted);
+
+			return $posted;
+		}
+
+		/**
+		 * @param DOMXPath $xpath a form's markup
+		 * @param DOMElement $select one of its one-choice selects
+		 * @return string what a browser posts for it: its chosen option's value, or its first option's when none
+		 *                is chosen
+		 */
+		private function selectPosts(DOMXPath $xpath, DOMElement $select)
+		{
+			$chosen = $xpath->query('.//option[@selected]', $select);
+			$option = $chosen->length ? $chosen->item($chosen->length - 1) : $xpath->query('.//option', $select)->item(0);
+
+			return $option ? $option->getAttribute('value') : '';
 		}
 
 		/**
@@ -1116,18 +1360,15 @@
 		}
 
 		/**
+		 * @param array|string $config a chapter's custom field settings as stored
 		 * @param array $stored a page's custom field values as {@see e_customfields::processDataPost()} stored them
-		 * @return array the page form's custom fields for the loaded configuration ('fields'), and a {@see DOMXPath}
-		 *               over the elements {@see e_form} renders for them and $stored ('xpath')
+		 * @return array the page form's custom fields for those settings ('fields'), and a {@see DOMXPath} over the
+		 *               elements {@see e_form} renders for them and $stored ('xpath')
 		 */
-		private function renderedPageForm(array $stored)
+		private function renderedPageForm($config, array $stored)
 		{
-			$fields = array();
-			$ui = $this->make('e_admin_ui', array(
-				'addTab'       => function () {},
-				'setFieldAttr' => function ($attributes) use (&$fields) { $fields = $attributes; },
-			));
-			$this->cf->setAdminUIConfig('page_fields', $ui);
+			$form = $this->pageFormConfig($config);
+			$fields = $form['fields'];
 			$values = $this->formValues($stored);
 			$html = '';
 
@@ -1161,16 +1402,22 @@
 		}
 
 		/**
+		 * @param array|string $config a chapter's custom field settings as stored
 		 * @param array $stored a page's custom field values as {@see e_customfields::processDataPost()} stored them
 		 * @return array what the page form posts back for them untouched, read from the elements {@see e_form} renders
-		 *               for the loaded configuration, each as a browser posts it from that element, the element a tag
-		 *               widget attaches to as the widget rewrites it
+		 *               for them, each as a browser posts it from that element, the element a tag widget attaches to as
+		 *               the widget rewrites it
 		 */
-		private function postedFromPageForm(array $stored)
+		private function postedFromPageForm($config, array $stored)
 		{
-			$form = $this->renderedPageForm($stored);
+			$form = $this->renderedPageForm($config, $stored);
 			$tagged = array_flip(array_intersect_key($this->widgetTargets($form), array_filter($form['fields'], function ($field) { return $field['type'] === 'tags'; })));
 			$posted = array();
+
+			foreach($form['xpath']->query('//select[@name]') as $select)
+			{
+				$posted[$select->getAttribute('name')] = $this->selectPosts($form['xpath'], $select);
+			}
 
 			foreach($form['xpath']->query('//input[@name]|//textarea[@name]') as $element)
 			{

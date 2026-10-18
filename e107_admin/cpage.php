@@ -283,7 +283,7 @@ class page_chapters_ui extends e_admin_ui
 				return false;
 			}
 
-			$new_data = e107::getCustomFields()->processConfigPost('chapter_fields', $new_data);
+			$new_data = e107::getCustomFields()->loadConfig(varset($old_data['chapter_fields']))->processConfigPost('chapter_fields', $new_data);
 			
 			return $new_data;	
 		}
@@ -293,7 +293,7 @@ class page_chapters_ui extends e_admin_ui
 		{	
 			// return $this->beforeCreate($new_data);
 
-			$new_data = e107::getCustomFields()->processConfigPost('chapter_fields', $new_data);
+			$new_data = e107::getCustomFields()->loadConfig(varset($old_data['chapter_fields']))->processConfigPost('chapter_fields', $new_data);
 
 			return $new_data;
 		}
@@ -770,6 +770,7 @@ class page_admin_ui extends e_admin_ui
 		 */
 		private function initCustomFields($chap=null)
 		{
+			$chap = empty($chap) ? (int) $this->getPosted('page_chapter') : $chap;
 
 			if(!empty($this->chapterFields[$chap]))
 			{

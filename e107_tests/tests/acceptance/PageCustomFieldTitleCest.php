@@ -32,7 +32,7 @@ class PageCustomFieldTitleCest
 			$I->amOnPage('/e107_admin/cpage.php?mode=cat&action=edit&id='.$chapter);
 			$I->submitForm('#core-page-chapters-form', array(
 				'chapter_fields[0][key]'   => 'mytext',
-				'chapter_fields[0][title]' => 'Text',
+				'chapter_fields[0][title]' => 'Text 2',
 				'chapter_fields[0][type]'  => 'text',
 				'chapter_fields[0][note]'  => 'Note'.self::MARKUP,
 				'chapter_fields[1][key]'   => 'mymethod',
@@ -43,9 +43,92 @@ class PageCustomFieldTitleCest
 
 		$stored = json_decode($I->grabFromDatabase('e107_page_chapters', 'chapter_fields', array('chapter_id' => $chapter)), true);
 
-		$I->assertSame(array('title' => 'Text', 'type' => 'text', 'writeParms' => '', 'help' => ''), $stored['mytext']);
+		$I->assertSame(array('title' => 'Text 2', 'type' => 'text', 'writeParms' => '', 'help' => ''), $stored['mytext']);
 		$I->assertArrayNotHasKey('mymethod', $stored);
-		$I->assertSame(1, $stored['__trust__']);
+		$I->assertSame(1, $stored['__trust__']['mytext']['title']);
+	}
+
+	public function aLowerAdministratorsSaveKeepsTheSettingsTheyLeftAlone(AcceptanceTester $I)
+	{
+		$chapter = $this->haveChapter($I, array('mytext' => array('title' => 'Text', 'type' => 'text', 'writeParms' => '', 'help' => '')));
+		$page = $this->havePage($I, $chapter, array('mytext' => 'Some text'));
+
+		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $chapter)
+		{
+			$this->saveChapterAsPagesAdmin($I, $chapter, array('chapter_fields[0][title]' => 'Text <b id="cfq7tk" onclick="cfq7t()">kept</b>'));
+		});
+
+		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $chapter)
+		{
+			$this->saveChapterAsPagesAdmin($I, $chapter, array('chapter_fields[0][help]' => 'Help <b id="cfq7tc" onclick="cfq7t()">changed</b>'));
+		});
+
+		$I->amSignedInAs();
+		$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+		$I->seeElement('#cfq7tk[onclick]');
+		$I->seeElement('#cfq7tc');
+		$I->dontSeeElement('#cfq7tc[onclick]');
+	}
+
+	public function aHigherAdministratorsSaveDoesNotPromoteSettingsTheyLeftAlone(AcceptanceTester $I)
+	{
+		$chapter = $this->haveChapter($I, array('mytext' => array('title' => 'Text', 'type' => 'text', 'writeParms' => '', 'help' => '')));
+		$page = $this->havePage($I, $chapter, array('mytext' => 'Some text'));
+
+		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 255), function () use ($I, $chapter)
+		{
+			$this->saveChapterAsPagesAdmin($I, $chapter, array('chapter_fields[0][title]' => 'Text &lt;b id="cfq7tp" onclick="cfq7t()"&gt;typed&lt;/b&gt;'));
+		});
+
+		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $chapter)
+		{
+			$this->saveChapterAsPagesAdmin($I, $chapter, array());
+		});
+
+		$I->amSignedInAs();
+		$I->amOnPage('/e107_admin/cpage.php?mode=page&action=edit&id='.$page);
+		$I->seeInSource('page_fields__mytext');
+		$I->dontSeeElement('#cfq7tp');
+
+		$I->haveSiteTheme('bootstrap3');
+		$I->amOnPage('/page.php?id='.$page);
+		$I->seeInSource('custom-fields-example');
+		$I->dontSeeElement('#cfq7tp');
+	}
+
+	/**
+	 * A dropdown's first option, which a page created untouched posts, keeps no level, so it prints as text whoever
+	 * created the page, once the field is made a text field.
+	 */
+	public function aCreatedPagesChoiceKeepsNoLevel(AcceptanceTester $I)
+	{
+		$key = '<b id="cfq7tc" onclick="cfq7t()">t</b>';
+		$chapter = $this->haveChapter($I, array('d' => array('title' => 'D', 'type' => 'dropdown', 'writeParms' => json_encode(array('optArray' => array($key => 'T', 'b' => 'B'))), 'help' => '')));
+
+		$I->haveSitePrefsDuring(array('post_html' => 254, 'post_script' => 254), function () use ($I, $chapter, $key)
+		{
+			$I->amSignedInAs();
+			$I->amOnPage('/e107_admin/cpage.php?mode=page&action=create');
+			$I->submitForm('#core-page-form', array('page_chapter' => $chapter, 'page_title' => 'Created cfq7t', 'page_fields__d' => $key), 'etrigger_submit');
+		});
+
+		$stored = json_decode($I->grabFromDatabase('e107_page', 'page_fields', array('page_title' => 'Created cfq7t')), true);
+		$I->assertStringContainsString('cfq7tc', $stored['d']);
+		$I->assertArrayNotHasKey('__trust__', $stored);
+	}
+
+	public function anUntouchedSaveStoresEachSettingAgainByteForByte(AcceptanceTester $I)
+	{
+		$fields = array(
+			'mytext'    => array('title' => 'java[p][/p]script:cfq7t()', 'type' => 'text', 'writeParms' => '{"size":"block-level"}', 'help' => 'Help [h][/h]<b>help</b>'),
+			'__trust__' => array('__tabs__' => 2, 'mytext' => array('title' => 1, 'writeParms' => 2, 'help' => 0)),
+		);
+		$chapter = $this->haveChapter($I, $fields, 'Tab [p][/p]<b>tab</b>');
+
+		$this->saveChapterAsPagesAdmin($I, $chapter, array());
+
+		$I->assertSame(array('__tabs__' => array('additional' => 'Tab [p][/p]<b>tab</b>')) + $fields,
+			json_decode($I->grabFromDatabase('e107_page_chapters', 'chapter_fields', array('chapter_id' => $chapter)), true));
 	}
 
 	public function anAuthorsHtmlTitlePrintsInTheMainAdministratorsForm(AcceptanceTester $I)
@@ -116,13 +199,27 @@ class PageCustomFieldTitleCest
 	{
 		$page = $this->havePage($I, $this->haveChapter($I, array(
 			'myimage'   => array('title' => 'Img &lt;b id=cfq7tm&gt;bold&lt;/b&gt;', 'type' => 'image', 'writeParms' => '', 'help' => ''),
-			'__trust__' => 0,
-		)), array('myimage' => '{e_IMAGE}e107_icon_32.png', '__trust__' => 0));
+			'__trust__' => array('myimage' => array('title' => 0)),
+		)), array('myimage' => '{e_IMAGE}e107_icon_32.png', '__trust__' => array('myimage' => 0)));
 
 		$I->haveSiteTheme('bootstrap3');
 		$I->amOnPage('/page.php?id='.$page);
 		$I->seeElement('a.e-modal');
 		$I->dontSeeElement('a.e-modal[data-modal-caption]');
+	}
+
+	/**
+	 * Save chapter $chapter through its edit form, as the administrator who holds only the Pages permission.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param int $chapter
+	 * @param array $values form field => value
+	 */
+	private function saveChapterAsPagesAdmin(AcceptanceTester $I, $chapter, array $values)
+	{
+		$I->amSignedInAs(self::PAGES_ADMIN);
+		$I->amOnPage('/e107_admin/cpage.php?mode=cat&action=edit&id='.$chapter);
+		$I->submitForm('#core-page-chapters-form', $values, 'etrigger_submit');
 	}
 
 	/**

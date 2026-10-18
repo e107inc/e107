@@ -29,8 +29,11 @@
 		 */
 		private $_trust = array();
 
-		/** @var int|null the same for the administrator who last saved $_config */
-		private $_configTrust = null;
+		/**
+		 * @var array the same for each title, help text and parameters of $_config, keyed by field and part, and for
+		 *            the tab label under '__tabs__'
+		 */
+		private $_configTrust = array();
 
 		private $_field_limit = 30;
 
@@ -73,7 +76,7 @@
 		 */
 		public function getTabLabel()
 		{
-			return $this->printable($this->_tab[$this->_tab_default]);
+			return $this->tabLabel($this->_tab_default);
 		}
 
 
@@ -84,12 +87,13 @@
 		 */
 		public function loadConfig($data)
 		{
+			$this->_config = array();
+			$this->_configTrust = array();
+
 			if(empty($data))
 			{
 				return $this;
 			}
-
-			$this->_configTrust = null;
 
 			if(is_array($data))
 			{
@@ -210,7 +214,7 @@
 				case 'dropdown':
 				case 'checkboxes':
 				case 'radio':
-					$ret = ($raw) ? $text : e107::getForm()->renderValue('customfield_'.$key,$this->decoded($value),$this->definition($this->_config[$key]));
+					$ret = ($raw) ? $text : e107::getForm()->renderValue('customfield_'.$key,$this->decoded($value),$this->definition($key));
 				break;
 
 				case 'video':
@@ -281,7 +285,7 @@
 					}
 					else
 					{
-						$ret = e107::getForm()->progressBar($key,$label,$this->definition($this->_config[$key]));
+						$ret = e107::getForm()->progressBar($key,$label,$this->definition($key));
 					}
 
 					break;
@@ -400,35 +404,22 @@
 		 * The parts of a field's stored configuration a form or a page reads, encoded to print, or null for a type this
 		 * class does not render.
 		 *
-		 * @param array $fld
+		 * @param string $key
 		 * @return array|null
 		 */
-		private function definition($fld)
+		private function definition($key)
 		{
+			$fld = isset($this->_config[$key]) ? $this->_config[$key] : null;
+
 			if(!is_array($fld) || !in_array(varset($fld['type']), $this->_fieldTypes, true))
 			{
 				return null;
 			}
 
-			$writeParms = varset($fld['writeParms'], array());
+			$writeParms = $this->parameters(varset($fld['writeParms'], array()));
+			$parmsTrust = $this->configLevel($key, 'writeParms');
 
-			if(is_string($writeParms))
-			{
-				$json = e107::getParser()->isJSON($writeParms);
-
-				if(is_array($json))
-				{
-					$writeParms = $json;
-				}
-				else
-				{
-					parse_str($writeParms, $writeParms);
-				}
-			}
-
-			$writeParms = is_array($writeParms) ? $writeParms : array();
-
-			if($this->_configTrust !== 2)
+			if($parmsTrust !== 2)
 			{
 				$writeParms = array_intersect_key($writeParms, array_flip($this->_writeParms));
 
@@ -448,28 +439,30 @@
 			}
 
 			$definition = array(
-				'title'      => $this->printable(varset($fld['title'], '')),
+				'title'      => $this->printable(varset($fld['title'], ''), $this->configLevel($key, 'title')),
 				'type'       => $fld['type'],
 				'writeParms' => $writeParms,
-				'help'       => $this->printable(varset($fld['help'], '')),
+				'help'       => $this->printable(varset($fld['help'], ''), $this->configLevel($key, 'help')),
 			);
 
-			return ($this->_configTrust === 2) ? $definition + $fld : $definition;
+			return ($parmsTrust === 2) ? $definition + $fld : $definition;
 		}
 
 
 		/**
 		 * @param mixed $value a title, help text or tab label as the configuration stores it
+		 * @param int|null $trust what its author could post, as {@see e_customfields::authorTrust()} says, or null for
+		 *                        none recorded
 		 * @return mixed HTML for an author who could post it when it was stored, otherwise encoded text
 		 */
-		private function printable($value)
+		private function printable($value, $trust)
 		{
-			if(empty($this->_configTrust) || !is_string($value))
+			if(empty($trust) || !is_string($value))
 			{
 				return $this->encoded($value);
 			}
 
-			return ($this->_configTrust === 2) ? $this->asScriptAuthorWrote($value) : e107::getParser()->toHTML($value, false, 'TITLE,scparse_off,defs_off');
+			return ($trust === 2) ? $this->asScriptAuthorWrote($value) : e107::getParser()->toHTML($value, false, 'TITLE,scparse_off,defs_off');
 		}
 
 
@@ -481,7 +474,7 @@
 		{
 			if(isset($config['__trust__']))
 			{
-				$this->_configTrust = in_array($config['__trust__'], array(0, 1, 2), true) ? $config['__trust__'] : null;
+				$this->_configTrust = $config['__trust__'];
 				unset($config['__trust__']);
 			}
 
@@ -534,6 +527,48 @@
 
 
 		/**
+		 * @param string $key a field of the loaded configuration
+		 * @param string $part 'title', 'help' or 'writeParms'
+		 * @return int|null the level recorded for that part of the field, or null for none
+		 */
+		private function configLevel($key, $part)
+		{
+			return $this->levelIn(isset($this->_configTrust[$key]) ? $this->_configTrust[$key] : null, $part);
+		}
+
+
+		/**
+		 * @param string $part 'title', 'help', 'writeParms' or '__tabs__'
+		 * @param mixed $value that setting as stored
+		 * @return mixed the setting as the chapter form shows it: a parameter list as stored, any other with its
+		 *               entities decoded
+		 */
+		private function shownSetting($part, $value)
+		{
+			return ($part === 'writeParms') ? $value : $this->decoded($value);
+		}
+
+
+		/**
+		 * @return int|null the level recorded for the tab label, or null for none
+		 */
+		private function tabLevel()
+		{
+			return $this->levelIn($this->_configTrust, '__tabs__');
+		}
+
+
+		/**
+		 * @param string $key the tab's id
+		 * @return mixed the tab's label, encoded for HTML unless its author's classes decided how it was stored
+		 */
+		private function tabLabel($key)
+		{
+			return $this->printable($this->_tab[$key], $this->tabLevel());
+		}
+
+
+		/**
 		 * @param string $key a field of the loaded data
 		 * @param mixed $value its value as stored
 		 * @return mixed the value as the page form is given it: as stored when its level is recorded, otherwise through
@@ -580,7 +615,17 @@
 				return array($stored, $level);
 			}
 
-			return array($filtered ? $tp->toDB($posted) : $posted, $this->authorTrust());
+			return array($filtered ? $tp->toDB($posted) : $posted, $this->isChoice($key) ? null : $this->authorTrust());
+		}
+
+
+		/**
+		 * @param string|null $key a field of the loaded configuration, null for a chapter setting
+		 * @return bool whether its value is a choice among the options its parameters list, which their author wrote
+		 */
+		private function isChoice($key)
+		{
+			return $key !== null && isset($this->_config[$key]['type']) && in_array($this->_config[$key]['type'], array('dropdown', 'radio', 'checkboxes'), true);
 		}
 
 
@@ -622,11 +667,13 @@
 
 		/**
 		 * @param string|null $key a field of the loaded configuration, null for a chapter setting
-		 * @return array its parameters as {@see e_form::renderElement()} reads them
+		 * @return array its parameters as the page form is given them, {@see e_customfields::definition()} says which
 		 */
 		private function fieldParameters($key)
 		{
-			return $this->parameters(($key !== null && isset($this->_config[$key]['writeParms'])) ? $this->_config[$key]['writeParms'] : null);
+			$definition = ($key === null) ? null : $this->definition($key);
+
+			return isset($definition['writeParms']) ? $definition['writeParms'] : array();
 		}
 
 
@@ -755,7 +802,7 @@
 
 			if(!empty($this->_config[$key]['title']))
 			{
-				return $this->printable($this->_config[$key]['title']);
+				return $this->printable($this->_config[$key]['title'], $this->configLevel($key, 'title'));
 			}
 
 			return null;
@@ -786,7 +833,7 @@
 
 			$text = "
 			<div class='form-group'>
-				".$frm->text('__e_customfields_tabs__', html_entity_decode($this->_tab[$this->_tab_default], ENT_QUOTES, 'UTF-8'), 30, array('placeholder' => 'Tab label', 'size' =>'medium', 'required' =>1))."
+				".$frm->text('__e_customfields_tabs__', $this->shownSetting('__tabs__', $this->_tab[$this->_tab_default]), 30, array('placeholder' => 'Tab label', 'size' =>'medium', 'required' =>1))."
 			</div>
 			<table class='table table-striped table-bordered'>
 			<colgroup>
@@ -815,10 +862,10 @@
 				);
 
 				$fieldName = $frm->text($name . '[' . $i . '][key]', varset($value[$i]['key']), 30, array('pattern' => '^[a-z0-9-]*'));
-				$fieldTitle = $frm->text($name . '[' . $i . '][title]', html_entity_decode(varset($value[$i]['title']), ENT_QUOTES, 'UTF-8'), 80);
+				$fieldTitle = $frm->text($name . '[' . $i . '][title]', $this->shownSetting('title', varset($value[$i]['title'])), 80);
 				$fieldType = $frm->select($name . '[' . $i . '][type]', $this->getFieldTypes(), varset($value[$i]['type']), $writeParms);
-				$fieldParms = $frm->text($name . '[' . $i . '][writeParms]', varset($value[$i]['writeParms']), 255, $parmsWriteParms);
-				$fieldHelp = $frm->text($name . '[' . $i . '][help]', html_entity_decode(varset($value[$i]['help']), ENT_QUOTES, 'UTF-8'), 255, array('size' => 'block-level'));
+				$fieldParms = $frm->text($name . '[' . $i . '][writeParms]', $this->shownSetting('writeParms', varset($value[$i]['writeParms'])), 255, $parmsWriteParms);
+				$fieldHelp = $frm->text($name . '[' . $i . '][help]', $this->shownSetting('help', varset($value[$i]['help'])), 255, array('size' => 'block-level'));
 				$text .= '<tr><td>' . $fieldName . '</td><td>' . $fieldTitle . '</td><td>' . $fieldType . '</td><td>' . $fieldParms . '</td><td>' . $fieldHelp . '</td></tr>';
 			}
 
@@ -871,12 +918,12 @@
 			$fields = array();
 
 			$tabKey = key($this->_tab);
-			$ui->addTab($tabKey, $this->printable($this->_tab[$tabKey]));
+			$ui->addTab($tabKey, $this->tabLabel($tabKey));
 
 
-			foreach($this->_config as $key=>$fld)
+			foreach(array_keys($this->_config) as $key)
 			{
-				$fld = $this->definition($fld);
+				$fld = $this->definition($key);
 
 				if($fld === null || !$this->isFieldKey($key))
 				{
@@ -930,7 +977,9 @@
 
 
 		/**
-		 * Process Posted form data and compiled Configuration Form data if found.
+		 * Process Posted form data and compiled Configuration Form data if found, keeping a title, help text,
+		 * parameters or tab label posted back as the configuration form showed the configuration
+		 * {@see e_customfields::loadConfig()} loaded as it is stored.
 		 * @param string $fieldname
 		 * @param array $postData all posted data.
 		 * @return array
@@ -944,13 +993,16 @@
 			}
 
 
-			$tp = e107::getParser();
 			$trust = $this->authorTrust();
 			$new = array();
+			$levels = array();
 
 			if(!empty($postData['__e_customfields_tabs__']) && is_string($postData['__e_customfields_tabs__']))
 			{
-				$new['__tabs__'] = array($this->_tab_default =>	$tp->toDB($postData['__e_customfields_tabs__']));
+				$posted = $postData['__e_customfields_tabs__'];
+				$stored = isset($this->_tab[$this->_tab_default]) ? $this->_tab[$this->_tab_default] : null;
+				list($tab, $levels['__tabs__']) = $this->storedAgain($posted, $stored, $this->shownSetting('__tabs__', $stored), $this->tabLevel(), true);
+				$new['__tabs__'] = array($this->_tab_default => $tab);
 			}
 
 			unset($postData['__e_customfields_tabs__']);
@@ -965,17 +1017,30 @@
 				$key = $fields['key'];
 				unset($fields['key']);
 
-				$new[$key] = array(
-					'title'      => is_string(varset($fields['title'])) ? $tp->toDB($fields['title']) : '',
+				$row = array(
+					'title'      => is_string(varset($fields['title'])) ? $fields['title'] : '',
 					'type'       => $fields['type'],
 					'writeParms' => is_string(varset($fields['writeParms'])) ? $fields['writeParms'] : '',
-					'help'       => is_string(varset($fields['help'])) ? $tp->toDB($fields['help']) : '',
-				) + (($trust === 2) ? $fields : array());
+					'help'       => is_string(varset($fields['help'])) ? $fields['help'] : '',
+				);
+				$rowLevels = array();
+
+				foreach(array('title', 'writeParms', 'help') as $part)
+				{
+					$stored = isset($this->_config[$key][$part]) ? $this->_config[$key][$part] : null;
+					list($row[$part], $rowLevels[$part]) = $this->storedAgain($row[$part], $stored, $this->shownSetting($part, $stored),
+						$this->configLevel($key, $part), $part !== 'writeParms');
+				}
+
+				$new[$key] = $row + (($trust === 2) ? $fields : array());
+				$levels[$key] = array_filter($rowLevels, 'is_int');
 			}
 
-			if(!empty($new))
+			$levels = array_filter($levels, function ($level) { return $level !== null && $level !== array(); });
+
+			if(!empty($new) && !empty($levels))
 			{
-				$new['__trust__'] = $trust;
+				$new['__trust__'] = $levels;
 			}
 
 			$postData[$fieldname] = empty($new) ? null : $new;
