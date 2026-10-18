@@ -914,4 +914,85 @@
 			self::assertArrayNotHasKey('html', $registered);
 		}
 
+		/**
+		 * The readings of a nest take about as long as those of the same number of blocks side by side, however the closers pair.
+		 */
+		public function testHideBlocksOfANestTakesAboutAsLongAsOfBlocksSideBySide()
+		{
+			$took = array();
+
+			foreach(array('nest' => str_repeat('[hide2]a ', 2000) . 'core' . str_repeat(' c[/hide]', 2000), 'side by side' => str_repeat('[hide]a c[/hide] ', 2000)) as $shape => $text)
+			{
+				$took[$shape] = INF;
+
+				for($i = 0; $i < 3; $i++)
+				{
+					$start = microtime(true);
+					$this->bb->hideBlocks($text);
+					$took[$shape] = min($took[$shape], microtime(true) - $start);
+				}
+			}
+
+			self::assertLessThan(4, $took['nest'] / $took['side by side'], json_encode($took));
+		}
+
+
+		public function testManyTagsInsideOneOpenTagParseInLittleMemory()
+		{
+			$bytes = $this->peakBytesOf(function ()
+			{
+				$this->bb->parseBBCodes('[quote]' . str_repeat('[b]x[/b] ', 4000) . '[/quote]', '');
+			});
+
+			self::assertLessThan(16 * 1048576, $bytes);
+		}
+
+
+		public function testAClosingTagThatPairsBelowTheTopLeavesTheTagsAboveItOpen()
+		{
+			self::assertSame("x<em class='bbcode italic bbcode-i'><strong class='bbcode bold bbcode-b'>y</strong>z</em>", $this->bb->parseBBCodes('[b]x[i]y[/b]z[/i]', ''));
+			self::assertSame("x[i]<strong class='bbcode bold bbcode-b'>y</strong> z", $this->bb->parseBBCodes('[b]x[i]y[/b] z', ''));
+		}
+
+
+		public function testThePairAfterACodeWithNoFileIsHandedWhatThatCodeGave()
+		{
+			$config = e107::getConfig();
+			$saved = $config->get('bbcode_list');
+
+			try
+			{
+				$config->set('bbcode_list', array('removedplugin' => array('gone' => 0)));
+				$this->bb->__construct();
+
+				self::assertSame("<strong class='bbcode bold bbcode-b'></strong>", $this->bb->parseBBCodes('[b][gone]a[/gone][url][/url][/b]', ''));
+			}
+			finally
+			{
+				$config->set('bbcode_list', $saved);
+				$this->bb->__construct();
+			}
+		}
+
+
+		/**
+		 * The bytes $run takes at its peak over those in use before it.
+		 *
+		 * @param callable $run
+		 * @return int
+		 */
+		private function peakBytesOf($run)
+		{
+			if (!function_exists('memory_reset_peak_usage'))
+			{
+				self::markTestSkipped('A peak is measured from a reset, which needs PHP 8.2.');
+			}
+
+			$before = memory_get_usage();
+			memory_reset_peak_usage();
+			$run();
+
+			return memory_get_peak_usage() - $before;
+		}
+
 	}
