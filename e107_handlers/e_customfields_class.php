@@ -22,8 +22,12 @@
 
 		private $_data = array();
 
-		/** @var int|null what the administrator who last saved $_data could store, as {@see e_customfields::authorTrust()} says; null for data saved before values were filtered */
-		private $_trust = null;
+		/**
+		 * @var array what the administrator who wrote each value of $_data could store, as
+		 *            {@see e_customfields::authorTrust()} says, keyed by field; none for a value saved before values
+		 *            were filtered
+		 */
+		private $_trust = array();
 
 		private $_field_limit = 30;
 
@@ -119,12 +123,13 @@
 		 */
 		public function loadData($data)
 		{
-			$this->_data = e107::unserialize($data);
-			$this->_trust = null;
+			$data = e107::unserialize($data);
+			$this->_data = is_array($data) ? $data : array();
+			$this->_trust = array();
 
-			if(is_array($this->_data) && isset($this->_data['__trust__']))
+			if(isset($this->_data['__trust__']))
 			{
-				$this->_trust = in_array($this->_data['__trust__'], array(0, 1, 2), true) ? $this->_data['__trust__'] : null;
+				$this->_trust = $this->_data['__trust__'];
 				unset($this->_data['__trust__']);
 			}
 
@@ -185,9 +190,10 @@
 				return null;
 			}
 
+			$trust = $this->levelIn($this->_trust, $key);
 			$text = is_string($value) ? $tp->attributeValue($value) : $value;
-			$shown = ($this->_trust === null) ? $text : $value;
-			$label = ($this->_trust === 2) ? $this->asScriptAuthorWrote($value) : $text;
+			$shown = ($trust === null) ? $text : $value;
+			$label = ($trust === 2) ? $this->asScriptAuthorWrote($value) : $text;
 			$ret = null;
 
 			switch($fieldType)
@@ -277,13 +283,13 @@
 					{
 						$ret = $tp->toHTML($shown, true, 'BODY');
 					}
-					elseif($this->_trust === 1)
+					elseif($trust === 1)
 					{
 						$ret = $tp->toHTML($value, false, 'WYSIWYG');
 					}
 					else
 					{
-						$ret = ($this->_trust === 2) ? $label : $shown;
+						$ret = ($trust === 2) ? $label : $shown;
 					}
 					break;
 
@@ -368,8 +374,179 @@
 
 
 		/**
+		 * @param mixed $levels levels as {@see e_customfields::authorTrust()} gives them, keyed as the values they were
+		 *                      recorded for
+		 * @param string $key
+		 * @return int|null the level recorded for $key, or null for none
+		 */
+		private function levelIn($levels, $key)
+		{
+			$level = (is_array($levels) && isset($levels[$key])) ? $levels[$key] : null;
+
+			return in_array($level, array(0, 1, 2), true) ? $level : null;
+		}
+
+
+		/**
+		 * @param string $key a field of the loaded data
+		 * @param mixed $value its value as stored
+		 * @return mixed the value as the page form is given it: as stored when its level is recorded, otherwise through
+		 *               {@see e_parse::toDB()}, with every '%' and '+' of a string written as a character reference
+		 */
+		private function formValue($key, $value)
+		{
+			$value = ($this->levelIn($this->_trust, $key) === null) ? e107::getParser()->toDB($value) : $value;
+
+			return is_string($value) ? str_replace(array('%', '+'), array('&#37;', '&#43;'), $value) : $value;
+		}
+
+
+		/**
+		 * @param string $key a field of the loaded data
+		 * @param mixed $value its value as stored
+		 * @return mixed the value as the page form shows it: a string as {@see e_parse::toForm()} gives the form it and
+		 *               {@see e_form::renderElement()} decodes it, an array decoded
+		 */
+		private function shownValue($key, $value)
+		{
+			$value = $this->formValue($key, $value);
+
+			return $this->decoded(is_string($value) ? e107::getParser()->toForm($value) : $value);
+		}
+
+
+		/**
+		 * @param mixed $posted a value as posted
+		 * @param mixed $stored the value it replaces as stored, null for none
+		 * @param mixed $shown that stored value as its form element shows it
+		 * @param int|null $level the level recorded for the stored value
+		 * @param bool $filtered whether a changed value is stored through {@see e_parse::toDB()} rather than as posted
+		 * @param string|null $key the field the value belongs to, null for a chapter setting, which a one-line
+		 *                         input shows
+		 * @return array the value to store and the level to record for it, null for none
+		 */
+		private function storedAgain($posted, $stored, $shown, $level, $filtered, $key = null)
+		{
+			$tp = e107::getParser();
+
+			if($stored !== null && $tp->isUnchangedPost($posted, $shown, $this->elementOf($key)))
+			{
+				return array($stored, $level);
+			}
+
+			return array($filtered ? $tp->toDB($posted) : $posted, $this->authorTrust());
+		}
+
+
+		/**
+		 * @param string|null $key a field of the loaded configuration, null for a chapter setting, which a one-line
+		 *                         input shows
+		 * @return array the page form's element for the field's value, as {@see e_parse::isUnchangedPost()} takes it:
+		 *               an email input for a one-line input its parameters make one, and a tag list's input without its
+		 *               widget when {@see e_customfields::isModelledWidget()} says the parameters set the widget
+		 *               up otherwise
+		 */
+		private function elementOf($key)
+		{
+			$type = ($key !== null && isset($this->_config[$key]['type']) && is_string($this->_config[$key]['type'])) ? $this->_config[$key]['type'] : 'text';
+			$parms = $this->fieldParameters($key);
+
+			if($type === 'tags')
+			{
+				return $this->isModelledWidget($parms) ? array('type' => 'tags', 'maxItems' => varset($parms['maxItems'])) : array('type' => 'text');
+			}
+
+			return array('type' => ($type !== 'textarea' && $type !== 'bbarea' && isset($parms['type']) && $parms['type'] === 'email') ? 'email' : $type);
+		}
+
+
+		/**
+		 * @param array $parms a tags field's parameters
+		 * @return bool whether {@see e_parse::isUnchangedPost()} reads the tag widget they set up as the widget runs:
+		 *              no settings of the widget's own, and a limit that is empty, for the default, or a positive
+		 *              whole number
+		 */
+		private function isModelledWidget(array $parms)
+		{
+			$limit = isset($parms['maxItems']) ? $parms['maxItems'] : null;
+
+			return !array_key_exists('selectize', $parms) && (empty($limit) || ((is_int($limit) || (is_string($limit) && ctype_digit($limit))) && (int) $limit > 0));
+		}
+
+
+		/**
+		 * @param string|null $key a field of the loaded configuration, null for a chapter setting
+		 * @return array its parameters as {@see e_form::renderElement()} reads them
+		 */
+		private function fieldParameters($key)
+		{
+			return $this->parameters(($key !== null && isset($this->_config[$key]['writeParms'])) ? $this->_config[$key]['writeParms'] : null);
+		}
+
+
+		/**
+		 * @param mixed $writeParms a field's parameters as its configuration stores them
+		 * @return array the parameters as {@see e_form::renderElement()} reads them
+		 */
+		private function parameters($writeParms)
+		{
+			if(is_string($writeParms))
+			{
+				$json = e107::getParser()->isJSON($writeParms);
+
+				if(is_array($json))
+				{
+					return $json;
+				}
+
+				parse_str($writeParms, $writeParms);
+			}
+
+			return is_array($writeParms) ? $writeParms : array();
+		}
+
+
+		/**
+		 * @param array $fields the page form's custom fields, keyed by name
+		 * @return array the same, the input of each tag list and user field with an id of its own, which the widget
+		 *               {@see e_form} puts on it takes as it takes the first element with its id, and a tag list in a
+		 *               text input
+		 */
+		private function withOwnWidgetInputs(array $fields)
+		{
+			foreach($fields as $name => $fld)
+			{
+				$type = isset($fld['type']) ? $fld['type'] : null;
+
+				if($type !== 'tags' && $type !== 'user')
+				{
+					continue;
+				}
+
+				$parms = $this->parameters(isset($fld['writeParms']) ? $fld['writeParms'] : null);
+				$id = e107::getForm()->name2id($name).'_'.$type;
+
+				if($type === 'tags')
+				{
+					unset($parms['type']);
+					$parms['id'] = $id;
+				}
+				else
+				{
+					$parms['__options'] = array('id' => $id) + $this->parameters(isset($parms['__options']) ? $parms['__options'] : null);
+				}
+
+				$fields[$name]['writeParms'] = $parms;
+			}
+
+			return $fields;
+		}
+
+
+		/**
 		 * @param mixed $key
-		 * @return bool whether $key can name a field, as the configuration form's pattern allows and the reserved '__tabs__' and '__trust__' do not
+		 * @return bool whether $key can name a field: letters, digits, '_' and '-', not starting with the '__' of the
+		 *              reserved '__tabs__' and '__trust__'
 		 */
 		private function isFieldKey($key)
 		{
@@ -575,7 +752,7 @@
 
 			}
 
-			$ui->setFieldAttr($fields);
+			$ui->setFieldAttr($this->withOwnWidgetInputs($fields));
 
 			return $this;
 
@@ -595,8 +772,7 @@
 
 			foreach($this->_data as $key=>$value)
 			{
-				$ui->getModel()->set($fieldname.'__'.$key, ($this->_trust === null) ? e107::getParser()->toDB($value) : $value);
-			//	e107::getDebug()->log($fieldname.'__'.$key.": ".$value);
+				$ui->getModel()->set($fieldname.'__'.$key, $this->formValue($key, $value));
 			}
 
 			return $this;
@@ -655,7 +831,8 @@
 
 
 		/**
-		 * Process all posted data and compile into a single field array.
+		 * Process all posted data and compile into a single field array, keeping a value posted back as the page form
+		 * showed the data {@see e_customfields::loadData()} loaded as it is stored.
 		 * @param $fieldname
 		 * @param $new_data
 		 * @return null
@@ -668,9 +845,11 @@
 				return null;
 			}
 
+			$columnPosted = array_key_exists($fieldname, $new_data);
 			unset($new_data[$fieldname]); // Reset.
 
 			$len = strlen($fieldname);
+			$levels = array();
 
 			foreach($new_data as $k=>$v)
 			{
@@ -680,7 +859,9 @@
 
 					if($this->isFieldKey($newkey))
 					{
-						$new_data[$fieldname][$newkey] = e107::getParser()->toDB($v);
+						$stored = isset($this->_data[$newkey]) ? $this->_data[$newkey] : null;
+						list($new_data[$fieldname][$newkey], $levels[$newkey]) = $this->storedAgain($v, $stored, $this->shownValue($newkey, $stored),
+							$this->levelIn($this->_trust, $newkey), true, $newkey);
 					}
 
 					unset($new_data[$k]);
@@ -690,9 +871,16 @@
 
 			}
 
-			if(!empty($new_data[$fieldname]))
+			$levels = array_filter($levels, 'is_int');
+
+			if(!empty($levels))
 			{
-				$new_data[$fieldname]['__trust__'] = $this->authorTrust();
+				$new_data[$fieldname]['__trust__'] = $levels;
+			}
+
+			if($columnPosted && !isset($new_data[$fieldname]))
+			{
+				$new_data[$fieldname] = null;
 			}
 
 			return $new_data;
