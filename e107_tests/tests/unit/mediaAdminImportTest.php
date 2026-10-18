@@ -8,7 +8,7 @@
  */
 
 /**
- * Posts the Media Manager's import and create forms through e107_admin/image.php in a booted child as the main admin.
+ * Posts the Media Manager's import and create forms through e107_admin/image.php in a booted child as the main admin, and runs its duplicate check there.
  */
 class mediaAdminImportTest extends \Test\Unit
 {
@@ -77,6 +77,43 @@ class mediaAdminImportTest extends \Test\Unit
 		self::assertFalse($where['as posted'], 'the file was written where the posted name points');
 		self::assertTrue($where['month folder, as staged'], "the file did not reach the month folder under the name it was staged with:\n".$where['page']);
 		self::assertSame(array($this->address('e_MEDIA_FILE', $this->month.'/'.$staged)), $this->storedUrls());
+	}
+
+	/**
+	 * @return array
+	 */
+	public function rowsAtAQuotedAddress()
+	{
+		return array(
+			'a row at the address'  => array(true),
+			'no row at the address' => array(false),
+		);
+	}
+
+	/**
+	 * @dataProvider rowsAtAQuotedAddress
+	 * @param bool $stored whether a row holds the address before checkDupe() looks for one
+	 */
+	public function testAQuoteInTheAddressLeavesTheDuplicateQueryIntact($stored)
+	{
+		$quoted = $this->month."/o'".$this->name;
+		$staged = $this->expression('e_IMPORT', $this->name);
+
+		if($stored)
+		{
+			$this->insertItem($this->address('e_MEDIA_FILE', $quoted));
+		}
+
+		list($page) = $this->runPage('import',
+			$this->staging($staged, self::TEXT),
+			array($staged),
+			"\$sql = e107::getDb(); \$sql->resetLastError(); \$path = ".$this->expression('e_MEDIA_FILE', $quoted)."; ".
+			"\$ui = (new ReflectionClass('media_admin_ui'))->newInstanceWithoutConstructor(); ".
+			"\$free = (\$ui->checkDupe(".$staged.", \$path) === \$path); ".
+			$this->report('DUPE', "array('error' => \$sql->getLastErrorNumber(), 'free' => \$free)")
+		);
+
+		self::assertSame(array('error' => 0, 'free' => !$stored), $this->answer($page, 'DUPE', 'checkDupe() did not answer:'), "the quote changed checkDupe()'s query or its answer:\n".$page);
 	}
 
 	public function testCreatingAnItemFromAFileInTheImportFolderMovesItIntoTheMonthFolderUnderItsOwnName()
@@ -154,6 +191,23 @@ class mediaAdminImportTest extends \Test\Unit
 		$this->skipIfTheMonthChanged();
 
 		return $created;
+	}
+
+	/**
+	 * @param string $address the media_url the item is stored with
+	 * @return int the item's id
+	 */
+	private function insertItem($address)
+	{
+		return (int) e107::getDb()->createQueryBuilder()->insert('core_media')->values(array(
+			'media_url'         => $address,
+			'media_name'        => 'media import test',
+			'media_caption'     => '',
+			'media_description' => '',
+			'media_category'    => '_common_file',
+			'media_usedby'      => '',
+			'media_tags'        => '',
+		))->insertGetId();
 	}
 
 	/**
