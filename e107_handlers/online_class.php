@@ -21,7 +21,7 @@ use e107\Database\SqlFragment;
 
 /*
   online_timestamp int(10) unsigned NOT NULL default '0',		Start of time period over which accesses counted
-  online_flag tinyint(3) unsigned NOT NULL default '0',			Not used? (displayed in admin log only)
+  online_flag tinyint(3) unsigned NOT NULL default '0',			1 once a request has claimed the flood ban for online_ip in this time period
   online_user_id varchar(100) NOT NULL default '',
   online_ip varchar(45) NOT NULL default '',
   online_location text NOT NULL,        						Current page being accessed
@@ -127,16 +127,13 @@ class e_online
 			$update_page = deftrue('e_AJAX_REQUEST') ? '' : ", online_location='{$page}'";
 
 			$insert_query = array(
-				'online_timestamp'	=> time(),
-				'online_flag'		=> 0,
 				'online_user_id'	=> $udata,
 				'online_ip'			=> $ip,
 				'online_location'	=> $page,
-				'online_pagecount'	=> 1,
 				'online_active'		=> 0,
 				'online_agent'		=> $agent,
 				'online_language'   => e_LAN
-			);
+			) + $this->freshWindow();
 
 			// !deftrue('e_AJAX_REQUEST')
 			// TODO add option to hide users from online list? boolean online_hide field?
@@ -167,11 +164,9 @@ class e_online
 						//	$query = "online_timestamp='".time()."', online_ip='{$ip}'{$update_page}, online_pagecount=1, `online_active` = 1 WHERE online_user_id='{$row['online_user_id']}'";
 
 							$query = array(
-								'online_timestamp' => time(),
 								'online_ip'         => $ip,
-								'online_pagecount'  => 1,
 								'online_active'     => 1
-							);
+							) + $this->freshWindow();
 
 
 						}
@@ -192,6 +187,15 @@ class e_online
 								'online_active'     => 1
 							);
 
+							if ($row['online_ip'] !== $ip)
+							{
+								$this->updateOnline($sql, array('online_flag' => 0), function($qb) use ($updateWhere, $ip)
+								{
+									$updateWhere($qb);
+									$qb->where('online_ip', '!=', $ip);
+								});
+							}
+
 						}
 					}
 					else
@@ -209,11 +213,9 @@ class e_online
 						//	$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = 1,  `online_active` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 
 							$query = array(
-								'online_timestamp' => time(),
 								'online_user_id'    => $udata,
-								'online_pagecount'  => 1,
 								'online_active'     => 1
-							);
+							) + $this->freshWindow();
 
 
 						}
@@ -267,10 +269,7 @@ class e_online
 					if ($row['online_timestamp'] < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this ip has connected
 					{
 						//Update record with timestamp, current page, and set pagecount to 1
-						$query = array(
-							'online_timestamp'	=> time(),
-							'online_pagecount'	=> 1
-						);
+						$query = $this->freshWindow();
 					}
 					else
 					{
@@ -313,7 +312,7 @@ class e_online
 					e107::lan('core','banlist',true);//e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php'
 					$reason = e107::getParser()->lanVars(BANLAN_78,$row['online_pagecount']); //  str_replace('--HITS--',$row['online_pagecount'], BANLAN_78)
 
-					if (true === e107::getIPHandler()->add_ban(2, $reason, $ip, 0))
+					if ($this->claimFloodBan($sql, $ip) && true === e107::getIPHandler()->add_ban(2, $reason, $ip, 0))
 					{
 						$ip = e107::getIPHandler()->ipDecode($ip);
 						e107::getEvent()->trigger('flood', $ip); //BC
@@ -455,7 +454,7 @@ class e_online
 	 * @param array    $columns column => value assignments to SET
 	 * @param Closure  $where   applies WHERE predicates to the builder
 	 * @param int|null $limit   optional LIMIT
-	 * @return void
+	 * @return int|false number of rows changed, or false on error
 	 */
 	private function updateOnline($sql, array $columns, $where, $limit = null)
 	{
@@ -475,7 +474,38 @@ class e_online
 			$qb->limit($limit);
 		}
 
-		$qb->execute();
+		return $qb->execute();
+	}
+
+
+	/**
+	 * The columns that start a visitor's counting window afresh.
+	 *
+	 * @return array column => value
+	 */
+	private function freshWindow()
+	{
+		return array(
+			'online_timestamp' => time(),
+			'online_pagecount' => 1,
+			'online_flag'      => 0
+		);
+	}
+
+
+	/**
+	 * Flag the address's online rows for a flood ban, which only one of several parallel requests can do.
+	 *
+	 * @param e_db   $sql database handle
+	 * @param string $ip  the visitor's address, as stored in online_ip
+	 * @return bool true for the request whose update set the flag
+	 */
+	private function claimFloodBan($sql, $ip)
+	{
+		return $this->updateOnline($sql, array('online_flag' => 1), function($qb) use ($ip)
+		{
+			$qb->where('online_ip', $ip)->where('online_flag', 0);
+		}) > 0;
 	}
 
 
