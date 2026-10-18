@@ -321,7 +321,15 @@ Plain text paragraph 3<br />';
 			$this->tm->setHtmlClass(e_UC_ADMIN);
 			$html = $this->tm->toHTML('[html]<p><x-bbcode alt=&quot;W2xpbms9aHR0cHM6Ly9lMTA3Lm9yZy9uZXdzLnBocD9hPTEmYj0yXWUxMDdbL2xpbmtd&quot;>x</x-bbcode></p>[/html]');
 
-			$this->assertSame(1, preg_match("#^<p><x-bbcode alt=&quot;W2xpbms9aHR0cHM6Ly9lMTA3Lm9yZy9uZXdzLnBocD9hPTEmYj0yXWUxMDdbL2xpbmtd&quot;><a class='bbcode bbcode-link[^']*' href='https://e107\.org/news\.php\?a=1&amp;amp;b=2' [^>]*>e107</a></x-bbcode></p>$#", $html), $html);
+			$this->assertSame(1, preg_match("#^<p><x-bbcode alt=&quot;W2xpbms9aHR0cHM6Ly9lMTA3Lm9yZy9uZXdzLnBocD9hPTEmYj0yXWUxMDdbL2xpbmtd&quot;><a class='bbcode bbcode-link[^']*' href='https://e107\.org/news\.php\?a=1&amp;b=2' [^>]*>e107</a></x-bbcode></p>$#", $html), $html);
+		}
+
+		public function testTheEditorEncodesALinkAddressOnce()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+			$html = $this->tm->toHTML('[html]<p>[link=https://e107.org/news.php?a=1&amp;b=2]e107[/link] [link=https://en.wikipedia.org/wiki/Ender&#039;s_Game]Book[/link]</p>[/html]');
+
+			$this->assertSame(1, preg_match("#^<p><a class='bbcode bbcode-link[^']*' href='https://e107\.org/news\.php\?a=1&amp;b=2' [^>]*>e107</a> <a class='bbcode bbcode-link[^']*' href='https://en\.wikipedia\.org/wiki/Ender&\#039;s_Game' [^>]*>Book</a></p>$#", $html), $html);
 		}
 
 

@@ -15,6 +15,9 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 {
 	use \Test\BootedCli;
 
+	/** A JavaScript string literal in double quotes, as toJsString() writes one. */
+	const STRING_LITERAL = '"(?:[^"\\\\]|\\\\.)*"';
+
 	/** @var e_parse */
 	private $tp;
 
@@ -94,6 +97,17 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 
 	/**
 	 * @param string $html
+	 * @return string the address the first anchor's javascript: href sends the window to
+	 */
+	private function addressTheScriptOpens($html)
+	{
+		preg_match_all('/'.self::STRING_LITERAL.'/', rawurldecode($this->hrefOfFirstAnchor($html)), $literals);
+
+		return implode('', array_map('json_decode', $literals[0]));
+	}
+
+	/**
+	 * @param string $html
 	 * @param string $message
 	 */
 	private function assertNoEventHandler($html, $message)
@@ -156,7 +170,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	 */
 	private function assertHandlerIsOnlyStringLiterals($html, $message)
 	{
-		$literals = '(?:"(?:[^"\\\\]|\\\\.)*"|\+)+';
+		$literals = '(?:'.self::STRING_LITERAL.'|\+)+';
 
 		foreach($this->elementsOf($html) as $element)
 		{
@@ -214,6 +228,73 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		self::assertNotSame(false, strpos($html, '"example.co.uk"'), $html);
 	}
 
+	/** The script a mailto link runs goes to the address typed, an ampersand in it included. */
+	public function testAMailtoLinkGoesToTheAddressTyped()
+	{
+		self::assertSame('mailto:tom&jerry@example.com', $this->addressTheScriptOpens($this->renderStored('[link=mailto:tom&jerry@example.com]Mail[/link]')));
+	}
+
+	/**
+	 * A member's & was stored as &amp;amp; from 2.2.0 to 2.3.12, and the post is shown as it was saved.
+	 *
+	 * @return array
+	 */
+	public function linksAMemberSavedBefore2313()
+	{
+		return array(
+			'link'      => array('[link=https://e107.org/news.php?a=1&amp;amp;b=2]x[/link]', 'https://e107.org/news.php?a=1&b=2'),
+			'link body' => array('[link]https://e107.org/news.php?a=1&amp;amp;b=2[/link]', 'https://e107.org/news.php?a=1&b=2'),
+		);
+	}
+
+	/**
+	 * @dataProvider linksAMemberSavedBefore2313
+	 * @param string $stored
+	 * @param string $href
+	 */
+	public function testALinkAMemberSavedBefore2313GoesToTheAddressTyped($stored, $href)
+	{
+		self::assertSame($href, $this->hrefOfFirstAnchor($this->tp->toHTML($stored, true)));
+	}
+
+	public function testAMailtoLinkAMemberSavedBefore2313GoesToTheAddressTyped()
+	{
+		self::assertSame('mailto:tom&jerry@example.com', $this->addressTheScriptOpens($this->tp->toHTML('[link=mailto:tom&amp;amp;jerry@example.com]Mail[/link]', true)));
+	}
+
+	/**
+	 * @return array
+	 */
+	public function linkAddressBreakouts()
+	{
+		return array(
+			'apostrophe'              => array("[link=//x/'/autofocus/onfocus='alert(1)'/]y[/link]"),
+			'body apostrophe'         => array("[link]//x/'/autofocus/onfocus='alert(1)'/[/link]"),
+			'apostrophe entity'       => array('[link=//x/&#039;/autofocus/onfocus=&#039;alert(1)&#039;/]y[/link]'),
+			'apostrophe stored twice' => array('[link=//x/&amp;#039;/autofocus/onfocus=&amp;#039;alert(1)&amp;#039;/]y[/link]'),
+		);
+	}
+
+	/**
+	 * An apostrophe in a [link] address stays inside its href.
+	 *
+	 * @dataProvider linkAddressBreakouts
+	 * @param string $bbcode
+	 */
+	public function testALinkAddressCannotAddAnAttribute($bbcode)
+	{
+		foreach(array($this->renderStored($bbcode), $this->renderUnencoded($bbcode)) as $html)
+		{
+			self::assertSame("//x/'/autofocus/onfocus='alert(1)'/", $this->hrefOfFirstAnchor($html), 'A [link] address escaped its href: '.$html);
+		}
+	}
+
+	/** A brace an upload or contact form wrote as a numeric reference stays written in a [link] address, so no shortcode runs from it. */
+	public function testABraceWrittenAsAReferenceStaysWrittenInALinkAddress()
+	{
+		self::assertSame('&#123;SITEURL&#125;page.php', $this->hrefOfFirstAnchor($this->tp->toHTML('[link=&#123;SITEURL&#125;page.php]x[/link]', true, 'BODY')));
+	}
+
 	/**
 	 * @return array
 	 */
@@ -225,6 +306,9 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'url body'       => array("[url]java\tscript:alert(1)[/url]"),
 			'url parameter'  => array("[url=java\tscript:alert(1)]x[/url]"),
 			'link parameter' => array("[link=java\tscript:alert(1)]x[/link]"),
+			'link entity'    => array('[link=java&#115;cript:alert(1)]x[/link]'),
+			'link entity first' => array('[link=&#106;avascript:alert(1)]x[/link]'),
+			'link entity stored twice' => array('[link=&amp;#106;avascript:alert(1)]x[/link]'),
 			'file parameter' => array('[file=javascript:alert(1)]x[/file]'),
 			'file tab'       => array("[file=java\tscript:alert(1)]x[/file]"),
 			'file constant'  => array('[file={e_MENU}javascript:alert(1)]x[/file]'),
@@ -312,6 +396,17 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'file path constant'  => array('[file={e_MEDIA_FILE}report.zip]x[/file]', 'report.zip', 'e_MEDIA_FILE'),
 			'url path constant'   => array('[url={e_PLUGIN}forum/forum.php]x[/url]', 'forum/forum.php', 'e_PLUGIN'),
 			'link path constant'  => array('[link={e_PLUGIN}forum/forum.php]x[/link]', 'forum/forum.php', 'e_PLUGIN'),
+			'link ampersand'      => array('[link=https://e107.org/news.php?a=1&b=2]x[/link]', 'https://e107.org/news.php?a=1&b=2'),
+			'link body ampersand' => array('[link]https://e107.org/news.php?a=1&b=2[/link]', 'https://e107.org/news.php?a=1&b=2'),
+			'link typed &amp;'    => array('[link=https://e107.org/news.php?a=1&amp;b=2]x[/link]', 'https://e107.org/news.php?a=1&b=2'),
+			'link body typed &amp;' => array('[link]https://e107.org/news.php?a=1&amp;b=2[/link]', 'https://e107.org/news.php?a=1&b=2'),
+			'link %26'            => array('[link=https://e107.org/search.php?q=Tom%26Jerry]x[/link]', 'https://e107.org/search.php?q=Tom%26Jerry'),
+			'link body %26'       => array('[link]https://e107.org/search.php?q=Tom%26Jerry[/link]', 'https://e107.org/search.php?q=Tom%26Jerry'),
+			'link marked external' => array('[link=https://e107.org/news.php?a=1&b=2 external]x[/link]', 'https://e107.org/news.php?a=1&b=2'),
+			'link external body'  => array('[link=external]https://e107.org/news.php?a=1&b=2[/link]', 'https://e107.org/news.php?a=1&b=2'),
+			'link path query'     => array('[link={e_PLUGIN}forum/forum.php?f=1&id=2]x[/link]', 'forum/forum.php?f=1&id=2', 'e_PLUGIN'),
+			'link apostrophe'     => array("[link=https://en.wikipedia.org/wiki/Ender's_Game]x[/link]", "https://en.wikipedia.org/wiki/Ender's_Game"),
+			'link in html'        => array('[html]<p>[link=https://e107.org/news.php?a=1&amp;b=2]x[/link]</p>[/html]', 'https://e107.org/news.php?a=1&b=2'),
 			'img thumbnail'       => array('[img]https://example.com/pics/th_cat.png[/img]', 'https://example.com/pics/cat.png'),
 			'img thumbnail path'  => array('[img]{e_IMAGE}custom/th_cat.png[/img]', 'custom/cat.png', 'e_IMAGE_ABS'),
 		);
@@ -410,6 +505,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'file' => array('[file={BBCODE_ATTRIBUTE_ECHO=x"y}]x[/file]'),
 			'url' => array('[url={BBCODE_ATTRIBUTE_ECHO=x"y}]x[/url]'),
 			'url body' => array('[url]{BBCODE_ATTRIBUTE_ECHO=x"y}[/url]'),
+			'link' => array('[link={BBCODE_ATTRIBUTE_ECHO=x"y}]x[/link]'),
 			'link body' => array('[link]{BBCODE_ATTRIBUTE_ECHO=x"y}[/link]'),
 		);
 	}
