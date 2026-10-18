@@ -1234,11 +1234,7 @@ class e_file
 				CURLOPT_COOKIEJAR      => e_SYSTEM . 'cookies.txt',
 			);
 
-			if(defined('CURLOPT_PROTOCOLS') && defined('CURLPROTO_HTTP') && defined('CURLPROTO_HTTPS'))
-			{
-				$curlOptions[CURLOPT_PROTOCOLS] = CURLPROTO_HTTP | CURLPROTO_HTTPS;
-				$curlOptions[CURLOPT_REDIR_PROTOCOLS] = CURLPROTO_HTTP | CURLPROTO_HTTPS;
-			}
+			$curlOptions += self::webOnlyCurlOptions();
 
 			$pin = $this->curlResolveEntry($target);
 
@@ -1286,6 +1282,22 @@ class e_file
 
 			return $curlOptions;
 
+		}
+
+		/**
+		 * @return array curl options that keep a request, and every redirect it follows, to HTTP and HTTPS
+		 * @throws RuntimeException when this curl cannot be limited that way
+		 */
+		public static function webOnlyCurlOptions()
+		{
+			if(!defined('CURLOPT_PROTOCOLS') || !defined('CURLOPT_REDIR_PROTOCOLS') || !defined('CURLPROTO_HTTP') || !defined('CURLPROTO_HTTPS'))
+			{
+				throw new RuntimeException('curl cannot be limited to HTTP and HTTPS here');
+			}
+
+			$webProtocols = CURLPROTO_HTTP | CURLPROTO_HTTPS;
+
+			return array(CURLOPT_PROTOCOLS => $webProtocols, CURLOPT_REDIR_PROTOCOLS => $webProtocols);
 		}
 
 

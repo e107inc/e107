@@ -300,7 +300,9 @@ class e_user_providerTest extends \Codeception\Test\Unit
 		}
 
 		$options = new \e107\Reflection\ReflectionProperty('Hybridauth\HttpClient\Curl', 'curlOptions');
-		$this::assertSame($options->getValue(new \Hybridauth\HttpClient\Curl()), $options->getValue($client));
+		$hybridauths = $options->getValue(new \Hybridauth\HttpClient\Curl());
+		$applied = $options->getValue($client);
+		$this::assertSame($hybridauths[CURLOPT_USERAGENT], $applied[CURLOPT_USERAGENT]);
 	}
 
 	public function testAStoredTokenIsNotUnserialised()
@@ -412,6 +414,58 @@ class e_user_providerTest extends \Codeception\Test\Unit
 		}
 
 		$this::assertSame(0, e_user_providerTestToken::$unserialised);
+	}
+
+	public function testAStoredServerAddressReadsNoFile()
+	{
+		$file = tempnam(sys_get_temp_dir(), 'keycloak');
+		file_put_contents($file, 'e_user_providerTest file text');
+		$restore = $this->withStoredProvider('Keycloak', array(
+			'enabled' => 1,
+			'url'     => 'file://' . $file . '#',
+			'realm'   => 'site',
+			'keys'    => array('id' => 'site', 'secret' => 'client-secret'),
+		));
+		try
+		{
+			$keycloak = $this->builtAdapter('Keycloak');
+		}
+		finally
+		{
+			$restore();
+		}
+
+		$exchange = new \e107\Reflection\ReflectionMethod('Hybridauth\Adapter\OAuth2', 'exchangeCodeForAccessToken');
+		$remoteAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+		$failure = '';
+		try
+		{
+			$exchange->invoke($keycloak, 'code');
+		}
+		catch (\Hybridauth\Exception\HttpClientFailureException $e)
+		{
+			$failure = $e->getMessage();
+		}
+		catch (\Hybridauth\Exception\HttpRequestFailedException $e)
+		{
+			$failure = $e->getMessage();
+		}
+		finally
+		{
+			unlink($file);
+			if ($remoteAddress === null)
+			{
+				unset($_SERVER['REMOTE_ADDR']);
+			}
+			else
+			{
+				$_SERVER['REMOTE_ADDR'] = $remoteAddress;
+			}
+		}
+
+		$this::assertNotSame('', $failure);
+		$this::assertFalse(strpos($failure, 'e_user_providerTest file text'), $failure);
 	}
 
 	/**
