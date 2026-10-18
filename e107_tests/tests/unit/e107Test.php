@@ -1519,39 +1519,39 @@ class e107Test extends \Test\Unit
 			'simplemde' => 'SimpleMDE',
 		);
 
-		e107::getConfig()
-			->setPref('wysiwyg', true)
-			->setPref('wysiwyg_list', $editors)
-			->save();
+		$restorePrefs = $this->withCorePrefs(array('wysiwyg' => true, 'wysiwyg_list' => $editors));
 
-		//	$tinyMceInstalled = e107::isInstalled('tinymce4');
-
-		$tests = array(
-			//input     => expected
-			'default'   => 'tinymce4',
-			'bbcode'    => 'bbcode',
-			'tinymce4'  => 'tinymce4',
-			'simplemde' => 'simplemde',
-			'nonexist'  => 'tinymce4',
-		);
-
-		foreach($tests as $input => $expected)
+		try
 		{
-			e107::wysiwyg($input);     // set the wysiwyg editor.
-			$result = e107::wysiwyg(null, true);  // get the name of the editor.
-			$this::assertSame($expected, $result, "Input: " . $input);
+			//	$tinyMceInstalled = e107::isInstalled('tinymce4');
+
+			$tests = array(
+				//input     => expected
+				'default'   => 'tinymce4',
+				'bbcode'    => 'bbcode',
+				'tinymce4'  => 'tinymce4',
+				'simplemde' => 'simplemde',
+				'nonexist'  => 'tinymce4',
+			);
+
+			foreach($tests as $input => $expected)
+			{
+				e107::wysiwyg($input);     // set the wysiwyg editor.
+				$result = e107::wysiwyg(null, true);  // get the name of the editor.
+				$this::assertSame($expected, $result, "Input: " . $input);
+			}
+
+
+			e107::getConfig()->setPref('wysiwyg', false);  // wysiwyg is disabled.
+			e107::wysiwyg('default');    // set as default.
+			$result = e107::wysiwyg(null, true);   // get the editor value.
+			$expected = 'bbcode';
+			$this::assertSame($expected, $result);
 		}
-
-
-		e107::getConfig()->setPref('wysiwyg', false)->save();  // wysiwyg is disabled.
-		e107::wysiwyg('default');    // set as default.
-		$result = e107::wysiwyg(null, true);   // get the editor value.
-		$expected = 'bbcode';
-		e107::getConfig()->setPref('wysiwyg', true)->save(); // enabled wysiwyg again.
-		$this::assertSame($expected, $result);
-
-
-		e107::getConfig()->setPref('wysiwyg', false)->save();  // wysiwyg is disabled.
+		finally
+		{
+			$restorePrefs();
+		}
 	}
 
 
