@@ -36,6 +36,7 @@ class uploadAdminTest extends \Test\Unit
 
 	protected function _before()
 	{
+		\Test\CoreTable::create('admin_history');
 		$this->writeAppFile(e_UPLOAD.self::FILE, 'uploadAdminTest');
 
 		$this->uploadId = (int) e107::getDb()->createQueryBuilder()->insert('upload')->insertGetId(array(
@@ -65,6 +66,8 @@ class uploadAdminTest extends \Test\Unit
 			unlink(e107::getParser()->replaceConstants($imported['media_url']));
 		}
 		$db->createQueryBuilder()->delete('core_media')->where('media_caption', 'uploadAdminTest')->execute();
+
+		\Test\CoreTable::drop('admin_history');
 	}
 
 	public function testTheListShowsAnUploadWhoseOwnerIsGoneWithoutWarnings()
