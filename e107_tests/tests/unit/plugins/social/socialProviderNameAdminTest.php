@@ -174,7 +174,7 @@ class socialProviderNameAdminTest extends \Test\Unit
 		$seed .= "register_shutdown_function(function() { \$docs = (new ReflectionClass('Hybridauth\\\\Provider\\\\Facebook'))->getDefaultProperties(); ";
 		$seed .= "echo \"\\nFACTS:\".json_encode(array('title' => LAN_SOCIAL_ADMIN_10, 'href' => \$docs['apiDocumentation'])).\"\\n\"; }); ";
 
-		$page = $this->renderInBootedCli('e107_plugins/social/admin_config.php', $seed.$php);
+		$page = $this->renderInBootedCli('e107_plugins/social/admin_config.php', $seed.$php, self::BUFFERED);
 
 		self::assertStringNotContainsString('Fatal error', $page, "The page died:\n".$page);
 

@@ -18,6 +18,7 @@ class e_user_providerTest extends \Test\Unit
 	protected function _before()
 	{
 		e_user_providerTestAdapter::$constructed = 0;
+		e_user_providerTestToken::$unserialised = 0;
 
 		try
 		{
@@ -301,38 +302,118 @@ class e_user_providerTest extends \Test\Unit
 		$this::assertSame($options->getValue(new \Hybridauth\HttpClient\Curl()), $options->getValue($client));
 	}
 
+	public function testAStoredTokenIsNotUnserialised()
+	{
+		$restore = $this->withStoredFacebook(array('tokens' => array(
+			'access_token' => array('lateObject' => serialize(new e_user_providerTestToken())),
+		)));
+		try
+		{
+			new e_user_provider('Facebook');
+		}
+		finally
+		{
+			$restore();
+		}
+
+		$this::assertSame(0, e_user_providerTestToken::$unserialised);
+	}
+
+	public function testATokenFromTheProvidersServerIsNotUnserialised()
+	{
+		$restore = $this->withStoredProvider('Keycloak', array(
+			'enabled' => 1,
+			'url'     => 'https://keycloak.example.invalid',
+			'realm'   => 'site',
+			'keys'    => array('id' => 'site', 'secret' => 'client-secret'),
+		));
+		try
+		{
+			$exchange = new \e107\Reflection\ReflectionMethod('Hybridauth\Adapter\OAuth2', 'validateAccessTokenExchange');
+			$answer = $exchange->invoke($this->builtAdapter('Keycloak'), http_build_query(array(
+				'access_token' => array('lateObject' => serialize(new e_user_providerTestToken())),
+			)));
+		}
+		finally
+		{
+			$restore();
+		}
+
+		$this::assertSame(0, e_user_providerTestToken::$unserialised);
+		$this::assertTrue($answer->exists('access_token'));
+	}
+
+	public function testAStoredTokenConnectsNoVisitor()
+	{
+		$restore = $this->withStoredFacebook(array('tokens' => array('access_token' => 'stored-access-token')));
+		try
+		{
+			$provider = new e_user_provider('Facebook');
+		}
+		finally
+		{
+			$restore();
+		}
+
+		$this::assertNull($provider->adapter);
+	}
+
+	public function testTelegramIsOfferedNoTokensField()
+	{
+		$this::assertArrayNotHasKey('tokens', e_user_provider::getFieldsOf('Telegram'));
+	}
+
 	/**
 	 * @param string $property one of {@see \Hybridauth\Adapter\AbstractAdapter}'s
 	 * @return mixed what it holds in the Facebook adapter e107 builds from the stored settings
 	 */
 	private function facebookAdapterProperty($property)
 	{
-		$hybridauth = new \e107\Reflection\ReflectionProperty('e_user_provider', 'hybridauth');
-		$adapter = $hybridauth->getValue(new e_user_provider('Facebook'))->getAdapter('Facebook');
 		$held = new \e107\Reflection\ReflectionProperty('Hybridauth\Adapter\AbstractAdapter', $property);
 
-		return $held->getValue($adapter);
+		return $held->getValue($this->builtAdapter('Facebook'));
+	}
+
+	/**
+	 * @param string $providerName
+	 * @return \Hybridauth\Adapter\AdapterInterface the adapter e107 builds for it from the stored settings
+	 */
+	private function builtAdapter($providerName)
+	{
+		$hybridauth = new \e107\Reflection\ReflectionProperty('e_user_provider', 'hybridauth');
+
+		return $hybridauth->getValue(new e_user_provider($providerName))->getAdapter($providerName);
 	}
 
 	/**
 	 * @param array $options saved for an enabled Facebook beside its app id and secret, as the social plugin saves them
-	 * @return callable puts the social login preferences back and forgets what Facebook's adapter kept in the session
+	 * @return callable as {@see e_user_providerTest::withStoredProvider()} returns it
 	 */
 	private function withStoredFacebook(array $options)
+	{
+		return $this->withStoredProvider('Facebook', array_merge(
+			array('enabled' => 1, 'keys' => array('id' => '123456789012345', 'secret' => 'app-secret')),
+			$options
+		));
+	}
+
+	/**
+	 * @param string $providerName
+	 * @param array $settings saved for it as the social plugin saves them
+	 * @return callable puts the social login preferences back and forgets what the provider's adapter kept in the session
+	 */
+	private function withStoredProvider($providerName, array $settings)
 	{
 		$restorePrefs = $this->withCorePrefs(array('social_login' => array(), 'social_login_active' => 1));
 
 		include_once(e_PLUGIN . 'social/includes/social_login_config.php');
 		$manager = new social_login_config(e107::getConfig());
-		$manager->setProviderConfig('Facebook', array_merge(
-			array('enabled' => 1, 'keys' => array('id' => '123456789012345', 'secret' => 'app-secret')),
-			$options
-		));
+		$manager->setProviderConfig($providerName, $settings);
 
-		return function () use ($restorePrefs)
+		return function () use ($providerName, $restorePrefs)
 		{
 			$storage = new \Hybridauth\Storage\Session();
-			$storage->deleteMatch('Facebook.');
+			$storage->deleteMatch($providerName . '.');
 			$restorePrefs();
 		};
 	}
@@ -365,3 +446,20 @@ class e_user_providerTestAdapter
 	}
 }
 
+/**
+ * Counts how often it is unserialised, standing in for any object a stored token could carry.
+ */
+class e_user_providerTestToken
+{
+	public static $unserialised = 0;
+
+	public function __wakeup()
+	{
+		self::$unserialised++;
+	}
+
+	public function __toString()
+	{
+		return 'token';
+	}
+}
