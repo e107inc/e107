@@ -2343,19 +2343,24 @@ class e_media
 
 		$targetDir = e_IMPORT;
 		$fileName = basename($filePath);
+		$rename = !empty($request['rename']) && is_string($request['rename']) ? basename($request['rename']) : '';
+		$storedPath = $rename === '' ? $filePath : $targetDir.$rename;
 
-		if(e107::getFile()->isAllowedType($filePath) !== true)
+		foreach(array_unique(array($filePath, $storedPath)) as $targetFile)
 		{
-			$this->ajaxUploadLog($filePath, $fileName, filesize($filePath), false, "Unapproved file-type. (".__METHOD__.")");
-			@unlink($filePath);
-			return '{"jsonrpc" : "2.0", "error" : {"code": 120, "message": "Unapproved file-type detected. '.$filePath.'"}, "id" : "id"}';
-		}
-	
-		if(e107::getFile()->isClean($filePath) !== true)
-		{
-			$this->ajaxUploadLog($filePath, $fileName, filesize($filePath), false, "File detected as not clean. (".__METHOD__.")");
-			@unlink($filePath);
-			return '{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Bad File Detected. '.$filePath.'"}, "id" : "id"}';
+			if(e107::getFile()->isAllowedType($filePath, $targetFile) !== true)
+			{
+				$this->ajaxUploadLog($filePath, $fileName, filesize($filePath), false, "Unapproved file-type. (".__METHOD__.")");
+				@unlink($filePath);
+				return '{"jsonrpc" : "2.0", "error" : {"code": 120, "message": "Unapproved file-type detected. '.$filePath.'"}, "id" : "id"}';
+			}
+
+			if(e107::getFile()->isClean($filePath, $targetFile) !== true)
+			{
+				$this->ajaxUploadLog($filePath, $fileName, filesize($filePath), false, "File detected as not clean. (".__METHOD__.")");
+				@unlink($filePath);
+				return '{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Bad File Detected. '.$filePath.'"}, "id" : "id"}';
+			}
 		}
 
 
@@ -2396,14 +2401,13 @@ class e_media
 
 		}
 
-		if(!empty($request['rename']))
+		if($rename !== '')
 		{
-			$newPath = $targetDir.basename($request['rename']);
-			if(!rename($filePath, $newPath))
+			if(!rename($filePath, $storedPath))
 			{
-				return '{"jsonrpc" : "2.0", "error" : {"code": 105, "message": "Unable to rename '.$filePath.' to '.$newPath.'"}, "id" : "id"}';
+				return '{"jsonrpc" : "2.0", "error" : {"code": 105, "message": "Unable to rename '.$filePath.' to '.$storedPath.'"}, "id" : "id"}';
 			}
-			$fileName = basename($newPath);
+			$fileName = basename($storedPath);
 		}
 
 		$msg = '';
