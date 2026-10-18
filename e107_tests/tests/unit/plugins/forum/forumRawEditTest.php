@@ -19,6 +19,8 @@
  */
 class forumRawEditTest extends \Codeception\Test\Unit
 {
+	use \Test\CorePrefs;
+	use \Test\UserClasses;
 
 	/** @var bool whether this test installed the forum plugin for its tables */
 	private $forumInstalled = false;
@@ -138,43 +140,34 @@ class forumRawEditTest extends \Codeception\Test\Unit
 	 */
 	private function withInheritedHtmlClass($run)
 	{
-		$config = e107::getConfig();
-		$was = array('post_html' => $config->get('post_html'), 'post_script' => $config->get('post_script'));
-		$tree = e107::getUserClass()->class_tree;
+		$classes = array();
+
+		foreach(array(self::PARENT_CLASS => (string) self::PARENT_CLASS, self::CHILD_CLASS => self::CHILD_CLASS . ',' . self::PARENT_CLASS) as $id => $accum)
+		{
+			$classes[] = array(
+				'userclass_id' => $id, 'userclass_name' => 'RAWEDIT' . $id, 'userclass_description' => '', 'userclass_editclass' => e_UC_MAINADMIN,
+				'userclass_parent' => e_UC_PUBLIC, 'userclass_accum' => $accum, 'userclass_visibility' => e_UC_PUBLIC, 'userclass_type' => 0,
+				'userclass_icon' => '', 'userclass_perms' => '',
+			);
+		}
+
+		$restoreClasses = $this->withUserClasses($classes);
+		$restorePrefs = $this->withCorePrefs(array('post_html' => self::PARENT_CLASS, 'post_script' => self::PARENT_CLASS));
 
 		try
 		{
-			foreach(array(self::PARENT_CLASS => (string) self::PARENT_CLASS, self::CHILD_CLASS => self::CHILD_CLASS . ',' . self::PARENT_CLASS) as $id => $accum)
-			{
-				$this->assertNotFalse(e107::getDb()->insert('userclass_classes', array(
-					'userclass_id' => $id, 'userclass_name' => 'RAWEDIT' . $id, 'userclass_description' => '', 'userclass_editclass' => e_UC_MAINADMIN,
-					'userclass_parent' => e_UC_PUBLIC, 'userclass_accum' => $accum, 'userclass_visibility' => e_UC_PUBLIC, 'userclass_type' => 0,
-					'userclass_icon' => '', 'userclass_perms' => '',
-				)));
-			}
-
-			$this->rereadClasses();
-			$config->set('post_html', self::PARENT_CLASS)->set('post_script', self::PARENT_CLASS);
 			$run();
 		}
 		finally
 		{
-			$config->set('post_html', $was['post_html'])->set('post_script', $was['post_script']);
-			e107::getDb()->delete('userclass_classes', 'userclass_id IN (' . self::PARENT_CLASS . ',' . self::CHILD_CLASS . ')');
-			e107::getCache()->clear_sys(UC_CACHE_TAG);
-			e107::getUserClass()->class_tree = $tree;
+			$restorePrefs();
+			$restoreClasses();
 
 			foreach($this->users as $user)
 			{
 				e107::setRegistry('core/e107/user/' . $user, null);
 			}
 		}
-	}
-
-	private function rereadClasses()
-	{
-		e107::getCache()->clear_sys(UC_CACHE_TAG);
-		e107::getUserClass()->readTree(true);
 	}
 
 	/**

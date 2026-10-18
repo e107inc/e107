@@ -11,6 +11,8 @@
 
 class e_formTest extends \Codeception\Test\Unit
 {
+	use \Test\UserClasses;
+
 	/** @var e_form */
 	protected $_frm;
 
@@ -990,14 +992,10 @@ class e_formTest extends \Codeception\Test\Unit
 		$preview = $this->_frm->renderValue('lw_tooltip', 'Tip <b title=&quot;'.str_repeat('a', 60).' b&quot;>X</b>', $cells['textarea inline'], 5);
 		self::assertSame(0, $this->parsedCell($preview)->getElementsByTagName('b')->length, 'textarea preview cut');
 
-		$uc = e107::getUserClass();
-		$tree = $uc->class_tree;
+		$restoreClasses = $this->withUserClasses(array(array('userclass_id' => 77, 'userclass_name' => $stored, 'userclass_description' => '', 'userclass_accum' => '77', 'userclass_perms' => '')));
 
 		try
 		{
-			e107::getDb()->insert('userclass_classes', array('userclass_id' => 77, 'userclass_name' => $stored, 'userclass_description' => '', 'userclass_accum' => '77', 'userclass_perms' => ''));
-			$uc->clearCache();
-			$uc->readTree(true);
 			$classCells = array(
 				'userclass'   => $this->_frm->renderValue('page_class', 77, array('type' => 'userclass', 'title' => 'Visibility'), 5),
 				'userclasses' => $this->_frm->renderValue('page_class', '77', array('type' => 'userclasses', 'title' => 'Visibility'), 5),
@@ -1005,9 +1003,7 @@ class e_formTest extends \Codeception\Test\Unit
 		}
 		finally
 		{
-			e107::getDb()->delete('userclass_classes', 'userclass_id = 77');
-			$uc->clearCache();
-			$uc->class_tree = $tree;
+			$restoreClasses();
 		}
 
 		foreach($classCells as $case => $html)
