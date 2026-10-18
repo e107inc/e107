@@ -7069,7 +7069,7 @@ class e_parse
 
 
 	/**
-	 * Parse new <x-bbcode> tags into bbcode output.
+	 * Replace each <x-bbcode> element with the bbcode its alt holds, as text, or for the editor as bbcode with < and > encoded.
 	 *
 	 * @param bool $retainTags : when you want to replace html and retain the <bbcode> tags wrapping it.
 	 * @return string html
@@ -7085,10 +7085,12 @@ class e_parse
 		{
 			foreach ($v as $val)
 			{
-				$tag = base64_decode($val['alt']);
-				$repl = ($retainTags == true) ? '$1' . $tag . '$2' : $tag;
-				//	$text = preg_replace('/(<x-bbcode[^>]*>).*(<\/x-bbcode>)/i',$repl, $text);
-				$text = preg_replace('/(<x-bbcode alt=(?:&quot;|")' . $val['alt'] . '(?:&quot;|")>).*(<\/x-bbcode>)/i', $repl, $text);
+				$bbcode = base64_decode($val['alt']);
+				$tag = ($retainTags == true) ? str_replace(array('<', '>'), array('&lt;', '&gt;'), $bbcode) : $this->attributeValue($bbcode);
+				$text = preg_replace_callback('/(<x-bbcode alt=(?:&quot;|")' . preg_quote($val['alt'], '/') . '(?:&quot;|")>).*?(<\/x-bbcode>)/i', function ($match) use ($tag, $retainTags)
+				{
+					return ($retainTags == true) ? $match[1] . $tag . $match[2] : $tag;
+				}, $text);
 
 			}
 		}
