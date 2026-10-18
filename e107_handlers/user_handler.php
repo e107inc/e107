@@ -1130,6 +1130,11 @@ class e_user_provider
 	protected $social_login_config_manager = null;
 
 	/**
+	 * @var string[] provider options only code may set, left out of the stored settings and the settings form
+	 */
+	private static $codeOnlyOptions = array('adapter', 'debug_mode', 'debug_file', 'curl_options', 'tokens');
+
+	/**
 	 * Create a new Hybridauth-backed social login provider
 	 *
 	 * This constructor suppresses exceptions due to client usages not handling exceptions and instead sends error
@@ -1187,7 +1192,7 @@ class e_user_provider
 	 */
 	private function respawnHybridauth()
 	{
-		$this->hybridauth = new Hybridauth\Hybridauth($this->getConfig());
+		$this->hybridauth = new Hybridauth\Hybridauth($this->getConfig(), null, new \e107\SocialLogin\SessionStorage());
 	}
 
 	/**
@@ -1257,7 +1262,7 @@ class e_user_provider
 	 */
 	private function storedProviderConfigs()
 	{
-		$codeOnlyOptions = array_flip(array('adapter', 'debug_mode', 'debug_file', 'curl_options'));
+		$codeOnlyOptions = array_flip(self::$codeOnlyOptions);
 		$providerConfigs = $this->social_login_config_manager->getSupportedConfiguredProviderConfigs();
 
 		foreach ($providerConfigs as $providerName => $providerConfig)
@@ -1388,7 +1393,9 @@ class e_user_provider
 	{
 		$standardFields = self::getStandardFieldsOf($providerName);
 		$supplementaryFields = self::getSupplementalFieldsOf($providerName);
-		return self::array_merge_recursive_distinct($standardFields, $supplementaryFields);
+		$fields = self::array_merge_recursive_distinct($standardFields, $supplementaryFields);
+
+		return array_diff_key($fields, array_flip(self::$codeOnlyOptions));
 	}
 
 	/**
@@ -1603,7 +1610,7 @@ class e_user_provider
 			return false;
 		}
 
-		$storage = new Hybridauth\Storage\Session();
+		$storage = new \e107\SocialLogin\SessionStorage();
 
 		foreach (array('authorization_state', 'request_token') as $handshakeKey)
 		{

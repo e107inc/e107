@@ -449,8 +449,7 @@ switch(\$act)
 		\$profile = new Hybridauth\\User\\Profile();
 		\$profile->identifier = '$identifier';
 		\$profile->displayName = '$username';
-		\$store = new Hybridauth\\Storage\\Session();
-		\$store->set('$provider.user', \$profile);
+		\$_SESSION['HYBRIDAUTH::STORAGE'][strtolower('$provider.user')] = \$profile;
 		echo "PROBE_OK connect\\n";
 		break;
 
