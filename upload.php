@@ -115,9 +115,18 @@ class userUpload
 	    if ((!empty($_POST['file_email']) || USER == true) && !empty($_POST['file_name']) && !empty($_POST['file_description']) && !empty($_POST['category']))
 	    {
 
+			foreach(array('file_website' => LAN_144, 'file_demo' => LAN_414) as $field => $label)
+			{
+				if(!$tp->maySaveLinkAddress(varset($_POST[$field])))
+				{
+					$error = true;
+					$mes->addError(rtrim($label, ': ').': '.LAN_LINK_SCRIPT_SCHEME_REFUSED);
+				}
+			}
+
 	    //	$uploaded = file_upload(e_FILE."public/", "unique");
 	    	$fl = e107::getFile();
-	    	$uploaded = $fl->getUploaded(e_UPLOAD, "unique", array('max_file_count' => 2, 'extra_file_types' => TRUE));
+	    	$uploaded = $error ? array() : $fl->getUploaded(e_UPLOAD, "unique", array('max_file_count' => 2, 'extra_file_types' => TRUE));
 	    
 	   	 	// First, see what errors the upload handler picked up
 	        if ($uploaded === false)
