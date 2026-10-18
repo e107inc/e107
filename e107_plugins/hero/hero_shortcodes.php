@@ -159,7 +159,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$bullet = varset($this->var['hero_bullets'][$this->count], array());
 
-		if($this->trustOf($bullet) >= 1)
+		if($this->trustOf($bullet, 'text') >= 1)
 		{
 			return $tp->toHTML(varset($bullet['text']), true, 'BODY');
 		}
@@ -317,7 +317,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$part = varset($this->var[$button], array());
 
-		if($this->trustOf($part) >= 1)
+		if($this->trustOf($part, 'label') >= 1)
 		{
 			return $tp->toHTML(varset($part['label']), false, 'TITLE,defs_off');
 		}
@@ -337,7 +337,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 		$part = varset($this->var[$button], array());
 		$url = $tp->parseTemplate(varset($part['url']));
 
-		if($this->trustOf($part) < 1)
+		if($this->trustOf($part, 'url') < 1)
 		{
 			return $tp->toUrlAttribute($url);
 		}
@@ -362,7 +362,7 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 	{
 		$icon = varset($part['icon']);
 
-		if($this->trustOf($part) === 2)
+		if($this->trustOf($part, 'icon') === 2)
 		{
 			return strtr($icon, array('&quot;' => '"', '&#039;' => "'", '&amp;quot;' => '&quot;', '&amp;#039;' => '&#039;'));
 		}
@@ -372,11 +372,12 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 
 	/**
 	 * @param array $part a bullet or a button as stored
-	 * @return int|null what its author could post when it was saved, or null for a part saved before that was recorded
+	 * @param string $key one of its values
+	 * @return int|null what the author of that value could post when it was saved, or null for one saved before that was recorded
 	 */
-	private function trustOf($part)
+	private function trustOf($part, $key)
 	{
-		$trust = isset($part['__trust__']) ? $part['__trust__'] : null;
+		$trust = (isset($part['__trust__']) && is_array($part['__trust__']) && isset($part['__trust__'][$key])) ? $part['__trust__'][$key] : null;
 
 		return in_array($trust, array(0, 1, 2), true) ? $trust : null;
 	}

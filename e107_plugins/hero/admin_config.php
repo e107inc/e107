@@ -150,7 +150,7 @@ class hero_ui extends e_admin_ui
 
 		public function beforeCreate($new_data,$old_data)
 		{
-			$new_data = $this->processGlyph($new_data);
+			$new_data = $this->processGlyph($new_data, array());
 
 			return $new_data;
 		}
@@ -170,39 +170,32 @@ class hero_ui extends e_admin_ui
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-			$new_data = $this->processGlyph($new_data);
+			$new_data = $this->processGlyph($new_data, $old_data);
 
 			return $new_data;
 		}
 
-		private function processGlyph($new_data)
+		private function processGlyph($new_data, $old_data)
 		{
-			$tp = e107::getParser();
 			$trust = $this->authorTrust();
 
 			foreach(array('hero_button1', 'hero_button2') as $field)
 			{
 				if(isset($new_data[$field]) && is_array($new_data[$field]))
 				{
-					$new_data[$field] = $this->storedPart($new_data[$field], $trust);
+					$new_data[$field] = $this->storedPart($new_data[$field], $this->storedValue($old_data, $field), $trust, false);
 				}
 			}
+
+			$bullets = $this->storedValue($old_data, 'hero_bullets');
 
 			if(isset($new_data['hero_bullets']) && is_array($new_data['hero_bullets']))
 			{
 				foreach($new_data['hero_bullets'] as $key => $row)
 				{
-					$new_data['hero_bullets'][$key] = is_array($row) ? $this->storedPart($row, $trust) : array();
+					$stored = (isset($bullets[$key]) && is_array($bullets[$key])) ? $bullets[$key] : array();
+					$new_data['hero_bullets'][$key] = is_array($row) ? $this->storedPart($row, $stored, $trust, true) : array();
 				}
-			}
-
-			foreach(varset($new_data['hero_bullets'], array()) as $key=>$row)
-			{
-				if(!empty($row['icon']) && strpos($row['icon'],".glyph")===false)
-				{
-					$new_data['hero_bullets'][$key]['icon'] = $row['icon'].".glyph";
-				}
-
 			}
 
 			return $new_data;
@@ -211,22 +204,46 @@ class hero_ui extends e_admin_ui
 
 		/**
 		 * @param array $part one bullet or button as posted
-		 * @param int $trust what its author may post, as {@see hero_ui::authorTrust()} says
-		 * @return array the part stored through toDB(), its address as typed, and what its author may post recorded beside it
+		 * @param array $stored the same part as stored, empty for a new one
+		 * @param int $trust what the current user may post, as {@see hero_ui::authorTrust()} says
+		 * @param bool $glyph whether a changed icon is stored as a glyph, as a bullet's is
+		 * @return array the part as stored: each value posted back untouched kept with its level, any other judged at $trust
 		 */
-		private function storedPart(array $part, $trust)
+		private function storedPart(array $part, array $stored, $trust, $glyph)
 		{
-			$url = isset($part['url']) ? $part['url'] : null;
-			$part = e107::getParser()->toDB($part);
+			$tp = e107::getParser();
+			$form = $this->getUI();
+			$levels = (isset($stored['__trust__']) && is_array($stored['__trust__'])) ? $stored['__trust__'] : array();
+			$recorded = array();
+			unset($part['__trust__']);
 
-			if($url !== null)
+			foreach($part as $key => $value)
 			{
-				$part['url'] = $url;
+				$unchanged = isset($stored[$key]) && $form->isPostedBack($key, $value, $stored[$key]);
+				$part[$key] = $unchanged ? $stored[$key] : (($key === 'url') ? $value : $tp->toDB($value));
+				$recorded[$key] = $unchanged ? (isset($levels[$key]) ? $levels[$key] : null) : $trust;
+
+				if($glyph && !$unchanged && $key === 'icon' && is_string($part[$key]) && $part[$key] !== '' && strpos($part[$key], '.glyph') === false)
+				{
+					$part[$key] .= '.glyph';
+				}
 			}
 
-			$part['__trust__'] = $trust;
+			$part['__trust__'] = array_filter($recorded, 'is_int');
 
 			return $part;
+		}
+
+		/**
+		 * @param array $old_data the slide as stored, empty for a new one
+		 * @param string $field 'hero_bullets', 'hero_button1' or 'hero_button2'
+		 * @return array that field's parts as stored
+		 */
+		private function storedValue($old_data, $field)
+		{
+			$stored = isset($old_data[$field]) ? e107::unserialize($old_data[$field]) : array();
+
+			return is_array($stored) ? $stored : array();
 		}
 
 		/**
@@ -504,7 +521,7 @@ class hero_form_ui extends e_admin_form_ui
 					$text .= "<tr>
 								<td class='text-center'>".$this->glyphPicker($name.'[icon]', varset($val['icon']))."</td>
 								<td>".$this->btnClass($name.'[icon_style]', varset($val['icon_style']))."</td>
-								<td>".$this->textarea($name.'[text]', e107::getParser()->attributeValue(varset($val['text'])),1,80,array('size'=>'block-level'))."</td>
+								<td>".$this->textarea($name.'[text]', e107::getParser()->toAttribute($this->shownValue('text', varset($val['text'])), true),1,80,array('size'=>'block-level'))."</td>
 								<td>".$this->select($name.'[animation]',$optAnimation, varset($val['animation']), array( 'useValues'=>1), true)."</td>
 								<td>".$this->select($name.'[animation_delay]',$optDelay, varset($val['animation_delay']), array('size'=>'small'), true)."</td>
 							</tr>";
@@ -528,12 +545,39 @@ class hero_form_ui extends e_admin_form_ui
 	function glyphPicker($name,$value)
 	{
 		$tp = e107::getParser();
-		$ico = str_replace(".glyph", '', $value);
 
 		$pack = e107::pref('hero','icon_pack', 'fontawesome');
 
-		return '<button class="btn btn-block btn-default iconpicker" role="iconpicker" name="'.$name.'" data-iconset="'.$tp->attributeValue($pack).'" data-icon="'.$tp->attributeValue($ico).'"></button>';
+		return '<button class="btn btn-block btn-default iconpicker" role="iconpicker" name="'.$name.'" data-iconset="'.$tp->attributeValue($pack).'" data-icon="'.$tp->toAttribute($this->shownValue('icon', $value), true).'"></button>';
 
+	}
+
+	/**
+	 * @param string $key a value of a bullet or button: 'icon', 'text', 'label', 'url' or a style
+	 * @param mixed $posted the value as posted
+	 * @param mixed $stored the value as stored
+	 * @return bool whether a browser posts $posted back for $stored from this form's element for it left untouched
+	 */
+	public function isPostedBack($key, $posted, $stored)
+	{
+		return e107::getParser()->isUnchangedPost($posted, $this->shownValue($key, $stored), array('type' => ($key === 'text') ? 'textarea' : 'text'));
+	}
+
+	/**
+	 * @param string $key a value of a bullet or button
+	 * @param mixed $value that value as stored
+	 * @return mixed the value as the edit form's element shows it: icon, text and label decoded, an icon without '.glyph'
+	 */
+	private function shownValue($key, $value)
+	{
+		if(!is_string($value) || !in_array($key, array('icon', 'text', 'label'), true))
+		{
+			return $value;
+		}
+
+		$value = ($key === 'icon') ? str_replace('.glyph', '', $value) : $value;
+
+		return html_entity_decode(e107::getParser()->attributeValue($value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 	}
 
 	function btnClass($name,$value,$options=array())
@@ -575,7 +619,7 @@ class hero_form_ui extends e_admin_form_ui
 
 					$text .= "<tr>
 								<td class='text-center'>".$this->glyphPicker($name.'[icon]', varset($val['icon']))."</td>
-								<td>".$this->renderElement($name.'[label]', varset($val['label']), array('type' => 'text', 'writeParms' => array('size'=>'block-level', 'placeholder'=>LAN_HERO_ADMIN_006)))."</td>
+								<td>".$this->text($name.'[label]', $this->shownValue('label', varset($val['label'])), 255, array('size'=>'block-level', 'placeholder'=>LAN_HERO_ADMIN_006))."</td>
 								<td> ".$this->text($name.'[url]', varset($val['url']), 255, array('size'=>'block-level', 'placeholder'=>'URL'))."</td>
 								<td> ".$this->btnClass($name.'[class]', varset($val['class']))."</td>
 							</tr>";
