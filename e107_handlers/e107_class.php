@@ -36,6 +36,9 @@ class e107
 
 	public $server_path;
 
+	/** @var string {@see e107::$server_path} as the script name spells it, before {@see e107::set_paths()} encodes it */
+	private $unencodedServerPath = '';
+
 	public $e107_dirs = array();
 
 	/**
@@ -5744,6 +5747,8 @@ class e107
 			$SCRIPT_NAME = $_SERVER['_'];
 		}
 
+		$SCRIPT_NAME = $this->runningScriptName($SCRIPT_NAME);
+
 		$http_path = dirname($SCRIPT_NAME);
 		$http_path = explode("/", $http_path);
 		for ($i = 0; $i < substr_count($path, "../"); $i ++)
@@ -5753,14 +5758,20 @@ class e107
 
 		$this->server_path = implode("/", $http_path)."/";
 		$this->server_path = $this->fix_windows_paths($this->server_path);
+		$this->server_path = preg_replace('#^/+#', '/', $this->server_path);
+		$this->unencodedServerPath = $this->server_path;
+		$webFolders = rtrim($this->server_path, '/');
+		$installFolder = rtrim($this->fix_windows_paths(dirname($target_path)), '/');
+		if((string) substr($installFolder, -strlen($webFolders)) !== $webFolders)
+		{
+			$this->server_path = preg_replace_callback('#[^A-Za-z0-9._~/%-]#', function ($character)
+			{
+				return rawurlencode($character[0]);
+			}, $this->server_path);
+		}
 
 //var_dump($this->server_path);
 //exit;
-
-		if ($this->server_path === "//")
-		{
-			$this->server_path = "/";
-		}
 
 		// Absolute file-path of directory containing class2.php
 		//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
@@ -5920,6 +5931,75 @@ class e107
 	}
 
 	/**
+	 * Cuts off the path info that some servers leave in the script name after the running script.
+	 *
+	 * @param string $scriptName SCRIPT_NAME as the server hands it over
+	 * @return string
+	 */
+	private function runningScriptName($scriptName)
+	{
+		$first = stripos($scriptName, '.php/');
+		if($first === false)
+		{
+			return $scriptName;
+		}
+
+		$firstCut = (string) substr($scriptName, 0, $first + 4);
+		$cwd = $this->fix_windows_paths(getcwd());
+		preg_match_all('#\.php(?=/|\z)#i', $scriptName, $ends, PREG_OFFSET_CAPTURE);
+
+		foreach($ends[0] as $end)
+		{
+			$script = (string) substr($scriptName, 0, $end[1] + 4);
+			if(is_file(basename($script)))
+			{
+				$folder = rtrim(dirname($script), '/\\');
+
+				return ($folder === '' || (string) substr($cwd, -strlen($folder)) === $folder) ? $script : $firstCut;
+			}
+		}
+
+		return $firstCut;
+	}
+
+	/**
+	 * Spells the site's folders at the start of a path the server hands over the way {@see e107::$server_path}, which e_HTTP is defined from, spells them.
+	 *
+	 * @param string $path PHP_SELF or a request URI
+	 * @return string
+	 */
+	private function asWebPath($path)
+	{
+		$served = $this->unencodedServerPath;
+		if($served === '' || $served === $this->server_path || strpos($path, $served) !== 0)
+		{
+			return $path;
+		}
+
+		return $this->server_path.substr($path, strlen($served));
+	}
+
+	/**
+	 * Scopes a cookie to the folders of a web path up to the first whose name holds a percent-encoded byte, which a browser may send in either spelling.
+	 *
+	 * @param string $path a web path, such as e_HTTP
+	 * @return string
+	 */
+	public static function cookiePath($path)
+	{
+		$path = (string) $path;
+		$encoded = strpos($path, '%');
+		if($encoded === false)
+		{
+			return $path;
+		}
+
+		$cut = strrpos((string) substr($path, 0, $encoded), '/');
+
+		return ($cut === false) ? '/' : (string) substr($path, 0, $cut + 1);
+	}
+
+	/**
 	 * Convert two absolute paths to a relative path between them
 	 * @license https://creativecommons.org/licenses/by-sa/3.0/ CC BY-SA 3.0
 	 * @see https://stackoverflow.com/a/2638272
@@ -6030,7 +6110,7 @@ class e107
 		}
 
 
-		$eSelf = !empty($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'];
+		$eSelf = $this->asWebPath(!empty($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']);
 		$_self = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$eSelf;
 
 
@@ -6041,14 +6121,14 @@ class e107
 		if (isset($_SERVER['HTTP_X_REWRITE_URL']))
 		{
 			// check this first so IIS will catch
-			$requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+			$requestUri = $this->asWebPath($_SERVER['HTTP_X_REWRITE_URL']);
 			$requestUrl = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$requestUri;
 			// fix request uri
 			$_SERVER['REQUEST_URI'] = $requestUri;
 		}
 		elseif (isset($_SERVER['REQUEST_URI']))
 		{
-			$requestUri = $_SERVER['REQUEST_URI'];
+			$requestUri = $this->asWebPath($_SERVER['REQUEST_URI']);
 			$requestUrl = $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST'].$requestUri;
 		}
 		else

@@ -329,7 +329,7 @@ function install_config_state()
 function install_set_state_cookie($value)
 {
 	$secure = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off');
-	$path = defined('e_HTTP') ? e_HTTP : '/';
+	$path = defined('e_HTTP') ? e107::cookiePath(e_HTTP) : '/';
 
 	// eShims::setcookie forwards the 7.3+ options array untouched on modern PHP
 	// and folds SameSite into the path on the PHP 5.6 floor, so the SameSite
@@ -354,7 +354,7 @@ function install_set_state_cookie($value)
 function install_clear_state_cookie()
 {
 	$secure = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off');
-	$path = defined('e_HTTP') ? e_HTTP : '/';
+	$path = defined('e_HTTP') ? e107::cookiePath(e_HTTP) : '/';
 
 	unset($_COOKIE['e107install_state']);
 
@@ -465,7 +465,7 @@ $e_install->renderPage();
  */
 function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = false)
 {
-	setcookie($name, $value, $expire, $path, $domain, (bool) $secure);
+	setcookie($name, $value, $expire, e107::cookiePath($path), $domain, (bool) $secure);
 }
 
 class e_install

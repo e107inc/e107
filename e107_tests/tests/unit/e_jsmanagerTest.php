@@ -46,8 +46,8 @@ class e_jsmanagerTest extends \Test\Unit
 		$fileId = new ReflectionMethod('e_jsmanager', 'getCacheFileId');
 		$fileId->setAccessible(true);
 
-		self::assertSame(hash('crc32', implode('', $paths).$token->invoke($this->js)), $fileId->invoke($this->js, $paths));
-		self::assertNotSame(hash('crc32', implode('', $paths).$this->js->getCacheId()), $fileId->invoke($this->js, $paths), 'the name would not change with the release');
+		self::assertSame(md5(e_HTTP.implode('', $paths).$token->invoke($this->js)), $fileId->invoke($this->js, $paths));
+		self::assertNotSame(md5(e_HTTP.implode('', $paths).$this->js->getCacheId()), $fileId->invoke($this->js, $paths), 'the name would not change with the release');
 	}
 
 	public function testIsInAdmin()

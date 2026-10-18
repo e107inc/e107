@@ -80,7 +80,7 @@ class ecacheTest extends \Test\Unit
 			),
 		);
 
-		$this->cache->setMD5('hash'); // set a consistent hash value: ie. 0800fc577294c34e0b28ad2839435945
+		$this->cache->setMD5('0800fc577294c34e0b28ad2839435945', false); // the hash the wmessage fixture is filed under
 
 		$clean = ["\t", "\n", "\r", " "];
 

@@ -43,17 +43,17 @@ class ecache {
 	}
 
 	/**
-	 * Set the MD5 Hash
+	 * Set the MD5 hash later page entries are filed under: of the site's web path and $text, or $text itself when $hash is false.
 	 */
 	public function setMD5($text, $hash=true)
 	{
 		if($text === null)
 		{
-			$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.defset('e_QUERY').filemtime(THEME.'theme.php'));
+			$this->CachePageMD5 = $this->contentHash(defset('e_QUERY'));
 			return $this;
 		}
 
-		$this->CachePageMD5 = ($hash === true) ? md5($text) : $text;
+		$this->CachePageMD5 = ($hash === true) ? md5(e_HTTP.$text) : $text;
 		return $this;
 	}
 
@@ -64,6 +64,17 @@ class ecache {
 	public function getMD5()
 	{
 		return $this->CachePageMD5;
+	}
+
+	/**
+	 * Hash of what a cached page or menu was built from, the site's web path among it.
+	 *
+	 * @param string $variant what sets apart entries of one tag: the query for a page, the admin flag for an nq_ entry
+	 * @return string
+	 */
+	private function contentHash($variant)
+	{
+		return md5(e_HTTP.e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.$variant.filemtime(THEME.'theme.php'));
 	}
 
 	/**
@@ -89,7 +100,7 @@ class ecache {
 					// We do not care about e_QUERY, so don't use it in the md5 calculation
 					if (!$this->CachenqMD5)
 					{
-						$this->CachenqMD5 = md5(e_BASE.(defined("ADMIN") && ADMIN == true ? "admin" : "").e_LANGUAGE.THEME.USERCLASS_LIST.filemtime(THEME.'theme.php'));
+						$this->CachenqMD5 = $this->contentHash(defined("ADMIN") && ADMIN == true ? "admin" : "");
 					}
 					// Add 'nq' to indicate we are not using e_QUERY
 					$CheckTag = '_nq_'.$this->CachenqMD5;
@@ -100,7 +111,7 @@ class ecache {
 					// It's a page - need the query in the hash
 					if (!$this->CachePageMD5)
 					{
-						$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.defset('e_QUERY').filemtime(THEME.'theme.php'));
+						$this->CachePageMD5 = $this->contentHash(defset('e_QUERY'));
 					}
 					$CheckTag = '_'.$this->CachePageMD5;
 				}

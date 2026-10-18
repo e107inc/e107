@@ -218,6 +218,9 @@ class e_session
         'samesite'   => 'Lax',
     );
 
+    /** @var string the session cookie's path as the folder reads, where releases before the web path was encoded scoped it */
+    private $_earlierCookiePath = '';
+
     /**
      * Session data
      * @var array
@@ -959,6 +962,7 @@ public function getData($key = null, $clear = false)
         $this->_namespace = $namespace;
 
         $this->validate();
+        $this->dropEarlierSessionCookie();
         $this->validateSessionCookie();
     }
 
@@ -1003,6 +1007,9 @@ public function getData($key = null, $clear = false)
                 $this->_options['path'] = defined('e_HTTP') ? e_HTTP : '/';
             }
         }
+
+        $this->_earlierCookiePath = rawurldecode($this->_options['path']);
+        $this->_options['path'] = e107::cookiePath($this->_options['path']);
 
         // session name before options - problems reported on php.net
         if (!empty($sessionName))
@@ -1204,6 +1211,44 @@ public function getData($key = null, $clear = false)
     }
 
     /**
+     * Drops the session cookie a browser kept from before the web path was encoded, scoped to the folder as it reads, which would otherwise be sent ahead of the one scoped to {@see e107::cookiePath()}.
+     *
+     * @return void
+     */
+    private function dropEarlierSessionCookie()
+    {
+        if (!empty($_SESSION['_cookie_session_path']) || headers_sent() || !function_exists('cookie'))
+        {
+            return;
+        }
+
+        if (isset($_COOKIE[session_name()]))
+        {
+            $this->expireEarlierSessionCookie();
+        }
+
+        $_SESSION['_cookie_session_path'] = $this->_options['path'];
+    }
+
+    /**
+     * Expires the session cookie at the path releases before the web path was encoded gave it, in the host-only form PHP sends and the domain form {@see cookie()} writes, unless that path is the current one, is not where the running script's address begins, or holds a space, a comma, a semicolon, a percent sign, a control character or a byte above ASCII.
+     *
+     * @return void
+     */
+    private function expireEarlierSessionCookie()
+    {
+        $earlier = $this->_earlierCookiePath;
+        $self = isset($_SERVER['PHP_SELF']) ? (string) $_SERVER['PHP_SELF'] : '';
+        if ($earlier === $this->_options['path'] || strpos($self, $earlier) !== 0 || !preg_match('#^/[\x21-\x24\x26-\x2B\x2D-\x3A\x3C-\x7E]*\z#', $earlier))
+        {
+            return;
+        }
+
+        eShims::setcookie(session_name(), '', 1, $earlier, (string) $this->_options['domain'], (bool) $this->_options['secure'], true);
+        cookie(session_name(), '', 1, $earlier, $this->_options['domain'], $this->_options['secure']);
+    }
+
+    /**
      * Reset session cookie lifetime
      * We reset session cookie on every (session_lifetime / 4) seconds
      * It's done by all session handler instances, they all share
@@ -1248,6 +1293,7 @@ public function getData($key = null, $clear = false)
     public function cookieDelete()
     {
         cookie(session_name(), null, null, $this->_options['path'], $this->_options['domain'], $this->_options['secure']);
+        $this->expireEarlierSessionCookie();
         return $this;
     }
 
