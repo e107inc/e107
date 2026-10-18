@@ -6,7 +6,7 @@
  * carries TinyMce's default <!-- pagebreak --> comment must stay inert (one
  * page), preserving backwards compatibility for pages saved before the fix.
  *
- * page.php splits on /\[newpage.*?\]/ (pageClass::parsePage), so this exercises
+ * page.php splits on the [newpage] marker (pageClass::parsePage), so this exercises
  * the real end-of-line consumer of what the pagebreak button now inserts.
  */
 class CpageNewpageCest
@@ -54,6 +54,19 @@ class CpageNewpageCest
 		$I->amOnPage('/page.php?' . $pageId . '.1');
 		$I->see('INERTALPHA333');
 		$I->see('INERTBRAVO444');
+	}
+
+	public function newpageMarkerEndingInsideATagIsReadAsText(AcceptanceTester $I)
+	{
+		$I->wantTo('confirm a [newpage] marker whose ] lies inside a tag is text, and the tag stays whole');
+
+		$pageId = $this->seedPage($I,
+			'[html]<p>CUTALPHA555 [newpage <u title=&quot;x]&quot;>CUTBRAVO666</u></p>[newpage]<p>CUTCHARLIE777</p>[/html]');
+
+		$I->amOnPage('/page.php?' . $pageId);
+		$I->see('CUTALPHA555');
+		$I->seeElement('u', array('title' => 'x]'));
+		$I->dontSee('CUTCHARLIE777');
 	}
 
 	private function seedPage(AcceptanceTester $I, $body)

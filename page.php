@@ -1094,7 +1094,10 @@ class pageClass
 		
 		$this->pageTitles = array();		// Notice removal
 
-		if(preg_match_all('/\[newpage.*?\]/si', $this->pageText, $pt))
+		$pageBreak = '/(\[newpage.*?\])/si';
+		$marked = e_parse::splitAtBBCodeTags($pageBreak, $this->pageText, PREG_SPLIT_DELIM_CAPTURE);
+
+		if(is_array($marked) && (count($marked) > 1))
 		{
 			if (substr($this->pageText, 0, 6) == '[html]')
 			{	// Need to strip html bbcode from wysiwyg on multi-page docs (handled automatically on single pages)
@@ -1107,7 +1110,7 @@ class pageClass
 					$this->pageText = (string) substr($this->pageText, 6);
 				}
 			}
-			$pages = preg_split("/\[newpage.*?\]/si", $this->pageText, -1, PREG_SPLIT_NO_EMPTY);
+			$pages = e_parse::splitAtBBCodeTags($pageBreak, $this->pageText, PREG_SPLIT_NO_EMPTY);
 			$this->multipageFlag = TRUE;
 		}
 		else
@@ -1118,9 +1121,12 @@ class pageClass
 			return;
 		}
 
-		foreach($pt[0] as $title)
+		foreach($marked as $key => $title)
 		{
-			$this->pageTitles[] = $title;
+			if($key % 2)
+			{
+				$this->pageTitles[] = $title;
+			}
 		}
 
 

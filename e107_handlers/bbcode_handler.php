@@ -36,7 +36,7 @@ class e_bbcode
 	private $core_bb = array();
 	private $class = false;
 	private $resizePrefs = array();
-	private static $bbPattern = '#^\[(/?)([A-Za-z_]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
+	private static $bbPattern = '#^\[' . e_parse::BBCODE_TAG_LEAVES_NO_HTML_TAG_OPEN . '(/?)([A-Za-z_]+)(\d*)([=:]?)(.*?)]$#i';	// Pattern to split up bbcodes
 
 	function __construct()
 	{
@@ -880,7 +880,7 @@ class e_bbcode
 		}
 		else // regular bbcode;
 		{
-			preg_match_all("/\[".$type."(?:[^\]]*)?]([^\[]*)(?:\[\/".$type."])/im",$text,$mtch);
+			preg_match_all("/\[".$type.e_parse::BBCODE_TAG_LEAVES_NO_HTML_TAG_OPEN."(?:[^\]]*)?]([^\[]*)(?:\[\/".$type."])/im",$text,$mtch);
 		}
 
 
