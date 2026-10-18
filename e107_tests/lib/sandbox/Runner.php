@@ -331,7 +331,7 @@ class Runner
 
 	/**
 	 * @param string[] $args
-	 * @return string[] $args without the options that pick groups, and without the --steps `e107-tests run` passes on its own
+	 * @return string[] $args without the options that pick groups or colours
 	 */
 	private static function withoutGroups(array $args)
 	{
@@ -342,7 +342,7 @@ class Runner
 			{
 				$i++;
 			}
-			elseif (!preg_match('/^(-g.|--group=|--steps$)/', $args[$i]))
+			elseif (!preg_match('/^(-g.|--group=|--(no-)?colors$)/', $args[$i]))
 			{
 				$kept[] = $args[$i];
 			}
