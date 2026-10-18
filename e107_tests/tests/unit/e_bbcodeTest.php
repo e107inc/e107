@@ -13,6 +13,7 @@
 	{
 		use \Test\CorePrefs;
 		use \Test\HideGlobals;
+		use \Test\HtmlAttributes;
 
 		/** @var e_bbcode */
 		protected $bb;
@@ -1136,8 +1137,7 @@
 			try
 			{
 				$html = $tp->toHTML('[hide][hide][hide <b title="]X <i onmouseover=print() ">Y[/hide][/hide][/hide]', true);
-				self::assertStringContainsString('&lt;i onmouseover', $html);
-				self::assertStringNotContainsString('<i onmouseover', $html);
+				self::assertSame(array(), $this->handlerAttributes($html), $html);
 			}
 			finally
 			{

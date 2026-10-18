@@ -37,9 +37,23 @@ class e_parse
 
 	private $pref; // core prefs used in toHTML.
 
+	/**
+	 * A start or end tag that a bbcode tag may hold, read to its first > outside a quoted value: not one of an element whose content a browser does not read as HTML.
+	 *
+	 * @internal shared by the readers of bbcode tags, not part of the parser API
+	 */
+	const HTML_TAG_A_BBCODE_TAG_MAY_HOLD = '<(?!\/?(?i:iframe|math|noembed|noframes|noscript|plaintext|script|style|svg|textarea|title|xmp)(?![^\t\n\f\r \/>]))(?=\/?[a-zA-Z])(?:[^<>"\'\]]++|"[^"\]]*+"|\'[^\'\]]*+\')*+>';
+
+	/**
+	 * A lookahead holding where the text up to the next ] leaves no HTML tag or comment open and holds no tag of an element whose content a browser does not read as HTML.
+	 *
+	 * @internal shared by the readers of one bbcode tag, not part of the parser API; {@see e_parse::blankBracketsBeginningNoBBCodeTag()} reads a whole text the same way
+	 */
+	const BBCODE_TAG_LEAVES_NO_HTML_TAG_OPEN = '(?=(?:[^\]<]++|<(?![a-zA-Z\/!?])|<!--(?:-?>|(?:[^\]-]++|-(?!-!?>))*+--!?>)|<(?:!(?!--)|\?|\/(?![a-zA-Z]))[^\]>]*+>|' . self::HTML_TAG_A_BBCODE_TAG_MAY_HOLD . ')*+\])';
+
 	private static $hideMarkers = 0; // sets of [hide] markers handed out by setAsideHideBlocks(), so that no two renders share one
 
-	/** @var string a [code] block as the bbcode parser pairs one, the number its tags carry captured second */
+	/** @var string a [code] block as the bbcode parser pairs one, the number its tags carry captured second, for a text {@see e_parse::blankBracketsBeginningNoBBCodeTag()} has read */
 	private static $codeBlockPattern = '#(\[code(?![a-z_])(\d*)(?!\d)[^\]\n]*\].*?\[/code(?![a-z_])\2(?!\d)[^\]\n]*\])#is';
 
 	/**
@@ -2020,7 +2034,7 @@ class e_parse
 		{
 			// Split each text block into bits which are either within one of the 'key' bbcodes, or outside them
 			// (Because we have to match end words, the 'extra' capturing subpattern gets added to output array. We strip it later)
-			$content = preg_split('#(\[(' . $keyCodes . ').*?\[\/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+			$content = self::splitAtBBCodeTags('#(\[(' . $keyCodes . ').*?\[\/(?:\\2)\])#mis', $text, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		}
 
 
@@ -2047,7 +2061,7 @@ class e_parse
 
 				// Have to have a good test in case a 'non-key' bbcode starts the block
 				// - so pull out the bbcode parameters while we're there
-				if (($parseBB !== false) && ($keyCodes !== '') && preg_match('#(^\[(' . $keyCodes . ')(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches))
+				if (($parseBB !== false) && ($keyCodes !== '') && preg_match('#(^\[(' . $keyCodes . ')' . self::BBCODE_TAG_LEAVES_NO_HTML_TAG_OPEN . '(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches))
 				{
 
 					$proc_funcs = false;
@@ -2534,7 +2548,7 @@ class e_parse
 				continue;
 			}
 
-			if ((stripos($piece['text'], '[code') !== false) && preg_match_all(self::$codeBlockPattern, $piece['text'], $found, PREG_OFFSET_CAPTURE))
+			if ((stripos($piece['text'], '[code') !== false) && preg_match_all(self::$codeBlockPattern, self::blankBracketsBeginningNoBBCodeTag($piece['text']), $found, PREG_OFFSET_CAPTURE))
 			{
 				foreach ($found[0] as $span)
 				{
@@ -3432,7 +3446,7 @@ class e_parse
 				'text'   => $segment,
 				'offset' => $offset,
 				'tag'    => $tag,
-				'inTag'  => $tag || (preg_match('#<[a-z]#i', $segment) === 1 && (!$codeRead || preg_match('#<[a-z]#i', (string) preg_replace(self::$codeBlockPattern, '', $segment)) === 1)),
+				'inTag'  => $tag || (preg_match('#<[a-z]#i', $segment) === 1 && (!$codeRead || preg_match('#<[a-z]#i', (string) preg_replace(self::$codeBlockPattern, '', self::blankBracketsBeginningNoBBCodeTag($segment))) === 1)),
 			);
 			$offset += strlen($segment);
 		}
@@ -7760,6 +7774,166 @@ class e_parse
 	}
 
 	/**
+	 * preg_split() of $text by $pattern, where a [ that cannot begin a bbcode tag begins no match ({@see e_parse::blankBracketsBeginningNoBBCodeTag()}).
+	 *
+	 * @internal shared by the readers that search a whole text for bbcode tags, not part of the parser API
+	 * @param string $pattern a pattern that matches a [ only as the [ of a bbcode tag, with a ] after it
+	 * @param string $text
+	 * @param int    $flags PREG_SPLIT_NO_EMPTY and PREG_SPLIT_DELIM_CAPTURE
+	 * @return string[]|false
+	 */
+	public static function splitAtBBCodeTags($pattern, $text, $flags = 0)
+	{
+		$flags &= PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE;
+
+		if (preg_match('#\[[^\[\]<]*+<#', $text) === 0)
+		{
+			return preg_split($pattern, $text, -1, $flags);
+		}
+
+		$pieces = preg_split($pattern, self::blankBracketsBeginningNoBBCodeTag($text), -1, $flags | PREG_SPLIT_OFFSET_CAPTURE);
+
+		if ($pieces === false)
+		{
+			return false;
+		}
+
+		foreach ($pieces as $key => $piece)
+		{
+			$pieces[$key] = (string) substr($text, $piece[1], strlen($piece[0]));
+		}
+
+		return $pieces;
+	}
+
+	/**
+	 * $text with every [ that cannot begin a bbcode tag by {@see e_parse::BBCODE_TAG_LEAVES_NO_HTML_TAG_OPEN} written as a NUL byte, read once from its end.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private static function blankBracketsBeginningNoBBCodeTag($text)
+	{
+		if (strpos($text, '[') === false)
+		{
+			return $text;
+		}
+
+		preg_match_all('#[\[\]<]#', $text, $marks, PREG_OFFSET_CAPTURE);
+		$marks = $marks[0];
+		$open = false;
+
+		foreach ($marks as $key => $mark)
+		{
+			if ($mark[0] !== '<')
+			{
+				$open = ($mark[0] === '[');
+			}
+			elseif (!$open)
+			{
+				unset($marks[$key]);
+			}
+		}
+
+		$commentEnds = null;
+		$tagEnds = null;
+		$blanked = $text;
+		$reaches = array();
+		$reach = false;
+		$close = strlen($text);
+
+		foreach (array_reverse($marks) as $mark)
+		{
+			$at = $mark[1];
+
+			if ($mark[0] === ']')
+			{
+				$reach = true;
+				$close = $at;
+			}
+			elseif ($mark[0] === '[')
+			{
+				if (!$reach)
+				{
+					$blanked[$at] = "\0";
+				}
+			}
+			else
+			{
+				$end = $at + 1;
+
+				if (preg_match('#\G(?:<(!--)|<([!?]|/(?![a-zA-Z]))|(' . self::HTML_TAG_A_BBCODE_TAG_MAY_HOLD . ')|<(?=/?[a-zA-Z]))#', $text, $kind, 0, $at) !== 0)
+				{
+					$end = null;
+
+					if (!empty($kind[1]))
+					{
+						if ($commentEnds === null)
+						{
+							preg_match_all('#--!?>#', $text, $commentEnds, PREG_OFFSET_CAPTURE);
+							$commentEnds = $commentEnds[0];
+							$commentEnd = count($commentEnds);
+						}
+
+						while (($commentEnd > 0) && ($commentEnds[$commentEnd - 1][1] >= $at + 4))
+						{
+							$commentEnd--;
+						}
+
+						if ((string) substr($text, $at + 4, 1) === '>')
+						{
+							$end = $at + 5;
+						}
+						elseif ((string) substr($text, $at + 4, 2) === '->')
+						{
+							$end = $at + 6;
+						}
+						elseif (isset($commentEnds[$commentEnd]) && ($commentEnds[$commentEnd][1] < $close))
+						{
+							$end = $commentEnds[$commentEnd][1] + strlen($commentEnds[$commentEnd][0]);
+						}
+					}
+					elseif (!empty($kind[2]))
+					{
+						if ($tagEnds === null)
+						{
+							preg_match_all('#>#', $text, $tagEnds, PREG_OFFSET_CAPTURE);
+							$tagEnds = $tagEnds[0];
+							$tagEnd = count($tagEnds);
+						}
+
+						while (($tagEnd > 0) && ($tagEnds[$tagEnd - 1][1] >= $at + 2))
+						{
+							$tagEnd--;
+						}
+
+						if (isset($tagEnds[$tagEnd]) && ($tagEnds[$tagEnd][1] < $close))
+						{
+							$end = $tagEnds[$tagEnd][1] + 1;
+						}
+					}
+					elseif (isset($kind[3]))
+					{
+						$end = $at + strlen($kind[3]);
+					}
+				}
+
+				if (($end !== null) && !isset($reaches[$end]))
+				{
+					$next = $end + strcspn($text, '[]<', $end);
+					$reaches[$end] = isset($reaches[$next]) && $reaches[$next];
+				}
+
+				$reach = ($end !== null) && $reaches[$end];
+			}
+
+			$reaches[$at] = $reach;
+		}
+
+		return $blanked;
+	}
+
+	/**
 	 * Apply {@see e_parse::restoreEntities()} to body text only, skipping <script> and <style> blocks and [code] blocks, whose `<` is written as `&lt;` unless it opens a [hide] block's marker.
 	 *
 	 * @param string $text
@@ -7768,7 +7942,7 @@ class e_parse
 	 */
 	private function restoreEntitiesOutsideCode($text, $forAttributeValue)
 	{
-		$parts = preg_split(self::$codeBlockPattern, $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+		$parts = self::splitAtBBCodeTags(self::$codeBlockPattern, $text, PREG_SPLIT_DELIM_CAPTURE);
 		$result = '';
 
 		foreach ($parts as $index => $part)
