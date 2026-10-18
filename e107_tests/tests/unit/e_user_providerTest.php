@@ -363,6 +363,26 @@ class e_user_providerTest extends \Test\Unit
 		$this::assertArrayNotHasKey('tokens', e_user_provider::getFieldsOf('Telegram'));
 	}
 
+	public function testStoredAddressesLeaveTheSignInAsE107MakesIt()
+	{
+		parse_str((string) parse_url($this->facebookSignInAddress(array()), PHP_URL_QUERY), $expected);
+		$address = $this->facebookSignInAddress(array(
+			'endpoints'                => array('authorize_url' => 'https://identity.example.invalid/authorize'),
+			'callback'                 => 'https://callback.example.invalid/',
+			'authorize_url_parameters' => array('redirect_uri' => 'https://parameters.example.invalid/'),
+		));
+
+		parse_str((string) parse_url($address, PHP_URL_QUERY), $query);
+		$this::assertSame('www.facebook.com', parse_url($address, PHP_URL_HOST));
+		unset($expected['state'], $query['state']);
+		$this::assertSame($expected, $query);
+	}
+
+	public function testTelegramIsOfferedNoCallbackField()
+	{
+		$this::assertArrayNotHasKey('callback', e_user_provider::getFieldsOf('Telegram'));
+	}
+
 	/**
 	 * @param string $property one of {@see \Hybridauth\Adapter\AbstractAdapter}'s
 	 * @return mixed what it holds in the Facebook adapter e107 builds from the stored settings

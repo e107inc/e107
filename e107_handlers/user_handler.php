@@ -1201,7 +1201,10 @@ class e_user_provider
 	/**
 	 * @var string[] provider options only code may set, left out of the stored settings and the settings form
 	 */
-	private static $codeOnlyOptions = array('adapter', 'debug_mode', 'debug_file', 'curl_options', 'tokens');
+	private static $codeOnlyOptions = array(
+		'adapter', 'debug_mode', 'debug_file', 'curl_options', 'tokens',
+		'callback', 'endpoints', 'authorize_url_parameters',
+	);
 
 	/**
 	 * Create a new Hybridauth-backed social login provider
