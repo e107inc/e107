@@ -157,12 +157,12 @@ class e107_event
 
 		if(!isset($this->functions[$eventname]) || !in_array($function, $this->functions[$eventname]))
 		{
+			$this->functions[$eventname][] = $function;
+
 			if (!empty($include))
 			{
-				$this->includes[$eventname][] = $include;
+				$this->includes[$eventname][count($this->functions[$eventname]) - 1] = $include;
 			}
-
-			$this->functions[$eventname][] = $function;
 		}
 	}
 

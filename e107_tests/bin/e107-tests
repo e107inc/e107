@@ -1018,16 +1018,34 @@ cmd_run() {
     resolve_env
     ensure_web_exec
     deps_ensure
-    # Build: run.php <suite> [--jobs N] --steps [user args...], once per suite.
-    # --steps goes before user args so a trailing `--` separator (which
-    # codecept uses to mark positionals) still works as intended.
+    # Build: run.php <suite> [--jobs N] [user args...], once per suite.
+    #
+    # No --steps by default. It printed every step of every test, so a passing
+    # run was mostly steps nobody reads. A failure prints its own "Scenario
+    # Steps" trace and dumps the response either way, so nothing needed to
+    # diagnose one is lost. Pass --steps to get the old output.
     local suites=() suite=${1:-} rc=0
     case $suite in
         all) suites=(unit acceptance); shift ;;
         ''|-*) suites=(unit acceptance) ;;
         *) suites=("$suite"); shift ;;
     esac
-    local cc_args=(--steps "$@")
+    local cc_args=("$@")
+
+    # Colour when a person is watching, plain text when the output is going to
+    # a file, a pipe or an agent's transcript. Codeception cannot tell the
+    # difference itself: `compose exec` hands it a pseudo-terminal whatever is
+    # on the other end, so it colours everything, and the escape sequences
+    # are a large share of a run's bytes.
+    local arg colour_set=no
+    for arg in "$@"; do
+        case $arg in
+            --colors|--no-colors) colour_set=yes ;;
+        esac
+    done
+    if [ "$colour_set" = no ] && [ ! -t 1 ]; then
+        cc_args=(--no-colors "${cc_args[@]}")
+    fi
     set_coverage_exec_env "$@"
     for suite in "${suites[@]}"; do
         compose_p exec "${COVERAGE_EXEC_ENV[@]}" -w "$WEB_TESTS_DIR" web php lib/sandbox/run.php "$suite" "${cc_args[@]}" || rc=$?
@@ -1368,13 +1386,16 @@ TEST:
                                      Results and failures' output land in
                                      tests/_output/<suite>/.
                                      Extra args are passed through to `codecept`.
+                                     Add --steps to trace every step; a failing
+                                     test prints its own trace either way.
   ci-unit                            Replay CI's exact unit run.
 
   Examples:
     e107-tests run unit
-    e107-tests run unit --filter ConstantsTest
     e107-tests run acceptance --jobs 4
+    e107-tests run unit tests/unit/ConstantsTest.php
     e107-tests run acceptance tests/acceptance/0000_InstallCest.php
+    e107-tests run acceptance --steps
     e107-tests sql "SELECT * FROM e107_user"
 
 VERSIONS:
