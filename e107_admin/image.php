@@ -3126,7 +3126,24 @@ class media_admin_ui extends e_admin_ui
 		}
 		else // Update Only ?
 		{
-		
+			$fname = basename($new_data['media_url']);
+			$oldpath = null;
+
+			if(strpos($new_data['media_url'], '{e_IMPORT}') !== false)
+			{
+				$fname = strpos($new_data['media_url'], '{e_IMPORT}') === 0 ? $this->importFileName(substr($new_data['media_url'], strlen('{e_IMPORT}'))) : '';
+				$oldpath = e_IMPORT.$fname;
+
+				if(!is_file($oldpath))
+				{
+					$mes->addError(LAN_FILE_NOT_FOUND);
+
+					return false;
+				}
+
+				$new_data['media_url'] = '{e_IMPORT}'.$fname;
+			}
+
 			$img_data = $this->mediaData($new_data['media_url']);
 
 
@@ -3137,13 +3154,11 @@ class media_admin_ui extends e_admin_ui
 				return FALSE;
 			}
 			
-			$fname = basename($new_data['media_url']);
 			// move to the required place
-			if(strpos($new_data['media_url'], '{e_IMPORT}') !== FALSE)
+			if($oldpath !== null)
 		//	if(strpos($new_data['media_url'], '{e_MEDIA}temp/') !== FALSE)
 			{
 				$tp = e107::getParser();
-				$oldpath = $tp->replaceConstants($new_data['media_url']);
 				$newpath = $this->checkDupe($oldpath,$typePath.'/'.$fname);
 				
 			
@@ -3160,7 +3175,7 @@ class media_admin_ui extends e_admin_ui
 
 			if(!varset($new_data['media_name']))
 			{
-				$img_data['media_name'] = basename($new_data['media_url']);
+				$img_data['media_name'] = $fname;
 			}
 
 

@@ -8,7 +8,7 @@
  */
 
 /**
- * Posts the Media Manager's import form through e107_admin/image.php in a booted child as the main admin.
+ * Posts the Media Manager's import and create forms through e107_admin/image.php in a booted child as the main admin.
  */
 class mediaAdminImportTest extends \Test\Unit
 {
@@ -79,6 +79,34 @@ class mediaAdminImportTest extends \Test\Unit
 		self::assertSame(array($this->address('e_MEDIA_FILE', $this->month.'/'.$staged)), $this->storedUrls());
 	}
 
+	public function testCreatingAnItemFromAFileInTheImportFolderMovesItIntoTheMonthFolderUnderItsOwnName()
+	{
+		$address = $this->address('e_IMPORT', $this->name);
+		$staged = $this->expression('e_IMPORT', $this->name);
+
+		list($page, $found) = $this->create($address, $staged, array(
+			$staged,
+			$this->expression('e_MEDIA_FILE', $this->month.'/'.$this->name),
+			$this->expression('e_MEDIA_FILE', $this->month.'/'.$address),
+		));
+
+		self::assertSame(array(false, true, false), $found, "the file did not reach the month folder under its own name:\n".$page);
+	}
+
+	public function testCreatingAnItemFromAnImportAddressOutsideTheImportFolderMovesNothing()
+	{
+		$path = '../'.$this->name;
+		$staged = $this->expression('e_IMPORT', $path);
+
+		list($page, $found) = $this->create($this->address('e_IMPORT', $path), $staged, array(
+			$staged,
+			$this->expression('e_MEDIA_FILE', $this->month.'/'.$this->name),
+		));
+
+		self::assertSame(array(true, false), $found, "the file outside the import folder was moved:\n".$page);
+		self::assertSame(array(), $this->storedUrls());
+	}
+
 	/**
 	 * @param string $posted the name the import form posts
 	 * @param string $staged the name of the file in the import folder
@@ -105,6 +133,27 @@ class mediaAdminImportTest extends \Test\Unit
 		$this->skipIfTheMonthChanged();
 
 		return array_combine(array_keys($places), $found) + array('page' => $page);
+	}
+
+	/**
+	 * @param string $address the media_url the create form posts
+	 * @param string $staged PHP expression of the path the file is staged at
+	 * @param string[] $places PHP expressions of paths whose files the child reports on shutdown, in this order
+	 * @return array the page, and whether a file is at each place
+	 */
+	private function create($address, $staged, array $places)
+	{
+		$post = array(
+			'etrigger_submit' => 'create',
+			'media_url'       => $address,
+			'media_name'      => 'media import test',
+			'media_category'  => '_common_file',
+		);
+
+		$created = $this->runPage('create', $this->posting($post, $staged), $places);
+		$this->skipIfTheMonthChanged();
+
+		return $created;
 	}
 
 	/**
