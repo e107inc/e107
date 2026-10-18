@@ -251,6 +251,53 @@ class e_user_providerTest extends \Test\Unit
 		return $address;
 	}
 
+	public function testAStoredLogFileLeavesTheLogWhereE107KeepsIt()
+	{
+		$elsewhere = tempnam(sys_get_temp_dir(), 'hybridauth');
+		$restore = $this->withStoredFacebook(array('debug_file' => $elsewhere));
+		try
+		{
+			$logger = $this->facebookAdapterProperty('logger');
+		}
+		finally
+		{
+			$restore();
+			unlink($elsewhere);
+		}
+
+		$file = new \e107\Reflection\ReflectionProperty('Hybridauth\Logger\Logger', 'file');
+		$this::assertSame(e_LOG . 'hybridAuth.log', $file->getValue($logger));
+	}
+
+	public function testAStoredLogLevelLeavesTheLevelE107Sets()
+	{
+		$restore = $this->withStoredFacebook(array('debug_mode' => 'none'));
+		try
+		{
+			$logger = $this->facebookAdapterProperty('logger');
+		}
+		finally
+		{
+			$restore();
+		}
+
+		$level = new \e107\Reflection\ReflectionProperty('Hybridauth\Logger\Logger', 'level');
+		$this::assertSame('error', $level->getValue($logger));
+	}
+
+	/**
+	 * @param string $property one of {@see \Hybridauth\Adapter\AbstractAdapter}'s
+	 * @return mixed what it holds in the Facebook adapter e107 builds from the stored settings
+	 */
+	private function facebookAdapterProperty($property)
+	{
+		$hybridauth = new \e107\Reflection\ReflectionProperty('e_user_provider', 'hybridauth');
+		$adapter = $hybridauth->getValue(new e_user_provider('Facebook'))->getAdapter('Facebook');
+		$held = new \e107\Reflection\ReflectionProperty('Hybridauth\Adapter\AbstractAdapter', $property);
+
+		return $held->getValue($adapter);
+	}
+
 	/**
 	 * @param array $options saved for an enabled Facebook beside its app id and secret, as the social plugin saves them
 	 * @return callable puts the social login preferences back and forgets what Facebook's adapter kept in the session
