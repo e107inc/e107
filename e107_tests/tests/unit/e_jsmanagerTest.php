@@ -37,8 +37,8 @@
 			$fileId = new ReflectionMethod('e_jsmanager', 'getCacheFileId');
 			$fileId->setAccessible(true);
 
-			$this->assertSame(hash('crc32', implode('', $paths).$token->invoke($this->js)), $fileId->invoke($this->js, $paths));
-			$this->assertNotSame(hash('crc32', implode('', $paths).$this->js->getCacheId()), $fileId->invoke($this->js, $paths), 'the name would not change with the release');
+			$this->assertSame(md5(e_HTTP.implode('', $paths).$token->invoke($this->js)), $fileId->invoke($this->js, $paths));
+			$this->assertNotSame(md5(e_HTTP.implode('', $paths).$this->js->getCacheId()), $fileId->invoke($this->js, $paths), 'the name would not change with the release');
 		}
 
 		public function testIsInAdmin()

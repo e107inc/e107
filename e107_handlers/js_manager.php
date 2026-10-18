@@ -1934,7 +1934,7 @@ class e_jsmanager
 	 */
 	private function getCacheFileId($paths)
 	{
-		$id = '';
+		$id = e_HTTP;
 		foreach($paths as $p)
 		{
 			$id .= str_replace("../","",$p);
@@ -1942,7 +1942,7 @@ class e_jsmanager
 
 		$id .= $this->cacheToken();
 
-		return hash('crc32', $id) ;
+		return md5($id);
 
 	}
 

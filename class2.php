@@ -1834,6 +1834,8 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 		$path = '/';
 	}
 	
+	$path = e107::cookiePath($path);
+
 	setcookie($name, $value, $expire, $path, $domain, $secure, true);
 }
 
