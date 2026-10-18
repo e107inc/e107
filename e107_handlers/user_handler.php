@@ -1257,7 +1257,7 @@ class e_user_provider
 	 */
 	private function storedProviderConfigs()
 	{
-		$codeOnlyOptions = array_flip(array('adapter', 'debug_mode', 'debug_file'));
+		$codeOnlyOptions = array_flip(array('adapter', 'debug_mode', 'debug_file', 'curl_options'));
 		$providerConfigs = $this->social_login_config_manager->getSupportedConfiguredProviderConfigs();
 
 		foreach ($providerConfigs as $providerName => $providerConfig)
