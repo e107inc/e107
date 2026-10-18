@@ -432,7 +432,6 @@ class media_form_ui extends e_admin_form_ui
 	public function rotateImages($ids,$type)
 	{
 		$sql = e107::getDb();
-		$tp = e107::getParser();
 		$mes = e107::getMessage();
 		ini_set('memory_limit', '150M');
 		ini_set('gd.jpeg_ignore_warning', 1);
@@ -447,7 +446,12 @@ class media_form_ui extends e_admin_form_ui
 		{
 			while($row = $sql->fetch())
 			{
-				$original = $tp->replaceConstants($row['media_url']);
+				$original = $this->getController()->mediaFolderPath($row['media_url']);
+
+				if($original === false || $original === '')
+				{
+					continue;
+				}
 
 				$mes->addDebug("Attempting to rotate by {$degrees} degrees: ".basename($original));
 				
@@ -507,7 +511,6 @@ class media_form_ui extends e_admin_form_ui
 		$sql = e107::getDb();
 		$sql2 = e107::getDb('sql2');
 		$mes = e107::getMessage();
-		$tp = e107::getParser();
 		$fl = e107::getFile();
 				
 		// Max size is 6 megapixel. 
@@ -518,22 +521,27 @@ class media_form_ui extends e_admin_form_ui
 		{
 			while($row = $sql->fetch())
 			{
-				$path = $tp->replaceConstants($row['media_url']);
+				$path = $this->getController()->mediaFolderPath($row['media_url']);
 
-				$mes->addDebug('Attempting to resize: ' .basename($path));
+				if($path === false)
+				{
+					continue;
+				}
+
+				$mes->addDebug('Attempting to resize: ' .basename($row['media_url']));
 				
 				if($this->resizeImage($path,$img_import_w,$img_import_h))
 				{
 					
 					$info = $fl->getFileInfo($path);
-					$mes->addSuccess(LAN_IMA_004. ': ' .basename($path));
+					$mes->addSuccess(LAN_IMA_004. ': ' .basename($row['media_url']));
 					$mes->addSuccess(print_a($info,true));
 					$dim = (int) $info['img-width'] . ' x ' . (int) $info['img-height'];
 					$sql2->update('core_media',"media_dimensions = '".$dim."', media_size = '". (int) $info['fsize'] ."' WHERE media_id = ". (int) $row['media_id'] . '');
 				}
 				else 
 				{
-					$mes->addError(LAN_IMA_004. ': ' .basename($path));
+					$mes->addError(LAN_IMA_004. ': ' .basename($row['media_url']));
 				}	
 			}
 		}		
@@ -559,7 +567,12 @@ class media_form_ui extends e_admin_form_ui
 
 		foreach($data as $row)
 		{
-			$path = $tp->replaceConstants($row['media_url']);
+			$path = $this->getController()->mediaFolderPath($row['media_url']);
+
+			if($path === false)
+			{
+				continue;
+			}
 
 			if($jpegFile = $mm->convertImageToJpeg($path,true))
 			{
@@ -3137,7 +3150,14 @@ class media_admin_ui extends e_admin_ui
 
 		if(!empty($deleted_data['media_url']))
 		{
-			$status = e107::getFile()->delete($deleted_data['media_url']);
+			$path = $this->mediaFolderPath($deleted_data['media_url']);
+
+			if($path === false)
+			{
+				return;
+			}
+
+			$status = is_file($path) && unlink($path);
 
 			$message = ($status !== false) ? LAN_UI_FILE_DELETED : LAN_UI_FILE_DELETED_FAILED;
 
@@ -3149,6 +3169,35 @@ class media_admin_ui extends e_admin_ui
 
 		}
 
+	}
+
+	/**
+	 * Expand an item's address, or say its file was kept when the folder the file is in lies outside the media folder.
+	 *
+	 * @param string $url media_url of the item
+	 * @return string|false the expanded address, '' when the folder it names is missing, or false when its file lies outside the media folder
+	 */
+	public function mediaFolderPath($url)
+	{
+		$path = e107::getParser()->replaceConstants($url);
+		$folder = dirname($path);
+
+		if(strpos($path, "\0") === false)
+		{
+			if(e107::getFile()->resolveSendRoot($folder, array(e_MEDIA)) !== false)
+			{
+				return $path;
+			}
+
+			if(!is_dir($folder))
+			{
+				return '';
+			}
+		}
+
+		e107::getMessage()->addInfo(e107::getParser()->lanVars(defset('LAN_IMA_FILE_KEPT_OUTSIDE_MEDIA', '[x] lies outside the media folder, so it was kept.'), $url, true));
+
+		return false;
 	}
 
 	function getPath($mime)

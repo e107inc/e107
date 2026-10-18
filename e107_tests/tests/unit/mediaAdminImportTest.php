@@ -8,11 +8,17 @@
  */
 
 /**
- * Posts the Media Manager's import and create forms through e107_admin/image.php in a booted child as the main admin, and runs its duplicate check there.
+ * Posts the Media Manager's import, create, delete and batch forms through e107_admin/image.php in a booted child as the main admin, and runs its duplicate check there.
  */
 class mediaAdminImportTest extends \Codeception\Test\Unit
 {
 	use \Test\BootedCli;
+
+	/** @var string what the name of the copy the list's resize batch writes beside a JPEG begins with */
+	const RESIZED = '2816x2112_';
+
+	/** @var string the name of a month folder the media folder does not hold */
+	const GONE = '1999-01';
 
 	/** @var string PHP expression of what a staged text file holds */
 	const TEXT = "'media import test'";
@@ -25,6 +31,9 @@ class mediaAdminImportTest extends \Codeception\Test\Unit
 
 	/** @var string[] absolute paths the child reported, removed again after each test */
 	private $reported = array();
+
+	/** @var string[] folders a test made outside the site, removed after the paths in them */
+	private $folders = array();
 
 	protected function _before()
 	{
@@ -44,9 +53,14 @@ class mediaAdminImportTest extends \Codeception\Test\Unit
 			}
 		}
 
+		foreach($this->folders as $folder)
+		{
+			rmdir($folder);
+		}
+
 		e107::getDb()->db_Query(array(
 			'PREPARE' => 'DELETE FROM '.MPREFIX.'core_media WHERE media_url LIKE :url',
-			'BIND'    => array('url' => array('value' => '%'.$this->name, 'type' => PDO::PARAM_STR)),
+			'BIND'    => array('url' => array('value' => $this->pattern(), 'type' => PDO::PARAM_STR)),
 		), null, 'db_Delete');
 	}
 
@@ -150,6 +164,167 @@ class mediaAdminImportTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * @return array
+	 */
+	public function addressesOutsideTheMediaFolder()
+	{
+		return array(
+			'a path'                                => array(''),
+			'a media address that climbs out of it' => array($this->address('e_MEDIA_FILE', str_repeat('../', 32))),
+		);
+	}
+
+	/**
+	 * @dataProvider addressesOutsideTheMediaFolder
+	 * @param string $prefix what the item's address holds before the path of its file, less the path's leading slash
+	 */
+	public function testDeletingAnItemLeavesAFileOutsideTheMediaFolderAlone($prefix)
+	{
+		list($address, $staged) = $this->outsideItem($prefix, 'txt');
+
+		list($page, $found) = $this->deleteItem($address, $staged);
+
+		self::assertSame(array(), $this->storedUrls(), "the item was not deleted:\n".$page);
+		self::assertTrue($found, "the file outside the media folder was deleted with the item:\n".$page);
+		self::assertSame(array('info'), $this->messagesNaming($page, $address), "the page did not say the file was kept:\n".$page);
+	}
+
+	public function testDeletingAnItemDeletesItsFileInTheMediaFolder()
+	{
+		$path = $this->month.'/'.$this->name;
+		$address = $this->address('e_MEDIA_FILE', $path);
+
+		list($page, $found) = $this->deleteItem($address, $this->expression('e_MEDIA_FILE', $path));
+
+		self::assertSame(array(), $this->storedUrls(), "the item was not deleted:\n".$page);
+		self::assertFalse($found, "the file of the deleted item is still in the media folder:\n".$page);
+		self::assertSame(array('success'), $this->messagesNaming($page, $address), "the page did not say the file was deleted:\n".$page);
+	}
+
+	public function testDeletingAnItemWhoseFolderIsGoneSaysItsFileCouldNotBeDeleted()
+	{
+		$address = $this->address('e_MEDIA_FILE', self::GONE.'/'.$this->name);
+
+		list($page, $found) = $this->deleteItem($address, $this->expression('e_MEDIA_FILE', $this->month.'/'.$this->name));
+
+		self::assertSame(array(), $this->storedUrls(), "the item was not deleted:\n".$page);
+		self::assertTrue($found, "a file the item's address does not name was deleted:\n".$page);
+		self::assertSame(array('error'), $this->messagesNaming($page, $address), "the page did not say the file could not be deleted:\n".$page);
+	}
+
+	/**
+	 * @dataProvider addressesOutsideTheMediaFolder
+	 * @param string $prefix what the item's address holds before the path of its file, less the path's leading slash
+	 */
+	public function testConvertingAnItemToJpegLeavesAFileOutsideTheMediaFolderAlone($prefix)
+	{
+		list($address, $staged) = $this->outsideItem($prefix, 'png');
+
+		list($page, $found) = $this->convertItem($address, $staged);
+
+		self::assertSame(array(true, false), $found, "the file outside the media folder was converted:\n".$page);
+		self::assertSame(array($address), $this->storedUrls(), "the item's address changed:\n".$page);
+		self::assertSame(array('info'), $this->messagesNaming($page, $address), "the page did not say the file was kept:\n".$page);
+	}
+
+	public function testConvertingAnItemToJpegThroughAFolderThatIsGoneLeavesAFileOutsideTheMediaFolderAlone()
+	{
+		list($address, $staged) = $this->outsideItem($this->climbThroughAFolderThatIsGone(), 'png');
+
+		list($page, $found) = $this->convertItem($address, $staged);
+
+		self::assertSame(array(true, false), $found, "the file outside the media folder was converted:\n".$page);
+		self::assertSame(array($address), $this->storedUrls(), "the item's address changed:\n".$page);
+	}
+
+	public function testConvertingAnItemToJpegConvertsItsFileInTheMediaFolder()
+	{
+		$path = $this->month.'/'.$this->named('png');
+
+		list($page, $found) = $this->convertItem($this->address('e_MEDIA_IMAGE', $path), $this->expression('e_MEDIA_IMAGE', $path));
+
+		self::assertSame(array(false, true), $found, "the file in the media folder was not converted:\n".$page);
+		self::assertSame(array($this->address('e_MEDIA_IMAGE', $this->month.'/'.$this->named('jpg'))), $this->storedUrls(), "the item does not name the converted file:\n".$page);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function jpegBatchesOnAddressesOutsideTheMediaFolder()
+	{
+		$rows = array();
+
+		foreach(array('rotate' => 'rotate_cw', 'resize' => 'resize_2048') as $label => $batch)
+		{
+			foreach($this->addressesOutsideTheMediaFolder() as $address => $prefix)
+			{
+				$rows[$label.', '.$address] = array($batch, $prefix[0]);
+			}
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * @dataProvider jpegBatchesOnAddressesOutsideTheMediaFolder
+	 * @param string $batch the list's batch option the item is run through
+	 * @param string $prefix what the item's address holds before the path of its file, less the path's leading slash
+	 */
+	public function testRotatingOrResizingAnItemLeavesAFileOutsideTheMediaFolderAlone($batch, $prefix)
+	{
+		$jpeg = $this->image('jpeg');
+		list($address, $staged, $file) = $this->outsideItem($prefix, 'jpg');
+		$copy = $this->outsideFile(self::RESIZED.basename($file));
+
+		list($page) = $this->batchItem($batch, $address, $jpeg, $staged);
+
+		self::assertSame($jpeg, file_get_contents($file), "the file outside the media folder was rewritten:\n".$page);
+		self::assertFalse(is_file($copy), "a resized copy was written beside the file outside the media folder:\n".$page);
+		self::assertSame(array('info'), $this->messagesNaming($page, $address), "the page did not say the file was kept:\n".$page);
+	}
+
+	public function testRotatingAnItemThroughAFolderThatIsGoneLeavesAFileOutsideTheMediaFolderAlone()
+	{
+		$jpeg = $this->image('jpeg');
+		list($address, $staged, $file) = $this->outsideItem($this->climbThroughAFolderThatIsGone(), 'jpg');
+
+		list($page) = $this->batchItem('rotate_cw', $address, $jpeg, $staged);
+
+		self::assertSame($jpeg, file_get_contents($file), "the file outside the media folder was rewritten:\n".$page);
+	}
+
+	public function testRotatingAnItemRotatesItsFileInTheMediaFolder()
+	{
+		$path = $this->month.'/'.$this->named('jpg');
+
+		list($page, , $paths) = $this->batchItem('rotate_cw', $this->address('e_MEDIA_IMAGE', $path), $this->image('jpeg'), $this->expression('e_MEDIA_IMAGE', $path));
+		$size = getimagesize($paths[0]);
+
+		self::assertSame(array(1, 2), array($size[0], $size[1]), "the file in the media folder was not rotated:\n".$page);
+	}
+
+	public function testResizingAnItemWritesAResizedCopyBesideItsFileInTheMediaFolder()
+	{
+		$name = $this->named('jpg');
+		$path = $this->month.'/'.$name;
+		$copy = $this->expression('e_MEDIA_IMAGE', $this->month.'/'.self::RESIZED.$name);
+
+		list($page, $found) = $this->batchItem('resize_2048', $this->address('e_MEDIA_IMAGE', $path), $this->image('jpeg'), $this->expression('e_MEDIA_IMAGE', $path), array($copy));
+
+		self::assertSame(array(true, true), $found, "no resized copy was written beside the file in the media folder:\n".$page);
+	}
+
+	public function testResizingAnItemWhoseFolderIsGoneSaysItsFileCouldNotBeResized()
+	{
+		$name = $this->named('jpg');
+
+		list($page, $found) = $this->batchItem('resize_2048', $this->address('e_MEDIA_IMAGE', self::GONE.'/'.$name), $this->image('jpeg'), $this->expression('e_MEDIA_IMAGE', $this->month.'/'.$name));
+
+		self::assertSame(array(true), $found, "a file the item's address does not name was removed:\n".$page);
+		self::assertSame(array('error'), $this->messageTypes($page, ': '.$name), "the page did not say the file could not be resized:\n".$page);
+	}
+
+	/**
 	 * @param string $posted the name the import form posts
 	 * @param string $staged the name of the file in the import folder
 	 * @return array whether a file is in each place the import could put it, and the page
@@ -199,13 +374,181 @@ class mediaAdminImportTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * @param string $address the media_url of the item the list deletes
+	 * @param string $staged PHP expression of the path its file is staged at
+	 * @return array the page, and whether the file is still there once the item is deleted
+	 */
+	private function deleteItem($address, $staged)
+	{
+		$id = $this->insertItem($address, 'text/plain');
+		$post = array('etrigger_delete' => array($id => $id), 'etrigger_delete_confirm' => 1);
+
+		list($page, $found) = $this->listPage($post, $staged, self::TEXT);
+
+		return array($page, $found[0]);
+	}
+
+	/**
+	 * @param string $address the media_url of the PNG item the list's batch converts to JPEG
+	 * @param string $staged PHP expression of the path its file is staged at
+	 * @return array the page, and whether the PNG and a JPEG beside it are there once the batch has run
+	 */
+	private function convertItem($address, $staged)
+	{
+		list($page, $found) = $this->batchItem('convert_to_jpeg', $address, $this->image('png'), $staged, array("substr(".$staged.", 0, -4).'.jpg'"));
+
+		return array($page, $found);
+	}
+
+	/**
+	 * @param string $batch the list's batch option the item is run through, less its options__ prefix
+	 * @param string $address the media_url of the item
+	 * @param string $image the image its file holds, whose type the item is stored with
+	 * @param string $staged PHP expression of the path its file is staged at
+	 * @param string[] $places PHP expressions of more paths whose files the child reports once the batch has run
+	 * @return array the page, whether a file is at the staged path and at each of $places, and the path of each
+	 */
+	private function batchItem($batch, $address, $image, $staged, array $places = array())
+	{
+		$size = getimagesizefromstring($image);
+		$id = $this->insertItem($address, $size['mime']);
+		$post = array('multiselect' => array($id), 'etrigger_batch' => 'options__'.$batch, 'e__execute_batch' => 1);
+
+		return $this->listPage($post, $staged, "base64_decode('".base64_encode($image)."')", $places);
+	}
+
+	/**
+	 * Posts the list with an item's file staged and the media folders an address can climb out of made.
+	 *
+	 * @param array $post the form the list is posted
+	 * @param string $staged PHP expression of the path the item's file is staged at
+	 * @param string $content PHP expression of what the file holds
+	 * @param string[] $places PHP expressions of more paths whose files the child reports once the list has run
+	 * @return array the page, whether a file is at the staged path and at each of $places, and the path of each
+	 */
+	private function listPage(array $post, $staged, $content, array $places = array())
+	{
+		return $this->runPage('list', $this->makingFolders(array('e_MEDIA_FILE', 'e_MEDIA_IMAGE', 'dirname('.$staged.')')).$this->posting($post, $staged, $content), array_merge(array($staged), $places));
+	}
+
+	/**
+	 * @param string $format png or jpeg
+	 * @return string an image in that format, two pixels wide and one high
+	 */
+	private function image($format)
+	{
+		$image = imagecreatetruecolor(2, 1);
+
+		ob_start();
+		call_user_func('image'.$format, $image);
+
+		return ob_get_clean();
+	}
+
+	/**
+	 * @param string $name the name of a file
+	 * @return string its path in a folder this test makes outside the site, both removed again after the test
+	 */
+	private function outsideFile($name)
+	{
+		$folder = sys_get_temp_dir().'/'.$this->stem();
+
+		if(!in_array($folder, $this->folders, true))
+		{
+			mkdir($folder);
+			$this->folders[] = $folder;
+		}
+
+		$this->reported[] = $folder.'/'.$name;
+
+		return $folder.'/'.$name;
+	}
+
+	/**
+	 * @param string $prefix what the address holds before the path of the file, less the path's leading slash
+	 * @param string $extension the file's extension
+	 * @return string[] the address of a file named for this test in a folder outside the site, a PHP expression of its path, and the path
+	 */
+	private function outsideItem($prefix, $extension)
+	{
+		$file = $this->outsideFile($this->named($extension));
+
+		return array(($prefix === '') ? $file : $prefix.ltrim($file, '/'), var_export($file, true), $file);
+	}
+
+	/**
+	 * @return string what an address holds to climb out of the media folder through a month folder that does not exist
+	 */
+	private function climbThroughAFolderThatIsGone()
+	{
+		return $this->address('e_MEDIA_IMAGE', self::GONE.'/'.str_repeat('../', 33));
+	}
+
+	/**
+	 * @param string $extension
+	 * @return string this test's name, with $extension in place of its own
+	 */
+	private function named($extension)
+	{
+		return $this->stem().'.'.$extension;
+	}
+
+	/**
+	 * @return string this test's name less its extension, which names every file and item the test makes
+	 */
+	private function stem()
+	{
+		return basename($this->name, '.txt');
+	}
+
+	/**
+	 * @return string a LIKE pattern that matches the address of every item the test stores
+	 */
+	private function pattern()
+	{
+		return '%'.$this->stem().'%';
+	}
+
+	/**
+	 * @param string $page the page the child printed
+	 * @param string $text what a message says
+	 * @return string[] the type of each message box on the page that says it
+	 */
+	private function messageTypes($page, $text)
+	{
+		$types = array();
+
+		foreach(array_slice(explode("<div class='s-message alert", $page), 1) as $box)
+		{
+			if(strpos($box, $text) !== false && preg_match('/s-message-icon s-message-(\w+)/', $box, $type))
+			{
+				$types[] = $type[1];
+			}
+		}
+
+		return $types;
+	}
+
+	/**
+	 * @param string $page the page the child printed
+	 * @param string $address an address, which a message names in bold
+	 * @return string[] the type of each message box on the page that names it
+	 */
+	private function messagesNaming($page, $address)
+	{
+		return $this->messageTypes($page, '<strong>'.$address.'</strong>');
+	}
+
+	/**
 	 * @param string $address the media_url the item is stored with
+	 * @param string $type its media_type
 	 * @return int the item's id
 	 */
-	private function insertItem($address)
+	private function insertItem($address, $type = '')
 	{
 		return (int) e107::getDb()->insert('core_media', array(
 			'media_url'         => $address,
+			'media_type'        => $type,
 			'media_name'        => 'media import test',
 			'media_caption'     => '',
 			'media_description' => '',
@@ -218,11 +561,12 @@ class mediaAdminImportTest extends \Codeception\Test\Unit
 	/**
 	 * @param array $post the form the page is posted
 	 * @param string $staged PHP expression of the path the file is staged at
+	 * @param string $content PHP expression of what the file holds
 	 * @return string statements that post the form with the session's token and stage the file
 	 */
-	private function posting(array $post, $staged)
+	private function posting(array $post, $staged, $content = self::TEXT)
 	{
-		return "\$_POST = ".var_export($post, true)." + array('e-token' => defset('e_TOKEN')); ".$this->staging($staged, self::TEXT);
+		return "\$_POST = ".var_export($post, true)." + array('e-token' => defset('e_TOKEN')); ".$this->staging($staged, $content);
 	}
 
 	/**
@@ -230,7 +574,7 @@ class mediaAdminImportTest extends \Codeception\Test\Unit
 	 * @param string $seed statements run after the boot and before the page
 	 * @param string[] $places PHP expressions of paths whose files the child reports on shutdown, in this order
 	 * @param string $after statements run once the page has returned
-	 * @return array the page, and whether a file is at each place
+	 * @return array the page, whether a file is at each place, and the path the child reported for each
 	 */
 	private function runPage($action, $seed, array $places, $after = '')
 	{
@@ -252,13 +596,15 @@ class mediaAdminImportTest extends \Codeception\Test\Unit
 		$page = implode("\n", $output);
 
 		$found = array();
+		$paths = array();
 		foreach($this->answer($page, 'PLACES', 'the page did not finish:') as $place)
 		{
 			$this->reported[] = $place[0];
 			$found[] = $place[1];
+			$paths[] = $place[0];
 		}
 
-		return array($page, $found);
+		return array($page, $found, $paths);
 	}
 
 	/**
@@ -335,12 +681,12 @@ class mediaAdminImportTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * @return string[] media_url of every row whose address ends in this test's name
+	 * @return string[] media_url of every row whose address holds this test's name less its extension
 	 */
 	private function storedUrls()
 	{
 		$sql = e107::getDb();
-		$sql->select('core_media', 'media_url', 'media_url LIKE ?', array('%'.$this->name));
+		$sql->select('core_media', 'media_url', 'media_url LIKE ?', array($this->pattern()));
 		$urls = array_column((array) $sql->rows(), 'media_url');
 		sort($urls);
 
