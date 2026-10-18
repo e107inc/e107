@@ -247,13 +247,16 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	private function quotablePost()
 	{
 		$post = trim($this->var['post_entry']);
+		$parts = array();
+		$at = 0;
 
-		foreach(array_reverse(e107::getBB()->hideBlocks($post)) as $block)
+		foreach(e107::getBB()->hideBlocks($post) as $block)
 		{
-			$post = substr_replace($post, '', $block['start'], $block['length']);
+			$parts[] = (string) substr($post, $at, $block['start'] - $at);
+			$at = $block['start'] + $block['length'];
 		}
 
-		return str_replace(array('[html]', '[/html]'), '', $post);
+		return str_replace(array('[html]', '[/html]'), '', implode('', $parts) . (string) substr($post, $at));
 	}
 
 	/**

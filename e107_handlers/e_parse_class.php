@@ -1910,6 +1910,23 @@ class e_parse
 	 */
 	public function toHTML($text, $parseBB = false, $modifiers = '', $postID = '', $wrap = false)
 	{
+		return $this->renderText($text, $parseBB, $modifiers, $postID, 0, null);
+	}
+
+
+	/**
+	 * {@see e_parse::toHTML()} for a text $depth [hide] blocks deep: 0 for the text toHTML() was given; 1 for the content of a block set aside from that text, or one the hide bbcode put in a block's place, which is read for its own blocks; from 2, a region of a block nested in such a content, whose blocks are markers already and whose line-break fix and trim the caller makes.
+	 *
+	 * @param string      $text
+	 * @param bool|string $parseBB
+	 * @param string      $modifiers
+	 * @param mixed       $postID
+	 * @param int         $depth
+	 * @param bool|null   $isHtml from depth 2, whether the region's source holds markup; null to tell from $text
+	 * @return string
+	 */
+	private function renderText($text, $parseBB, $modifiers, $postID, $depth, $isHtml)
+	{
 
 		if (empty($text) || !is_string($text))
 		{
@@ -1936,19 +1953,19 @@ class e_parse
 
 		global $fromadmin;
 
-		if ($parseBB !== false)
+		if (($parseBB !== false) && ($depth < 2))
 		{
 			$text = $this->inertInsideTags($text, '#\[(?=/?(?:table|html|php|code|scode))#i', '&#91;', true);
 		}
 
 		// Set default modifiers to start
 		$opts = $this->getModifiers($modifiers);
-		$isHtml = $this->isHtml($text);
+		$isHtml = ($isHtml === null) ? $this->isHtml($text) : $isHtml;
 		$hideBlocks = array();
 		$parseBlocksWith = $parseBB;
 		$stripCodes = is_string($parseBB) ? explode(',', $parseBB) : array();
 
-		if (($parseBB !== false) && !in_array('hide', $stripCodes, true))
+		if (($parseBB !== false) && ($depth < 2) && !in_array('hide', $stripCodes, true))
 		{
 			$text = $this->setAsideHideBlocks($text, $hideBlocks);
 		}
@@ -2149,27 +2166,21 @@ class e_parse
 
 		if (!empty($hideBlocks))
 		{
-			$ret_parser = $this->renderHideBlocks($ret_parser, $hideBlocks, $parseBlocksWith, $modifiers, $postID);
+			$ret_parser = $this->renderHideBlocks($ret_parser, $hideBlocks, $parseBlocksWith, $modifiers, $postID, $depth);
+		}
+
+		if ($depth >= 2)
+		{
+			return $ret_parser;
 		}
 
 		// Quick Fix - Remove trailing <br /> on block-level elements (eg. div, pre, table, etc. )
-		$srch = array();
-		$repl = array();
-
-		foreach ($this->blockTags as $val)
-		{
-			$srch[] = '</' . $val . '><br />';
-			$repl[] = '</' . $val . '>';
-		}
-
-		$ret_parser = str_replace($srch, $repl, $ret_parser);
-
-		return trim($ret_parser);
+		return trim($this->withFewerBreaks($ret_parser, 1));
 	}
 
 
 	/**
-	 * Replace each [hide] block {@see e_bbcode::hideBlocks()} finds in $text, and that lies either within one tag or wholly outside tags, with a marker shaped as a tag, so that no other step of toHTML() can make or break one, and none can carry it into an attribute unencoded; write as an entity the bracket of every other [hide] or [/hide] a tag holds, and look once more for the blocks a refused one held.
+	 * Replace each [hide] block {@see e_bbcode::hideBlocks()} finds in $text, and that lies either within one tag or wholly outside tags, with a marker shaped as a tag, so that no other step of toHTML() can make or break one, and none can carry it into an attribute unencoded; write as an entity the bracket of every other [hide] or [/hide] a tag holds, and look once more for the blocks a refused one held. Each block keeps those {@see e_bbcode::hideBlockTree()} finds nested in its content.
 	 *
 	 * @param string $text
 	 * @param array  $blocks receives the blocks and their markers
@@ -2187,38 +2198,44 @@ class e_parse
 		for ($pass = 1; ; $pass++)
 		{
 			$pieces = $this->tagPieces($text, true);
-			$found = ($pieces === false) ? array() : e107::getBB()->hideBlocks($text);
+			$tree = ($pieces === false) ? array() : e107::getBB()->hideBlockTree($text);
 			$taken = array();
 			$refused = false;
+			$number = -1;
 
-			foreach ($found as $index => $block)
+			foreach ($tree as $index => $block)
 			{
-				$first = $this->tagPieceAt($pieces, $block['start']);
-				$last = $this->tagPieceAt($pieces, $block['start'] + $block['length'] - 1);
+				if ($block['parent'] !== -1)
+				{
+					continue;
+				}
 
-				if ($first !== $last && ($pieces[$first]['tag'] || $pieces[$last]['tag']))
+				$number++;
+
+				if ($this->straddlesTag($pieces, $block))
 				{
 					$refused = true;
 					continue;
 				}
 
-				$taken[$index] = $block;
+				$taken[$number] = $index;
 			}
 
 			$edits = array();
-			$span = reset($taken);
+			$spans = array_values($taken);
+			$next = 0;
 			preg_match_all($bracket, $text, $brackets, PREG_OFFSET_CAPTURE);
 
 			foreach ($brackets[0] as $match)
 			{
 				$at = $match[1];
 
-				while ($span !== false && $span['start'] + $span['length'] <= $at)
+				while (isset($spans[$next]) && ($tree[$spans[$next]]['start'] + $tree[$spans[$next]]['length'] <= $at))
 				{
-					$span = next($taken);
+					$next++;
 				}
 
-				if (($span === false || $at < $span['start']) && ($pieces === false || $pieces[$this->tagPieceAt($pieces, $at)]['inTag']))
+				if ((!isset($spans[$next]) || ($at < $tree[$spans[$next]]['start'])) && ($pieces === false || $pieces[$this->tagPieceAt($pieces, $at)]['inTag']))
 				{
 					$edits[$at] = array(1, '&#91;');
 				}
@@ -2229,12 +2246,7 @@ class e_parse
 				break;
 			}
 
-			krsort($edits);
-
-			foreach ($edits as $at => $edit)
-			{
-				$text = substr_replace($text, $edit[1], $at, $edit[0]);
-			}
+			$text = $this->spliceText($text, $edits);
 		}
 
 		if (!empty($taken))
@@ -2242,46 +2254,44 @@ class e_parse
 			$set = ++self::$hideMarkers;
 		}
 
-		foreach ($taken as $index => $block)
+		foreach ($taken as $number => $index)
 		{
-			$block['marker'] = '<e_hide_' . $set . '_' . $index . '>';
-			$blocks[$index] = $block;
-			$edits[$block['start']] = array($block['length'], $block['marker']);
+			$block = $tree[$index];
+			list($contentStart, $contentEnd) = $this->hideContentRange($block);
+			$blocks[$number] = array(
+				'start'   => $block['start'],
+				'length'  => $block['length'],
+				'open'    => $block['open'],
+				'close'   => $block['close'],
+				'content' => (string) substr($text, $contentStart, $contentEnd - $contentStart),
+				'marker'  => '<e_hide_' . $set . '_' . $number . '>',
+				'blocks'  => $this->nestedHideBlocks($tree, $index, $contentStart),
+			);
+			$edits[$block['start']] = array($block['length'], $blocks[$number]['marker']);
 		}
 
-		krsort($edits);
-
-		foreach ($edits as $at => $edit)
-		{
-			$text = substr_replace($text, $edit[1], $at, $edit[0]);
-		}
-
-		return $text;
+		return $this->spliceText($text, $edits);
 	}
 
 
 	/**
-	 * Put each block {@see e_parse::setAsideHideBlocks()} set aside back into $html, rendered by the hide bbcode, where its marker stands as a tag of its own, and put a space in place of every marker left anywhere else, so that the text either side cannot join.
+	 * Put each block {@see e_parse::setAsideHideBlocks()} set aside back into $html, rendered by the hide bbcode, where its marker stands as a tag of its own, and put a space in place of every marker left anywhere else, so that the text either side cannot join. A shown block's content is rendered as a text of its own at $depth 0, and from the blocks found nested in it below that.
 	 *
 	 * @param string      $html
 	 * @param array       $blocks
 	 * @param bool|string $parseBB
 	 * @param string      $modifiers
 	 * @param mixed       $postID
+	 * @param int         $depth as {@see e_parse::renderText()} takes it
 	 * @return string
 	 */
-	private function renderHideBlocks($html, $blocks, $parseBB, $modifiers, $postID)
+	private function renderHideBlocks($html, $blocks, $parseBB, $modifiers, $postID, $depth)
 	{
-		global $e_hide_block;
-
 		$markers = array();
-		$leftovers = array();
 
-		foreach ($blocks as $block)
+		foreach ($blocks as $number => $block)
 		{
-			$markers[$block['marker']] = $block;
-			$core = substr($block['marker'], 1, -1);
-			array_push($leftovers, $block['marker'], '&lt;' . $core . '&gt;', '&lt;' . $core . '&#x3E;', '%3C' . $core . '%3E');
+			$markers[$block['marker']] = $number;
 		}
 
 		$parts = $this->splitOnTags($html);
@@ -2298,20 +2308,680 @@ class e_parse
 				continue;
 			}
 
-			$was = $e_hide_block;
-			$e_hide_block = $markers[$part];
-			$box = e107::getBB()->parseBBCodes('[hide]' . $part . '[/hide]', $postID);
-			$e_hide_block = $was;
+			$block = $blocks[$markers[$part]];
+			$box = $this->hideBlockBox($block, $part, $postID);
 
 			if (strpos($box, $part) !== false)
 			{
-				$box = str_replace($part, $this->toHTML($this->inertInsideTags($markers[$part]['content'], '#<#', '&lt;', false), $parseBB, $modifiers, $postID), $box);
+				$box = str_replace($part, ($depth === 0)
+					? $this->renderOwnText($block['content'], $parseBB, $modifiers, $postID)
+					: $this->renderNestedBlocks($block, $parseBB, $modifiers, $postID), $box);
 			}
 
 			$parts[$i] = $box;
 		}
 
-		return str_replace($leftovers, ' ', implode('', $parts));
+		return $this->withoutMarkers(implode('', $parts), array($this->markerSet($blocks) => array_flip(array_keys($blocks))));
+	}
+
+
+	/**
+	 * The content of $block, set aside from the content of another, rendered region by region from the blocks found nested in it: the text of each region once, with a marker for each block in it that does not straddle a tag; each block's box from the hide bbcode before anything inside it is processed; a block whose content would cut a tag, or a [code] block holding one, read in a view of its own once the view it was found in is done with; the whole joined once.
+	 *
+	 * @param array       $block as {@see e_parse::setAsideHideBlocks()} sets it aside
+	 * @param bool|string $parseBB
+	 * @param string      $modifiers
+	 * @param mixed       $postID
+	 * @return string
+	 */
+	private function renderNestedBlocks($block, $parseBB, $modifiers, $postID)
+	{
+		$views = array($this->nestedView($block['content'], $block['blocks']));
+		$pending = array(1);
+		$regions = array();
+		$work = array(array(0, -1, 2, 0));
+		$later = array();
+		$laterAt = 0;
+		$nextRegion = 1;
+		$depths = array(2);
+		$regionSets = array();
+
+		while ($work || isset($later[$laterAt]))
+		{
+			if ($work)
+			{
+				list($view, $index, $depth, $region) = array_pop($work);
+			}
+			else
+			{
+				list($view, $index, $depth, $region) = $later[$laterAt];
+				unset($later[$laterAt++]);
+			}
+
+			$content = $views[$view]['content'];
+			$nested = $views[$view]['nested'];
+			$read = $views[$view]['read'];
+
+			list($start, $end) = ($index < 0) ? array(0, strlen($content)) : $this->hideContentRange($nested[$index]);
+			$markers = array();
+			$text = '';
+			$at = $start;
+			$set = 0;
+
+			foreach (isset($read['children'][$index]) ? $read['children'][$index] : array() as $number => $child)
+			{
+				if (!$set)
+				{
+					$set = ++self::$hideMarkers;
+				}
+
+				$marker = '<e_hide_' . $set . '_' . $number . '>';
+				$markers[$marker] = $child;
+				$regionSets[$region][$set][$number] = true;
+				$text .= $this->editedSlice($content, $read['edits'], $at, $nested[$child]['start']) . $marker;
+				$at = $nested[$child]['start'] + $nested[$child]['length'];
+			}
+
+			$text = $this->withoutPairedHideTags($text . $this->editedSlice($content, $read['edits'], $at, $end));
+
+			$html = $this->renderText($text, $parseBB, $modifiers, $postID, $depth, $markers ? $this->sourceIsHtml($read, $start, $end) : null);
+			$parts = $markers ? $this->splitOnTags($html) : false;
+			$out = array();
+			$buffer = '';
+			$children = array();
+
+			foreach (($parts === false) ? array($html) : $parts as $part)
+			{
+				if (!isset($markers[$part]))
+				{
+					$buffer .= $part;
+					continue;
+				}
+
+				$child = $nested[$markers[$part]];
+				list($childStart, $childEnd) = $this->hideContentRange($child);
+				$child['content'] = (string) substr($content, $childStart, $childEnd - $childStart);
+				$box = $this->hideBlockBox($child, $part, $postID);
+
+				if (strpos($box, $part) === false)
+				{
+					$buffer .= $box;
+					continue;
+				}
+
+				$id = $nextRegion++;
+				$depths[$id] = $depth + 1;
+
+				if (isset($read['own'][$markers[$part]]))
+				{
+					$childView = count($pending);
+					$views[$childView] = $this->nestedView($child['content'], $this->nestedHideBlocks($nested, $markers[$part], $childStart));
+					$pending[$childView] = 1;
+					$later[] = array($childView, -1, $depth + 1, $id);
+				}
+				else
+				{
+					$pending[$view]++;
+					$children[] = array($view, $markers[$part], $depth + 1, $id);
+				}
+
+				foreach (explode($part, $box) as $j => $slice)
+				{
+					if ($j)
+					{
+						$out[] = $buffer;
+						$out[] = $id;
+						$buffer = '';
+					}
+
+					$buffer .= $slice;
+				}
+			}
+
+			$out[] = $buffer;
+			$regions[$region] = $out;
+
+			foreach (array_reverse($children) as $child)
+			{
+				$work[] = $child;
+			}
+
+			if (--$pending[$view] === 0)
+			{
+				unset($views[$view]);
+			}
+		}
+
+		$output = array();
+		$stack = array(array(0, 0));
+		$sets = isset($regionSets[0]) ? $regionSets[0] : array();
+
+		while ($stack)
+		{
+			$top = count($stack) - 1;
+			list($region, $i) = $stack[$top];
+			$last = count($regions[$region]) - 1;
+
+			if ($i > $last)
+			{
+				if (isset($regionSets[$region]))
+				{
+					unset($sets[key($regionSets[$region])]);
+				}
+
+				array_pop($stack);
+				continue;
+			}
+
+			$stack[$top][1] = $i + 1;
+
+			if ($i % 2)
+			{
+				$child = $regions[$region][$i];
+				$sets += isset($regionSets[$child]) ? $regionSets[$child] : array();
+				$stack[] = array($child, 0);
+				continue;
+			}
+
+			$part = $this->withFewerBreaks($this->withoutMarkers($regions[$region][$i], $sets), $depths[$region] - 1);
+			$part = ($i === 0) ? ltrim($part) : $part;
+			$output[] = ($i === $last) ? rtrim($part) : $part;
+		}
+
+		return implode('', $output);
+	}
+
+
+	/**
+	 * What {@see e_parse::renderNestedBlocks()} needs to know of $content once: the brackets of [hide] and [/hide] a tag holds, which each region writes as entities; for each nested block, those of the blocks in its content it sets aside, in order, leaving as typed one that straddles a tag; which of them begin or end inside a tag, or inside a [code] block while their content holds a < and letter, and so read tags or [code] blocks otherwise than $content does; and where markup lies, to tell whether a region's source holds any.
+	 *
+	 * @param string  $content
+	 * @param array[] $nested
+	 * @return array with the keys edits (offsets, ascending), children (block index, -1 for $content itself => block indexes), own (block index => true), html (offsets of [html], ascending) and markup (the starts and the ends of each tag the markup test reads, ascending)
+	 */
+	private function readNestedContent($content, $nested)
+	{
+		$read = array('edits' => array(), 'children' => array(), 'own' => array(), 'html' => array(), 'markup' => array(array(), array()));
+
+		if (!preg_match('#\[(?=/?hide)#i', $content))
+		{
+			return $read;
+		}
+
+		$pieces = $this->tagPieces($content, true);
+		preg_match_all('#\[(?=/?hide)#i', $content, $brackets, PREG_OFFSET_CAPTURE);
+
+		foreach ($brackets[0] as $match)
+		{
+			if ($pieces === false || $pieces[$this->tagPieceAt($pieces, $match[1])]['inTag'])
+			{
+				$read['edits'][] = $match[1];
+			}
+		}
+
+		if ($pieces === false || empty($nested))
+		{
+			return $read;
+		}
+
+		$spans = array(array(), array());
+		$tags = array();
+
+		foreach ($pieces as $piece)
+		{
+			if ($piece['tag'])
+			{
+				continue;
+			}
+
+			if ((stripos($piece['text'], '[code') !== false) && preg_match_all(self::$codeBlockPattern, $piece['text'], $found, PREG_OFFSET_CAPTURE))
+			{
+				foreach ($found[0] as $span)
+				{
+					$spans[0][] = $piece['offset'] + $span[1];
+					$spans[1][] = $piece['offset'] + $span[1] + strlen($span[0]);
+				}
+			}
+
+			if (preg_match_all('#<[a-z]#i', $piece['text'], $found, PREG_OFFSET_CAPTURE))
+			{
+				foreach ($found[0] as $tag)
+				{
+					$tags[] = $piece['offset'] + $tag[1];
+				}
+			}
+		}
+
+		$refused = array();
+
+		foreach ($nested as $index => $block)
+		{
+			if (($block['parent'] >= 0 && isset($refused[$block['parent']])) || $this->straddlesTag($pieces, $block))
+			{
+				$refused[$index] = true;
+				continue;
+			}
+
+			$read['children'][$block['parent']][] = $index;
+			list($start, $end) = $this->hideContentRange($block);
+			$tag = $this->lastBefore($tags, $start);
+
+			if ((isset($tags[$tag]) && ($tags[$tag] + 1 < $end) && ($this->insideSpan($spans, $start) || $this->insideSpan($spans, $end)))
+				|| $this->insideTag($pieces, $start) || $this->insideTag($pieces, $end))
+			{
+				$read['own'][$index] = true;
+			}
+		}
+
+		preg_match_all('#\[html\]#', $content, $html, PREG_OFFSET_CAPTURE);
+		preg_match_all('#(?<=<)\w+(?=([^<]*?)>)#', $content, $witnesses, PREG_OFFSET_CAPTURE);
+
+		foreach ($html[0] as $match)
+		{
+			$read['html'][] = $match[1];
+		}
+
+		foreach ($witnesses[0] as $i => $match)
+		{
+			$read['markup'][0][] = $match[1] - 1;
+			$read['markup'][1][] = $witnesses[1][$i][1] + strlen($witnesses[1][$i][0]);
+		}
+
+		return $read;
+	}
+
+
+	/**
+	 * $text with the bracket of every [hide] and [/hide] held by the opening or the closing tag of a [hide] pair {@see e_bbcode::hideBlockTree()} finds in it written as an entity.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function withoutPairedHideTags($text)
+	{
+		$edits = array();
+
+		foreach (e107::getBB()->hideBlockTree($text) as $block)
+		{
+			$close = $block['start'] + $block['length'] - strlen($block['close']);
+
+			foreach (array($block['start'] => $block['open'], $close => $block['close']) as $at => $tag)
+			{
+				preg_match_all('#\[(?=/?hide)#i', $tag, $brackets, PREG_OFFSET_CAPTURE);
+
+				foreach ($brackets[0] as $bracket)
+				{
+					$edits[$at + $bracket[1]] = array(1, '&#91;');
+				}
+			}
+		}
+
+		return $this->spliceText($text, $edits);
+	}
+
+
+	/**
+	 * Whether offset $at lies strictly inside a tag of $pieces, so that a content beginning or ending there would read the tag as text.
+	 *
+	 * @param array[] $pieces as {@see e_parse::tagPieces()} cuts the text
+	 * @param int     $at
+	 * @return bool
+	 */
+	private function insideTag($pieces, $at)
+	{
+		$piece = $pieces[$this->tagPieceAt($pieces, $at)];
+
+		return $piece['tag'] && ($piece['offset'] < $at) && ($at < $piece['offset'] + strlen($piece['text']));
+	}
+
+
+	/**
+	 * Whether offset $at lies strictly inside one of the [code] spans {@see e_parse::readNestedContent()} found.
+	 *
+	 * @param int[][] $spans the starts and the ends of the spans, ascending
+	 * @param int     $at
+	 * @return bool
+	 */
+	private function insideSpan($spans, $at)
+	{
+		$span = $this->lastBefore($spans[0], $at) - 1;
+
+		return ($span >= 0) && ($spans[1][$span] > $at);
+	}
+
+
+	/**
+	 * The number of $sorted (ascending) that are less than $at.
+	 *
+	 * @param int[] $sorted
+	 * @param int   $at
+	 * @return int
+	 */
+	private function lastBefore($sorted, $at)
+	{
+		$low = 0;
+		$high = count($sorted);
+
+		while ($low < $high)
+		{
+			$middle = ($low + $high) >> 1;
+
+			if ($sorted[$middle] < $at)
+			{
+				$low = $middle + 1;
+			}
+			else
+			{
+				$high = $middle;
+			}
+		}
+
+		return $low;
+	}
+
+
+	/**
+	 * The hide bbcode's box for $block, with $marker in place of its content.
+	 *
+	 * @param array  $block with the keys start, length, open, close and content
+	 * @param string $marker
+	 * @param mixed  $postID
+	 * @return string
+	 */
+	private function hideBlockBox($block, $marker, $postID)
+	{
+		global $e_hide_block;
+
+		$was = $e_hide_block;
+		$e_hide_block = array(
+			'start'   => $block['start'],
+			'length'  => $block['length'],
+			'open'    => $block['open'],
+			'close'   => $block['close'],
+			'content' => $block['content'],
+			'marker'  => $marker,
+		);
+		$box = e107::getBB()->parseBBCodes('[hide]' . $marker . '[/hide]', $postID);
+		$e_hide_block = $was;
+
+		return $box;
+	}
+
+
+	/**
+	 * The blocks of $tree nested in the content of block $index, which begins at byte $offset, each with its start counted from there and its parent counted among them, -1 for the block itself.
+	 *
+	 * @param array[] $tree as {@see e_bbcode::hideBlockTree()} returns it, or a part of it so counted
+	 * @param int     $index
+	 * @param int     $offset
+	 * @return array[]
+	 */
+	private function nestedHideBlocks($tree, $index, $offset)
+	{
+		$nested = array();
+		$end = $tree[$index]['start'] + $tree[$index]['length'];
+
+		for ($i = $index + 1; isset($tree[$i]) && ($tree[$i]['start'] < $end); $i++)
+		{
+			$block = $tree[$i];
+			$block['start'] -= $offset;
+			$block['parent'] = ($block['parent'] === $index) ? -1 : $block['parent'] - $index - 1;
+			$nested[] = $block;
+		}
+
+		return $nested;
+	}
+
+
+	/**
+	 * Whether $block begins and ends in different pieces of $pieces, either of them a tag.
+	 *
+	 * @param array[] $pieces as {@see e_parse::tagPieces()} cuts the text
+	 * @param array   $block with the keys start and length
+	 * @return bool
+	 */
+	private function straddlesTag($pieces, $block)
+	{
+		$first = $this->tagPieceAt($pieces, $block['start']);
+		$last = $this->tagPieceAt($pieces, $block['start'] + $block['length'] - 1);
+
+		return ($first !== $last) && ($pieces[$first]['tag'] || $pieces[$last]['tag']);
+	}
+
+
+	/**
+	 * $text with each of $edits made, offset => array(length, replacement), the spans they replace apart from one another.
+	 *
+	 * @param string  $text
+	 * @param array[] $edits
+	 * @return string
+	 */
+	private function spliceText($text, $edits)
+	{
+		ksort($edits);
+		$parts = array();
+		$at = 0;
+
+		foreach ($edits as $offset => $edit)
+		{
+			$parts[] = (string) substr($text, $at, $offset - $at);
+			$parts[] = $edit[1];
+			$at = $offset + $edit[0];
+		}
+
+		$parts[] = (string) substr($text, $at);
+
+		return implode('', $parts);
+	}
+
+
+	/**
+	 * The bytes of $content from $from to $to, the bracket at each of $edits (offsets, ascending) written as an entity.
+	 *
+	 * @param string $content
+	 * @param int[]  $edits
+	 * @param int    $from
+	 * @param int    $to
+	 * @return string
+	 */
+	private function editedSlice($content, $edits, $from, $to)
+	{
+		$low = $this->lastBefore($edits, $from);
+		$slice = '';
+
+		for ($at = $from; isset($edits[$low]) && ($edits[$low] < $to); $low++)
+		{
+			$slice .= substr($content, $at, $edits[$low] - $at) . '&#91;';
+			$at = $edits[$low] + 1;
+		}
+
+		return $slice . (string) substr($content, $at, $to - $at);
+	}
+
+
+	/**
+	 * Whether the source from $from to $to of the content {@see e_parse::readNestedContent()} read holds markup as {@see e_parse::isHtml()} tells it.
+	 *
+	 * @param array $read
+	 * @param int   $from
+	 * @param int   $to
+	 * @return bool
+	 */
+	private function sourceIsHtml($read, $from, $to)
+	{
+		$html = $this->lastBefore($read['html'], $from);
+		$markup = $this->lastBefore($read['markup'][0], $from);
+
+		return (isset($read['html'][$html]) && ($read['html'][$html] + 6 <= $to)) || (isset($read['markup'][1][$markup]) && ($read['markup'][1][$markup] < $to));
+	}
+
+
+	/**
+	 * $nested, read in $before, with each offset and tag moved to where it lies in $after, which is $before with some of its < written as &lt;.
+	 *
+	 * @param array[] $nested
+	 * @param string  $before
+	 * @param string  $after
+	 * @return array[]
+	 */
+	private function movedBlocks($nested, $before, $after)
+	{
+		$moved = array();
+		$shift = 0;
+
+		for ($i = 0, $j = 0, $length = strlen($before); $i < $length; $i++, $j++)
+		{
+			$moved[$i] = $shift;
+
+			if (($before[$i] === '<') && ($after[$j] === '&'))
+			{
+				$j += 3;
+				$shift += 3;
+			}
+		}
+
+		$moved[$length] = $shift;
+
+		foreach ($nested as $index => $block)
+		{
+			$start = $block['start'] + $moved[$block['start']];
+			list($contentStart, $contentEnd) = $this->hideContentRange($block);
+			$end = $block['start'] + $block['length'];
+			$nested[$index]['start'] = $start;
+			$nested[$index]['length'] = $end + $moved[$end] - $start;
+			$nested[$index]['open'] = (string) substr($after, $start, $contentStart + $moved[$contentStart] - $start);
+			$nested[$index]['close'] = (string) substr($after, $contentEnd + $moved[$contentEnd], $end + $moved[$end] - $contentEnd - $moved[$contentEnd]);
+		}
+
+		return $nested;
+	}
+
+
+	/**
+	 * $html with a space in place of every marker of $sets left in it, as typed, entity-encoded or percent-encoded, so that the text either side cannot join.
+	 *
+	 * @param string $html
+	 * @param array  $sets set number => the numbers of its markers, as keys
+	 * @return string
+	 */
+	private function withoutMarkers($html, $sets)
+	{
+		if (empty($sets) || (strpos($html, 'e_hide_') === false))
+		{
+			return $html;
+		}
+
+		return preg_replace_callback('#<e_hide_(\d+)_(\d+)>|&lt;e_hide_(\d+)_(\d+)(?:&gt;|&\#x3E;)|%3Ce_hide_(\d+)_(\d+)%3E#', function ($match) use ($sets)
+		{
+			$at = ($match[1] !== '') ? 1 : ((isset($match[3]) && $match[3] !== '') ? 3 : 5);
+
+			return isset($sets[$match[$at]][$match[$at + 1]]) ? ' ' : $match[0];
+		}, $html);
+	}
+
+
+	/**
+	 * The set number the markers of $blocks share.
+	 *
+	 * @param array[] $blocks
+	 * @return int
+	 */
+	private function markerSet($blocks)
+	{
+		$block = reset($blocks);
+
+		return (int) substr($block['marker'], 8);
+	}
+
+
+	/**
+	 * $html with up to $times line breaks taken from each run that follows the end of a block element, which carries a line break of its own.
+	 *
+	 * @param string $html
+	 * @param int    $times
+	 * @return string
+	 */
+	private function withFewerBreaks($html, $times)
+	{
+		if (($times < 1) || (strpos($html, '><br />') === false))
+		{
+			return $html;
+		}
+
+		$ends = array();
+
+		foreach ($this->blockTags as $tag)
+		{
+			$ends[] = '</' . $tag . '>';
+		}
+
+		$out = '';
+		$at = 0;
+
+		for ($gt = strpos($html, '><br />'); $gt !== false; $gt = strpos($html, '><br />', $run))
+		{
+			$run = $gt + 1;
+
+			foreach ($ends as $end)
+			{
+				if (($run >= strlen($end)) && ((string) substr($html, $run - strlen($end), strlen($end)) === $end))
+				{
+					for ($breaks = 0; (string) substr($html, $run, 6) === '<br />'; $breaks++)
+					{
+						$run += 6;
+					}
+
+					$out .= substr($html, $at, $gt + 1 - $at) . str_repeat('<br />', max(0, $breaks - $times));
+					$at = $run;
+					break;
+				}
+			}
+		}
+
+		return $out . (string) substr($html, $at);
+	}
+
+
+	/**
+	 * The offsets of the content of $block, from its start up to its closing tag.
+	 *
+	 * @param array $block with the keys start, length, open and close
+	 * @return int[]
+	 */
+	private function hideContentRange($block)
+	{
+		return array($block['start'] + strlen($block['open']), $block['start'] + $block['length'] - strlen($block['close']));
+	}
+
+
+	/**
+	 * $content, shown in a [hide] block, rendered as a text of its own, with every < of a tag the parser cannot read written as &lt;.
+	 *
+	 * @param string      $content
+	 * @param bool|string $parseBB
+	 * @param string      $modifiers
+	 * @param mixed       $postID
+	 * @return string
+	 */
+	private function renderOwnText($content, $parseBB, $modifiers, $postID)
+	{
+		return $this->renderText($this->inertInsideTags($content, '#<#', '&lt;', false), $parseBB, $modifiers, $postID, 1, null);
+	}
+
+
+	/**
+	 * The view {@see e_parse::renderNestedBlocks()} renders regions from: $source with every < of a tag the parser cannot read written as &lt;, the blocks $nested in it moved to match, and what it reads of them.
+	 *
+	 * @param string  $source
+	 * @param array[] $nested counted from the start of $source
+	 * @return array with the keys content, nested and read
+	 */
+	private function nestedView($source, $nested)
+	{
+		$content = $this->inertInsideTags($source, '#<#', '&lt;', false);
+		$nested = ($content === $source) ? $nested : $this->movedBlocks($nested, $source, $content);
+
+		return array('content' => $content, 'nested' => $nested, 'read' => $this->readNestedContent($content, $nested));
 	}
 
 	/**
