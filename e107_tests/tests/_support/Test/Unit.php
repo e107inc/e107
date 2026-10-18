@@ -417,6 +417,24 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Runs $php in a booted CLI child that defined $constants before class2.php could, so the boot keeps the values given here.
+	 *
+	 * @param array $constants name => value
+	 * @param string $php
+	 * @return array the output lines, stdout and stderr interleaved, then the exit status
+	 */
+	protected function runInBootedCliDefining(array $constants, $php)
+	{
+		$defines = '';
+		foreach($constants as $name => $value)
+		{
+			$defines .= 'define('.var_export($name, true).', '.var_export($value, true).'); ';
+		}
+
+		return $this->runInCli($defines.$this->cliBoot(array('cli' => true)).$php);
+	}
+
+	/**
 	 * Loads an entry script in a booted CLI child once $seed has run, and returns everything it wrote; the page arrives on shutdown, because footer.php leaves its output buffer open.
 	 *
 	 * @param string $script path under the app root, e.g. 'e107_admin/db.php'
@@ -459,12 +477,10 @@ class Unit extends \Codeception\Test\Unit
 	 */
 	protected function bootPluginInCli($plugin, $version, array $get, $php)
 	{
-		$boot = "define('e_QUERY', '".http_build_query($get)."'); ";
-		$boot .= $this->cliBoot(array('cli' => true));
-		$boot .= "error_reporting(E_ALL); \$_GET = ".var_export($get, true)."; ";
-		$boot .= "e107::getConfig()->setPref('plug_installed/".$plugin."', '".$version."'); ";
+		$seed = "error_reporting(E_ALL); \$_GET = ".var_export($get, true)."; ";
+		$seed .= "e107::getConfig()->setPref('plug_installed/".$plugin."', '".$version."'); ";
 
-		return $this->runInCli($boot.$php);
+		return $this->runInBootedCliDefining(array('e_QUERY' => http_build_query($get)), $seed.$php);
 	}
 
 	/**

@@ -90,7 +90,7 @@ class social_shortcodes extends e_shortcode
 		{
 			if(self::isDestination(varset($this->xurl[$k])))
 			{
-				$social[$k] = ['href'=> $this->xurl[$k],   'title'=>$val['label'] ];
+				$social[$k] = ['href'=> $tp->toAttribute($this->xurl[$k], true),   'title'=>$val['label'] ];
 			}
 		}
 
@@ -310,9 +310,9 @@ class social_shortcodes extends e_shortcode
 				$shareUrl .= "&amp;hashtags=".rawurlencode($options['hashtags']);
 			}
 
-			if(!empty($options['twitterAccount']))
+			if(self::isDestination(varset($options['twitterAccount'])))
 			{
-				$shareUrl .= "&amp;via=".$options['twitterAccount'];
+				$shareUrl .= "&amp;via=".rawurlencode($options['twitterAccount']);
 			}
 
 		}
@@ -493,10 +493,11 @@ class social_shortcodes extends e_shortcode
 	function sc_twitter_timeline($parm=null)
 	{
 		$ns = e107::getRender();
+		$tp = e107::getParser();
 		
 		$account = basename(XURL_TWITTER);
 		//data-related="twitterapi,twitter"
-		$text = '<a class="twitter-timeline" href="'.XURL_TWITTER.'" data-widget-id="'.varset($parm['id']).'" data-theme="'.varset($parm['theme'],'light').'" data-link-color="#cc0000"   data-aria-polite="assertive" width="100%" height="'.varset($parm['height'],300).'" lang="'.e_LAN.'">'.LAN_SOCIAL_201.'@'.$account.'</a>';
+		$text = '<a class="twitter-timeline" href="'.$tp->toAttribute(XURL_TWITTER, true).'" data-widget-id="'.varset($parm['id']).'" data-theme="'.varset($parm['theme'],'light').'" data-link-color="#cc0000"   data-aria-polite="assertive" width="100%" height="'.varset($parm['height'],300).'" lang="'.e_LAN.'">'.LAN_SOCIAL_201.'@'.$tp->toAttribute($account, true).'</a>';
 
 		$text .= <<<TMPL
 		

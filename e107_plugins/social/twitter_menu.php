@@ -22,9 +22,11 @@ if(deftrue('XURL_TWITTER'))
 	$theme          = vartrue($pref['twitter_menu_theme'], 'light');
 
 
-	$extras = 'data-theme="'.$theme.'" data-tweet-limit="'.$limit.'"  style="height:'.$height.'px;max-width:100%" data-screen-name="'.$screenName.'" data-chrome="noheader nofooter transparent noscrollbar"';
+	$screenNameHtml = e107::getParser()->toAttribute($screenName, true);
 
-	$text = '<a class="twitter-timeline" href="https://twitter.com/'.$screenName.'?ref_src=twsrc%5Etfw" '.$extras.'>'.LAN_SOCIAL_201."@".$screenName.'</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>';
+	$extras = 'data-theme="'.$theme.'" data-tweet-limit="'.$limit.'"  style="height:'.$height.'px;max-width:100%" data-screen-name="'.$screenNameHtml.'" data-chrome="noheader nofooter transparent noscrollbar"';
+
+	$text = '<a class="twitter-timeline" href="https://twitter.com/'.$screenNameHtml.'?ref_src=twsrc%5Etfw" '.$extras.'>'.LAN_SOCIAL_201."@".$screenNameHtml.'</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>';
 
 	e107::getRender()->tablerender('Twitter',$text,'twitter-menu');
 

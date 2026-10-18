@@ -28,7 +28,7 @@ if(deftrue('SOCIAL_FACEBOOK_INIT') )
 	$share  = vartrue($pref['facebook_like_menu_share'],    'false');
 
 	$text = "<div style='overflow:hidden'>"; // prevent theme breakages.
-	$text .= '<div class="fb-like" data-href="'.rtrim($ref.'/').'" data-width="'.$width.'px" data-layout="'.$layout.'" data-colorscheme="'.$theme.'" data-action="'.$action.'" data-show-faces="true" data-share="'.$share.'"></div>';
+	$text .= '<div class="fb-like" data-href="'.e107::getParser()->toAttribute(rtrim($ref.'/'), true).'" data-width="'.$width.'px" data-layout="'.$layout.'" data-colorscheme="'.$theme.'" data-action="'.$action.'" data-show-faces="true" data-share="'.$share.'"></div>';
 	$text .= "</div>";
 
 
