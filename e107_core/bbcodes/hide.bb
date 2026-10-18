@@ -2,7 +2,7 @@ global $sql, $e_hide_query, $e_hide_hidden, $e_hide_allowed, $e_hide_block, $e_h
 
 if(empty($e_hide_block))
 {
-	return '[hide'.(($parm !== '') ? '='.$parm : '').']'.$code_text.'[/hide]';
+	return '[hide'.(($parm !== '') ? '='.htmlspecialchars($parm, ENT_QUOTES, 'UTF-8', false) : '').']'.$code_text.'[/hide]';
 }
 
 $sealed = trim($e_hide_block['content']);

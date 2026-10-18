@@ -439,6 +439,25 @@
 		}
 
 
+		public function testAPairLeftToTheHideBbcodeWritesItsParameterBackAsText()
+		{
+			global $e_hide_block;
+
+			$was = $e_hide_block;
+			$e_hide_block = null;
+
+			try
+			{
+				self::assertSame('[hide=&lt;i title=&quot;x&quot;&gt;]y[/hide]', $this->bb->parseBBCodes('[hide=<i title="x">]y[/hide]', ''));
+				self::assertSame('[hide=a&amp;b]y[/hide]', $this->bb->parseBBCodes('[hide=a&amp;b]y[/hide]', ''));
+			}
+			finally
+			{
+				$e_hide_block = $was;
+			}
+		}
+
+
 		/**
 		 * @dataProvider hideBlockSpellings
 		 * @param string $text
