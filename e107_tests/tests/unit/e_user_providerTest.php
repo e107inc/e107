@@ -384,6 +384,36 @@ class e_user_providerTest extends \Codeception\Test\Unit
 		$this::assertArrayNotHasKey('callback', e_user_provider::getFieldsOf('Telegram'));
 	}
 
+	public function testAStoredKeyFileOpensNoArchive()
+	{
+		$base = tempnam(sys_get_temp_dir(), 'apple');
+		$tar = new \PharData($base . '.tar');
+		$tar->addFromString('readme.txt', 'no key here');
+		$tar->setMetadata(new e_user_providerTestToken());
+		unset($tar);
+		copy($base . '.tar', $base . '-copy.tar');
+		$restore = $this->withStoredProvider('Apple', array(
+			'enabled' => 1,
+			'keys'    => array(
+				'id'       => 'org.example.site',
+				'team_id'  => 'TEAM123456',
+				'key_id'   => 'KEY1234567',
+				'key_file' => 'phar://' . $base . '-copy.tar/AuthKey.p8',
+			),
+		));
+		try
+		{
+			new e_user_provider('Apple');
+		}
+		finally
+		{
+			$restore();
+			array_map('unlink', array($base, $base . '.tar', $base . '-copy.tar'));
+		}
+
+		$this::assertSame(0, e_user_providerTestToken::$unserialised);
+	}
+
 	/**
 	 * @param string $property one of {@see \Hybridauth\Adapter\AbstractAdapter}'s
 	 * @return mixed what it holds in the Facebook adapter e107 builds from the stored settings

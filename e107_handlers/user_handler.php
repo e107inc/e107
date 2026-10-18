@@ -1261,7 +1261,7 @@ class e_user_provider
 	}
 
 	/**
-	 * @return array {@see social_login_config::getSupportedConfiguredProviderConfigs()} without the options only code may choose
+	 * @return array {@see social_login_config::getSupportedConfiguredProviderConfigs()} without the options only code may choose, or a key file outside the server's own files
 	 */
 	private function storedProviderConfigs()
 	{
@@ -1270,10 +1270,20 @@ class e_user_provider
 
 		foreach ($providerConfigs as $providerName => $providerConfig)
 		{
-			if (is_array($providerConfig))
+			if (!is_array($providerConfig))
 			{
-				$providerConfigs[$providerName] = array_diff_key($providerConfig, $codeOnlyOptions);
+				continue;
 			}
+
+			$providerConfig = array_diff_key($providerConfig, $codeOnlyOptions);
+
+			if (isset($providerConfig['keys']['key_file']) && is_string($providerConfig['keys']['key_file'])
+				&& strpos($providerConfig['keys']['key_file'], '://') !== false)
+			{
+				unset($providerConfig['keys']['key_file']);
+			}
+
+			$providerConfigs[$providerName] = $providerConfig;
 		}
 
 		return $providerConfigs;
