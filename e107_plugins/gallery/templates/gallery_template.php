@@ -70,7 +70,7 @@ $GALLERY_TEMPLATE['slideshow_wrapper'] = '
 </div>
 
 <div class="gallery-slideshow-controls">
-	<a href="#" class="gallery-control gal-next btn btn-sm btn-xs btn-default btn-secondary pull-right float-right">
+	<a href="#" class="gallery-control gal-next btn btn-sm btn-xs btn-default btn-secondary pull-right float-right float-end">
 		' . LAN_NEXT . ' {GLYPH=fa-chevron-right}
 	</a>
 	<a href="#" class="gallery-control gal-prev btn btn-sm btn-xs btn-default btn-secondary">
