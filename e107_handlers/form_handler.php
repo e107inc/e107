@@ -5545,6 +5545,15 @@ var_dump($select_options);*/
 	}
 
 	/**
+	 * @param string $address a stored address, entities encoded as toDB() stores them
+	 * @return string the href a list links it with: decoded once, encoded for the attribute, and empty for a scheme {@see e_parse::toUrlAttribute()} does not link
+	 */
+	private function listLinkHref($address)
+	{
+		return $this->tp->toUrlAttribute(html_entity_decode($address, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+	}
+
+	/**
 	 * Render Field Value
 	 * @param string $field field name
 	 * @param mixed $value field value
@@ -6051,7 +6060,7 @@ var_dump($select_options);*/
 					$url = $this->tp->replaceConstants($value, 'full');
 				}
 				$name = basename($value);
-				$value = '<a href="'.$url.'" title="Direct link to '.$name.'" rel="external">'.$name.'</a>';
+				$value = '<a href="'.$this->listLinkHref($url).'" title="Direct link to '.$name.'" rel="external">'.$name.'</a>';
 			break;
 
 			case 'image': //js tooltip...
@@ -6482,7 +6491,7 @@ var_dump($select_options);*/
 				$value = '<a' . $this->attributes([
 						'target' => $target,
 						'class'  => $class,
-						'href'   => $tp->replaceConstants(vartrue($parms['pre']) . $value, 'abs'),
+					]) . " href='" . $this->listLinkHref($tp->replaceConstants(vartrue($parms['pre']) . $value, 'abs')) . "'" . $this->attributes([
 						'title'  => $value,
 					]) . ">" . $ttl . '</a>';
 				break;
