@@ -3114,7 +3114,8 @@ class media_admin_ui extends e_admin_ui
 		$f = e107::getFile()->getFileInfo($oldpath,TRUE);
 		
 		$mes->addDebug('checkDupe(): newpath=' .$newpath. '<br />oldpath=' .$oldpath. '<br />' .print_r($newpath,TRUE));
-		if(file_exists($newpath) || e107::getDb()->select('core_media', '*',"media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+		$sql = e107::getDb();
+		if(file_exists($newpath) || $sql->select('core_media', '*',"media_url = '".$sql->escape($tp->createConstants($newpath,'rel'))."' LIMIT 1") )
 		{
 			$mes->addWarning($newpath. ' already exists.');
 			$file = $f['pathinfo']['filename']. '_.' .$f['pathinfo']['extension'];
