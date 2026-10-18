@@ -557,7 +557,7 @@ class page_admin_ui extends e_admin_ui
             'menu_class' 		=> array('title'=> 'LAN_VISIBILITY', 	'tab' => 3,	'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
 			'menu_button_text'	=> array('title'=> 'CUSLAN_68', 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>'CUSLAN_85'),
 		
-			'menu_button_url'	=> array('title'=> 'CUSLAN_69', 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>'CUSLAN_86', 'writeParms'=>'size=xxlarge'),
+			'menu_button_url'	=> array('title'=> 'CUSLAN_69', 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true, 'linkAddress'=>true,	'width'=>'25%', "help"=>'CUSLAN_86', 'writeParms'=>'size=xxlarge'),
 		
 			'menu_icon'			=> array('title' => 'CUSLAN_70',       'nolist'=>true, 'tab' => 2,	'type' => 'icon', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page^&glyphs=1', 'readonly'=>false),
 		
@@ -866,6 +866,73 @@ class page_admin_ui extends e_admin_ui
 			}
 
 			e107::getCustomFields()->setAdminUIConfig('page_fields',$this);
+		}
+
+		/**
+		 * @return string[] the url custom fields of the chapter loaded, under the names the form posts them in
+		 */
+		private function urlCustomFields()
+		{
+			$fields = array();
+
+			foreach($this->fields as $name => $field)
+			{
+				if(strpos($name, 'page_fields__') === 0 && varset($field['type']) === 'url')
+				{
+					$fields[] = $name;
+				}
+			}
+
+			return $fields;
+		}
+
+		/**
+		 * @param array $page a page as posted once processDataPost() has gathered its custom fields, or as stored with them decoded
+		 * @return array its custom fields' values, under the names the form posts them in
+		 */
+		private function customFieldValues($page)
+		{
+			$addresses = array();
+
+			foreach((array) varset($page['page_fields'], array()) as $key => $value)
+			{
+				$addresses['page_fields__'.$key] = $value;
+			}
+
+			return $addresses;
+		}
+
+		/**
+		 * @param array $posted the page as posted
+		 * @return array the page as it is saved: its custom fields gathered by processDataPost(), none taken from a posted page_fields, and its chapter a whole number
+		 */
+		private function asSaved($posted)
+		{
+			$page = e107::getCustomFields()->processDataPost('page_fields', $posted);
+
+			if(array_key_exists('page_fields', $posted) && !array_key_exists('page_fields', $page))
+			{
+				$page['page_fields'] = null;
+			}
+
+			if(isset($page['page_chapter']))
+			{
+				$page['page_chapter'] = (int) $page['page_chapter'];
+			}
+
+			return $page;
+		}
+
+		/**
+		 * @param array $posted the page as {@see page_admin_ui::asSaved()} gives it
+		 * @param array $stored the page as stored with its custom fields decoded, empty for a new one
+		 * @return bool whether the addresses in its url custom fields may be saved, judged under the url fields of the chapter the save stores
+		 */
+		private function maySaveCustomFieldLinks($posted, $stored)
+		{
+			$this->initCustomFields(isset($posted['page_chapter']) && array_key_exists('page_chapter', $this->getModel()->getDataFields()) ? $posted['page_chapter'] : (int) varset($stored['page_chapter']));
+
+			return $this->maySaveLinkAddresses($this->urlCustomFields(), $this->customFieldValues($posted), $this->customFieldValues($stored));
 		}
 
 		/**
@@ -1384,7 +1451,12 @@ class page_admin_ui extends e_admin_ui
 				$new_data = array_merge($new_data, $this->pageColumnsFilledOnCreate($new_data));
 			}
 
-			$new_data = e107::getCustomFields()->processDataPost('page_fields',$new_data);
+			$new_data = $this->asSaved($new_data);
+
+			if(!$this->maySaveCustomFieldLinks($new_data, array()))
+			{
+				return false;
+			}
 
 			if(isset($new_data['menu_name']))
 			{
@@ -1439,7 +1511,12 @@ class page_admin_ui extends e_admin_ui
 				e107::getMessage()->addError(CUSLAN_79);
 				return false;
 			}
-			$new_data = e107::getCustomFields()->processDataPost('page_fields',$new_data);
+			$new_data = $this->asSaved($new_data);
+
+			if(!$this->maySaveCustomFieldLinks($new_data, array_merge($old_data, array('page_fields' => e107::getCustomFields()->getData()))))
+			{
+				return false;
+			}
 
 			if(isset($new_data['menu_name']))
 			{
