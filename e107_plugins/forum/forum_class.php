@@ -85,7 +85,7 @@ class e107forum
 	private $permList = array();
 	public $modArray, $prefs;
 
-	/** @var array moderator rows keyed by userclass, for authorisation only */
+	/** @var array moderator rows keyed by userclass */
 	private $moderatorsByClass = array();
 
 	/** @var string what {@see e107forum::sealHidden()} seals for, which keeps its key apart from every other sealed token */
@@ -715,18 +715,10 @@ class e107forum
 
 
 	/**
-	 * Moderators of one userclass, for deciding permission.
-	 *
-	 * Kept apart from forumGetMods(), which memoises a single list on the
-	 * instance whatever class it is asked for. Templates read that memo to
-	 * render a forum's moderator list, so it cannot simply be keyed without
-	 * changing what they show. The page also primes it before any write is
-	 * authorised, which meant every permission question in the request was
-	 * answered for the forum named in the URL rather than for the thread or
-	 * post being acted on.
+	 * Moderators of one userclass, memoised per class; permission checks read this, never $modArray.
 	 *
 	 * @param int|string $uclass value of forum.forum_moderators
-	 * @return array moderator rows keyed by user id
+	 * @return array moderator rows keyed by user id, none for a class a guest holds
 	 */
 	private function moderatorsOfClass($uclass)
 	{
@@ -751,9 +743,19 @@ class e107forum
 				$mods[$row['user_id']] = $row;
 			}
 		}
-		else
+		elseif(!in_array((int) $uclass, array(e_UC_PUBLIC, e_UC_READONLY, e_UC_GUEST), true))
 		{
-			$mods = e107::getUserClass()->getUsersInClass($uclass, 'user_name', true);
+			$qb = e107::getDb('sql_r')->createQueryBuilder();
+			$rows = $qb->select('u.user_id', 'u.user_name')->from('user', 'u')
+				->where($this->trackClassHeld($qb, $uclass))
+				->orderBy('u.user_id', 'ASC')
+				->fetchAll();
+
+			foreach($rows as $row)
+			{
+				$row['user_id'] = (int) $row['user_id'];
+				$mods[$row['user_id']] = $row;
+			}
 		}
 
 		return $this->moderatorsByClass[$key] = $mods;
@@ -2223,27 +2225,17 @@ class e107forum
 
 	function forumGetMods($uclass = e_UC_ADMIN, $force=false)
 	{
-		$sql = e107::getDb();
 		if(count($this->modArray) && !$force)
 		{
 			return $this->modArray;
 		}
-		if($uclass == e_UC_ADMIN || trim($uclass) == '')
+
+		if($force)
 		{
-			$rows = $sql->createQueryBuilder()
-				->select('user_id', 'user_name')->from('user')
-				->where('user_admin', 1)->orderBy('user_name', 'ASC')
-				->fetchAll();
-			foreach($rows as $row)
-			{
-				$this->modArray[$row['user_id']] = $row;
-			}
-		}
-		else
-		{
-			$this->modArray = e107::getUserClass()->getUsersInClass($uclass, 'user_name', true);
+			unset($this->moderatorsByClass[(string) $uclass]);
 		}
 
+		$this->modArray = $this->moderatorsOfClass($uclass);
 
 		return $this->modArray;
 	}
@@ -2561,25 +2553,24 @@ class e107forum
 
 
 	/**
-	 * "The recipient, aliased u, holds user class $classId", as SQL.
+	 * "The user, aliased u, holds user class $classId", as SQL.
 	 *
 	 * The rule being answered is e_user_model::_setClassList(): a signed-in user
 	 * holds every class written in user_class along with everything those
 	 * inherit, plus the fixed classes their own row answers for. So the
 	 * predicate is a match against user_class, ORed with whichever property of
 	 * the user row the class is a name for, shaped after
-	 * user_class::getUsersInClass(). It answers readability and nothing else;
-	 * whether an address is worth writing to is the mailer's question.
+	 * user_class::getUsersInClass(). It answers holding and nothing else.
 	 *
-	 * e_UC_PUBLIC, e_UC_READONLY and e_UC_MEMBER are held by every account, and
-	 * the join to user is what establishes that there is one.
+	 * e_UC_PUBLIC, e_UC_READONLY and e_UC_MEMBER are held by every account, so
+	 * every row of user answers them.
 	 *
 	 * e_UC_GUEST and e_UC_NOBODY answer nobody rather than being matched against
 	 * user_class, one being the absence of an account and the other the refusal
 	 * of every one. That is narrower than checkPerm(), which would grant either
 	 * to a row carrying the id literally, and deliberately so.
 	 *
-	 * @param QueryBuilder $qb the query the recipient is aliased u in
+	 * @param QueryBuilder $qb the query the user is aliased u in
 	 * @param int $classId
 	 * @return SqlFragment
 	 */
