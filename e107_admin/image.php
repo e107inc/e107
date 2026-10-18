@@ -3379,19 +3379,32 @@ class media_admin_ui extends e_admin_ui
 	}
 
 	
+	/**
+	 * The name of the file in e_IMPORT that a posted import name stands for, or '' when it stands for none.
+	 *
+	 * @param mixed $name
+	 * @return string
+	 */
+	private function importFileName($name)
+	{
+		$name = is_string($name) ? e107::getParser()->filter($name, 'file') : '';
+
+		return in_array($name, array('.', '..'), true) ? '' : $name;
+	}
+
 	function batchDelete()
 	{
-		$tp = e107::getParser();
-
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
-			if(trim($file) == '')
+			$file = $this->importFileName($file);
+
+			if($file === '')
 			{
 				continue;
 			}	
 			
 		//	$oldpath = e_MEDIA."temp/".$file;
-			$oldpath = e_IMPORT . $tp->filter($file, 'file');
+			$oldpath = e_IMPORT . $file;
 			if(file_exists($oldpath))
 			{
 				unlink($oldpath);
@@ -3427,12 +3440,18 @@ class media_admin_ui extends e_admin_ui
 		
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
+			$file = $this->importFileName($file);
 
-			$oldpath = e_IMPORT.$tp->filter($file, 'file');
+			if($file === '')
+			{
+				continue;
+			}
+
+			$oldpath = e_IMPORT.$file;
 
 			if($_POST['batch_category'] === '_avatars_public' || $_POST['batch_category'] === '_avatars_private')
 			{
-				$newpath = ($_POST['batch_category'] === '_avatars_public') ? e_AVATAR_DEFAULT.$tp->filter($file, 'file') : $newpath = e_AVATAR_UPLOAD.$tp->filter($file, 'file');
+				$newpath = ($_POST['batch_category'] === '_avatars_public') ? e_AVATAR_DEFAULT.$file : e_AVATAR_UPLOAD.$file;
 
 				if(rename($oldpath,$newpath))
 				{
