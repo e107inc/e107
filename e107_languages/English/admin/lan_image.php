@@ -17,6 +17,7 @@ return [
     'LAN_IMA_002' => "Not enough memory available to rotate",
     'LAN_IMA_003' => "Rotated",
     'LAN_IMA_004' => "Resizing",
+    'LAN_IMA_FILE_KEPT_OUTSIDE_MEDIA' => "[x] lies outside the media folder, so it was kept.",
     'IMALAN_1' => "Enable image display",
     'IMALAN_2' => "Display images, this will apply sitewide (comments, chatbox etc) to images posted using the [img] bbcode",
     'IMALAN_3' => "Resize method",
