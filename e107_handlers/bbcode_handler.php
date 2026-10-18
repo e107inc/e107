@@ -105,41 +105,126 @@ class e_bbcode
 	 */
 	public function hideBlocks($text)
 	{
+		$outer = array();
+
+		foreach ($this->hideBlockTree($text) as $block)
+		{
+			if ($block['parent'] === -1)
+			{
+				$outer[] = array(
+					'start'   => $block['start'],
+					'length'  => $block['length'],
+					'open'    => $block['open'],
+					'close'   => $block['close'],
+					'content' => (string) substr($text, $block['start'] + strlen($block['open']), $block['length'] - strlen($block['open']) - strlen($block['close'])),
+				);
+			}
+		}
+
+		return $outer;
+	}
+
+
+	/**
+	 * Every [hide] block in $text, those inside another included: the outermost as {@see e_bbcode::hideBlocks()} reports them, and inside the content of each, the blocks the same pairs make there, found the same way.
+	 *
+	 * @param string $text
+	 * @return array[] in order of position, each with the keys start and length (bytes into $text), open, close, and parent (the index of the block whose content holds it, or -1)
+	 */
+	public function hideBlockTree($text)
+	{
 		if (!is_string($text) || stripos($text, '[hide') === false)
 		{
 			return array();
 		}
 
-		$pairs = array_merge($this->pairsOfBlockCode($text, 'hide', false, false), $this->pairsOfBlockCode($text, 'hide', true, false), $this->pairsOfBlockCode($text, 'hide', true, true));
+		$pairs = array();
 
-		usort($pairs, function ($a, $b)
+		foreach (array(array(false, false), array(true, false), array(true, true)) as $reading)
 		{
-			return ($a['start'] === $b['start']) ? $b['length'] - $a['length'] : $a['start'] - $b['start'];
-		});
+			foreach ($this->pairsOfBlockCode($text, 'hide', $reading[0], $reading[1]) as $pair)
+			{
+				$span = $pair['start'] . ':' . $pair['length'];
 
-		$outer = array();
+				if (!isset($pairs[$span]))
+				{
+					$pairs[$span] = $pair;
+				}
+			}
+		}
+
+		$pairs = array_values($pairs);
+		$starts = array();
+		$lengths = array();
 
 		foreach ($pairs as $pair)
 		{
-			$last = count($outer) - 1;
-
-			if (($last < 0) || ($pair['start'] >= $outer[$last]['start'] + $outer[$last]['length']))
-			{
-				$outer[] = $pair;
-			}
-			elseif ($pair['start'] + $pair['length'] > $outer[$last]['start'] + $outer[$last]['length'])
-			{
-				$outer[$last]['length'] = $pair['start'] + $pair['length'] - $outer[$last]['start'];
-				$outer[$last]['close'] = $pair['close'];
-			}
+			$starts[] = $pair['start'];
+			$lengths[] = -$pair['length'];
 		}
 
-		foreach ($outer as $i => $block)
+		array_multisort($starts, SORT_ASC, SORT_NUMERIC, $lengths, SORT_ASC, SORT_NUMERIC, $pairs);
+
+		$blocks = array();
+		$open = array();
+
+		foreach ($pairs as $pair)
 		{
-			$outer[$i]['content'] = (string) substr($text, $block['start'] + strlen($block['open']), $block['length'] - strlen($block['open']) - strlen($block['close']));
+			$end = $pair['start'] + $pair['length'];
+
+			while ($open && ($blocks[$open[count($open) - 1]]['end'] <= $pair['start']))
+			{
+				array_pop($open);
+			}
+
+			$low = 0;
+			$high = count($open);
+
+			while ($low < $high)
+			{
+				$middle = ($low + $high) >> 1;
+				$holder = $blocks[$open[$middle]];
+
+				if (($pair['start'] >= $holder['contentStart']) && ($end <= $holder['contentEnd']))
+				{
+					$low = $middle + 1;
+				}
+				else
+				{
+					$high = $middle;
+				}
+			}
+
+			if ($low === count($open))
+			{
+				$open[] = count($blocks);
+				$blocks[] = array(
+					'start'        => $pair['start'],
+					'length'       => $pair['length'],
+					'open'         => $pair['open'],
+					'close'        => $pair['close'],
+					'parent'       => $low ? $open[$low - 1] : -1,
+					'end'          => $end,
+					'contentStart' => $pair['start'] + strlen($pair['open']),
+					'contentEnd'   => $end - strlen($pair['close']),
+				);
+			}
+			elseif ($end > $blocks[$open[$low]]['end'])
+			{
+				$index = $open[$low];
+				$blocks[$index]['length'] = $end - $blocks[$index]['start'];
+				$blocks[$index]['close'] = $pair['close'];
+				$blocks[$index]['end'] = $end;
+				$blocks[$index]['contentEnd'] = $end - strlen($pair['close']);
+			}
 		}
 
-		return $outer;
+		foreach ($blocks as $index => $block)
+		{
+			unset($blocks[$index]['end'], $blocks[$index]['contentStart'], $blocks[$index]['contentEnd']);
+		}
+
+		return $blocks;
 	}
 
 

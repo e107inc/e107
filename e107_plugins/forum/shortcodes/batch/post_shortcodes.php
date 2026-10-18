@@ -252,11 +252,24 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 		if($blocks && !$forum->mayReadHidden($this->var['post_thread']))
 		{
-			foreach(array_reverse($blocks) as $block)
+			$sealed = array();
+
+			foreach(array_reverse($blocks, true) as $index => $block)
 			{
-				$sealed = $forum->sealHidden($this->var['post_thread'], $this->var['post_id'], $block['content']);
-				$post = substr_replace($post, ($sealed === false) ? '' : '[hide]' . $sealed . '[/hide]', $block['start'], $block['length']);
+				$sealed[$index] = $forum->sealHidden($this->var['post_thread'], $this->var['post_id'], $block['content']);
 			}
+
+			$parts = array();
+			$at = 0;
+
+			foreach($blocks as $index => $block)
+			{
+				$parts[] = (string) substr($post, $at, $block['start'] - $at);
+				$parts[] = ($sealed[$index] === false) ? '' : '[hide]' . $sealed[$index] . '[/hide]';
+				$at = $block['start'] + $block['length'];
+			}
+
+			$post = implode('', $parts) . (string) substr($post, $at);
 		}
 
 		return str_replace(array('[html]', '[/html]'), '', $post);
