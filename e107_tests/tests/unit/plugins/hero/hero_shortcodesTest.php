@@ -84,7 +84,7 @@ class hero_shortcodesTest extends \Codeception\Test\Unit
 		$this->sc->setVars(array('hero_title' => 'A [powerful] &amp; <b>free</b> &quot;hero&quot; area'));
 		$this->assertSame('A <strong>powerful</strong> &amp; <b>free</b> "hero" area', $this->sc->sc_hero_title(array('enwrap' => 'strong')));
 
-		$this->sc->setVars(array('hero_title' => 'e_ROOT', 'hero_description' => 'e_SYSTEM', 'hero_button1' => array('label' => 'e_ROOT', '__trust__' => 1)));
+		$this->sc->setVars(array('hero_title' => 'e_ROOT', 'hero_description' => 'e_SYSTEM', 'hero_button1' => array('label' => 'e_ROOT', '__trust__' => array('label' => 1))));
 		$this->assertSame('e_ROOT', $this->sc->sc_hero_title(), 'a constant name in a title stays a name');
 		$this->assertSame('e_SYSTEM', $this->sc->sc_hero_description(), 'a constant name in a description stays a name');
 		$this->assertSame('e_ROOT', $this->sc->sc_hero_button1_label(), 'a constant name in a label stays a name');
@@ -117,7 +117,7 @@ class hero_shortcodesTest extends \Codeception\Test\Unit
 		$button = array('label' => 'Go <b>now</b>', 'url' => 'tel:+15555550100', 'class' => 'primary', 'icon' => '<i class=&quot;fa fa-phone&quot;></i>');
 		$bullet = array('text' => 'Some <b>bold</b> text', 'icon' => '<i class=&quot;fa fa-sun&quot;></i>');
 
-		$this->sc->setVars(array('hero_bullets' => array($bullet + array('__trust__' => 1)), 'hero_button1' => $button + array('__trust__' => 1)));
+		$this->sc->setVars(array('hero_bullets' => array($bullet + $this->recorded($bullet, 1)), 'hero_button1' => $button + $this->recorded($button, 1)));
 		$this->sc->count = 0;
 		$this->assertStringContainsString('<b>bold</b>', $this->sc->sc_hero_text());
 		$this->assertStringContainsString('<b>now</b>', $this->sc->sc_hero_button1_label());
@@ -126,15 +126,15 @@ class hero_shortcodesTest extends \Codeception\Test\Unit
 
 		foreach(array('javascript:alert(1)', ' JavaScript:alert(1)', 'data:text/html,x', 'vbscript:x', 'javascript&#58;alert(1)', 'javascript&colon;alert(1)') as $url)
 		{
-			$this->sc->setVars(array('hero_button1' => array('url' => $url, '__trust__' => 1)));
+			$this->sc->setVars(array('hero_button1' => array('url' => $url, '__trust__' => array('url' => 1))));
 			$this->assertSame('', $this->sc->sc_hero_button1_url(), $url);
 		}
 
-		$this->sc->setVars(array('hero_bullets' => array($bullet + array('__trust__' => 2)), 'hero_button1' => $button + array('__trust__' => 2)));
+		$this->sc->setVars(array('hero_bullets' => array($bullet + $this->recorded($bullet, 2)), 'hero_button1' => $button + $this->recorded($button, 2)));
 		$this->assertSame('<i class="fa fa-sun"></i>', $this->sc->sc_hero_icon());
 		$this->assertStringStartsWith('<i class="fa fa-phone"></i>', $this->sc->sc_hero_button1_icon());
 
-		foreach(array(array(), array('__trust__' => 0)) as $record)
+		foreach(array(array(), $this->recorded($button + $bullet, 0)) as $record)
 		{
 			$this->sc->setVars(array('hero_bullets' => array($bullet + $record), 'hero_button1' => $button + $record));
 			$this->assertStringNotContainsString('<b>', $this->sc->sc_hero_text());
@@ -142,6 +142,27 @@ class hero_shortcodesTest extends \Codeception\Test\Unit
 			$this->assertSame('', $this->sc->sc_hero_button1_url());
 			$this->assertNoMarkupIn($this->sc->sc_hero_icon(), 'icon by an author who may not post HTML');
 		}
+	}
+
+	/**
+	 * Each value of a part prints as its own author may post it, whoever wrote the part's other values.
+	 */
+	public function testEachValueOfAPartPrintsAsItsOwnAuthorMayPostIt()
+	{
+		$this->sc->setVars(array('hero_button1' => array('label' => 'Go <b>now</b>', 'url' => 'tel:+15555550100', '__trust__' => array('label' => 0, 'url' => 1))));
+
+		$this->assertStringNotContainsString('<b>', $this->sc->sc_hero_button1_label());
+		$this->assertSame('tel:+15555550100', $this->sc->sc_hero_button1_url());
+	}
+
+	/**
+	 * @param array $part a bullet or a button
+	 * @param int $level
+	 * @return array the record of $level for each of its values
+	 */
+	private function recorded(array $part, $level)
+	{
+		return array('__trust__' => array_fill_keys(array_keys($part), $level));
 	}
 
 	/**
