@@ -81,14 +81,15 @@ class searchCommentHandlersTest extends \Test\Unit
 
 	/**
 	 * Runs $code in a booted CLI subprocess, buffers flushed and the boot
-	 * marker on stderr where the buffers cannot swallow it.
+	 * marker on stderr where the buffers cannot swallow it. Every notice is
+	 * reported, because a CLI boot leaves notices out.
 	 *
 	 * @param string $code PHP to run after class2.php has been loaded
 	 * @return array {out: string, exit: int}
 	 */
 	private function runIsolated($code)
 	{
-		$php  = "fwrite(STDERR, '" . self::BOOTED . "'); ";
+		$php  = "error_reporting(E_ALL); fwrite(STDERR, '" . self::BOOTED . "'); ";
 		$php .= $code;
 		$php .= "while(ob_get_level() > 0) { @ob_end_flush(); } ";
 
@@ -133,7 +134,7 @@ class searchCommentHandlersTest extends \Test\Unit
 		);
 
 		$this->assertBooted($result);
-		$this->assertStringNotContainsString('Undefined constant', $result['out'],
+		self::assertReadNoUndefinedConstant('\w+', $result['out'],
 			"A stale comments_handlers pref must not pull in a language constant the page has not loaded (#5267).\n" . $result['out']);
 		$this->assertSame(0, $result['exit'],
 			"The admin search page must not fatal on a stale comments_handlers pref (#5267).\n" . $result['out']);
@@ -375,7 +376,7 @@ class searchCommentHandlersTest extends \Test\Unit
 		);
 
 		$this->assertBooted($result);
-		$this->assertStringNotContainsString('Undefined constant', $result['out'],
+		self::assertReadNoUndefinedConstant('\w+', $result['out'],
 			"poll/search/search_comments.php must load its own global LAN (#5267).\n" . $result['out']);
 		$this->assertStringContainsString('TITLE=Poll', $result['out'],
 			"The handler must still be titled when the plugin is not installed.\n" . $result['out']);

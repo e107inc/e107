@@ -14,7 +14,7 @@
 		{
 			list($out, $exitCode) = $this->previewInBareBootstrap('{FEATUREBOX}');
 
-			$this->assertStringNotContainsString('Undefined constant', $out,
+			self::assertReadNoUndefinedConstant('\w+', $out,
 				"checklayout() must not print a constant only the featurebox plugin defines (#5956).\n" . $out);
 			$this->assertSame(0, $exitCode, "Previewing a {FEATUREBOX} layout area must not fatal.\n" . $out);
 			$this->assertStringContainsString('[Feature Box]', $out,
@@ -31,7 +31,8 @@
 		 */
 		private function previewInBareBootstrap($fragment)
 		{
-			$code  = "require_once('" . addslashes(APP_PATH . '/e107_handlers/menumanager_class.php') . "'); ";
+			$code  = "error_reporting(E_ALL); ";
+			$code .= "require_once('" . addslashes(APP_PATH . '/e107_handlers/menumanager_class.php') . "'); ";
 			$code .= "\$reflection = new ReflectionClass('e_menuManager'); ";
 			$code .= "\$reflection->newInstanceWithoutConstructor()->checklayout('" . $fragment . "');";
 
