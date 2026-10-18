@@ -340,6 +340,49 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Adds user classes for one test and re-reads the shared class tree so they count; call what it returns in a finally block.
+	 *
+	 * @param array[] $classes userclass_classes rows, each with its userclass_id
+	 * @return callable deletes the classes and puts back the class tree they were added to
+	 */
+	protected function withUserClasses(array $classes)
+	{
+		$userClass = \e107::getUserClass();
+		$tree = $userClass->class_tree;
+		$ids = array_map('intval', array_column($classes, 'userclass_id'));
+
+		$restore = static function () use ($userClass, $tree, $ids)
+		{
+			\e107::getDb()->createQueryBuilder()->delete('userclass_classes')->where('userclass_id', 'IN', $ids)->execute();
+			$userClass->clearCache();
+			$userClass->class_tree = $tree;
+		};
+
+		$added = false;
+
+		try
+		{
+			foreach($classes as $class)
+			{
+				self::assertNotFalse(\e107::getDb()->createQueryBuilder()->insert('userclass_classes')->values($class)->execute());
+			}
+
+			$userClass->clearCache();
+			$userClass->readTree(true);
+			$added = true;
+		}
+		finally
+		{
+			if(!$added)
+			{
+				$restore();
+			}
+		}
+
+		return $restore;
+	}
+
+	/**
 	 * Sets one core preference, or removes it when $value is null.
 	 *
 	 * @param \e_pref $config
