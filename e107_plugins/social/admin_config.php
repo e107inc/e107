@@ -253,7 +253,10 @@ class social_ui extends e_admin_ui
 
 				foreach ($_POST['social_login'] as $provider_name => $raw_updated_social_login)
 				{
-					$this->social_login_config_manager->setProviderConfig($provider_name, $raw_updated_social_login);
+					if($this->isSupportedProvider($provider_name))
+					{
+						$this->social_login_config_manager->setProviderConfig($provider_name, $raw_updated_social_login);
+					}
 				}
 
 				if(isset($_POST['social_login_active']))
@@ -758,6 +761,19 @@ class social_ui extends e_admin_ui
 					";
 
 		return $text;
+	}
+
+	/**
+	 * Whether Hybridauth has an adapter by this name, matched without regard to case as {@see social_login_config::normalizeProviderName()} matches it.
+	 *
+	 * @param string $providerName
+	 * @return bool
+	 */
+	private function isSupportedProvider($providerName)
+	{
+		$supported = array_map('mb_strtolower', $this->social_login_config_manager->getSupportedProviders());
+
+		return in_array(mb_strtolower($providerName), $supported, true);
 	}
 
 	/**
