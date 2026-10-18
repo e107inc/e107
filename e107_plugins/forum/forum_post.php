@@ -866,6 +866,11 @@ class forum_post_handler
 					continue;
 				}
 
+				if(!$this->offersAsDestination($f['forum_id']))
+				{
+					continue;
+				}
+
 				$id = $f['forum_id'];
 				$opts[$id] = $for_name;
 			}
@@ -873,6 +878,17 @@ class forum_post_handler
 
 
 		return e107::getForm()->select($name, $opts, $curVal, $opts, $currentName);
+	}
+
+	/**
+	 * Whether the split and move forms list a forum as a destination.
+	 *
+	 * @param int $forumId
+	 * @return bool
+	 */
+	private function offersAsDestination($forumId)
+	{
+		return getperms('0') || ($this->forumObj->checkPerm($forumId, 'view') && $this->forumObj->canModerateForum($forumId));
 	}
 
 
