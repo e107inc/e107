@@ -5653,6 +5653,7 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		$this->convertToData($_posted);
+		$sent = $_posted;
 
 		if($callbackBefore && method_exists($this, $callbackBefore))
 		{
@@ -5765,7 +5766,10 @@ class e_admin_controller_ui extends e_admin_controller
 			$this->doAfterSubmit($model->getId(), $noredirectAction);
 			return true;
 		}
-		elseif($callbackError && method_exists($this, $callbackError))
+
+		$model->setPostedData($this->postToRedraw($sent, $_posted));
+
+		if($callbackError && method_exists($this, $callbackError))
 		{
 			// suppress messages if callback returns TRUE
 			if($this->$callbackError($_posted, $old_data, $model->getId()) !== true)
@@ -5928,6 +5932,24 @@ class e_admin_controller_ui extends e_admin_controller
 
 		return e107::getEvent()->trigger($triggerName, $eventData);
 
+	}
+
+	/**
+	 * @param array $sent the post as {@see e_admin_controller_ui::convertToData()} left it
+	 * @param array $saved that post with what the before-save callback returned merged in
+	 * @return array $saved with each string the callback changed decoded once, as the form shows it again
+	 */
+	private function postToRedraw(array $sent, array $saved)
+	{
+		foreach($saved as $key => $value)
+		{
+			if(is_string($value) && (!array_key_exists($key, $sent) || $sent[$key] !== $value))
+			{
+				$saved[$key] = html_entity_decode($value, ENT_QUOTES);
+			}
+		}
+
+		return $saved;
 	}
 
 	/**

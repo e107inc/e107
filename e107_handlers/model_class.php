@@ -2147,10 +2147,21 @@ class e_front_model extends e_model
 		{
 			// FIXED - double post_toFom() and toDB(post_toForm()) problems
 			// setPosted|setPostedData|addPostedData methods are storing RAW data now
-			return e107::getParser()->post_toForm($posted);
+			return $this->postedForForm($posted);
 		}
 		return e107::getParser()->toForm($this->getData((string) $key, $default, $index));
     }
+
+	/**
+	 * @param mixed $posted a value as it was posted
+	 * @return mixed a string as {@see e_parse::post_toForm()} gives it with its ampersands written as entities too; an array as {@see e_parse::post_toForm()} gives it
+	 */
+	private function postedForForm($posted)
+	{
+		$tp = e107::getParser();
+
+		return is_array($posted) ? $tp->post_toForm($posted) : $tp->post_toForm(str_replace('&', '&amp;', (string) $posted));
+	}
 
     /**
      * Overwrite posted data in the object for a single field. Key is not parsed.
