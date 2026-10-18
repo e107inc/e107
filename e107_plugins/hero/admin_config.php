@@ -146,11 +146,52 @@ class hero_ui extends e_admin_ui
 
 		}
 		*/
+		/** @var string[] the fields that hold a button, its address among its parts */
+		private $buttons = array('hero_button1', 'hero_button2');
+
+		/**
+		 * @param array $slide a slide as posted, or as stored with its buttons decoded
+		 * @return array each button's address, under the button's field
+		 */
+		private function buttonUrls($slide)
+		{
+			$urls = array();
+
+			foreach($this->buttons as $field)
+			{
+				if(isset($slide[$field]) && is_array($slide[$field]) && isset($slide[$field]['url']))
+				{
+					$urls[$field] = $slide[$field]['url'];
+				}
+			}
+
+			return $urls;
+		}
+
+		/**
+		 * @param array $stored the slide as stored, its buttons as JSON
+		 * @return array each button's address as stored
+		 */
+		private function storedButtonUrls($stored)
+		{
+			foreach($this->buttons as $field)
+			{
+				$stored[$field] = e107::unserialize(varset($stored[$field]));
+			}
+
+			return $this->buttonUrls($stored);
+		}
+
 		// ------- Customize Create --------
 		
 		public function beforeCreate($new_data,$old_data)
 		{
-			$new_data = $this->processGlyph($new_data, array());
+			if(!$this->maySaveLinkAddresses($this->buttons, $this->buttonUrls($new_data), $this->storedButtonUrls($old_data)))
+			{
+				return false;
+			}
+
+			$new_data = $this->processGlyph($new_data, $old_data);
 
 			return $new_data;
 		}
@@ -170,9 +211,7 @@ class hero_ui extends e_admin_ui
 		
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-			$new_data = $this->processGlyph($new_data, $old_data);
-
-			return $new_data;
+			return $this->beforeCreate($new_data, $old_data);
 		}
 
 		private function processGlyph($new_data, $old_data)
