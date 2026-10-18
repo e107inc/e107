@@ -75,6 +75,7 @@ class social_setup
 	{
 		$coreConfig = e107::getConfig();
 		$logger = e107::getMessage();
+		$tp = e107::getParser();
 		$manager = new social_login_config($coreConfig);
 
 		$providerConfig = $coreConfig->getPref(social_login_config::SOCIAL_LOGIN_PREF);
@@ -110,7 +111,8 @@ class social_setup
 					social_login_config::SOCIAL_LOGIN_PREF . '/' . $oldNormalizedProviderName
 				);
 				$logger->addSuccess(
-					"Updated name of social login provider $oldNormalizedProviderName → $actualNormalizedProviderName"
+					"Updated name of social login provider " . $tp->toAttribute($oldNormalizedProviderName, true) .
+					" → " . $tp->toAttribute($actualNormalizedProviderName, true)
 				);
 			}
 		}
