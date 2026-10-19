@@ -17,6 +17,7 @@ define("LAN_IMA_002", "Not enough memory available to rotate");
 define("LAN_IMA_003", "Rotated");
 define("LAN_IMA_004", "Resizing");
 define("LAN_IMA_FILE_KEPT_OUTSIDE_MEDIA", "[x] lies outside the media folder, so it was kept.");
+define("LAN_IMA_FILE_KEPT_OUTSIDE_AVATARS", "[x] lies outside the avatars folder, so it was kept.");
 // Options
 
 // define("LAN_IMA_O_001", "News Images");

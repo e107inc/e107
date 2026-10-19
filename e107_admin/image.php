@@ -2689,8 +2689,6 @@ class media_admin_ui extends e_admin_ui
 
 				//	$path = basename($path);
 
-					$path = str_replace('../', '',$path); // clean the path.
-
 					$mes->addDebug('usr: '. (int) $usr .'  path: '.$path);
 
 					$image_type = 2;
@@ -2702,10 +2700,19 @@ class media_admin_ui extends e_admin_ui
 
 					//delete it from server
 					$deletePath = e_AVATAR.$tp->filter($path);
-					if(@unlink($deletePath))
+					$folder = dirname($deletePath);
+					$fileName = ltrim(substr($deletePath, strlen($folder)), '/'.DIRECTORY_SEPARATOR);
+					$avatarFolder = $this->folderInside($deletePath, e_AVATAR, defset('LAN_IMA_FILE_KEPT_OUTSIDE_AVATARS', '[x] lies outside the avatars folder, so it was kept.'), $path);
+
+					if($avatarFolder === false)
+					{
+						continue;
+					}
+
+					if($avatarFolder !== '' && @unlink($avatarFolder.DIRECTORY_SEPARATOR.$fileName))
 					{
 						$mes->addDebug('Deleted: '.$deletePath);
-						$message[] = basename($path); //admin log & sysmessage
+						$message[] = $fileName; //admin log & sysmessage
 					}
 					else
 					{
@@ -3180,13 +3187,31 @@ class media_admin_ui extends e_admin_ui
 	public function mediaFolderPath($url)
 	{
 		$path = e107::getParser()->replaceConstants($url);
+		$folder = $this->folderInside($path, e_MEDIA, defset('LAN_IMA_FILE_KEPT_OUTSIDE_MEDIA', '[x] lies outside the media folder, so it was kept.'), $url);
+
+		return $folder ? $path : $folder;
+	}
+
+	/**
+	 * Find the folder of a file inside a root folder, or say the file was kept when that folder lies outside it.
+	 *
+	 * @param string $path the file's path
+	 * @param string $root the folder the file must lie in
+	 * @param string $message the text saying the file was kept, with [x] for its name
+	 * @param string $name what the message calls the file
+	 * @return string|false the folder as resolved, '' when it is missing, or false when the file lies outside $root
+	 */
+	private function folderInside($path, $root, $message, $name)
+	{
 		$folder = dirname($path);
 
 		if(strpos($path, "\0") === false)
 		{
-			if(e107::getFile()->resolveSendRoot($folder, array(e_MEDIA)) !== false)
+			$resolved = e107::getFile()->resolveSendRoot($folder, array($root));
+
+			if($resolved !== false)
 			{
-				return $path;
+				return $resolved;
 			}
 
 			if(!is_dir($folder))
@@ -3195,7 +3220,7 @@ class media_admin_ui extends e_admin_ui
 			}
 		}
 
-		e107::getMessage()->addInfo(e107::getParser()->lanVars(defset('LAN_IMA_FILE_KEPT_OUTSIDE_MEDIA', '[x] lies outside the media folder, so it was kept.'), $url, true));
+		e107::getMessage()->addInfo(e107::getParser()->lanVars($message, $name, true));
 
 		return false;
 	}
