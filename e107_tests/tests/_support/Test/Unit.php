@@ -36,6 +36,9 @@ class Unit extends \Codeception\Test\Unit
 	/** The address the site answers on: e107_handlers/mail.php reads SERVER_ADDR unguarded inside a block it gates on REMOTE_ADDR, so a child carrying one key needs the other. */
 	const SERVER_ADDRESS = '127.0.0.1';
 
+	/** A child's php arguments that hold its output back, so the notices its boot prints send no headers and its session settings stay changeable. */
+	const BUFFERED = '-d output_buffering=On';
+
 	/** @var int addresses handed out so far, across every test in the run */
 	private static $visitorsSeated = 0;
 
@@ -439,9 +442,10 @@ class Unit extends \Codeception\Test\Unit
 	 *
 	 * @param string $script path under the app root, e.g. 'e107_admin/db.php'
 	 * @param string $seed PHP setting up preferences and request data before the script is loaded
+	 * @param string $ini extra php command-line arguments, e.g. {@see Unit::BUFFERED}
 	 * @return string
 	 */
-	protected function renderInBootedCli($script, $seed)
+	protected function renderInBootedCli($script, $seed, $ini = '')
 	{
 		$booted = 'E107-BOOTED';
 
@@ -450,7 +454,7 @@ class Unit extends \Codeception\Test\Unit
 		$php .= $seed;
 		$php .= "require_once('".addslashes(APP_PATH.'/'.$script)."'); ";
 
-		list($output) = $this->runInBootedCli($php);
+		list($output) = $this->runInBootedCli($php, $ini);
 		$page = implode("\n", $output);
 
 		$this->assertStringContainsString($booted, $page,

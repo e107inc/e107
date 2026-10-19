@@ -1949,7 +1949,7 @@ class e_user_provider
         }
         catch (Exception $e)
         {
-            e107::getMessage()->addError('[' . $e->getCode() . ']' . $e->getMessage(), 'default', true);
+            e107::getMessage()->addError('[' . $e->getCode() . ']' . e107::getParser()->attributeValue($e->getMessage()), 'default', true);
             $session = e107::getSession();
             $session->set('HAuthError', true);
             $connected = false;

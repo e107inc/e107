@@ -15,9 +15,6 @@ namespace e107\SessionHandlers;
  */
 class NonblockingFilesSessionHandlerTest extends \Test\Unit
 {
-	/** A child's php arguments that hold its output back, so the notices its boot prints send no headers and its session settings stay changeable. */
-	const BUFFERED = '-d output_buffering=On';
-
 	const ID = 'nonblockingtest0123456789abcdef';
 
 	/** @var string */
