@@ -10,6 +10,8 @@
 
 class userloginAutoBanTest extends \Codeception\Test\Unit
 {
+	use \Test\BanlistRows;
+
 	/** RFC 5737 TEST-NET-2 as eIPHandler stores it. Banning the CLI IP instead would kill the rest of the run. */
 	const TEST_IP = '0000:0000:0000:0000:0000:ffff:c633:6401';
 
@@ -19,6 +21,7 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 	const TEST_USER = 'vr9hvictim';
 	const TEST_PASS = 'correct horse battery staple';
 	const FAIL_LIMIT = 3;
+	const REASON = 'userloginAutoBanTest';
 
 	/** @var userlogin */
 	protected $lg;
@@ -151,23 +154,9 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 		$this->assertSame(1, $this->autoBannedCount());
 	}
 
-	protected function seedWhitelist()
-	{
-		e107::getDb()->insert('banlist', array('data' => array(
-			'banlist_id'         => 0,
-			'banlist_ip'         => self::TEST_IP,
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_WHITELIST,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 1,
-			'banlist_reason'     => 'whitelisted',
-			'banlist_notes'      => '',
-		)));
-	}
-
 	public function testAWhitelistedAddressIsNotRecordedAsBanned()
 	{
-		$this->seedWhitelist();
+		$this->haveRow(self::TEST_IP, eIPHandler::BAN_TYPE_WHITELIST);
 
 		for($i = 1; $i <= self::FAIL_LIMIT + 1; $i++)
 		{
@@ -176,6 +165,24 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 
 		$this->assertSame(self::FAIL_LIMIT + 1, $this->failedLoginCount());
 		$this->assertSame(0, $this->loginBanCount());
+		$this->assertSame(0, $this->autoBannedCount());
+	}
+
+	/**
+	 * An attempt that raced the one that banned its address finds it already banned, and the winner has announced it.
+	 */
+	public function testAnAddressAlreadyBannedIsNotAnnouncedAgain()
+	{
+		for($i = 1; $i <= self::FAIL_LIMIT; $i++)
+		{
+			$this->seedFailedLogin();
+		}
+
+		$this->haveRow(self::TEST_IP, eIPHandler::BAN_TYPE_LOGINS, time() + 3600);
+
+		$this->recordFailure(LOGIN_BAD_PW);
+
+		$this->assertSame(1, $this->loginBanCount());
 		$this->assertSame(0, $this->autoBannedCount());
 	}
 
@@ -346,20 +353,6 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 		$this->assertGreaterThan(time(), $expires);
 	}
 
-	protected function seedExpiredBan()
-	{
-		e107::getDb()->insert('banlist', array('data' => array(
-			'banlist_id'         => 0,
-			'banlist_ip'         => self::EXPIRED_IP,
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_LOGINS,
-			'banlist_datestamp'  => time() - 7200,
-			'banlist_banexpires' => time() - 60,
-			'banlist_admin'      => 1,
-			'banlist_reason'     => 'expired',
-			'banlist_notes'      => '',
-		)));
-	}
-
 	protected function expiredBanRows()
 	{
 		return (int) e107::getDb()->count('banlist', '(*)',
@@ -372,7 +365,7 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 	 */
 	public function testAnExpiredBanLiftsItself()
 	{
-		$this->seedExpiredBan();
+		$this->haveRow(self::EXPIRED_IP, eIPHandler::BAN_TYPE_LOGINS, time() - 60);
 		$this->assertSame(1, $this->expiredBanRows());
 
 		$notBanned = e107::getIPHandler()->checkBan("banlist_ip='" . self::EXPIRED_IP . "'", false, true);

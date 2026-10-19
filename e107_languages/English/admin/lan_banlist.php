@@ -72,7 +72,9 @@ define("BANLAN_IMPORT_REPLACE_NOTHING", "CSV import: The existing imported bans 
 define("BANLAN_IMPORT_REPLACE_BUSY", "CSV import: Nothing was imported. Another import that replaces the existing imported bans is already running, and two of those at once delete each other's entries. Import again once it has finished.");
 define("BANLAN_IMPORT_REPLACE_LOCK_FAILED", "CSV import: Nothing was imported. The database did not say whether another import is running, so this one stopped rather than risk deleting entries it could not account for. Try again, and look in the database error log if it keeps happening.");
 define("BANLAN_IMPORT_ROLLBACK_FAILED", "The [x] entries already written could not be removed and are still on the ban list.");
+define("BANLAN_IMPORT_RESTORE_FAILED", "[x] existing entries that the import wrote over could not be put back as they were, so they now carry the file's values.");
 define("BANLAN_IMPORT_LOG_SUMMARY", "File: [file]<br />[imported] imported, [duplicates] duplicates, [rejected] rejected");
+define("BANLAN_ENTRY_ALREADY_LISTED", "[x] is already listed with the type [y] (ID [z]), so this entry was not saved. Edit that one instead.");
 define("BANLAN_52", "Whitelist");
 define("BANLAN_53", "Add to Whitelist");
 define("BANLAN_54", "No entries in whitelist");

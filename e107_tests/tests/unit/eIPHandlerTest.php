@@ -10,17 +10,18 @@
 
 	class eIPHandlerTest extends \Codeception\Test\Unit
 	{
+		use \Test\BanlistRows;
+		use \Test\CorePrefs;
 
 		const RETRIGGER_HOURS = 6;
 		const RETRIGGERED_IP = '203.0.113.77';
 		const EXPIRED_IP = '203.0.113.78';
 		const LIVE_IP = '203.0.113.79';
+		const RACED_IP = '203.0.113.80';
+		const REASON = 'eIPHandlerTest';
 
 		/** @var eIPHandler */
 		protected $ip;
-
-		/** @var array banlist_id values written by this test */
-		private $insertedIds = array();
 
 		/** @var mixed the ban_durations pref as found, restored in _after() */
 		private $savedDurations = null;
@@ -47,39 +48,12 @@
 			e107::getConfig()->set('ban_durations', $this->savedDurations);
 			e107::getConfig()->set('ban_retrigger', $this->savedRetrigger);
 
-			if(!empty($this->insertedIds))
+			if(e107::getDb()->delete('banlist', "banlist_reason = '".self::REASON."'"))
 			{
-				e107::getDb()->delete('banlist', '`banlist_id` IN ('.implode(',', $this->insertedIds).')');
-				$this->insertedIds = array();
-
 				// The retrigger under test regenerated the ban files with these
 				// rows in. Put them back as they were.
 				$this->ip->regenerateFiles();
 			}
-		}
-
-		/**
-		 * @param string $ip
-		 * @param int $type
-		 * @param int $expires
-		 * @return int banlist_id
-		 */
-		private function haveRow($ip, $type, $expires)
-		{
-			$id = e107::getDb()->insert('banlist', array(
-				'banlist_id'         => 0,
-				'banlist_ip'         => $ip,
-				'banlist_bantype'    => $type,
-				'banlist_datestamp'  => time() - 60,
-				'banlist_banexpires' => $expires,
-				'banlist_admin'      => 0,
-				'banlist_reason'     => 'eIPHandlerTest retrigger probe',
-				'banlist_notes'      => '',
-			));
-			$this->assertNotEmpty($id, 'could not write the banlist row this test needs');
-			$this->insertedIds[] = (int) $id;
-
-			return (int) $id;
 		}
 
 		/**
@@ -93,8 +67,8 @@
 
 		/**
 		 * A banned visitor coming back extends the ban that stopped them.
-		 * banlist_ip carries an ordinary index rather than a unique one, so
-		 * keying the write on the address reaches every row stored under it,
+		 * banlist_ip is unique only together with the type, so keying the
+		 * write on the address reaches every row stored under it,
 		 * each one by the hours configured for the enforced row's type rather
 		 * than its own.
 		 */
@@ -164,6 +138,47 @@
 			$this->assertTrue($result);
 
 
+		}
+
+		/**
+		 * A ban another request wrote between add_ban()'s look-up and its insert is answered as already banned.
+		 */
+		public function testABanAnotherRequestWroteFirstIsAnsweredAsAlreadyBanned()
+		{
+			require_once(__DIR__.'/fixtures/RacingBanHandlerFixture.php');
+
+			$address = $this->ip->ipEncode(self::RACED_IP);
+			$restoreKey = \Test\BanlistAddressKey::set(true);
+			$restorePrefs = $this->withCorePrefs(array('enable_rdns_on_ban' => 1));
+
+			try
+			{
+				$handler = new RacingBanHandlerFixture();
+				$handler->rivalRow = $this->banRow($address, eIPHandler::BAN_TYPE_FLOOD);
+
+				$result = $handler->add_ban(2, self::REASON, $address, 0);
+				$stored = (int) e107::getDb()->count('banlist', '(*)', "WHERE banlist_ip = '".$address."'");
+			}
+			finally
+			{
+				e107::getDb()->delete('banlist', "banlist_ip = '".$address."'");
+				$restorePrefs();
+				$restoreKey();
+			}
+
+			$this->assertSame(1, $result);
+			$this->assertSame(1, $stored);
+			$this->assertSame(0, $handler->regenerated, 'The request that lost wrote nothing, so it has no ban files to write again.');
+		}
+
+		public function testAnAddressWithABanAndAWhitelistEntryIsAnsweredAsWhitelisted()
+		{
+			$address = $this->ip->ipEncode(self::RACED_IP);
+			$this->haveRow($address, eIPHandler::BAN_TYPE_MANUAL);
+			$this->haveRow($address, eIPHandler::BAN_TYPE_WHITELIST);
+
+			$this->assertFalse($this->ip->add_ban(2, self::REASON, $address, 0), 'checkBan() lets the whitelist entry win, so add_ban() has to answer the same way');
+			$this->assertCount(2, $this->rowsThisTestWrote());
 		}
 
 

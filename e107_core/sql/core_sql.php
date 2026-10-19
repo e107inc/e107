@@ -77,7 +77,7 @@ CREATE TABLE banlist (
   banlist_reason tinytext NOT NULL,
   banlist_notes tinytext NOT NULL,
   PRIMARY KEY  (banlist_id),
-  KEY banlist_ip (banlist_ip),
+  UNIQUE KEY banlist_ip (banlist_ip,banlist_bantype),
   KEY banlist_datestamp (banlist_datestamp),
   KEY banlist_banexpires (banlist_banexpires)
 ) ENGINE=MyISAM;

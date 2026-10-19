@@ -725,10 +725,6 @@ class userlogin
 					if($banAdded === true)
 					{
 						$this->failureBanTime = $time;
-					}
-
-					if($banAdded !== false)
-					{
 						e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17."'");
 						e107::getEvent()->trigger('user_ban_failed_login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text));
 					}
