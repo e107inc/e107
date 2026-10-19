@@ -71,7 +71,7 @@ class news_rss // plugin-folder + '_rss'
 		$this->showImages           = vartrue($pref['rss_shownewsimage'],false);
 		$this->summaryDescription   =  vartrue($pref['rss_summarydiz'],false);
 
-		$render         = ($pref['rss_othernews'] != 1) ? "AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))" : "";
+		$render         = empty($pref['rss_othernews']) ? "AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))" : "";
 		$nobody_regexp  = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$topic          = (!empty($parms['id']) && is_numeric($parms['id'])) ?  " AND news_category = ".intval($parms['id']) : '';
 		$limit          = vartrue($parms['limit'],10);
@@ -111,9 +111,9 @@ class news_rss // plugin-folder + '_rss'
 			$rss[$i]['datestamp']         = $value['news_datestamp'];
 			$rss[$i]['description']     = $this->getDescription($value);
 
-			if($value['news_allow_comments'] && $pref['comments_disabled'] != 1)
+			if(empty($value['news_allow_comments']) && $pref['comments_disabled'] != 1)
 			{
-				$rss[$i]['comment']     = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['news_id'];
+				$rss[$i]['comment']     = SITEURL."comment.php?comment.news.".$value['news_id'];
 			}
 
 			$rss[$i]['media']            = $this->getMedia($value);
