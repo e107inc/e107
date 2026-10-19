@@ -857,7 +857,15 @@ if (e107::getUser()->isUser())
 {
 	if (logout_refused())
 	{
-		e107::getMessage()->addError(defset('LAN_LOGOUT_REFUSED_TOKEN_MISSING', 'You have not been logged out, because that link carried no security token. Use the logout link in this site\'s own menu rather than a bookmark or a link on another site.'));
+		if (empty($_E107['single_entry']))
+		{
+			e107::getRedirect()->go(SITEURL.'index.php?'.\e107\User\LogoutConfirmation::QUERY_WORD, true, 303);
+			exit();
+		}
+		elseif (empty($_E107['route_table']))
+		{
+			e107::getMessage()->addError(defset('LAN_LOGOUT_REFUSED_TOKEN_MISSING', 'You have not been logged out, because that link carried no security token. Use the logout link in this site\'s own menu rather than a bookmark or a link on another site.'));
+		}
 	}
 	elseif (logout_requested())
 	{
@@ -1959,7 +1967,7 @@ function logout_requested()
 {
 	$query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
 
-	return ($query === 'logout' || strpos($query, 'logout&') === 0);
+	return (new \e107\Http\Request('GET', $query))->hasLeadingQueryWord(\e107\User\LogoutConfirmation::QUERY_WORD);
 }
 
 
