@@ -59,6 +59,7 @@ return [
     'BANLAN_IMPORT_REPLACE_BUSY' => "CSV import: Nothing was imported. Another import that replaces the existing imported bans is already running, and two of those at once delete each other's entries. Import again once it has finished.",
     'BANLAN_IMPORT_REPLACE_LOCK_FAILED' => "CSV import: Nothing was imported. The database did not say whether another import is running, so this one stopped rather than risk deleting entries it could not account for. Try again, and look in the database error log if it keeps happening.",
     'BANLAN_IMPORT_ROLLBACK_FAILED' => "The [x] entries already written could not be removed and are still on the ban list.",
+    'BANLAN_IMPORT_RESTORE_FAILED' => "[x] existing entries that the import wrote over could not be put back as they were, so they now carry the file's values.",
     'BANLAN_IMPORT_LOG_SUMMARY' => "File: [file]<br />[imported] imported, [duplicates] duplicates, [rejected] rejected",
     'BANLAN_52' => "Whitelist",
     'BANLAN_53' => "Add to Whitelist",
@@ -132,5 +133,6 @@ return [
     'BANLAN_ENTRY_FORMATS' => "An address (10.77.66.65, 2001:db8::1), a range (10.77.66.0/24, 10.77.66.1-10.77.66.100, 10.77.66.*, 2001:db8::/32), an email address (user@example.com, *@example.com) or a host name pattern (*.example.com)",
     'BANLAN_ENTRY_INVALID' => "This entry is not an address, a range, an email address or a host name pattern, so nothing would enforce it. It was not saved. A CIDR block starts at its network address: 10.77.66.0/24, not 10.77.66.65/24.",
     'BANLAN_ENTRY_COVERS_YOU' => "This range includes your own address, [x], so saving it would lock you out of this site. It was not saved. Add your address to the whitelist first if you mean it.",
+    'BANLAN_ENTRY_ALREADY_LISTED' => "[x] is already listed with the type [y] (ID [z]), so this entry was not saved. Edit that one instead.",
     'BANLAN_ENTRY_NOT_ENFORCED' => "Not enforced",
 ];

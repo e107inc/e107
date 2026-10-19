@@ -206,19 +206,20 @@ class banlist_ui extends e_admin_ui
 
 		public function beforeCreate($new_data, $old_data)
 		{
-			return $this->storableRow($new_data);
+			return $this->storableRow($new_data, array());
 		}
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-			return $this->storableRow($new_data);
+			return $this->storableRow($new_data, (array) $old_data);
 		}
 
 		/**
 		 * @param array $data the posted row
-		 * @return array|false the row with banlist_ip in its stored form, or false when the entry is one nothing enforces
+		 * @param array $current the row being edited as stored, empty for a new one
+		 * @return array|false the row with banlist_ip in its stored form, or false when nothing would enforce the entry or another row holds its address and type and this one does not
 		 */
-		private function storableRow($data)
+		private function storableRow($data, $current)
 		{
 			$data['banlist_admin'] = ADMINID;
 
@@ -237,11 +238,28 @@ class banlist_ui extends e_admin_ui
 			}
 
 			$range = $entry->range();
-			$isBan = (int) varset($data['banlist_bantype'], eIPHandler::BAN_TYPE_MANUAL) < eIPHandler::BAN_TYPE_WHITELIST;
+			$type = (int) varset($data['banlist_bantype'], eIPHandler::BAN_TYPE_MANUAL);
 
-			if($isBan && $range !== null && $range->contains(Address::toHex(e107::getIPHandler()->getIP())))
+			if($type < eIPHandler::BAN_TYPE_WHITELIST && $range !== null && $range->contains(Address::toHex(e107::getIPHandler()->getIP())))
 			{
 				e107::getMessage()->addError(e107::getParser()->lanVars(BANLAN_ENTRY_COVERS_YOU, e107::getIPHandler()->getIP(true)));
+
+				return false;
+			}
+
+			$holders = array_map('intval', e107::getDb()->createQueryBuilder()->select('banlist_id')->from('banlist')
+				->where('banlist_ip', $entry->stored())
+				->where('banlist_bantype', $type)
+				->orderBy('banlist_id')
+				->fetchColumn());
+
+			if($holders && !in_array((int) varset($current['banlist_id'], 0), $holders, true))
+			{
+				e107::getMessage()->addError(e107::getParser()->lanVars(BANLAN_ENTRY_ALREADY_LISTED, array(
+					htmlspecialchars(trim($data['banlist_ip']), ENT_QUOTES, 'UTF-8'),
+					(new banlistManager)->getBanTypeString($type),
+					$holders[0],
+				)));
 
 				return false;
 			}

@@ -18,6 +18,8 @@ use e107\Ip\RangeLookup;
  */
 class banlistManagerTest extends \Test\Unit
 {
+	use \Test\BanlistRows;
+
 	/** @var banlistManager */
 	private $mgr;
 
@@ -34,6 +36,7 @@ class banlistManagerTest extends \Test\Unit
 	private $savedRetrigger = null;
 
 	const HOURS = 6;
+	const REASON = 'e107help retrigger probe';
 	const BAN_TYPE = -2;
 	const IP_TRIGGERED = '10.66.66.11';
 	const IP_UNTOUCHED = '10.66.66.22';
@@ -90,21 +93,10 @@ class banlistManagerTest extends \Test\Unit
 	 */
 	private function haveBan($ip, $expires, $type = self::BAN_TYPE)
 	{
-		$id = e107::getDb()->insert('banlist', array(
-			'banlist_id'         => 0,
-			'banlist_ip'         => $ip,
-			'banlist_bantype'    => $type,
-			'banlist_datestamp'  => time() - 3600,
-			'banlist_banexpires' => $expires,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'e107help retrigger probe',
-			'banlist_notes'      => '',
-		));
+		$id = $this->haveRow($ip, $type, $expires);
+		$this->insertedIds[] = $id;
 
-		self::assertNotEmpty($id, 'could not write the banlist row this test needs');
-		$this->insertedIds[] = (int) $id;
-
-		return (int) $id;
+		return $id;
 	}
 
 	/**
@@ -273,8 +265,8 @@ class banlistManagerTest extends \Test\Unit
 
 	/**
 	 * The row is selected by the id the queue carries and then has to be written
-	 * by that same id. banlist_ip is an ordinary index, so keying the write on
-	 * the address moves every row stored under it, each one under the duration
+	 * by that same id. banlist_ip is unique only together with the type, so keying
+	 * the write on the address moves every row stored under it, each one under the duration
 	 * configured for the matched row's type rather than its own.
 	 */
 	public function testRetriggerMovesOnlyTheRowThatMatched()
