@@ -284,6 +284,38 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Runs $run with the classes that may post HTML and script, and PHP unless $php is null, set as given.
+	 *
+	 * @param int $html
+	 * @param int $script
+	 * @param callable $run
+	 * @param int|null $php
+	 * @return mixed what $run returns, the parser reading its script access again before and after
+	 */
+	protected function withPostClasses($html, $script, $run, $php = null)
+	{
+		$prefs = array('post_html' => $html, 'post_script' => $script);
+
+		if($php !== null)
+		{
+			$prefs['php_bbcode'] = $php;
+		}
+
+		$restore = $this->withCorePrefs($prefs);
+		\e107::getParser()->setScriptAccess(false);
+
+		try
+		{
+			return $run();
+		}
+		finally
+		{
+			$restore();
+			\e107::getParser()->setScriptAccess(false);
+		}
+	}
+
+	/**
 	 * Routes URLs through the given url_config locations for one test; call what it returns in a finally block.
 	 *
 	 * @param array $locations module => config location, e.g. 'user' => 'core/rewrite'
