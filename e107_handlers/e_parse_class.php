@@ -972,14 +972,14 @@ class e_parse
 		}
 		//	return htmlentities($text);
 
-		$search = array('&#036;', '&quot;', '<', '>', '+');
-		$replace = array('$', '"', '&lt;', '&gt;', '%2B');
+		$search = array('&#036;', '&quot;', '<', '>');
+		$replace = array('$', '"', '&lt;', '&gt;');
 		$text = str_replace($search, $replace, $text);
 
 		if (is_string($text) && e107::wysiwyg() !== true)
 		{
 			// fix for utf-8 issue with html_entity_decode(); ???
-			$text = urldecode(str_ireplace(array('%3C', '%3E', '%27'), array('&lt;', '&gt;', '&#039;'), $text));
+			$text = rawurldecode(str_ireplace(array('%3C', '%3E', '%27'), array('&lt;', '&gt;', '&#039;'), $text));
 			//	$text = str_replace("&nbsp;", " ", $text);
 		}
 
