@@ -5522,12 +5522,6 @@ class e107
 				self::die_http_400();
 			}
 
-			$regex = "/(wget |curl -o |lwp-download|onmouse)/i";
-			if(preg_match($regex,$input))
-			{
-				self::die_http_400();
-			}
-
 		}
 
 		if($type === '_GET') // Basic XSS check.
