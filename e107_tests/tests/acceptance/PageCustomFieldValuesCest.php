@@ -262,7 +262,7 @@ class PageCustomFieldValuesCest
 		$I->dontSeeElement('#cfq7n[onload]');
 	}
 
-	public function theMainAdministratorSeesStoredValuesAsText(AcceptanceTester $I)
+	public function storedMarkupNeverRunsForTheMainAdministrator(AcceptanceTester $I)
 	{
 		$page = $this->havePage($I, 'Stored cfq7', array(
 			'myvideo'    => 'x'.self::MARKUP.'.youtube',
@@ -288,6 +288,7 @@ class PageCustomFieldValuesCest
 			$I->amOnPage('/page.php?id='.$id);
 			$I->seeInSource('custom-fields-example');
 			$I->dontSeeInSource('<svg id=cfq7x');
+			$I->dontSeeElement('svg#cfq7x');
 			$I->dontSeeInSource("href='javascript:");
 		}
 	}
@@ -313,6 +314,28 @@ class PageCustomFieldValuesCest
 
 		$I->amOnPage('/page.php?id='.$video);
 		$I->seeInSource('2016-04/clip.mp4" type="video/mp4"');
+	}
+
+	public function aRichTextValueWithNoLevelPrintsItsFormattingButNotItsScript(AcceptanceTester $I)
+	{
+		$page = $this->havePage($I, 'Legacy cfq418', array(
+			'mybbarea' => '[html]<p><b id="cfq418b">Sale</b> <img id="cfq418i" src="x.png" onerror="cfq418()"></p>'
+				.'<script id="cfq418s">var cfq418 = 1;</script>[/html]',
+			'mytext'   => '<b id="cfq418t">Text</b>',
+		));
+
+		$I->haveSiteTheme('bootstrap3');
+		$I->resetAllCookies();
+		$I->loginAsAdmin();
+		$I->amOnPage('/page.php?id='.$page);
+		$I->seeInSource('custom-fields-example');
+		$I->seeElement('b#cfq418b');
+		$I->seeElement('img#cfq418i');
+		$I->dontSeeElement('img#cfq418i[onerror]');
+		$I->dontSeeInSource('var cfq418');
+		$I->dontSeeElement('b#cfq418t');
+		$I->seeInSource('id="cfq418t">Text');
+		$I->dontSee('permission to use');
 	}
 
 	/**
