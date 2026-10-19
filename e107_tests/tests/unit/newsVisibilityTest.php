@@ -15,6 +15,8 @@
  */
 class newsVisibilityTest extends \Test\Unit
 {
+	use \Test\NewsRows;
+
 	const PREFIX = 'uc_probe_';
 
 	/** @var int a userclass the runtime user is not a member of */
@@ -29,7 +31,6 @@ class newsVisibilityTest extends \Test\Unit
 
 		$this->assertNotContains((string) $this->absentClass, explode(',', USERCLASS_LIST), 'This test needs a userclass the runtime user is outside of.');
 
-		$this->removeProbeRows();
 		$this->ids['public'] = $this->addItem('public', 0);
 		$this->ids['restricted'] = $this->addItem('restricted', $this->absentClass);
 		$this->ids['inverted'] = $this->addItem('inverted', -$this->absentClass);
@@ -37,7 +38,7 @@ class newsVisibilityTest extends \Test\Unit
 
 	protected function _after()
 	{
-		$this->removeProbeRows();
+		$this->removeNewsItems();
 	}
 
 	public function testAnItemHiddenFromAnotherClassLoads()
@@ -88,22 +89,10 @@ class newsVisibilityTest extends \Test\Unit
 	 */
 	private function addItem($name, $class)
 	{
-		return (int) e107::getDb()->insert('news', array(
-			'news_title'       => self::PREFIX.$name,
-			'news_sef'         => self::PREFIX.$name,
-			'news_body'        => 'probe',
-			'news_class'       => (string) $class,
-			'news_category'    => 1,
-			'news_author'      => 1,
-			'news_datestamp'   => time() - 60,
-			'news_start'       => 0,
-			'news_end'         => 0,
-			'news_render_type' => '0',
+		return $this->haveNewsItem(self::PREFIX.$name, array(
+			'news_sef'      => self::PREFIX.$name,
+			'news_class'    => (string) $class,
+			'news_category' => 1,
 		));
-	}
-
-	private function removeProbeRows()
-	{
-		e107::getDb()->delete('news', "news_title LIKE '".self::PREFIX."%'");
 	}
 }

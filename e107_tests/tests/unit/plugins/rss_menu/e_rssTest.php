@@ -5,6 +5,8 @@
  */
 class e_rssTest extends \Test\Unit
 {
+	use \Test\NewsRows;
+
 	/** @var rss_menu_rss */
 	private $addon;
 
@@ -37,7 +39,7 @@ class e_rssTest extends \Test\Unit
 
 		$db = e107::getDb();
 		$db->createQueryBuilder()->delete('comments')->where('comment_id', $this->commentId)->execute();
-		$db->createQueryBuilder()->delete('news')->where('news_id', $this->newsId)->execute();
+		$this->removeNewsItems();
 	}
 
 	/**
@@ -140,23 +142,7 @@ class e_rssTest extends \Test\Unit
 	{
 		$db = e107::getDb();
 
-		$this->newsId = $db->createQueryBuilder()->insert('news')->insertGetId(array(
-			'news_title'            => $this->marker,
-			'news_sef'              => '',
-			'news_body'             => 'body',
-			'news_extended'         => '',
-			'news_meta_keywords'    => '',
-			'news_meta_description' => '',
-			'news_datestamp'        => time() - 3600,
-			'news_author'           => 1,
-			'news_category'         => 0,
-			'news_start'            => 0,
-			'news_end'              => 0,
-			'news_class'            => '0',
-			'news_render_type'      => '0',
-			'news_summary'          => '',
-			'news_thumbnail'        => '',
-		));
+		$this->newsId = $this->haveNewsItem($this->marker);
 
 		$this->commentId = $db->createQueryBuilder()->insert('comments')->insertGetId(array(
 			'comment_pid'          => 0,
@@ -174,7 +160,6 @@ class e_rssTest extends \Test\Unit
 			'comment_share'        => 0,
 		));
 
-		$this::assertNotEmpty($this->newsId, 'could not seed a news item: '.$db->getLastErrorText());
 		$this::assertNotEmpty($this->commentId, 'could not seed a comment: '.$db->getLastErrorText());
 	}
 }
