@@ -29,11 +29,6 @@ global $pref, $parm;
 
 	$tp = e107::getParser();
 
-	$typedAddress = function ($stored)
-	{
-		return htmlspecialchars_decode(htmlspecialchars_decode($stored, ENT_QUOTES), ENT_QUOTES);
-	};
-
 	$parm = strip_tags(trim($parm));
 
 	/* Fix for people using link=external= */
@@ -45,7 +40,7 @@ global $pref, $parm;
 
 	if(strpos($parm, 'mailto') === 0)
 	{
-		list($pre,$email) = explode(":",$typedAddress($parm));
+		list($pre,$email) = explode(":",$tp->bbcodeTextAsTyped($parm));
 		list($p1,$p2) = explode("@",$email);
 		$p2=rawurlencode($p2);			// Primarily to pick up spaces, which are not allowed
 		$address = $tp->toJsString($p1).'+"@"+'.$tp->toJsString($p2);
@@ -78,7 +73,7 @@ global $pref, $parm;
 	{
     	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && substr($link,0,1) != "/" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
     }
-	$href = $tp->toBBCodeUrlAttribute($typedAddress($link));
+	$href = $tp->toBBCodeUrlAttribute($link);
 	if ($link !== '' && $href === '') return $code_text;
 	return "<a class='{$class}' href='".$href."' ".$insert.">".$code_text."</a>";
 

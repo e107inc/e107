@@ -3519,7 +3519,7 @@ class e_parse
 	}
 
 	/**
-	 * Encode a bbcode's URL for an href or src attribute once the constants and shortcodes toHTML() expands in it are expanded, leaving the calling bbcode's globals as they were.
+	 * Encode a bbcode's URL, given as the post stores it, for an href or src attribute once the constants and shortcodes toHTML() expands in it are expanded, leaving the calling bbcode's globals as they were.
 	 *
 	 * @param string $url
 	 * @return string encoded with every opening brace as an entity, or '' when there is nothing {@see e_parse::toUrlAttribute()} will link
@@ -3528,7 +3528,7 @@ class e_parse
 	{
 		global $code_text, $parm, $postID, $fromadmin;
 
-		$url = $this->expandConstants((string) $url, self::$webPathConstants);
+		$url = $this->expandConstants($this->bbcodeTextAsTyped($url), self::$webPathConstants);
 
 		if (self::$bbcodeShortcodes && strpos($url, '{') !== false)
 		{
@@ -3545,6 +3545,21 @@ class e_parse
 		}
 
 		return str_replace('{', '&#123;', $this->toUrlAttribute($url));
+	}
+
+	/**
+	 * What the author typed in a bbcode's parameter or text, from the value the post stores.
+	 *
+	 * A post's store can write `& < > " '` as references, and a member's post saved by 2.2.0 to 2.3.12 holds an `&` as `&amp;amp;`, so this takes back two levels.
+	 * Only `&amp; &lt; &gt; &quot;` and the numeric references to `& < > " '` are decoded: every other reference stays written, so `&apos;` and a brace written as `&#123;` stay written.
+	 * {@see e_parse::toBBCodeUrlAttribute()} takes back these levels itself, so hand it the stored value.
+	 *
+	 * @param string $stored a bbcode's $parm or $code_text
+	 * @return string decoded, for the bbcode to encode once where it writes it, as with {@see e_parse::toAttribute()}
+	 */
+	public function bbcodeTextAsTyped($stored)
+	{
+		return htmlspecialchars_decode(htmlspecialchars_decode((string) $stored, ENT_QUOTES), ENT_QUOTES);
 	}
 
 	/**

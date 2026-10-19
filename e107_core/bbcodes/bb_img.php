@@ -161,6 +161,11 @@
 
 			$imgParms = $safeParms;
 
+			if(isset($imgParms['alt']))
+			{
+				$imgParms['alt'] = htmlspecialchars_decode($imgParms['alt'], ENT_QUOTES);
+			}
+
 			if(isset($imgParms['loading'])
 				&& !in_array(strtolower($imgParms['loading']), array('auto', 'eager', 'lazy'), true))
 			{
@@ -297,7 +302,7 @@
 
 
 			$code_text = str_replace($search, $replace, $code_text);
-			$code_text = e107::getParser()->toAttribute($code_text);
+			$code_text = e107::getParser()->toAttribute(e107::getParser()->bbcodeTextAsTyped($code_text));
 
 			$img_file = pathinfo($code_text);        // 'External' file name. N.B. - might still contain a constant such as e_IMAGE
 
@@ -348,7 +353,7 @@
 			}
 
 
-			$href = $addlink ? $tp->toBBCodeUrlAttribute(htmlspecialchars_decode($main_name, ENT_QUOTES)) : '';
+			$href = $addlink ? $tp->toBBCodeUrlAttribute($main_name) : '';
 
 			if($href !== '')
 			{
