@@ -16,7 +16,7 @@ class hero_shortcodesTest extends \Test\Unit
 		$this->sc = new plugin_hero_hero_shortcodes();
 	}
 
-	public function testStoredMarkupInBulletsAndButtonsPrintsAsText()
+	public function testStoredMarkupInBulletsAndButtonsNeverRuns()
 	{
 		$button = array('icon' => '<i class="fa"></i>'.self::MARKUP, 'label' => 'Go'.self::MARKUP, 'url' => 'https://example.com/'.self::MARKUP, 'class' => "primary' autofocus onfocus='alert(1)");
 		$this->sc->setVars(array(
@@ -49,7 +49,10 @@ class hero_shortcodesTest extends \Test\Unit
 		$nextprev = '{NEXTPREV: total=2&amount=1&current=0&tmpl_prefix=default&url=%22%20autofocus%20onfocus%3Dalert(1)%20x%3D%22}';
 		$printItem = "{PRINT_ITEM=x^' autofocus onfocus=alert(1) x='}";
 		$this->sc->setVars(array(
-			'hero_bullets' => array(array('text' => $nextprev), array('text' => $printItem)),
+			'hero_bullets' => array(
+				array('text' => $nextprev, '__trust__' => array('text' => 0)),
+				array('text' => $printItem, '__trust__' => array('text' => 0)),
+			),
 			'hero_button1' => array('label' => $nextprev),
 			'hero_button2' => array('label' => $printItem),
 		));
@@ -134,10 +137,12 @@ class hero_shortcodesTest extends \Test\Unit
 		$this->assertSame('<i class="fa fa-sun"></i>', $this->sc->sc_hero_icon());
 		$this->assertStringStartsWith('<i class="fa fa-phone"></i>', $this->sc->sc_hero_button1_icon());
 
+		$this->sc->setVars(array('hero_bullets' => array($bullet + $this->recorded($bullet, 0))));
+		$this->assertStringNotContainsString('<b>', $this->sc->sc_hero_text());
+
 		foreach(array(array(), $this->recorded($button + $bullet, 0)) as $record)
 		{
 			$this->sc->setVars(array('hero_bullets' => array($bullet + $record), 'hero_button1' => $button + $record));
-			$this->assertStringNotContainsString('<b>', $this->sc->sc_hero_text());
 			$this->assertStringNotContainsString('<b>', $this->sc->sc_hero_button1_label());
 			$this->assertSame('', $this->sc->sc_hero_button1_url());
 			$this->assertNoMarkupIn($this->sc->sc_hero_icon(), 'icon by an author who may not post HTML');
@@ -153,6 +158,47 @@ class hero_shortcodesTest extends \Test\Unit
 
 		$this->assertStringNotContainsString('<b>', $this->sc->sc_hero_button1_label());
 		$this->assertSame('tel:+15555550100', $this->sc->sc_hero_button1_url());
+	}
+
+	/**
+	 * A bullet's text with no record of who saved it, stored as it was posted, prints as the same text prints once
+	 * {@see e_parse::toDB()} has stored it for an author who may post HTML but not script: its markup and shortcodes
+	 * kept, its scripts and event handlers gone.
+	 */
+	public function testABulletWithNoLevelPrintsAsAnHtmlAuthorWithoutScriptSavedIt()
+	{
+		$texts = array(
+			'<strong id="q418s">Sale</strong> at {SITENAME}',
+			'<img id="q418i" src="x.png" onerror="q418()">Bullet <b id="q418b" onclick="q418()">kept</b>'
+				.'<script>var q418 = 1;</script>',
+		);
+		$printed = array();
+		$expected = array();
+
+		$this->withPostClasses(e_UC_PUBLIC, e_UC_NOBODY, function () use ($texts, &$printed, &$expected)
+		{
+			foreach($texts as $i => $text)
+			{
+				$saved = e107::getParser()->toDB($text, false, false, false, 1);
+				$this->sc->setVars(array('hero_bullets' => array(
+					array('text' => $saved, '__trust__' => array('text' => 1)),
+					array('text' => $text),
+				)));
+				$this->sc->count = 0;
+				$expected[$i] = $this->sc->sc_hero_text();
+				$this->sc->count = 1;
+				$printed[$i] = $this->sc->sc_hero_text();
+			}
+		});
+
+		$this->assertSame($expected, $printed);
+
+		$this->assertStringContainsString('<strong id="q418s">Sale</strong> at '.SITENAME, $printed[0]);
+		$this->assertStringContainsString('src="x.png"', $printed[1]);
+		$this->assertStringContainsString('<b id="q418b">kept</b>', $printed[1]);
+		$this->assertNoMarkupIn($printed[1], 'scripted bullet');
+		$this->assertStringNotContainsString('q418()', $printed[1]);
+		$this->assertStringNotContainsString('var q418', $printed[1]);
 	}
 
 	/**

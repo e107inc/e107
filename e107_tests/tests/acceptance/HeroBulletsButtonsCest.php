@@ -145,7 +145,7 @@ class HeroBulletsButtonsCest
 	}
 
 	/**
-	 * A bullet text with a reference such as &#128; in it stays text after an untouched save with script access.
+	 * A bullet text with a reference such as &#128; in it keeps no script after an untouched save with script access.
 	 */
 	public function aHigherAdministratorsSaveDoesNotPromoteATextTheBrowserWouldDecodeItself(AcceptanceTester $I)
 	{
@@ -160,7 +160,7 @@ class HeroBulletsButtonsCest
 
 		$I->amOnPage('/');
 		$I->seeInSource('Q7C decoded');
-		$I->dontSeeElement('#q7chg');
+		$I->dontSeeElement('#q7chg[onclick]');
 	}
 
 	/**
@@ -217,7 +217,8 @@ class HeroBulletsButtonsCest
 	}
 
 	/**
-	 * A bullet text starting with line breaks stays as stored after an untouched save with script access.
+	 * A bullet text starting with line breaks stays as stored, and keeps no script, after an untouched save with script
+	 * access.
 	 */
 	public function aHigherAdministratorsSaveKeepsATextStartingWithLineBreaks(AcceptanceTester $I)
 	{
@@ -234,7 +235,7 @@ class HeroBulletsButtonsCest
 		$I->assertSame(array($text, array()), array($bullets[0]['text'], $bullets[0]['__trust__']));
 		$I->amOnPage('/');
 		$I->seeInSource('Q7C breaks');
-		$I->dontSeeElement('#q7chy');
+		$I->dontSeeElement('#q7chy[onclick]');
 	}
 
 	/**
@@ -309,7 +310,7 @@ class HeroBulletsButtonsCest
 		}
 	}
 
-	public function theMainAdministratorSeesStoredBulletsAndButtonsAsText(AcceptanceTester $I)
+	public function storedMarkupInBulletsAndButtonsNeverRunsForTheMainAdministrator(AcceptanceTester $I)
 	{
 		$id = $this->haveSlide($I, 'Q7C stored', array(
 			'icon'            => '<i class="fa"></i>'.self::MARKUP,
@@ -326,6 +327,7 @@ class HeroBulletsButtonsCest
 			$I->amOnPage($page);
 			$I->seeInSource('Q7C stored');
 			$I->dontSeeInSource('<svg id=q7ch');
+			$I->dontSeeElement('svg#q7ch');
 			$I->dontSeeInSource("primary' autofocus");
 			$I->dontSeeInSource('href="javascript:q7ch');
 			$I->dontSeeInSource("href='javascript:q7ch");
@@ -353,6 +355,25 @@ class HeroBulletsButtonsCest
 		$I->see('Plain bullet q7c');
 		$I->see('Plain button q7c');
 		$I->seeInSource('href="https://example.com/q7c" class="btn btn-success');
+	}
+
+	public function aBulletWithNoLevelPrintsItsFormattingButNotItsScript(AcceptanceTester $I)
+	{
+		$I->haveSiteTheme('bootstrap5');
+		$this->haveSlide($I, 'Q418 legacy', array(
+			'icon' => 'fa-sun-o.glyph',
+			'text' => '<strong id="q418s">Sale</strong> at {SITENAME} <img id="q418i" src="x.png" onerror="q418()">'
+				.'<script>var q418 = 1;</script>',
+		), array('label' => 'Go', 'url' => 'https://example.com/q418', 'class' => 'primary'));
+
+		$I->amSignedInAs();
+		$I->amOnPage('/');
+		$I->seeElement('strong#q418s');
+		$I->seeElement('img#q418i');
+		$I->dontSeeElement('img#q418i[onerror]');
+		$I->dontSeeInSource('var q418');
+		$I->dontSeeInSource('{SITENAME}');
+		$I->dontSee('permission to use');
 	}
 
 	/**
