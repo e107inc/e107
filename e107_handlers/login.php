@@ -745,10 +745,6 @@ class userlogin
 					if($banAdded === true)
 					{
 						$this->failureBanTime = $time;
-					}
-
-					if($banAdded !== false)
-					{
 						e107::getDb()->createQueryBuilder()->insert('generic')->values(array(
 							'gen_type'      => 'auto_banned',
 							'gen_datestamp' => $time,
