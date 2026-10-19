@@ -6064,6 +6064,19 @@ class e107
 	}
 
 	/**
+	 * Keep a request path from starting with another host's address once a browser has read it, whether it decodes a character reference in an attribute or drops a tab or a line break.
+	 *
+	 * @param string $uri
+	 * @return string
+	 */
+	private static function rootRequestPath($uri)
+	{
+		$uri = str_replace(array("\t", "\n", "\r"), array('%09', '%0A', '%0D'), $uri);
+
+		return preg_replace(array('#^[/\\\\]+#', '#^/&#'), array('/', '/%26'), $uri);
+	}
+
+	/**
 	 * Define e_PAGE, e_SELF, e_ADMIN_AREA and USER_AREA;
 	 * The following files are assumed to use admin theme:
 	 * 1. Any file in the admin directory (check for non-plugin added to avoid mismatches)
@@ -6154,7 +6167,7 @@ class e107
 			}
 		}
 
-		$requestUri = self::encodeRequestUrl($requestUri, $no_cbrace);
+		$requestUri = self::encodeRequestUrl(self::rootRequestPath($requestUri), $no_cbrace);
 		$requestUrl = self::encodeRequestUrl($requestUrl, $no_cbrace);
 
 		define('e_REQUEST_URL', $requestUrl); // full request url string (including domain)
