@@ -307,12 +307,15 @@ class PageCustomFieldValuesCest
 		$I->seeInSource('2016-04/clip.mp4" type="video/mp4"');
 	}
 
-	public function aRichTextValueWithNoLevelPrintsItsFormattingButNotItsScript(AcceptanceTester $I)
+	public function aValueWithNoLevelPrintsItsFormattingButNotItsScript(AcceptanceTester $I)
 	{
 		$page = $this->havePage($I, 'Legacy cfq418', array(
 			'mybbarea' => '[html]<p><b id="cfq418b">Sale</b> <img id="cfq418i" src="x.png" onerror="cfq418()"></p>'
 				.'<script id="cfq418s">var cfq418 = 1;</script>[/html]',
-			'mytext'   => '<b id="cfq418t">Text</b>',
+			'mytext'   => '<b id="cfq418t" onclick="cfq418()">Text</b><script>var cfq418 = 1;</script>',
+			'myurl'    => '<b id="cfq418u">Link</b>',
+			'myemail'  => '<b id="cfq418e">Mail</b>',
+			'mynumber' => '<b id="cfq418n">1</b>',
 		));
 
 		$I->haveSiteTheme('bootstrap3');
@@ -323,8 +326,13 @@ class PageCustomFieldValuesCest
 		$I->seeElement('img#cfq418i');
 		$I->dontSeeElement('img#cfq418i[onerror]');
 		$I->dontSeeInSource('var cfq418');
-		$I->dontSeeElement('b#cfq418t');
-		$I->seeInSource('id="cfq418t">Text');
+
+		foreach(array('t', 'u', 'e', 'n') as $field)
+		{
+			$I->seeElement('b#cfq418'.$field);
+		}
+
+		$I->dontSeeElement('b#cfq418t[onclick]');
 		$I->dontSee('permission to use');
 	}
 
