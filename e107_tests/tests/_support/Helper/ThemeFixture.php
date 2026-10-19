@@ -8,7 +8,7 @@ class ThemeFixture extends AppFixture
 	const PROBE_FILE = 'e107_tests_theme_fixture_probe.php';
 
 	/** What a fixture theme may be made of; anything else in the fixture directory is not deployed. */
-	private static $files = array('theme.php', 'theme.xml', 'fpw_template.php', 'login_template.php', 'online_menu_template.php', 'templates/fpw_template.php', 'templates/online/online_menu_template.php', 'templates/usersettings_template.php');
+	private static $files = array('theme.php', 'theme.xml', 'fpw_template.php', 'login_template.php', 'online_menu_template.php', 'templates/fpw_template.php', 'templates/online/online_menu_template.php', 'templates/usersettings_template.php', 'templates/logout_template.php');
 
 	/** @var bool */
 	private $probeWritten = false;
@@ -20,7 +20,7 @@ class ThemeFixture extends AppFixture
 	private $restore = null;
 
 	/**
-	 * Put a fixture theme from tests/_data into e107_themes.
+	 * Put a fixture theme from tests/_data into e107_themes, and drop the cached theme list so the next request finds it.
 	 *
 	 * @param string $name the fixture directory name
 	 */
@@ -39,6 +39,8 @@ class ThemeFixture extends AppFixture
 			$this->app()->writeAppFile($relative, file_get_contents($source));
 			$this->written[] = $relative;
 		}
+
+		$this->probe('clearcache', '');
 	}
 
 	/**
@@ -129,12 +131,8 @@ if($act === 'settheme')
 {
 	$previous = e107::getPref('sitetheme');
 
-	e107::getTheme()->clearCache();
-
 	$handler = new themeHandler();
 	$handler->setTheme($name, false);
-
-	e107::getTheme()->clearCache();
 
 	echo "PROBE_OK THEME=".e107::getPref('sitetheme')
 		." LAYOUT=".e107::getPref('sitetheme_deflayout')
