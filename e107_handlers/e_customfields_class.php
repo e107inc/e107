@@ -192,7 +192,6 @@
 
 			$trust = $this->levelIn($this->_trust, $key);
 			$text = is_string($value) ? $tp->attributeValue($value) : $value;
-			$shown = ($trust === null) ? $text : $value;
 			$label = ($trust === 2) ? $this->asScriptAuthorWrote($value) : $text;
 			$ret = null;
 
@@ -250,11 +249,11 @@
 					break;
 
 				case 'url':
-					$ret = ($raw) ? $this->linkTo($value) : $tp->toHTML($shown);
+					$ret = ($raw) ? $this->linkTo($value) : $tp->toHTML($this->atLevel($value, $trust));
 					break;
 
 				case 'email':
-					$ret = ($raw) ? $text : $tp->toHTML($shown);
+					$ret = ($raw) ? $text : $tp->toHTML($this->atLevel($value, $trust));
 					break;
 
 				case 'user':
@@ -279,7 +278,7 @@
 
 				case 'textarea':
 				case 'bbarea':
-					$html = ($trust === null) ? $tp->toDBWithoutScript($value) : $value;
+					$html = $this->atLevel($value, $trust);
 
 					if(!$raw)
 					{
@@ -291,7 +290,7 @@
 					}
 					else
 					{
-						$ret = ($trust === 2) ? $label : $shown;
+						$ret = ($trust === 2) ? $label : $html;
 					}
 					break;
 
@@ -323,11 +322,23 @@
 					break;
 
 				default:
-					$ret = ($raw) ? $text : $tp->toHTML($shown);
+					$ret = ($raw) ? $text : $tp->toHTML($this->atLevel($value, $trust));
 			}
 
 
 			return $ret;
+		}
+
+
+		/**
+		 * @param mixed $value a value as stored
+		 * @param int|null $trust the level recorded for it, null for none
+		 * @return mixed the value as an author at that level stored it: one with no level, stored as it was posted, as
+		 *               {@see e_parse::toDBWithoutScript()} stores it for an author who may post HTML but not script
+		 */
+		private function atLevel($value, $trust)
+		{
+			return ($trust === null) ? e107::getParser()->toDBWithoutScript($value) : $value;
 		}
 
 

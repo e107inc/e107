@@ -642,8 +642,7 @@
 		/**
 		 * A value saved by an administrator who may post HTML prints as HTML where the page prints HTML, in raw mode
 		 * too with its quotes back, an icon written as markup only for one with script access, and the same values with
-		 * no record of who saved them print as text, but for the text area's, which prints as one saved by an
-		 * administrator who may post HTML but not script.
+		 * no record of who saved them print as values saved by an administrator who may post HTML but not script.
 		 */
 		public function testAValuePrintsAsItsAuthorMayPostIt()
 		{
@@ -671,7 +670,7 @@
 
 			$this->cf->loadData(json_encode($values));
 			$this->assertStringContainsString('<b>bold</b>', $this->cf->getFieldValue('textarea'));
-			$this->assertStringNotContainsString('<b>', $this->cf->getFieldValue('url'));
+			$this->assertStringContainsString('<b>this</b>', $this->cf->getFieldValue('url'));
 			$this->assertStringStartsNotWith('<i class="fa fa-check">', $this->cf->getFieldValue('icon'));
 
 			$this->cf->loadData(json_encode(array('textarea' => '&lt;b&gt;bold&lt;/b&gt;', '__trust__' => array('textarea' => 0))));
@@ -679,16 +678,17 @@
 		}
 
 		/**
-		 * A rich text or text area value with no record of who saved it, stored as it was posted, prints as the same
-		 * value prints once {@see e_parse::toDB()} has stored it for an author who may post HTML but not script: its
-		 * markup kept and its scripts and event handlers gone, in raw mode too, whatever the current user may post.
+		 * A value with no record of who saved it, stored as it was posted, prints as the same value prints once
+		 * {@see e_parse::toDB()} has stored it for an author who may post HTML but not script: its markup kept and its
+		 * scripts and event handlers gone, whatever the current user may post. A rich text or text area value prints
+		 * so in raw mode too.
 		 */
 		public function testAValueWithNoLevelPrintsAsAnHtmlAuthorWithoutScriptSavedIt()
 		{
-			$this->cf->loadConfig(array(
+			$config = array(
 				'rich' => array('title' => 'Rich', 'type' => 'bbarea', 'writeParms' => '', 'help' => ''),
 				'text' => array('title' => 'Text', 'type' => 'textarea', 'writeParms' => '', 'help' => ''),
-			));
+			);
 			$formatted = array(
 				'rich' => '[html]<p><b id="cfq418b">Sale</b></p>[/html]',
 				'text' => 'Say "hi" & <i id="cfq418w">wave</i>, it\'s $5',
@@ -698,6 +698,18 @@
 					.'<script>var cfq418 = 1;</script>[/html]',
 				'text' => '<b id="cfq418t" onclick="cfq418()">Sale</b><script>var cfq418 = 1;</script>',
 			);
+			$modes = array_fill_keys(array_keys($config), array(array(), array('mode' => 'raw')));
+
+			foreach(array('text', 'number', 'url', 'email', 'password', 'hidden') as $type)
+			{
+				$key = 'one_'.$type;
+				$config[$key] = array('title' => ucfirst($type), 'type' => $type, 'writeParms' => '', 'help' => '');
+				$formatted[$key] = 'Say "hi" & <i id="cfq418'.$type.'">wave</i>, it\'s $5';
+				$scripted[$key] = '<b id="cfq418'.$type.'" onclick="cfq418()">Sale</b><script>var cfq418 = 1;</script>';
+				$modes[$key] = array(array());
+			}
+
+			$this->cf->loadConfig($config);
 
 			foreach(array($formatted, $scripted) as $values)
 			{
@@ -712,11 +724,11 @@
 
 				foreach(array(e_UC_PUBLIC, e_UC_NOBODY) as $reader)
 				{
-					$this->withPostClasses($reader, $reader, function () use ($values, $saved, $reader)
+					$this->withPostClasses($reader, $reader, function () use ($values, $saved, $reader, $modes)
 					{
-						foreach(array(array(), array('mode' => 'raw')) as $parm)
+						foreach(array_keys($values) as $key)
 						{
-							foreach(array_keys($values) as $key)
+							foreach($modes[$key] as $parm)
 							{
 								$this->cf->loadData(json_encode($saved));
 								$expected = $this->cf->getFieldValue($key, $parm);
@@ -729,7 +741,7 @@
 				}
 			}
 
-			$printed = $this->withPostClasses(e_UC_NOBODY, e_UC_NOBODY, function () use ($formatted, $scripted)
+			$printed = $this->withPostClasses(e_UC_NOBODY, e_UC_NOBODY, function () use ($formatted, $scripted, $modes)
 			{
 				$printed = array();
 
@@ -739,26 +751,37 @@
 
 					foreach(array('normal' => array(), 'raw' => array('mode' => 'raw')) as $mode => $parm)
 					{
-						$printed[$name][$mode] = $this->cf->getFieldValue('rich', $parm)
-							.$this->cf->getFieldValue('text', $parm);
+						$printed[$name][$mode] = '';
+
+						foreach(array_keys($values) as $key)
+						{
+							if(in_array($parm, $modes[$key], true))
+							{
+								$printed[$name][$mode] .= $this->cf->getFieldValue($key, $parm);
+							}
+						}
 					}
 				}
 
 				return $printed;
 			});
 
+			$formatting = '//p/b[@id="cfq418b"] | //i[starts-with(@id, "cfq418")]';
 			$xpath = new DOMXPath($this->htmlDocument($printed['formatted']['normal']));
-			$this->assertSame(2, $xpath->query('//p/b[@id="cfq418b"] | //i[@id="cfq418w"]')->length, 'formatting kept');
+			$this->assertSame(8, $xpath->query($formatting)->length, 'formatting kept');
+			$xpath = new DOMXPath($this->htmlDocument($printed['formatted']['raw']));
+			$this->assertSame(2, $xpath->query($formatting)->length, 'formatting kept in raw mode');
 
 			foreach($printed['scripted'] as $mode => $html)
 			{
 				$xpath = new DOMXPath($this->htmlDocument($html));
 				$label = $mode.': '.$html;
 
-				$this->assertSame(2, $xpath->query('//img[@src="x.png"] | //b[@id="cfq418t"]')->length, $label);
+				$kept = $xpath->query('//img[@src="x.png"] | //b[starts-with(@id, "cfq418")]');
+				$this->assertSame(($mode === 'normal') ? 8 : 2, $kept->length, $label);
 				$this->assertSame(0, $xpath->query('//script')->length, $label);
 				$this->assertNoMarkupIn($html, $label);
-				$this->assertStringNotContainsString('cfq418', preg_replace('/ id="cfq418[it]"/', '', $html), $label);
+				$this->assertStringNotContainsString('cfq418', preg_replace('/ id="cfq418\w+"/', '', $html), $label);
 			}
 		}
 
