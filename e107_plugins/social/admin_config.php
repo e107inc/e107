@@ -614,7 +614,7 @@ class social_ui extends e_admin_ui
 			}
 			catch (\Hybridauth\Exception\InvalidArgumentException $e)
 			{
-				e107::getMessage()->addError("[{$e->getCode()}] {$e->getMessage()}");
+				e107::getMessage()->addError("[{$e->getCode()}] ".e107::getParser()->attributeValue($e->getMessage()));
 			}
 			catch (\Hybridauth\Exception\UnexpectedValueException $ignored)
 			{

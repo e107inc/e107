@@ -14,6 +14,14 @@ namespace Test;
 trait BootedCli
 {
 	/**
+	 * @return string a child's php arguments that hold its output back, so the notices its boot prints send no headers and its session settings stay changeable
+	 */
+	protected static function buffered()
+	{
+		return '-d output_buffering=On';
+	}
+
+	/**
 	 * Runs $php in a subprocess that has booted class2.php in CLI mode; the child serves {@see Addresses::SERVER} and visits as {@see Addresses::nextVisitor()}, keeping an address its caller put in the environment.
 	 *
 	 * @param string $php
@@ -50,9 +58,10 @@ trait BootedCli
 	 *
 	 * @param string $script path under the app root, e.g. 'e107_admin/db.php'
 	 * @param string $seed PHP setting up preferences and request data before the script is loaded
+	 * @param string $ini extra php command-line arguments, e.g. {@see BootedCli::buffered()}
 	 * @return string
 	 */
-	protected function renderInBootedCli($script, $seed)
+	protected function renderInBootedCli($script, $seed, $ini = '')
 	{
 		$booted = 'E107-BOOTED';
 
@@ -61,7 +70,7 @@ trait BootedCli
 		$php .= $seed;
 		$php .= "require_once('".addslashes(APP_PATH.'/'.$script)."'); ";
 
-		list($output) = $this->runInBootedCli($php);
+		list($output) = $this->runInBootedCli($php, $ini);
 		$page = implode("\n", $output);
 
 		$this->assertStringContainsString($booted, $page,

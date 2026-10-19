@@ -21,9 +21,6 @@ class e_session_dbTest extends \Codeception\Test\Unit
 
 	const PROBE_ID = 'sessdbtestgcprobe0123456789';
 
-	/** A child's php arguments that hold its output back, so the notices its boot prints send no headers and its session settings stay changeable. */
-	const BUFFERED = '-d output_buffering=On';
-
 	/** @var SessionDbHandlerLeavingTheSessionOpen */
 	private $handler;
 
@@ -218,7 +215,7 @@ class e_session_dbTest extends \Codeception\Test\Unit
 		$php .= "fwrite(STDERR, session_start() ? '@@started@@' : '@@refused@@'); ";
 		$php .= "session_write_close(); ";
 
-		list($output) = $this->runInBootedCli($php, self::BUFFERED);
+		list($output) = $this->runInBootedCli($php, self::buffered());
 
 		$this->assertStringContainsString('@@started@@', implode("\n", $output));
 		$this->assertFalse($this->rowExists(self::EXPIRED), 'the session start ran the collector');
@@ -240,7 +237,7 @@ class e_session_dbTest extends \Codeception\Test\Unit
 		$php .= "\$handler->close(); ";
 		$php .= "fwrite(STDERR, '@@'.ini_get('session.gc_probability').':'.(\$db->queryCount() - \$before).'@@'); ";
 
-		list($output) = $this->runInBootedCli($php, self::BUFFERED);
+		list($output) = $this->runInBootedCli($php, self::buffered());
 		$printed = implode("\n", $output);
 
 		$this->assertSame(1, preg_match('/@@(\d+):(\d+)@@/', $printed, $matches), $printed);
