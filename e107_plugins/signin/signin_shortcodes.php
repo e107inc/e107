@@ -132,7 +132,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 	function sc_signin_form($parm=null)
 	{
-		return ($parm === 'start') ? '<form method="post" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">' : '</form>';
+		return ($parm === 'start') ? '<form method="post" action="'.e107::getParser()->toUrlAttribute(e_REQUEST_HTTP).'" accept-charset="UTF-8">' : '</form>';
 	}
 
 	function sc_signin_imagecode_box($parm = '')
