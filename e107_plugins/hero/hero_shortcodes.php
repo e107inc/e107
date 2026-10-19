@@ -158,13 +158,15 @@ class plugin_hero_hero_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 		$bullet = varset($this->var['hero_bullets'][$this->count], array());
+		$trust = $this->trustOf($bullet, 'text');
+		$text = ($trust === null) ? $tp->toDBWithoutScript(varset($bullet['text'])) : varset($bullet['text']);
 
-		if($this->trustOf($bullet, 'text') >= 1)
+		if($trust === null || $trust >= 1)
 		{
-			return $tp->toHTML(varset($bullet['text']), true, 'BODY');
+			return $tp->toHTML($text, true, 'BODY');
 		}
 
-		return $tp->toHTML($tp->attributeValue(varset($bullet['text'])), true, 'BODY,scparse_off');
+		return $tp->toHTML($tp->attributeValue($text), true, 'BODY,scparse_off');
 	}
 
 
