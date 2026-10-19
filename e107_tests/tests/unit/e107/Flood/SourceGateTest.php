@@ -73,7 +73,7 @@ class SourceGateTest extends \Test\Unit
 
 	public function testTheGateOpensAgainOnceTheTimeoutHasPassed()
 	{
-		$gate = $this->gate(1);
+		$gate = $this->gate();
 		$gate->record(self::KIND, self::SOURCE);
 
 		self::assertTrue($gate->isClosedTo(self::KIND, self::SOURCE));

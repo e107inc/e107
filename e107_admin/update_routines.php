@@ -695,6 +695,80 @@ function update_core_database($type = '')
 			}
 		}
 
+		$banlistKey = array();
+		$banlistKeyUnique = false;
+		foreach($sql->schema()->getIndexes('banlist') as $part)
+		{
+			if($part['Key_name'] === 'banlist_ip')
+			{
+				$banlistKey[(int) $part['Seq_in_index']] = $part['Column_name'];
+				$banlistKeyUnique = ((int) $part['Non_unique'] === 0);
+			}
+		}
+		ksort($banlistKey);
+
+		if(!$banlistKeyUnique || array_values($banlistKey) !== array('banlist_ip', 'banlist_bantype'))
+		{
+			if($just_check)
+			{
+				return update_needed("The ban list can hold the same entry twice, which lets parallel requests ban one address several times.");
+			}
+
+			$now = time();
+			$duplicates = array();
+			$groups = $sql->createQueryBuilder()->select('banlist_ip', 'banlist_bantype')->from('banlist')
+				->groupBy(array('banlist_ip', 'banlist_bantype'))->havingCount('>', 1)
+				->fetchAll();
+
+			foreach($groups as $group)
+			{
+				$rows = $sql->createQueryBuilder()->select('banlist_id', 'banlist_banexpires')->from('banlist')
+					->where('banlist_ip', $group['banlist_ip'])->where('banlist_bantype', (int) $group['banlist_bantype'])
+					->orderBy('banlist_id')
+					->fetchAll();
+
+				$keep = (int) $rows[0]['banlist_id'];
+				foreach($rows as $row)
+				{
+					if((int) $row['banlist_banexpires'] === 0 || (int) $row['banlist_banexpires'] > $now)
+					{
+						$keep = (int) $row['banlist_id'];
+						break;
+					}
+				}
+
+				foreach($rows as $row)
+				{
+					if((int) $row['banlist_id'] !== $keep)
+					{
+						$duplicates[] = (int) $row['banlist_id'];
+					}
+				}
+			}
+
+			foreach(array_chunk($duplicates, 500) as $chunk)
+			{
+				$sql->createQueryBuilder()->delete('banlist')->whereIn('banlist_id', $chunk)->execute();
+			}
+
+			$alter = $sql->schema()->table('banlist');
+			if(!empty($banlistKey))
+			{
+				$alter->dropIndex('banlist_ip');
+			}
+			if($alter->addIndex(Index::unique('banlist_ip', array('banlist_ip', 'banlist_bantype')))->execute() === false)
+			{
+				e107::getMessage()->addError("The ban list could not be given its one-entry-per-address-and-type key, so this update is still due.");
+			}
+
+			if(!empty($duplicates))
+			{
+				e107::getIPHandler()->regenerateFiles();
+				$log->addEvent(4, __FILE__, "UPDATE", 'LAN_UPDATE',
+					"Removed ".count($duplicates)." duplicate ban list entries, keeping the first live entry of each address and type.", false, LOG_TO_ROLLING);
+			}
+		}
+
 		if(empty($pref['ban_durations_login_default_applied']))
 		{
 			if(empty($pref['ban_durations'][eIPHandler::BAN_TYPE_LOGINS]))

@@ -17,6 +17,8 @@ use e107\Ip\RangeFile;
  */
 class banlistCsvImportTest extends \Test\Unit
 {
+	use \Test\BanlistRows;
+
 	/** @var banlistManager */
 	private $mgr;
 
@@ -41,9 +43,13 @@ class banlistCsvImportTest extends \Test\Unit
 	/** @var bool whether the probe took the lock and still owes it back */
 	private $probeHoldsLock = false;
 
+	/** @var callable|null puts the banlist_ip key back as a test found it, null where no test changed it */
+	private $restoreKey = null;
+
 	const IP_A = '10.77.66.1';
 	const IP_B = '10.77.66.2';
 	const IP_C = '10.77.66.3';
+	const ER_BINLOG_CREATE_ROUTINE_NEED_SUPER = 1419;
 
 	protected function _before()
 	{
@@ -80,6 +86,12 @@ class banlistCsvImportTest extends \Test\Unit
 				->whereIn('banlist_ip', $used)
 				->orWhereLike('banlist_ip', 'imported-test-%')
 				->execute();
+
+			if($this->restoreKey !== null)
+			{
+				call_user_func($this->restoreKey);
+				$this->restoreKey = null;
+			}
 
 			$this->mgr->writeBanListFiles('ip,htaccess');
 
@@ -181,6 +193,17 @@ class banlistCsvImportTest extends \Test\Unit
 		}
 
 		return $locked;
+	}
+
+	/**
+	 * @return array[] the banlist_ip key of a site before the update and after it
+	 */
+	public function addressKeys()
+	{
+		return array(
+			'the plain key of a site not yet updated' => array(false),
+			'the unique key the update adds'          => array(true),
+		);
 	}
 
 	/**
@@ -323,15 +346,7 @@ class banlistCsvImportTest extends \Test\Unit
 
 	public function testDuplicateEntriesAreSkipped()
 	{
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => e107::getIPHandler()->ipEncode(self::IP_A),
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_MANUAL,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'pre-existing',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow(e107::getIPHandler()->ipEncode(self::IP_A), eIPHandler::BAN_TYPE_MANUAL, 0, 'pre-existing');
 
 		$csv = self::IP_A . "\n" . self::IP_B . "\n" . self::IP_B . "\n";
 		$result = $this->mgr->importBanlistCsv($this->haveCsv($csv));
@@ -347,15 +362,7 @@ class banlistCsvImportTest extends \Test\Unit
 
 	public function testReplaceModeSwapsOldImportedRowsForTheFile()
 	{
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => 'imported-test-old',
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'old import',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow('imported-test-old', eIPHandler::BAN_TYPE_IMPORTED, 0, 'old import');
 
 		$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_B . "\n"),
 			array('replaceImported' => true));
@@ -368,15 +375,7 @@ class banlistCsvImportTest extends \Test\Unit
 
 	public function testAReplaceImportIsRefusedWhileAnotherRunIsReplacing()
 	{
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => 'imported-test-old',
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'written by the run that is still going',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow('imported-test-old', eIPHandler::BAN_TYPE_IMPORTED, 0, 'written by the run that is still going');
 
 		$this->takeProbeLock();
 		$queriesBefore = e107::getDb()->queryCount();
@@ -405,15 +404,7 @@ class banlistCsvImportTest extends \Test\Unit
 
 	public function testTheReplaceLockIsStillHeldWhenTheReplacedRowsHaveGone()
 	{
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => 'imported-test-old',
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'the batch the run is replacing',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow('imported-test-old', eIPHandler::BAN_TYPE_IMPORTED, 0, 'the batch the run is replacing');
 
 		self::assertSame(1, $this->countRows($this->probeDb(), 'imported-test-old'),
 			'the batch this run replaces has to be there to start with, so that a count of none later reads as the delete rather than as a read that answered nothing');
@@ -486,15 +477,7 @@ class banlistCsvImportTest extends \Test\Unit
 
 	public function testAnExpiredRowDoesNotMakeAnImportedAddressADuplicate()
 	{
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => e107::getIPHandler()->ipEncode(self::IP_A),
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_MANUAL,
-			'banlist_datestamp'  => time() - 7200,
-			'banlist_banexpires' => time() - 3600,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'expired an hour ago',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow(e107::getIPHandler()->ipEncode(self::IP_A), eIPHandler::BAN_TYPE_MANUAL, time() - 3600, 'expired an hour ago');
 
 		$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_A . "\n"));
 
@@ -504,19 +487,16 @@ class banlistCsvImportTest extends \Test\Unit
 			'a refreshed blocklist has to reinstate an address whose old ban has run out');
 	}
 
-	public function testReimportingAfterARowLapsesSupersedesItRatherThanStackingASecondCopy()
+	/**
+	 * @dataProvider addressKeys
+	 * @param bool $unique
+	 */
+	public function testReimportingAfterARowLapsesSupersedesItRatherThanStackingASecondCopy($unique)
 	{
+		$this->restoreKey = \Test\BanlistAddressKey::set($unique);
 		$encoded = e107::getIPHandler()->ipEncode(self::IP_A);
 
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => $encoded,
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
-			'banlist_datestamp'  => time() - 7200,
-			'banlist_banexpires' => time() - 3600,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'lapsed an hour ago',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow($encoded, eIPHandler::BAN_TYPE_IMPORTED, time() - 3600, 'lapsed an hour ago');
 
 		$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_A . "\n"));
 
@@ -537,15 +517,7 @@ class banlistCsvImportTest extends \Test\Unit
 	{
 		$this->cleanupIps[] = self::IP_A;
 
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => self::IP_A,
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_MANUAL,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'written before addresses were encoded',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow(self::IP_A, eIPHandler::BAN_TYPE_MANUAL, 0, 'written before addresses were encoded');
 
 		$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_A . "\n"));
 
@@ -555,19 +527,16 @@ class banlistCsvImportTest extends \Test\Unit
 		self::assertSame(0, $result['imported']);
 	}
 
-	public function testReplaceModeImportsNothingAtAllWhenAnyLineWasRejected()
+	/**
+	 * @dataProvider addressKeys
+	 * @param bool $unique
+	 */
+	public function testReplaceModeImportsNothingAtAllWhenAnyLineWasRejected($unique)
 	{
+		$this->restoreKey = \Test\BanlistAddressKey::set($unique);
 		$encoded = e107::getIPHandler()->ipEncode(self::IP_B);
 
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => $encoded,
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'old import',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow($encoded, eIPHandler::BAN_TYPE_IMPORTED, 0, 'old import');
 
 		$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_B . "\n<junk>!!\n"),
 			array('replaceImported' => true));
@@ -577,34 +546,101 @@ class banlistCsvImportTest extends \Test\Unit
 		self::assertSame(str_replace('[x]', 1, BANLAN_IMPORT_REPLACE_INCOMPLETE), $result['fatal'],
 			'and the admin has to be told, with the way out, or they read the run as a success');
 
-		$rows = e107::getDb()->createQueryBuilder()->select('banlist_id')->from('banlist')
+		$rows = e107::getDb()->createQueryBuilder()->select('banlist_reason')->from('banlist')
 			->where('banlist_ip', $encoded)->fetchAll();
 		self::assertCount(1, $rows,
 			'the old batch is hidden from the duplicate check because it was going to be deleted, '
 			. 'so a run that keeps it and its own rows both would double every address they share');
+		self::assertSame('old import', $rows[0]['banlist_reason'],
+			'and a row the run wrote over, where the key had no room for a second one, is put back as it was');
+	}
+
+	public function testAnAbortedReplaceThatCannotPutARowBackSaysSoRatherThanCallingItAnEntryItWrote()
+	{
+		$this->restoreKey = \Test\BanlistAddressKey::set(true);
+		$this->haveRow(e107::getIPHandler()->ipEncode(self::IP_B), eIPHandler::BAN_TYPE_IMPORTED, 0, 'old import');
+
+		$sql = e107::getDb();
+
+		if($sql->execute("CREATE TRIGGER `banlistCsvImportTest_restore` BEFORE UPDATE ON `".MPREFIX."banlist` FOR EACH ROW
+			IF NEW.banlist_reason = 'old import' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'restore refused'; END IF") === false)
+		{
+			self::assertSame(self::ER_BINLOG_CREATE_ROUTINE_NEED_SUPER, (int) $sql->getLastErrorNumber(), $sql->getLastErrorText());
+			$this->markTestSkipped('MySQL refuses CREATE TRIGGER to an account without SUPER while binary logging is on.');
+		}
+
+		try
+		{
+			$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_B . "\n<junk>!!\n"),
+				array('replaceImported' => true));
+		}
+		finally
+		{
+			$sql->execute("DROP TRIGGER IF EXISTS `banlistCsvImportTest_restore`");
+		}
+
+		self::assertStringContainsString('could not be put back', $result['fatal']);
+		self::assertStringNotContainsString(str_replace('[x]', 1, BANLAN_IMPORT_ROLLBACK_FAILED), $result['fatal'],
+			'removing what that message points at would delete the address\'s ban from the earlier batch');
+	}
+
+	/**
+	 * @dataProvider addressKeys
+	 * @param bool $unique
+	 */
+	public function testReplaceModeLeavesAnAddressBothBatchesNameWithOneEntryFromTheFile($unique)
+	{
+		$this->restoreKey = \Test\BanlistAddressKey::set($unique);
+		$encoded = e107::getIPHandler()->ipEncode(self::IP_A);
+
+		$this->haveRow($encoded, eIPHandler::BAN_TYPE_IMPORTED, 0, 'old import');
+
+		$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_A . ",,,,from the file,\n"),
+			array('replaceImported' => true));
+
+		self::assertSame('', $result['fatal']);
+		self::assertSame(1, $result['imported']);
+		self::assertSame(array(), $result['warnings']);
+
+		$rows = e107::getDb()->createQueryBuilder()->select('banlist_reason')->from('banlist')
+			->where('banlist_ip', $encoded)->fetchAll();
+		self::assertSame(array(array('banlist_reason' => 'from the file')), $rows,
+			'a blocklist re-imported in replace mode names most of the addresses it named last time');
+	}
+
+	/**
+	 * Under the key, two spellings the column compares as equal are one entry, whichever way PHP sees them.
+	 */
+	public function testTwoSpellingsOfOneAddressInAFileAreOneEntryUnderTheKey()
+	{
+		$this->restoreKey = \Test\BanlistAddressKey::set(true);
+
+		$result = $this->mgr->importBanlistCsv($this->haveCsv("imported-test-case@example.com\nImported-Test-Case@Example.com\n"));
+
+		self::assertSame('', $result['fatal']);
+		self::assertSame(1, $result['imported']);
+		self::assertSame(1, $result['duplicates']);
+	}
+
+	public function testALiveImportedEntryInAnotherSpellingIsADuplicateUnderTheKey()
+	{
+		$this->restoreKey = \Test\BanlistAddressKey::set(true);
+
+		$this->haveRow('Imported-Test-Live@Example.com', eIPHandler::BAN_TYPE_IMPORTED, 0, 'already imported');
+
+		$result = $this->mgr->importBanlistCsv($this->haveCsv("imported-test-live@example.com,,,,from the file,\n"));
+
+		self::assertSame('', $result['fatal']);
+		self::assertSame(0, $result['imported']);
+		self::assertSame(1, $result['duplicates']);
+		self::assertSame('already imported', $this->storedRow('Imported-Test-Live@Example.com')['banlist_reason']);
 	}
 
 	public function testReplaceModeKeepsTheOldBatchAndSaysSoWhenTheFileAddsNothing()
 	{
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => 'imported-test-keep',
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'old import',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow('imported-test-keep', eIPHandler::BAN_TYPE_IMPORTED, 0, 'old import');
 
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => e107::getIPHandler()->ipEncode(self::IP_A),
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_MANUAL,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'banned by hand, not by the import',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow(e107::getIPHandler()->ipEncode(self::IP_A), eIPHandler::BAN_TYPE_MANUAL, 0, 'banned by hand, not by the import');
 
 		$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_A . "\n"),
 			array('replaceImported' => true));
@@ -633,15 +669,7 @@ class banlistCsvImportTest extends \Test\Unit
 	{
 		$encoded = e107::getIPHandler()->ipEncode(self::IP_C);
 
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => $encoded,
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_TEMPORARY,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'left behind by an import that died',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow($encoded, eIPHandler::BAN_TYPE_TEMPORARY, 0, 'left behind by an import that died');
 
 		$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_B . "\n" . self::IP_C . "\n"),
 			array('replaceImported' => true));
@@ -725,15 +753,7 @@ class banlistCsvImportTest extends \Test\Unit
 	}
 	public function testUnterminatedQuoteAbortsAndKeepsPreviousImport()
 	{
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => 'imported-test-safe',
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'must survive',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow('imported-test-safe', eIPHandler::BAN_TYPE_IMPORTED, 0, 'must survive');
 
 		$csv = self::IP_A . ',0,0,-5,ok,ok' . "\n"
 			. self::IP_B . ',0,0,-5,"unterminated,note' . "\n"
@@ -958,15 +978,7 @@ class banlistCsvImportTest extends \Test\Unit
 	{
 		$encoded = e107::getIPHandler()->ipEncode(self::IP_A);
 
-		e107::getDb()->createQueryBuilder()->insert('banlist')->values(array(
-			'banlist_ip'         => $encoded,
-			'banlist_bantype'    => eIPHandler::BAN_TYPE_WHITELIST,
-			'banlist_datestamp'  => time(),
-			'banlist_banexpires' => 0,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'office range',
-			'banlist_notes'      => '',
-		))->execute();
+		$this->haveRow($encoded, eIPHandler::BAN_TYPE_WHITELIST, 0, 'office range');
 
 		$csv = '"' . self::IP_A . '","0","0","-5","blocklist",""' . "\n";
 		$result = $this->mgr->importBanlistCsv($this->haveCsv($csv), array('useFileExpiry' => true));
@@ -1025,6 +1037,7 @@ class banlistCsvImportTest extends \Test\Unit
 			array('BANLAN_IMPORT_MORE_SKIPPED', array('[x]')),
 			array('BANLAN_IMPORT_REPLACE_INCOMPLETE', array('[x]')),
 			array('BANLAN_IMPORT_ROLLBACK_FAILED', array('[x]')),
+			array('BANLAN_IMPORT_RESTORE_FAILED', array('[x]')),
 			array('BANLAN_IMPORT_LAPSED_KEPT', array('[x]')),
 			array('BANLAN_IMPORT_REPLACE_KEPT', array('[x]')),
 			array('BANLAN_IMPORT_LOG_SUMMARY', array('[file]', '[imported]', '[duplicates]', '[rejected]')),

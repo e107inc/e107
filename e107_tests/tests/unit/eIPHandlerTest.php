@@ -16,6 +16,8 @@ use e107\Reflection\ReflectionProperty;
 
 class eIPHandlerTest extends \Test\Unit
 {
+	use \Test\BanlistRows;
+
 	const VISITOR = '198.51.100.77';
 	const NEIGHBOUR = '198.51.100.78';
 	const TEST_NET = '198.51.100.0/24';
@@ -77,47 +79,6 @@ class eIPHandlerTest extends \Test\Unit
 			array_map('unlink', glob($dir.'*'));
 			rmdir($dir);
 		}
-	}
-
-	/**
-	 * @param string $ip stored as given
-	 * @param int $type
-	 * @param int $expires
-	 * @return int banlist_id
-	 */
-	private function haveRow($ip, $type, $expires = 0)
-	{
-		$id = e107::getDb()->insert('banlist', array(
-			'banlist_id'         => 0,
-			'banlist_ip'         => $ip,
-			'banlist_bantype'    => $type,
-			'banlist_datestamp'  => time() - 60,
-			'banlist_banexpires' => $expires,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => self::REASON,
-			'banlist_notes'      => '',
-		));
-		self::assertNotEmpty($id, 'could not write the banlist row this test needs');
-
-		return (int) $id;
-	}
-
-	/**
-	 * @return int[] the banlist_id values this test wrote that are still stored, ascending
-	 */
-	private function rowsThisTestWrote()
-	{
-		$sql = e107::getDb();
-		$sql->createQueryBuilder()->select('banlist_id')->from('banlist')->where('banlist_reason', self::REASON)->execute();
-
-		$ids = array();
-		while($row = $sql->fetch())
-		{
-			$ids[] = (int) $row['banlist_id'];
-		}
-		sort($ids);
-
-		return $ids;
 	}
 
 	/**
@@ -397,6 +358,47 @@ class eIPHandlerTest extends \Test\Unit
 		self::assertSame(0, e107::getDb()->createQueryBuilder()->from('banlist')->where('banlist_ip', $inside)->count());
 		self::assertTrue($this->ip->add_ban(2, self::REASON, $outside), 'an address outside it can');
 		self::assertSame(1, e107::getDb()->createQueryBuilder()->from('banlist')->where('banlist_ip', $outside)->count());
+	}
+
+	/**
+	 * A ban another request wrote between add_ban()'s look-up and its insert is answered as already banned.
+	 */
+	public function testABanAnotherRequestWroteFirstIsAnsweredAsAlreadyBanned()
+	{
+		require_once(__DIR__.'/fixtures/RacingBanHandlerFixture.php');
+
+		$address = $this->ip->ipEncode(self::OUTSIDER);
+		$restoreKey = \Test\BanlistAddressKey::set(true);
+		$restorePrefs = $this->withCorePrefs(array('enable_rdns_on_ban' => 1));
+
+		try
+		{
+			$handler = new RacingBanHandlerFixture();
+			$handler->rivalRow = $this->banRow($address, eIPHandler::BAN_TYPE_FLOOD);
+
+			$result = $handler->add_ban(2, self::REASON, $address, 0);
+			$stored = e107::getDb()->createQueryBuilder()->from('banlist')->where('banlist_ip', $address)->count();
+		}
+		finally
+		{
+			e107::getDb()->createQueryBuilder()->delete('banlist')->where('banlist_ip', $address)->execute();
+			$restorePrefs();
+			$restoreKey();
+		}
+
+		self::assertSame(1, $result);
+		self::assertSame(1, $stored);
+		self::assertSame(0, $handler->regenerated, 'The request that lost wrote nothing, so it has no ban files to write again.');
+	}
+
+	public function testAnAddressWithABanAndAWhitelistEntryIsAnsweredAsWhitelisted()
+	{
+		$address = $this->ip->ipEncode(self::OUTSIDER);
+		$this->haveRow($address, eIPHandler::BAN_TYPE_MANUAL);
+		$this->haveRow($address, eIPHandler::BAN_TYPE_WHITELIST);
+
+		self::assertFalse($this->ip->add_ban(2, self::REASON, $address, 0), 'checkBan() lets the whitelist entry win, so add_ban() has to answer the same way');
+		self::assertCount(2, $this->rowsThisTestWrote());
 	}
 
 	/**
@@ -775,8 +777,8 @@ class eIPHandlerTest extends \Test\Unit
 
 	/**
 	 * A banned visitor coming back extends the ban that stopped them. banlist_ip
-	 * carries an ordinary index rather than a unique one, so keying the write on
-	 * the address reaches every row stored under it, each one by the hours
+	 * is unique only together with the type, so keying the write on the address
+	 * reaches every row stored under it, each one by the hours
 	 * configured for the enforced row's type rather than its own.
 	 *
 	 * @group runs-in-separate-process
