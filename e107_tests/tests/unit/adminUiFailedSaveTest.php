@@ -64,6 +64,9 @@ class adminUiFailedSaveTest extends \Test\Unit
 			'checkboxes'                    => array('fs_checkboxes', array('x&y', '&amp;amp;', '&amp;lt;b&amp;gt;')),
 			'radio'                         => array('fs_radio', '&amp;amp;'),
 			'text a before-save hook wrote' => array('fs_hooked', self::HOOKED),
+			'textarea'                      => array('fs_textarea', self::TYPED),
+			'bbarea'                        => array('fs_bbarea', self::TYPED),
+			'file'                          => array('fs_file', '{e_MEDIA_FILE}'.$path),
 		);
 	}
 
