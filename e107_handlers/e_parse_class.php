@@ -355,6 +355,10 @@ class e_parse
 	private $blockTags = array();
 
 	private $scriptAccess = false; // nobody.
+
+	/** @var bool raised by {@see e_parse::toDBWithoutScript()} for the length of its {@see e_parse::toDB()} call */
+	private $storingWithoutScript = false;
+
 	private $replaceVars;
 	private $replaceUnset;
 
@@ -678,6 +682,12 @@ class e_parse
 		$authorPostsHtml = ($author !== null) ? $author->checkClass($core_pref->get('post_html', e_UC_MAINADMIN), false) : null;
 		$authorPostsScript = ($author !== null) ? $author->checkClass($core_pref->get('post_script', e_UC_NOBODY), false) : null;
 
+		if ($this->storingWithoutScript)
+		{
+			$authorPostsHtml = true;
+			$authorPostsScript = false;
+		}
+
 		if ($mod !== 'pReFs') //XXX We're not saving prefs.
 		{
 
@@ -790,6 +800,27 @@ class e_parse
 
 
 		return $ret;
+	}
+
+	/**
+	 * Convert submitted content as {@see e_parse::toDB()} stores it for an author who may post HTML but not script.
+	 *
+	 * @param mixed $data string or array, as {@see e_parse::toDB()} takes it
+	 * @return mixed the converted string, an array converted the same way, or $data unchanged when it is neither
+	 */
+	public function toDBWithoutScript($data)
+	{
+		$was = $this->storingWithoutScript;
+		$this->storingWithoutScript = true;
+
+		try
+		{
+			return $this->toDB($data, false, false, 'no_php');
+		}
+		finally
+		{
+			$this->storingWithoutScript = $was;
+		}
 	}
 
 
@@ -6538,14 +6569,19 @@ class e_parse
 		$access = $this->scriptAccess;
 		$tags = $this->allowedTags;
 		$attributes = $this->allowedAttributes;
+		$scriptTags = $this->scriptTags;
+		$scriptAttributes = $this->scriptAttributes;
 
 		$this->scriptAccess = e_UC_NOBODY;
-		$this->allowedTags = array_values(array_diff($tags, $this->scriptTags));
+		$this->allowedTags = array_values(array_diff($tags, $scriptTags));
 
 		foreach ($attributes as $tag => $list)
 		{
-			$this->allowedAttributes[$tag] = array_values(array_diff($list, $this->scriptAttributes));
+			$this->allowedAttributes[$tag] = array_values(array_diff($list, $scriptAttributes));
 		}
+
+		$this->scriptTags = array();
+		$this->scriptAttributes = array();
 
 		try
 		{
@@ -6556,6 +6592,8 @@ class e_parse
 			$this->scriptAccess = $access;
 			$this->allowedTags = $tags;
 			$this->allowedAttributes = $attributes;
+			$this->scriptTags = $scriptTags;
+			$this->scriptAttributes = $scriptAttributes;
 		}
 	}
 
@@ -6603,7 +6641,7 @@ class e_parse
 		{
 			$this->grantScriptAccess();
 		}
-		elseif(deftrue('ADMIN') && (strpos($html, '</script>') !== false))
+		elseif(!$this->storingWithoutScript && deftrue('ADMIN') && (strpos($html, '</script>') !== false))
 		{
 			$lan1 = defset('LAN_NO_SCRIPT_ACCESS', "You don't have permission to use [script] tags.");
 			$lan2 = defset('', "If you believe this is an error, please ask the main administrator to grant you script access via [b]Preferences > Content Filters[/b]");
