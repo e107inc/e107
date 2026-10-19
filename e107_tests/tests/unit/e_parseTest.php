@@ -1095,20 +1095,18 @@ EXPECTED;
 		$orig = "lr.src = window._lr.url + '/Scripts/api.js';";
 
 		$db = $this->tp->toDB($orig);
+		$expected = 'lr.src = window._lr.url + &#039;/Scripts/api.js&#039;;';
 
 		$restorePrefs = $this->withCorePrefs(array('wysiwyg' => true));
 
 		try
 		{
 			e107::wysiwyg('default');
-			$actual = $this->tp->toForm($db);
-			$expected = 'lr.src = window._lr.url %2B &#039;/Scripts/api.js&#039;;';
-			self::assertEquals($expected, $actual);
+			self::assertTrue(e107::wysiwyg());
+			self::assertSame(array($expected, array('1+1')), array($this->tp->toForm($db), $this->tp->toForm(array('1+1'))));
 
 			e107::getConfig()->updatePref('wysiwyg', false);
-			$actual = $this->tp->toForm($db);
-			$expected = 'lr.src = window._lr.url + &#039;/Scripts/api.js&#039;;';
-			self::assertEquals($expected, $actual);
+			self::assertEquals($expected, $this->tp->toForm($db));
 
 
 			$actual = $this->tp->toForm("[html]Something &quot;hi&quot;[/html]");
