@@ -316,9 +316,9 @@
 
 		/**
 		 * A value stored as it was posted, as every value was before values went through {@see e_parse::toDB()}, prints
-		 * without its markup.
+		 * none of the markup in it that could run.
 		 */
-		public function testStoredMarkupInAValuePrintsAsText()
+		public function testStoredMarkupInAValueNeverRuns()
 		{
 			$markup = '"><svg onload=alert(1)>';
 			$data = array();
@@ -641,7 +641,8 @@
 		/**
 		 * A value saved by an administrator who may post HTML prints as HTML where the page prints HTML, in raw mode
 		 * too with its quotes back, an icon written as markup only for one with script access, and the same values with
-		 * no record of who saved them print as text.
+		 * no record of who saved them print as text, but for the text area's, which prints as one saved by an
+		 * administrator who may post HTML but not script.
 		 */
 		public function testAValuePrintsAsItsAuthorMayPostIt()
 		{
@@ -668,12 +669,96 @@
 			$this->assertSame('<script>$("#x").text("a\nb");</script>', $this->cf->getFieldValue('textarea', array('mode' => 'raw')));
 
 			$this->cf->loadData(json_encode($values));
-			$this->assertStringNotContainsString('<b>', $this->cf->getFieldValue('textarea'));
+			$this->assertStringContainsString('<b>bold</b>', $this->cf->getFieldValue('textarea'));
 			$this->assertStringNotContainsString('<b>', $this->cf->getFieldValue('url'));
 			$this->assertStringStartsNotWith('<i class="fa fa-check">', $this->cf->getFieldValue('icon'));
 
 			$this->cf->loadData(json_encode(array('textarea' => '&lt;b&gt;bold&lt;/b&gt;', '__trust__' => array('textarea' => 0))));
 			$this->assertStringNotContainsString('<b>', $this->cf->getFieldValue('textarea'));
+		}
+
+		/**
+		 * A rich text or text area value with no record of who saved it, stored as it was posted, prints as the same
+		 * value prints once {@see e_parse::toDB()} has stored it for an author who may post HTML but not script: its
+		 * markup kept and its scripts and event handlers gone, in raw mode too, whatever the current user may post.
+		 */
+		public function testAValueWithNoLevelPrintsAsAnHtmlAuthorWithoutScriptSavedIt()
+		{
+			$this->cf->loadConfig(array(
+				'rich' => array('title' => 'Rich', 'type' => 'bbarea', 'writeParms' => '', 'help' => ''),
+				'text' => array('title' => 'Text', 'type' => 'textarea', 'writeParms' => '', 'help' => ''),
+			));
+			$formatted = array(
+				'rich' => '[html]<p><b id="cfq418b">Sale</b></p>[/html]',
+				'text' => 'Say "hi" & <i id="cfq418w">wave</i>, it\'s $5',
+			);
+			$scripted = array(
+				'rich' => '[html]<p><img id="cfq418i" src="x.png" onerror="cfq418()">Sale</p>'
+					.'<script>var cfq418 = 1;</script>[/html]',
+				'text' => '<b id="cfq418t" onclick="cfq418()">Sale</b><script>var cfq418 = 1;</script>',
+			);
+
+			foreach(array($formatted, $scripted) as $values)
+			{
+				$saved = $this->withPostClasses(e_UC_PUBLIC, e_UC_NOBODY, function () use ($values)
+				{
+					return array_map(function ($value)
+					{
+						return e107::getParser()->toDB($value, false, false, false, 1);
+					}, $values);
+				});
+				$saved['__trust__'] = array_fill_keys(array_keys($values), 1);
+
+				foreach(array(e_UC_PUBLIC, e_UC_NOBODY) as $reader)
+				{
+					$this->withPostClasses($reader, $reader, function () use ($values, $saved, $reader)
+					{
+						foreach(array(array(), array('mode' => 'raw')) as $parm)
+						{
+							foreach(array_keys($values) as $key)
+							{
+								$this->cf->loadData(json_encode($saved));
+								$expected = $this->cf->getFieldValue($key, $parm);
+								$this->cf->loadData(json_encode($values));
+								$label = $key.' '.json_encode($parm).' read by class '.$reader;
+								$this->assertSame($expected, $this->cf->getFieldValue($key, $parm), $label);
+							}
+						}
+					});
+				}
+			}
+
+			$printed = $this->withPostClasses(e_UC_NOBODY, e_UC_NOBODY, function () use ($formatted, $scripted)
+			{
+				$printed = array();
+
+				foreach(array('formatted' => $formatted, 'scripted' => $scripted) as $name => $values)
+				{
+					$this->cf->loadData(json_encode($values));
+
+					foreach(array('normal' => array(), 'raw' => array('mode' => 'raw')) as $mode => $parm)
+					{
+						$printed[$name][$mode] = $this->cf->getFieldValue('rich', $parm)
+							.$this->cf->getFieldValue('text', $parm);
+					}
+				}
+
+				return $printed;
+			});
+
+			$xpath = new DOMXPath($this->htmlDocument($printed['formatted']['normal']));
+			$this->assertSame(2, $xpath->query('//p/b[@id="cfq418b"] | //i[@id="cfq418w"]')->length, 'formatting kept');
+
+			foreach($printed['scripted'] as $mode => $html)
+			{
+				$xpath = new DOMXPath($this->htmlDocument($html));
+				$label = $mode.': '.$html;
+
+				$this->assertSame(2, $xpath->query('//img[@src="x.png"] | //b[@id="cfq418t"]')->length, $label);
+				$this->assertSame(0, $xpath->query('//script')->length, $label);
+				$this->assertNoMarkupIn($html, $label);
+				$this->assertStringNotContainsString('cfq418', preg_replace('/ id="cfq418[it]"/', '', $html), $label);
+			}
 		}
 
 		public function testProcessDataPostStoresValuesThroughToDb()
@@ -908,32 +993,6 @@
 			}
 
 			return $posted;
-		}
-
-		/**
-		 * Run $run as an author whose post_html and post_script classes are the ones given.
-		 *
-		 * @param int $html
-		 * @param int $script
-		 * @param callable $run
-		 * @return mixed what $run returns
-		 */
-		private function withPostClasses($html, $script, $run)
-		{
-			$pref = e107::getConfig();
-			$was = array($pref->get('post_html'), $pref->get('post_script'));
-			$pref->set('post_html', $html)->set('post_script', $script);
-			e107::getParser()->setScriptAccess(false);
-
-			try
-			{
-				return $run();
-			}
-			finally
-			{
-				$pref->set('post_html', $was[0])->set('post_script', $was[1]);
-				e107::getParser()->setScriptAccess(false);
-			}
 		}
 
 		/**

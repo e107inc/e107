@@ -279,13 +279,15 @@
 
 				case 'textarea':
 				case 'bbarea':
+					$html = ($trust === null) ? $tp->toDBWithoutScript($value) : $value;
+
 					if(!$raw)
 					{
-						$ret = $tp->toHTML($shown, true, 'BODY');
+						$ret = $tp->toHTML($html, true, 'BODY');
 					}
-					elseif($trust === 1)
+					elseif($trust === 1 || $trust === null)
 					{
-						$ret = $tp->toHTML($value, false, 'WYSIWYG');
+						$ret = $tp->toHTML($html, false, 'WYSIWYG');
 					}
 					else
 					{
