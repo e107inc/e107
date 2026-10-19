@@ -244,6 +244,10 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		return array(
 			'link'      => array('[link=https://e107.org/news.php?a=1&amp;amp;b=2]x[/link]', 'https://e107.org/news.php?a=1&b=2'),
 			'link body' => array('[link]https://e107.org/news.php?a=1&amp;amp;b=2[/link]', 'https://e107.org/news.php?a=1&b=2'),
+			'url'       => array('[url=https://e107.org/news.php?a=1&amp;amp;b=2]x[/url]', 'https://e107.org/news.php?a=1&b=2'),
+			'url body'  => array('[url]https://e107.org/news.php?a=1&amp;amp;b=2[/url]', 'https://e107.org/news.php?a=1&b=2'),
+			'file'      => array('[file=https://e107.org/request.php?a=1&amp;amp;b=2]x[/file]', 'https://e107.org/request.php?a=1&b=2'),
+			'img thumbnail' => array('[img]https://example.com/pics/th_cat.png?a=1&amp;amp;b=2[/img]', 'https://example.com/pics/cat.png?a=1&b=2'),
 		);
 	}
 
@@ -260,6 +264,65 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	public function testAMailtoLinkAMemberSavedBefore2313GoesToTheAddressTyped()
 	{
 		self::assertSame('mailto:tom&jerry@example.com', $this->addressTheScriptOpens($this->tp->toHTML('[link=mailto:tom&amp;amp;jerry@example.com]Mail[/link]', true)));
+	}
+
+	/**
+	 * @param string $address
+	 * @param string $stored
+	 */
+	private function assertEmailLinkGoesTo($address, $stored)
+	{
+		e107::getConfig()->set('make_clickable', 0);
+		self::assertSame($address, $this->hrefOfFirstAnchor($this->tp->toHTML($stored, true)), 'The mailto: link went elsewhere.');
+
+		e107::getConfig()->set('make_clickable', 1);
+		self::assertSame($address, $this->addressTheScriptOpens($this->tp->toHTML($stored, true)), 'The script went elsewhere.');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function emailLinks()
+	{
+		return array(
+			'body'             => array('[email]tom&jerry@example.com[/email]', 'mailto:tom&jerry@example.com'),
+			'parameter'        => array('[email=tom&jerry@example.com]Mail[/email]', 'mailto:tom&jerry@example.com'),
+			'body typed &amp;' => array('[email]tom&amp;jerry@example.com[/email]', 'mailto:tom&jerry@example.com'),
+			'body %26'         => array('[email]tom%26jerry@example.com[/email]', 'mailto:tom%26jerry@example.com'),
+			'body apostrophe'  => array("[email]o'brien@example.com[/email]", "mailto:o'brien@example.com"),
+		);
+	}
+
+	/**
+	 * An [email] link goes to the address typed, written as a mailto: link or, with make_clickable on, as a script.
+	 *
+	 * @dataProvider emailLinks
+	 * @param string $bbcode
+	 * @param string $address
+	 */
+	public function testAnEmailLinkGoesToTheAddressTyped($bbcode, $address)
+	{
+		$this->assertEmailLinkGoesTo($address, $this->tp->toDB($bbcode));
+	}
+
+	/**
+	 * @return array
+	 */
+	public function emailLinksAMemberSavedBefore2313()
+	{
+		return array(
+			'body'      => array('[email]tom&amp;amp;jerry@example.com[/email]'),
+			'parameter' => array('[email=tom&amp;amp;jerry@example.com]Mail[/email]'),
+		);
+	}
+
+	/**
+	 * @dataProvider emailLinksAMemberSavedBefore2313
+	 * @param string $stored
+	 */
+	public function testAnEmailLinkAMemberSavedBefore2313GoesToTheAddressTyped($stored)
+	{
+		$this->assertEmailLinkGoesTo('mailto:tom&jerry@example.com', $stored);
 	}
 
 	/**
@@ -407,7 +470,16 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'link path query'     => array('[link={e_PLUGIN}forum/forum.php?f=1&id=2]x[/link]', 'forum/forum.php?f=1&id=2', 'e_PLUGIN'),
 			'link apostrophe'     => array("[link=https://en.wikipedia.org/wiki/Ender's_Game]x[/link]", "https://en.wikipedia.org/wiki/Ender's_Game"),
 			'link in html'        => array('[html]<p>[link=https://e107.org/news.php?a=1&amp;b=2]x[/link]</p>[/html]', 'https://e107.org/news.php?a=1&b=2'),
+			'url ampersand'       => array('[url=https://e107.org/news.php?a=1&b=2]x[/url]', 'https://e107.org/news.php?a=1&b=2'),
+			'url body ampersand'  => array('[url]https://e107.org/news.php?a=1&b=2[/url]', 'https://e107.org/news.php?a=1&b=2'),
+			'url typed &amp;'     => array('[url=https://e107.org/news.php?a=1&amp;b=2]x[/url]', 'https://e107.org/news.php?a=1&b=2'),
+			'url %26'             => array('[url=https://e107.org/search.php?q=Tom%26Jerry]x[/url]', 'https://e107.org/search.php?q=Tom%26Jerry'),
+			'url apostrophe'      => array("[url=https://en.wikipedia.org/wiki/Ender's_Game]x[/url]", "https://en.wikipedia.org/wiki/Ender's_Game"),
+			'url in a table'      => array('[table][tr][td][url=https://e107.org/news.php?a=1&b=2]x[/url][/td][/tr][/table]', 'https://e107.org/news.php?a=1&b=2'),
+			'url in html'         => array('[html]<p>[url=https://e107.org/news.php?a=1&amp;b=2]x[/url]</p>[/html]', 'https://e107.org/news.php?a=1&b=2'),
+			'file ampersand'      => array('[file=https://e107.org/request.php?a=1&b=2]x[/file]', 'https://e107.org/request.php?a=1&b=2'),
 			'img thumbnail'       => array('[img]https://example.com/pics/th_cat.png[/img]', 'https://example.com/pics/cat.png'),
+			'img thumbnail query' => array('[img]https://example.com/pics/th_cat.png?a=1&b=2[/img]', 'https://example.com/pics/cat.png?a=1&b=2'),
 			'img thumbnail path'  => array('[img]{e_IMAGE}custom/th_cat.png[/img]', 'custom/cat.png', 'e_IMAGE_ABS'),
 		);
 	}
@@ -581,6 +653,33 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		$html = $this->renderStored('[quote=" onmouseover="alert(1)]hello[/quote]');
 
 		$this->assertNoEventHandler($html, 'A [quote] author name escaped the title attribute.');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function quotedNames()
+	{
+		return array(
+			'ampersand'   => array('[quote=Tom & Jerry]hello[/quote]', 'Tom & Jerry'),
+			'typed &amp;' => array('[quote=Tom &amp; Jerry]hello[/quote]', 'Tom & Jerry'),
+			'apostrophe'  => array("[quote=Tom's cat]hello[/quote]", "Tom's cat"),
+		);
+	}
+
+	/**
+	 * @dataProvider quotedNames
+	 * @param string $bbcode
+	 * @param string $name
+	 */
+	public function testAQuoteCitesTheNameTyped($bbcode, $name)
+	{
+		self::assertSame($name, $this->elementIn($this->renderStored($bbcode), 'cite')->getAttribute('title'));
+	}
+
+	public function testAQuoteAMemberSavedBefore2313CitesTheNameTyped()
+	{
+		self::assertSame('Tom & Jerry', $this->elementIn($this->tp->toHTML('[quote=Tom &amp;amp; Jerry]hello[/quote]', true), 'cite')->getAttribute('title'));
 	}
 
 	/** A quote a bbcode handler encoded inside a [hide] block stays encoded for a reader the block is shown to. */
@@ -851,6 +950,8 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'stream site url'      => array('[stream width=60]{SITEURL}a.wmv[/stream]', 'a.wmv', 'SITEURL'),
 			'flash rendered by a shortcode'  => array('[flash=60,40]{BBCODE_ATTRIBUTE_RENDERED=https://example.com/}a.swf[/flash]', 'https://example.com/a.swf'),
 			'stream rendered by a shortcode' => array('[stream width=60]{BBCODE_ATTRIBUTE_RENDERED=https://example.com/}a.wmv[/stream]', 'https://example.com/a.wmv'),
+			'flash ampersand'      => array('[flash=60,40]http://example.com/a.swf?a=1&b=2[/flash]', 'http://example.com/a.swf?a=1&b=2'),
+			'stream ampersand'     => array('[stream width=60]http://example.com/a.wmv?a=1&b=2[/stream]', 'http://example.com/a.wmv?a=1&b=2'),
 		);
 	}
 
@@ -867,6 +968,27 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 
 		self::assertSame(array($expected, $expected), $this->playerUrlsIn($html));
 		self::assertSame('60', $this->elementIn($html, 'object')->getAttribute('width'));
+	}
+
+	/**
+	 * @return array
+	 */
+	public function playersAMemberSavedBefore2313()
+	{
+		return array(
+			'flash'  => array('[flash=60,40]http://example.com/a.swf?a=1&amp;amp;b=2[/flash]', 'http://example.com/a.swf?a=1&b=2'),
+			'stream' => array('[stream width=60]http://example.com/a.wmv?a=1&amp;amp;b=2[/stream]', 'http://example.com/a.wmv?a=1&b=2'),
+		);
+	}
+
+	/**
+	 * @dataProvider playersAMemberSavedBefore2313
+	 * @param string $stored
+	 * @param string $url
+	 */
+	public function testAPlayerAMemberSavedBefore2313PlaysTheAddressTyped($stored, $url)
+	{
+		self::assertSame(array($url, $url), $this->playerUrlsIn($this->tp->toHTML($stored, true, 'BODY')));
 	}
 
 	/**
@@ -1349,6 +1471,95 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 
 		self::assertNotSame(false, strpos($html, '<figcaption>Hello</figcaption>'),
 			'An [img] lost its explicit caption. Rendered: '.$html);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function imageSources()
+	{
+		return array(
+			'ampersand'   => array('[img]https://example.com/pics/cat.png?a=1&b=2[/img]', 'https://example.com/pics/cat.png?a=1&b=2'),
+			'typed &amp;' => array('[img]https://example.com/pics/cat.png?a=1&amp;b=2[/img]', 'https://example.com/pics/cat.png?a=1&b=2'),
+			'%26'         => array('[img]https://example.com/pics/cat.png?q=Tom%26Jerry[/img]', 'https://example.com/pics/cat.png?q=Tom%26Jerry'),
+			'apostrophe'  => array("[img]https://example.com/pics/Tom's_cat.png[/img]", "https://example.com/pics/Tom's_cat.png"),
+		);
+	}
+
+	/**
+	 * @dataProvider imageSources
+	 * @param string $bbcode
+	 * @param string $src
+	 */
+	public function testAnImageLoadsTheAddressTyped($bbcode, $src)
+	{
+		self::assertSame($src, $this->elementIn($this->renderStored($bbcode), 'img')->getAttribute('src'));
+	}
+
+	public function testAnImageAMemberSavedBefore2313LoadsTheAddressTyped()
+	{
+		self::assertSame('https://example.com/pics/cat.png?a=1&b=2',
+			$this->elementIn($this->tp->toHTML('[img]https://example.com/pics/cat.png?a=1&amp;amp;b=2[/img]', true), 'img')->getAttribute('src'));
+	}
+
+	/** A local [img] in a news item, whose images a new install resizes, asks for its thumbnail at that size. */
+	public function testAResizedImageAsksForItsSize()
+	{
+		$bbcodes = e107::getBB();
+		$mode = $bbcodes->getMode();
+		$bbcodes->setClass('news');
+
+		try
+		{
+			$src = $this->elementIn($this->renderStored('[img]{e_IMAGE}generic/blank.gif[/img]'), 'img')->getAttribute('src');
+		}
+		finally
+		{
+			$bbcodes->setClass($mode);
+		}
+
+		parse_str((string) parse_url($src, PHP_URL_QUERY), $query);
+		self::assertSame(array('src', 'w', 'h'), array_keys($query), $src);
+	}
+
+	/**
+	 * An [img] parameter is a query string, so an & in its text is typed %26. A third value is the caption a media image shows.
+	 *
+	 * @return array
+	 */
+	public function imageTexts()
+	{
+		return array(
+			'alt %26'                  => array('[img alt=Tom %26 Jerry]https://example.com/pics/cat.png[/img]', 'Tom & Jerry'),
+			'alt apostrophe'           => array("[img alt=Tom's cat]https://example.com/pics/cat.png[/img]", "Tom's cat"),
+			'alt typed &lt;'           => array('[img alt=x %26lt;y%26gt;]https://example.com/pics/cat.png[/img]', 'x &lt;y&gt;'),
+			'media alt %26'            => array('[img alt=Tom %26 Jerry]{e_MEDIA_IMAGE}b.gif[/img]', 'Tom & Jerry', 'Tom & Jerry'),
+			'media alt apostrophe'     => array("[img alt=Tom's cat]{e_MEDIA_IMAGE}b.gif[/img]", "Tom's cat", "Tom's cat"),
+			'media caption %26'        => array('[img alt=Cat&figcaption=Tom %26 Jerry]{e_MEDIA_IMAGE}b.gif[/img]', 'Cat', 'Tom & Jerry'),
+			'media caption apostrophe' => array("[img alt=Cat&figcaption=Tom's cat]{e_MEDIA_IMAGE}b.gif[/img]", 'Cat', "Tom's cat"),
+			'media caption typed &lt;' => array('[img alt=Cat&figcaption=Write %26lt;b%26gt; for bold]{e_MEDIA_IMAGE}b.gif[/img]', 'Cat', 'Write &lt;b&gt; for bold'),
+		);
+	}
+
+	/**
+	 * An [img] alt reads as typed, and so do the title it fills and the caption.
+	 *
+	 * @dataProvider imageTexts
+	 * @param string $bbcode
+	 * @param string $alt
+	 * @param string $caption
+	 */
+	public function testAnImageTextReadsAsTyped($bbcode, $alt, $caption = null)
+	{
+		$html = $this->renderStored($bbcode);
+		$image = $this->elementIn($html, 'img');
+
+		self::assertSame(array($alt, $alt), array($image->getAttribute('alt'), $image->getAttribute('title')), 'Rendered: '.$html);
+
+		if($caption !== null)
+		{
+			self::assertSame($caption, $this->elementIn($html, 'figcaption')->textContent, 'Rendered: '.$html);
+		}
 	}
 
 	/**
