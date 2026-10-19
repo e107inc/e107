@@ -99,7 +99,7 @@ class news_rss // plugin-folder + '_rss'
 			->where('n.news_start', '<', $now)
 			->where($qb->expr()->anyOf($qb->expr()->eq('n.news_end', 0), $qb->expr()->gt('n.news_end', $now)));
 
-		if($pref['rss_othernews'] != 1)
+		if(empty($pref['rss_othernews']))
 		{
 			$qb->where($qb->expr()->anyOf(
 				$qb->expr()->findInSet('n.news_render_type', '0'),
@@ -140,9 +140,9 @@ class news_rss // plugin-folder + '_rss'
 			$rss[$i]['datestamp']         = $value['news_datestamp'];
 			$rss[$i]['description']     = $this->getDescription($value);
 
-			if($value['news_allow_comments'] && $pref['comments_disabled'] != 1)
+			if(empty($value['news_allow_comments']) && $pref['comments_disabled'] != 1)
 			{
-				$rss[$i]['comment']     = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['news_id'];
+				$rss[$i]['comment']     = SITEURL."comment.php?comment.news.".$value['news_id'];
 			}
 
 			$rss[$i]['media']            = $this->getMedia($value);
