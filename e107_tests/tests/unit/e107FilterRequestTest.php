@@ -9,33 +9,33 @@
  */
 
 /**
- * Covers e107::filter_request(), which prepare_request() runs over every
- * $_POST value and which answers a suspicious one with a bare HTTP 400.
- *
- * A refusal calls exit(), so only values that must be let through can be
- * asserted here: reaching the assertion at all is the proof that none was refused.
+ * Covers {@see e107::filter_request()}, which runs over every POSTed value before any page code does.
  */
-class e107FilterRequestTest extends \Test\Unit
+class e107FilterRequestTest extends \Codeception\Test\Unit
 {
+	use \Test\BootedCli;
+
+	const LET_THROUGH = '@@LET_THROUGH@@';
+
 	/**
-	 * The language manager posts translations of strings that name the tools
-	 * the Cron setup page tells the admin to use, such as
-	 * LAN_CRON_SETUP_WGET_LABEL ("With wget instead of curl").
-	 *
 	 * @dataProvider proseProvider
 	 */
-	public function testPostedProseMentioningDownloadToolsIsNotRefused($text)
+	public function testPostedProseNamingADownloadToolOrHandlerIsNotRefused($text)
 	{
-		$this->assertNull(e107::filter_request($text, 'newlang', '_POST'));
+		list($output) = $this->runInBootedCli("e107::filter_request(".var_export($text, true).", 'body', '_POST'); echo '".self::LET_THROUGH."';");
+		$printed = implode("\n", $output);
+
+		self::assertStringContainsString(self::LET_THROUGH, $printed,
+			"the child ended before the text was let through, so the filter refused it or the boot failed:\n".$printed);
 	}
 
 	public function proseProvider()
 	{
 		return array(
-			array('With wget instead of curl'),
-			array('Com wget em vez de curl'),
-			array('Con wget en lugar de curl'),
-			array('Use curl or wget, whichever your host provides.'),
+			'wget in a translation'                => array('Com wget em vez de curl'),
+			'curl -o in download instructions'     => array('Download it with curl -o e107.zip followed by the address.'),
+			'lwp-download in an install note'      => array('Install lwp-download from libwww-perl.'),
+			'onmouseover in a JavaScript tutorial' => array('Set onmouseover on the link to show the tooltip.'),
 		);
 	}
 }
