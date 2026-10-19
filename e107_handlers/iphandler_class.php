@@ -1077,32 +1077,17 @@ class eIPHandler
 		{
 			return FALSE;
 		}
-		// See if address already in the banlist
-		if ($sql->select('banlist', '`banlist_bantype`', "`banlist_ip`='{$ban_ip}'"))
+		$listed = $this->listedAnswer($ban_ip);
+		if ($listed !== null)
 		{
-			$banRow = $sql->fetch();
-			$banType = $banRow['banlist_bantype'];
-			
-			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST)
-			{ // Got a whitelist entry for this
-				//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
-				return FALSE;
-			}
-			return 1;		// Already in ban list
+			return $listed;
 		}
-		/*
-		// See if the address is in the whitelist
-		if ($sql->select('banlist', '*', "`banlist_ip`='{$ban_ip}' AND `banlist_bantype` >= ".eIPHandler::BAN_TYPE_WHITELIST))
-		{ // Got a whitelist entry for this
-			//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
-			return FALSE;
-		} */
 		if(!empty($pref['enable_rdns_on_ban']))
 		{
 			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
 		}
 		// Add using an array - handles DB changes better
-		$sql->insert('banlist', 
+		$inserted = $sql->insert('banlist', 
 			array(
 				'banlist_id'			=> 0,
 				'banlist_ip' 			=> $ban_ip , 
@@ -1114,8 +1099,38 @@ class eIPHandler
 				'banlist_notes' 		=> $ban_notes
 			));
 
+		if ($inserted === false)
+		{
+			$listed = $this->listedAnswer($ban_ip);
+			if ($listed !== null)
+			{
+				return $listed;
+			}
+		}
+
 		$this->regenerateFiles();
 		return TRUE;
+	}
+
+
+	/**
+	 * What {@see eIPHandler::add_ban()} answers for an address the ban list already holds.
+	 *
+	 * @param string $ban_ip as add_ban() stores it
+	 * @return bool|int|null 1 where a ban holds it, FALSE where a whitelist entry does, null where nothing does
+	 */
+	private function listedAnswer($ban_ip)
+	{
+		$sql = e107::getDb();
+
+		if (!$sql->select('banlist', 'banlist_bantype', 'banlist_ip = :ip ORDER BY banlist_bantype DESC', array('ip' => $ban_ip)))
+		{
+			return null;
+		}
+
+		$banRow = $sql->fetch();
+
+		return ($banRow['banlist_bantype'] >= eIPHandler::BAN_TYPE_WHITELIST) ? FALSE : 1;
 	}
 
 
@@ -1562,9 +1577,7 @@ class banlistManager
 
 					$stored = $this->storedBanEntry($row['banlist_ip']);
 					$stored = ($stored === false) ? $row['banlist_ip'] : $stored;
-					$expires = (int) $row['banlist_banexpires'];
-
-					if($expires === 0 || $expires > $now)
+					if(!self::hasLapsed((int) $row['banlist_banexpires'], $now))
 					{
 						$known[$stored] = true;
 						continue;
@@ -1576,6 +1589,7 @@ class banlistManager
 
 			$supersededIds = array();
 			$insertedIds = array();
+			$overwritten = array();
 			$enclosure = ($quote === '') ? "\0" : $quote;
 			$line = 0;
 
@@ -1595,7 +1609,7 @@ class banlistManager
 					if(strpos((string) $field, "\n") !== false || strpos((string) $field, "\r") !== false)
 					{
 						fclose($fh);
-						return $this->abortImport($result, $insertedIds, BANLAN_49.$line);
+						return $this->abortImport($result, $insertedIds, $overwritten, BANLAN_49.$line);
 					}
 				}
 
@@ -1634,7 +1648,7 @@ class banlistManager
 					unset($lapsedIds[$entry]);
 				}
 
-				$inserted = $sql->insert('banlist', array(
+				$row = array(
 					'banlist_ip'         => $entry,
 					'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
 					'banlist_datestamp'  => $datestamp,
@@ -1642,18 +1656,37 @@ class banlistManager
 					'banlist_admin'      => $adminId,
 					'banlist_reason'     => $this->filterImportText(varset($fields[4], '')),
 					'banlist_notes'      => $this->filterImportText(varset($fields[5], '')),
-				));
+				);
+				$inserted = $sql->insert('banlist', $row);
 
-				if($inserted === false)
+				if($inserted !== false)
+				{
+					if(is_numeric($inserted))
+					{
+						$insertedIds[] = (int) $inserted;
+					}
+					$result['imported']++;
+					continue;
+				}
+
+				$holder = $this->importedHolder($entry, $replacedIds, array_merge($insertedIds, array_keys($overwritten)));
+
+				if($holder === null)
+				{
+					$result['duplicates']++;
+					continue;
+				}
+
+				if($holder === false || !$this->writeBanRow($holder['banlist_id'], $row))
 				{
 					fclose($fh);
-					return $this->abortImport($result, $insertedIds, BANLAN_50.$line);
+					return $this->abortImport($result, $insertedIds, $overwritten, BANLAN_50.$line);
 				}
 
-				if(is_numeric($inserted))
-				{
-					$insertedIds[] = (int) $inserted;
-				}
+				$id = (int) $holder['banlist_id'];
+				$overwritten[$id] = $holder;
+				unset($replacedIds[$id]);
+				$supersededIds = array_diff($supersededIds, array($id));
 				$result['imported']++;
 			}
 
@@ -1661,7 +1694,7 @@ class banlistManager
 
 			if($replaceImported && !empty($result['errors']))
 			{
-				return $this->abortImport($result, $insertedIds,
+				return $this->abortImport($result, $insertedIds, $overwritten,
 					str_replace('[x]', count($result['errors']), defset('BANLAN_IMPORT_REPLACE_INCOMPLETE', "CSV import: Nothing was imported. Replacing the existing imported bans needs the whole file to import, and [x] line(s) could not. Correct those lines and import again, or untick 'Replace existing imported bans' to add the rest alongside what is already there.")));
 			}
 
@@ -1823,23 +1856,92 @@ class banlistManager
 	}
 
 	/**
-	 *	Abandon a run that cannot finish: undo its inserts and say why, naming the rows left behind where the undo itself failed.
+	 *	The imported row holding an entry whose insert the table refused, where the run may write over it: one it is replacing, or one that has lapsed.
+	 *
+	 *	@param string $entry banlist_ip as the run stores it.
+	 *	@param array $replacedIds banlist_id => true for the rows a replace run is swapping out.
+	 *	@param array $writtenIds banlist_id values this run has written.
+	 *	@return array|false|null the row; null where a live entry or one this run wrote holds the address; false where no imported row does.
+	 */
+	private function importedHolder($entry, $replacedIds, $writtenIds)
+	{
+		$sql = e107::getDb();
+
+		if(!$sql->select('banlist', '*', 'banlist_ip = :ip AND banlist_bantype = :type',
+			array('ip' => $entry, 'type' => eIPHandler::BAN_TYPE_IMPORTED)))
+		{
+			return false;
+		}
+
+		$holder = $sql->fetch();
+		$id = (int) $holder['banlist_id'];
+
+		if(in_array($id, $writtenIds, true) || (!isset($replacedIds[$id]) && !self::hasLapsed((int) $holder['banlist_banexpires'], time())))
+		{
+			return null;
+		}
+
+		return $holder;
+	}
+
+	/**
+	 *	Overwrite one ban row's columns in place.
+	 *
+	 *	@param int $id banlist_id
+	 *	@param array $values column => value
+	 *	@return bool whether the statement ran.
+	 */
+	private function writeBanRow($id, $values)
+	{
+		unset($values['banlist_id']);
+
+		return e107::getDb()->update('banlist', array('data' => $values, 'WHERE' => '`banlist_id` = '.(int) $id)) !== false;
+	}
+
+	/**
+	 *	Abandon a run that cannot finish: undo its inserts and overwrites and say why, naming the rows left behind where the undo itself failed.
 	 *
 	 *	@param array $result Counts and per-line errors accumulated by the run.
 	 *	@param array $insertedIds banlist_id values inserted so far.
+	 *	@param array $overwritten rows written over so far, by banlist_id, as they were before.
 	 *	@param string $reason LAN string naming the line that stopped the run.
 	 *	@return array
 	 */
-	private function abortImport($result, $insertedIds, $reason)
+	private function abortImport($result, $insertedIds, $overwritten, $reason)
 	{
 		$result['imported'] = 0;
 		$result['duplicates'] = 0;
 		$left = $this->deleteBanRows($insertedIds);
-		$result['fatal'] = ($left === 0)
-			? $reason
-			: $reason.' '.str_replace('[x]', $left, defset('BANLAN_IMPORT_ROLLBACK_FAILED', "The [x] entries already written could not be removed and are still on the ban list."));
+		$unrestored = 0;
+
+		foreach($overwritten as $id => $row)
+		{
+			$unrestored += $this->writeBanRow($id, $row) ? 0 : 1;
+		}
+
+		$result['fatal'] = $reason;
+
+		if($left > 0)
+		{
+			$result['fatal'] .= ' '.str_replace('[x]', $left, defset('BANLAN_IMPORT_ROLLBACK_FAILED', "The [x] entries already written could not be removed and are still on the ban list."));
+		}
+
+		if($unrestored > 0)
+		{
+			$result['fatal'] .= ' '.str_replace('[x]', $unrestored, defset('BANLAN_IMPORT_RESTORE_FAILED', "[x] existing entries that the import wrote over could not be put back as they were, so they now carry the file's values."));
+		}
 
 		return $result;
+	}
+
+	/**
+	 *	@param int $expires banlist_banexpires, 0 for a ban that never ends
+	 *	@param int $now
+	 *	@return bool
+	 */
+	private static function hasLapsed($expires, $now)
+	{
+		return $expires > 0 && $expires <= $now;
 	}
 
 	/**

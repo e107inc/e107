@@ -14,6 +14,8 @@
  */
 class banlistManagerTest extends \Codeception\Test\Unit
 {
+	use \Test\BanlistRows;
+
 	/** @var banlistManager */
 	private $mgr;
 
@@ -29,6 +31,7 @@ class banlistManagerTest extends \Codeception\Test\Unit
 	const HOURS = 6;
 	const IP_TRIGGERED = '10.66.66.11';
 	const IP_UNTOUCHED = '10.66.66.22';
+	const REASON = 'e107help banlist file probe';
 	const BAN_TYPE = -2;
 	const IP_WILDCARD = '10.77.66.*';
 	const IP_IN_WILDCARD = '10.77.66.65';
@@ -82,21 +85,10 @@ class banlistManagerTest extends \Codeception\Test\Unit
 	 */
 	private function haveBan($ip, $type = self::BAN_TYPE, $expires = 0)
 	{
-		$id = e107::getDb()->insert('banlist', array(
-			'banlist_id'         => 0,
-			'banlist_ip'         => $ip,
-			'banlist_bantype'    => $type,
-			'banlist_datestamp'  => time() - 3600,
-			'banlist_banexpires' => $expires,
-			'banlist_admin'      => 0,
-			'banlist_reason'     => 'e107help banlist file probe',
-			'banlist_notes'      => '',
-		));
+		$id = $this->haveRow($ip, $type, $expires);
+		$this->insertedIds[] = $id;
 
-		self::assertNotEmpty($id, 'could not write the banlist row this test needs');
-		$this->insertedIds[] = (int) $id;
-
-		return (int) $id;
+		return $id;
 	}
 
 	/**
@@ -143,8 +135,8 @@ class banlistManagerTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * An address can carry more than one ban: banlist_ip has an ordinary index
-	 * rather than a unique one, and the admin screen writes what it is given.
+	 * An address can carry more than one ban: banlist_ip is unique only
+	 * together with the type, so a ban of each type can share an address.
 	 * The queue names the address, so the ban in force is the one to retrigger,
 	 * and demanding a single row meant a duplicated address retriggered nothing
 	 * at all and lapsed on schedule while the visitor was still knocking.

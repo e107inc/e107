@@ -194,26 +194,64 @@ class banlist_ui extends e_admin_ui
 
 		public function beforeCreate($new_data, $old_data)
 		{
-			$new_data['banlist_admin'] = ADMINID;
-
-			if(filter_var($new_data['banlist_ip'], FILTER_VALIDATE_IP)) // check it's an IP
-			{
-				$new_data['banlist_ip'] = e107::getIPHandler()->ipEncode($new_data['banlist_ip']);
-			}
-
-			return $new_data;
+			return $this->storableRow($new_data, array());
 		}
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-			$new_data['banlist_admin'] = ADMINID;
+			return $this->storableRow($new_data, (array) $old_data);
+		}
 
-			if(filter_var($new_data['banlist_ip'], FILTER_VALIDATE_IP)) // check it's an IP
+		/**
+		 * @param array $data the posted row
+		 * @param array $current the row being edited as stored, empty for a new one
+		 * @return array|false the row with an address in its stored form, or false when another row holds its address and type and this one does not
+		 */
+		private function storableRow($data, $current)
+		{
+			$data['banlist_admin'] = ADMINID;
+
+			if(!isset($data['banlist_ip']))
 			{
-				$new_data['banlist_ip'] = e107::getIPHandler()->ipEncode($new_data['banlist_ip']);
+				return $data;
 			}
 
-			return $new_data;
+			$typed = $data['banlist_ip'];
+
+			if(filter_var($data['banlist_ip'], FILTER_VALIDATE_IP))
+			{
+				$data['banlist_ip'] = e107::getIPHandler()->ipEncode($data['banlist_ip']);
+			}
+
+			$type = (int) varset($data['banlist_bantype'], eIPHandler::BAN_TYPE_MANUAL);
+			$sql = e107::getDb();
+
+			$holders = array();
+
+			if($sql->select('banlist', 'banlist_id', 'banlist_ip = :ip AND banlist_bantype = :type ORDER BY banlist_id',
+				array('ip' => $data['banlist_ip'], 'type' => $type)))
+			{
+				while($row = $sql->fetch())
+				{
+					$holders[] = (int) $row['banlist_id'];
+				}
+			}
+
+			if($holders && !in_array((int) varset($current['banlist_id'], 0), $holders, true))
+			{
+				e107::getMessage()->addError(e107::getParser()->lanVars(
+					defset('BANLAN_ENTRY_ALREADY_LISTED', "[x] is already listed with the type [y] (ID [z]), so this entry was not saved. Edit that one instead."),
+					array(
+						htmlspecialchars(trim($typed), ENT_QUOTES, 'UTF-8'),
+						(new banlistManager)->getBanTypeString($type),
+						$holders[0],
+					)
+				));
+
+				return false;
+			}
+
+			return $data;
 		}
 
 
