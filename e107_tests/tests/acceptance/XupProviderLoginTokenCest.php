@@ -258,6 +258,51 @@ class XupProviderLoginTokenCest
 	}
 
 	/**
+	 * The error of an OpenID sign-in repeats the identifier its returning address carries, so it has to reach the page as text
+	 */
+	public function anOpenIdSignInErrorIsShownAsText(AcceptanceTester $I)
+	{
+		$I->wantTo('show the error of a failed OpenID sign-in as text');
+
+		$this->clearStore($I);
+		preg_match('#^SITEURL:(.*)$#m', $I->probe('act=siteurl'), $match);
+		$identifier = 'http://127.0.0.1/<b>e107tests-identifier</b>';
+		$I->amOnPage(self::ROUTE.'&provider='.self::OPENID_PROVIDER.'&'.http_build_query(array(
+			'openid.ns'           => 'http://specs.openid.net/auth/2.0',
+			'openid.mode'         => 'id_res',
+			'openid.claimed_id'   => $identifier,
+			'openid.identity'     => $identifier,
+			'openid.return_to'    => trim($match[1]).'index.php?route=system/xup/login&provider='.self::OPENID_PROVIDER,
+			'openid.assoc_handle' => 'e107tests',
+			'openid.signed'       => 'mode',
+			'openid.sig'          => 'e107tests',
+		)));
+
+		preg_match('#^ALERTS:(.*)$#m', $I->probe('act=alerts'), $alerts);
+		$shown = isset($alerts[1]) ? $alerts[1] : '';
+		$I->assertNotFalse(strpos($shown, 'e107tests-identifier'), 'The sign-in has to fail with an error that names the identifier');
+		$I->assertFalse(strpos($shown, '<b>e107tests-identifier</b>'), 'The identifier must reach the page as text');
+	}
+
+	/**
+	 * The reasons e107 gives for refusing a social sign-up are its own markup, so they have to reach the page as markup
+	 */
+	public function aRefusedSignUpShowsItsReasonsAsMarkup(AcceptanceTester $I)
+	{
+		$I->wantTo('show why a social sign-up was refused as markup');
+
+		$I->probe('act=signout');
+		$I->probe('act=newcomer');
+		$I->amOnPage(self::ROUTE.'&provider='.self::OPENID_PROVIDER);
+
+		preg_match('#^ALERTS:(.*)$#m', $I->probe('act=alerts'), $alerts);
+		$shown = isset($alerts[1]) ? $alerts[1] : '';
+		$I->assertNotFalse(strpos($shown, '[5]'), 'The sign-up has to be refused by e107');
+		$I->assertNotFalse(strpos($shown, 'SQL Insert Error'), 'The reason has to be shown');
+		$I->assertFalse(strpos($shown, '&lt;'), "None of e107's own markup may reach the page as text: ".$shown);
+	}
+
+	/**
 	 * Sign the client out and give it back the profile of an earlier OpenID
 	 * sign-in, so that every OpenID case below starts from the one session
 	 * state the risk needs and differs only in what the browser says.
@@ -437,6 +482,26 @@ switch(\$act)
 		echo 'VALUE:'.(is_scalar(\$held) ? \$held : 'held')."\\n";
 		break;
 
+	case 'siteurl':
+		echo "PROBE_OK siteurl\\n";
+		echo 'SITEURL:'.SITEURL."\\n";
+		break;
+
+	case 'alerts':
+		echo "PROBE_OK alerts\\n";
+		echo 'ALERTS:'.str_replace(array("\\r", "\\n"), ' ', e107::getMessage()->render('default', true))."\\n";
+		break;
+
+	case 'newcomer':
+		\$profile = new Hybridauth\\User\\Profile();
+		\$profile->identifier = 'e107tests_newcomer';
+		\$profile->displayName = 'e107tests newcomer';
+		\$_SESSION['HYBRIDAUTH::STORAGE'][strtolower('$provider.user')] = \$profile;
+		e107::getDb()->gen('DROP TRIGGER IF EXISTS e107tests_refuse_newcomer');
+		e107::getDb()->gen("CREATE TRIGGER e107tests_refuse_newcomer BEFORE INSERT ON `".MPREFIX."user` FOR EACH ROW BEGIN IF NEW.user_xup = '{$provider}_e107tests_newcomer' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'e107tests refuses this sign-up'; END IF; END");
+		echo "PROBE_OK newcomer\\n";
+		break;
+
 	case 'teardown':
 		\$manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, false);
 		\$manager->forgetProvider('Facebook');
@@ -445,6 +510,8 @@ switch(\$act)
 		\$manager->saveConfig();
 		e107::getUser()->logout();
 		e107::getDb()->delete('user', "user_loginname='$loginname'");
+		e107::getDb()->gen('DROP TRIGGER IF EXISTS e107tests_refuse_newcomer');
+		e107::getDb()->delete('user', "user_xup='{$provider}_e107tests_newcomer'");
 		unset(\$_SESSION['HYBRIDAUTH::STORAGE']);
 		echo "PROBE_OK teardown\\n";
 		break;

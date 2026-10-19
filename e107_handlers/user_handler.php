@@ -1736,7 +1736,8 @@ class e_user_provider
 			if ($user->hasError())
 			{
 				e107::getLog()->add('XUP Signup Failure', $userdata, E_LOG_WARNING, "XUP_SIGNUP");
-				throw new Exception($user->renderMessages(), 5);
+				e107::getMessage()->addError($user->renderMessages(), 'default', true);
+				throw new Exception('', 5);
 			}
 
 

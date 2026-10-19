@@ -75,7 +75,7 @@ class core_system_xup_controller extends eController
 				}
 				catch (Exception $e)
 				{
-					e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
+					e107::getMessage()->addError('['.$e->getCode().']'.e107::getParser()->attributeValue($e->getMessage()), 'default', true);
 				}
 			}
 		}
