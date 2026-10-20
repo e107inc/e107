@@ -45,7 +45,7 @@ class e107WebPathCookieTest extends \Test\Unit
 
 	/**
 	 * @param string $webPath what e_HTTP holds
-	 * @return string the path PHP is told to send the session cookie with once {@see e_session::start()} has run
+	 * @return string the path PHP is told to send the session cookie with once {@see e_session::start()} has run, less the SameSite attribute PHP before 7.3 carries on the end of it
 	 */
 	private function sessionCookiePathFor($webPath)
 	{
@@ -68,6 +68,15 @@ class e107WebPathCookieTest extends \Test\Unit
 		self::assertSame(0, $status, "the probe exited with status $status:\n".implode("\n", $lines));
 		self::assertCount(1, $lines, "the probe raised a diagnostic:\n".implode("\n", $lines));
 
-		return json_decode($lines[0]);
+		$path = json_decode($lines[0]);
+		$sameSite = '; samesite=Lax';
+
+		if(PHP_VERSION_ID < 70300)
+		{
+			self::assertStringEndsWith($sameSite, $path, "the session cookie's SameSite attribute for the web path $webPath");
+			$path = substr($path, 0, -strlen($sameSite));
+		}
+
+		return $path;
 	}
 }
