@@ -14,6 +14,9 @@
 
 		protected $_debugPlugin = ''; // 'linkwords'; // add plugin-dir for full report.
 
+		/** @var array<string,bool> installed state of each plugin before this test touched it */
+		private $pluginState = array();
+
 		protected function _before()
 		{
 			e107::loadAdminIcons(); // for plugin admin area scripts.
@@ -25,6 +28,53 @@
 			{
 				$this->assertTrue(false, "Couldn't load e107plugin object");
 			}*/
+		}
+
+		/**
+		 * Note a plugin's installed state before this test changes it.
+		 *
+		 * @param string $pluginDir plugin folder name
+		 * @return void
+		 */
+		private function rememberPlugin($pluginDir)
+		{
+			if(!array_key_exists($pluginDir, $this->pluginState))
+			{
+				$this->pluginState[$pluginDir] = $this->pluginIsInstalled($pluginDir);
+			}
+		}
+
+		/**
+		 * @param string $pluginDir plugin folder name
+		 * @return bool whether plugin_installflag is set, which the product's own uninstall gates on
+		 */
+		private function pluginIsInstalled($pluginDir)
+		{
+			$sql = e107::getDb();
+
+			return (bool) $sql->retrieve('plugin', 'plugin_installflag', "plugin_path = '".$sql->escape($pluginDir)."'");
+		}
+
+		/**
+		 * Put back the installed state every plugin was in, pass or fail.
+		 */
+		protected function _after()
+		{
+			foreach($this->pluginState as $pluginDir => $wasInstalled)
+			{
+				$isInstalled = $this->pluginIsInstalled($pluginDir);
+
+				if($wasInstalled && !$isInstalled)
+				{
+					e107::getPlugin()->install($pluginDir);
+				}
+				elseif(!$wasInstalled && $isInstalled)
+				{
+					e107::getPlugin()->uninstall($pluginDir, array('delete_tables' => 1, 'delete_files' => 0));
+				}
+			}
+
+			$this->pluginState = array();
 		}
 
 		private function makePluginReport($pluginDir)
@@ -372,6 +422,8 @@
 		{
 			$sql = e107::getDb();
 
+			$this->rememberPlugin('tagcloud');
+
 			$plg = e107::getPlug()->clearCache();
 			$plg->load('tagcloud');
 
@@ -503,6 +555,8 @@
 
 		private function pluginInstall($pluginDir)
 		{
+			$this->rememberPlugin($pluginDir);
+
 			e107::setRegistry('core/form/related'); // reset.
 
 			e107::getPlugin()->uninstall($pluginDir);
@@ -524,6 +578,8 @@
 
 		private function pluginUninstall($pluginDir, $opts=array())
 		{
+			$this->rememberPlugin($pluginDir);
+
 			if(empty($opts))
 			{
 				$opts = array(

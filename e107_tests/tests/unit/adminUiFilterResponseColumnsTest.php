@@ -33,10 +33,14 @@ class adminUiFilterResponseColumnsTest extends \Codeception\Test\Unit
 		'user_login'     => array('title' => 'Real name', 'type' => 'text', 'data' => 'safestr'),
 	);
 
+	/** @var array */
+	private $savedGet;
+
 	protected function _before()
 	{
 		require_once(e_HANDLER . 'admin_ui.php');
 		require_once(__DIR__ . '/fixtures/AdminUiFilterResponseProbeFixture.php');
+		$this->savedGet = $_GET;
 		e107::coreLan('admin', true);
 
 		e107::getDb()->insert('user', array(
@@ -59,6 +63,7 @@ class adminUiFilterResponseColumnsTest extends \Codeception\Test\Unit
 	protected function _after()
 	{
 		e107::getDb()->delete('user', "user_loginname = '" . self::NAME . "'");
+		$_GET = $this->savedGet;
 	}
 
 	/**

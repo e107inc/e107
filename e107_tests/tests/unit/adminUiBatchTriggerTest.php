@@ -28,9 +28,18 @@ class adminUiBatchTriggerTest extends \Codeception\Test\Unit
 	/** @var array|null registry entries replaced by stubUserRegistry() */
 	private $savedUserRegistry;
 
+	/** @var array */
+	private $savedGet;
+
+	protected function _before()
+	{
+		$this->savedGet = $_GET;
+	}
+
 	protected function _after()
 	{
 		$this->restoreUserRegistry();
+		$_GET = $this->savedGet;
 	}
 
 	private function stubUserRegistry()
