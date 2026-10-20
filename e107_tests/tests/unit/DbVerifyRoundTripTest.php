@@ -518,7 +518,7 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	}
 
 	/**
-	 * Copy a table, structure and rows, so the test can put it back.
+	 * Set a table aside and leave a copy of it, structure and rows, in its place for the test to change.
 	 *
 	 * @param string $table unprefixed table name.
 	 * @return void
@@ -530,10 +530,11 @@ class DbVerifyRoundTripTest extends \Test\Unit
 		$backup = MPREFIX . 'dbvroundtrip_' . $table;
 
 		$this->runStatement('DROP TABLE IF EXISTS `' . $backup . '`');
-		$this->runStatement('CREATE TABLE `' . $backup . '` LIKE `' . $physical . '`');
-		$this->runStatement('INSERT INTO `' . $backup . '` SELECT * FROM `' . $physical . '`');
-
+		$this->runStatement('RENAME TABLE `' . $physical . '` TO `' . $backup . '`');
 		$this->snapshots[$table] = $backup;
+
+		$this->runStatement('CREATE TABLE `' . $physical . '` LIKE `' . $backup . '`');
+		$this->runStatement('INSERT INTO `' . $physical . '` SELECT * FROM `' . $backup . '`');
 	}
 
 	/**
@@ -545,18 +546,9 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	{
 
 		$physical = MPREFIX . $table;
-		$autoIncrement = $this->autoIncrementOf($backup);
 
 		$this->runStatement('DROP TABLE IF EXISTS `' . $physical . '`');
-		$this->runStatement('CREATE TABLE `' . $physical . '` LIKE `' . $backup . '`');
-		$this->runStatement('INSERT INTO `' . $physical . '` SELECT * FROM `' . $backup . '`');
-
-		if($autoIncrement !== null)
-		{
-			$this->runStatement('ALTER TABLE `' . $physical . '` AUTO_INCREMENT = ' . (int) $autoIncrement);
-		}
-
-		$this->runStatement('DROP TABLE `' . $backup . '`');
+		$this->runStatement('RENAME TABLE `' . $backup . '` TO `' . $physical . '`');
 	}
 
 	/**
@@ -691,27 +683,6 @@ class DbVerifyRoundTripTest extends \Test\Unit
 		);
 
 		return empty($rows) ? null : $rows[0]['ENGINE'];
-	}
-
-	/**
-	 * @param string $physicalTableName
-	 * @return int|null null when the table has no AUTO_INCREMENT column.
-	 */
-	private function autoIncrementOf($physicalTableName)
-	{
-
-		$rows = $this->rows(
-			'SELECT AUTO_INCREMENT FROM information_schema.TABLES'
-			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name',
-			array('name' => $physicalTableName)
-		);
-
-		if(empty($rows) || $rows[0]['AUTO_INCREMENT'] === null)
-		{
-			return null;
-		}
-
-		return (int) $rows[0]['AUTO_INCREMENT'];
 	}
 
 	/**
