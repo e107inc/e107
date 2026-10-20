@@ -1134,6 +1134,21 @@ class e_formTest extends \Test\Unit
 	}
 
 	/**
+	 * A user column's modal caption, which the admin script sets as text, reads as the name the link shows.
+	 */
+	public function testAUserLinkCaptionReadsAsTheNameItShows()
+	{
+		foreach(array("O'Brien", 'Tom & "Jerry"') as $typed)
+		{
+			$readParms = array('link' => 1, '__nameval' => e107::getParser()->toDB($typed));
+			$link = $this->parsedCell($this->_frm->renderValue('user_id', 5, array('type' => 'user', 'title' => 'User', 'readParms' => $readParms), 1))->getElementsByTagName('a')->item(0);
+
+			self::assertSame($typed, $link->textContent);
+			self::assertSame('User #5 : '.$typed, $link->getAttribute('data-modal-caption'));
+		}
+	}
+
+	/**
 	 * @param string $html
 	 * @return DOMDocument $html parsed as the body of a page
 	 */

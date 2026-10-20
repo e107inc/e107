@@ -88,17 +88,24 @@ class forumAttachmentNameTest extends \Test\Unit
 	}
 
 	/**
-	 * The Bootstrap topic template asks for the modal, and the modal's script writes the caption into the page with jQuery's html().
+	 * The Bootstrap topic template asks for the modal, and the modal's script sets the caption as text.
 	 */
-	public function testTheModalCaptionIsStillTextOnceTheBrowserHasDecodedIt()
+	public function testTheModalCaptionReadsAsTheDisplayNameOnceTheBrowserHasDecodedIt()
 	{
-		$page = $this->renderAttachments(array('img' => array(
-			array('file' => 'photo.jpg', 'name' => self::MARKUP, 'size' => 1),
-		)), array('modal' => 1));
+		$names = array(
+			self::MARKUP                => self::MARKUP,
+			'O&#039;Brien &amp; Co.jpg' => "O'Brien & Co.jpg",
+		);
 
-		self::assertSame(1, preg_match('/data-modal-caption="([^"]*)"/', $page, $match), "no caption was written:\n" . $page);
-		self::assertStringNotContainsString('<i ', html_entity_decode($match[1], ENT_QUOTES, 'UTF-8'),
-			"the caption is markup by the time the modal writes it:\n" . $page);
+		foreach($names as $stored => $shown)
+		{
+			$page = $this->renderAttachments(array('img' => array(
+				array('file' => 'photo.jpg', 'name' => $stored, 'size' => 1),
+			)), array('modal' => 1));
+
+			self::assertSame(1, preg_match('/data-modal-caption="([^"]*)"/', $page, $match), "no caption was written:\n" . $page);
+			self::assertSame($shown, html_entity_decode($match[1], ENT_QUOTES, 'UTF-8'), $page);
+		}
 	}
 
 	public function testTheMissingFileNoticePrintsTheStoredNameAsText()

@@ -6415,7 +6415,7 @@ var_dump($select_options);*/
 
 					$value = '<a' . $this->attributes([
 							'class'              => "e-modal",
-							'data-modal-caption' => "User #$id : $ttl",
+							'data-modal-caption' => "User #$id : " . html_entity_decode($ttl, ENT_QUOTES, 'UTF-8'),
 							'href'               => $link,
 							'title'              => LAN_EFORM_011
 						]) . '>' . $ttl . '</a>';

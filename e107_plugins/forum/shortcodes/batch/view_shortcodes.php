@@ -476,9 +476,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 								//TODO Use jQuery zoom instead.
 
-								$caption = $tp->toAttribute($name, true);
-
-								$inc = (vartrue($parm['modal'])) ? "data-modal-caption=\"" . $caption . "\" data-target='#uiModal' data-bs-target='#uiModal' " : "";
+								$inc = (vartrue($parm['modal'])) ? "data-modal-caption=\"" . $name . "\" data-target='#uiModal' data-bs-target='#uiModal' " : "";
 								$images[] = "<a  {$inc} rel='external' href='{$full}' data-bs-toggle='modal' class='forum-attachment-image e-modal' ><img class='thumbnail' src='{$thumb}' alt='' /></a>";
 							}
 							elseif(ADMIN)
