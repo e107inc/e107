@@ -1144,12 +1144,10 @@ e107::css('inline',"
 			if($attributes['mode'] == 'read')
 			{
 
-				$tp = e107::getParser();
 				$topic = $this->getController()->getListModel()->get('gen_ip');
 				$topidId = $this->getController()->getListModel()->get('gen_intdata');
-				$caption = $tp->toAttribute('Topic: '.$this->gen_ip($topic, 'read'), true);
 				$text = "<div class='btn-group'>";
-				$text .= "<a class='e-modal btn btn-default'  data-modal-caption='".$caption."'  href='".e_SELF."?mode=post&action=list&id=". $topidId."' rel='external'>".defset('ADMIN_VIEW_ICON')."</a>";
+				$text .= "<a class='e-modal btn btn-default'  data-modal-caption='Topic: ".$this->gen_ip($topic, 'read')."'  href='".e_SELF."?mode=post&action=list&id=". $topidId."' rel='external'>".defset('ADMIN_VIEW_ICON')."</a>";
 
 				$text .= $this->renderValue('options',$value,array('readParms'=>'edit=0'), $id);
 				$text .= "</div>";

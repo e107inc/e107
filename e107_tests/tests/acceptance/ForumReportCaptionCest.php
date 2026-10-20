@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The reported posts list names each thread in a modal caption that the admin script inserts as HTML.
+ * The reported posts list names each thread in a modal caption that the admin script inserts as text.
  */
 class ForumReportCaptionCest
 {
@@ -47,7 +47,7 @@ class ForumReportCaptionCest
 		$I->loginAsAdmin();
 		$I->amOnPage('/e107_plugins/forum/forum_admin.php?mode=report&action=list');
 
-		$this->seeCaptionAsText($I, $thread, '&lt;img src=x onerror=alert(1)&gt; caption probe');
+		$this->seeCaptionAsText($I, $thread, '<img src=x onerror=alert(1)> caption probe');
 	}
 
 	/**
@@ -65,11 +65,11 @@ class ForumReportCaptionCest
 		$I->amOnPage('/e107_plugins/forum/forum_admin.php?mode=report&action=list');
 
 		$I->dontSeeInSource('<name-markup>');
-		$this->seeCaptionAsText($I, $thread, '&lt;name-markup&gt;raw probe');
+		$this->seeCaptionAsText($I, $thread, '<name-markup>raw probe</name-markup>');
 	}
 
 	/**
-	 * The caption of a report's view button, as the admin script reads it, carries $text once and no tag.
+	 * The caption of a report's view button, as the admin script reads it, is "Topic: " and $text, the name as it is shown.
 	 *
 	 * @param AcceptanceTester $I
 	 * @param int $thread
@@ -79,7 +79,6 @@ class ForumReportCaptionCest
 	{
 		$caption = $I->grabAttributeFrom('a.e-modal[href*="mode=post&action=list&id='.$thread.'"]', 'data-modal-caption');
 
-		$I->assertSame(0, substr_count($caption, '<'), $caption);
-		$I->assertSame(1, substr_count($caption, $text), $caption);
+		$I->assertSame('Topic: '.$text, $caption);
 	}
 }
