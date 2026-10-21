@@ -74,7 +74,7 @@ class e107WebPathCookieTest extends \Test\Unit
 		if(PHP_VERSION_ID < 70300)
 		{
 			self::assertStringEndsWith($sameSite, $path, "the session cookie's SameSite attribute for the web path $webPath");
-			$path = substr($path, 0, -strlen($sameSite));
+			$path = (string) substr($path, 0, -strlen($sameSite));
 		}
 
 		return $path;
