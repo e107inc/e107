@@ -21,21 +21,20 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../class2.php');
 }
 
-// e_form::mediaUrl() points every image and file picker in the admin area at
-// action=dialog, so the dialog answers to any administrator; the upload tab
-// inside it is what asks for A or A1.
 $action = varset($_GET['action']);
+$route = new e_admin_request();
+$dialogSearch = e_AJAX_REQUEST && isset($_GET['search']) && $route->getMode() === 'main' && $route->getAction() === $action
+	&& in_array($action, array('image2', 'video', 'audio', 'glyph', 'icon', 'youtube'), true);
+$allowed = ($action === 'dialog' || $dialogSearch) ? ADMIN : getperms($action === 'youtube' ? 'A|A1' : 'A');
 
-if($action === 'dialog')
+if(!$allowed)
 {
-	if(!ADMIN)
+	if(e_AJAX_REQUEST)
 	{
-		e107::redirect('admin');
-		exit;
+		require_once(e_HANDLER.'js_helper.php');
+		e_jshelper::sendAjaxError(403, defset('ADLAN_86', 'Forbidden'), defset('ADLAN_87', 'Access denied!'));
 	}
-}
-elseif(!getperms($action === 'youtube' ? 'A|A1' : 'A'))
-{
+
 	e107::redirect('admin');
 	exit;
 }
@@ -1090,8 +1089,6 @@ class media_admin_ui extends e_admin_ui
 		$this->prefs['watermark_pos']['writeParms'] 		= $wm_pos;	
 		$this->prefs['watermark_pos']['readParms'] 			= $wm_pos;	
 	
-		e107::getCache()->clearAll('image');
-		
 		if(e_AJAX_REQUEST && isset($_GET['search']))
 		{
 			$parm = array('search' => $tp->filter($_GET['search']));
@@ -1131,6 +1128,8 @@ class media_admin_ui extends e_admin_ui
 
 			exit;
 		}
+
+		e107::getCache()->clearAll('image');
 
 
 
@@ -3673,7 +3672,7 @@ class media_admin_ui extends e_admin_ui
 }
 
 
-new media_admin();
+new media_admin(true, $route);
 
 require_once(e_ADMIN. 'auth.php');
 

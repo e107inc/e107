@@ -40,9 +40,10 @@ trait BootedCli
 	 *
 	 * @param array $constants name => value
 	 * @param string $php
+	 * @param string $ini extra php command-line arguments, e.g. {@see BootedCli::buffered()}
 	 * @return array the output lines, stdout and stderr interleaved, then the exit status
 	 */
-	protected function runInBootedCliDefining(array $constants, $php)
+	protected function runInBootedCliDefining(array $constants, $php, $ini = '')
 	{
 		$defines = '';
 		foreach($constants as $name => $value)
@@ -50,7 +51,7 @@ trait BootedCli
 			$defines .= 'define('.var_export($name, true).', '.var_export($value, true).'); ';
 		}
 
-		return $this->runInCli($defines.$this->cliBoot(array('cli' => true)).$php);
+		return $this->runInCli($defines.$this->cliBoot(array('cli' => true)).$php, $ini);
 	}
 
 	/**
@@ -59,9 +60,10 @@ trait BootedCli
 	 * @param string $script path under the app root, e.g. 'e107_admin/db.php'
 	 * @param string $seed PHP setting up preferences and request data before the script is loaded
 	 * @param string $ini extra php command-line arguments, e.g. {@see BootedCli::buffered()}
+	 * @param array $constants name => value, defined before class2.php could, as {@see BootedCli::runInBootedCliDefining()} does
 	 * @return string
 	 */
-	protected function renderInBootedCli($script, $seed, $ini = '')
+	protected function renderInBootedCli($script, $seed, $ini = '', array $constants = array())
 	{
 		$booted = 'E107-BOOTED';
 
@@ -70,7 +72,7 @@ trait BootedCli
 		$php .= $seed;
 		$php .= "require_once('".addslashes(APP_PATH.'/'.$script)."'); ";
 
-		list($output) = $this->runInBootedCli($php, $ini);
+		list($output) = $this->runInBootedCliDefining($constants, $php, $ini);
 		$page = implode("\n", $output);
 
 		$this->assertStringContainsString($booted, $page,
