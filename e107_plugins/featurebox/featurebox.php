@@ -9,6 +9,10 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
+
+$tp = e107::getParser();
+$ns = e107::getRender();
+
 if (!e107::isInstalled('featurebox'))
 {
 	e107::redirect();

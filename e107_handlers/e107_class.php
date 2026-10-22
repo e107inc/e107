@@ -1643,7 +1643,7 @@ class e107
 	/**
 	 * Retrieve text parser singleton object
 	 *
-	 * @return e_parse|array
+	 * @return e_parse
 	 */
 	public static function getParser()
 	{
@@ -1653,7 +1653,7 @@ class e107
 	/**
 	 * Retrieve sc parser singleton object
 	 *
-	 * @return e_parse_shortcode|array
+	 * @return e_parse_shortcode
 	 */
 	public static function getScParser()
 	{
@@ -1726,7 +1726,7 @@ class e107
 	 * </code>
 	 *
 	 * @param string $className
-	 * @param string $pluginName
+	 * @param string|true|null $pluginName
 	 * @param string|true $overrideClass
 	 * @return e_shortcode
 	 */
@@ -2568,7 +2568,6 @@ class e107
 		{
 			case 'detect':
 				return $libraryHandler->detect($library);
-				break;
 
 			case 'load':
 				$cdn = (bool) self::getPref('e_jslib_cdn', true);
@@ -2617,11 +2616,9 @@ class e107
 				}
 
 				return $libraryHandler->load($library, $variant, $types);
-				break;
 
 			case 'info':
 				return $libraryHandler->info($library);
-				break;
 
 			case 'files':
 				$info = $libraryHandler->info($library);
@@ -2643,7 +2640,6 @@ class e107
 
 
 				return $ret;
-				break;
 
 			case 'preload':
 
@@ -3047,8 +3043,8 @@ class e107
 
 	/**
 	 * @see eResponse::addMeta()
-	 * @param null $name
-	 * @param null $content
+	 * @param string|null $name
+	 * @param string|null $content
 	 * @param array $extended
 	 * @return eResponse
 	 */
@@ -3395,7 +3391,7 @@ class e107
 
 	/**
 	 * Load admin icons template and define their constants
-	 * @return array;
+	 * @return array
 	 */
 	public static function loadAdminIcons()
 	{
@@ -4674,15 +4670,12 @@ class e107
 		{
 			case 'core' :
 				return self::getPref($pname, $default);
-			break;
 
 			case 'theme' :
 				return self::getThemePref($pname, $default);
-			break;
 
 			default:
 				return self::getPlugPref($type, $pname, $default);
-			break;
 		}
 
 	}
@@ -5235,7 +5228,7 @@ class e107
 	/**
 	 * Set or Retrieve WYSIWYG active status. (replaces constant  e_WYSIWYG)
 	 *
-	 * @param bool/string $val if null, return current value, otherwise define editor to use
+	 * @param bool|string $val if null, return current value, otherwise define editor to use
 	 * @param bool $returnEditor true = return name of active editor, false = return "false" for non wysiwyg editor, return "true" if wysiwyg editor should be used
 	 * @return bool|mixed
 	 */
@@ -6809,7 +6802,7 @@ class e107
 	/**
 	 * Returns true if the number is compatible with this version of e107.
 	 * @param string $version The minimum version requirement
-	 * @param string theme|plugin
+	 * @param string $mode theme|plugin
 	 * @return bool
 	 */
 	public static function isCompatible($version, $mode)
@@ -7094,7 +7087,6 @@ class e107
 				trigger_error('$e107->$' . $name . ' not defined', E_USER_WARNING);
 
 				return null;
-				break;
 		}
 
 		// Store the result in the static cache

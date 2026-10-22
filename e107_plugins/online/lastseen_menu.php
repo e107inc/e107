@@ -13,6 +13,8 @@ if(!defined('e107_INIT'))
 	exit;
 }
 
+$sql = e107::getDb();
+
 $online_shortcodes = e107::getScBatch('online', true);
 
 if(is_readable(THEME.'online_menu_template.php'))

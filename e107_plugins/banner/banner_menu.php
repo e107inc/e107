@@ -16,6 +16,10 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
+
+$tp = e107::getParser();
+$ns = e107::getRender();
+
 e107::lan('banner');
 
 if(file_exists(THEME.'templates/banner/banner_template.php')) // v2.x location. 

@@ -1150,7 +1150,7 @@ class cronScheduler
 	/**
 	 * Cron parser class.
 	 *
-	 * @var \CronParser.
+	 * @var \CronParser
 	 */
 	private $cron;
 

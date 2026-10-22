@@ -423,7 +423,6 @@ class html_import extends base_import_class
 			
 			default:
 				return varset($source[$type][0]);
-			break;
 		}	
 	}
 
@@ -485,7 +484,7 @@ class html_import extends base_import_class
 	
 	
 	/** Download and Import remote images and update body text with local relative-links. eg. {e_MEDIA}
-	 * @param returns text-body with remote links replaced with local ones for the images downloaded. 
+	 * Returns the text-body with remote links replaced with local ones for the images downloaded. 
 	 */
 	function saveImages($body,$cat='news')
 	{

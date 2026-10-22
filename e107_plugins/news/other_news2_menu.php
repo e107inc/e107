@@ -18,6 +18,8 @@ use e107\Database\SqlFragment;
 
 if (!defined('e107_INIT')) { exit; }
 
+$tp = e107::getParser();
+
 
 // Load Data
 if($cacheData = e107::getCache()->retrieve("nq_othernews2"))

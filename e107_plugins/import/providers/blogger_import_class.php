@@ -161,11 +161,9 @@ class blogger_import extends rss_import
 				}
 
 				return "";
-			break;
 
 			default:
 				return $source[$type][0];
-			break;
 		}		
 
 

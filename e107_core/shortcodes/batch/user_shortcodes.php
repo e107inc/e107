@@ -513,7 +513,6 @@ class user_shortcodes extends e_shortcode
 			{
 				case 'like':
 					return $frm->like('user',$this->var['user_id']);	
-				break;
 				case 'legacy':
 					$rater = e107::getRate();
 					$ret = "<span>";
@@ -531,10 +530,8 @@ class user_shortcodes extends e_shortcode
 					}
 					$ret .= "</span>";
 					return $ret;	
-				break;
 				default:
 					return $frm->rate('user',$this->var['user_id']);	
-				break;
 			}		
 
 			return "";

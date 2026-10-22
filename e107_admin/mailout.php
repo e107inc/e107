@@ -1656,12 +1656,10 @@ class mailout_admin_form_ui extends e_admin_form_ui
 		{
 			case 'read':
 				return varset($data['mail_selectors'], '');
-			break;
 
 			case 'write':
 
 				return $this->getController()->mailAdmin->emailSelector('all', varset($data['mail_selectors'], FALSE));	
-			break;
 
 			case 'filter':
 			case 'batch':
@@ -1683,11 +1681,9 @@ class mailout_admin_form_ui extends e_admin_form_ui
 		{
 			case 'read':
 				return varset($data['mail_send_style'], '');
-			break;
 
 			case 'write':
 				return $this->getController()->mailAdmin->sendStyleSelect(varset($data['mail_send_style'], ''),'mail_send_style');
-			break;
 
 			case 'filter':
 			case 'batch':
@@ -1708,7 +1704,6 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			case 'read':
 				$data 	= $this->storedEmail($this->getController()->getListModel());
 				return $data[$field];
-			break;
 
 			case 'write':
 				$data 	= $this->storedEmail($this->getController()->getModel());
@@ -1725,7 +1720,6 @@ class mailout_admin_form_ui extends e_admin_form_ui
 				
 				
 				return $this->text($field, $data[$field],70, 'size=xxlarge');
-			break;
 
 			case 'filter':
 			case 'batch':

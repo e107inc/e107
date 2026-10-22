@@ -1596,7 +1596,6 @@ class e_admin_dispatcher
 
 			case 'response':
 				return $response;
-			break;
 
 			case 'render':
 			default:
@@ -4020,7 +4019,6 @@ class e_admin_controller_ui extends e_admin_controller
 
 		$arr = array();
 		/**
-		 * @var  $id
 		 * @var e_tree_model $model
 		 */
 		foreach ($tree->getTree() as $id => $model)

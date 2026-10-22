@@ -65,12 +65,10 @@ class signup_shortcodes extends e_shortcode
 		{
 			case 'login':
 				return $this->sc_signup_xup_login($param);
-			break;
 			
 			case 'signup':
 			default:
 				return $this->sc_signup_xup_signup($param);
-			break;
 		}
 	}
 	

@@ -805,7 +805,6 @@ class banlist_form_ui extends e_admin_form_ui
 
 			case 'write': // Edit Page
 				return $this->renderElement('banlist_reason', $curVal, array());
-				break;
 
 			case 'filter':
 			case 'batch':
@@ -835,12 +834,10 @@ class banlist_form_ui extends e_admin_form_ui
 				}
 
 				return $shown;
-				break;
 
 			case 'write': // Edit Page
 
 				return $this->text('banlist_ip', $shown, array());
-				break;
 
 			case 'filter':
 			case 'batch':
@@ -862,7 +859,6 @@ class banlist_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				return "<div class='nowrap' title='".$ipAdministrator->getBanTypeString($curVal, TRUE)."'>".$ipAdministrator->getBanTypeString($curVal, FALSE)."</div>";					
-			break;
 			
 			case 'write': // Edit Page
 
@@ -878,12 +874,10 @@ class banlist_form_ui extends e_admin_form_ui
 
 
 				return $this->select('banlist_bantype',$ipAdministrator->banTypes, $curVal);
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return  $ipAdministrator->banTypes; 
-			break;
 		}
 	}
 
@@ -925,12 +919,10 @@ class banlist_form_ui extends e_admin_form_ui
 
 				return $this->select('banlist_banexpires',$opts, $curVal);
 				// return $frm->text('banlist_banexpires',$curVal);		
-			break;
 			
 			case 'filter':
 			case 'batch':
 				return  false;
-			break;
 		}
 	}
 
@@ -1045,16 +1037,13 @@ class banlist_form_ui extends e_admin_form_ui
 			{
 				case 'read': // List Page
 					return $curVal;
-					break;
 
 				case 'write': // Edit Page
 					return $frm->text('gen_type',$curVal);
-					break;
 
 				case 'filter':
 				case 'batch':
 					return  array(1=>LAN_BAN);
-					break;
 			}
 		}
 
@@ -1068,11 +1057,9 @@ class banlist_form_ui extends e_admin_form_ui
 			{
 				case 'read': // List Page
 					return str_replace(":::","<br />",$curVal);
-					break;
 
 				case 'write': // Edit Page
 					return $frm->text('gen_chardata',$curVal);
-					break;
 
 				case 'filter':
 				case 'batch':

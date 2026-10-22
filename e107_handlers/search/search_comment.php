@@ -21,6 +21,8 @@ if (!defined('USERCLASS_LIST'))
 	throw new RuntimeException('The comments search cannot be built without the visitor\'s userclass list.');
 }
 
+$tp = e107::getParser();
+
 // TODO Rework all of this to v2 standards while maintaining BC.
 
 // advanced 

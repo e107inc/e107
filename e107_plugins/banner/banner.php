@@ -14,6 +14,9 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../../class2.php');
 }
 
+$tp = e107::getParser();
+$ns = e107::getRender();
+
 if (!e107::isInstalled('banner'))
 {
 	e107::redirect();

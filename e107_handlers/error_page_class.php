@@ -21,24 +21,12 @@ e107::lan('core', 'error');
 class error_page
 {
 
-	/**
-	 * @var
-	 */
 	private $template = 'DEFAULT';
 
-	/**
-	 * @var
-	 */
 	private $title;
 
-	/**
-	 * @var
-	 */
 	private $caption;
 
-	/**
-	 * @var
-	 */
 	private $content;
 
 	/**

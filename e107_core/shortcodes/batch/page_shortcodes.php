@@ -288,16 +288,13 @@ class cpage_shortcodes extends e_shortcode
 		{
 			case 'src':
 				return $thumb;
-			break;
 
 			case 'link':
 				return '<a href="'.$tp->replaceConstants($path, 'abs').'" class="cpage-image" rel="external image"><img class="cpage-image" src="'.$thumb.'" alt="'.varset($parms[1]['alt']).'" '.$dimensions.' /></a>';
-			break;
 
 			case 'tag':
 			default:
 				return '<img class="cpage-image" src="'.$thumb.'" alt="'.varset($parms[1]['alt']).'" '.$dimensions.' />';
-			break;
 		}
 	}
 	

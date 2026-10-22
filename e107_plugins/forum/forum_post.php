@@ -140,14 +140,12 @@ class forum_post_handler
 				$data['action']         = $this->action;
 				$this->setPageTitle($data);
 				return $data;
-				break;
 
 			case 'nt':
 				$forumInfo              = $this->forumObj->forumGet($this->id);
 				$forumInfo['action']    = $this->action;
 				$this->setPageTitle($forumInfo);
 				return $forumInfo;
-				break;
 
 			case 'edit':
 			case "quote":
@@ -162,7 +160,6 @@ class forum_post_handler
 				$data['initial_post']   = $this->forumObj->threadDetermineInitialPost($this->post);
 				$this->setPageTitle($data);
 				return $data;
-				break;
 
 			case 'move':
 				$thread                 = $this->forumObj->threadGet($this->id, true);
@@ -171,7 +168,6 @@ class forum_post_handler
 				$data['action']         = $this->action;
 				$this->setPageTitle($data);
 				return $data;
-				break;
 
 			default:
 				$url = e107::url('forum','index',null,['mode'=>'full']);

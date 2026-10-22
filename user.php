@@ -15,6 +15,11 @@
 //HCL define('PAGE_NAME', 'Members');
 
 require_once("class2.php");
+
+$tp = e107::getParser();
+$sql = e107::getDb();
+$ns = e107::getRender();
+
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 // Next bit is to fool PM plugin into doing things

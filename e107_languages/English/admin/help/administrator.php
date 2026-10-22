@@ -16,6 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$ns = e107::getRender();
+
 $caption = "Site Admin Help";
 $text = "Use this page to edit the preferences for, or delete site administrators. The administrator will only have permission to access the features that are ticked.<br /><br />
 To create a new admin go to the user config page and update an existing user to admin status.";
