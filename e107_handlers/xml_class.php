@@ -524,9 +524,11 @@ class xmlClass
 		}
 
 
-		if(!$xml = simplexml_load_string($xmlData, 'SimpleXMLElement', LIBXML_NOCDATA))
+		list($xml, $complaints) = $this->parseQuietly($xmlData, LIBXML_NOCDATA);
+
+		if(!$xml)
 		{
-			$this->errors = $this->getErrors($xmlData);
+			$this->errors = $complaints;
 			return FALSE;
 		}
 
@@ -1468,18 +1470,35 @@ class xmlClass
 	 */
 	function getErrors($xml)
 	{
-		libxml_use_internal_errors(true);
-		$sxe = simplexml_load_string($xml);
+		list($sxe, $errors) = $this->parseQuietly($xml);
+
+		return $sxe ? FALSE : $errors;
+	}
+
+	/**
+	 * Parse $xml with libxml's complaints collected rather than raised, whatever setting the caller left libxml in, and put that setting back.
+	 *
+	 * @param string $xml
+	 * @param int $options LIBXML_* flags
+	 * @return array the SimpleXMLElement or false, then each complaint as one string
+	 */
+	private function parseQuietly($xml, $options = 0)
+	{
+		$previous = libxml_use_internal_errors(true);
+		libxml_clear_errors();
+
+		$sxe = simplexml_load_string($xml, 'SimpleXMLElement', $options);
+
 		$errors = array();
-		if (!$sxe)
+		foreach(libxml_get_errors() as $error)
 		{
-		    foreach(libxml_get_errors() as $error)
-			{
-		        $errors[] = $error->message. "Line:".$error->line." Column:".$error->column;
-			}
-			return $errors;
+			$errors[] = $error->message. "Line:".$error->line." Column:".$error->column;
 		}
-		return FALSE;
+
+		libxml_clear_errors();
+		libxml_use_internal_errors($previous);
+
+		return array($sxe, $errors);
 	}
 
 

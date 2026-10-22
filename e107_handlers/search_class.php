@@ -642,10 +642,7 @@ class e_search
 
 		$file = e_PLUGIN.$plugin.'/plugin.xml';
 		$source = is_readable($file) ? (string) file_get_contents($file) : '';
-		$libxmlErrors = libxml_use_internal_errors(true);
 		$meta = ($source !== '') ? e107::getXml(false)->parseXml($source, false) : false;
-		libxml_clear_errors();
-		libxml_use_internal_errors($libxmlErrors);
 
 		if(empty($meta['@attributes']['name']))
 		{
