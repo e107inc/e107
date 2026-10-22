@@ -352,6 +352,27 @@
 			$this->assertStringNotContainsString("\n", $message, 'A log line is one line.');
 		}
 
+		/** A malformed document is reported, not raised as a warning, whichever way an earlier caller left libxml's error setting, and the setting is left as it was. */
+		public function testParseXmlReportsAMalformedDocumentQuietlyAndLeavesLibxmlAsItFoundIt()
+		{
+			foreach(array(false, true) as $setting)
+			{
+				$previous = libxml_use_internal_errors($setting);
+
+				try
+				{
+					$parsed = (new xmlClass())->parseXml('<feed><item></feed>');
+				}
+				finally
+				{
+					$left = libxml_use_internal_errors($previous);
+				}
+
+				$this->assertFalse($parsed);
+				$this->assertSame($setting, $left);
+			}
+		}
+
 		/**
 		 * The commonest case of #6127: nothing below ever recorded a reason,
 		 * and the caller logged a bare colon.
