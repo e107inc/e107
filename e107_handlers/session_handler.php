@@ -989,6 +989,8 @@ class e_session
 		}
 
 		session_regenerate_id(true);
+		$params = session_get_cookie_params();
+		$this->expireDomainWideSessionCookie($params['path']);
 
 		return $this;
 	}
@@ -1061,7 +1063,7 @@ class e_session
 		}
 
 		setcookie(session_name(), '', 1, $earlier, (string) $this->_options['domain'], (bool) $this->_options['secure'], true);
-		cookie(session_name(), '', 1, $earlier, $this->_options['domain'], $this->_options['secure']);
+		$this->expireDomainWideSessionCookie($earlier);
 	}
 
 	/**
@@ -1069,6 +1071,7 @@ class e_session
 	 * We reset session cookie on every (session_lifetime / 4) seconds 
 	 * It's done by all session handler instances, they all share
 	 * one and the same '_cookie_session_validate' variable (global session namespace)
+	 * Only a request that has run language detection renews it: before that, a multi-language subdomain site's session cookie looks host-only.
 	 * @return e_session
 	 */
 	public function validateSessionCookie()
@@ -1085,9 +1088,9 @@ class e_session
 		}
 		elseif ($_SESSION['_cookie_session_validate'] < time())
 		{ 
-			if (!headers_sent())
+			if (!headers_sent() && !e107::getE107('no_lan'))
 			{
-				cookie(session_name(), session_id(), time() + $this->_options['lifetime'], $this->_options['path'], $this->_options['domain'], $this->_options['secure']);
+				$this->sendSessionCookie(session_id(), time() + $this->_options['lifetime']);
 				$time = time() + round($this->_options['lifetime'] / 4);
 				$_SESSION['_cookie_session_validate'] = $time;
 			}
@@ -1102,9 +1105,50 @@ class e_session
 	 */
 	public function cookieDelete()
 	{
-		cookie(session_name(), null, null, $this->_options['path'], $this->_options['domain'], $this->_options['secure']);
+		$this->sendSessionCookie('', 1);
 		$this->expireEarlierSessionCookie();
 		return $this;
+	}
+
+	/**
+	 * Expires the session cookie's domain-wide copy, then sends the cookie with $value until $expires and every other parameter PHP sends it with, read back from {@see session_get_cookie_params()}; does nothing once output has started.
+	 *
+	 * @param string $value
+	 * @param int $expires
+	 * @return void
+	 */
+	private function sendSessionCookie($value, $expires)
+	{
+		if (headers_sent())
+		{
+			return;
+		}
+
+		$options = session_get_cookie_params();
+		$this->expireDomainWideSessionCookie($options['path']);
+
+		unset($options['lifetime']);
+		$options['expires'] = $expires;
+		eShims::setcookie(session_name(), $value, $options);
+	}
+
+	/**
+	 * Expires the session cookie at $path in the domain-wide form {@see cookie()} gives it, which earlier releases wrote and a browser sends ahead of a newer cookie, unless that form is the cookie PHP sends.
+	 *
+	 * @param string $path
+	 * @return void
+	 */
+	private function expireDomainWideSessionCookie($path)
+	{
+		$params = session_get_cookie_params();
+		$domain = e107::cookieDomain($params['domain']);
+
+		if ($domain === (string) $params['domain'])
+		{
+			return;
+		}
+
+		eShims::setcookie(session_name(), '', 1, $path, $domain, (bool) $params['secure'], true);
 	}
 
 	/**
