@@ -26,6 +26,9 @@ class e_media
 	protected $imagelist = array();
 	
 	protected $logging = false; 
+
+	/** @var string[] media types whose categories carry the type as a suffix, eg. news_image and _common_image */
+	private $typedCategories = array('image', 'video', 'audio');
 	
 	protected $mimePaths = array(
 				'text'			=> e_MEDIA_FILE,
@@ -531,11 +534,12 @@ class e_media
 	//	$inc 		= array();
 		$searchinc 	= array();
 		$catArray   = array();
+		$common     = $this->commonCategory($type);
 		
 		if(strpos($cat,"^") || !$cat)
 		{
 			$cat = str_replace("^","",$cat);
-			$catArray[] = '_common_'.$type;
+			$catArray[] = $common;
 		}
 
 		if($cat)
@@ -548,13 +552,17 @@ class e_media
 			{
 				$catArray[] = $cat;
 
-				if($type === 'image' || $type === 'audio'|| $type === 'video')
+				if(in_array($type, $this->typedCategories, true))
 				{
 					$catArray[] = $cat.'_'.$type; // BC Fix.
 				}
 			}
 		}
 
+		if(in_array($common, $catArray, true))
+		{
+			$catArray[] = '_common';
+		}
 
 		// TODO check the category is valid.
 
@@ -1385,12 +1393,12 @@ class e_media
 	/**
 	 * Import a file into the Media Manager
 	 * @param string $file Path to file
-	 * @param string $category media-category to import into
+	 * @param string $category media-category to import into; '' or '_common' files it under the common category of its type
 	 * @param null|array $opts('path'=> Custom Folder (optional))
 	 * @param array $new_data - Additional media info to save.
 	 * @return bool|string
 	 */
-	public function importFile($file='', $category='_common_image', $opts = null, $new_data = array())
+	public function importFile($file='', $category='', $opts = null, $new_data = array())
 	{
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
@@ -1424,6 +1432,7 @@ class e_media
 			
 		$img_data = $this->mediaData($oldpath); // Basic File Info only
 
+		$category = $this->importCategory($category, $img_data['media_type']);
 
 		if($category === '_icon')
 		{
@@ -1460,7 +1469,7 @@ class e_media
 		$img_data['media_url']			= $tp->createConstants($newpath,'rel');
 		$img_data['media_name'] 		= $tp->toDB(basename($newpath));
 		$img_data['media_caption'] 		= vartrue($new_data['media_caption']);
-		$img_data['media_category'] 	= vartrue($category,'_common_image');
+		$img_data['media_category'] 	= $category;
 		$img_data['media_description'] 	= vartrue($new_data['media_description']);
 		$img_data['media_userclass'] 	= '0';
 
@@ -1478,6 +1487,33 @@ class e_media
 		}
 		
 		
+	}
+
+
+	/**
+	 * Category an import is stored under: the include-common markers dropped, and no category or the bare '_common' resolved by {@see e_media::commonCategory()}.
+	 * @param string $category
+	 * @param string $mimeType
+	 * @return string
+	 */
+	private function importCategory($category, $mimeType)
+	{
+		$category = str_replace(array('+', '^'), '', (string) $category);
+
+		return ($category === '' || $category === '_common') ? $this->commonCategory($mimeType) : $category;
+	}
+
+
+	/**
+	 * Common category media of a type is filed under, eg. '_common_image' for 'image' or 'image/png', and '_common_file' for any type but image, video and audio.
+	 * @param string $type a media type or a MIME type
+	 * @return string
+	 */
+	private function commonCategory($type)
+	{
+		list($mainType) = explode('/', (string) $type);
+
+		return in_array($mainType, $this->typedCategories, true) ? '_common_'.$mainType : '_common_file';
 	}
 
 
@@ -2429,7 +2465,6 @@ class e_media
 		{
 			$uploadPath = varset($request['path'],null);
 			$for = e107::getParser()->filter($request['for']);
-			$for = str_replace(array('+','^'),'', $for);
 
 			if(!$result = e107::getMedia()->importFile($fileName, $for, array('path'=>$uploadPath)))
 			{

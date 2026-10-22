@@ -15,6 +15,9 @@
 		/** @var string a name of a type that may not be uploaded, which the rename tests ask for */
 		const REFUSED = 'media-rename-test.svg';
 
+		/** @var string what a staged PDF holds */
+		const PDF = "%PDF-1.4\n%%EOF\n";
+
 		/** @var e_media  */
 		protected $md;
 
@@ -202,13 +205,18 @@
 			}
 			finally
 			{
-				foreach($paths as $path)
-				{
-					if(is_file($path))
-					{
-						unlink($path);
-					}
-				}
+				self::removeFiles($paths);
+			}
+		}
+
+		/**
+		 * @param string[] $paths files a test staged or made, removed where they are still there
+		 */
+		private static function removeFiles(array $paths)
+		{
+			foreach(array_filter($paths, 'is_file') as $path)
+			{
+				unlink($path);
 			}
 		}
 
@@ -237,6 +245,63 @@
 				$this->assertStringEndsWith($var['expected'],$result);
 			}
 
+		}
+
+		public function testImportFileStoresTheBareCommonCategoryAsTheCommonCategoryOfItsType()
+		{
+			$this->assertSame('_common_image', $this->importedCategory('media-common-test.jpg', $this->jpeg(), array('_common')));
+			$this->assertSame('_common_file', $this->importedCategory('media-common-test.pdf', self::PDF, array('_common')));
+		}
+
+		public function testImportFileStoresAnImportWithNoCategoryUnderTheCommonCategoryOfItsType()
+		{
+			$this->assertSame('_common_file', $this->importedCategory('media-common-test.pdf', self::PDF, array('')));
+			$this->assertSame('_common_file', $this->importedCategory('media-common-test.pdf', self::PDF, array()));
+		}
+
+		public function testImportFileDropsTheIncludeCommonMarker()
+		{
+			$this->assertSame('news', $this->importedCategory('media-marker-test.jpg', $this->jpeg(), array('news^')));
+		}
+
+		/**
+		 * @return string what a staged JPEG holds
+		 */
+		private function jpeg()
+		{
+			return file_get_contents(e_PLUGIN.'gallery/images/horse.jpg');
+		}
+
+		/**
+		 * @param string $name the name the file is staged under in e_IMPORT, which this removes again with whatever the import made of it
+		 * @param string $content what the staged file holds
+		 * @param array $arguments what importFile() is given after the name, the category first
+		 * @return string the media_category the import was stored under
+		 */
+		private function importedCategory($name, $content, array $arguments)
+		{
+			file_put_contents(e_IMPORT.$name, $content);
+			$url = false;
+
+			try
+			{
+				$url = call_user_func_array(array($this->md, 'importFile'), array_merge(array($name), $arguments));
+				$this->assertNotFalse($url, 'the import failed');
+
+				return e107::getDb()->createQueryBuilder()->select('media_category')->from('core_media')->where('media_url', $url)->fetchOne();
+			}
+			finally
+			{
+				$paths = array(e_IMPORT.$name);
+
+				if($url)
+				{
+					e107::getDb()->createQueryBuilder()->delete('core_media')->where('media_url', $url)->execute();
+					$paths[] = e107::getParser()->replaceConstants($url);
+				}
+
+				self::removeFiles($paths);
+			}
 		}
 
 		private function compileFontAwesomeMeta($version)
@@ -470,5 +535,52 @@
 			$this->assertSame(array($ids['percent'], $ids['plain']), array_keys($list));
 
 			$sql->delete('core_media', "media_category LIKE 'mediatestcat%'");
+		}
+
+		/**
+		 * @return array
+		 */
+		public function commonRows()
+		{
+			return array(
+				'an image filed as the legacy _common' => array('getImages', '_common', 'image/jpeg', array('news^', '', '_common_image', '_common')),
+				'a video filed as the legacy _common'  => array('getVideos', '_common', 'video/mp4', array('news^', '', '_common_video', '_common')),
+				'an audio filed as the legacy _common' => array('getAudios', '_common', 'audio/mpeg', array('news^', '', '_common_audio', '_common')),
+				'a file filed as the legacy _common'   => array('getFiles', '_common', 'application/pdf', array('news^', '', '_common_file')),
+				'a file filed as _common_file'         => array('getFiles', '_common_file', 'application/pdf', array('news^', '', '_common_file')),
+			);
+		}
+
+		/**
+		 * @dataProvider commonRows
+		 * @param string $getter the e_media method a picker of the row's type lists through
+		 * @param string $category what the row is filed under
+		 * @param string $type the row's MIME type
+		 * @param string[] $offering categories a picker may ask for that include the common media of the row's type
+		 */
+		public function testACommonRowIsOfferedWhereverTheCommonMediaOfItsTypeIs($getter, $category, $type, array $offering)
+		{
+			$id = (int) e107::getDb()->createQueryBuilder()->insert('core_media')->insertGetId(array(
+				'media_name'      => 'mediatest common row',
+				'media_category'  => $category,
+				'media_url'       => '{e_MEDIA}mediatest-common-row',
+				'media_type'      => $type,
+				'media_userclass' => 0,
+			));
+			$this->assertGreaterThan(0, $id);
+
+			try
+			{
+				foreach($offering as $cat)
+				{
+					$this->assertArrayHasKey($id, $this->md->$getter($cat), "a picker for '$cat' left the row out");
+				}
+
+				$this->assertArrayNotHasKey($id, $this->md->$getter('news'), "a picker for 'news' alone offered the row");
+			}
+			finally
+			{
+				e107::getDb()->createQueryBuilder()->delete('core_media')->where('media_id', $id)->execute();
+			}
 		}
 	}
