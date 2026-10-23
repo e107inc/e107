@@ -1815,16 +1815,8 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 	{
 		return;
 	}
-/*
-	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
-	{
-		$domain = (e_DOMAIN !== false) ? ".".e_DOMAIN : "";
-	}
-	*/
-	if((empty($domain) && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
-	{
-		$domain = (e_DOMAIN !== false) ? ".".e_DOMAIN : '';
-	}
+
+	$domain = e107::cookieDomain($domain);
 
 	if(defined('e_MULTISITE_MATCH') && deftrue('e_ADMIN_AREA'))
 	{
