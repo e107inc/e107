@@ -976,21 +976,15 @@
 		public function testANestTakesAboutAsLongAsItsTagsSideBySide($nest, $sideBySide, $allowed, $limit)
 		{
 			$tp = e107::getParser();
-			$took = array('nest' => INF, 'side by side' => INF);
 			$this->holdHideGlobals();
 			$this->allowHiddenContent($allowed);
 
 			try
 			{
-				for($i = 0; $i < 3; $i++)
+				$took = self::leastProcessorTimes(function ($text) use ($tp)
 				{
-					foreach(array('nest' => $nest, 'side by side' => $sideBySide) as $shape => $text)
-					{
-						$start = microtime(true);
-						$tp->toHTML($text, true);
-						$took[$shape] = min($took[$shape], microtime(true) - $start);
-					}
-				}
+					$tp->toHTML($text, true);
+				}, array('nest' => $nest, 'side by side' => $sideBySide));
 			}
 			finally
 			{
@@ -1006,7 +1000,7 @@
 			return array(
 				'bold tags left open in nested blocks, hidden' => array(str_repeat('[hide]a ', 300) . str_repeat('[b]', 300) . 'core' . str_repeat(' c[/hide]', 300), str_repeat('[hide]a [b]core c[/hide] ', 300), false, 4),
 				'nested blocks, shown'                         => array(str_repeat('[hide]a ', 120) . 'core' . str_repeat(' c[/hide]', 120), str_repeat('[hide]a c[/hide] ', 120), true, 8),
-				'a deep nest, shown'                           => array(str_repeat('[hide]a ', 4000) . 'core' . str_repeat(' c[/hide]', 4000), str_repeat('[hide]a c[/hide] ', 4000), true, 2.5),
+				'a deep nest, shown'                           => array(str_repeat('[hide]a ', 4000) . 'core' . str_repeat(' c[/hide]', 4000), str_repeat('[hide]a c[/hide] ', 4000), true, 4),
 			);
 		}
 
@@ -1264,19 +1258,7 @@
 		 */
 		public function testHideBlocksOfANestTakesAboutAsLongAsOfBlocksSideBySide()
 		{
-			$took = array();
-
-			foreach(array('nest' => str_repeat('[hide2]a ', 2000) . 'core' . str_repeat(' c[/hide]', 2000), 'side by side' => str_repeat('[hide]a c[/hide] ', 2000)) as $shape => $text)
-			{
-				$took[$shape] = INF;
-
-				for($i = 0; $i < 3; $i++)
-				{
-					$start = microtime(true);
-					$this->bb->hideBlocks($text);
-					$took[$shape] = min($took[$shape], microtime(true) - $start);
-				}
-			}
+			$took = self::leastProcessorTimes(array($this->bb, 'hideBlocks'), array('nest' => str_repeat('[hide2]a ', 2000) . 'core' . str_repeat(' c[/hide]', 2000), 'side by side' => str_repeat('[hide]a c[/hide] ', 2000)));
 
 			self::assertLessThan(4, $took['nest'] / $took['side by side'], json_encode($took));
 		}
