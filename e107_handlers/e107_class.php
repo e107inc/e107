@@ -5766,6 +5766,22 @@ class e107
 	}
 
 	/**
+	 * The domain {@see cookie()} sets a cookie for: the site's domain and every subdomain of it, '.' and e_DOMAIN, for an empty $domain off a language subdomain and for any $domain on a multi-language subdomain site; $domain itself otherwise.
+	 *
+	 * @param string $domain as handed to {@see cookie()}
+	 * @return string
+	 */
+	public static function cookieDomain($domain)
+	{
+		if((empty($domain) && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
+		{
+			return (e_DOMAIN !== false) ? '.'.e_DOMAIN : '';
+		}
+
+		return (string) $domain;
+	}
+
+	/**
 	 * Convert two absolute paths to a relative path between them
 	 * @license https://creativecommons.org/licenses/by-sa/3.0/ CC BY-SA 3.0
 	 * @see https://stackoverflow.com/a/2638272
