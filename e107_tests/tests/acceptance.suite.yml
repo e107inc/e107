@@ -13,6 +13,9 @@ extensions:
         # Takes back what each test wrote into its sandbox, and reports a test
         # that left anything else there, which fails the run.
         - Extension\SandboxGuard
+        # Keeps the page a failing step left the browser on, which the failure's
+        # own artefact loses to whatever _after() requests next.
+        - Extension\FailedStepPage
 modules:
     enabled:
         - Asserts
