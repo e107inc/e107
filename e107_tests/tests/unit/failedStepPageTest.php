@@ -30,6 +30,9 @@ class failedStepPageTest extends \Codeception\Test\Unit
 	/** @var \Symfony\Component\DomCrawler\Crawler|null */
 	private $crawler;
 
+	/** @var \Symfony\Component\BrowserKit\CookieJar */
+	private $jar;
+
 	protected function _before()
 	{
 		$module = $this->createMock('Codeception\Module\PhpBrowser');
@@ -38,6 +41,8 @@ class failedStepPageTest extends \Codeception\Test\Unit
 		$browser->method('getInternalRequest')->willReturnCallback(function () { return $this->request; });
 		$browser->method('getInternalResponse')->willReturnCallback(function () { return $this->response; });
 		$browser->method('getCrawler')->willReturnCallback(function () { return $this->crawler; });
+		$this->jar = new \Symfony\Component\BrowserKit\CookieJar();
+		$browser->method('getCookieJar')->willReturnCallback(function () { return $this->jar; });
 		$module->client = $browser;
 
 		$suite = $this->createMock('Codeception\Suite');
@@ -77,7 +82,7 @@ class failedStepPageTest extends \Codeception\Test\Unit
 		$this->reply('/probe.php?act=pref', 'PROBE_OK pref');
 		$this->step($test, false);
 
-		self::assertSame("<!-- http://sb1.web/forum_post.php?f=move -->\nthe move page", $this->listedPage($test, Events::TEST_FAIL));
+		self::assertSame("<!-- http://sb1.web/forum_post.php?f=move -->\n<!-- cookies held: none -->\nthe move page", $this->listedPage($test, Events::TEST_FAIL));
 	}
 
 	/**
@@ -131,7 +136,7 @@ class failedStepPageTest extends \Codeception\Test\Unit
 		$this->request = new \Symfony\Component\BrowserKit\Request('http://sb1.web/forum_post.php?f=move&posted', 'POST');
 		$this->step($test, true);
 
-		self::assertSame("<!-- http://sb1.web/forum_post.php?f=move -->\nthe move page", $this->listedPage($test, Events::TEST_FAIL));
+		self::assertSame("<!-- http://sb1.web/forum_post.php?f=move -->\n<!-- cookies held: none -->\nthe move page", $this->listedPage($test, Events::TEST_FAIL));
 	}
 
 	/**
@@ -144,7 +149,34 @@ class failedStepPageTest extends \Codeception\Test\Unit
 		$this->request = new \Symfony\Component\BrowserKit\Request('http://sb1.web/index.php', 'GET');
 		$this->step($test, true);
 
-		self::assertSame("<!-- http://sb1.web/login.php -->\nredirecting", $this->listedPage($test, Events::TEST_FAIL));
+		self::assertSame("<!-- http://sb1.web/login.php -->\n<!-- cookies held: none -->\nredirecting", $this->listedPage($test, Events::TEST_FAIL));
+	}
+
+	/**
+	 * The page is listed with every cookie the browser held, a name held under two paths twice, in the order a request sends them.
+	 */
+	public function testThePageIsListedWithEveryCookieTheBrowserHeldInTheOrderItSendsThem()
+	{
+		$test = $this->begin($this->cest('aTest'));
+		$this->jar->set(new \Symfony\Component\BrowserKit\Cookie('PHPSESSID', 'old', null, '/', 'sb1.web'));
+		$this->jar->set(new \Symfony\Component\BrowserKit\Cookie('PHPSESSID', 'new', '4102444800', '/e107/', 'sb1.web', true));
+		$this->reply('/e107/', 'the home page');
+		$this->step($test, true);
+
+		self::assertSame("<!-- http://sb1.web/e107/ -->\n<!-- cookies held: PHPSESSID=old (domain sb1.web, path /, expires with the session); PHPSESSID=new (domain sb1.web, path /e107/, expires 4102444800, https only) -->\nthe home page", $this->listedPage($test, Events::TEST_FAIL));
+	}
+
+	/**
+	 * Nothing an address or a cookie holds ends the comment it is listed in.
+	 */
+	public function testNoAddressOrCookieEndsTheCommentItIsListedIn()
+	{
+		$test = $this->begin($this->cest('aTest'));
+		$this->jar->set(new \Symfony\Component\BrowserKit\Cookie('note', 'a--><b>x</b>', null, '/', 'sb1.web'));
+		$this->reply('/a-->b', 'the page');
+		$this->step($test, true);
+
+		self::assertSame("<!-- http://sb1.web/a- ->b -->\n<!-- cookies held: note=a- -><b>x</b> (domain sb1.web, path /, expires with the session) -->\nthe page", $this->listedPage($test, Events::TEST_FAIL));
 	}
 
 	/**
