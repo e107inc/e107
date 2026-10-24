@@ -213,7 +213,7 @@ elseif ($action == 'forums')
 
 	if (!$qb->execute())
 	{
-		$ftext .= "<span class='mediumtext'>".UP_LAN_8.'</span>';
+		$ftext = "<span class='mediumtext'>".UP_LAN_8.'</span>';
 	}
 	else
 	{
