@@ -197,9 +197,9 @@ elseif ($action == 'forums')
 
 	$sqlp = e107::getDb('posts');
 
-	if (!$sqlp->gen($qry))
+	if ($forumList === '' || !$sqlp->gen($qry))
 	{
-		$ftext .= "<span class='mediumtext'>".UP_LAN_8.'</span>';
+		$ftext = "<span class='mediumtext'>".UP_LAN_8.'</span>';
 	}
 	else
 	{
