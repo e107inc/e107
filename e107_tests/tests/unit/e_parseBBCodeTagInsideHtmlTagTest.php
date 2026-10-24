@@ -14,6 +14,7 @@ class e_parseBBCodeTagInsideHtmlTagTest extends \Codeception\Test\Unit
 {
 	use \Test\HtmlAttributes;
 	use \Test\HideGlobals;
+	use \Test\ProcessorTime;
 
 	/**
 	 * @return array
@@ -191,7 +192,7 @@ class e_parseBBCodeTagInsideHtmlTagTest extends \Codeception\Test\Unit
 	 */
 	public function testOpenersBeforeAnOpenTagRenderAboutAsFastAsBeforeAWholeOne($open, $whole)
 	{
-		$took = array('open' => $this->fastestRender($open), 'whole' => $this->fastestRender($whole));
+		$took = $this->leastRenderTimes(array('open' => $open, 'whole' => $whole));
 
 		self::assertLessThan(4, $took['open'] / $took['whole'], json_encode($took));
 	}
@@ -217,27 +218,21 @@ class e_parseBBCodeTagInsideHtmlTagTest extends \Codeception\Test\Unit
 	 */
 	public function testOpenersWithNoCloserRenderAboutAsFastAsWithOne($unclosed, $closed)
 	{
-		$took = array('unclosed' => $this->fastestRender($unclosed), 'closed' => $this->fastestRender($closed));
+		$took = $this->leastRenderTimes(array('unclosed' => $unclosed, 'closed' => $closed));
 
 		self::assertLessThan(4, $took['unclosed'] / $took['closed'], json_encode($took));
 	}
 
 	/**
-	 * @param string $text
-	 * @return float the fastest of three toHTML() renders of $text, in seconds
+	 * @param string[] $texts keyed by name
+	 * @return float[] the least processor time of a {@see e_parse::toHTML()} render of each of $texts, in seconds, keyed as $texts
 	 */
-	private function fastestRender($text)
+	private function leastRenderTimes(array $texts)
 	{
-		$took = INF;
-
-		for ($i = 0; $i < 3; $i++)
+		return self::leastProcessorTimes(function ($text)
 		{
-			$start = microtime(true);
 			e107::getParser()->toHTML($text, true, 'BODY');
-			$took = min($took, microtime(true) - $start);
-		}
-
-		return $took;
+		}, $texts);
 	}
 
 	/**
