@@ -168,16 +168,7 @@ class e_parse_shortcode
 		//If codes is set to true, let's go get a list of shortcode methods
 		if ($codes === true)
 		{
-			$codes = array();
-			$tmp = get_class_methods($classFunc);
-			foreach ($tmp as $c)
-			{
-				if (strpos($c, 'sc_') === 0)
-				{
-					$codes[] = substr($c, 3);
-				}
-			}
-			unset($tmp);
+			$codes = $this->classCodes($classFunc);
 		}
 
 		//Register object feature
@@ -308,13 +299,9 @@ class e_parse_shortcode
 
 			if(!empty($this->scClasses[$class]->override))
 			{
-				$methods = get_class_methods($class);
-				foreach($methods as $meth)
+				foreach($this->classCodes($class) as $code)
 				{
-					if(strpos($meth,'sc_') === 0)
-					{
-						$this->addonOverride[$meth] = $class;
-					}
+					$this->addonOverride['sc_'.$code] = $class;
 				}
 			}
 
@@ -704,30 +691,46 @@ class e_parse_shortcode
 	 */
 	protected function registerClassMethods($class, $path, $force = false)
 	{
-		$tmp = get_class_methods($class);
 		$className = is_object($class) ? get_class($class) : $class;
 
-		foreach ($tmp as $c)
+		foreach ($this->classCodes($class) as $sc_func)
 		{
-			if (strpos($c, 'sc_') === 0)
+			$code = strtoupper($sc_func);
+			if ($force || !$this->isRegistered($code))
 			{
-				$sc_func = substr($c, 3);
-				$code = strtoupper($sc_func);
-				if ($force || !$this->isRegistered($code))
-				{
-					$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $className);
-					$this->initShortcodeClass($className);
-				//	if (class_exists($className, false))
-				//	{
-					//	$this->scClasses[$className] = new $className(); // Required. Test with e107::getScBatch($className)	
-					//	echo "CLASS=:".$className;			
-				//	}
-				}
+				$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $className);
+				$this->initShortcodeClass($className);
 			}
 		}
-		
 
 		return $this;
+	}
+
+	/**
+	 * The shortcode names a class defines as sc_ methods; none, with a debug log line, when the class does not exist.
+	 *
+	 * @param object|string $class
+	 * @return string[]
+	 */
+	private function classCodes($class)
+	{
+		if (!is_object($class) && !class_exists($class))
+		{
+			e107::getDebug()->log("Couldn't find shortcode class <b>".$class."</b>");
+
+			return array();
+		}
+
+		$codes = array();
+		foreach (get_class_methods($class) as $method)
+		{
+			if (strpos($method, 'sc_') === 0)
+			{
+				$codes[] = (string) substr($method, 3);
+			}
+		}
+
+		return $codes;
 	}
 
 
