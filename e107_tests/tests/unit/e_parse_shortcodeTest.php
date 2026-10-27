@@ -2042,4 +2042,39 @@ class e_parse_shortcodeTest extends \Test\Unit
 
 		$this->assertArrayHasKey('E107HELP_BATCH_PROBE', $codes);
 	}
+
+	/**
+	 * A plugin folder renamed from the one its e_shortcode.php class is named for.
+	 */
+	public function testConstructorSkipsAPluginBatchWithoutItsClass()
+	{
+		$suffix = uniqid();
+		$renamed = 'e107help-renamed-batch-'.$suffix;
+		$present = 'e107help_present_batch_'.$suffix;
+
+		$this->writeAppFile('e107_plugins/'.$renamed.'/e_shortcode.php', "<?php\nclass e107help_original_batch_{$suffix}_shortcodes extends e_shortcode\n{\n}\n");
+		$this->writeAppFile('e107_plugins/'.$present.'/e_shortcode.php', "<?php\nclass {$present}_shortcodes extends e_shortcode\n{\n\tfunction sc_e107help_present_batch()\n\t{\n\t\treturn 'present';\n\t}\n}\n");
+		$restore = $this->withCorePrefs(array('e_shortcode_list' => array($renamed => 1, $present => 1)));
+
+		try
+		{
+			$parser = new e_parse_shortcode();
+
+			$this->assertTrue($parser->isRegistered('E107HELP_PRESENT_BATCH'));
+		}
+		finally
+		{
+			$restore();
+		}
+	}
+
+	public function testRegisterShortcodeWithAMissingClassRegistersNothing()
+	{
+		$registered = new \e107\Reflection\ReflectionProperty('e_parse_shortcode', 'registered_codes');
+		$before = $registered->getValue($this->scParser);
+
+		$this->scParser->registerShortcode('e107help_missing_class_'.uniqid(), true);
+
+		$this->assertSame($before, $registered->getValue($this->scParser));
+	}
 }
