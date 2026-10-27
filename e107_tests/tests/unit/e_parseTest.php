@@ -3856,9 +3856,10 @@ Your browser does not support the audio tag.
 		$strip = new \e107\Reflection\ReflectionMethod('e_parse', 'stripVoidClosingTags');
 
 		$doc = new DOMDocument();
-		$doc->loadHTML('<body><video><source src="x.mp4" type="video/mp4"></source></video></body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
-		$source = $doc->getElementsByTagName('source')->item(0);
+		$video = $doc->appendChild($doc->createElement('body'))->appendChild($doc->createElement('video'));
+		$source = $video->appendChild($doc->createElement('source'));
+		$source->setAttribute('src', 'x.mp4');
+		$source->setAttribute('type', 'video/mp4');
 		$source->appendChild($doc->createTextNode('Your browser does not support the video tag.'));
 		self::assertTrue($source->hasChildNodes(), 'precondition: simulated old-libxml placed content inside <source>');
 
