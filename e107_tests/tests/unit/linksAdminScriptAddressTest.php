@@ -17,18 +17,19 @@
 class linksAdminScriptAddressTest extends \Codeception\Test\Unit
 {
 	use \Test\BootedCli;
+	use \Test\CorePrefs;
 
 	const NAME = 'linksAdminScriptAddressTest';
 
 	/** @var bool whether this test added the link_rel column the suite's database predates and links.php saves */
 	private $addedRel = false;
 
-	/** @var string the stored core preferences, which a page a child opens may save with its classes */
-	private $storedPrefs;
+	/** @var callable puts back the stored core preferences, which a page a child opens may save with its classes */
+	private $restorePrefs;
 
 	protected function _before()
 	{
-		$this->storedPrefs = e107::getDb()->retrieve('core', 'e107_value', "e107_name = 'SitePrefs'");
+		$this->restorePrefs = $this->keepStoredCorePrefs();
 
 		if(!e107::getDb()->field('links', 'link_rel'))
 		{
@@ -48,11 +49,7 @@ class linksAdminScriptAddressTest extends \Codeception\Test\Unit
 			e107::getDb()->gen('ALTER TABLE `#links` DROP `link_rel`');
 		}
 
-		e107::getDb()->update('core', array(
-			'data'  => array('e107_value' => $this->storedPrefs),
-			'WHERE' => "e107_name = 'SitePrefs'",
-		));
-		e107::getConfig()->clearPrefCache();
+		call_user_func($this->restorePrefs);
 	}
 
 	/**

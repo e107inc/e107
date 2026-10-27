@@ -681,30 +681,11 @@ class links_admin_form_ui extends e_admin_form_ui
 			$this->linkFunctions[$cat] = $func;
 		}
 
-		$sitetheme = e107::getPref('sitetheme');
-
-		if(!file_exists(e_THEME.$sitetheme.'/theme_shortcodes.php'))
-		{
-			return null;
-		}
-
-		require_once(e_THEME.$sitetheme.'/theme_shortcodes.php');
-		$methods = get_class_methods('theme_shortcodes');
-
-		asort($methods);
-
 		$cat = defset('LINKLAN_10',"Theme Shortcodes");
 
-		foreach($methods as $func)
+		foreach($this->themeShortcodeMethods() as $func)
 		{
-			if(strpos($func,'sc_') !== 0)
-			{
-				continue;
-			}
-
-			$newkey = 'theme::'.$func;
-
-			$this->linkFunctions[$cat][$newkey] = str_replace('sc_','',$func);
+			$this->linkFunctions[$cat]['theme::'.$func] = str_replace('sc_','',$func);
 		}
 
 		if($tmp = e107::getDb()->retrieve('links', 'link_owner', "GROUP BY link_owner ORDER BY link_owner", true))
@@ -726,6 +707,33 @@ class links_admin_form_ui extends e_admin_form_ui
 
 	}
 	
+	/**
+	 * The sc_ methods of the site theme's theme_shortcodes class, sorted; none when its theme_shortcodes.php or that class is missing.
+	 *
+	 * @return string[]
+	 */
+	private function themeShortcodeMethods()
+	{
+		$file = e_THEME.e107::getPref('sitetheme').'/theme_shortcodes.php';
+
+		if(!file_exists($file))
+		{
+			return array();
+		}
+
+		require_once($file);
+
+		if(!class_exists('theme_shortcodes'))
+		{
+			return array();
+		}
+
+		$methods = get_class_methods('theme_shortcodes');
+		asort($methods);
+
+		return preg_grep('/^sc_/', $methods);
+	}
+
 	function link_parent($value, $mode)
 	{
 		switch($mode)

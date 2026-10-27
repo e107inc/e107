@@ -69,6 +69,25 @@ trait CorePrefs
 	}
 
 	/**
+	 * Keeps the stored core preferences, which an admin page a booted child opens may save with whatever it set; call what it returns in _after().
+	 *
+	 * @return callable puts the stored row back as it was found and clears the preference cache
+	 */
+	protected function keepStoredCorePrefs()
+	{
+		$stored = \e107::getDb()->retrieve('core', 'e107_value', "e107_name = 'SitePrefs'");
+
+		return static function () use ($stored)
+		{
+			\e107::getDb()->update('core', array(
+				'data'  => array('e107_value' => $stored),
+				'WHERE' => "e107_name = 'SitePrefs'",
+			));
+			\e107::getConfig()->clearPrefCache();
+		};
+	}
+
+	/**
 	 * Sets one core preference, or removes it when $value is null.
 	 *
 	 * @param \e_pref $config
