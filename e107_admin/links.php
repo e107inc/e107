@@ -688,7 +688,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 		foreach($this->themeShortcodeMethods() as $func)
 		{
-			$this->linkFunctions[$cat]['theme::'.$func] = str_replace('sc_','',$func);
+			$this->linkFunctions[$cat]['theme::'.$func] = (string) substr($func, 3);
 		}
 
 		if($tmp = e107::getDb()->createQueryBuilder()

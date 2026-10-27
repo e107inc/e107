@@ -47,6 +47,14 @@ class linksAdminThemeShortcodesTest extends \Test\Unit
 		self::assertStringNotContainsString('e107help_helper', $page);
 	}
 
+	public function testALinkFunctionIsLabelledWithTheShortcodeNameAfterItsPrefix()
+	{
+		$page = $this->createFormWithThemeShortcodes("<?php\nclass theme_shortcodes\n{\n\tfunction sc_e107help_misc_probe() {}\n}\n");
+
+		self::assertSame(1, preg_match('/'.self::linkFunctionOption('sc_e107help_misc_probe', 'e107help_misc_probe').'/', $page),
+			"the link function is not labelled with the whole shortcode name:\n".$page);
+	}
+
 	public function testTheOwnerFilterListsTheLinkOwnersWhenTheThemeHasNoShortcodesFile()
 	{
 		$this->writeThemeFile('theme.php', "<?php\n");
