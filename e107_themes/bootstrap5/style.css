@@ -1,17 +1,3 @@
-body {
-  padding-top: 56px;
-}
-
-body.layout-home {
-  padding-top: 0px;
-}
-
-body.layout-singlelogin {
-  padding-top: 0px;
-}
-
-
-
 /* featurebox defaults */
 #e107bootstrapcarousel .carousel-item {
   height: 65vh;
@@ -78,11 +64,6 @@ ul.social-buttons li a {
   display: inline;
 }
 
-/* fix for fixed-top on login page - to save custom header */
-.layout-singlelogin .fixed-top {
-  position: initial;
-}
-
 /* fix for too small core login box width */
 
 #login-template {
@@ -107,11 +88,11 @@ ul.social-buttons li a {
 #carousel-hero.carousel {
   position: relative;
   left: 0;
-  top: 70px;
+  top: 0; /* the navbar is sticky and in the page flow, so the hero needs no offset (hero.css sets 30px) */
   width: 100%;
   height: 100%;
   overflow: hidden;
-  margin-bottom: 60px;
+  margin-bottom: .5rem;
 }
 
 /* CUSTOM Responsive Styles */
