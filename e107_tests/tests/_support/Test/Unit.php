@@ -287,6 +287,25 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Keeps the stored core preferences, which an admin page a booted child opens may save with whatever it set; call what it returns in _after().
+	 *
+	 * @return callable puts the stored row back as it was found and clears the preference cache
+	 */
+	protected function keepStoredCorePrefs()
+	{
+		$stored = \e107::getDb()->retrieve('core', 'e107_value', "e107_name = 'SitePrefs'");
+
+		return static function () use ($stored)
+		{
+			\e107::getDb()->createQueryBuilder()->update('core')
+				->set('e107_value', $stored)
+				->where('e107_name', 'SitePrefs')
+				->execute();
+			\e107::getConfig()->clearPrefCache();
+		};
+	}
+
+	/**
 	 * Runs $run with the classes that may post HTML and script, and PHP unless $php is null, set as given.
 	 *
 	 * @param int $html

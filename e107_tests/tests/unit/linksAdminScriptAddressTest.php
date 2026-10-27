@@ -20,12 +20,12 @@ class linksAdminScriptAddressTest extends \Test\Unit
 	/** @var bool whether this test added the link_rel column the suite's database predates and links.php saves */
 	private $addedRel = false;
 
-	/** @var string the stored core preferences, which a page a child opens may save with its classes */
-	private $storedPrefs;
+	/** @var callable puts back the stored core preferences, which a page a child opens may save with its classes */
+	private $restorePrefs;
 
 	protected function _before()
 	{
-		$this->storedPrefs = e107::getDb()->retrieve('core', 'e107_value', "e107_name = 'SitePrefs'");
+		$this->restorePrefs = $this->keepStoredCorePrefs();
 
 		\Test\CoreTable::create('admin_history');
 
@@ -49,11 +49,7 @@ class linksAdminScriptAddressTest extends \Test\Unit
 
 		\Test\CoreTable::drop('admin_history');
 
-		e107::getDb()->createQueryBuilder()->update('core')
-			->set('e107_value', $this->storedPrefs)
-			->where('e107_name', 'SitePrefs')
-			->execute();
-		e107::getConfig()->clearPrefCache();
+		call_user_func($this->restorePrefs);
 	}
 
 	/**
