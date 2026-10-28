@@ -79,6 +79,12 @@ jobs:
       - name: Diag, the runner's CPU
         run: lscpu | head -20; nproc; free -m
 
+      - name: Diag, PHP's vectorised string functions on this CPU
+        if: ${{ !cancelled() }}
+        run: |
+          tree=$(cut -f3 "$RUNNER_TEMP/e107-cells/cells.tsv" | head -n 1)
+          for seed in 1 2 3; do "$tree/e107_tests/bin/e107-tests" exec php .github/actions/harness-stack/simd-check.php $seed < /dev/null; done
+
       - name: Diag, log every request
         if: ${{ !cancelled() }}
         run: .github/actions/harness-stack/diag.sh arm
