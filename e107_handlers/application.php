@@ -54,13 +54,13 @@ class e_url
 
 	/**
 	 * @param array $get the route's query as parse_str() reads it
-	 * @param string|null $query the same query as text, which a page may also read with &amp; taken as &
+	 * @param string $query the same query as text, which a page may also read with &amp; taken as &
 	 * @return bool whether any e-token it gives the page it includes is the one the request carried, which class2.php has judged
 	 */
 	private static function handsOverOnlyTheCarriedToken(array $get, $query)
 	{
 		$carried = isset($_GET['e-token']) ? $_GET['e-token'] : null;
-		parse_str(str_replace('&amp;', '&', (string) $query), $decoded);
+		parse_str(str_replace('&amp;', '&', $query), $decoded);
 
 		foreach(array($get, $decoded) as $read)
 		{
@@ -192,7 +192,7 @@ class e_url
 				if($newLocation != $this->_request)
 				{
 					$redirect = e107::getParser()->replaceConstants($newLocation);
-					list($file,$query) = explode("?", $redirect,2);
+					list($file, $query) = array_pad(explode('?', $redirect, 2), 2, '');
 
 					$get = array();
 					if(!empty($query))
