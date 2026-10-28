@@ -2361,8 +2361,18 @@ class e_http_header
 				$this->content = str_replace($search, $replace, $this->content);
 			}
 
+			$diagBefore = strlen($this->content);
 			$this->content = e_token_injector::process($this->content);
 			$this->length = strlen($this->content);
+			if(function_exists('e107_diag_header'))
+			{
+				e107_diag_header('Page', 'raw='.$diagBefore.' out='.$this->length.' ob='.ob_get_level().' mode='.e_session::tokenCheckMode().' uses='.(int) e_session::modeUsesToken().' tok='.(defset('e_TOKEN') ? 'y' : 'n').' preg='.preg_last_error_msg().' theme='.(defined('THEME') ? basename(THEME) : '-').' csrf='.var_export(e107::getPref('csrf_enforce', null), true));
+				if(defset('e_PAGE') === 'login.php' && $this->length < 9000)
+				{
+					@mkdir('/tmp/diag-pages', 0777, true);
+					@file_put_contents('/tmp/diag-pages/'.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '-').'-'.sprintf('%.4f', microtime(true)).'-'.$this->length.'.html', $this->content);
+				}
+			}
 		}
 		else
 		{

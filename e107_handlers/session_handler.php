@@ -1519,6 +1519,7 @@ class e_core_session extends e_session
 
 		if($this->getSessionId())
 		{
+			e107_diag_header('Csrf', 'mode='.self::tokenCheckMode().' posted='.(isset($_POST['e-token']) ? substr((string) $_POST['e-token'], 0, 8) : '-').' held='.($this->has('__form_token') ? substr(md5($this->get('__form_token')), 0, 8) : '-'));
 			if(!$this->attest(self::tokenCheckMode()))
 			{
 				$this->log('Unauthorized access!');
