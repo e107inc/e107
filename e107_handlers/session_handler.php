@@ -22,8 +22,9 @@ if (!function_exists('e107_diag'))
 	function e107_diag($msg)
 	{
 		$line = sprintf("%.4f pid=%d host=%s %s %s sid=%s :: %s\n", microtime(true), getmypid(), isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '-', isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '-', isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '-', session_id(), $msg);
-		@file_put_contents('/tmp/e107diag.log', $line, FILE_APPEND | LOCK_EX);
-		@chmod('/tmp/e107diag.log', 0666);
+		$old = umask(0);
+		@file_put_contents('/tmp/e107diag.log', $line, FILE_APPEND);
+		umask($old);
 	}
 }
 
