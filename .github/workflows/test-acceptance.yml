@@ -61,6 +61,10 @@ jobs:
           - {php: '8.5', db: 'mariadb:12.3', copy: 2}
           - {php: '8.5', db: 'mariadb:12.3', copy: 3}
           - {php: '8.5', db: 'mariadb:12.3', copy: 4}
+          - {php: '8.5', db: 'mariadb:12.3', copy: 5}
+          - {php: '8.5', db: 'mariadb:12.3', copy: 6}
+          - {php: '8.5', db: 'mariadb:12.3', copy: 7}
+          - {php: '8.5', db: 'mariadb:12.3', copy: 8}
 
     runs-on: ubuntu-latest
 
@@ -78,12 +82,6 @@ jobs:
 
       - name: Diag, the runner's CPU
         run: lscpu | head -20; nproc; free -m
-
-      - name: Diag, PHP's vectorised string functions on this CPU
-        if: ${{ !cancelled() }}
-        run: |
-          tree=$(cut -f3 "$RUNNER_TEMP/e107-cells/cells.tsv" | head -n 1)
-          for seed in 1 2 3; do "$tree/e107_tests/bin/e107-tests" exec php .github/actions/harness-stack/simd-check.php $seed < /dev/null; done
 
       - name: Diag, log every request
         if: ${{ !cancelled() }}
