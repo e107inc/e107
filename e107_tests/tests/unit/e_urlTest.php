@@ -167,39 +167,58 @@ class e_urlTest extends \Test\Unit
 	 */
 	public function testARouteHandsOverOnlyTheTokenTheRequestCarried()
 	{
-		$restore = $this->withCorePrefs(array('url_config' => null, 'url_aliases' => null, 'e_url_list' => array('routeprobe' => 1)));
-		$get = $_GET;
-
-		try
-		{
-			self::assertSame(array('a' => '1'), $this->routedGet('probe/a=1', array()), 'no token');
-			self::assertSame(array('e-token' => 'carried', 'a' => '1'), $this->routedGet('probe/a=1&e-token=carried', array('e-token' => 'carried')), 'the carried token');
-			self::assertSame(array(), $this->routedGet('probe/a=1&e-token=routed', array()), 'a token only the route has');
-			self::assertSame(array('e-token' => 'carried'), $this->routedGet('probe/a=1&e-token=routed', array('e-token' => 'carried')), 'a token other than the carried one');
-			self::assertSame(array(), $this->routedGet('probe/a=1&amp;e-token=routed', array()), 'a token the page reads behind &amp;');
-			self::assertSame(array('e-token' => 'carried'), $this->routedGet('probe/a=1&e-token=routed&amp;e-token=carried', array('e-token' => 'carried')), 'a token only parse_str() reads, ahead of the carried one');
-		}
-		finally
-		{
-			$_GET = $get;
-			$restore();
-		}
+		self::assertSame(array('a' => '1'), $this->routedGet('probe/a=1', array()), 'no token');
+		self::assertSame(array('e-token' => 'carried', 'a' => '1'), $this->routedGet('probe/a=1&e-token=carried', array('e-token' => 'carried')), 'the carried token');
+		self::assertSame(array(), $this->routedGet('probe/a=1&e-token=routed', array()), 'a token only the route has');
+		self::assertSame(array('e-token' => 'carried'), $this->routedGet('probe/a=1&e-token=routed', array('e-token' => 'carried')), 'a token other than the carried one');
+		self::assertSame(array(), $this->routedGet('probe/a=1&amp;e-token=routed', array()), 'a token the page reads behind &amp;');
+		self::assertSame(array('e-token' => 'carried'), $this->routedGet('probe/a=1&e-token=routed&amp;e-token=carried', array('e-token' => 'carried')), 'a token only parse_str() reads, ahead of the carried one');
 	}
 
 	/**
-	 * @return array $_GET after e_url::run() has routed $request, through a route whose page is not on disk, from $carried
+	 * Contact, RSS and the forum index route to a page with no query string, which must reach the page without a warning.
 	 */
-	private function routedGet($request, array $carried)
+	public function testARouteWhoseTargetHasNoQueryStringRaisesNoWarning()
 	{
-		$_GET = $carried;
-		$url = new e_url();
-		(new ReflectionProperty('e_url', '_request'))->setValue($url, $request);
-		(new ReflectionProperty('e_url', '_config'))->setValue($url, array('routeprobe' => array('probe' => array(
-			'regex'    => '^probe/(.*)',
-			'redirect' => '{e_PLUGIN}routeprobe/absent.php?$1',
-		))));
-		$url->run();
+		self::assertSame(array(), $this->routedGet('probe/', array(), '{e_PLUGIN}routeprobe/absent.php'));
+	}
 
-		return $_GET;
+	/**
+	 * @return array $_GET after {@see e_url::run()} has routed $request to $redirect, a page that is not on disk, from $carried, failing the test on any error raised on the way
+	 */
+	private function routedGet($request, array $carried, $redirect = '{e_PLUGIN}routeprobe/absent.php?$1')
+	{
+		$restore = $this->withCorePrefs(array('url_config' => null, 'url_aliases' => null, 'e_url_list' => array('routeprobe' => 1)));
+		$get = $_GET;
+		$_GET = $carried;
+		$raised = array();
+		set_error_handler(function ($severity, $message) use (&$raised)
+		{
+			$raised[] = $message;
+
+			return true;
+		});
+
+		try
+		{
+			$url = new e_url();
+			(new ReflectionProperty('e_url', '_request'))->setValue($url, $request);
+			(new ReflectionProperty('e_url', '_config'))->setValue($url, array('routeprobe' => array('probe' => array(
+				'regex'    => '^probe/(.*)',
+				'redirect' => $redirect,
+			))));
+			$url->run();
+			$routed = $_GET;
+		}
+		finally
+		{
+			restore_error_handler();
+			$_GET = $get;
+			$restore();
+		}
+
+		self::assertSame(array(), $raised, 'Routing '.$request.' to '.$redirect.' raised these.');
+
+		return $routed;
 	}
 }
