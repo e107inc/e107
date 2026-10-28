@@ -316,6 +316,7 @@ class userlogin
 		}
 
 		$cookieval = $this->validLogin($this->userData, $autologin);
+		e107_diag_header('Login', 'valid '.$user_id);
 
 		if($_E107['cli'])
 		{
@@ -614,6 +615,7 @@ class userlogin
 	{
 		global $pref;
 
+		e107_diag_header('Login', 'invalid '.$reason.' '.$username.' '.$extra_text);
 		$doCheck = FALSE;			// Flag set if need to ban check
 		$this->userData = array();
 

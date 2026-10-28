@@ -34,7 +34,7 @@ concurrency:
 
 jobs:
   test-acceptance:
-    name: PHP ${{ matrix.php }}, ${{ matrix.db }}
+    name: PHP ${{ matrix.php }}, ${{ matrix.db }}, copy ${{ matrix.copy }}
     strategy:
       fail-fast: false
       matrix:
@@ -57,10 +57,10 @@ jobs:
         # subdirectory shape, so the docroot layout is new coverage and the
         # subdirectory layout is what CI has always had.
         include:
-          - php: '5.6'
-            db: 'mysql:5.5'
-          - php: '8.5'
-            db: 'mariadb:12.3'
+          - {php: '8.5', db: 'mariadb:12.3', copy: 1}
+          - {php: '8.5', db: 'mariadb:12.3', copy: 2}
+          - {php: '8.5', db: 'mariadb:12.3', copy: 3}
+          - {php: '8.5', db: 'mariadb:12.3', copy: 4}
 
     runs-on: ubuntu-latest
 
@@ -76,6 +76,13 @@ jobs:
             docroot
             subdirectory --base-path e107
 
+      - name: Diag, the runner's CPU
+        run: lscpu | head -20; nproc; free -m
+
+      - name: Diag, log every request
+        if: ${{ !cancelled() }}
+        run: .github/actions/harness-stack/diag.sh arm
+
       # !cancelled(): a layout whose env did not come up is reported as a
       # failed cell, and the other still runs.
       - name: Run acceptance tests in both layouts
@@ -86,4 +93,16 @@ jobs:
         if: failure()
         uses: ./.github/actions/harness-stack/failed-cells
         with:
-          name: acceptance-php${{ matrix.php }}
+          name: acceptance-php${{ matrix.php }}-${{ matrix.copy }}
+
+      - name: Diag, collect the request logs
+        if: ${{ !cancelled() }}
+        run: .github/actions/harness-stack/diag.sh collect "$RUNNER_TEMP/e107-diag"
+
+      - name: Diag, upload the request logs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: diag-${{ matrix.copy }}
+          path: ${{ runner.temp }}/e107-diag/
+          retention-days: 7

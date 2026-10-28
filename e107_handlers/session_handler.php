@@ -17,6 +17,17 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+if (!function_exists('e107_diag_header'))
+{
+	function e107_diag_header($name, $value)
+	{
+		if (!headers_sent())
+		{
+			header('X-Diag-'.$name.': '.preg_replace('/[\r\n]+/', ' ', (string) $value), false);
+		}
+	}
+}
+
 /**
  * @package e107
  * @subpackage	e107_handlers
@@ -942,7 +953,8 @@ class e_session
 		}
 		
 	
-		session_start();
+		$diagStarted = session_start();
+		e107_diag_header('Start', ($diagStarted ? 'ok' : 'FAILED').' in='.(isset($_COOKIE[session_name()]) ? substr($_COOKIE[session_name()], 0, 8) : '-').' id='.substr(session_id(), 0, 8).' keys='.implode(',', array_keys((array) $_SESSION)));
 		self::$_sessionStarted = true;
 		return $this;
 	}
@@ -988,7 +1000,9 @@ class e_session
 			return $this;
 		}
 
-		session_regenerate_id(true);
+		$diagOld = session_id();
+		$diagOk = session_regenerate_id(true);
+		e107_diag_header('Regen', substr($diagOld, 0, 8).'>'.substr(session_id(), 0, 8).' '.($diagOk ? 'ok' : 'FAILED'));
 		$params = session_get_cookie_params();
 		$this->expireDomainWideSessionCookie($params['path']);
 
@@ -1165,6 +1179,7 @@ class e_session
 		{ 
 			$sessionData = $this->_data['_session_validate_data'];
 			$validateData = $this->getValidateData();
+			e107_diag_header('Validate', 'FAILED saved='.json_encode($sessionData).' now='.json_encode($validateData));
 			
 			$details = 'USER INFORMATION: '.(isset($_COOKIE[e_COOKIE]) ? $_COOKIE[e_COOKIE] : (isset($_SESSION[e_COOKIE]) ? $_SESSION[e_COOKIE] : 'n/a'))."\n";
 			$details .= "HOST: ".$_SERVER['HTTP_HOST']."\n";
@@ -2135,13 +2150,16 @@ class e_session_db #implements SessionHandlerInterface
 
     	if(false === $rows)
     	{
+    		e107_diag_header('Read', 'FAILED '.$this->_db->getLastErrorText());
     		return false;
     	}
 
     	if(isset($rows[$key]) && '' !== $rows[$key])
     	{
+    		e107_diag_header('Read', 'hit '.substr($session_id, 0, 8).' '.strlen($rows[$key]).'b');
     		return $rows[$key];
     	}
+    	e107_diag_header('Read', 'miss '.substr($session_id, 0, 8));
 
     	if(isset($rows[$legacyKey]) && '' !== $rows[$legacyKey] && $this->rekey($legacyKey, $key))
     	{
