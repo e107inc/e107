@@ -171,7 +171,7 @@ class e_thumbpage
 
 		unset($tmp, $self);
 		// basic Admin area detection - required for proper path parsing
-		define('ADMIN', strpos(e_SELF, (e107::getFolder('admin')) != false || strpos(e_PAGE, 'admin') !== false));
+		define('ADMIN', (strpos(e_SELF, e107::getFolder('admin')) !== false || strpos(e_PAGE, 'admin') !== false));
 
 		// Next function call maintains behavior identical to before; might not be needed
 		//  See https://github.com/e107inc/e107/issues/3033
