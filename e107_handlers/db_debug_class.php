@@ -686,7 +686,7 @@ class e107_db_debug
 					$tMarker['%Time'] = $this->highlight($tMarker['%Time'], $tMarker['%Time'], 20);
 
 					$tMarker['%DB Count'] = number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
-					$tMarker['%DB Time'] = $db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
+					$tMarker['%DB Time'] = $db_time > 0 ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
 				//	$tMarker['DB Time'] = number_format($tMarker['DB Time'] * 1000.0, 1);
 					$dbTime = number_format($tMarker['DB Time'] * 1000.0, 1);
 					$tMarker['DB Time'] = $this->highlight($dbTime,$dbTime, 10);
@@ -711,7 +711,7 @@ class e107_db_debug
 			$text .= $head;
 
 			$aSum['%Time'] = $totTime ? number_format(100.0 * ($aSum['Time'] / $totTime), 0) : 0;
-			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
+			$aSum['%DB Time'] = $db_time > 0 ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
 			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
 			$aSum['Time'] = number_format($aSum['Time'] * 1000.0, 1);
 			$aSum['DB Time'] = number_format($aSum['DB Time'] * 1000.0, 1);
@@ -787,14 +787,14 @@ class e107_db_debug
 				$aSum['DB Time'] += $curTable['DB Time'];
 				$aSum['DB Count'] += $curTable['DB Count'];
 				$curTable['%DB Count'] = number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount(), 0);
-				$curTable['%DB Time'] = number_format(100.0 * $curTable['DB Time'] / $db_time, 0);
+				$curTable['%DB Time'] = $db_time > 0 ? number_format(100.0 * $curTable['DB Time'] / $db_time, 0) : 0;
 				$timeLabel = number_format($curTable['DB Time'] * 1000.0, 1);
 				$curTable['DB Time'] = $this->highlight($timeLabel, ($curTable['DB Time'] * 1000), 500); // 500 msec
 
 				$text .= "<tr><td>" . implode("&nbsp;</td><td  style='text-align:right'>", array_values($curTable)) . "&nbsp;</td></tr>\n";
 			}
 
-			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
+			$aSum['%DB Time'] = $db_time > 0 ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
 			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
 			$aSum['DB Time'] = number_format($aSum['DB Time'] * 1000.0, 1);
 			$text .= "<tr><th><b>" . implode("&nbsp;</td><th style='text-align:right'><b>", array_values($aSum)) . "&nbsp;</b></td></tr>\n";
