@@ -17,6 +17,16 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+if (!function_exists('e107_diag'))
+{
+	function e107_diag($msg)
+	{
+		$line = sprintf("%.4f pid=%d host=%s %s %s sid=%s :: %s\n", microtime(true), getmypid(), isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '-', isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '-', isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '-', session_id(), $msg);
+		@file_put_contents('/tmp/e107diag.log', $line, FILE_APPEND | LOCK_EX);
+		@chmod('/tmp/e107diag.log', 0666);
+	}
+}
+
 /**
  * @package e107
  * @subpackage	e107_handlers
@@ -942,7 +952,8 @@ class e_session
 		}
 		
 	
-		session_start();
+		$diagStarted = session_start();
+		e107_diag('session_start='.var_export($diagStarted, true).' method='.$this->_sessionSaveMethod.' cookie='.(isset($_COOKIE[session_name()]) ? $_COOKIE[session_name()] : 'none').' keys='.implode(',', array_keys((array) $_SESSION)));
 		self::$_sessionStarted = true;
 		return $this;
 	}
@@ -981,14 +992,17 @@ class e_session
 	 */
 	public function regenerateId()
 	{
-		if (session_status() !== PHP_SESSION_ACTIVE || headers_sent())
+		if (session_status() !== PHP_SESSION_ACTIVE || headers_sent($diagFile, $diagLine))
 		{
+			e107_diag('REGENERATE REFUSED status='.session_status().' headers_sent at '.$diagFile.':'.$diagLine);
 			e107::getDebug()->log('Session id not regenerated: no active session, or output has already started.');
 
 			return $this;
 		}
 
-		session_regenerate_id(true);
+		$diagOld = session_id();
+		$diagOk = session_regenerate_id(true);
+		e107_diag('regenerated from '.$diagOld.' ok='.var_export($diagOk, true));
 		$params = session_get_cookie_params();
 		$this->expireDomainWideSessionCookie($params['path']);
 
@@ -1165,6 +1179,7 @@ class e_session
 		{ 
 			$sessionData = $this->_data['_session_validate_data'];
 			$validateData = $this->getValidateData();
+			e107_diag('VALIDATE FAILED saved='.json_encode($sessionData).' current='.json_encode($validateData));
 			
 			$details = 'USER INFORMATION: '.(isset($_COOKIE[e_COOKIE]) ? $_COOKIE[e_COOKIE] : (isset($_SESSION[e_COOKIE]) ? $_SESSION[e_COOKIE] : 'n/a'))."\n";
 			$details .= "HOST: ".$_SERVER['HTTP_HOST']."\n";
@@ -2135,6 +2150,7 @@ class e_session_db #implements SessionHandlerInterface
 
     	if(false === $rows)
     	{
+    		e107_diag('DB READ FAILED '.$this->_db->getLastErrorText());
     		return false;
     	}
 
@@ -2142,6 +2158,7 @@ class e_session_db #implements SessionHandlerInterface
     	{
     		return $rows[$key];
     	}
+    	e107_diag('DB READ no live row for '.$session_id);
 
     	if(isset($rows[$legacyKey]) && '' !== $rows[$legacyKey] && $this->rekey($legacyKey, $key))
     	{
@@ -2277,6 +2294,7 @@ class e_session_db #implements SessionHandlerInterface
     	$session_id = self::storageKey($session_id);
 
     	$check = $this->_db->select($this->getTable(), 'session_id', "`session_id`='{$session_id}'");
+    	e107_diag('DB WRITE check='.var_export($check, true).' user='.defset('USERID').' bytes='.strlen($session_data).' hasauth='.(strpos($session_data, e107::getPref('cookie_name', 'e107cookie')) !== false ? 1 : 0));
     	
     	if($check)
     	{
@@ -2294,6 +2312,7 @@ class e_session_db #implements SessionHandlerInterface
     			return true;
     		}	
     	}
+    	e107_diag('DB WRITE FAILED '.$this->_db->getLastErrorText());
     	return false;
     }
     

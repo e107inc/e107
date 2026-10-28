@@ -41,7 +41,16 @@ class FailedStepPage extends Extension
 
 		if ($crawler !== null)
 		{
-			$this->page = $this->comment($crawler->getUri())."\n".$this->comment($this->cookiesOf($client))."\n".$client->getInternalResponse()->getContent();
+			$host = (string) parse_url($crawler->getUri(), PHP_URL_HOST);
+			$diag = array();
+			foreach (@file('/tmp/e107diag.log') ?: array() as $line)
+			{
+				if (strpos($line, ' host='.$host.' ') !== false)
+				{
+					$diag[] = rtrim($line);
+				}
+			}
+			$this->page = $this->comment($crawler->getUri())."\n".$this->comment($this->cookiesOf($client))."\n".($diag ? $this->comment("server diag:\n".implode("\n", array_slice($diag, -150)))."\n" : '').$client->getInternalResponse()->getContent();
 		}
 	}
 

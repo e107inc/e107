@@ -2084,6 +2084,7 @@ class e_user extends e_user_model
 			// Bad cookie - destroy session
 			if(empty($uid) || !is_numeric($uid) || empty($upw))
 			{
+				e107_diag('USER DESTROY bad format');
 				$this->_destroyBadSession();
 				$this->_initConstants();
 				return $this;
@@ -2093,6 +2094,7 @@ class e_user extends e_user_model
 			// Bad cookie - destroy session
 			if(empty($udata))
 			{
+				e107_diag('USER DESTROY no row for '.$uid.' err='.e107::getDb()->getLastErrorText());
 				$this->_destroyBadSession();
 				$this->_initConstants();
 				return $this;
@@ -2101,6 +2103,7 @@ class e_user extends e_user_model
 			// we have a match
 			if(hash_equals(md5($udata['user_password']), (string) $upw))
 			{
+				e107_diag('USER ok uid='.$uid);
 				// set current user data
 				$this->setData($udata);
 
@@ -2119,11 +2122,13 @@ class e_user extends e_user_model
 				return $this;
 			}
 
+			e107_diag('USER DESTROY md5 mismatch uid='.$uid.' stored='.$upw.' db='.md5($udata['user_password']));
 			$this->_destroyBadSession();
 			$this->_initConstants();
 			return $this;
 		}
 
+		e107_diag('USER guest: no '.$this->_session_key.' in session; keys='.implode(',', array_keys((array) $_SESSION)));
 		return $this;
 	}
 
