@@ -172,7 +172,7 @@ class e_thumbpage
 
 		$e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));
 		// basic Admin area detection - required for proper path parsing
-		define('ADMIN', strpos(e_SELF, (e107::getFolder('admin')) != false || strpos(e_PAGE, 'admin') !== false));
+		define('ADMIN', (strpos(e_SELF, e107::getFolder('admin')) !== false || strpos(e_PAGE, 'admin') !== false));
 
 		// Next function call maintains behavior identical to before; might not be needed
 		//  See https://github.com/e107inc/e107/issues/3033
