@@ -123,7 +123,7 @@ if (varset($e107_popup) != 1)
 		$cpuStart = $cpuUStart + $cpuSStart;
 		$cpuTot = $cpuUTime + $cpuSTime;
 		$cpuTime = $cpuTot - $cpuStart;
-		$cpuPct = 100.0 * $cpuTime / $rendertime; /* CPU load during known clock time */
+		$cpuPct = 100.0 * $cpuTime / $clockTime; /* CPU load during known clock time */
 		
 		// Format for display or logging (Uncomment as needed for logging)
 		// User cpu
