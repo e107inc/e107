@@ -12,6 +12,8 @@ use e107\Reflection\ReflectionProperty;
 
 class e107Test extends \Codeception\Test\Unit
 {
+	use \Test\ScratchFiles;
+
 	use \Test\BootedCli;
 	use \Test\CorePrefs;
 
@@ -68,7 +70,7 @@ class e107Test extends \Codeception\Test\Unit
 		{
 			if(is_dir($file))
 			{
-				$this->removeScratchDir($file);
+				self::removeTree($file);
 			}
 			elseif(file_exists($file))
 			{
@@ -76,6 +78,7 @@ class e107Test extends \Codeception\Test\Unit
 			}
 		}
 		$this->tempFiles = array();
+		$this->removeScratch();
 	}
 
 	public function testInitCore()
@@ -1380,39 +1383,6 @@ class e107Test extends \Codeception\Test\Unit
 		}
 
 
-	}
-
-	/**
-	 * A fresh, empty directory under the system temp dir, removed by
-	 * {@see e107Test::_after()}.
-	 *
-	 * @return string with a trailing slash
-	 */
-	private function makeScratchDir($label)
-	{
-		$dir = sys_get_temp_dir() . '/e107_' . $label . '_' . uniqid('', true) . '/';
-		mkdir($dir, 0777, true);
-		$this->tempFiles[] = $dir;
-
-		return $dir;
-	}
-
-	private function removeScratchDir($dir)
-	{
-		@chmod($dir, 0755);
-		foreach(array_diff(scandir($dir), array('.', '..')) as $entry)
-		{
-			$path = rtrim($dir, '/') . '/' . $entry;
-			if(is_dir($path))
-			{
-				$this->removeScratchDir($path);
-			}
-			else
-			{
-				@unlink($path);
-			}
-		}
-		@rmdir($dir);
 	}
 
 	public function testWriteFileAtomicWritesTheContentAndLeavesNothingElseBehind()
