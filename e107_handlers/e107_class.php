@@ -3508,7 +3508,8 @@ class e107
 	 * empty space.
 	 *
 	 * Extraction results are cached until the template changes, so the
-	 * tokeniser runs only on the first request after an edit.
+	 * tokeniser runs only on the first request after an edit. APCu is used
+	 * when available + enabled; otherwise a file under e_CACHE.
 	 *
 	 * @param string $path absolute filesystem path to the template
 	 * @return bool true if the scan ran (file readable), false otherwise.
@@ -3586,7 +3587,6 @@ class e107
 
 		return is_array($names) ? $names : array();
 	}
-
 
 	/**
 	 * A store for values worked out from source files, kept as files under e_CACHE.
@@ -4180,150 +4180,84 @@ class e107
 	 *
 	 * This method includes a language file and processes it based on its return type. For old-style files using define(),
 	 * it returns the result of the include operation (typically 1 for success). For new-style files returning an array,
-	 * it defines constants from the array and applies an English fallback if the current language is not English.
+	 * it defines constants from the array. For a file in any language but English, each phrase its English counterpart
+	 * has and it lacks is then defined, in English or, with the noLanguageSubs preference on, as its own name
+	 * ({@see \e107\Language\Fallback::fill()}).
 	 *
 	 * For modern language loading, consider using e107::lan(), e107::coreLan(), e107::plugLan(), or e107::themeLan()
 	 * as they provide more structured and maintainable options.
 	 *
 	 * @param string $path  The full path to the language file (e.g., 'e107_languages/English/lan_admin.php' or 'folder/Spanish/Spanish_global.php').
 	 * @param bool   $force [optional] If true, forces inclusion with include() instead of include_once(). Defaults to false.
-	 * @param string $lang  [optional] The language of the file (e.g., 'English', 'Spanish'). If empty, uses e_LANGUAGE or defaults to 'English'.
+	 * @param string $lang  [optional] Not read: the file's language is the one its path names.
 	 * @return bool|int|string Returns:
-	 *                      - false if the file is not readable or no fallback is available,
+	 *                      - false if the file is not readable,
 	 *                      - int (typically 1) for successful inclusion of old-style files,
 	 *                      - true for successful processing of new-style array-based files,
 	 *                      - string (empty '') if the include result is unset for old-style files.
 	 */
 	public static function includeLan($path, $force = false, $lang = '')
 	{
-
+		$fallback = self::getLanguageFallback();
 		$adminLanguage = self::getPref('adminlanguage');
 
 		if(deftrue('e_ADMIN_AREA') && !empty($adminLanguage))
 		{
-			$path = str_replace(e_LANGUAGE, $adminLanguage, $path);
-			$lang = $adminLanguage;
+			$path = $fallback->translatePath($path, e_LANGUAGE, $adminLanguage);
 		}
 
-		if(is_readable($path))
+		$ret = false;
+
+		if(is_file($path))
 		{
 			$ret = ($force) ? include($path) : include_once($path);
 		}
-		else
+
+		$applied = is_array($ret);
+
+		if($applied)
 		{
-			$ret = false;
+			$fallback->defineTerms($ret);
 		}
 
-		// Determine the language: use $lang if provided, otherwise fall back to e_LANGUAGE or 'English'
-		if ($lang)
-		{
-			$effectiveLang = $lang;
-		}
-		else
-		{
-			$effectiveLang = defined('e_LANGUAGE') ? e_LANGUAGE : 'English';
-		}
+		$fallback->fill($path, (bool) self::getPref('noLanguageSubs', false), $applied);
 
-		if(is_array($ret))
+		if($applied)
 		{
-			self::includeLanArray($ret, $path, $effectiveLang);
-
 			return true; // New-style success indicator
 		}
-		elseif($effectiveLang !== 'English' && !self::getPref('noLanguageSubs', false)) // Fallback
-		{
-			self::includeLanArray(null, $path, $effectiveLang);
-		}
-
 
 		// Old-style behavior: return the include result or empty string if unset
 		return (isset($ret)) ? $ret : "";
 	}
 
 	/**
-	 * Helper method to process array-based language files and apply English fallback.
+	 * The fallback every language loader shares.
 	 *
-	 * Defines constants from the provided terms array and, for non-English languages, ensures all English
-	 * constants are defined as a fallback for any missing terms.
-	 *
-	 * @param array  $terms The array of language constants returned by the included file (e.g., ['LAN_FOO' => 'Bar']).
-	 * @param string $path  The path to the language file, used to determine the English fallback path.
-	 * @param string $lang  The language of the current file (e.g., 'Spanish'), used to decide if English fallback is needed.
-	 * @return void
+	 * @return \e107\Language\Fallback
 	 */
-	private static function includeLanArray($terms, $path, $lang)
+	public static function getLanguageFallback()
 	{
+		static $fallback = null;
 
-		static $english_terms = []; // Cache English fallback terms, keyed by resolved English path
-
-		// Define constants from the current language’s array first
-		if(!empty($terms) && is_array($terms))
+		if($fallback === null)
 		{
-			foreach($terms as $const => $value)
+			$report = (PHP_SAPI === 'cli') ? null : function ($message)
 			{
-				if(!defined($const))
-				{
-					define($const, $value);
-				}
-			}
+				trigger_error($message, E_USER_WARNING);
+			};
+
+			$folders = array('languages', defined('e_LANGUAGEDIR') ? basename(e_LANGUAGEDIR) : 'languages', 'lans');
+
+			$newReader = function ()
+			{
+				return new \e107\Language\PhraseFile();
+			};
+
+			$fallback = new \e107\Language\Fallback($newReader, self::sourceCache('langaps'), self::sourceCache('lanphrases'), $folders, $report);
 		}
 
-		if($lang === 'English')
-		{
-			return;
-		}
-
-		// Resolve the English fallback path. The language name appears only as
-		// the language directory ("languages/<lang>/") and/or the leading token
-		// of the language file ("<lang>.php" or "<lang>_*.php"), never elsewhere
-		// in a real e107 path. Rewriting just those positions (rather than every
-		// occurrence, as a blunt str_replace would) leaves a language name that
-		// also occurs in the docroot untouched. See issue #5682.
-		$quotedLang = preg_quote($lang, '#');
-		$english_path = preg_replace(
-			[
-				'#(languages/)' . $quotedLang . '/#',    // language directory segment
-				'#/' . $quotedLang . '(?=[._][^/]*$)#',  // language file token (last path segment only)
-			],
-			['${1}English/', '/English'],
-			$path
-		);
-
-		// The cache is keyed on this resolved English path, NOT basename($path):
-		// two files that share a basename but live in different directories
-		// (core ships lan_search.php and admin/lan_search.php, etc.) resolve to
-		// different English files and must not share a cache slot.
-
-		// Load English fallback if not already cached for this English path
-		if(!isset($english_terms[$english_path]))
-		{
-			if(is_readable($english_path))
-			{
-				$english_terms[$english_path] = include($english_path);
-				if(!is_array($english_terms[$english_path]))
-				{
-					$english_terms[$english_path] = [];
-				}
-			}
-			else
-			{
-				trigger_error("No English fallback found for: $english_path", E_USER_WARNING);
-				$english_terms[$english_path] = [];
-			}
-		}
-
-		// Define English constants only for terms still missing
-		if(!empty($english_terms[$english_path]))
-		{
-			foreach($english_terms[$english_path] as $const => $english_value)
-			{
-				if(!defined($const))
-				{
-					define($const, $english_value);
-					trigger_error("Missing $lang constant: $const in $path", E_USER_WARNING);
-				}
-			}
-		}
+		return $fallback;
 	}
 
 
@@ -4473,7 +4407,7 @@ class e107
 
 			if(e_ADMIN_AREA && !empty($adminLanguage))
 			{
-				$path = str_replace(e_LANGUAGE, $adminLanguage, $path);
+				$path = self::getLanguageFallback()->translatePath($path, e_LANGUAGE, $adminLanguage);
 			}
 
 			self::getMessage()->addDebug("Attempting to Load: ".$path);

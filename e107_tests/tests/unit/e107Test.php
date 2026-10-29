@@ -1769,180 +1769,77 @@ PHP
 
 
 	/**
-	 * Test non-English new-style file with English fallback (plugin-style path)
-	 *
-	 * @group runs-in-separate-process
-	 * @runInSeparateProcess
+	 * A translated array file that lacks a phrase gets it from its English counterpart, and keeps its own.
 	 */
-	public function testIncludeLanNonEnglishWithFallback()
+	public function testIncludeLanFillsAPhraseTheTranslationLacksFromEnglish()
 	{
+		$root = $this->makeScratchDir('6846_fill').'e107_plugins/testplugin/languages';
+		$this->writeScratchFile($root.'/English/English_front.php',
+			"<?php\nreturn ['TEST_6846_SHARED' => 'Shared', 'TEST_6846_ENGLISH_ONLY' => 'English Only'];\n");
+		$spanish = $root.'/Spanish/Spanish_front.php';
+		$this->writeScratchFile($spanish, "<?php\nreturn ['TEST_6846_SHARED' => 'Compartido'];\n");
 
-		$english_content = <<<PHP
-<?php
-return [
-'TEST_LAN_FALLBACK' => 'English Fallback',
-'TEST_LAN_SHARED' => 'Shared Value',
-'TEST_LAN_ENGLISH_ONLY' => 'English Only'
-];
-PHP
-;
-		$english_path = $this->createTempLanguageFile($english_content, 'English', 'lan_test_fallback', 'e107_plugins/testplugin/languages/');
-
-		$spanish_content = <<<PHP
-<?php
-return [
-'TEST_LAN_FALLBACK' => 'Spanish Override',
-'TEST_LAN_SHARED' => 'Spanish Shared'
-// TEST_LAN_ENGLISH_ONLY missing
-];
-PHP
-;
-		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_fallback', 'e107_plugins/testplugin/languages/');
-
-		// Load Spanish first to define constants, then English as fallback
-		$result = e107::includeLan($spanish_path, true, 'Spanish');
-		e107::includeLan($english_path, true, 'English');
-
-		self::assertTrue($result, 'includeLan should return true for Spanish file');
-		self::assertTrue(defined('TEST_LAN_FALLBACK'), 'TEST_LAN_FALLBACK should be defined');
-		self::assertEquals('Spanish Override', constant('TEST_LAN_FALLBACK'), 'TEST_LAN_FALLBACK should use Spanish value');
-		self::assertTrue(defined('TEST_LAN_SHARED'), 'TEST_LAN_SHARED should be defined');
-		self::assertEquals('Spanish Shared', constant('TEST_LAN_SHARED'), 'TEST_LAN_SHARED should use Spanish value');
-		self::assertTrue(defined('TEST_LAN_ENGLISH_ONLY'), 'TEST_LAN_ENGLISH_ONLY should be defined');
-		self::assertEquals('English Only', constant('TEST_LAN_ENGLISH_ONLY'), 'TEST_LAN_ENGLISH_ONLY should fall back to English');
+		self::assertTrue(e107::includeLan($spanish));
+		self::assertSame('Compartido', constant('TEST_6846_SHARED'));
+		self::assertSame('English Only', constant('TEST_6846_ENGLISH_ONLY'));
 	}
 
 	/**
-	 * Test non-English new-style file with English fallback (custom path)
-	 *
-	 * @group runs-in-separate-process
-	 * @runInSeparateProcess
+	 * A translated define() file is filled from an English array file just the same.
 	 */
-	public function testIncludeLanCustomPathWithFallback()
+	public function testIncludeLanFillsAnOldStyleTranslationFromAnArrayEnglishFile()
 	{
+		$root = $this->makeScratchDir('6846_old').'e107_languages';
+		$this->writeScratchFile($root.'/English/lan_6846.php',
+			"<?php\nreturn ['TEST_6846_OLD_SHARED' => 'Shared', 'TEST_6846_OLD_ENGLISH_ONLY' => 'English Only'];\n");
+		$spanish = $root.'/Spanish/lan_6846.php';
+		$this->writeScratchFile($spanish, "<?php\ndefine('TEST_6846_OLD_SHARED', 'Compartido');\n");
 
-		$english_content = <<<PHP
-<?php
-return [
-'TEST_LAN_CUSTOM' => 'English Custom',
-'TEST_LAN_SHARED_CUSTOM' => 'Shared Custom',
-'TEST_LAN_ENGLISH_ONLY_CUSTOM' => 'English Only Custom'
-];
-PHP
-;
-		$english_path = $this->createTempLanguageFile($english_content, 'English', 'Spanish_global', 'folder/');
-
-		$spanish_content = <<<PHP
-<?php
-return [
-'TEST_LAN_CUSTOM' => 'Spanish Custom Override',
-'TEST_LAN_SHARED_CUSTOM' => 'Spanish Shared Custom'
-// TEST_LAN_ENGLISH_ONLY_CUSTOM missing
-];
-PHP
-;
-		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'Spanish_global', 'folder/');
-
-		// Load Spanish first to define constants, then English as fallback
-		$result = e107::includeLan($spanish_path, true, 'Spanish');
-		e107::includeLan($english_path, true, 'English');
-
-		self::assertTrue($result, 'includeLan should return true for Spanish file with custom path');
-		self::assertTrue(defined('TEST_LAN_CUSTOM'), 'TEST_LAN_CUSTOM should be defined');
-		self::assertEquals('Spanish Custom Override', constant('TEST_LAN_CUSTOM'), 'TEST_LAN_CUSTOM should use Spanish value');
-		self::assertTrue(defined('TEST_LAN_SHARED_CUSTOM'), 'TEST_LAN_SHARED_CUSTOM should be defined');
-		self::assertEquals('Spanish Shared Custom', constant('TEST_LAN_SHARED_CUSTOM'), 'TEST_LAN_SHARED_CUSTOM should use Spanish value');
-		self::assertTrue(defined('TEST_LAN_ENGLISH_ONLY_CUSTOM'), 'TEST_LAN_ENGLISH_ONLY_CUSTOM should be defined');
-		self::assertEquals('English Only Custom', constant('TEST_LAN_ENGLISH_ONLY_CUSTOM'), 'TEST_LAN_ENGLISH_ONLY_CUSTOM should fall back to English');
+		self::assertSame(1, e107::includeLan($spanish));
+		self::assertSame('Compartido', constant('TEST_6846_OLD_SHARED'));
+		self::assertSame('English Only', constant('TEST_6846_OLD_ENGLISH_ONLY'));
 	}
 
 	/**
-	 * Test includeLanArray directly with reflection
-	 *
-	 * @group runs-in-separate-process
-	 * @runInSeparateProcess
+	 * With "Load language files only for current language" on, a missing phrase reads as its own name, as it did before PHP 8.
 	 */
-	public function testIncludeLanArrayDirectly()
+	public function testIncludeLanWithNoLanguageSubsDefinesAMissingPhraseAsItsName()
 	{
+		$root = $this->makeScratchDir('6846_names').'e107_languages';
+		$this->writeScratchFile($root.'/English/lan_6846.php',
+			"<?php\nreturn ['TEST_6846_NAMED_SHARED' => 'Shared', 'TEST_6846_NAMED_ENGLISH_ONLY' => 'English Only'];\n");
+		$spanish = $root.'/Spanish/lan_6846.php';
+		$this->writeScratchFile($spanish, "<?php\nreturn ['TEST_6846_NAMED_SHARED' => 'Compartido'];\n");
 
-		$english_content = <<<PHP
-<?php
-return [
-'TEST_LAN_DIRECT' => 'English Direct',
-'TEST_LAN_SHARED_DIRECT' => 'Shared Direct',
-'TEST_LAN_ENGLISH_ONLY_DIRECT' => 'English Only Direct'
-];
-PHP
-;
-		$english_path = $this->createTempLanguageFile($english_content, 'English', 'lan_test_direct', 'e107_plugins/testplugin/languages/');
+		$restore = $this->withCorePrefs(array('noLanguageSubs' => 1));
 
-		$spanish_content = <<<PHP
-<?php
-return [
-'TEST_LAN_DIRECT' => 'Spanish Direct Override',
-'TEST_LAN_SHARED_DIRECT' => 'Spanish Shared Direct'
-// TEST_LAN_ENGLISH_ONLY_DIRECT missing
-];
-PHP
-;
-		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_direct', 'e107_plugins/testplugin/languages/');
+		try
+		{
+			e107::includeLan($spanish);
+		}
+		finally
+		{
+			$restore();
+		}
 
-		$method = new ReflectionMethod('e107', 'includeLanArray');
-
-		// Load Spanish first, then English as fallback
-		$spanish_terms = require($spanish_path);
-		$method->invoke(null, $spanish_terms, $spanish_path, 'Spanish');
-
-		$english_terms = require($english_path);
-		$method->invoke(null, $english_terms, $english_path, 'English');
-
-		self::assertTrue(defined('TEST_LAN_DIRECT'), 'TEST_LAN_DIRECT should be defined');
-		self::assertEquals('Spanish Direct Override', constant('TEST_LAN_DIRECT'), 'TEST_LAN_DIRECT should use Spanish value');
-		self::assertTrue(defined('TEST_LAN_SHARED_DIRECT'), 'TEST_LAN_SHARED_DIRECT should be defined');
-		self::assertEquals('Spanish Shared Direct', constant('TEST_LAN_SHARED_DIRECT'), 'TEST_LAN_SHARED_DIRECT should use Spanish value');
-		self::assertTrue(defined('TEST_LAN_ENGLISH_ONLY_DIRECT'), 'TEST_LAN_ENGLISH_ONLY_DIRECT should be defined');
-		self::assertEquals('English Only Direct', constant('TEST_LAN_ENGLISH_ONLY_DIRECT'), 'TEST_LAN_ENGLISH_ONLY_DIRECT should fall back to English');
+		self::assertSame('Compartido', constant('TEST_6846_NAMED_SHARED'));
+		self::assertSame('TEST_6846_NAMED_ENGLISH_ONLY', constant('TEST_6846_NAMED_ENGLISH_ONLY'));
 	}
 
 	/**
-	 * Test Spanish old-style language file with English array fallback
+	 * A file outside any languages folder names no language, so there is no English counterpart to fill it from.
 	 */
-	public function testIncludeLanSpanishOldStyleWithEnglishArrayFallback()
+	public function testIncludeLanLeavesAFileOutsideALanguagesFolderAlone()
 	{
+		$root = $this->makeScratchDir('6846_outside').'folder';
+		$this->writeScratchFile($root.'/English/English_global.php',
+			"<?php\nreturn ['TEST_6846_OUTSIDE_ENGLISH_ONLY' => 'English Only'];\n");
+		$spanish = $root.'/Spanish/Spanish_global.php';
+		$this->writeScratchFile($spanish, "<?php\nreturn ['TEST_6846_OUTSIDE' => 'Fuera'];\n");
 
-		$english_content = <<<PHP
-<?php
-return [
-'TEST_LAN_SPANISH_ENGLISH_FALLBACK_EN' => 'English Fallback',
-'TEST_LAN_SHARED_SPANISH_ENGLISH_EN' => 'Shared English Value',
-'TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH' => 'English Only'
-];
-PHP
-;
-		$english_path = $this->createTempLanguageFile($english_content, 'English', 'lan_test_spanish_fallback', 'e107_plugins/testplugin/languages/');
-
-		$spanish_content = <<<PHP
-<?php
-define('TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES', 'Spanish Override');
-define('TEST_LAN_SHARED_SPANISH_ENGLISH_ES', 'Spanish Shared');
-// TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH not defined
-PHP
-;
-		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_spanish_fallback', 'e107_plugins/testplugin/languages/');
-
-		// Load Spanish first (old-style), then English as fallback (array)
-		$result = e107::includeLan($spanish_path, true, 'Spanish');
-		e107::includeLan($english_path, true, 'English');
-
-		self::assertEquals(1, $result, 'includeLan should return 1 for successful old-style Spanish file inclusion');
-		self::assertTrue(defined('TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES'), 'TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES should be defined');
-		self::assertEquals('Spanish Override', constant('TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES'), 'TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES should use Spanish value');
-		self::assertTrue(defined('TEST_LAN_SHARED_SPANISH_ENGLISH_ES'), 'TEST_LAN_SHARED_SPANISH_ENGLISH_ES should be defined');
-		self::assertEquals('Spanish Shared', constant('TEST_LAN_SHARED_SPANISH_ENGLISH_ES'), 'TEST_LAN_SHARED_SPANISH_ENGLISH_ES should use Spanish value');
-		self::assertTrue(defined('TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH'), 'TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH should be defined');
-		self::assertEquals('English Only', constant('TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH'), 'TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH should fall back to English');
+		self::assertTrue(e107::includeLan($spanish));
+		self::assertFalse(defined('TEST_6846_OUTSIDE_ENGLISH_ONLY'));
 	}
-
 
 	/**
 	 * Regression test for issue #5682.

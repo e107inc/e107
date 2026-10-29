@@ -1093,7 +1093,7 @@ class eMessage
  * @return void
  */
 function show_emessage($mode, $message, $line = 0, $file = "") {
-	global $tp;
+	global $tp, $pref;
 
 	// For critical errors where no theme is available.
 	$errorHead = '
@@ -1127,10 +1127,13 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		}
 
 		$path = e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php";
+		$fallback = (defined('e_HANDLER') && class_exists('e107', false) && class_exists('e107\\Language\\Fallback')) ? e107::getLanguageFallback() : null;
+		$arr = null;
 
 		if(is_readable($path))
 		{
 			$arr = include($path);
+
 			if(is_array($arr))
 			{
 				foreach($arr as $key => $value)
@@ -1146,6 +1149,11 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 					}
 				}
 			}
+		}
+
+		if($fallback !== null)
+		{
+			$fallback->fill($path, !empty($pref['noLanguageSubs']), is_array($arr));
 		}
 
     //	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
