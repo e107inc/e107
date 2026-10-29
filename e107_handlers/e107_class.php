@@ -4107,7 +4107,15 @@ class e107
 			$path = $english;
 		}
 
-		$ret = ($force) ? include($path) : include_once($path);
+		try
+		{
+			$ret = ($force) ? include($path) : include_once($path);
+		}
+		catch(\Error $e)
+		{
+			$fallback->recover($path, false, $e);
+			$ret = '';
+		}
 
 		$fallback->fill($path, $byName, false);
 

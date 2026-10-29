@@ -80,6 +80,23 @@ class StaleLanguagePackCest
 		$I->assertSame('Please delete install.php from your server', $phrases['CORE_LAN4']);
 	}
 
+	public function aPackFileThatStopsWithAnErrorLeavesThePageStanding(AcceptanceTester $I)
+	{
+		$I->haveSitePrefUntilAfter('noLanguageSubs', 0);
+		$contact = $this->translated(file_get_contents(APP_PATH.'/e107_languages/English/lan_contact.php'));
+		$broken = preg_replace('/("Eo Message subject)"/', '$1 ".e_Contact_Typo', $contact, 1, $count);
+		$I->assertSame(1, $count, 'the fixture must be able to break the file');
+		$this->writePack($I, 'lan_contact.php', $broken);
+		$this->writePack($I, 'admin/help/prefs.php', "<?php\necho 'Eo help '.e_Help_Typo;\n");
+
+		$phrases = $I->grabProbeJson();
+
+		$I->assertSame('Eo Contact Details', $phrases['LAN_CONTACT_01'], 'the rest of the file is still the pack\'s');
+		$this->seePageStanding($I, '/contact.php');
+		$I->seeInSource('Message subject');
+		$this->seePageStanding($I, '/e107_admin/prefs.php');
+	}
+
 	/**
 	 * @param AcceptanceTester $I
 	 * @param string           $page

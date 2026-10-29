@@ -197,6 +197,39 @@ class FallbackTest extends \Codeception\Test\Unit
 		self::assertSame('Apple', constant($p.'A'));
 	}
 
+	public function testAFileThatStopsWithAnErrorKeepsWhatItCanAndTheRestIsFilled()
+	{
+		if(PHP_VERSION_ID < 80000)
+		{
+			self::markTestSkipped('an undefined constant throws only from PHP 8');
+		}
+
+		$p = $this->p;
+		$this->writeFile('languages/English/English_admin.php',
+			"define('{$p}A', 'Apple');\ndefine('{$p}B', 'Banana');\ndefine('{$p}C', 'Cherry');\ndefine('{$p}D', 'Date');");
+		$pack = $this->writeFile('languages/Esperanto/Esperanto_admin.php',
+			"define('{$p}A', 'Pomo');\ndefine('{$p}B', 'Banano '.{$p}TYPO);\ndefine('{$p}C', 'Cxerizo');");
+		$fallback = $this->fallback();
+
+		try
+		{
+			include $pack;
+			self::fail('the pack was meant to stop on the undefined constant');
+		}
+		catch(\Error $e)
+		{
+			$fallback->recover($pack, false, $e);
+		}
+
+		$filled = $fallback->fill($pack, false, false);
+
+		self::assertSame('Pomo', constant($p.'A'), 'defined before the error');
+		self::assertSame('Cxerizo', constant($p.'C'), 'read after the error');
+		self::assertSame('Banana', constant($p.'B'), 'the phrase that stopped the file comes from English');
+		self::assertSame(array($p.'B', $p.'D'), $filled);
+		self::assertStringContainsString('stopped at line 3', $this->reports[0]);
+	}
+
 	public function testTheFilesAboutToLoadKeepTheirPhrasesAndCanReadTheFilledOnes()
 	{
 		$p = $this->p;
