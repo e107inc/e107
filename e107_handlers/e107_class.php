@@ -4210,7 +4210,15 @@ class e107
 
 		if(is_file($path))
 		{
-			$ret = ($force) ? include($path) : include_once($path);
+			try
+			{
+				$ret = ($force) ? include($path) : include_once($path);
+			}
+			catch(\Error $e)
+			{
+				$fallback->recover($path, true, $e);
+				$ret = '';
+			}
 		}
 
 		$applied = is_array($ret);

@@ -1132,7 +1132,17 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 
 		if(is_readable($path))
 		{
-			$arr = include($path);
+			try
+			{
+				$arr = include($path);
+			}
+			catch(\Error $e)
+			{
+				if($fallback !== null)
+				{
+					$fallback->recover($path, true, $e);
+				}
+			}
 
 			if(is_array($arr))
 			{

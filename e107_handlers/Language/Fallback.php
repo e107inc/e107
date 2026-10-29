@@ -53,6 +53,9 @@ final class Fallback
 	/** @var array name => true, for the phrases files about to load will define */
 	private $leftTo = array();
 
+	/** @var array files that stopped with an error part of the way through */
+	private $broken = array();
+
 	/**
 	 * @param callable      $newReader returns the PhraseFile that reads a file the caches do not answer for
 	 * @param SourceDerived $gaps    keeps, per language file, the phrases it lacks
@@ -119,7 +122,7 @@ final class Fallback
 			return array();
 		}
 
-		$entry = $this->gaps->get($path, $this->besideEnglish, array($english));
+		$entry = isset($this->broken[$path]) ? null : $this->gaps->get($path, $this->besideEnglish, array($english));
 
 		if($entry === null)
 		{
@@ -176,6 +179,38 @@ final class Fallback
 				}
 			}
 		}
+	}
+
+	/**
+	 * Define what can be read of a language file that stopped with an error part of the way through.
+	 *
+	 * @param string     $path
+	 * @param bool       $arrays whether the loader defines the phrases of an array a file returns
+	 * @param \Throwable $error  what the include threw
+	 * @return void
+	 */
+	public function recover($path, $arrays, $error)
+	{
+		$this->broken[$path] = true;
+		$read = $this->phrases->get($path, $this->readPhrases);
+		$recovered = 0;
+
+		foreach(is_array($read) ? $read['phrases'] : array() as $name => $value)
+		{
+			$how = $read['how'][$name];
+
+			if(defined($name) || isset($read['unsupported'][$name]) || $how === PhraseFile::CONDITIONAL
+				|| ($how === PhraseFile::LISTED && !$arrays) || ($value = $this->resolveKnown($value)) === null)
+			{
+				continue;
+			}
+
+			define($name, $value);
+			$recovered++;
+		}
+
+		$this->tell(sprintf('%s stopped at line %d (%s); %d of its later phrase(s) were read without running it',
+			$path, $error->getLine(), $error->getMessage(), $recovered));
 	}
 
 	/**
@@ -369,6 +404,26 @@ final class Fallback
 		}
 
 		return $text;
+	}
+
+	/**
+	 * @param array|string|bool|int|float|null $value
+	 * @return mixed|null null when a constant it names is not defined
+	 */
+	private function resolveKnown($value)
+	{
+		if(is_array($value))
+		{
+			foreach($value as $part)
+			{
+				if(is_array($part) && !defined($part[0]))
+				{
+					return null;
+				}
+			}
+		}
+
+		return $this->resolve($value);
 	}
 
 	/**
