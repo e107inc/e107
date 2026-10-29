@@ -1057,7 +1057,17 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 
 		if(is_readable($path))
 		{
-			include($path);
+			try
+			{
+				include($path);
+			}
+			catch(\Error $e)
+			{
+				if($fallback !== null)
+				{
+					$fallback->recover($path, false, $e);
+				}
+			}
 		}
 
 		if($fallback !== null)
