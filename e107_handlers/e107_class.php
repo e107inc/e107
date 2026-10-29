@@ -3390,9 +3390,8 @@ class e107
 	 * constant name so missing strings render visibly rather than as
 	 * empty space.
 	 *
-	 * Extraction results are cached keyed on sha1_file($path), so the
-	 * tokeniser runs only on cache miss (first request or after file edit).
-	 * APCu is used when available + enabled; otherwise a file under e_CACHE.
+	 * Extraction results are cached until the template changes, so the
+	 * tokeniser runs only on the first request after an edit.
 	 *
 	 * @param string $path absolute filesystem path to the template
 	 * @return bool true if the scan ran (file readable), false otherwise.
@@ -3448,8 +3447,7 @@ class e107
 
 	/**
 	 * Extract the set of LAN_* T_STRING tokens referenced as bare constants
-	 * in the given template. Results are cached keyed on sha1_file($path)
-	 * so the tokeniser only runs on cache miss.
+	 * in the given template, tokenising it only when it has changed.
 	 *
 	 * The scan is *not* transitive — only the supplied file is inspected.
 	 * Nested includes are expected to flow back through requireLegacyTemplate()
@@ -3460,78 +3458,30 @@ class e107
 	 */
 	protected static function _extractLanConstantsFromTemplate($path)
 	{
-		$realpath = realpath($path);
-		$key = $realpath !== false ? $realpath : $path;
+		static $cache = null;
 
-		// Process-local memoisation — same path resolved repeatedly in one request.
-		static $local = array();
-		if(isset($local[$key]))
+		if($cache === null)
 		{
-			return $local[$key];
+			$cache = self::sourceCache('lantokens');
 		}
 
-		$sig = @hash_file('sha256', $path);
-		if($sig === false)
-		{
-			$local[$key] = array();
-			return $local[$key];
-		}
+		$names = $cache->get($path, array(__CLASS__, '_extractLanConstantsFromSource'));
 
-		$cacheKey = 'lantokens_' . hash('sha256', $key) . '_' . $sig;
+		return is_array($names) ? $names : array();
+	}
 
-		// APCu first if available + enabled.
-		$apcuActive = function_exists('apcu_fetch')
-			&& function_exists('apcu_enabled')
-			&& @apcu_enabled();
 
-		if($apcuActive)
-		{
-			$fetched = apcu_fetch($cacheKey, $ok);
-			if($ok && is_array($fetched))
-			{
-				$local[$key] = $fetched;
-				return $fetched;
-			}
-		}
+	/**
+	 * A store for values worked out from source files, kept as files under e_CACHE.
+	 *
+	 * @param string $prefix names the kind of entry
+	 * @return \e107\Cache\SourceDerived
+	 */
+	private static function sourceCache($prefix)
+	{
+		$directory = defined('e_CACHE') ? rtrim(e_CACHE, '/\\').'/' : null;
 
-		// File cache fallback under e_CACHE.
-		$cacheDir = defined('e_CACHE') ? e_CACHE : null;
-		$cacheFile = null;
-		if(!$apcuActive && $cacheDir && is_dir($cacheDir) && is_writable($cacheDir))
-		{
-			$cacheFile = rtrim($cacheDir, '/\\') . DIRECTORY_SEPARATOR . $cacheKey . '.php';
-			if(is_file($cacheFile))
-			{
-				$cached = @include $cacheFile;
-				if(is_array($cached))
-				{
-					$local[$key] = $cached;
-					return $cached;
-				}
-			}
-		}
-
-		$src = @file_get_contents($path);
-		if($src === false)
-		{
-			$local[$key] = array();
-			return $local[$key];
-		}
-
-		$names = self::_extractLanConstantsFromSource($src);
-
-		if($apcuActive)
-		{
-			@apcu_store($cacheKey, $names, 0);
-		}
-		elseif($cacheFile !== null)
-		{
-			$payload = "<?php\nreturn " . var_export($names, true) . ";\n";
-			self::writeFileAtomic($cacheFile, $payload);
-		}
-
-		$local[$key] = $names;
-		return $names;
+		return new \e107\Cache\SourceDerived($prefix, $directory, array(__CLASS__, 'writeFileAtomic'));
 	}
 
 	/**
