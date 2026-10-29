@@ -13,6 +13,8 @@ use e107\Reflection\ReflectionProperty;
 
 class e107Test extends \Test\Unit
 {
+	use \Test\ScratchFiles;
+
 
 	protected $tempFiles = [];
 	/** @var e107 */
@@ -70,7 +72,7 @@ class e107Test extends \Test\Unit
 		{
 			if(is_dir($file))
 			{
-				$this->removeScratchDir($file);
+				self::removeTree($file);
 			}
 			elseif(file_exists($file))
 			{
@@ -78,6 +80,7 @@ class e107Test extends \Test\Unit
 			}
 		}
 		$this->tempFiles = [];
+		$this->removeScratch();
 	}
 
 	/**
@@ -1958,21 +1961,21 @@ PHP
 	 */
 	public function testIncludeLanFallbackBasenameCollision()
 	{
-		$root = sys_get_temp_dir() . '/e107_5682_collision/e107_languages';
+		$root = $this->makeScratchDir('5682_collision') . 'e107_languages';
 
 		// admin/ pair, same basename "lan_coll.php"; the Spanish file is
 		// missing the admin-only English constant so the fallback must fill it.
 		$adminSpanish = $root . '/Spanish/admin/lan_coll.php';
-		$this->writeLanFixture($root . '/English/admin/lan_coll.php',
+		$this->writeScratchFile($root . '/English/admin/lan_coll.php',
 			"<?php\nreturn ['LAN_5682_ADMIN' => 'Admin ES', 'LAN_5682_ADMIN_EN_ONLY' => 'Admin English Only'];\n");
-		$this->writeLanFixture($adminSpanish,
+		$this->writeScratchFile($adminSpanish,
 			"<?php\nreturn ['LAN_5682_ADMIN' => 'Admin ES'];\n");
 
 		// frontend pair, identical basename in a different directory.
 		$frontSpanish = $root . '/Spanish/lan_coll.php';
-		$this->writeLanFixture($root . '/English/lan_coll.php',
+		$this->writeScratchFile($root . '/English/lan_coll.php',
 			"<?php\nreturn ['LAN_5682_FRONT' => 'Front ES', 'LAN_5682_FRONT_EN_ONLY' => 'Front English Only'];\n");
-		$this->writeLanFixture($frontSpanish,
+		$this->writeScratchFile($frontSpanish,
 			"<?php\nreturn ['LAN_5682_FRONT' => 'Front ES'];\n");
 
 		// Load the admin file first; this primes the fallback cache.
@@ -2004,12 +2007,12 @@ PHP
 	public function testIncludeLanFallbackDocrootContainsLanguageName()
 	{
 		// Base directory deliberately embeds the language name as a substring.
-		$root = sys_get_temp_dir() . '/Spanish_site_5682/e107_languages';
+		$root = $this->makeScratchDir('Spanish_site_5682') . 'e107_languages';
 
-		$this->writeLanFixture($root . '/English/lan_doc.php',
+		$this->writeScratchFile($root . '/English/lan_doc.php',
 			"<?php\nreturn ['LAN_5682_DOC' => 'Doc ES', 'LAN_5682_DOC_EN_ONLY' => 'Doc English Only'];\n");
 		$spanish = $root . '/Spanish/lan_doc.php';
-		$this->writeLanFixture($spanish,
+		$this->writeScratchFile($spanish,
 			"<?php\nreturn ['LAN_5682_DOC' => 'Doc ES'];\n");
 
 		e107::includeLan($spanish, true, 'Spanish');
@@ -2017,22 +2020,6 @@ PHP
 		self::assertTrue(defined('LAN_5682_DOC_EN_ONLY'),
 			'English fallback must resolve even when the docroot contains the language name (issue #5682)');
 		self::assertEquals('Doc English Only', constant('LAN_5682_DOC_EN_ONLY'));
-	}
-
-	/**
-	 * Write a language fixture at an exact path and track it for cleanup.
-	 * Unlike createTempLanguageFile(), the basename is deterministic (no
-	 * tempnam suffix), which is required to reproduce same-basename collisions.
-	 */
-	private function writeLanFixture($path, $content)
-	{
-		$dir = dirname($path);
-		if(!is_dir($dir))
-		{
-			mkdir($dir, 0777, true);
-		}
-		file_put_contents($path, $content);
-		$this->tempFiles[] = $path;
 	}
 
 	/**
@@ -2051,39 +2038,6 @@ PHP
 		$this->tempFiles[] = $path; // Track for cleanup
 
 		return $path;
-	}
-
-	/**
-	 * A fresh, empty directory under the system temp dir, removed by
-	 * {@see e107Test::_after()}.
-	 *
-	 * @return string with a trailing slash
-	 */
-	private function makeScratchDir($label)
-	{
-		$dir = sys_get_temp_dir() . '/e107_' . $label . '_' . uniqid('', true) . '/';
-		mkdir($dir, 0777, true);
-		$this->tempFiles[] = $dir;
-
-		return $dir;
-	}
-
-	private function removeScratchDir($dir)
-	{
-		@chmod($dir, 0755);
-		foreach(array_diff(scandir($dir), array('.', '..')) as $entry)
-		{
-			$path = rtrim($dir, '/') . '/' . $entry;
-			if(is_dir($path))
-			{
-				$this->removeScratchDir($path);
-			}
-			else
-			{
-				@unlink($path);
-			}
-		}
-		@rmdir($dir);
 	}
 
 	public function testWriteFileAtomicWritesTheContentAndLeavesNothingElseBehind()
