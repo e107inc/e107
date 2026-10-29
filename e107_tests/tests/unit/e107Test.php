@@ -1827,6 +1827,26 @@ PHP
 	}
 
 	/**
+	 * A plugin's admin file the admin language lacks is filled from the English one, here with names because noLanguageSubs is on.
+	 */
+	public function testLoadLanFilesFillsAFileTheLanguageLacks()
+	{
+		$this->writeAppFile('e107_plugins/lan6846/languages/English_admin.php', "<?php\nreturn ['TEST_6846_LOADED' => 'Loaded'];\n");
+		$restore = $this->withCorePrefs(array('adminlanguage' => 'Spanish', 'noLanguageSubs' => 1));
+
+		try
+		{
+			e107::loadLanFiles('lan6846', 'admin');
+		}
+		finally
+		{
+			$restore();
+		}
+
+		self::assertSame('TEST_6846_LOADED', constant('TEST_6846_LOADED'));
+	}
+
+	/**
 	 * A file outside any languages folder names no language, so there is no English counterpart to fill it from.
 	 */
 	public function testIncludeLanLeavesAFileOutsideALanguagesFolderAlone()

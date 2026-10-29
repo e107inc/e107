@@ -5190,8 +5190,8 @@ class e107
 	 * Returns the include_once error return if there is one
 	 * Otherwise returns an empty string.
 	 * Note - if the code knows precisely where the language file is located, use {@link getLan()}
-	 * $pref['noLanguageSubs'] can be set TRUE to prevent searching for the English files if
-	 * the files for the current site language don't exist.
+	 * When no file exists for the current language, the first one whose English counterpart
+	 * exists is filled from it, as {@see e107::includeLan()} fills any file.
 	 *
 	 * @param string $unitName
 	 * @param string $type predefined types are runtime|admin|theme
@@ -5232,25 +5232,21 @@ class e107
 			if (is_readable($s))
 			{
 				return self::includeLan($s);
-			//	$ret = include_once($s);
-			//	return (isset($ret)) ? $ret : "";
 			}
-		}
-		if ((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
-		{
-			return FALSE;		// No point looking for the English files twice
 		}
 
-		foreach ($searchPath as $s)			// Now look for the English files
+		$fallback = self::getLanguageFallback();
+
+		foreach ($searchPath as $s)			// Then for one whose English counterpart exists, for includeLan() to fill from
 		{
-			$s = str_replace(e_LANGUAGE, 'English', $s);
-			if (is_readable($s))
+			$english = $fallback->englishPath($s);
+
+			if ($english !== null && $english !== $s && is_readable($english))
 			{
-				return self::includeLan($s);
-			//	$ret = include_once($s);
-			//	return (isset($ret)) ? $ret : "";
+				return self::includeLan($s) ?: true;
 			}
 		}
+
 		return FALSE;		// Nothing found
 	}
 
