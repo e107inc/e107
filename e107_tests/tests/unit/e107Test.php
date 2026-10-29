@@ -1443,6 +1443,29 @@ class e107Test extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * A plugin's admin file the admin language lacks is filled from the English one, here with names because noLanguageSubs is on.
+	 */
+	public function testLoadLanFilesFillsAFileTheLanguageLacks()
+	{
+		$plugin = e_PLUGIN.'lan6846/';
+		$this->writeScratchFile($plugin.'languages/English_admin.php', "<?php\ndefine('TEST_6846_LOADED', 'Loaded');\n");
+		$this->tempFiles[] = $plugin;
+
+		$restore = $this->withCorePrefs(array('adminlanguage' => 'Spanish', 'noLanguageSubs' => 1));
+
+		try
+		{
+			e107::loadLanFiles('lan6846', 'admin');
+		}
+		finally
+		{
+			$restore();
+		}
+
+		self::assertSame('TEST_6846_LOADED', constant('TEST_6846_LOADED'));
+	}
+
+	/**
 	 * A file outside any languages folder names no language, so there is no English counterpart to fill it from.
 	 */
 	public function testIncludeLanLeavesAFileOutsideALanguagesFolderAlone()
