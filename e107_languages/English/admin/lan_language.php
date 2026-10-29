@@ -30,7 +30,7 @@ define("LANG_LAN_21", "Language-Packs");
 
 define("LANG_LAN_25", "Language-Pack Creation Status");
 define("LANG_LAN_26", "Load language files only for current language");
-define("LANG_LAN_27", "If checked, and a required language cannot be found, there will be an error");
+define("LANG_LAN_27", "If checked, a phrase the current language lacks shows its name instead of the English text");
 //define("LANG_LAN_28", "Check this box if you're an [e107 certified translator].");
 //define("LANG_LAN_EML", "Please email your language pack to:");
 define("LANG_LAN_32", "Installed Languages");

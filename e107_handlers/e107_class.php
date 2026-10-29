@@ -3470,7 +3470,6 @@ class e107
 		return is_array($names) ? $names : array();
 	}
 
-
 	/**
 	 * A store for values worked out from source files, kept as files under e_CACHE.
 	 *
@@ -4059,6 +4058,11 @@ class e107
 
 	/**
 	 * Load language file, replacement of include_lan()
+	 *
+	 * A file the current language does not have is replaced by its English counterpart, unless the noLanguageSubs
+	 * preference is on. For a file in any language but English, each phrase its English counterpart has and it lacks
+	 * is then defined, in English or, with noLanguageSubs on, as its own name ({@see \e107\Language\Fallback::fill()}).
+	 *
 	 * @outdated use e107::lan() or e107::coreLan(), e107::plugLan(), e107::themeLan()
 	 * @param string $path
 	 * @param boolean $force
@@ -4066,35 +4070,66 @@ class e107
 	 */
 	public static function includeLan($path, $force = false)
 	{
-		if (!is_readable($path))
-		{
-			if ((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
-			{
-				return false;
-			}
-
-			self::getDebug()->log("Couldn't load language file: " . $path);
-
-			$path = str_replace(e_LANGUAGE, 'English', $path);
-
-			self::getDebug()->log("Attempts to load default language file: " . $path);
-
-			if(!is_readable($path))
-			{
-				self::getDebug()->log("Couldn't load default language file: " . $path);
-				return false;
-			}
-		}
-
+		$fallback = self::getLanguageFallback();
+		$byName = (bool) self::getPref('noLanguageSubs');
 		$adminLanguage = self::getPref('adminlanguage');
 
-		if(e_ADMIN_AREA && vartrue($adminLanguage))
+		if(deftrue('e_ADMIN_AREA') && vartrue($adminLanguage))
 		{
-			$path = str_replace(e_LANGUAGE, $adminLanguage, $path);
+			$path = $fallback->translatePath($path, e_LANGUAGE, $adminLanguage);
+		}
+
+		if (!is_file($path))
+		{
+			self::getDebug()->log("Couldn't load language file: " . $path);
+
+			$english = $fallback->englishPath($path);
+
+			if($byName || $english === null || !is_readable($english))
+			{
+				$fallback->fill($path, $byName, false);
+				return false;
+			}
+
+			self::getDebug()->log("Attempts to load default language file: " . $english);
+
+			$path = $english;
 		}
 
 		$ret = ($force) ? include($path) : include_once($path);
+
+		$fallback->fill($path, $byName, false);
+
 		return (isset($ret)) ? $ret : "";
+	}
+
+	/**
+	 * The fallback every language loader shares.
+	 *
+	 * @return \e107\Language\Fallback
+	 */
+	public static function getLanguageFallback()
+	{
+		static $fallback = null;
+
+		if($fallback === null)
+		{
+			$report = (PHP_SAPI === 'cli') ? null : function ($message)
+			{
+				trigger_error($message, E_USER_WARNING);
+			};
+
+			$folders = array('languages', defined('e_LANGUAGEDIR') ? basename(e_LANGUAGEDIR) : 'languages', 'lans');
+
+			$newReader = function ()
+			{
+				return new \e107\Language\PhraseFile();
+			};
+
+			$fallback = new \e107\Language\Fallback($newReader, self::sourceCache('langaps'), self::sourceCache('lanphrases'), $folders, $report);
+		}
+
+		return $fallback;
 	}
 
 	/**
@@ -4242,7 +4277,7 @@ class e107
 
 			if(e_ADMIN_AREA && !empty($adminLanguage))
 			{
-				$path = str_replace(e_LANGUAGE, $adminLanguage, $path);
+				$path = self::getLanguageFallback()->translatePath($path, e_LANGUAGE, $adminLanguage);
 			}
 
 			self::getMessage()->addDebug("Attempting to Load: ".$path);

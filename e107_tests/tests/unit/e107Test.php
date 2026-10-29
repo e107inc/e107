@@ -1385,6 +1385,77 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
+	/**
+	 * A translated file that lacks a phrase gets it from its English counterpart, and keeps its own.
+	 */
+	public function testIncludeLanFillsAPhraseTheTranslationLacksFromEnglish()
+	{
+		$root = $this->makeScratchDir('6846_fill').'e107_plugins/testplugin/languages';
+		$this->writeScratchFile($root.'/English/English_front.php',
+			"<?php\ndefine('TEST_6846_SHARED', 'Shared');\ndefine('TEST_6846_ENGLISH_ONLY', 'English Only');\n");
+		$spanish = $root.'/Spanish/Spanish_front.php';
+		$this->writeScratchFile($spanish, "<?php\ndefine('TEST_6846_SHARED', 'Compartido');\n");
+
+		self::assertSame(1, e107::includeLan($spanish));
+		self::assertSame('Compartido', constant('TEST_6846_SHARED'));
+		self::assertSame('English Only', constant('TEST_6846_ENGLISH_ONLY'));
+	}
+
+	/**
+	 * A file the translation does not have at all is replaced by the English one, as before.
+	 */
+	public function testIncludeLanLoadsTheEnglishFileInPlaceOfAMissingOne()
+	{
+		$root = $this->makeScratchDir('6846_swap').'e107_languages';
+		$this->writeScratchFile($root.'/English/lan_6846.php', "<?php\ndefine('TEST_6846_SWAPPED', 'Swapped');\n");
+
+		self::assertSame(1, e107::includeLan($root.'/Spanish/lan_6846.php'));
+		self::assertSame('Swapped', constant('TEST_6846_SWAPPED'));
+	}
+
+	/**
+	 * With "Load language files only for current language" on, a missing phrase, or every phrase of a missing file, reads as its own name, as it did before PHP 8.
+	 */
+	public function testIncludeLanWithNoLanguageSubsDefinesAMissingPhraseAsItsName()
+	{
+		$root = $this->makeScratchDir('6846_names').'e107_languages';
+		$this->writeScratchFile($root.'/English/lan_6846.php',
+			"<?php\ndefine('TEST_6846_NAMED_SHARED', 'Shared');\ndefine('TEST_6846_NAMED_ENGLISH_ONLY', 'English Only');\n");
+		$this->writeScratchFile($root.'/English/lan_6846_absent.php', "<?php\ndefine('TEST_6846_NAMED_ABSENT', 'Absent');\n");
+		$spanish = $root.'/Spanish/lan_6846.php';
+		$this->writeScratchFile($spanish, "<?php\ndefine('TEST_6846_NAMED_SHARED', 'Compartido');\n");
+
+		$restore = $this->withCorePrefs(array('noLanguageSubs' => 1));
+
+		try
+		{
+			e107::includeLan($spanish);
+			self::assertFalse(e107::includeLan($root.'/Spanish/lan_6846_absent.php'));
+		}
+		finally
+		{
+			$restore();
+		}
+
+		self::assertSame('Compartido', constant('TEST_6846_NAMED_SHARED'));
+		self::assertSame('TEST_6846_NAMED_ENGLISH_ONLY', constant('TEST_6846_NAMED_ENGLISH_ONLY'));
+		self::assertSame('TEST_6846_NAMED_ABSENT', constant('TEST_6846_NAMED_ABSENT'));
+	}
+
+	/**
+	 * A file outside any languages folder names no language, so there is no English counterpart to fill it from.
+	 */
+	public function testIncludeLanLeavesAFileOutsideALanguagesFolderAlone()
+	{
+		$root = $this->makeScratchDir('6846_outside').'folder';
+		$this->writeScratchFile($root.'/English/English_global.php', "<?php\ndefine('TEST_6846_OUTSIDE_ENGLISH_ONLY', 'English Only');\n");
+		$spanish = $root.'/Spanish/Spanish_global.php';
+		$this->writeScratchFile($spanish, "<?php\ndefine('TEST_6846_OUTSIDE', 'Fuera');\n");
+
+		self::assertSame(1, e107::includeLan($spanish));
+		self::assertFalse(defined('TEST_6846_OUTSIDE_ENGLISH_ONLY'));
+	}
+
 	public function testWriteFileAtomicWritesTheContentAndLeavesNothingElseBehind()
 	{
 		$dir = $this->makeScratchDir('atomic');
