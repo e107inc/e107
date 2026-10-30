@@ -165,6 +165,20 @@ class ContactFormCest
 	}
 
 	/**
+	 * A submission valid in every respect, carrying the token of a form just served, with $fields put over it.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param array $fields
+	 * @return array
+	 */
+	private function servedSubmission(AcceptanceTester $I, array $fields = array())
+	{
+		$token = $this->openFormAndGrabToken($I);
+
+		return array_merge($this->submission(), $this->captcha($I), array('e-token' => $token), $fields);
+	}
+
+	/**
 	 * The CAPTCHA pair a rendered document actually carries.
 	 *
 	 * A test has to be able to answer the CAPTCHA the visitor was given rather
@@ -228,11 +242,7 @@ class ContactFormCest
 
 		foreach(array($this->unlistedId => $this->unlistedEmail, $this->bannedId => $this->bannedEmail) as $id => $email)
 		{
-			$token = $this->openFormAndGrabToken($I);
-			$post = array_merge($this->submission(), $this->captcha($I), array(
-				'e-token'        => $token,
-				'contact_person' => $id,
-			));
+			$post = $this->servedSubmission($I, array('contact_person' => $id));
 			$I->sendPostRequest('/contact.php', $post);
 		}
 
@@ -257,11 +267,7 @@ class ContactFormCest
 		$ids = array_keys($this->listed);
 		$id = $ids[0];
 
-		$token = $this->openFormAndGrabToken($I);
-		$post = array_merge($this->submission(), $this->captcha($I), array(
-			'e-token'        => $token,
-			'contact_person' => $id,
-		));
+		$post = $this->servedSubmission($I, array('contact_person' => $id));
 		$I->sendPostRequest('/contact.php', $post);
 
 		$I->assertStringContainsString($this->listed[$id], $this->mailLog($I),
@@ -488,14 +494,10 @@ class ContactFormCest
 	{
 		$I->wantTo('keep refusing a wrong CAPTCHA answer');
 
-		$captcha = $this->captcha($I);
-		$captcha['code_verify'] = 'definitely-not-the-code';
-
 		$I->probe('act=clearmaillog');
 
-		$token = $this->openFormAndGrabToken($I);
 		$I->sendPostRequest('/contact.php',
-			array_merge($this->submission(), $captcha, array('e-token' => $token)));
+			$this->servedSubmission($I, array('code_verify' => 'definitely-not-the-code')));
 
 		$I->assertStringNotContainsString('Mail-ID=', $this->mailLog($I),
 			'a wrong CAPTCHA answer must not reach the mailer');
@@ -512,8 +514,7 @@ class ContactFormCest
 		$I->probe('act=clearmaillog');
 
 		// Everything a member's submission would carry, from a guest.
-		$token = $this->openFormAndGrabToken($I);
-		$post = array_merge($this->submission(), $this->captcha($I), array('e-token' => $token));
+		$post = $this->servedSubmission($I);
 		$I->sendPostRequest('/contact.php', $post);
 
 		$log = $this->mailLog($I);
@@ -533,8 +534,7 @@ class ContactFormCest
 
 		$I->probe('act=clearmaillog');
 
-		$token = $this->openFormAndGrabToken($I);
-		$post = array_merge($this->submission(), $this->captcha($I), array('e-token' => $token));
+		$post = $this->servedSubmission($I);
 		$I->sendPostRequest('/contact.php', $post);
 
 		$I->assertStringContainsString('Mail-ID=', $this->mailLog($I),
@@ -550,15 +550,13 @@ class ContactFormCest
 
 		$I->probe('act=clearmaillog');
 
-		$token = $this->openFormAndGrabToken($I);
-		$submission = $this->submission();
-		$post = array_merge($submission, $this->captcha($I), array('e-token' => $token));
+		$post = $this->servedSubmission($I);
 		$I->sendPostRequest('/contact.php', $post);
 
 		$bodies = $this->mailBodies($I);
 
 		$I->assertCount(1, $bodies, 'the dry run transport must record the body it was handed');
-		$I->assertStringContainsString($submission['email_send'], $bodies[0],
+		$I->assertStringContainsString($post['email_send'], $bodies[0],
 			'the message the recipient reads must carry the address that sent it');
 		$I->assertStringNotContainsString('e-email', $bodies[0],
 			'the address must reach the recipient as itself, not as obfuscated markup');
@@ -583,9 +581,7 @@ class ContactFormCest
 
 		$I->probe('act=clearmaillog');
 
-		$token = $this->openFormAndGrabToken($I);
-		$post = array_merge($this->submission(), $this->captcha($I), array(
-			'e-token'             => $token,
+		$post = $this->servedSubmission($I, array(
 			'body'                => 'Please look at [img]http://example.com/BODYMARKER.png[/img] '
 				.'and at <marquee>BODYTAG</marquee> and at {SITENAME}, which is comfortably '
 				.'longer than the fifteen characters the form insists on.',
@@ -610,6 +606,54 @@ class ContactFormCest
 			'BBCode the visitor wrote must not be rendered into the message');
 		$I->assertStringContainsString('{SITENAME}', $log,
 			'a shortcode the visitor wrote must not be expanded into the message');
+	}
+
+	/**
+	 * A field that arrives as a list is answered the way the same field left blank is, and the page is served in full.
+	 */
+	public function aFieldPostedAsAListIsAnsweredAsThoughLeftBlank(AcceptanceTester $I)
+	{
+		$I->wantTo('answer a contact field posted as a list the way an empty one is answered');
+
+		foreach(array('author_name', 'email_send', 'subject', 'body') as $field)
+		{
+			$delivered = array();
+
+			foreach(array('', array('first', 'second')) as $value)
+			{
+				$I->probe('act=clearmaillog');
+
+				$post = $this->servedSubmission($I, array($field => $value));
+				$I->sendPostRequest('/contact.php', $post);
+
+				$I->seeResponseCodeIs(200);
+				$I->seeInSource('</html>');
+
+				$delivered[] = strpos($this->mailLog($I), 'Mail-ID=') !== false;
+			}
+
+			$I->assertSame($delivered[0], $delivered[1],
+				"'".$field."' posted as a list must be answered as it is when left blank");
+		}
+	}
+
+	/**
+	 * A custom field posted as a list reaches the recipient as a blank field, not as the word Array.
+	 */
+	public function aCustomFieldPostedAsAListIsSentBlank(AcceptanceTester $I)
+	{
+		$I->wantTo('send a custom contact field posted as a list as a blank field');
+
+		$I->probe('act=clearmaillog');
+
+		$post = $this->servedSubmission($I, array('topics' => array('first', 'second')));
+		$I->sendPostRequest('/contact.php', $post);
+
+		$bodies = $this->mailBodies($I);
+
+		$I->assertCount(1, $bodies, 'a custom field posted as a list must not stop the message');
+		$I->assertStringContainsString('<td>topics:</td><td></td>', $bodies[0],
+			'the field must still be named in the message, with nothing after it');
 	}
 
 	/**
