@@ -180,7 +180,7 @@ class e_jslib
 
 	    if(!deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
         
-        $etag = md5($page).($encoding ? '-'.$encoding : '');
+        $etag = md5($contents).($encoding ? '-'.$encoding : '');
     	header('ETag: '.$etag, true);
     	if($encoding) header('Content-Encoding: ' . $encoding);
 		
