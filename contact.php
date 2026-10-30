@@ -52,6 +52,7 @@ class contact_front
 
 		if($offered && isset($_POST['send-contactus']))
 		{
+			$this->blankPostedArrays();
 			$this->processFormSubmit();
 		}
 
@@ -84,6 +85,22 @@ class contact_front
 			[$form, $info],
 			$LAYOUT
 		);
+	}
+
+	/**
+	 * Empties every field of a contact submission posted as an array, so the handler and the form it redisplays read it as left blank.
+	 *
+	 * @return void
+	 */
+	private function blankPostedArrays()
+	{
+		foreach($_POST as $name => $value)
+		{
+			if(is_array($value))
+			{
+				$_POST[$name] = '';
+			}
+		}
 	}
 
 	/**
