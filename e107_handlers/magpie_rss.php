@@ -107,7 +107,7 @@ class MagpieRSS {
                 $output_encoding, $input_encoding, $detect_encoding);
         
         
-        if (!is_resource($parser)) {
+        if (!is_resource($parser) && !($parser instanceof XMLParser)) {
             $this->error( "Failed to create an instance of PHP's XML parser. " .
                           "http://www.php.net/manual/en/ref.xml.php",
                           E_USER_ERROR );
