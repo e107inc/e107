@@ -16,48 +16,44 @@ if (!e107::isInstalled('newsletter'))
 	return;
 }
 
+require_once(e_PLUGIN.'newsletter/handlers/newsletter_subscribers_class.php');
+
 // Do not display menu when there are no newsletters defined yet
 if(!USER || !$sql->select('newsletter', '*', "newsletter_parent='0'"))
 {	
 	return FALSE;
 }
 
-$newsletterArray = $sql->db_getList();
+$newsletterArray = $sql->db_getList('ALL', false, false, 'newsletter_id');
 $requery = false;
 //include_lan(e_PLUGIN.'newsletter/languages/'.e_LANGUAGE.'.php');
 
 foreach($_POST as $key => $value)
 {
-	if(strpos($key, 'nlUnsubscribe_') === 0)
+	$joining = strpos($key, 'nlSubscribe_') === 0;
+	if(!$joining && strpos($key, 'nlUnsubscribe_') !== 0)
 	{
-		$subid = str_replace('nlUnsubscribe_', '', $key);
-		$newsletterArray[$subid]['newsletter_subscribers'] = str_replace(chr(1).USERID, "", $newsletterArray[$subid]['newsletter_subscribers']);
-		$sql->update('newsletter', "newsletter_subscribers='".$newsletterArray[$subid]['newsletter_subscribers']."' WHERE newsletter_id='".intval($subid)."' ");
-		$requery = true;
+		continue;
 	}
-	elseif(strpos($key, 'nlSubscribe_') === 0)
-	{
-		$subid = str_replace("nlSubscribe_", "", $key);
-		$nl_subscriber_array = $newsletterArray[$subid]['newsletter_subscribers'];
 
-		// prevent double entry of same user id
-		if (!array_key_exists(USERID, $nl_subscriber_array))
-		{	
-			$newsletterArray[$subid]['newsletter_subscribers'] .= chr(1).USERID;
-			$subscribers_list = array_flip(explode(chr(1), $newsletterArray[$subid]['newsletter_subscribers']));
-			sort($subscribers_list);
-			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
-			
-			// remove the possible zero caused by function array_flip
-			if (substr($new_subscriber_list, 0, 1) == '0')
-			{	
-				$new_subscriber_list = (string) substr($new_subscriber_list, 1);
-			}
-			
-			$sql->update('newsletter', "newsletter_subscribers='".$new_subscriber_list."' WHERE newsletter_id='".intval($subid)."' ");
-			$requery = true;
-		}
+	$subid = (int) substr($key, strpos($key, '_') + 1);
+	if(!isset($newsletterArray[$subid]))
+	{
+		continue;
 	}
+
+	$subscribers = new newsletter_subscribers($newsletterArray[$subid]['newsletter_subscribers']);
+	if($joining)
+	{
+		$subscribers->add(USERID);
+	}
+	else
+	{
+		$subscribers->remove(USERID);
+	}
+
+	$sql->update('newsletter', array('data' => array('newsletter_subscribers' => $subscribers->toStoredString()), 'WHERE' => 'newsletter_id = '.$subid));
+	$requery = true;
 }
 
 //global $tp;
@@ -66,7 +62,7 @@ if($requery)
 {
 	if($sql->select('newsletter', '*', "newsletter_parent='0' "))
 	{
-		$newsletterArray = $sql->db_getList();
+		$newsletterArray = $sql->db_getList('ALL', false, false, 'newsletter_id');
 	}
 }	
 
@@ -81,7 +77,8 @@ foreach($newsletterArray as $nl)
 	$tp->toHTML($nl['newsletter_text'], TRUE)."</span><br /><br />
 	";
 
-	if(preg_match("#".chr(1).USERID."(".chr(1)."|$)#si", $nl['newsletter_subscribers']))
+	$subscribers = new newsletter_subscribers($nl['newsletter_subscribers']);
+	if($subscribers->has(USERID))
 	{
 		$text .= NLLAN_48."<br /><br />
 		<input class='btn btn-sm btn-primary button' type='submit' name='nlUnsubscribe_".$nl['newsletter_id']."' value='".NLLAN_51."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_49)).") \" />
