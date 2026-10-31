@@ -522,12 +522,22 @@ class Unit extends \Codeception\Test\Unit
 	 */
 	protected function renderInBootedCli($script, $seed, $ini = '', array $constants = array())
 	{
+		return $this->outputOfBootedCli($seed."require_once('".addslashes(APP_PATH.'/'.$script)."'); ", $ini, $constants);
+	}
+
+	/**
+	 * Runs $php in a booted CLI child and returns everything it wrote, failing unless the child got as far as booting; output still buffered is written on shutdown.
+	 *
+	 * @param string $php
+	 * @param string $ini extra php command-line arguments, e.g. {@see Unit::BUFFERED}
+	 * @param array $constants name => value, defined before class2.php could, as {@see Unit::runInBootedCliDefining()} does
+	 * @return string
+	 */
+	protected function outputOfBootedCli($php, $ini = '', array $constants = array())
+	{
 		$booted = 'E107-BOOTED';
 
-		$php = "fwrite(STDERR, '".$booted."'); ";
-		$php .= "register_shutdown_function(function() { while(ob_get_level() > 0) { @ob_end_flush(); } }); ";
-		$php .= $seed;
-		$php .= "require_once('".addslashes(APP_PATH.'/'.$script)."'); ";
+		$php = "fwrite(STDERR, '".$booted."'); register_shutdown_function(function() { while(ob_get_level() > 0) { @ob_end_flush(); } }); ".$php;
 
 		list($output) = $this->runInBootedCliDefining($constants, $php, $ini);
 		$page = implode("\n", $output);
