@@ -579,16 +579,93 @@
 		}
 
 		/**
+		 * An uploaded theme's folder appears after the request has loaded its theme list, and "set as site theme" has to find it there all the same.
+		 * @see https://github.com/e107inc/e107/issues/6875
+		 */
+		public function testPostObserverUploadAndSetMakesTheUploadedThemeTheSiteTheme()
+		{
+			$run    = $this->postUploadAndSet('themeHandlerTestUpload');
+			$stored = $run['stored'];
+
+			$stored['sitetheme_layouts'] = array_keys((array) $stored['sitetheme_layouts']);
+
+			$this->assertSame(array(
+				'sitetheme'             => $run['name'],
+				'themecss'              => 'upload.css',
+				'sitetheme_deflayout'   => 'upload_default',
+				'sitetheme_layouts'     => array('upload_home', 'upload_default'),
+				'sitetheme_custompages' => array('upload_home' => array('FRONTPAGE')),
+				'sitetheme_version'     => '1.2.3',
+			), $stored, 'the uploaded theme has to become the site theme, with what its own theme.xml declares');
+			$this->assertSame(array(), $run['imported'], 'only the uploaded theme\'s own images may reach the Media Manager, and it has none');
+			$this->assertSame(array(), $run['errors'], implode("\n", $run['errors']));
+			$this->assertSame(array(), $run['warnings'], implode("\n", $run['warnings']));
+		}
+
+		/**
+		 * A folder with no theme.php, such as a plugin's uploaded on the theme page, is not a theme, so "set as site theme" has to refuse it.
+		 * @see https://github.com/e107inc/e107/issues/6875
+		 */
+		public function testPostObserverUploadAndSetRefusesAFolderThatIsNotATheme()
+		{
+			$run = $this->postUploadAndSet('themeHandlerTestUploadedPlugin');
+
+			$this->assertSame($run['before'], $run['stored'], 'a folder the theme list does not hold must leave the site theme as it was');
+			$this->assertSame(array(TPVLAN_86), $run['errors'], 'and the administrator is told the site theme was not changed');
+			$this->assertSame(array(), $run['imported'], 'nothing was set, so nothing may reach the Media Manager');
+		}
+
+		/**
+		 * Drives {@see themeHandler::postObserver()} through an upload with "set as site theme" ticked, the archive unpacking to a copy of a tests/_data folder that appears only after the request has loaded its theme list.
+		 *
+		 * @param string $fixture a folder under tests/_data
+		 * @return array as {@see themeHandlerTest::observePost()} returns, with the uploaded folder's name and the Media Manager entries the save added
+		 */
+		private function postUploadAndSet($fixture)
+		{
+			$name   = $fixture . uniqid();
+			$db     = e107::getDb();
+			$menus  = $db->createQueryBuilder()->select('*')->from('menus')->where('menu_layout', '!=', '')->fetchAll();
+			$lastId = (int) $db->createQueryBuilder()->from('core_media')->max('media_id');
+
+			e107::getTheme()->getList();
+
+			$this->assertTrue($this->copydir(codecept_data_dir($fixture), e_THEME . $name));
+			$this->assertArrayNotHasKey($name, e107::getTheme()->getList(), 'the request has to hold a theme list loaded before the upload, as the admin page does');
+
+			try
+			{
+				$run = $this->observePost($this->make('themeHandler', array('themeUpload' => $name)), array('upload' => 1, 'setUploadTheme' => 1),
+					array('sitetheme', 'themecss', 'sitetheme_deflayout', 'sitetheme_layouts', 'sitetheme_custompages', 'sitetheme_version'));
+
+				$run['name']     = $name;
+				$run['imported'] = $db->createQueryBuilder()->select('media_url')->from('core_media')->where('media_id', '>', $lastId)->fetchColumn();
+
+				return $run;
+			}
+			finally
+			{
+				$db->createQueryBuilder()->delete('core_media')->where('media_id', '>', $lastId)->execute();
+				$db->createQueryBuilder()->delete('menus')->where('menu_layout', '!=', '')->execute();
+
+				foreach($menus as $menu)
+				{
+					$db->createQueryBuilder()->insert('menus')->values($menu)->execute();
+				}
+
+				e107::getTheme()->clearCache();
+			}
+		}
+
+		/**
 		 * Drives {@see themeHandler::postObserver()} through submit_style for one posted theme, restoring every preference it wrote.
 		 *
 		 * @param string $curTheme
 		 * @param array|null $values the style fields to post beside curTheme; null posts the full set
-		 * @return array before, stored, errors and warnings
+		 * @return array as {@see themeHandlerTest::observePost()} returns
 		 */
 		private function postStyleSubmission($curTheme, $values = null)
 		{
-			e107::coreLan('theme', true);
-
 			if(!is_array($values))
 			{
 				$values = array(
@@ -598,18 +675,42 @@
 				);
 			}
 
-			$config        = e107::getConfig();
 			$themeConfig   = e107::getThemeConfig(e107::getPref('sitetheme'));
-			$siteThemePref = $config->get('sitetheme_pref');
-			$original      = $config->getPref();
-			$posted        = $_POST;
-			$mes           = e107::getMessage();
-			$warnings      = array();
+			$siteThemePref = e107::getConfig()->get('sitetheme_pref');
 
 			$this->th->themeConfigObj = $this->themeConfigStub();
 
-			$before = $this->siteThemePreferences();
-			$_POST  = array('curTheme' => $curTheme, 'submit_style' => 1) + $values;
+			try
+			{
+				return $this->observePost($this->th, array('curTheme' => $curTheme, 'submit_style' => 1) + $values,
+					array('themecss', 'sitetheme_deflayout', 'sitetheme_layouts', 'sitetheme_custompages'));
+			}
+			finally
+			{
+				self::undoThemeConfigSave(array($themeConfig), $siteThemePref);
+			}
+		}
+
+		/**
+		 * Runs {@see themeHandler::postObserver()} for one POST, then puts back the POST, the core preferences and the messages.
+		 *
+		 * @param themeHandler $th
+		 * @param array $post
+		 * @param string[] $fields the core preferences to read before and after
+		 * @return array before, stored, errors and warnings
+		 */
+		private function observePost($th, array $post, array $fields)
+		{
+			e107::coreLan('theme', true);
+
+			$config   = e107::getConfig();
+			$original = $config->getPref();
+			$posted   = $_POST;
+			$mes      = e107::getMessage();
+			$warnings = array();
+
+			$before = $this->siteThemePreferences($fields);
+			$_POST  = $post;
 
 			$mes->reset(false, false, true);
 			set_error_handler(function ($no, $str) use (&$warnings) {
@@ -620,12 +721,12 @@
 
 			try
 			{
-				$this->th->postObserver();
+				$th->postObserver();
 				$errors = $mes->get(E_MESSAGE_ERROR, 'default', true, false);
 
 				return array(
 					'before'   => $before,
-					'stored'   => $this->siteThemePreferences(),
+					'stored'   => $this->siteThemePreferences($fields),
 					'errors'   => empty($errors) ? array() : (array) $errors,
 					'warnings' => $warnings,
 				);
@@ -636,20 +737,20 @@
 				$_POST = $posted;
 				$config->removePostedData();
 				$config->setPref($original)->save(false, true, false);
-				self::undoThemeConfigSave(array($themeConfig), $siteThemePref);
 				$mes->reset(false, false, true);
 			}
 		}
 
 		/**
-		 * @return array the site-scoped preferences the submit_style branch writes, keyed by preference name
+		 * @param string[] $fields core preference names
+		 * @return array their values, keyed by preference name
 		 */
-		private function siteThemePreferences()
+		private function siteThemePreferences(array $fields)
 		{
 			$config = e107::getConfig();
 			$stored = array();
 
-			foreach(array('themecss', 'sitetheme_deflayout', 'sitetheme_layouts', 'sitetheme_custompages') as $field)
+			foreach($fields as $field)
 			{
 				$stored[$field] = $config->get($field);
 			}
