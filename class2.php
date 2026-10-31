@@ -554,29 +554,33 @@ if(!empty($pref['multilanguage']) && (e_LANGUAGE !== $pref['sitelanguage']))
 if(!isset($_E107['no_lan']))
 {
 	$dbg->logTime('Include Global Core Language Files');
+	$customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
+	$customLan2 = e_SYSTEM.'/lans/'.e_LANGUAGE.'_custom.php'; // v2 Custom language File Path.
+	$lanFallback = e107::getLanguageFallback();
+	$lanFallback->leaveTo(array($customLan, $customLan2));
+
 	if((e_ADMIN_AREA === true) && !empty($pref['adminlanguage']))
 	{
-		include(e_LANGUAGEDIR.$pref['adminlanguage'].'/'.$pref['adminlanguage'].'.php');
+		e107::includeLan(e_LANGUAGEDIR.$pref['adminlanguage'].'/'.$pref['adminlanguage'].'.php');
 	}
 	else
 	{
-		include(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS load
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS load
 	}
 
 
-	$customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
 	if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the core
 	{
 		include($customLan);
 	}
 
-	// v2 Custom language File Path.
-	$customLan2 = e_SYSTEM.'/lans/'.e_LANGUAGE.'_custom.php';
 	if(is_readable($customLan2)) // FASTER - if exist, should be done 'once' by the core
 	{
 		include($customLan2);
 	}
-	unset($customLan, $customLan2);
+
+	$lanFallback->leaveTo(array());
+	unset($customLan, $customLan2, $lanFallback);
 
 	$lng->bcDefs(); // defined v1.x definitions for old templates.
 
@@ -2034,8 +2038,8 @@ class error_handler
 
 	function __construct()
 	{
-		$this->label = array(E_NOTICE => "Notice", E_WARNING => "Warning", E_DEPRECATED => "Deprecated", E_USER_ERROR => "Error");
-		$this->color = array(E_NOTICE=> 'info', E_WARNING=>'warning', E_DEPRECATED => 'danger', E_USER_ERROR => 'danger');
+		$this->label = array(E_NOTICE => "Notice", E_USER_NOTICE => "Notice", E_WARNING => "Warning", E_USER_WARNING => "Warning", E_DEPRECATED => "Deprecated", E_USER_ERROR => "Error");
+		$this->color = array(E_NOTICE=> 'info', E_USER_NOTICE => 'info', E_WARNING=>'warning', E_USER_WARNING => 'warning', E_DEPRECATED => 'danger', E_USER_ERROR => 'danger');
 
 		if(PHP_VERSION_ID < 80000)
 		{
@@ -2194,6 +2198,7 @@ class error_handler
 			break;
 
 			case E_NOTICE:
+			case E_USER_NOTICE:
 		//	case E_STRICT:
 
 			if ($startup_error || $this->deftrue('E107_DBG_ALLERRORS')  || $this->deftrue('E107_DBG_ERRBACKTRACE'))
@@ -2202,6 +2207,7 @@ class error_handler
 			}
 			break;
 			case E_WARNING:
+			case E_USER_WARNING:
 			if ($startup_error || $this->deftrue('E107_DBG_BASIC') || $this->deftrue('E107_DBG_ERRBACKTRACE'))
 			{
 				$this->addError($type, $message,$line,$file);

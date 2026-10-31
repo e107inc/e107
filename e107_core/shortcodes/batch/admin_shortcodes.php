@@ -246,7 +246,17 @@ class admin_shortcodes extends e_shortcode
 		if(!empty($helpfile))
 		{
 			ob_start();
-			include_once($helpfile);
+
+			try
+			{
+				include_once($helpfile);
+			}
+			catch(\Error $e)
+			{
+				ob_clean();
+				e107::getMessage()->addDebug($helpfile.' stopped at line '.$e->getLine().': '.$e->getMessage());
+			}
+
 			$help_text .= ob_get_clean();
 		}
 

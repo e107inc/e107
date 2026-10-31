@@ -1682,15 +1682,14 @@ class users_admin_ui extends e_admin_ui
 				$lfile = e_LANGUAGEDIR.$lan.'/lan_signup.php';
 			}
 		}
-		if ($lfile && is_readable($lfile))
-		{
-			require_once($lfile);
-		}
-		else
+		if (!$lfile || !is_readable($lfile))
 		{
 			//@FIXME use email templates by Language
-			require_once (e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php");
+			$lfile = e_LANGUAGEDIR.e_LANGUAGE."/lan_signup.php";
 		}
+
+		require_once($lfile);
+		e107::getLanguageFallback()->fill($lfile, (bool) e107::getPref('noLanguageSubs'), false);
 		if(!$lan) $lan = e_LANGUAGE;
 		
 		// FIXME switch to e107::getUrl()->create(), use email content templates
