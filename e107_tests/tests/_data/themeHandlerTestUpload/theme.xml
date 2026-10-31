@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="themeHandlerTest upload" version="1.2.3" date="2026-10-31" compatibility="2.0">
+	<author name="e107help" />
+	<summary>A theme that arrives by upload</summary>
+	<stylesheets>
+		<css file="upload.css" name="Upload" default="true" />
+	</stylesheets>
+	<layouts>
+		<layout name='upload_home' title='Home'>
+			<custompages>FRONTPAGE</custompages>
+		</layout>
+		<layout name='upload_default' title='Default' default='true' />
+	</layouts>
+</e107Theme>
