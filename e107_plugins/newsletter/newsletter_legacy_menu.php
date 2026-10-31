@@ -87,7 +87,7 @@ foreach($newsletterArray as $nl)
 	else
 	{
 		$text .= NLLAN_50." <b>".USEREMAIL."</b>)<br /><br />
-		<input class='btn btn-sm btn-primary button' type='submit' name='nlSubscribe_".$nl['newsletter_id']."' value='".NLLAN_52."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_53))."') \" />
+		<input class='btn btn-sm btn-primary button' type='submit' name='nlSubscribe_".$nl['newsletter_id']."' value='".NLLAN_52."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_53)).") \" />
 		";
 	}
 	$nl_count = $sql->count('newsletter', "(*)", "WHERE newsletter_parent='".$nl['newsletter_id']."' AND newsletter_flag='1'");

@@ -17,6 +17,7 @@ class newsletter_legacy_menuTest extends \Codeception\Test\Unit
 {
 	use \Test\BootedCli;
 	use \Test\NewsletterRows;
+	use \Test\HtmlAttributes;
 
 	/** @var int a newsletter whose id is its place in the menu at most */
 	private $first;
@@ -66,6 +67,19 @@ class newsletter_legacy_menuTest extends \Codeception\Test\Unit
 		self::assertStringContainsString("name='nlUnsubscribe_".$this->later."'", $page, 'the user is not shown as subscribed');
 	}
 
+	public function testBothButtonsAskBeforeTheyAreSent()
+	{
+		$this->seed(array(1), array(3));
+
+		$page = $this->press('');
+
+		foreach(array('nlUnsubscribe_'.$this->first, 'nlSubscribe_'.$this->later) as $button)
+		{
+			$onclick = $this->onclick($page, $button);
+			self::assertSame(1, preg_match('#^return jsconfirm\("[^"]+"\)\s*$#', $onclick), $button.' asks nothing: '.$onclick);
+		}
+	}
+
 	/**
 	 * @param int[] $first the first newsletter's subscribers
 	 * @param int[] $later the later newsletter's subscribers
@@ -76,6 +90,19 @@ class newsletter_legacy_menuTest extends \Codeception\Test\Unit
 		$this->first = $this->haveNewsletter(0, $first);
 		$this->haveNewsletter($this->first, array());
 		$this->later = $this->haveNewsletter(0, $later);
+	}
+
+	/**
+	 * @param string $page
+	 * @param string $name
+	 * @return string the onclick of the button named $name, as a browser reads it
+	 */
+	private function onclick($page, $name)
+	{
+		$onclick = $this->attributesOf($page, "//input[@name='".$name."']/@onclick");
+		self::assertCount(1, $onclick, 'no single button named '.$name.":\n".$page);
+
+		return $onclick[0];
 	}
 
 	/**
