@@ -214,14 +214,14 @@ class user_import
 		$userRecord['user_realm'] 		= '';		// Never carry across these fields
 	    $userRecord['user_pwchange'] 	= 0;
 	
-		if(!$result = $this->userDB->replace('user',$userRecord))
+		if(!$this->userDB->replace('user',$userRecord))
 		{
 	     	return 4;
 		}
 	
 		if (count($extendedFields))
 		{
-			$extendedFields['user_extended_id'] = varset($userRecord['user_id'],0) ? $userRecord['user_id'] : $result;
+			$extendedFields['user_extended_id'] = varset($userRecord['user_id'],0) ? $userRecord['user_id'] : $this->userDB->lastInsertId();
 			
 			if($this->userDB->replace('user_extended',$extendedFields) === false)
 			{
