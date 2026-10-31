@@ -49,6 +49,26 @@ class newsletter_admin_configTest extends \Test\Unit
 		}
 	}
 
+	public function testDeletingANewsletterRemovesIt()
+	{
+		$id = $this->haveNewsletter(0, array());
+
+		$page = $this->open('', array('delete' => array('newsletter_'.$id => 'Delete')));
+
+		self::assertNull($this->storedSubscribers($id), "the newsletter is still there:\n".$page);
+	}
+
+	public function testDeletingAnIssueRemovesItAndKeepsItsNewsletter()
+	{
+		$newsletter = $this->haveNewsletter(0, array());
+		$issue = $this->haveNewsletter($newsletter, array());
+
+		$page = $this->open('', array('delete' => array('issue_'.$issue => 'Delete')));
+
+		self::assertNull($this->storedSubscribers($issue), "the issue is still there:\n".$page);
+		self::assertSame('', $this->storedSubscribers($newsletter), 'the newsletter went with its issue');
+	}
+
 	/**
 	 * @param int $count
 	 * @return int[] the ids of $count new members, in the order they joined

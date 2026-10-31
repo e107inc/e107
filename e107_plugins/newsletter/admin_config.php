@@ -588,20 +588,25 @@ class newsletter
 	 */
 	function deleteNewsletter()
 	{
+		if(empty($_POST['delete']) || !is_array($_POST['delete']))
+		{
+			return null;
+		}
+
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 
-		$tmp = key($_POST['delete']);
-		if(strpos($tmp['key'], 'newsletter') === 0)
+		$tmp = (string) key($_POST['delete']);
+		if(strpos($tmp, 'newsletter') === 0)
 		{
-			$id = intval(str_replace('newsletter_', '', $tmp['key']));
+			$id = intval(str_replace('newsletter_', '', $tmp));
 			$sql->createQueryBuilder()->delete('newsletter')->where('newsletter_id', $id)->execute();
 			//$this -> message = NLLAN_42;
 			$mes->addSuccess(LAN_DELETED);
 		}
 		else
 		{
-			$id = intval(str_replace('issue_', '', $tmp['key']));
+			$id = intval(str_replace('issue_', '', $tmp));
 			$sql->createQueryBuilder()->delete('newsletter')->where('newsletter_id', $id)->execute();
 			//$this -> message = NLLAN_43;
 			$mes->addSuccess(LAN_DELETED);
