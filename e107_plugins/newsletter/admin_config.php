@@ -24,6 +24,7 @@ $e_sub_cat = 'newsletter';
 require_once(e_ADMIN.'auth.php');
 // Include ren_help for display_help (while showing BBcodes)
 require_once(e_HANDLER.'ren_help.php');
+require_once(e_PLUGIN.'newsletter/handlers/newsletter_subscribers_class.php');
 
 $mes = e107::getMessage();
 
@@ -158,11 +159,12 @@ class newsletter
 			$nlArray = $sql->db_getList(); 
 			foreach($nlArray as $data)
 			{
+				$subscriberCount = count((new newsletter_subscribers($data['newsletter_subscribers']))->ids());
 				$text .= "
 				<tr>
 					<td>".$data['newsletter_id']."</td>
 					<td>".$data['newsletter_title']."</td>
-					<td>".((substr_count($data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count($data['newsletter_subscribers'], chr(1))."</a>":substr_count($data['newsletter_subscribers'], chr(1)))."</td>
+					<td>".($subscriberCount ? "<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".$subscriberCount."</a>" : $subscriberCount)."</td>
 					<td>
 						<a class='btn btn-default btn-secondary btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
 						<input class='btn btn-default btn-secondary btn-large' type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")).") \"/>
@@ -448,7 +450,7 @@ class newsletter
 			return FALSE;
 		}
 		$newsletterParentInfo = $sql->fetch();
-		$memberArray = explode(chr(1), $newsletterParentInfo['newsletter_subscribers']);
+		$memberArray = (new newsletter_subscribers($newsletterParentInfo['newsletter_subscribers']))->ids();
 
 		require(e_HANDLER.'mail_manager_class.php');
 		$mailer = new e107MailManager;
@@ -617,7 +619,6 @@ class newsletter
 		$frm = e107::getForm();
 
 		$nl_sql = new db;
-		$_nl_sanatized = '';
 		$vs_text = '';
 
 
@@ -651,49 +652,30 @@ class newsletter
 
 			if($nl_row = $nl_sql->fetch())
 			{
-				$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
+				$subscribers_list = (new newsletter_subscribers($nl_row['newsletter_subscribers']))->ids();
 				sort($subscribers_list);
-				$subscribers_total_count = count($subscribers_list) - 1;	// Get a null entry as well
+				$subscribers_total_count = count($subscribers_list);
 			}
 			if ($subscribers_total_count<1) 
 			{
 				e107::redirect(e_SELF);
 				exit;
 			}
-			// Loop through each user in the array subscribers_list & sanatize
-			$_last_subscriber = '';
 			foreach ($subscribers_list as $val)
 			{
-				$val=trim($val);
-				if ($val)
+				$nl_sql -> select("user", "*", "user_id=".intval($val));
+				if($nl_row = $nl_sql-> fetch())
 				{
-					if ($val != $_last_subscriber)
-					{
-						$nl_sql -> select("user", "*", "user_id=".intval($val));
-						if($nl_row = $nl_sql-> fetch())
-						{
-							//<a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
-							$uparams = array('id' => $val, 'name' => $nl_row['user_name']);
-							$link = e107::getUrl()->create('user/profile/view', $uparams);
-							$userlink = "<a href='".$link."'>".$nl_row['user_name']."</a>";
-							$vs_text .= "
-							<tr>
-								<td>".$val."</td>
-								<td>".$userlink."</td>
-								<td>".$nl_row['user_email']."</td>
-								<td><a href='".e_SELF."?remove.{$p_id}.{$val}&amp;e-token=".defset('e_TOKEN')."'>".ADMIN_DELETE_ICON."</a>".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."</td>
-							</tr>";
-							$_last_subscriber = $val;
-						}
-					}
-					else 
-					{	// Duplicate user id found in the subscribers_list array!
-						newsletter::remove_subscribers($p_id, $val);	// removes all entries for this user id
-						$newsletterArray[$p_id]['newsletter_subscribers'] = chr(1).$val;	// keep this single value in the list
-						$nl_sql -> update("newsletter", "newsletter_subscribers='".$nl_sql->escape($newsletterArray[$p_id]['newsletter_subscribers'])."' WHERE newsletter_id='".intval($p_id)."'");
-						$subscribers_total_count --;
-						$_nl_sanatized = 1;
-					}
+					$uparams = array('id' => $val, 'name' => $nl_row['user_name']);
+					$link = e107::getUrl()->create('user/profile/view', $uparams);
+					$userlink = "<a href='".$link."'>".$nl_row['user_name']."</a>";
+					$vs_text .= "
+					<tr>
+						<td>".$val."</td>
+						<td>".$userlink."</td>
+						<td>".$nl_row['user_email']."</td>
+						<td><a href='".e_SELF."?remove.{$p_id}.{$val}&amp;e-token=".defset('e_TOKEN')."'>".ADMIN_DELETE_ICON."</a>".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."</td>
+					</tr>";
 				}
 			}
 		}
@@ -708,10 +690,6 @@ class newsletter
 			 </div>			
 		 </form>
 		  ";
-		if ($_nl_sanatized == 1)
-		{
-			$mes->addInfo(NLLAN_66);
-		}
 		
 		$ns->tablerender(NLLAN_65.' '.$p_id, $mes->render() . $vs_text);
 	}
@@ -724,10 +702,9 @@ class newsletter
 		$sql ->select('newsletter', '*', 'newsletter_id='.intval($p_id));
 		if($nl_row = $sql->fetch())
 		{
-			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
-			unset($subscribers_list[$p_key]);
-			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
-			$sql->update('newsletter', "newsletter_subscribers='".$sql->escape($new_subscriber_list)."' WHERE newsletter_id='".intval($p_id)."'");
+			$subscribers = new newsletter_subscribers($nl_row['newsletter_subscribers']);
+			$subscribers->remove($p_key);
+			$sql->update('newsletter', array('data' => array('newsletter_subscribers' => $subscribers->toStoredString()), 'WHERE' => 'newsletter_id = '.intval($p_id)));
 		}
 	}
 }
