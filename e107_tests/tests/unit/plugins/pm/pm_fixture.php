@@ -8,12 +8,15 @@
  */
 
 /**
- * What the limit and attachment tests share: the plugin's language file, and the generic rows a test adds, taken away again once it is done.
+ * What the limit and attachment tests share: the plugin's language file, and the plugin tables and generic rows a test adds, taken away again once it is done.
  */
 abstract class pm_fixture extends \Codeception\Test\Unit
 {
 	/** @var int[] the generic rows this test added */
 	private $genIds = array();
+
+	/** @var string[] the plugin tables this test created */
+	private $tables = array();
 
 	protected function _before()
 	{
@@ -27,7 +30,27 @@ abstract class pm_fixture extends \Codeception\Test\Unit
 			e107::getDb()->delete('generic', 'gen_id = '.(int) $id);
 		}
 
+		foreach($this->tables as $table)
+		{
+			\Test\CoreTable::drop($table);
+		}
+
 		$this->genIds = array();
+		$this->tables = array();
+	}
+
+	/**
+	 * Creates a table pm_sql.php declares, unless the database already has it.
+	 *
+	 * @param string $name without the table prefix
+	 * @return void
+	 */
+	protected function requireTable($name)
+	{
+		if(\Test\CoreTable::createDeclared($name, e_PLUGIN.'pm/pm_sql.php'))
+		{
+			$this->tables[] = $name;
+		}
 	}
 
 	/**

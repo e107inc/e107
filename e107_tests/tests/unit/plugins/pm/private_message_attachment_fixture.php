@@ -38,9 +38,6 @@ abstract class private_message_attachment_fixture extends pm_fixture
 	/** @var array */
 	private $dirs = array();
 
-	/** @var bool */
-	private $createdTable = false;
-
 	protected function _before()
 	{
 		parent::_before();
@@ -48,7 +45,7 @@ abstract class private_message_attachment_fixture extends pm_fixture
 		require_once(e_PLUGIN . 'pm/pm_class.php');
 		require_once(__DIR__ . '/private_message_attachment_double.php');
 
-		$this->requirePrivateMsgTable();
+		$this->requireTable('private_msg');
 
 		$this->root = e_TEMP . 'pm_attachment_root_' . uniqid() . '/';
 		$this->legacy = e_TEMP . 'pm_attachment_legacy_' . uniqid() . '/';
@@ -63,12 +60,6 @@ abstract class private_message_attachment_fixture extends pm_fixture
 		foreach($this->pmIds as $id)
 		{
 			$sql->delete('private_msg', 'pm_id = ' . (int) $id);
-		}
-
-		if($this->createdTable)
-		{
-			$sql->gen('DROP TABLE ' . MPREFIX . 'private_msg');
-			$this->createdTable = false;
 		}
 
 		foreach($this->files as $file)
@@ -263,27 +254,5 @@ abstract class private_message_attachment_fixture extends pm_fixture
 		}
 
 		return $sql->fetch();
-	}
-
-	/**
-	 * The unit install carries no plugin tables, so the table the pm plugin declares is built from its own schema file and dropped again.
-	 */
-	private function requirePrivateMsgTable()
-	{
-		$sql = e107::getDb();
-
-		if($sql->isTable('private_msg'))
-		{
-			return;
-		}
-
-		require_once(e_HANDLER . 'db_table_admin_class.php');
-
-		$admin = new db_table_admin();
-
-		self::assertNotEmpty($admin->createTable(e_PLUGIN . 'pm/pm_sql.php', 'private_msg'),
-			'Could not create the private_msg table pm_sql.php declares');
-
-		$this->createdTable = true;
 	}
 }
