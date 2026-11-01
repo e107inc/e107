@@ -85,17 +85,17 @@ class pmbox_manager
 			{
 				if($this->pmPrefs['pm_limits'] == 1)
 				{
-					$qry = "SELECT MAX(gen_user_id) AS inbox_limit, MAX(gen_ip) as outbox_limit FROM `#generic` WHERE gen_type='pm_limit' AND gen_datestamp IN (".USERCLASS_LIST.")";
+					$qry = "SELECT MAX(gen_user_id) AS inbox_limit, MAX(CAST(gen_ip AS UNSIGNED)) as outbox_limit FROM `#generic` WHERE gen_type='pm_limit' AND gen_datestamp IN (".USERCLASS_LIST.")";
 				}
 				else
 				{
-					$qry = "SELECT MAX(gen_intdata) AS inbox_limit, MAX(gen_chardata) as outbox_limit FROM `#generic` WHERE gen_type='pm_limit' AND gen_datestamp IN (".USERCLASS_LIST.")";
+					$qry = "SELECT MAX(gen_intdata) AS inbox_limit, MAX(CAST(gen_chardata AS UNSIGNED)) as outbox_limit FROM `#generic` WHERE gen_type='pm_limit' AND gen_datestamp IN (".USERCLASS_LIST.")";
 				}
 				if($this->pmDB->gen($qry))
 				{
 					$row = $this->pmDB->fetch();
-					$pm_info['inbox']['limit'] =  $row['inbox_limit'];
-					$pm_info['outbox']['limit'] =  $row['outbox_limit'];
+					$pm_info['inbox']['limit'] =  varset($row['inbox_limit'], '');
+					$pm_info['outbox']['limit'] =  varset($row['outbox_limit'], '');
 				}
 				$pm_info['inbox']['limit_val'] = ($this->pmPrefs['pm_limits'] == 1 ? varset($pm_info['inbox']['total'],'') : varset($pm_info['inbox']['size'],''));
 				if(!$pm_info['inbox']['limit'] || !$pm_info['inbox']['limit_val'])
@@ -104,7 +104,7 @@ class pmbox_manager
 				}
 				else
 				{
-					$pm_info['inbox']['filled'] = number_format($pm_info['inbox']['limit_val']/$pm_info['inbox']['limit'] * 100, 2);
+					$pm_info['inbox']['filled'] = number_format($pm_info['inbox']['limit_val']/$pm_info['inbox']['limit'] * 100, 2, '.', '');
 				}
 				$pm_info['outbox']['limit_val'] = ($this->pmPrefs['pm_limits'] == 1 ? varset($pm_info['outbox']['total'],'') : varset($pm_info['outbox']['size'],''));
 				if(!$pm_info['outbox']['limit'] || !$pm_info['outbox']['limit_val'])
@@ -113,7 +113,7 @@ class pmbox_manager
 				}
 				else
 				{
-					$pm_info['outbox']['filled'] = number_format($pm_info['outbox']['limit_val']/$pm_info['outbox']['limit'] * 100, 2);
+					$pm_info['outbox']['filled'] = number_format($pm_info['outbox']['limit_val']/$pm_info['outbox']['limit'] * 100, 2, '.', '');
 				}
 			}
 			else

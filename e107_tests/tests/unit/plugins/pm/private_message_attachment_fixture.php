@@ -8,6 +8,8 @@
  *
  */
 
+require_once(__DIR__.'/pm_fixture.php');
+
 /**
  * The fixtures every attachment test needs: disposable attachment trees, the
  * private_msg table the unit install does not carry, a stored attachment, a
@@ -16,7 +18,7 @@
  * Everything seeded here is tracked and taken away again, because the unit
  * suite runs against a live install.
  */
-abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
+abstract class private_message_attachment_fixture extends pm_fixture
 {
 	/** @var string the media tree attachments store into */
 	protected $root;
@@ -31,25 +33,19 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 	private $pmIds = array();
 
 	/** @var array */
-	private $genIds = array();
-
-	/** @var array */
 	private $files = array();
 
 	/** @var array */
 	private $dirs = array();
 
-	/** @var bool */
-	private $createdTable = false;
-
 	protected function _before()
 	{
+		parent::_before();
+
 		require_once(e_PLUGIN . 'pm/pm_class.php');
 		require_once(__DIR__ . '/private_message_attachment_double.php');
 
-		e107::includeLan(e_PLUGIN . 'pm/languages/' . e_LANGUAGE . '.php');
-
-		$this->requirePrivateMsgTable();
+		$this->requireTable('private_msg');
 
 		$this->root = e_TEMP . 'pm_attachment_root_' . uniqid() . '/';
 		$this->legacy = e_TEMP . 'pm_attachment_legacy_' . uniqid() . '/';
@@ -64,17 +60,6 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 		foreach($this->pmIds as $id)
 		{
 			$sql->delete('private_msg', 'pm_id = ' . (int) $id);
-		}
-
-		foreach($this->genIds as $id)
-		{
-			$sql->delete('generic', 'gen_id = ' . (int) $id);
-		}
-
-		if($this->createdTable)
-		{
-			$sql->gen('DROP TABLE ' . MPREFIX . 'private_msg');
-			$this->createdTable = false;
 		}
 
 		foreach($this->files as $file)
@@ -100,6 +85,8 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 				rmdir($dir);
 			}
 		}
+
+		parent::_after();
 	}
 
 	/**
@@ -203,7 +190,7 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 	 */
 	protected function seedGenericRow($type, $chardata = '')
 	{
-		$id = e107::getDb()->insert('generic', array(
+		return $this->addGenericRow(array(
 			'gen_type'      => $type,
 			'gen_datestamp' => time(),
 			'gen_user_id'   => (int) USERID,
@@ -211,12 +198,6 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 			'gen_intdata'   => 1,
 			'gen_chardata'  => $chardata
 		));
-
-		self::assertNotEmpty($id, 'Could not seed a generic row.');
-
-		$this->genIds[] = $id;
-
-		return (int) $id;
 	}
 
 	/**
@@ -273,27 +254,5 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 		}
 
 		return $sql->fetch();
-	}
-
-	/**
-	 * The unit install carries no plugin tables, so the table the pm plugin declares is built from its own schema file and dropped again.
-	 */
-	private function requirePrivateMsgTable()
-	{
-		$sql = e107::getDb();
-
-		if($sql->isTable('private_msg'))
-		{
-			return;
-		}
-
-		require_once(e_HANDLER . 'db_table_admin_class.php');
-
-		$admin = new db_table_admin();
-
-		self::assertNotEmpty($admin->createTable(e_PLUGIN . 'pm/pm_sql.php', 'private_msg'),
-			'Could not create the private_msg table pm_sql.php declares');
-
-		$this->createdTable = true;
 	}
 }
