@@ -1472,10 +1472,9 @@ class themeHandler
 
 		if(!empty($_POST['setUploadTheme']) && !empty($unzippedTheme))
 		{
-			$themeArray = e107::getTheme()->getList();
-			$this->id = $themeArray[$unzippedTheme]['id'];
+			$this->themeArray = e107::getTheme($unzippedTheme, true)->getList();
 
-			if($this->setTheme())
+			if(isset($this->themeArray[$unzippedTheme]) && $this->setTheme($unzippedTheme))
 			{
 
 				$mes->addSuccess(TPVLAN_3);
