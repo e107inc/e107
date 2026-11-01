@@ -51,15 +51,15 @@ class auth_login extends alt_auth_base
 		$this->copyMethods = array();
 		$ldap = $this->altAuthGetParams('ldap');
 
-		foreach ($ldap as $row)
+		foreach ($ldap as $name => $value)
 		{
-			if ((strpos($row['auth_parmname'], 'ldap_xf_') === 0) && $ldap[$row['auth_parmname']]) // Attribute to copy on successful login
+			if ((strpos($name, 'ldap_xf_') === 0) && $value)
 			{
-				$this->copyAttribs[substr($row['auth_parmname'], strlen('ldap_xf_'))] = $ldap[$row['auth_parmname']]; // Key = LDAP attribute. Value = e107 field name
+				$this->copyAttribs[substr($name, strlen('ldap_xf_'))] = strtolower($value);
 			}
-			elseif ((strpos($row['auth_parmname'], 'ldap_pm_') === 0) && $ldap[$row['auth_parmname']] && ($ldap[$row['auth_parmname']] != 'none')) // Method to use to copy parameter
-			{	// Any fields with non-null 'copy' methods
-				$this->copyMethods[substr($row['auth_parmname'], strlen('ldap_pm_'))] = $ldap[$row['auth_parmname']]; // Key = e107 field name. Value = copy method
+			elseif ((strpos($name, 'ldap_pm_') === 0) && $value && ($value != 'none'))
+			{
+				$this->copyMethods[substr($name, strlen('ldap_pm_'))] = $value;
 			}
 		}
 		$this->server = explode(',', $ldap['ldap_server']);
@@ -231,20 +231,17 @@ class auth_login extends alt_auth_base
 			$ldap_attributes = array_values(array_unique($this->copyAttribs));
 			if ($this->serverType == "ActiveDirectory")
 			{	// If we are using AD then build up the full string from the fqdn
-				$altauth_tmp = explode('.', $this->dn);
-				$checkDn='';
-				foreach($altauth_tmp as $$altauth_dc)
+				$checkDn = 'DC=' . implode(',DC=', explode('.', $this->dn));
+				if ($this->ou != '')
 				{
-					$checkDn .= ",DC={$altauth_dc}";
+					$checkDn = $this->ou . ',' . $checkDn;
 				}
-				// prefix with the OU
-				$checkDn = $this->ou . $checkDn;
 			}
 			$this->result = ldap_search($this->connection, $checkDn, $current_filter, $ldap_attributes);
 			if ($this->result)
 			{
 				$entries = ldap_get_entries($this->connection, $this->result);
-				if (count($entries) == 2) // All OK
+				if (is_array($entries) && $entries['count'] == 1)
 				{
 					for ($j = 0; $j < $entries[0]['count']; $j++)
 					{
@@ -258,25 +255,9 @@ class auth_login extends alt_auth_base
 								$newvals[$tk] = $tlv[0]; // Just grab the first value
 							}
 						}
-						else
-						{
-							// echo " Unexpected non-array value - Key: {$k}   Value: {$tlv}<br />";
-							$this->makeErrorText(); // Read the error code and explanatory string
-							return AUTH_NOCONNECT; // Not really a suitable return code for this - its an error
-						}
 					}
 				}
-				else
-				{
-					// echo "Got wrong number of entries<br />";
-					$this->makeErrorText(); // Read the error code and explanatory string
-					return AUTH_NOUSER; // Bit debateable what to return if this happens
-				}
 			}
-			//else // Probably a bit strange if we don't get any info back - but possible
-			//	{
-					// echo "No results!<br />";
-			//	}
 
 				return AUTH_SUCCESS;
 		}
