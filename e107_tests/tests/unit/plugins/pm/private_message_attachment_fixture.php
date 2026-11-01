@@ -8,6 +8,8 @@
  *
  */
 
+require_once(__DIR__.'/pm_fixture.php');
+
 /**
  * The fixtures every attachment test needs: disposable attachment trees, the
  * private_msg table the unit install does not carry, a stored attachment, a
@@ -16,7 +18,7 @@
  * Everything seeded here is tracked and taken away again, because the unit
  * suite runs against a live install.
  */
-abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
+abstract class private_message_attachment_fixture extends pm_fixture
 {
 	/** @var string the media tree attachments store into */
 	protected $root;
@@ -31,9 +33,6 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 	private $pmIds = array();
 
 	/** @var array */
-	private $genIds = array();
-
-	/** @var array */
 	private $files = array();
 
 	/** @var array */
@@ -44,10 +43,10 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 
 	protected function _before()
 	{
+		parent::_before();
+
 		require_once(e_PLUGIN . 'pm/pm_class.php');
 		require_once(__DIR__ . '/private_message_attachment_double.php');
-
-		e107::includeLan(e_PLUGIN . 'pm/languages/' . e_LANGUAGE . '.php');
 
 		$this->requirePrivateMsgTable();
 
@@ -64,11 +63,6 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 		foreach($this->pmIds as $id)
 		{
 			$sql->delete('private_msg', 'pm_id = ' . (int) $id);
-		}
-
-		foreach($this->genIds as $id)
-		{
-			$sql->delete('generic', 'gen_id = ' . (int) $id);
 		}
 
 		if($this->createdTable)
@@ -100,6 +94,8 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 				rmdir($dir);
 			}
 		}
+
+		parent::_after();
 	}
 
 	/**
@@ -203,7 +199,7 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 	 */
 	protected function seedGenericRow($type, $chardata = '')
 	{
-		$id = e107::getDb()->insert('generic', array(
+		return $this->addGenericRow(array(
 			'gen_type'      => $type,
 			'gen_datestamp' => time(),
 			'gen_user_id'   => (int) USERID,
@@ -211,12 +207,6 @@ abstract class private_message_attachment_fixture extends \Codeception\Test\Unit
 			'gen_intdata'   => 1,
 			'gen_chardata'  => $chardata
 		));
-
-		self::assertNotEmpty($id, 'Could not seed a generic row.');
-
-		$this->genIds[] = $id;
-
-		return (int) $id;
 	}
 
 	/**
