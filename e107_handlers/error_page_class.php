@@ -243,10 +243,14 @@ class error_page
          $body = $tp->parseTemplate($tpl, true, $sc);
 
 		// set title, mode and body for when SEF (index.php) is handling it.
-		$front = eFront::instance();
-		$front->getResponse()->setTitle(LAN_ERROR);
-		$front->getResponse()->setRenderMod('error_page_'.$status_code);
-        $front->getResponse()->setBody($body);
+		// standalone error.php runs without an eFront response object.
+		$response = eFront::instance()->getResponse();
+		if($response)
+		{
+			$response->setTitle(LAN_ERROR);
+			$response->setRenderMod('error_page_'.$status_code);
+			$response->setBody($body);
+		}
 
 
 
