@@ -661,11 +661,19 @@ class e_file
 		/**
 		 * Every A and AAAA address $host has, from either resolver this machine has.
 		 *
+		 * Names only: a host that spells an address in decimal, octal or hex is
+		 * refused before either resolver is asked.
+		 *
 		 * @param string $host
 		 * @return string[] empty when the name does not resolve
 		 */
 		protected function resolveHostname($host)
 		{
+			if(!$this->isHostname($host))
+			{
+				return array();
+			}
+
 			$addresses = $this->dnsRecordAddresses($host);
 
 			if(empty($addresses))
@@ -705,16 +713,12 @@ class e_file
 		/**
 		 * The addresses the operating system's resolver has for $host, IPv4 only.
 		 *
-		 * Names only: the C library answers a host that spells an address in
-		 * decimal, octal or hex without asking any name service, and those
-		 * spellings are refused here.
-		 *
 		 * @param string $host
 		 * @return string[] empty when this resolver has no answer
 		 */
 		protected function systemResolverAddresses($host)
 		{
-			if(!function_exists('gethostbynamel') || !$this->isHostname($host))
+			if(!function_exists('gethostbynamel'))
 			{
 				return array();
 			}
@@ -742,17 +746,23 @@ class e_file
 		/**
 		 * Whether $host is a name to look up rather than an address in disguise.
 		 *
+		 * A host whose last label is a decimal or 0x hex number is an address, and
+		 * so is any host a client could decode into one: a percent sign or a
+		 * non-ASCII byte means no lookup.
+		 *
 		 * @param string $host
 		 * @return bool
 		 */
 		private function isHostname($host)
 		{
-			if(stripos($host, '0x') === 0)
+			if(preg_match('/[%\x80-\xff]/', $host))
 			{
 				return false;
 			}
 
-			return (bool) preg_match('/[a-zA-Z]/', $host);
+			$labels = explode('.', (substr($host, -1) === '.') ? (string) substr($host, 0, -1) : $host);
+
+			return !preg_match('/^(0x[0-9a-f]*|[0-9]+)$/i', end($labels));
 		}
 
 
