@@ -2321,6 +2321,10 @@ class banlistManager
 	{
 		$ipAction = array();	// Array of IP addresses to action
 		$fileName = $this->ourConfigDir.eIPHandler::BAN_FILE_RETRIGGER_NAME.eIPHandler::BAN_FILE_EXTENSION;
+		if (!is_readable($fileName))
+		{
+			return 0;			// Nothing queued for retriggering
+		}
 		$entries = file($fileName);
 		if (!is_array($entries))
 		{
