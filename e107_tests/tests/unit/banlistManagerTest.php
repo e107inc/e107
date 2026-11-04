@@ -305,6 +305,40 @@ class banlistManagerTest extends \Test\Unit
 	}
 
 	/**
+	 * The retrigger file only exists once a banned visitor has come back, so
+	 * on most cron runs there is nothing to read. That is not an error and
+	 * must not log a file() warning on every run.
+	 */
+	public function testRetriggerWithNothingQueuedIsQuiet()
+	{
+		e107::getConfig()->set('ban_retrigger', 1);
+
+		if(file_exists($this->retriggerFile))
+		{
+			unlink($this->retriggerFile);
+		}
+
+		$warnings = array();
+		set_error_handler(function ($errno, $errstr) use (&$warnings)
+		{
+			$warnings[] = $errstr;
+			return true;
+		});
+
+		try
+		{
+			$count = $this->mgr->banRetriggerAction();
+		}
+		finally
+		{
+			restore_error_handler();
+		}
+
+		self::assertSame(0, $count, 'with no retrigger file there is nothing to action');
+		self::assertSame(array(), $warnings, 'an empty queue must not raise a warning');
+	}
+
+	/**
 	 * Every form a row has ever been stored in has to be enforced as the
 	 * range it names: dotted and encoded singles, the x-wildcard encoding,
 	 * dotted wildcards, CIDR and hyphenated ranges. A 0.7-era row with type
