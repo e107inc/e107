@@ -38,7 +38,7 @@ class e_url
 	 */
 	function __construct()
 	{
-		$this->_request         = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
+		$this->_request         = (strpos(e_REQUEST_URI, e_HTTP) === 0) ? (string) substr(e_REQUEST_URI, strlen(e_HTTP)) : e_REQUEST_URI;
 
 		$this->_config          = e107::getUrlConfig();
 		$this->_alias           = e107::getPref('e_url_alias');
