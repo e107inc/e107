@@ -133,10 +133,7 @@ class e107RequestPathTest extends \Test\Unit
 			putenv('QUERY_STRING');
 		}
 
-		$lines = preg_grep('/^'.preg_quote(self::PAGE, '/').'/', $output);
-		self::assertCount(1, $lines, "the child for $request reported no page:\n".implode("\n", $output));
-
-		$page = json_decode((string) substr(reset($lines), strlen(self::PAGE)), true);
+		$page = self::reportedAfter($output, self::PAGE, "the child for $request");
 		self::assertCount(1, $page['forms'], "the page at $request holds no single sign-in form:\n".implode("\n", $output));
 		$page['form'] = $page['forms'][0];
 
