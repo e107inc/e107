@@ -148,6 +148,22 @@ trait BootedCli
 	}
 
 	/**
+	 * Decodes the JSON a child printed after $marker on the one line of its output that starts with it, failing the test unless exactly one line does.
+	 *
+	 * @param array $output a child's output lines, as {@see BootedCli::runInCli()} returns them
+	 * @param string $marker
+	 * @param string $child the child as the failure message names it, e.g. "the child for /news.php"
+	 * @return mixed objects decoded as arrays
+	 */
+	protected static function reportedAfter(array $output, $marker, $child)
+	{
+		$lines = preg_grep('/^'.preg_quote($marker, '/').'/', $output);
+		self::assertCount(1, $lines, "$child printed no single line starting $marker:\n".implode("\n", $output));
+
+		return json_decode((string) substr(reset($lines), strlen($marker)), true);
+	}
+
+	/**
 	 * Asserts that a child's output reports no read of a missing array key, in the wording of any PHP the suite runs on.
 	 *
 	 * @param string $keys the keys, as a regular expression alternation
