@@ -243,7 +243,6 @@ class error_page
          $body = $tp->parseTemplate($tpl, true, $sc);
 
 		// set title, mode and body for when SEF (index.php) is handling it.
-		// standalone error.php runs without an eFront response object.
 		$response = eFront::instance()->getResponse();
 		if($response)
 		{
