@@ -1514,6 +1514,52 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame(array(), $qb->getParameters());
 		}
 
+		public function testFindAnyInSetOrsOneFindInSetPerValueWithEachValueBoundUnchanged()
+		{
+			$qb = $this->makeQb();
+			$frag = $qb->expr()->findAnyInSet('user_class', array(3, '7', ' 12'));
+
+			$this->assertSame(
+				'(FIND_IN_SET(:qb1, `user_class`)) OR (FIND_IN_SET(:qb2, `user_class`)) OR (FIND_IN_SET(:qb3, `user_class`))',
+				$frag->getSql()
+			);
+			$this->assertSame(array(), $frag->getParameters());
+			$this->assertSame(array('qb1' => 3, 'qb2' => '7', 'qb3' => ' 12'), $qb->getParameters());
+		}
+
+		public function testFindAnyInSetOfOneValueCompilesAsAnyOfOneFindInSet()
+		{
+			$qb = $this->makeQb();
+			$qb->select('user_name')->from('user', 'u')->where($qb->expr()->findAnyInSet('u.user_class', array(254)));
+
+			$this->assertSame(
+				'SELECT `user_name` FROM `e107_user` AS `u` WHERE ((FIND_IN_SET(:qb1, `u`.`user_class`)))',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 254), $qb->getParameters());
+		}
+
+		public function testFindAnyInSetOfNoValuesCompilesToTheAlwaysFalsePredicate()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertSame('1=0', $qb->expr()->findAnyInSet('user_class', array())->getSql());
+			$this->assertSame(array(), $qb->getParameters());
+		}
+
+		public function testFindAnyInSetRefusesAnInvalidColumnWithOrWithoutValues()
+		{
+			$self = $this;
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->expr()->findAnyInSet('user_class); DROP', array(1));
+			});
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->expr()->findAnyInSet('user_class); DROP', array());
+			});
+		}
+
 		public function testJoins()
 		{
 			$qb = $this->makeQb();

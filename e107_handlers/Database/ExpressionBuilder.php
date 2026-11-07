@@ -285,6 +285,38 @@ class ExpressionBuilder
 	}
 
 	/**
+	 * True when any one of $values is a whole entry in the comma-separated $column.
+	 * An empty $values list compiles to the always-false 1=0, as {@see ExpressionBuilder::in()} does.
+	 * Each value binds unchanged, and one holding a comma matches nothing: pass the entries, not the joined string.
+	 *
+	 * <code>
+	 * $qb->where($qb->expr()->findAnyInSet('user_class', array(3, 7)));
+	 * // (FIND_IN_SET(:qb1, `user_class`)) OR (FIND_IN_SET(:qb2, `user_class`))
+	 * </code>
+	 *
+	 * @param string $column comma-separated SET column (the haystack)
+	 * @param array $values the needles, each searched for as by {@see ExpressionBuilder::findInSet()}
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	public function findAnyInSet($column, array $values)
+	{
+		if(count($values) === 0)
+		{
+			return $this->in($column, array());
+		}
+
+		$parts = array();
+
+		foreach($values as $value)
+		{
+			$parts[] = $this->findInSet($column, $value);
+		}
+
+		return $this->_combine('OR', $parts);
+	}
+
+	/**
 	 * `column` IS NULL
 	 *
 	 * @param string $column
