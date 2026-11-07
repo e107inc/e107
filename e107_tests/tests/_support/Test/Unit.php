@@ -570,6 +570,22 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Decodes the JSON a child printed after $marker on the one line of its output that starts with it, failing the test unless exactly one line does.
+	 *
+	 * @param array $output a child's output lines, as {@see Unit::runInCli()} returns them
+	 * @param string $marker
+	 * @param string $child the child as the failure message names it, e.g. "the child for /news.php"
+	 * @return mixed objects decoded as arrays
+	 */
+	protected static function reportedAfter(array $output, $marker, $child)
+	{
+		$lines = preg_grep('/^'.preg_quote($marker, '/').'/', $output);
+		self::assertCount(1, $lines, "$child printed no single line starting $marker:\n".implode("\n", $output));
+
+		return json_decode((string) substr(reset($lines), strlen($marker)), true);
+	}
+
+	/**
 	 * What the shared parser is configured with right now, to hand back to {@see Unit::restoreParserState()} afterwards.
 	 *
 	 * @return array
