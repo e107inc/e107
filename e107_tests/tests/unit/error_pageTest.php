@@ -20,12 +20,9 @@ class error_pageTest extends \Test\Unit
 	protected function _before()
 	{
 		require_once(e_HANDLER . 'error_page_class.php');
+		e107::getUrl();
 
-		$this->responseProp = new ReflectionProperty('eFront', '_response');
-		if(PHP_VERSION_ID < 80100)
-		{
-			$this->responseProp->setAccessible(true);
-		}
+		$this->responseProp = new \e107\Reflection\ReflectionProperty('eFront', '_response');
 		$this->originalResponse = $this->responseProp->getValue(eFront::instance());
 	}
 
