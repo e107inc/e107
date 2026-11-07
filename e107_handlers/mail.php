@@ -904,7 +904,9 @@ class e107Email extends PHPMailer
 
 		if(!empty($eml['template'])) // @see e107_core/templates/email_template.php
 		{
-			require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php"); // do not use e107::lan etc.
+			$lanUsers = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php";
+			require_once($lanUsers); // do not use e107::lan etc.
+			e107::getLanguageFallback()->fill($lanUsers, (bool) e107::getPref('noLanguageSubs'), false);
 
 			if(is_array($eml['template']))
 			{
