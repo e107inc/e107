@@ -19,70 +19,6 @@
 			require_once(e_HANDLER."menumanager_class.php");
 		}
 
-		/**
-		 * Copies a fixture theme out of tests/_data into e_THEME, journaled so the run takes it back out.
-		 *
-		 * @param string $src
-		 * @param string $dst inside APP_PATH
-		 * @return bool false when there is nothing to copy or the destination is already there
-		 */
-		private function copydir( $src, $dst )
-		{
-			if(!is_dir($src) || is_dir($dst))
-			{
-				echo 'Skipping directory creation. '.$dst.' already exists.'."\n";
-				return false;
-			}
-
-			\Helper\AppFileRegistry::didWrite($this->appRelativePath($dst));
-			self::copyTree($src, $dst);
-
-			return true;
-		}
-
-		private static function copyTree($src, $dst)
-		{
-			mkdir($dst);
-
-			$DS = DIRECTORY_SEPARATOR ;
-
-			$files = scandir($src);
-
-			unset($files[0], $files[1]);
-
-			foreach($files as $file)
-			{
-				if($file != '.' && $file != '..')
-				{
-					if(is_dir($src . $DS . $file))
-					{
-						self::copyTree($src . $DS . $file, $dst . $DS . $file);
-					}
-					else
-					{
-						copy($src . $DS . $file, $dst . $DS . $file);
-					}
-				}
-			}
-		}
-
-		/**
-		 * @param string $path under APP_PATH, absolute or relative to the working directory; the last segment need not exist yet
-		 * @return string the same path relative to the app root
-		 */
-		private function appRelativePath($path)
-		{
-			$root = realpath(APP_PATH);
-			$parent = realpath(dirname(rtrim($path, '/')));
-
-			if($root === false || $parent === false || strpos($parent.'/', $root.'/') !== 0)
-			{
-				self::fail("$path is not inside the app root ".APP_PATH);
-			}
-
-			return ltrim(substr($parent, strlen($root)).'/'.basename(rtrim($path, '/')), '/');
-		}
-
 		public function testGetLayouts()
 		{
 			//FIXME: https://github.com/e107inc/e107/issues/4030
@@ -90,18 +26,18 @@
 			$src1 = codecept_data_dir()."testcore";
 			$dest1 = e_THEME."testcore";
 
-			$this->copydir($src1,$dest1);
+			$this->getModule('\Helper\Unit')->copydir($src1,$dest1);
 
 			$src2 = codecept_data_dir()."testkubrick";
 			$dest2 = e_THEME."testkubrick";
 
-			$this->copydir($src2,$dest2);
+			$this->getModule('\Helper\Unit')->copydir($src2,$dest2);
 
 
 			$src3 = codecept_data_dir()."basic-light";
 			$dest3 = e_THEME."basic-light";
 
-			$this->copydir($src3,$dest3);
+			$this->getModule('\Helper\Unit')->copydir($src3,$dest3);
 
 			$tests = array(
 

@@ -75,4 +75,62 @@ class Unit extends E107Base
 			}
 		}
 	}
+
+	/**
+	 * Copies a fixture tree, e.g. a theme out of tests/_data into e_THEME, journaled so the run takes it back out.
+	 *
+	 * @param string $src
+	 * @param string $dst inside APP_PATH
+	 * @return bool false when there is nothing to copy or the destination is already there
+	 */
+	public function copydir($src, $dst)
+	{
+		if(!is_dir($src) || is_dir($dst))
+		{
+			return false;
+		}
+
+		AppFileRegistry::didWrite(self::appRelativePath($dst));
+		self::copyTree($src, $dst);
+
+		return true;
+	}
+
+	private static function copyTree($src, $dst)
+	{
+		mkdir($dst);
+
+		foreach(scandir($src) as $file)
+		{
+			if($file === '.' || $file === '..')
+			{
+				continue;
+			}
+
+			if(is_dir($src.DIRECTORY_SEPARATOR.$file))
+			{
+				self::copyTree($src.DIRECTORY_SEPARATOR.$file, $dst.DIRECTORY_SEPARATOR.$file);
+				continue;
+			}
+
+			copy($src.DIRECTORY_SEPARATOR.$file, $dst.DIRECTORY_SEPARATOR.$file);
+		}
+	}
+
+	/**
+	 * @param string $path under APP_PATH, absolute or relative to the working directory; the last segment need not exist yet
+	 * @return string the same path relative to the app root
+	 */
+	private static function appRelativePath($path)
+	{
+		$root = realpath(APP_PATH);
+		$parent = realpath(dirname(rtrim($path, '/')));
+
+		if($root === false || $parent === false || strpos($parent.'/', $root.'/') !== 0)
+		{
+			\PHPUnit\Framework\Assert::fail("$path is not inside the app root ".APP_PATH);
+		}
+
+		return ltrim(substr($parent, strlen($root)).'/'.basename(rtrim($path, '/')), '/');
+	}
 }
