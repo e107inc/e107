@@ -634,24 +634,38 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 
 
 	/**
-	 * The C library answers a host that spells an address in decimal, octal or
-	 * hex out of inet_aton, without asking any name service, so the fallback
-	 * would otherwise accept spellings this policy has always refused.
+	 * The C library and some DNS resolvers answer a host that ends in a number
+	 * with an address of their own reading, so neither is asked about one.
 	 */
-	public function testTheSystemResolverIsAskedAboutNamesOnly()
+	public function testNeitherResolverIsAskedAboutAnAddressSpelling()
 	{
 		$fl = new E107P3SplitResolverFile();
-		$fl->dnsRecords = array();
+		$fl->dnsRecords = array(self::PUBLIC_IP);
+		$fl->systemRecords = array(self::PUBLIC_IP);
 
 		self::assertFalse($fl->resolveOutboundTarget('http://16843009/'),
 			'1.1.1.1 in decimal is an address literal, not a name.');
 		self::assertFalse($fl->resolveOutboundTarget('http://1.1/'));
 		self::assertFalse($fl->resolveOutboundTarget('http://0x01010101/'));
 		self::assertFalse($fl->resolveOutboundTarget('http://2130706433/'));
-		self::assertFalse($fl->resolveOutboundTarget('http://0177.0.0.1/'));
+		self::assertFalse($fl->resolveOutboundTarget('http://0177.0.0.1/'),
+			'0177.0.0.1 is 127.0.0.1 in octal, whatever a resolver reads it as.');
+		self::assertFalse($fl->resolveOutboundTarget('http://127.0.0.0x1/'));
+		self::assertFalse($fl->resolveOutboundTarget('http://1.1.1.1./'));
+		self::assertFalse($fl->resolveOutboundTarget('http://127.0.0.%31/'),
+			'%31 decodes to 1.');
+		self::assertFalse($fl->resolveOutboundTarget("http://\xEF\xBC\x91\xEF\xBC\x92\xEF\xBC\x97.\xEF\xBC\x90.\xEF\xBC\x90.\xEF\xBC\x91/"),
+			'Fullwidth digits map to ASCII ones.');
+		self::assertFalse($fl->resolveOutboundTarget("http://127\xE3\x80\x820\xE3\x80\x820\xE3\x80\x821/"),
+			'An ideographic full stop maps to a dot.');
 
 		self::assertSame(array(), $fl->addressesFor('16843009'));
 		self::assertSame(array(), $fl->addressesFor('0x01010101'));
+
+		self::assertIsArray($fl->resolveOutboundTarget('http://p3-split.test/'),
+			'The same answer for a name is taken.');
+		self::assertIsArray($fl->resolveOutboundTarget('http://0x0.test/'),
+			'A name may start with 0x.');
 	}
 
 
