@@ -293,16 +293,47 @@ class Unit extends \Codeception\Test\Unit
 	 */
 	protected function keepStoredCorePrefs()
 	{
-		$stored = \e107::getDb()->retrieve('core', 'e107_value', "e107_name = 'SitePrefs'");
+		return $this->keepStoredPrefs('SitePrefs', \e107::getConfig());
+	}
 
-		return static function () use ($stored)
+	/**
+	 * Keeps one stored preference row, which a booted child may save; call what it returns once the test is done.
+	 *
+	 * @param string $name the row's e107_name, e.g. 'plugin_pm'
+	 * @param \e_pref $config the preference object that caches the row
+	 * @return callable puts the row back as it was found, removes it when there was none, and clears the preference cache
+	 */
+	protected function keepStoredPrefs($name, $config)
+	{
+		$stored = self::storedPrefsValue($name);
+
+		return static function () use ($name, $config, $stored)
 		{
-			\e107::getDb()->createQueryBuilder()->update('core')
-				->set('e107_value', $stored)
-				->where('e107_name', 'SitePrefs')
-				->execute();
-			\e107::getConfig()->clearPrefCache();
+			if($stored === null)
+			{
+				\e107::getDb()->createQueryBuilder()->delete('core')->where('e107_name', $name)->execute();
+			}
+			else
+			{
+				\e107::getDb()->createQueryBuilder()->update('core')
+					->set('e107_value', $stored)
+					->where('e107_name', $name)
+					->execute();
+			}
+
+			$config->clearPrefCache();
 		};
+	}
+
+	/**
+	 * @param string $name the row's e107_name, e.g. 'plugin_pm'
+	 * @return string|null the stored preferences as the database holds them, null when there is no row
+	 */
+	protected static function storedPrefsValue($name)
+	{
+		$row = \e107::getDb()->createQueryBuilder()->select('e107_value')->from('core')->where('e107_name', $name)->fetchRow();
+
+		return empty($row) ? null : $row['e107_value'];
 	}
 
 	/**

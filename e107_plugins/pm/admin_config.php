@@ -196,17 +196,28 @@ class private_msg_ui extends e_admin_ui
 		{
 			$sql = e107::getDb();
 			$mes = e107::getMessage();
-			$pm_prefs = e107::pref('pm');
+			$config = e107::getPlugConfig('pm');
 
 			$limitVal = intval($_POST['pm_limits']);
 
 
-			if($pm_prefs['pm_limits'] != $limitVal)
+			if($config->get('pm_limits') != $limitVal)
 			{
-				$pm_prefs['pm_limits'] = $limitVal;
-
-				$mes->addSuccess(ADLAN_PM_8);
+				if($config->set('pm_limits', $limitVal)->save(false, true, false) !== false)
+				{
+					$mes->addSuccess(ADLAN_PM_8);
+				}
+				else
+				{
+					$mes->addError(ADLAN_PM_7);
+				}
 			}
+
+			if(empty($_POST['inbox_count']) || !is_array($_POST['inbox_count']))
+			{
+				return;
+			}
+
 			foreach(array_keys($_POST['inbox_count']) as $id)
 			{
 				$id = intval($id);
