@@ -75,16 +75,49 @@ trait CorePrefs
 	 */
 	protected function keepStoredCorePrefs()
 	{
-		$stored = \e107::getDb()->retrieve('core', 'e107_value', "e107_name = 'SitePrefs'");
+		return $this->keepStoredPrefs('SitePrefs', \e107::getConfig());
+	}
 
-		return static function () use ($stored)
+	/**
+	 * Keeps one stored preference row, which a booted child may save; call what it returns once the test is done.
+	 *
+	 * @param string $name the row's e107_name, e.g. 'plugin_pm'
+	 * @param \e_pref $config the preference object that caches the row
+	 * @return callable puts the row back as it was found, removes it when there was none, and clears the preference cache
+	 */
+	protected function keepStoredPrefs($name, $config)
+	{
+		$stored = self::storedPrefsValue($name);
+
+		return static function () use ($name, $config, $stored)
 		{
-			\e107::getDb()->update('core', array(
-				'data'  => array('e107_value' => $stored),
-				'WHERE' => "e107_name = 'SitePrefs'",
-			));
-			\e107::getConfig()->clearPrefCache();
+			$bind = array('name' => array('value' => $name, 'type' => \PDO::PARAM_STR));
+
+			if($stored === null)
+			{
+				$query = array('PREPARE' => 'DELETE FROM `'.MPREFIX.'core` WHERE `e107_name` = :name', 'BIND' => $bind);
+			}
+			else
+			{
+				$bind['value'] = array('value' => $stored, 'type' => \PDO::PARAM_STR);
+				$query = array('PREPARE' => 'UPDATE `'.MPREFIX.'core` SET `e107_value` = :value WHERE `e107_name` = :name', 'BIND' => $bind);
+			}
+
+			\e107::getDb()->db_Query($query, null, 'db_Update');
+			$config->clearPrefCache();
 		};
+	}
+
+	/**
+	 * @param string $name the row's e107_name, e.g. 'plugin_pm'
+	 * @return string|null the stored preferences as the database holds them, null when there is no row
+	 */
+	protected static function storedPrefsValue($name)
+	{
+		$sql = \e107::getDb();
+		$row = $sql->select('core', 'e107_value', 'e107_name = :name', array('name' => $name)) ? $sql->fetch() : array();
+
+		return empty($row) ? null : $row['e107_value'];
 	}
 
 	/**

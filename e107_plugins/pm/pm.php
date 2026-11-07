@@ -647,18 +647,18 @@
 					}
 				}
 
-				if(intval($this->pmPrefs['pm_limits']) > 0)
+				if(intval($this->pmPrefs['pm_limits']) > 0 && !empty($pm_info['outbox']['limit']))
 				{
 					if($this->pmPrefs['pm_limits'] == '1')
 					{
-						if($pm_info['outbox']['total'] == $pm_info['outbox']['limit'])
+						if($pm_info['outbox']['total'] >= $pm_info['outbox']['limit'])
 						{
 							return LAN_PM_19;
 						}
 					}
 					else
 					{
-						if($pm_info['outbox']['size'] + $totalsize > $pm_info['outbox']['limit'])
+						if($pm_info['outbox']['size'] + $totalsize / 1024 > $pm_info['outbox']['limit'])
 						{
 							return LAN_PM_21;
 						}
