@@ -30,7 +30,7 @@ return [
     'LANG_LAN_21' => "Language-Packs",
     'LANG_LAN_25' => "Language-Pack Creation Status",
     'LANG_LAN_26' => "Load language files only for current language",
-    'LANG_LAN_27' => "If checked, and a required language cannot be found, there will be an error",
+    'LANG_LAN_27' => "If checked, a phrase the current language lacks shows its name instead of the English text",
     'LANG_LAN_32' => "Installed Languages",
     'LANG_LAN_33' => "Display only errors during verification",
     'LANG_LAN_50' => "Admin-Area Interface Language",

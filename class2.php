@@ -553,30 +553,37 @@ if(!empty($pref['multilanguage']) && (e_LANGUAGE !== $pref['sitelanguage']))
 if(!isset($_E107['no_lan']))
 {
 	$dbg->logTime('Include Global Core Language Files');
+	$customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
+	$customLan2 = e_SYSTEM.'/lans/'.e_LANGUAGE.'_custom.php'; // v2 Custom language File Path.
+	$lanFallback = e107::getLanguageFallback();
+
 	if((e_ADMIN_AREA === true) && !empty($pref['adminlanguage']))
 	{
+		$lanFallback->leaveTo(array(
+			$lanFallback->translatePath($customLan, e_LANGUAGE, $pref['adminlanguage']),
+			$lanFallback->translatePath($customLan2, e_LANGUAGE, $pref['adminlanguage']),
+		), true);
 		e107::includeLan(e_LANGUAGEDIR.$pref['adminlanguage'].'/'.$pref['adminlanguage'].'.php');
 	}
 	else
 	{
+		$lanFallback->leaveTo(array($customLan, $customLan2), true);
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS load
 	}
 
 
-	$customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
 	if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the core
 	{
 		e107::includeLan($customLan);
 	}
 
-	// v2 Custom language File Path.
-	$customLan2 = e_SYSTEM.'/lans/'.e_LANGUAGE.'_custom.php';
 	if(is_readable($customLan2)) // FASTER - if exist, should be done 'once' by the core
 	{
 		e107::includeLan($customLan2);
 	}
 
-	unset($customLan, $customLan2);
+	$lanFallback->leaveTo(array());
+	unset($customLan, $customLan2, $lanFallback);
 
 	$lng->bcDefs(); // defined v1.x definitions for old templates.
 
