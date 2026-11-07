@@ -95,9 +95,9 @@ services:
       E107_DB_NAME: ${E107_DB_NAME}
       # For the suite runner, which clones each sandbox's database as root.
       E107_DB_ROOT_PASSWORD: ${E107_DB_ROOT_PASSWORD}
-      # Empty for a docroot install; a bare directory name (no slashes) to
-      # also serve the site from a subdirectory. The entrypoint turns this
-      # into an Apache alias. See bin/e107-tests --base-path.
+      # Empty for a docroot install; a directory path such as e107 or
+      # sites/e107 to also serve the site from a subdirectory. The entrypoint
+      # turns this into an Apache alias. See bin/e107-tests --base-path.
       E107_BASE_PATH: ${E107_BASE_PATH:-}
     volumes:
       # Bind-mount the app root so host edits are live. The suites never write
