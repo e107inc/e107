@@ -12,6 +12,7 @@ use e107\Reflection\ReflectionProperty;
 
 class e_urlTest extends \Codeception\Test\Unit
 {
+	use \Test\BootedCli;
 	use \Test\CorePrefs;
 
 	/**
@@ -56,6 +57,49 @@ class e_urlTest extends \Codeception\Test\Unit
 		{
 			$restore();
 		}
+	}
+
+	/**
+	 * @dataProvider requestsUnderAWebPath
+	 * @param string $webPath what e_HTTP holds
+	 * @param string $requestUri what the server sets REQUEST_URI to; its part after the first "?" is the QUERY_STRING
+	 * @param string $expected the path the routes are matched against
+	 */
+	public function testARouteIsMatchedAgainstTheRequestLessOnlyTheLeadingWebPath($webPath, $requestUri, $expected)
+	{
+		$marker = 'E_URL_REQUEST=';
+		$parts = explode('?', $requestUri, 2);
+		putenv('REQUEST_URI='.$requestUri);
+		putenv('QUERY_STRING='.(isset($parts[1]) ? $parts[1] : ''));
+
+		try
+		{
+			list($output) = $this->runInBootedCliDefining(array('e_HTTP' => $webPath),
+				"echo \"\\n".$marker."\", json_encode((new e107\\Reflection\\ReflectionProperty('e_url', '_request'))->getValue(new e_url())), \"\\n\";",
+				self::buffered());
+		}
+		finally
+		{
+			putenv('REQUEST_URI');
+			putenv('QUERY_STRING');
+		}
+
+		self::assertSame($expected, self::reportedAfter($output, $marker, "the child for $requestUri under $webPath"));
+	}
+
+	/**
+	 * @return array[] what {@see e_urlTest::testARouteIsMatchedAgainstTheRequestLessOnlyTheLeadingWebPath()} takes
+	 */
+	public function requestsUnderAWebPath()
+	{
+		return array(
+			'the root, a route'                 => array('/', '/feed/news/rss/', 'feed/news/rss/'),
+			'the root, the front page'          => array('/', '/', ''),
+			'a folder, a route'                 => array('/sub/', '/sub/feed/news/rss/', 'feed/news/rss/'),
+			'a folder, the front page'          => array('/sub/', '/sub/', ''),
+			'a folder named again in the path'  => array('/sub/', '/sub/feed/sub/rss/', 'feed/sub/rss/'),
+			'a folder named again in the query' => array('/sub/', '/sub/feed/news/rss/?from=/sub/', 'feed/news/rss/?from=/sub/'),
+		);
 	}
 
 	/**
