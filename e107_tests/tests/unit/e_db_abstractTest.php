@@ -585,11 +585,7 @@ abstract class e_db_abstractTest extends \Test\Unit
 			array('tmp_ip' => 'qb.test.3', 'tmp_time' => 1003, 'tmp_info' => 'gamma'),
 		);
 
-		foreach($rows as $row)
-		{
-			$affected = $db->createQueryBuilder()->insert('tmp')->values($row)->execute();
-			$this->assertSame(1, $affected);
-		}
+		$this->insertTmpRows($rows);
 
 		// fetchAll() with expression, ORDER BY and LIMIT
 		$qb = $db->createQueryBuilder();
@@ -694,12 +690,60 @@ abstract class e_db_abstractTest extends \Test\Unit
 			->fetchOne());
 
 		// DELETE through the builder cleans up
-		$qb = $db->createQueryBuilder();
-		$affected = $qb->delete('tmp')
-			->where($qb->expr()->startsWith('tmp_ip', 'qb.test.'))
-			->execute();
+		$this->assertSame(3, $this->deleteTmpRowsStartingWith('qb.test.'));
+	}
 
-		$this->assertSame(3, $affected);
+	public function testFindAnyInSetMatchesWholeEntriesOnly()
+	{
+		$this->insertTmpRows(array(
+			array('tmp_ip' => 'qb.set.1', 'tmp_time' => 2001, 'tmp_info' => 'alpha,beta'),
+			array('tmp_ip' => 'qb.set.2', 'tmp_time' => 2002, 'tmp_info' => 'alphabet,gamma'),
+			array('tmp_ip' => 'qb.set.3', 'tmp_time' => 2003, 'tmp_info' => 'delta'),
+		));
+
+		$this->assertSame(array('qb.set.1'), $this->tmpRowsHoldingAnyOf(array('alpha')));
+		$this->assertSame(array('qb.set.1', 'qb.set.3'), $this->tmpRowsHoldingAnyOf(array('beta', 'delta')));
+		$this->assertSame(array('qb.set.3'), $this->tmpRowsHoldingAnyOf(array('alpha,beta', 'delta')));
+
+		$this->assertSame(3, $this->deleteTmpRowsStartingWith('qb.set.'));
+	}
+
+	/**
+	 * @param array $rows tmp rows, each inserted through the query builder and asserted to add one row
+	 */
+	private function insertTmpRows(array $rows)
+	{
+		foreach($rows as $row)
+		{
+			$this->assertSame(1, $this->db->createQueryBuilder()->insert('tmp')->values($row)->execute());
+		}
+	}
+
+	/**
+	 * @param string $prefix
+	 * @return int|bool the number of tmp rows deleted through the query builder whose tmp_ip starts with $prefix
+	 */
+	private function deleteTmpRowsStartingWith($prefix)
+	{
+		$qb = $this->db->createQueryBuilder();
+
+		return $qb->delete('tmp')->where($qb->expr()->startsWith('tmp_ip', $prefix))->execute();
+	}
+
+	/**
+	 * @param array $values
+	 * @return array the tmp_ip of each qb.set.* row whose tmp_info holds any of $values, in tmp_ip order
+	 */
+	private function tmpRowsHoldingAnyOf(array $values)
+	{
+		$qb = $this->db->createQueryBuilder();
+
+		return $qb->select('tmp_ip')
+			->from('tmp')
+			->where($qb->expr()->findAnyInSet('tmp_info', $values))
+			->andWhere($qb->expr()->startsWith('tmp_ip', 'qb.set.'))
+			->orderBy('tmp_ip', 'ASC')
+			->fetchColumn();
 	}
 
 	public function testQueryBuilderRejectsHostileInput()
