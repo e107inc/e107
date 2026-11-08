@@ -1217,7 +1217,7 @@ class e_db_pdo implements e_db
 
         try
         {
-            $dump = new Ifsnop\Mysqldump\Mysqldump("mysql:host={$this->mySQLserver};port={$this->mySQLport};dbname={$this->mySQLdefaultdb}", $this->mySQLuser, $this->mySQLpassword, $dumpSettings);
+            $dump = new Ifsnop\Mysqldump\Mysqldump("mysql:host={$this->mySQLserver};port={$this->mySQLport};dbname={$this->mySQLdefaultdb}", $this->mySQLuser, $this->mySQLpassword, $dumpSettings, array(PDO::ATTR_PERSISTENT => false));
 		    $dump->start($backupFile);
 		    return $backupFile;
 		}

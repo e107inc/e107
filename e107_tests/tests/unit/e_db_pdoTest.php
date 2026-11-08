@@ -296,6 +296,32 @@ class e_db_pdoTest extends e_db_abstractTest
 			'a failed backup has to say why');
 	}
 
+	public function testABackupLeavesNoConnectionOfItsOwn()
+	{
+		$poll = new ReflectionClass('Test\Poll');
+
+		$php = "require_once(".var_export($poll->getFileName(), true)."); ";
+		$php .= "\$db = e107::getDb(); ";
+		$php .= "\$open = function () use (\$db) { ";
+		$php .= "\$db->execute('SELECT ID FROM information_schema.PROCESSLIST WHERE DB = :db', array('db' => e107::getMySQLConfig('defaultdb'))); ";
+		$php .= "\$ids = array(); while(\$row = \$db->fetch()) { \$ids[] = (int) \$row['ID']; } return \$ids; }; ";
+		$php .= "\$before = \$open(); ";
+		$php .= "\$db->execute('SELECT CONNECTION_ID() AS id'); ";
+		$php .= "\$own = \$db->fetch(); ";
+		$php .= "\$seen = in_array((int) \$own['id'], \$before, true); ";
+		$php .= "\$file = \$db->backup('user', null, array('gzip' => false, 'nologs' => false, 'droptable' => false)); ";
+		$php .= "\$left = array(); ";
+		$php .= "\\Test\\Poll::until(function () use (\$open, \$before, &\$left) { \$left = array_values(array_diff(\$open(), \$before)); return empty(\$left); }, 2); ";
+		$php .= "echo PHP_EOL.'BACKUP-CONNECTIONS:'.json_encode(array('seen' => \$seen, 'backup' => \$file !== false, 'left' => \$left)).PHP_EOL; ";
+
+		list($output) = $this->runInBootedCli($php);
+		$result = self::reportedAfter($output, 'BACKUP-CONNECTIONS:', 'the backup child');
+
+		$this->assertTrue($result['seen'], 'the child could not find its own session in PROCESSLIST, so an empty difference proves nothing');
+		$this->assertTrue($result['backup'], 'the backup itself failed, so it proves nothing about its connection');
+		$this->assertSame(array(), $result['left'], 'the backup left server connection(s) open after it returned');
+	}
+
 	/**
 	 * PDO-exclusive feature: Copy row and keep unique keys unique
 	 * @see e_db_abstractTest::testDb_Query()
