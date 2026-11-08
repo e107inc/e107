@@ -9,6 +9,8 @@
 	 */
 
 
+	use e107\Media\RestrictedMedia;
+
 	class e_thumbnailTest extends \Test\Unit
 	{
 
@@ -22,6 +24,7 @@
 
 		protected function _after()
 		{
+			putenv('QUERY_STRING');
 			$this->releaseMediaRows();
 		}
 
@@ -40,6 +43,8 @@
 
 			$this->thm->setCache(false);
 			$this->thm->setDebug(true);
+
+			$this->forgetIndex();
 
 			$this->thumbPath = codecept_data_dir()."thumbnailTest".DIRECTORY_SEPARATOR;
 
@@ -293,6 +298,169 @@
 			}
 		}
 
+		public function testAWarmIndexAnswersUntilItIsForgotten()
+		{
+			$this->restrictMediaRow('{e_IMAGE}logo.png', '253');
+
+			self::assertFalse($this->thumbnailFor(array(e_UC_GUEST), 'e_IMAGE/logo.png')->checkSrc(), 'a guest was given a members-only item');
+
+			$this->reclassMediaRow('{e_IMAGE}logo.png', '0');
+
+			self::assertFalse($this->thumbnailFor(array(e_UC_GUEST), 'e_IMAGE/logo.png')->checkSrc(), 'the second request read the library instead of the index');
+
+			$this->forgetIndex();
+
+			self::assertTrue($this->thumbnailFor(array(e_UC_GUEST), 'e_IMAGE/logo.png')->checkSrc(), 'the index outlived forget()');
+		}
+
+		public function testABatchEditInTheMediaManagerReachesTheIndexAtOnce()
+		{
+			$url = '{e_MEDIA_IMAGE}p16unit/batch.png';
+			$this->restrictMediaRow($url, '253');
+
+			self::assertSame('253', (new RestrictedMedia(e107::getCache(), e107::getDb()))->classOf($url));
+
+			$media = e107::getDb()->createQueryBuilder()->select('media_id')->from('core_media')->where('media_url', $url);
+			$get = array('mode' => 'main', 'action' => 'list');
+			putenv('QUERY_STRING='.http_build_query($get));
+
+			$php = "define('SEP', ' &raquo; '); \$_GET = ".var_export($get, true)."; ";
+			$php .= "e107::getUser()->setData(e107::user(1)); ";
+			$php .= "\$_POST = array('etrigger_batch' => 'media_userclass__0', 'multiselect' => array(".(int) $media->fetchOne()."), 'e-token' => defset('e_TOKEN')); ";
+			$php .= "register_shutdown_function(function () { chdir('/'); }); ";
+			$php .= "require_once(".var_export(APP_PATH.'/e107_admin/image.php', true)."); ";
+
+			$this->runInBootedCli($php);
+
+			$saved = e107::getDb()->createQueryBuilder()->select('media_userclass')->from('core_media')->where('media_url', $url)->fetchOne();
+
+			self::assertSame('0', $saved, 'the batch edit did not reach the row, so the index had nothing to catch up with');
+			self::assertNull((new RestrictedMedia(e107::getCache(), e107::getDb()))->classOf($url), 'the index still gated an item the media manager had made public');
+		}
+
+		public function testTheRestrictedIndexLastsADay()
+		{
+			$this->restrictMediaRow('{e_IMAGE}logo.png', '253');
+			$this->thumbnailFor(array(e_UC_GUEST), 'e_IMAGE/logo.png')->checkSrc();
+			$this->reclassMediaRow('{e_IMAGE}logo.png', '0');
+
+			$index = $this->indexEntry();
+
+			touch($index, time() - (24 * 60 - 1) * 60);
+			self::assertFalse($this->thumbnailFor(array(e_UC_GUEST), 'e_IMAGE/logo.png')->checkSrc(), 'the index was dropped before its day was up');
+
+			touch($index, time() - (24 * 60 + 1) * 60);
+			self::assertTrue($this->thumbnailFor(array(e_UC_GUEST), 'e_IMAGE/logo.png')->checkSrc(), 'the index outlived its day');
+		}
+
+		public function testAnIndexThatDoesNotParseIsRebuilt()
+		{
+			$this->restrictMediaRow('{e_IMAGE}logo.png', '253');
+			$this->thumbnailFor(array(e_UC_GUEST), 'e_IMAGE/logo.png')->checkSrc();
+			$index = $this->indexEntry();
+
+			foreach(array('{"broken', '"text"', '') as $garbage)
+			{
+				file_put_contents($index, ecache::CACHE_PREFIX.$garbage);
+
+				self::assertFalse($this->thumbnailFor(array(e_UC_GUEST), 'e_IMAGE/logo.png')->checkSrc(),
+					'a cached '.var_export($garbage, true).' was read as an index that restricts nothing');
+			}
+		}
+
+		public function testALibraryThatCannotBeReadAdmitsNobody()
+		{
+			$index = new RestrictedMedia(e107::getCache(), $this->make('e_db_pdo', array('execute' => false)));
+
+			self::assertSame((string) e_UC_NOBODY, $index->classOf('{e_IMAGE}logo.png'));
+			self::assertSame(array(), $this->indexEntries(), 'a failed read was cached as an index');
+		}
+
+		public function testEachLanguageTableHasAnIndexOfItsOwn()
+		{
+			$this->restrictMediaRow('{e_IMAGE}logo.png', '253');
+			self::assertSame('253', (new RestrictedMedia(e107::getCache(), e107::getDb()))->classOf('{e_IMAGE}logo.png'));
+
+			$french = $this->make('e_db_pdo', array('hasLanguage' => 'lan_french_core_media', 'execute' => false));
+
+			self::assertSame((string) e_UC_NOBODY, (new RestrictedMedia(e107::getCache(), $french))->classOf('{e_IMAGE}logo.png'),
+				'the index of core_media answered for lan_french_core_media');
+
+			e107::getCache()->set_sys(RestrictedMedia::CACHE_TAG.'_lan_french_core_media', '{}', true);
+			$this->forgetIndex();
+			self::assertSame(array(), $this->indexEntries(), 'forget() left the index of a language table behind');
+		}
+
+		public function testARequestThatWaitedForARebuildReadsTheIndexItWrote()
+		{
+			$reads = 0;
+			$cache = $this->make('ecache', array('retrieve_sys' => function () use (&$reads)
+			{
+				return (++$reads === 1) ? false : json_encode(array('{e_image}logo.png' => '253'));
+			}));
+
+			$queried = false;
+			$db = $this->make('e_db_pdo', array('execute' => function () use (&$queried)
+			{
+				$queried = true;
+
+				return false;
+			}));
+
+			self::assertSame('253', (new RestrictedMedia($cache, $db))->classOf('{e_IMAGE}logo.png'));
+			self::assertFalse($queried, 'the request read the library although the index was written while it waited');
+		}
+
+		public function testARowIsFoundWhateverTheCaseOfItsKey()
+		{
+			$this->restrictMediaRow('{e_MEDIA_IMAGE}p16unit/Äpfel.png', '253');
+
+			$index = new RestrictedMedia(e107::getCache(), e107::getDb());
+
+			self::assertSame('253', $index->classOf('{e_MEDIA_IMAGE}P16UNIT/äPFEL.PNG'));
+		}
+
+		public function testAPublicThumbnailOpensNoConnectionOnceTheIndexIsWarm()
+		{
+			$cold = $this->thumbPhp('e_THEME/bootstrap5/images/lumen.png');
+			$warm = $this->thumbPhp('e_THEME/bootstrap5/images/lumen.png');
+
+			self::assertSame(16, $cold['width'], 'thumb.php served no thumbnail, so nothing it did is evidence');
+			self::assertSame(1, $cold['connects'], 'building the index did not open exactly one connection');
+			self::assertSame(16, $warm['width'], 'thumb.php served no thumbnail, so nothing it did is evidence');
+			self::assertSame(0, $warm['connects'], 'a public thumbnail opened a database connection with the index warm');
+		}
+
+		/**
+		 * @param string $src a PNG
+		 * @return array 'width', of the PNG thumb.php served for $src at w=16 in a child of its own, and 'connects', how many database connections it opened
+		 */
+		private function thumbPhp($src)
+		{
+			$script = APP_PATH.'/thumb.php';
+
+			$php = "\$_GET = array('src' => ".var_export($src, true).", 'w' => '16'); ";
+			$php .= "\$_SERVER['QUERY_STRING'] = http_build_query(\$_GET); ";
+			$php .= "\$_SERVER['REQUEST_URI'] = '/thumb.php?'.\$_SERVER['QUERY_STRING']; ";
+			$php .= "\$_SERVER['SCRIPT_FILENAME'] = ".var_export($script, true)."; ";
+			$php .= "\$_SERVER['PHP_SELF'] = \$_SERVER['SCRIPT_NAME'] = '/thumb.php'; ";
+			$php .= "\$_SERVER['HTTP_HOST'] = 'localhost'; ";
+			$php .= "define('E107_DBG_TRAFFIC', true); ";
+			$php .= "ob_start(); ob_start(); ";
+			$php .= "register_shutdown_function(function () { ";
+			$php .= "\$body = ''; while(ob_get_level() > 0) { \$body = ob_get_clean().\$body; } ";
+			$php .= "\$png = strpos(\$body, \"\\x89PNG\"); ";
+			$php .= "\$size = (\$png === false) ? false : getimagesizefromstring(substr(\$body, \$png)); ";
+			$php .= "\$who = e107::getSingleton('e107_traffic')->aTrafficWho; ";
+			$php .= "\$connects = isset(\$who['db Connect']) ? count(\$who['db Connect']) : 0; ";
+			$php .= "echo PHP_EOL.'THUMB-SENT:'.json_encode(array('width' => \$size ? \$size[0] : 0, 'connects' => \$connects)).PHP_EOL; }); ";
+			$php .= "require(".var_export($script, true)."); ";
+
+			list($output) = $this->runInCli($php);
+
+			return self::reportedAfter($output, 'THUMB-SENT:', 'the thumb.php child for '.$src);
+		}
+
 		/**
 		 * An e_thumbnail whose caller identity is supplied rather than looked
 		 * up. The class resolves it from USERCLASS_LIST or from a session, and
@@ -349,14 +517,14 @@
 					'media_usedby'      => '',
 					'media_tags'        => '',
 				))->execute();
-
-				return;
+			}
+			else
+			{
+				$this->restoreRows[$url] = $row['media_userclass'];
+				$this->reclassMediaRow($url, $class);
 			}
 
-			$this->restoreRows[$url] = $row['media_userclass'];
-
-			$sql->createQueryBuilder()->update('core_media')
-				->set('media_userclass', $class)->where('media_url', $url)->execute();
+			$this->forgetIndex();
 		}
 
 		/**
@@ -364,17 +532,58 @@
 		 */
 		private function releaseMediaRows()
 		{
-			$sql = e107::getDb();
-
 			foreach($this->restoreRows as $url => $class)
 			{
-				$sql->createQueryBuilder()->update('core_media')
-					->set('media_userclass', $class)->where('media_url', $url)->execute();
+				$this->reclassMediaRow($url, $class);
 			}
 
 			$this->restoreRows = array();
 
-			$sql->createQueryBuilder()->delete('core_media')->where('media_caption', 'p16unit')->execute();
+			e107::getDb()->createQueryBuilder()->delete('core_media')->where('media_caption', 'p16unit')->execute();
+
+			$this->forgetIndex();
+		}
+
+		/**
+		 * @return void
+		 */
+		private function forgetIndex()
+		{
+			(new RestrictedMedia(e107::getCache(), e107::getDb()))->forget();
+		}
+
+		/**
+		 * @return array the files the restricted-media index is held in
+		 */
+		private function indexEntries()
+		{
+			$entries = glob(e_CACHE_CONTENT.'S_'.RestrictedMedia::CACHE_TAG.'*.cache.php');
+
+			return $entries ? $entries : array();
+		}
+
+		/**
+		 * @return string the one file the restricted-media index is held in
+		 */
+		private function indexEntry()
+		{
+			$entries = $this->indexEntries();
+			self::assertCount(1, $entries, 'the index is not held in exactly one entry');
+
+			return $entries[0];
+		}
+
+		/**
+		 * Changes a row the way a write outside the media manager does, leaving the index as it was.
+		 *
+		 * @param string $url
+		 * @param string $class
+		 * @return void
+		 */
+		private function reclassMediaRow($url, $class)
+		{
+			e107::getDb()->createQueryBuilder()->update('core_media')
+				->set('media_userclass', $class)->where('media_url', $url)->execute();
 		}
 
 		public function testPlaceholderImage()

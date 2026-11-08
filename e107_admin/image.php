@@ -12,6 +12,7 @@
 */
 
 use e107\Database\SqlFragment;
+use e107\Media\RestrictedMedia;
 
 if(!empty($_GET['action']) && $_GET['action'] === 'dialog')
 {
@@ -39,6 +40,11 @@ if(!$allowed)
 
 	e107::redirect('admin');
 	exit;
+}
+
+if(!empty($_POST))
+{
+	register_shutdown_function(array(new RestrictedMedia(e107::getCache(), e107::getDb()), 'forget'));
 }
 
 // TODO use library manager
