@@ -10,6 +10,7 @@
 
 
 
+use e107\Media\RestrictedMedia;
 use Intervention\Image\ImageManagerStatic as Image;
 
 /**
@@ -484,25 +485,9 @@ class e_thumbnail
 			return false;
 		}
 
-		$sql = e107::getDb();
+		$userclass = (new RestrictedMedia(e107::getCache(), e107::getDb()))->classOf($key);
 
-		if(!$sql->select('core_media', 'media_userclass', "media_url='".$sql->escape($key)."' LIMIT 1"))
-		{
-			// Avatars, and anything uploaded outside the media manager, have no
-			// row and are not the library's to restrict.
-			return false;
-		}
-
-		$row = $sql->fetch();
-
-		if(empty($row))
-		{
-			return false;
-		}
-
-		$userclass = trim((string) varset($row['media_userclass'], ''));
-
-		if($this->admitsEveryone($userclass))
+		if($userclass === null)
 		{
 			return false;
 		}
@@ -635,41 +620,6 @@ class e_thumbnail
 		}
 
 		return null;
-	}
-
-	/**
-	 * Whether $userclass restricts nobody, which is decided without working out
-	 * who is asking.
-	 *
-	 * The empty string is the column default rather than a restriction, so it
-	 * admits everyone; e107 has shipped rows carrying it since 1.0. e_UC_PUBLIC
-	 * is what e_media::import() and e_media::importFile() write into every row
-	 * they create, so it is the value nearly every library item carries.
-	 * Answering both without resolving the caller is what keeps the ordinary
-	 * thumbnail request free of a session, and its response free of the
-	 * Set-Cookie and Pragma headers that stop a shared cache storing it.
-	 *
-	 * @param string $userclass trimmed value of core_media.media_userclass
-	 * @return bool
-	 */
-	private function admitsEveryone($userclass)
-	{
-		if($userclass === '')
-		{
-			return true;
-		}
-
-		foreach(explode(',', $userclass) as $class)
-		{
-			$class = trim($class);
-
-			if(is_numeric($class) && (int) $class === e_UC_PUBLIC)
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
