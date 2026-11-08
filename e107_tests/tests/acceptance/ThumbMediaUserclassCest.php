@@ -870,6 +870,8 @@ if(\$act === 'reset' || \$act === 'cleanup')
 	{
 		e107::getDb()->delete('core_media', "media_url='".e107::getDb()->escape(\$url)."'");
 	}
+
+	(new \\e107\\Media\\RestrictedMedia(e107::getCache(), e107::getDb()))->forget();
 }
 
 if(\$act === 'blankcookie')
@@ -904,6 +906,8 @@ if(\$act === 'seed')
 			\$seeded++;
 		}
 	}
+
+	(new \\e107\\Media\\RestrictedMedia(e107::getCache(), e107::getDb()))->forget();
 
 	echo 'SEEDED='.((\$seeded === count(\$rows)) ? '1' : '0')."\n";
 	echo 'SEEDCOUNT='.\$seeded."\n";
