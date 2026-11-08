@@ -104,6 +104,14 @@ class e107_eventTest extends \Test\Unit
 
 	}
 
+	public function testAMethodThatIsNotStaticRunsOnAnInstanceOfItsClass()
+	{
+		$event = new e107_event();
+		$event->register('e107help_probe', array('e107help_event_instance', 'classItRanOn'));
+
+		self::assertSame('e107help_event_instance', $event->trigger('e107help_probe'));
+	}
+
 	/**
 	 * register() appends to functions[] every time but to includes[] only when
 	 * an include was given, while trigger() walks the two in lockstep by index.
@@ -156,5 +164,16 @@ if(!function_exists('e107help_event_never'))
 	function e107help_event_never($data, $eventname)
 	{
 		return null;
+	}
+}
+
+if(!class_exists('e107help_event_instance'))
+{
+	class e107help_event_instance
+	{
+		public function classItRanOn($data, $eventname)
+		{
+			return isset($this) ? get_class($this) : null;
+		}
 	}
 }

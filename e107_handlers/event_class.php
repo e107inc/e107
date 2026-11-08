@@ -241,7 +241,7 @@ class e107_event
 						    list($staticClass, $staticMethod) = explode('::', $method, 2);
 						    $ret = $staticClass::$staticMethod($data, $eventname);
 						}
-						elseif(is_callable([$class, $method]))
+						elseif(method_exists($class, $method) && (new ReflectionMethod($class, $method))->isStatic())
 						{
 						    $ret = $class::$method($data, $eventname); // Call statically from within the same class.
 						}
