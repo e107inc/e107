@@ -11,6 +11,8 @@
 
 class e_db_pdoTest extends e_db_abstractTest
 {
+	use \Test\BootedCli;
+
 	protected function makeDb()
 	{
 		return $this->make('e_db_pdo');
@@ -293,6 +295,30 @@ class e_db_pdoTest extends e_db_abstractTest
 			'a failed backup has to leave an error number behind');
 		$this->assertNotSame('', $this->db->getLastErrorText(),
 			'a failed backup has to say why');
+	}
+
+	public function testABackupLeavesNoConnectionOfItsOwn()
+	{
+		$poll = new ReflectionClass('Test\Poll');
+
+		$php = "require_once(".var_export($poll->getFileName(), true)."); ";
+		$php .= "\$db = e107::getDb(); ";
+		$php .= "\$open = function () use (\$db) { ";
+		$php .= "\$db->db_Query(array('PREPARE' => 'SELECT ID FROM information_schema.PROCESSLIST WHERE DB = :db', 'BIND' => array('db' => array('value' => e107::getMySQLConfig('defaultdb'), 'type' => PDO::PARAM_STR))), null, 'db_Select'); ";
+		$php .= "\$ids = array(); while(\$row = \$db->fetch()) { \$ids[] = (int) \$row['ID']; } return \$ids; }; ";
+		$php .= "\$before = \$open(); ";
+		$php .= "\$seen = in_array((int) \$db->retrieve('SELECT CONNECTION_ID()'), \$before, true); ";
+		$php .= "\$file = \$db->backup('user', null, array('gzip' => false, 'nologs' => false, 'droptable' => false)); ";
+		$php .= "\$left = array(); ";
+		$php .= "\\Test\\Poll::until(function () use (\$open, \$before, &\$left) { \$left = array_values(array_diff(\$open(), \$before)); return empty(\$left); }, 2); ";
+		$php .= "echo PHP_EOL.'BACKUP-CONNECTIONS:'.json_encode(array('seen' => \$seen, 'backup' => \$file !== false, 'left' => \$left)).PHP_EOL; ";
+
+		list($output) = $this->runInBootedCli($php);
+		$result = self::reportedAfter($output, 'BACKUP-CONNECTIONS:', 'the backup child');
+
+		$this->assertTrue($result['seen'], 'the child could not find its own session in PROCESSLIST, so an empty difference proves nothing');
+		$this->assertTrue($result['backup'], 'the backup itself failed, so it proves nothing about its connection');
+		$this->assertSame(array(), $result['left'], 'the backup left server connection(s) open after it returned');
 	}
 
 	/**
