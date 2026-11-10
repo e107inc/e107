@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:x="https://example.test/x">
+  <channel>
+    <title>Image edge cases</title>
+    <description>Desc</description>
+    <x:image>Namespaced image text</x:image>
+    <image><url>https://example.test/c.png</url><x:extra>image extension</x:extra></image>
+    <textInput><x:hint>hint</x:hint><title>TI</title></textInput>
+    <item>
+      <title>Item with image</title>
+      <image><url>https://example.test/item.png</url></image>
+    </item>
+  </channel>
+</rss>

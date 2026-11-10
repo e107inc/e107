@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<atom:feed xmlns:atom="http://www.w3.org/2005/Atom">
+  <atom:title>Prefixed feed</atom:title>
+  <atom:entry>
+    <atom:title>First prefixed entry</atom:title>
+    <atom:id>p1</atom:id>
+  </atom:entry>
+  <atom:entry>
+    <atom:title>Second prefixed entry</atom:title>
+    <atom:id>p2</atom:id>
+  </atom:entry>
+</atom:feed>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="feed.xsl"?>
+<!-- A comment before the root -->
+<rss version="2.0">
+  <!-- A comment inside -->
+  <channel>
+    <title>Styled<!-- inline comment --> feed</title>
+    <description>Desc</description>
+    <item><title>Item<?pi data?> title</title></item>
+  </channel>
+</rss>
