@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<rss version="0.92">
+  <channel>
+    <title>Version 0.92</title>
+    <link>https://example.test/</link>
+    <description>With cloud</description>
+    <cloud domain="rpc.example.test" port="80" path="/RPC2" registerProcedure="notify" protocol="xml-rpc"/>
+    <item>
+      <description>Item without a title</description>
+      <enclosure url="https://example.test/a.mp3" length="1" type="audio/mpeg"/>
+    </item>
+  </channel>
+</rss>

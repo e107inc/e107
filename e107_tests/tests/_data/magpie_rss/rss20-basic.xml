@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example Channel</title>
+    <link>https://example.test/</link>
+    <description>An example feed for testing.</description>
+    <language>en-gb</language>
+    <copyright>Copyright 2026 Example</copyright>
+    <lastBuildDate>Sat, 07 Nov 2026 10:00:00 GMT</lastBuildDate>
+    <pubDate>Sat, 07 Nov 2026 09:00:00 +0100</pubDate>
+    <generator>Hand written</generator>
+    <ttl>60</ttl>
+    <image>
+      <url>https://example.test/logo.png</url>
+      <title>Example Logo</title>
+      <link>https://example.test/</link>
+      <width>88</width>
+      <height>31</height>
+    </image>
+    <textInput>
+      <title>Search</title>
+      <description>Search the site</description>
+      <name>q</name>
+      <link>https://example.test/search</link>
+    </textInput>
+    <item>
+      <title>First item</title>
+      <link>https://example.test/1</link>
+      <description>The first item.</description>
+      <author>author@example.test (Ann Author)</author>
+      <category>News</category>
+      <category domain="https://example.test/tags">Second category</category>
+      <comments>https://example.test/1#comments</comments>
+      <enclosure url="https://example.test/1.mp3" length="12345" type="audio/mpeg"/>
+      <guid isPermaLink="false">item-1</guid>
+      <pubDate>Fri, 06 Nov 2026 08:30:00 GMT</pubDate>
+      <source url="https://other.test/feed">Other</source>
+    </item>
+    <item>
+      <title>Second item</title>
+      <link>https://example.test/2</link>
+      <description>The second item.</description>
+      <pubDate>not a date</pubDate>
+    </item>
+    <item>
+      <title>Third item, no date</title>
+      <guid>https://example.test/3</guid>
+    </item>
+  </channel>
+</rss>
