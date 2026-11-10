@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Content src</title>
+  <entry>
+    <title>Out of line</title>
+    <id>s1</id>
+    <updated>2026-11-01T00:00:00Z</updated>
+    <content type="video/mp4" src="https://example.test/v.mp4"/>
+    <summary type="html">&lt;b&gt;bold summary&lt;/b&gt;</summary>
+  </entry>
+</feed>

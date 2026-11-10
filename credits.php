@@ -44,7 +44,7 @@ if (!defined('e107_INIT'))
 				
 	                     <h4 class="text-info">Third Party Code</h4>
 	                    <p>
-	                        jQuery, Twitter Bootstrap, FontAwesome, HybridAuth, PhpMailer, Intervention, Minify, MagpieRSS, PCLZip, PCLTar, TinyMCE, Nuvolo Icons, TCPDF, PHP UTF8
+	                        jQuery, Twitter Bootstrap, FontAwesome, HybridAuth, PhpMailer, Intervention, Minify, PCLZip, PCLTar, TinyMCE, Nuvolo Icons, TCPDF, PHP UTF8
 	                    </p>
                    		<h4 class="text-info">Sponsors</h4>
 	                    <p>
