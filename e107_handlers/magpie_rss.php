@@ -86,7 +86,7 @@ class MagpieRSS
 	/** @var string|null RSS or ATOM, or null when no feed root was recognised */
 	public $feed_type = null;
 
-	/** @var string|null the feed's version ('2.0', '1.0', '0.3' ...), or null when the root names none */
+	/** @var string|null the feed's version ('2.0', '1.0', '0.3' ...), or null for RSS that names none */
 	public $feed_version = null;
 
 	/** @var string the output encoding asked for, as given; '' when none was */
@@ -546,7 +546,7 @@ class MagpieRSS
 	}
 
 	/**
-	 * Files a content construct the document left open, then, for a feed that names its version, fills the keys every feed of a type is expected to have (RSS 'tagline' and 'summary', Atom 'description', 'date_timestamp' ...); safe to call again.
+	 * Files a content construct the document left open, then fills the keys every feed of a type is expected to have (RSS 'tagline' and 'summary', Atom 'description', 'date_timestamp' ...); safe to call again.
 	 *
 	 * @return void
 	 */
@@ -558,7 +558,7 @@ class MagpieRSS
 		{
 			$this->normaliseAtom();
 		}
-		elseif($this->is_rss())
+		elseif($this->feed_type === RSS)
 		{
 			$this->normaliseRss();
 		}
@@ -577,7 +577,7 @@ class MagpieRSS
 	/**
 	 * Tells whether the document is Atom.
 	 *
-	 * @return string|false|null the Atom version, null for Atom that names none, or false for anything else
+	 * @return string|false the Atom version ('1.0' when the feed names none), or false for anything else
 	 */
 	public function is_atom()
 	{
@@ -1436,8 +1436,9 @@ class MagpieRSS
 	{
 		if($local === 'feed')
 		{
+			$version = $this->attribute($attrs, 'version');
 			$this->feed_type = ATOM;
-			$this->feed_version = $this->attribute($attrs, 'version');
+			$this->feed_version = $version === null ? '1.0' : $version;
 			$this->roles = array('channel' => 'channel', 'item' => 'item', 'entry' => 'item', 'link' => 'link');
 			$this->roles = array_merge($this->roles, array_fill_keys($this->_CONTENT_CONSTRUCTS, 'construct'));
 			$this->enter('channel', array());
@@ -1752,13 +1753,20 @@ class MagpieRSS
 	}
 
 	/**
-	 * Copies Atom fields to the names RSS uses ('description', content:encoded) and dates entries by 'issued', else 'modified'.
+	 * Copies Atom fields to the names RSS uses ('description', content:encoded) and dates entries; Atom 1.0 names map onto Atom 0.3's.
 	 *
 	 * @return void
 	 */
 	private function normaliseAtom()
 	{
-		$dates = array('issued', 'modified');
+		$atom10 = $this->feed_version === '1.0';
+		$dates = $atom10 ? array('issued', 'published', 'modified', 'updated') : array('issued', 'modified');
+
+		if($atom10 && !isset($this->channel['tagline']) && isset($this->channel['subtitle']) && is_string($this->channel['subtitle']) && trim($this->channel['subtitle'], " \t\r\n") !== '')
+		{
+			$this->channel['tagline'] = $this->channel['subtitle'];
+		}
+
 		$this->channel['description'] = isset($this->channel['tagline']) ? $this->channel['tagline'] : null;
 
 		for(reset($this->items); ($index = key($this->items)) !== null; next($this->items))

@@ -868,21 +868,42 @@ class MagpieRSSTest extends \Codeception\Test\Unit
 		$this->assertSame(array(), $report['channel']);
 	}
 
-	public function testFeedsThatNameNoVersionAreNotNormalised()
+	public function testAtom10IsNormalisedOntoTheAtom03Keys()
 	{
-		$atom = $this->fixture('atom10');
+		$rss = $this->fixture('atom10');
+
+		$this->assertSame('1.0', $rss->feed_version);
+		$this->assertSame('1.0', $rss->is_atom());
+		$this->assertSame('Atom 1.0 subtitle', $rss->channel['tagline']);
+		$this->assertSame('Atom 1.0 subtitle', $rss->channel['description']);
+		$this->assertSame('Rights statement', $rss->channel['rights']);
+		$this->assertArrayNotHasKey('copyright', $rss->channel);
+		$this->assertArrayNotHasKey('lastbuilddate', $rss->channel);
+		$this->assertSame('Entry summary text', $rss->items[0]['description']);
+		$this->assertSame(array('encoded' => '<p>HTML <em>content</em></p>'), $rss->items[0]['content']);
+		$this->assertSame(1793953800, $rss->items[0]['date_timestamp']);
+		$this->assertSame(1793890800, $rss->items[1]['date_timestamp']);
+
+		$bare = $this->fixture('atom10-content-src');
+
+		$this->assertNull($bare->channel['description']);
+		$this->assertArrayNotHasKey('tagline', $bare->channel);
+		$this->assertArrayNotHasKey('atom_content', $bare->items[0]);
+		$this->assertSame(1793491200, $bare->items[0]['date_timestamp']);
+	}
+
+	public function testRssWithoutAVersionIsNormalised()
+	{
 		$rss = $this->fixture('rss-without-version');
 
-		$this->assertNull($atom->feed_version);
-		$this->assertNull($atom->is_atom());
-		$this->assertArrayNotHasKey('description', $atom->channel);
-		$this->assertArrayNotHasKey('tagline', $atom->channel);
-		$this->assertArrayNotHasKey('description', $atom->items[0]);
-		$this->assertArrayNotHasKey('content', $atom->items[0]);
-		$this->assertArrayNotHasKey('date_timestamp', $atom->items[0]);
 		$this->assertNull($rss->feed_version);
 		$this->assertNull($rss->is_rss());
-		$this->assertArrayNotHasKey('tagline', $rss->channel);
+		$this->assertSame('Desc', $rss->channel['tagline']);
+
+		$dated = $this->parse('<rss><channel><item><description>D</description><pubDate>Fri, 06 Nov 2026 08:30:00 GMT</pubDate></item></channel></rss>');
+
+		$this->assertSame('D', $dated->items[0]['summary']);
+		$this->assertSame(1793953800, $dated->items[0]['date_timestamp']);
 	}
 
 	public function testNormaliseCanRunAgainWithoutChangingTheResult()
@@ -941,6 +962,16 @@ class MagpieRSSTest extends \Codeception\Test\Unit
 		$rss = $this->parse('<feed><entry><link rel="alternate" href=""/><link rel="alternate" href="https://example.test/real"/><link rel="self"/><link href=""/></entry></feed>');
 
 		$this->assertSame(array('link' => 'https://example.test/real'), $rss->items[0]);
+	}
+
+	public function testAWhitespaceOnlySubtitleFillsNeitherTaglineNorDescription()
+	{
+		$rss = $this->parse("<feed><subtitle type=\"xhtml\">\n  <div xmlns=\"http://www.w3.org/1999/xhtml\">Sub</div>\n</subtitle></feed>");
+
+		$this->assertSame("\n  \n", $rss->channel['subtitle']);
+		$this->assertSame('Sub', $rss->channel['subtitle_div']);
+		$this->assertArrayNotHasKey('tagline', $rss->channel);
+		$this->assertNull($rss->channel['description']);
 	}
 
 	public function testOverridesOfAppendConcatAndTheEventsSeeEveryTextRunAndLink()
