@@ -26,6 +26,7 @@ namespace Test;
 class Unit extends \Codeception\Test\Unit
 {
 	use \Helper\PhpUnitCompat;
+	use \Test\ProcessorTime;
 
 	/** TEST-NET-2 (RFC 5737): the range the suite's subprocesses present themselves from. */
 	const VISITOR_ADDRESS_PREFIX = '198.51.100.';
@@ -659,40 +660,6 @@ class Unit extends \Codeception\Test\Unit
 	private function parserProperty($setting)
 	{
 		return new \e107\Reflection\ReflectionProperty('e_parse', $setting);
-	}
-
-	/**
-	 * The least processor time $run takes on each of $inputs, over three rounds that visit every input in turn.
-	 *
-	 * @param callable $run called with one input
-	 * @param array    $inputs keyed by name
-	 * @return float[] seconds, keyed as $inputs
-	 */
-	protected static function leastProcessorTimes($run, array $inputs)
-	{
-		$took = array_fill_keys(array_keys($inputs), INF);
-
-		for($round = 0; $round < 3; $round++)
-		{
-			foreach($inputs as $name => $input)
-			{
-				$start = self::processorTime();
-				$run($input);
-				$took[$name] = min($took[$name], self::processorTime() - $start);
-			}
-		}
-
-		return $took;
-	}
-
-	/**
-	 * @return float seconds of processor time this process has used, in user and in kernel mode
-	 */
-	private static function processorTime()
-	{
-		$usage = getrusage();
-
-		return $usage['ru_utime.tv_sec'] + $usage['ru_stime.tv_sec'] + ($usage['ru_utime.tv_usec'] + $usage['ru_stime.tv_usec']) / 1000000;
 	}
 
 	/**
