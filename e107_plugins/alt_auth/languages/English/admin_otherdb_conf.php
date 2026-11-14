@@ -39,5 +39,7 @@ return [
     'OTHERDB_LAN_13' => "(Leave blank if not used)",
     'OTHERDB_LAN_14' => "Email address Field:",
     'OTHERDB_LAN_15' => "MySQL - generic database",
+    'SHOW_COPY_HELP' => true,
+    'SHOW_CONVERSION_HELP' => true,
     'LAN_AUTHENTICATE_HELP' => "This authentication method is used to validate against a non-E107 database. The password must be stored in one of the supported formats.",
 ];
