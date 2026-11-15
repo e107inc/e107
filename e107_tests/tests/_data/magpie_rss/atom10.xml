@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">Atom 1.0 Feed</title>
+  <subtitle>Atom 1.0 subtitle</subtitle>
+  <link rel="self" href="https://example.test/atom"/>
+  <link rel="alternate" type="text/html" href="https://example.test/"/>
+  <link href="https://example.test/norel"/>
+  <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
+  <updated>2026-11-07T10:00:00Z</updated>
+  <rights>Rights statement</rights>
+  <generator uri="https://example.test/gen" version="1.0">Generator</generator>
+  <author><name>Feed Author</name><email>feed@example.test</email></author>
+  <entry>
+    <title>Atom 1.0 entry</title>
+    <link rel="alternate" href="https://example.test/e1"/>
+    <link rel="enclosure" type="audio/mpeg" length="1" href="https://example.test/e1.mp3"/>
+    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+    <published>2026-11-06T09:30:00+01:00</published>
+    <updated>2026-11-06T10:00:00Z</updated>
+    <author><name>Entry Author</name></author>
+    <category term="news" label="News"/>
+    <summary type="text">Entry summary text</summary>
+    <content type="html">&lt;p&gt;HTML &lt;em&gt;content&lt;/em&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">XHTML <b>title</b></div></title>
+    <id>e2</id>
+    <updated>2026-11-05T10:00:00-05:00</updated>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>XHTML <a href="https://example.test/x">body</a></p></div></content>
+  </entry>
+</feed>

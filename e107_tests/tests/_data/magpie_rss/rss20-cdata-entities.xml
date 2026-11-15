@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Fish &amp; Chips &#8212; &#x2603; caf&#233;</title>
+    <link>https://example.test/?a=1&amp;b=2</link>
+    <description>&lt;p&gt;Escaped &lt;em&gt;HTML&lt;/em&gt;&lt;/p&gt;</description>
+    <item>
+      <title><![CDATA[CDATA <title> & stuff]]></title>
+      <description><![CDATA[<p>Paragraph one.</p>
+<p>Paragraph two with <a href="https://example.test/?x=1&y=2">a link</a>.</p>]]></description>
+      <link>https://example.test/cdata</link>
+    </item>
+    <item>
+      <title>Mixed &quot;quotes&quot; &apos;apos&apos; &gt; &lt;</title>
+      <description>Text before <![CDATA[<b>cdata</b>]]> text after</description>
+    </item>
+  </channel>
+</rss>

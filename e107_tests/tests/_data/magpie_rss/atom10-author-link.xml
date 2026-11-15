@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Author link</title>
+  <entry>
+    <title>Entry with an author link</title>
+    <author><link href="https://example.test/ann"/><name>Ann</name></author>
+  </entry>
+</feed>

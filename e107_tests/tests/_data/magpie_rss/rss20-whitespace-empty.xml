@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>
+      Padded Title
+    </title>
+    <link>https://example.test/</link>
+    <description/>
+    <item>
+      <title>  spaced  </title>
+      <description></description>
+      <link/>
+    </item>
+    <item>
+      <title>Multi
+line
+title</title>
+    </item>
+  </channel>
+</rss>

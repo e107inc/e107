@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Broken</title>
+    <description>Desc</description>
+    <item>
+      <title>Before the break</title>
+    </item>
+    <item>
+      <title>Mismatched</titel>
+    </item>
+  </channel>
+</rss>

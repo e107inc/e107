@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Nested</title>
+    <description>Channel desc</description>
+    <custom>
+      <inner>Channel inner value</inner>
+      <inner>Repeated inner value</inner>
+    </custom>
+    <item>
+      <title>Nested item</title>
+      <foo>foo text<bar>bar text</bar>after bar<baz><qux>deep</qux></baz></foo>
+      <ext:thing xmlns:ext="https://example.test/ext">
+        <ext:sub>namespaced sub</ext:sub>
+        <plain>plain in ns parent</plain>
+      </ext:thing>
+      <after>after namespaced</after>
+    </item>
+  </channel>
+</rss>

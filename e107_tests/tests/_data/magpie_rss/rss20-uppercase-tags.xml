@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RSS VERSION="2.0">
+  <CHANNEL>
+    <Title>Upper Channel</Title>
+    <Link>https://example.test/</Link>
+    <Description>Upper description</Description>
+    <ITEM>
+      <TITLE>Upper item</TITLE>
+      <PubDate>Wed, 04 Nov 2026 00:00:00 GMT</PubDate>
+    </ITEM>
+  </CHANNEL>
+</RSS>
