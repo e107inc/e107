@@ -825,23 +825,24 @@ $(document).ready(function()
 			}
 		};
 		
+		var highlightNavLink = function (links, link) {
+			$(links).closest("li").removeClass("active");
+			$(links).switchClass( "link-active", "link", 0 );
+			$(link).switchClass( "link", "link-active", 30 );
+			$(link).closest("li").addClass("active");
+		};
+		
 		 $(panelLinks).click(function () {
 		 	$(panelLinks).each(function(index) {
     			var ot = $(this).attr("href");
     			if (ot.split('#')[1]) {
                     $(ot).hide().removeClass('e-hideme');
                 }
-				$(this).closest("li").removeClass("active");
-				$(this).switchClass( "link-active", "link", 0 );
 			});
-
-
-
 
 	   		var id = $(this).attr("href"), hash = id.split('#')[1];
 	   		
-			$(this).switchClass( "link", "link-active", 30 );
-			$(this).closest("li").addClass("active");
+			highlightNavLink(panelLinks, this);
 
 			// 'remember' the active navigation pane
 			if(hash) {
@@ -1156,7 +1157,9 @@ $(document).ready(function()
 
 
 
-		$("a.menuManagerSelect").click(function(e){
+		var layoutLinks = "a.menuManagerSelect";
+
+		$(layoutLinks).click(function(e){
 
 
 			var link = $(this).attr('data-url');
@@ -1165,6 +1168,7 @@ $(document).ready(function()
 			$('#curLayout').val(layout);
 			$('ul.e-mm-selector').hide();
 			$('form#e-mm-selector').attr('action',link);
+			highlightNavLink(layoutLinks, this);
 
 			var text = $(this).text();
 			$(this).html(text + ' <i class="e-mm-select-loading fa fa-spin fa-spinner"></i>');
