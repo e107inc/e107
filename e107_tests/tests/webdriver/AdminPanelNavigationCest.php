@@ -21,6 +21,7 @@ class AdminPanelNavigationCest
 	const PREFS = '/e107_admin/prefs.php';
 
 	const PANE_CLASS = 'e-nav-pane';
+	const LAYOUT_LINK = 'a.menuManagerSelect';
 
 	public function _before(\WebDriverTester $I)
 	{
@@ -60,6 +61,7 @@ class AdminPanelNavigationCest
 		$I->click("//a[@href='#list-new-recent-menu']");
 		$I->waitForElementVisible('#list-new-recent-menu', 10);
 		$I->dontSeeElement('#list-new-recent-page');
+		$this->seeOnlyHighlighted($I, 'a.'.self::PANE_CLASS, "[href='#list-new-recent-menu']");
 	}
 
 	public function aRememberedPanelIsRestoredFromTheFragment(\WebDriverTester $I)
@@ -131,8 +133,8 @@ class AdminPanelNavigationCest
 		$I->seeElementInDOM('.plugin-navigation a.'.self::PANE_CLASS);
 
 		$I->amOnPage(self::MENUS);
-		$I->seeElement('a.menuManagerSelect');
-		$I->dontSeeElementInDOM('a.menuManagerSelect.'.self::PANE_CLASS);
+		$I->seeElement(self::LAYOUT_LINK);
+		$I->dontSeeElementInDOM(self::LAYOUT_LINK.'.'.self::PANE_CLASS);
 
 		$I->amOnPage(self::DOCS);
 		$I->seeElement('.docs-item');
@@ -142,6 +144,30 @@ class AdminPanelNavigationCest
 			for(var i = 0; i < items.length; i++) { if(items[i].offsetParent !== null) { shown++; } }
 			return shown;
 		"), 'docs.php shows exactly one help item');
+	}
+
+	/**
+	 * Menu Manager's links have their own handler, so it must move the highlight to the layout it loads (#6918).
+	 */
+	public function aMenuManagerLayoutLinkTakesTheHighlight(\WebDriverTester $I)
+	{
+		$I->wantTo('pick a Menu Manager layout and see the highlight move to it');
+		$I->amOnPage(self::MENUS);
+		$I->seeElement('li.active > '.self::LAYOUT_LINK.'.link-active#plugin-navigation-jumbotron-sidebar-right');
+
+		$I->click('#plugin-navigation-jumbotron-full');
+		$I->waitForElement('#plugin-navigation-jumbotron-full .e-mm-select-loading', 10);
+		$this->seeOnlyHighlighted($I, self::LAYOUT_LINK, '#plugin-navigation-jumbotron-full');
+	}
+
+	/**
+	 * Waits for the highlight to land on $target, then checks no other link in $links kept it.
+	 */
+	private function seeOnlyHighlighted(\WebDriverTester $I, $links, $target)
+	{
+		$I->waitForElement('li.active > '.$links.'.link-active'.$target, 10);
+		$I->assertSame(1, (int) $I->executeJS('return document.querySelectorAll(arguments[0]).length;', array($links.'.link-active')));
+		$I->assertSame(1, (int) $I->executeJS('return document.querySelectorAll(arguments[0]).length;', array('li.active > '.$links)));
 	}
 
 	/**
