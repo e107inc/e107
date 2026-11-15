@@ -3025,8 +3025,8 @@ class e107plugin
 		}
 		else // Plugin Path.
 		{
-			$id = $this->getId($id);
-			$plug = e107plugin::getPluginRecord($id); // Get plugin info from DB
+			$plug = e107plugin::getPluginRecord($id); // Get plugin info from DB by path
+			$id = (int) $plug['plugin_id'];
 		}
 				
 		$this->current_plug = $plug;
