@@ -54,7 +54,7 @@ tmpfs database, and its own dependency (vendor) volume. You can run several
 at once; `e107-tests list` shows every harness env on the machine, across
 all worktrees, and marks this worktree's active one with `*`.
 
-Validated PHP versions: `5.6`, `7.0`, `7.4`, `8.0`, `8.1`, `8.2`.
+Validated PHP versions: `5.6`, `7.0`, `7.4`, `8.0`, `8.1`, `8.2`, `8.5`, `8.6`.
 Validated DB images: `mariadb:10.6`, `mariadb:10.11`, `mariadb:11.4`,
 `mysql:5.7`, `mysql:8.0`. Anything supported by the upstream
 `php:<ver>-apache` or `mariadb`/`mysql` Docker Hub images should work.
@@ -118,7 +118,7 @@ run `composer install` in `e107_tests/` on the host yourself.
 ### One lock per PHP range
 
 `composer.json` uses union constraints because one file has to serve every
-cell in the PHP 5.6-8.5 matrix, and composer picks the highest branch the
+cell in the PHP 5.6-8.6 matrix, and composer picks the highest branch the
 running PHP can satisfy. What it picks depends on where upstream dropped a
 PHP version, so one lock cannot serve the whole range; there is one per
 range instead, each resolved on the oldest PHP it serves so every newer PHP
@@ -126,7 +126,8 @@ in the range installs it unchanged (JSON can't carry comments, so the
 rationale lives here):
 
 - `composer.lock`: resolved on the PHP that `config.platform.php` in
-  `composer.json` declares (8.1), and installed as-is from there up.
+  `composer.json` declares (8.1), and installed as-is on every newer PHP its
+  packages accept.
 - `composer.php7.4.lock`: resolved on PHP 7.4 and installed on 7.4 and 8.0.
   Codeception 4.2 with the 1.x modules, Twig 1.x and PHPUnit 9.
 - `composer.php5.6.lock`: resolved on PHP 5.6 and installed on 5.6 and 7.0.

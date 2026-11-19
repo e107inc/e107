@@ -46,12 +46,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # The ends of the supported range and two points inside it. 8.5 is
-        # the newest PHP an e107 v2.3 site is likely to meet, and 8.0 is the
-        # release that turned a long list of PHP's warnings into Errors, so
-        # those two are where a version break tends to show. The 8.1 and 8.2
-        # cells they replace now sit between two cells that do run.
-        php: ['5.6', '7.0', '7.4', '8.0', '8.5']
+        # The ends of the supported range and two points inside it. The
+        # newest cell is the newest PHP an e107 v2.3 site is likely to meet,
+        # and 8.0 is the release that turned a long list of PHP's warnings into
+        # Errors, so those two are where a version break tends to show. The
+        # releases between them sit between two cells that do run.
+        #
+        # The official images are built ZTS from 8.6 on: chdir() there moves
+        # only PHP's own idea of the working directory, so a proc_open() child
+        # given no cwd starts in the directory the process started in.
+        php: ['5.6', '7.0', '7.4', '8.0', '8.6']
 
     runs-on: ubuntu-latest
 
