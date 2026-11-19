@@ -1430,7 +1430,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			$e107_vars = array_values($e107_vars);
 			eShims::usort($e107_vars, function ($a, $b)
 			{
-				return strcoll((string) varset($a['text']), (string) varset($b['text']));
+				return eShims::strcoll((string) varset($a['text']), (string) varset($b['text']));
 			});
 		}
 	
