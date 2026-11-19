@@ -15,6 +15,8 @@ namespace e107\SessionHandlers;
  */
 class DatabaseSessionHandler implements \SessionHandlerInterface
 {
+	use CreateSidTrait;
+
 	/**
 	 * Digest the session id is stored under, and the prefix that marks a row as
 	 * carrying one. Must be a {@see hash_algos()} name.
@@ -35,6 +37,11 @@ class DatabaseSessionHandler implements \SessionHandlerInterface
 	 * @var int|null
 	 */
 	protected $_lifetime = null;
+
+	/**
+	 * @var array|null the id {@see DatabaseSessionHandler::validateId()} last found readable, then the rows it found
+	 */
+	private $validated = null;
 
 	/**
 	 * @param \e_db $db connection the session table is read and written through
@@ -105,8 +112,13 @@ class DatabaseSessionHandler implements \SessionHandlerInterface
 	public function read($id)
 	{
 		$keys = self::storageKeys($id);
-		$rows = $this->readKeys($keys);
+		$rows = $this->rowsJustValidated($id);
 		list($key, $legacyKey) = $keys;
+
+		if(false === $rows)
+		{
+			$rows = $this->readKeys($keys);
+		}
 
 		if(false === $rows)
 		{
@@ -124,6 +136,31 @@ class DatabaseSessionHandler implements \SessionHandlerInterface
 		}
 
 		return '';
+	}
+
+	/**
+	 * @param string $id
+	 * @return bool whether a live row holds the session, and true when the table cannot be read
+	 */
+	#[\ReturnTypeWillChange]
+	public function validateId($id)
+	{
+		$rows = $this->readKeys(self::storageKeys($id));
+		$this->validated = false === $rows ? null : array($id, $rows);
+
+		return false === $rows || array() !== $rows;
+	}
+
+	/**
+	 * @param string $id
+	 * @return array|false the rows {@see DatabaseSessionHandler::validateId()} found for $id, once, as PHP reads straight after asking; false for anything else
+	 */
+	private function rowsJustValidated($id)
+	{
+		$validated = $this->validated;
+		$this->validated = null;
+
+		return null !== $validated && $validated[0] === $id ? $validated[1] : false;
 	}
 
 	/**

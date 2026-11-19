@@ -15,6 +15,8 @@ namespace e107\SessionHandlers;
  */
 class NonblockingFilesSessionHandler implements \SessionHandlerInterface
 {
+	use CreateSidTrait;
+
 	/**
 	 * @var string
 	 */
@@ -96,6 +98,16 @@ class NonblockingFilesSessionHandler implements \SessionHandlerInterface
 		$this->markSeen[$id] = $this->endMark($id);
 
 		return $this->readOwnFile($this->sessionFile($id));
+	}
+
+	/**
+	 * @param string $id
+	 * @return bool whether a file this process wrote holds the session
+	 */
+	#[\ReturnTypeWillChange]
+	public function validateId($id)
+	{
+		return SessionId::isWellFormed($id) && $this->isOwnFile($this->sessionFile($id));
 	}
 
 	/**

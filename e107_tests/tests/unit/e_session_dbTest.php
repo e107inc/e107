@@ -96,6 +96,27 @@ class e_session_dbTest extends \Test\Unit
 		$this->assertSame(1, $statements, 'the hashed and the legacy key are one lookup');
 	}
 
+	public function testAStrictStartLooksTheSessionUpWithOneStatement()
+	{
+		$this->haveRow(e_session_db::storageKey(self::ID), 'x|i:1;', time() + 600);
+		$handler = $this->handler;
+
+		list($data, $statements) = $this->counted(function() use ($handler) { $handler->validateId(e_session_dbTest::ID); return $handler->read(e_session_dbTest::ID); });
+
+		$this->assertSame('x|i:1;', $data);
+		$this->assertSame(1, $statements, 'the read PHP makes straight after asking takes the rows the question found');
+	}
+
+	public function testOnlyTheReadThatFollowsTheQuestionTakesItsRows()
+	{
+		$handler = $this->handler;
+		$handler->validateId(self::ID);
+		$this->haveRow(e_session_db::storageKey(self::ID), 'x|i:1;', time() + 600);
+
+		$this->assertSame('', $handler->read(self::PROBE_ID));
+		$this->assertSame('x|i:1;', $handler->read(self::ID), 'a read of another id spends the rows, so this one looks again');
+	}
+
 	public function testTheHashedRowIsPreferredOverALegacyOne()
 	{
 		$this->haveRow(e_session_db::storageKey(self::ID), 'hashed', time() + 600);
@@ -128,6 +149,46 @@ class e_session_dbTest extends \Test\Unit
 		$this->haveRow(self::ID, 'stale too', time() - 10);
 
 		$this->assertSame('', $this->handler->read(self::ID));
+	}
+
+	public function testALiveRowUnderEitherKeyIsAValidId()
+	{
+		$this->assertFalse($this->handler->validateId(self::ID), 'no row holds it');
+
+		$this->haveRow(self::ID, 'legacy', time() + 600);
+		$this->assertTrue($this->handler->validateId(self::ID), 'a row written before v2.3.12');
+
+		$this->forget();
+		$this->haveRow(e_session_db::storageKey(self::ID), 'hashed', time() + 600);
+		$this->assertTrue($this->handler->validateId(self::ID));
+	}
+
+	public function testAnExpiredRowIsNotAValidId()
+	{
+		$this->haveRow(e_session_db::storageKey(self::ID), 'stale', time() - 10);
+
+		$this->assertFalse($this->handler->validateId(self::ID));
+	}
+
+	public function testAnIdIsKeptWhenTheTableCannotBeRead()
+	{
+		$this->handler->setTable('session_table_that_is_not_there');
+
+		$this->assertTrue($this->handler->validateId(self::ID));
+	}
+
+	/**
+	 * Strict mode, on by default from PHP 8.6, keeps the id of a session that exists and gives an id nobody wrote a new one.
+	 */
+	public function testStrictModeKeepsALiveSessionAndReplacesAMadeUpOne()
+	{
+		$this->haveRow(e_session_db::storageKey(self::PROBE_ID), 'x|i:1;', time() + 600);
+
+		$this->assertSame(self::PROBE_ID, $this->idAfterStrictStart('new e_session_db()', self::PROBE_ID));
+
+		$given = $this->idAfterStrictStart('new e_session_db()', self::ID);
+		$this->assertNotSame(self::ID, $given);
+		$this->assertTrue(\e107\SessionHandlers\SessionId::isWellFormed($given), $given);
 	}
 
 	public function testDestroyRemovesBothKeysWithOneStatement()

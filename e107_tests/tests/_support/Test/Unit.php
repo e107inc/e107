@@ -540,6 +540,45 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Starts a session in a booted child under session.use_strict_mode, through the save handler $handler builds, for a request naming the session $id; skips on PHP 5.6, which never asks a save handler whether a session exists.
+	 *
+	 * @param string $handler PHP expression that constructs the save handler
+	 * @param string $id
+	 * @return string the id the session started under
+	 */
+	protected function idAfterStrictStart($handler, $id)
+	{
+		if(PHP_VERSION_ID < 70000)
+		{
+			$this->markTestSkipped('PHP 5.6 never asks a save handler whether a session exists');
+		}
+
+		$php = "session_write_close(); ini_set('session.use_strict_mode', '1'); session_id(".var_export($id, true)."); ";
+		$php .= "session_set_save_handler(".$handler.", true); ";
+		$php .= "session_start(); fwrite(STDERR, '@@'.session_id().'@@'); session_write_close();";
+
+		list($started) = $this->marksFromBootedCli($php, 1);
+
+		return $started;
+	}
+
+	/**
+	 * Runs $php in a booted child and returns what it wrote between @@ marks, failing unless there are $count of them.
+	 *
+	 * @param string $php statements that write each value they report as '@@'.$value.'@@'
+	 * @param int $count
+	 * @return string[]
+	 */
+	protected function marksFromBootedCli($php, $count)
+	{
+		list($output) = $this->runInBootedCli($php, self::BUFFERED);
+		$printed = implode("\n", $output);
+		$this->assertSame($count, preg_match_all('/@@([^@]*)@@/', $printed, $matches), $printed);
+
+		return $matches[1];
+	}
+
+	/**
 	 * The statements that boot e107 in a child of this run, so every child boots the one way whatever it was started for.
 	 *
 	 * @param array $e107 what $_E107 holds when class2.php boots
