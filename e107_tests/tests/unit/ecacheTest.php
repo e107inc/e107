@@ -263,7 +263,7 @@ PHP;
 				'-d', 'html_errors=0',
 				'-d', 'xdebug.mode=off',
 				$hammer,
-				e_HANDLER,
+				realpath(e_HANDLER),
 				$dir,
 				'1.0',
 				'hammer_tag',

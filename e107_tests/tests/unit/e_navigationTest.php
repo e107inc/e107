@@ -587,6 +587,56 @@
 
 		}
 
+		public function testAdminSortFollowsTheCollationOfTheLocale()
+		{
+			$vars = array(
+				'zebra'          => array('text' => 'Zebra', 'link' => '/e107_admin/zebra.php', 'icon' => ''),
+				'about'          => array('text' => 'about', 'link' => '/e107_admin/about.php', 'icon' => ''),
+				'administrators' => array('text' => 'Administrators', 'link' => '/e107_admin/administrators.php', 'icon' => ''),
+				'emoticon'       => array('text' => 'Émoticônes', 'link' => '/e107_admin/emoticon.php', 'icon' => ''),
+				'adminpassword'  => array('text' => 'Admin password', 'link' => '/e107_admin/adminpassword.php', 'icon' => ''),
+			);
+
+			$this->assertSame(array('adminpassword', 'administrators', 'zebra', 'about', 'emoticon'), $this->linkOrderIn(array('C'), $vars));
+			$this->assertSame(array('about', 'administrators', 'adminpassword', 'emoticon', 'zebra'), $this->linkOrderIn(array('tr_TR.UTF-8', 'tr_TR.utf8'), $vars));
+		}
+
+		/**
+		 * @param string[] $locales the LC_COLLATE names to try, in order
+		 * @param array $vars the links, as {@see e_navigation::admin()} takes them
+		 * @return string[] the admin page names the sorted links point at, in the order they appear
+		 */
+		private function linkOrderIn(array $locales, array $vars)
+		{
+			$restore = $this->withLocale(LC_COLLATE, $locales);
+
+			try
+			{
+				$html = e107::getNav()->admin('', 'no-active-page', $vars, $this->listTemplate(), false, true);
+			}
+			finally
+			{
+				$restore();
+			}
+
+			preg_match_all('#href="/e107_admin/([a-z]+)\.php"#', $html, $matches);
+
+			return $matches[1];
+		}
+
+		/**
+		 * @return array an explicit template, as the registry's may be empty once {@see e107Test::testGetCoreTemplate()} has loaded it with $override on
+		 */
+		private function listTemplate()
+		{
+			return array(
+				'start' => '<ul>',
+				'button' => '<li><a id="plugin-navigation-{LINK_ID}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'button_active' => '<li><a id="plugin-navigation-{LINK_ID}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'end' => '</ul>',
+			);
+		}
+
 		public function testAdminSortDeduplicatesSameNamedEntries()
 		{
 			$vars = array(
@@ -596,18 +646,8 @@
 				'delta' => array('text' => 'Aardvark',    'link' => '/e107_admin/delta.php', 'icon' => ''),
 			);
 
-			// Explicit template: the core admin template registry entry may hold
-			// an empty array when another test loaded it first with $override on
-			// (e107Test::testGetCoreTemplate), which would render nothing here.
-			$tmpl = array(
-				'start' => '<ul>',
-				'button' => '<li><a id="plugin-navigation-{LINK_ID}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
-				'button_active' => '<li><a id="plugin-navigation-{LINK_ID}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
-				'end' => '</ul>',
-			);
-
 			// Empty title returns the raw <ul> list instead of echoing a tablerender.
-			$result = e107::getNav()->admin('', 'no-active-page', $vars, $tmpl, false, true);
+			$result = e107::getNav()->admin('', 'no-active-page', $vars, $this->listTemplate(), false, true);
 
 			$this->assertSame(1, substr_count($result, 'href="/e107_admin/alpha.php"'));
 			$this->assertSame(1, substr_count($result, 'href="/e107_admin/beta.php"'));
