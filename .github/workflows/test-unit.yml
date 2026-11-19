@@ -58,7 +58,10 @@ jobs:
         # 7.4 closes the gap between them and 8.1: the last of the 7 line, and
         # the one cell where composer resolves Codeception 4 with PHPUnit 9,
         # a generation the 5.7 and 10 cells on either side never exercise.
-        php: ['5.6', '7.0', '7.4', '8.1', '8.2', '8.3', '8.4', '8.5']
+        # The official images are built ZTS from 8.6 on: chdir() there moves
+        # only PHP's own idea of the working directory, so a proc_open() child
+        # given no cwd starts in the directory the process started in.
+        php: ['5.6', '7.0', '7.4', '8.1', '8.2', '8.3', '8.4', '8.5', '8.6']
 
     runs-on: ubuntu-latest
 

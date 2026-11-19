@@ -142,6 +142,7 @@ RUN set -eux; \
 RUN set -eux; \
     if [ "$WITH_XDEBUG" = "yes" ]; then \
         PHPV=$(php -r 'echo PHP_MAJOR_VERSION * 100 + PHP_MINOR_VERSION;'); \
+        command -v pecl >/dev/null || { echo "The PHP $PHP_VERSION image ships no pecl to build Xdebug with; bring the env up without --xdebug." >&2; exit 1; }; \
         # Last Xdebug release supporting each interpreter, per e107 CI.
         if [ "$PHPV" -ge 800 ]; then \
             pecl install xdebug; \
