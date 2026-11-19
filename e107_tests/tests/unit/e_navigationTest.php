@@ -3,6 +3,7 @@
 
 	class e_navigationTest extends \Codeception\Test\Unit
 	{
+		use \Test\Locales;
 
 		protected function _before()
 		{
@@ -576,6 +577,49 @@
 			$result = e107::getNav()->adminCats();
 			$this->assertSame($expected, $result);
 
+		}
+
+		public function testAdminSortFollowsTheCollationOfTheLocale()
+		{
+			$vars = array(
+				'zebra'          => array('text' => 'Zebra', 'link' => '/e107_admin/zebra.php', 'icon' => ''),
+				'about'          => array('text' => 'about', 'link' => '/e107_admin/about.php', 'icon' => ''),
+				'administrators' => array('text' => 'Administrators', 'link' => '/e107_admin/administrators.php', 'icon' => ''),
+				'emoticon'       => array('text' => 'Émoticônes', 'link' => '/e107_admin/emoticon.php', 'icon' => ''),
+				'adminpassword'  => array('text' => 'Admin password', 'link' => '/e107_admin/adminpassword.php', 'icon' => ''),
+			);
+
+			$this->assertSame(array('adminpassword', 'administrators', 'zebra', 'about', 'emoticon'), $this->linkOrderIn(array('C'), $vars));
+			$this->assertSame(array('about', 'administrators', 'adminpassword', 'emoticon', 'zebra'), $this->linkOrderIn(array('tr_TR.UTF-8', 'tr_TR.utf8'), $vars));
+		}
+
+		/**
+		 * @param string[] $locales the LC_COLLATE names to try, in order
+		 * @param array $vars the links, as {@see e_navigation::admin()} takes them
+		 * @return string[] the admin page names the sorted links point at, in the order they appear
+		 */
+		private function linkOrderIn(array $locales, array $vars)
+		{
+			$tmpl = array(
+				'start' => '<ul>',
+				'button' => '<li><a href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'button_active' => '<li><a href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'end' => '</ul>',
+			);
+			$restore = $this->withLocale(LC_COLLATE, $locales);
+
+			try
+			{
+				$html = e107::getNav()->admin('', 'no-active-page', $vars, $tmpl, false, true);
+			}
+			finally
+			{
+				$restore();
+			}
+
+			preg_match_all('#href="/e107_admin/([a-z]+)\.php"#', $html, $matches);
+
+			return $matches[1];
 		}
 
 	}
