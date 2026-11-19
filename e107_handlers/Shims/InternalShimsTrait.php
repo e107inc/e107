@@ -20,6 +20,7 @@ trait InternalShimsTrait
 	use Internal\ReadfileTrait;
 	use Internal\SessionCreateIdTrait;
 	use Internal\SetcookieTrait;
+	use Internal\StrcollTrait;
 	use Internal\StrftimeTrait;
 	use Internal\StrptimeTrait;
 	use Internal\StrtolowerTrait;
