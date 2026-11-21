@@ -3390,9 +3390,8 @@ class e107
 	 * constant name so missing strings render visibly rather than as
 	 * empty space.
 	 *
-	 * Extraction results are cached keyed on sha1_file($path), so the
-	 * tokeniser runs only on cache miss (first request or after file edit).
-	 * APCu is used when available + enabled; otherwise a file under e_CACHE.
+	 * Extraction results are cached until the template changes, so the
+	 * tokeniser runs only on the first request after an edit.
 	 *
 	 * @param string $path absolute filesystem path to the template
 	 * @return bool true if the scan ran (file readable), false otherwise.
@@ -3448,8 +3447,7 @@ class e107
 
 	/**
 	 * Extract the set of LAN_* T_STRING tokens referenced as bare constants
-	 * in the given template. Results are cached keyed on sha1_file($path)
-	 * so the tokeniser only runs on cache miss.
+	 * in the given template, tokenising it only when it has changed.
 	 *
 	 * The scan is *not* transitive — only the supplied file is inspected.
 	 * Nested includes are expected to flow back through requireLegacyTemplate()
@@ -3460,78 +3458,29 @@ class e107
 	 */
 	protected static function _extractLanConstantsFromTemplate($path)
 	{
-		$realpath = realpath($path);
-		$key = $realpath !== false ? $realpath : $path;
+		static $cache = null;
 
-		// Process-local memoisation — same path resolved repeatedly in one request.
-		static $local = array();
-		if(isset($local[$key]))
+		if($cache === null)
 		{
-			return $local[$key];
+			$cache = self::sourceCache('lantokens');
 		}
 
-		$sig = @hash_file('sha256', $path);
-		if($sig === false)
-		{
-			$local[$key] = array();
-			return $local[$key];
-		}
+		$names = $cache->get($path, array(__CLASS__, '_extractLanConstantsFromSource'));
 
-		$cacheKey = 'lantokens_' . hash('sha256', $key) . '_' . $sig;
+		return is_array($names) ? $names : array();
+	}
 
-		// APCu first if available + enabled.
-		$apcuActive = function_exists('apcu_fetch')
-			&& function_exists('apcu_enabled')
-			&& @apcu_enabled();
+	/**
+	 * A store for values worked out from source files, kept as files under e_CACHE.
+	 *
+	 * @param string $prefix names the kind of entry
+	 * @return \e107\Cache\SourceDerived
+	 */
+	private static function sourceCache($prefix)
+	{
+		$directory = defined('e_CACHE') ? rtrim(e_CACHE, '/\\').'/' : null;
 
-		if($apcuActive)
-		{
-			$fetched = apcu_fetch($cacheKey, $ok);
-			if($ok && is_array($fetched))
-			{
-				$local[$key] = $fetched;
-				return $fetched;
-			}
-		}
-
-		// File cache fallback under e_CACHE.
-		$cacheDir = defined('e_CACHE') ? e_CACHE : null;
-		$cacheFile = null;
-		if(!$apcuActive && $cacheDir && is_dir($cacheDir) && is_writable($cacheDir))
-		{
-			$cacheFile = rtrim($cacheDir, '/\\') . DIRECTORY_SEPARATOR . $cacheKey . '.php';
-			if(is_file($cacheFile))
-			{
-				$cached = @include $cacheFile;
-				if(is_array($cached))
-				{
-					$local[$key] = $cached;
-					return $cached;
-				}
-			}
-		}
-
-		$src = @file_get_contents($path);
-		if($src === false)
-		{
-			$local[$key] = array();
-			return $local[$key];
-		}
-
-		$names = self::_extractLanConstantsFromSource($src);
-
-		if($apcuActive)
-		{
-			@apcu_store($cacheKey, $names, 0);
-		}
-		elseif($cacheFile !== null)
-		{
-			$payload = "<?php\nreturn " . var_export($names, true) . ";\n";
-			self::writeFileAtomic($cacheFile, $payload);
-		}
-
-		$local[$key] = $names;
-		return $names;
+		return new \e107\Cache\SourceDerived($prefix, $directory, array(__CLASS__, 'writeFileAtomic'));
 	}
 
 	/**
@@ -4109,6 +4058,11 @@ class e107
 
 	/**
 	 * Load language file, replacement of include_lan()
+	 *
+	 * A file the current language does not have is replaced by its English counterpart, unless the noLanguageSubs
+	 * preference is on. For a file in any language but English, each phrase its English counterpart has and it lacks
+	 * is then defined, in English or, with noLanguageSubs on, as its own name ({@see \e107\Language\Fallback::fill()}).
+	 *
 	 * @outdated use e107::lan() or e107::coreLan(), e107::plugLan(), e107::themeLan()
 	 * @param string $path
 	 * @param boolean $force
@@ -4116,35 +4070,74 @@ class e107
 	 */
 	public static function includeLan($path, $force = false)
 	{
-		if (!is_readable($path))
-		{
-			if ((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
-			{
-				return false;
-			}
-
-			self::getDebug()->log("Couldn't load language file: " . $path);
-
-			$path = str_replace(e_LANGUAGE, 'English', $path);
-
-			self::getDebug()->log("Attempts to load default language file: " . $path);
-
-			if(!is_readable($path))
-			{
-				self::getDebug()->log("Couldn't load default language file: " . $path);
-				return false;
-			}
-		}
-
+		$fallback = self::getLanguageFallback();
+		$byName = (bool) self::getPref('noLanguageSubs');
 		$adminLanguage = self::getPref('adminlanguage');
 
-		if(e_ADMIN_AREA && vartrue($adminLanguage))
+		if(deftrue('e_ADMIN_AREA') && vartrue($adminLanguage))
 		{
-			$path = str_replace(e_LANGUAGE, $adminLanguage, $path);
+			$path = $fallback->translatePath($path, e_LANGUAGE, $adminLanguage);
 		}
 
-		$ret = ($force) ? include($path) : include_once($path);
+		if (!is_file($path))
+		{
+			self::getDebug()->log("Couldn't load language file: " . $path);
+
+			$english = $fallback->englishPath($path);
+
+			if($byName || $english === null || !is_readable($english))
+			{
+				$fallback->fill($path, $byName, false);
+				return false;
+			}
+
+			self::getDebug()->log("Attempts to load default language file: " . $english);
+
+			$path = $english;
+		}
+
+		try
+		{
+			$ret = ($force) ? include($path) : include_once($path);
+		}
+		catch(\Error $e)
+		{
+			$fallback->recover($path, false, $e);
+			$ret = '';
+		}
+
+		$fallback->fill($path, $byName, false);
+
 		return (isset($ret)) ? $ret : "";
+	}
+
+	/**
+	 * The fallback every language loader shares.
+	 *
+	 * @return \e107\Language\Fallback
+	 */
+	public static function getLanguageFallback()
+	{
+		static $fallback = null;
+
+		if($fallback === null)
+		{
+			$report = (PHP_SAPI === 'cli') ? null : function ($message)
+			{
+				trigger_error($message, E_USER_WARNING);
+			};
+
+			$folders = array('languages', defined('e_LANGUAGEDIR') ? basename(e_LANGUAGEDIR) : 'languages', 'lans');
+
+			$newReader = function ()
+			{
+				return new \e107\Language\PhraseFile();
+			};
+
+			$fallback = new \e107\Language\Fallback($newReader, self::sourceCache('langaps'), self::sourceCache('lanphrases'), $folders, $report);
+		}
+
+		return $fallback;
 	}
 
 	/**
@@ -4292,7 +4285,7 @@ class e107
 
 			if(e_ADMIN_AREA && !empty($adminLanguage))
 			{
-				$path = str_replace(e_LANGUAGE, $adminLanguage, $path);
+				$path = self::getLanguageFallback()->translatePath($path, e_LANGUAGE, $adminLanguage);
 			}
 
 			self::getMessage()->addDebug("Attempting to Load: ".$path);
@@ -5056,8 +5049,9 @@ class e107
 	 * Returns the include_once error return if there is one
 	 * Otherwise returns an empty string.
 	 * Note - if the code knows precisely where the language file is located, use {@link getLan()}
-	 * $pref['noLanguageSubs'] can be set TRUE to prevent searching for the English files if
-	 * the files for the current site language don't exist.
+	 * When no file exists for the current language, the first one whose English counterpart
+	 * exists is loaded through {@see e107::includeLan()}, which puts the English file in its
+	 * place or, with $pref['noLanguageSubs'] on, defines its phrases as their own names.
 	 *
 	 * @param string $unitName
 	 * @param string $type predefined types are runtime|admin|theme
@@ -5097,24 +5091,22 @@ class e107
 		{
 			if (is_readable($s))
 			{
-				$ret = include_once($s);
-				return (isset($ret)) ? $ret : "";
+				return self::includeLan($s);
 			}
-		}
-		if ((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
-		{
-			return FALSE;		// No point looking for the English files twice
 		}
 
-		foreach ($searchPath as $s)			// Now look for the English files
+		$fallback = self::getLanguageFallback();
+
+		foreach ($searchPath as $s)			// Then for one whose English counterpart exists, for includeLan() to fill from
 		{
-			$s = str_replace(e_LANGUAGE, 'English', $s);
-			if (is_readable($s))
+			$english = $fallback->englishPath($s);
+
+			if ($english !== null && $english !== $s && is_readable($english))
 			{
-				$ret = include_once($s);
-				return (isset($ret)) ? $ret : "";
+				return self::includeLan($s) ?: true;
 			}
 		}
+
 		return FALSE;		// Nothing found
 	}
 
