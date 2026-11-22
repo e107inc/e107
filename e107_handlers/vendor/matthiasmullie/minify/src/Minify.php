@@ -219,7 +219,7 @@ abstract class Minify
 
             // strip BOM, if any
             if (substr($data, 0, 3) == "\xef\xbb\xbf") {
-                $data = substr($data, 3);
+                $data = (string) substr($data, 3);
             }
         }
 

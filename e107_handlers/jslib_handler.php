@@ -202,7 +202,7 @@ class e_jslib
             $crc = crc32($contents);
 
             $gzdata .= gzcompress($contents, 9);
-            $gzdata = substr($gzdata, 0, -4);
+            $gzdata = (string) substr($gzdata, 0, -4);
             $gzdata .= pack("V", $crc) . pack("V", $size);
 
             $gsize = strlen($gzdata);

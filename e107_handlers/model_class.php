@@ -958,7 +958,7 @@ class e_model extends e_object
         $simple = false;
         if(strpos($key, '//') === 0)
         {
-        	$key = substr($key, 2);
+        	$key = (string) substr($key, 2);
         	$simple = true;
         }
         /*elseif($key[0] == '/')
@@ -1110,7 +1110,7 @@ class e_model extends e_object
         	// Example: '//some/key'; NOTE: '//some/key//more/depth' is NOT parsed
         	// if you wish to have array('some/key' => array('more/depth' => value))
         	// right syntax is 'some/key//more/depth'
-        	$key = substr($key, 2);
+        	$key = (string) substr($key, 2);
         	$simple = true;
         }
         /*elseif($key[0] == '/')

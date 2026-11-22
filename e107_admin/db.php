@@ -1758,11 +1758,11 @@ class system_tools
 	{
 		if(strpos($type,'plugin_') === 0)
 		{
-			$config = e107::getPlugConfig(substr($type,7));
+			$config = e107::getPlugConfig((string) substr($type,7));
 		}
 		elseif(strpos($type,'theme_') === 0)
 		{
-			$config = e107::getThemeConfig(substr($type,6));
+			$config = e107::getThemeConfig((string) substr($type,6));
 		}
 		else
 		{
@@ -1883,11 +1883,11 @@ class system_tools
 
 		if(strpos($type,'plugin_') === 0)
 		{
-			$caption = LAN_PLUGIN . SEP . ucfirst(substr($type,7));
+			$caption = LAN_PLUGIN . SEP . ucfirst((string) substr($type,7));
 		}
 		elseif(strpos($type,'theme_') === 0)
 		{
-			$caption = LAN_THEME . SEP . ucfirst(substr($type,6));
+			$caption = LAN_THEME . SEP . ucfirst((string) substr($type,6));
 		}
 		else
 		{
@@ -1918,7 +1918,7 @@ class system_tools
 		{
 			foreach($fList as $file)
 			{
-				$scList[] = strtoupper(substr($file['fname'], 0, -4));
+				$scList[] = strtoupper((string) substr($file['fname'], 0, -4));
 			}
 			$scList = implode(',', $scList);
 		}
@@ -1931,7 +1931,7 @@ class system_tools
 		{
 			foreach($fList as $file)
 			{
-				$scList[] = substr($file['fname'], 0, -4);
+				$scList[] = (string) substr($file['fname'], 0, -4);
 			}
 			$scList = implode(',', $scList);
 		}

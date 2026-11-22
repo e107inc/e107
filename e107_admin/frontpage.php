@@ -157,7 +157,7 @@ if (!empty($_POST))
 	foreach ($_POST as $k => $v)
 	{
 		$incDec = substr($k, 0, 6);
-		$idNum = substr($k, 6);
+		$idNum = (string) substr($k, 6);
 		if ($incDec == 'fp_inc')
 		{
 			$mv = intval($idNum);

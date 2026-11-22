@@ -1104,7 +1104,7 @@ class PHPMailer
         $params = [$kind, $address, $name];
         //Enqueue addresses with IDN until we know the PHPMailer::$CharSet.
         //Domain is assumed to be whatever is after the last @ symbol in the address
-        if (static::idnSupported() && $this->has8bitChars(substr($address, ++$pos))) {
+        if (static::idnSupported() && $this->has8bitChars((string) substr($address, ++$pos))) {
             if ('Reply-To' !== $kind) {
                 if (!array_key_exists($address, $this->RecipientsQueue)) {
                     $this->RecipientsQueue[$address] = $params;
@@ -1310,7 +1310,7 @@ class PHPMailer
         $pos = strrpos($address, '@');
         if (
             (false === $pos)
-            || ((!$this->has8bitChars(substr($address, ++$pos)) || !static::idnSupported())
+            || ((!$this->has8bitChars((string) substr($address, ++$pos)) || !static::idnSupported())
             && !static::validateAddress($address))
         ) {
             $error_message = sprintf(
@@ -1467,7 +1467,7 @@ class PHPMailer
             false !== $pos &&
             static::idnSupported()
         ) {
-            $domain = substr($address, ++$pos);
+            $domain = (string) substr($address, ++$pos);
             //Verify CharSet string is a valid one, and domain properly encoded in this CharSet.
             if ($this->has8bitChars($domain) && @mb_check_encoding($domain, $this->CharSet)) {
                 //Convert the domain from whatever charset it's in to UTF-8
@@ -2458,8 +2458,8 @@ class PHPMailer
 
         $message = static::normalizeBreaks($message);
         //Remove a trailing line break
-        if (substr($message, -$lelen) === static::$LE) {
-            $message = substr($message, 0, -$lelen);
+        if ((string) substr($message, -$lelen) === static::$LE) {
+            $message = (string) substr($message, 0, -$lelen);
         }
 
         //Split message into lines
@@ -2478,13 +2478,13 @@ class PHPMailer
                             $len = $space_left;
                             if ($is_utf8) {
                                 $len = $this->utf8CharBoundary($word, $len);
-                            } elseif ('=' === substr($word, $len - 1, 1)) {
+                            } elseif ('=' === (string) substr($word, $len - 1, 1)) {
                                 --$len;
-                            } elseif ('=' === substr($word, $len - 2, 1)) {
+                            } elseif ('=' === (string) substr($word, $len - 2, 1)) {
                                 $len -= 2;
                             }
-                            $part = substr($word, 0, $len);
-                            $word = substr($word, $len);
+                            $part = (string) substr($word, 0, $len);
+                            $word = (string) substr($word, $len);
                             $buf .= ' ' . $part;
                             $message .= $buf . sprintf('=%s', static::$LE);
                         } else {
@@ -2499,12 +2499,12 @@ class PHPMailer
                         $len = $length;
                         if ($is_utf8) {
                             $len = $this->utf8CharBoundary($word, $len);
-                        } elseif ('=' === substr($word, $len - 1, 1)) {
+                        } elseif ('=' === (string) substr($word, $len - 1, 1)) {
                             --$len;
-                        } elseif ('=' === substr($word, $len - 2, 1)) {
+                        } elseif ('=' === (string) substr($word, $len - 2, 1)) {
                             $len -= 2;
                         }
-                        $part = substr($word, 0, $len);
+                        $part = (string) substr($word, 0, $len);
                         $word = (string) substr($word, $len);
 
                         if ($word !== '') {
@@ -2548,12 +2548,12 @@ class PHPMailer
         $foundSplitPos = false;
         $lookBack = 3;
         while (!$foundSplitPos) {
-            $lastChunk = substr($encodedText, $maxLength - $lookBack, $lookBack);
+            $lastChunk = (string) substr($encodedText, $maxLength - $lookBack, $lookBack);
             $encodedCharPos = strpos($lastChunk, '=');
             if (false !== $encodedCharPos) {
                 //Found start of encoded character byte within $lookBack block.
                 //Check the encoded byte value (the 2 chars after the '=')
-                $hex = substr($encodedText, $maxLength - $lookBack + $encodedCharPos + 1, 2);
+                $hex = (string) substr($encodedText, $maxLength - $lookBack + $encodedCharPos + 1, 2);
                 $dec = hexdec($hex);
                 if ($dec < 128) {
                     //Single byte character.
@@ -3618,7 +3618,7 @@ class PHPMailer
         }
 
         //Chomp the last linefeed
-        return substr($encoded, 0, -strlen($linebreak));
+        return (string) substr($encoded, 0, -strlen($linebreak));
     }
 
     /**
@@ -4542,7 +4542,7 @@ class PHPMailer
         //In case the path is a URL, strip any query string before getting extension
         $qpos = strpos($filename, '?');
         if (false !== $qpos) {
-            $filename = substr($filename, 0, $qpos);
+            $filename = (string) substr($filename, 0, $qpos);
         }
         $ext = static::mb_pathinfo($filename, PATHINFO_EXTENSION);
 

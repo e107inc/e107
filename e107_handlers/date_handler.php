@@ -401,7 +401,7 @@ class e_date
 		if (substr($format,-1,1) == 'z')
 		{
 			$useLocale = FALSE;
-			$format = substr($format,0,-1);		// Remove local disable string
+			$format = (string) substr($format,0,-1);		// Remove local disable string
 		}
 		switch ($decode)
 		{
@@ -434,17 +434,17 @@ class e_date
 			{
 				if (strlen($dateString) == 6)
 				{	// Probably fixed format numeric without separators
-					$dateVals = array(1 => substr($dateString,0,2), 2 => substr($dateString,2,2), 3 => substr($dateString,-2));
+					$dateVals = array(1 => substr($dateString,0,2), 2 => (string) substr($dateString,2,2), 3 => substr($dateString,-2));
 				}
 				elseif (strlen($dateString) == 8)
 				{	// Trickier - year may be first or last!
 					if ($format == 'ymd')
 					{
-						$dateVals = array(1 => substr($dateString,0,4), 2 => substr($dateString,4,2), 3 => substr($dateString,-2));
+						$dateVals = array(1 => substr($dateString,0,4), 2 => (string) substr($dateString,4,2), 3 => substr($dateString,-2));
 					}
 					else
 					{
-						$dateVals = array(1 => substr($dateString,0,2), 2 => substr($dateString,2,2), 3 => substr($dateString,-4));
+						$dateVals = array(1 => substr($dateString,0,2), 2 => (string) substr($dateString,2,2), 3 => substr($dateString,-4));
 					}
 				}
 			}
@@ -462,7 +462,7 @@ class e_date
 			{
 				if (strlen($timeString) == 6)
 				{	// Assume hhmmss
-					$timeVals = array(1 => substr($timeString,0,2), 2 => substr($timeString,2,2), 3 => substr($timeString,-2));
+					$timeVals = array(1 => substr($timeString,0,2), 2 => (string) substr($timeString,2,2), 3 => substr($timeString,-2));
 				}
 				elseif (strlen($timeString) == 4)
 				{	// Assume hhmm

@@ -205,7 +205,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 			// FIX handle non-latin file names
 			$name = preg_replace("/[^\w\pL.-]/u", '', str_replace(' ', '_', str_replace('%20', '_', $tp->ustrtolower($name))));
 			$raw_name = $name; // Save 'proper' file name - useful for display
-			$file_ext = trim(strtolower(substr(strrchr($name, "."), 1))); 	// File extension - forced to lower case internally
+			$file_ext = trim(strtolower((string) substr(strrchr($name, "."), 1))); 	// File extension - forced to lower case internally
 
 			if (!trim($files['type'][$key]))
 				$files['type'][$key] = 'Unknowm mime-type';
@@ -594,7 +594,7 @@ function get_image_mime($filename, $extended = false)
 	{
 
 		// 1. Start by checking against filetypes - that's the easy one!
-		$file_ext = strtolower(substr(strrchr($target_name, '.'), 1));
+		$file_ext = strtolower((string) substr(strrchr($target_name, '.'), 1));
 
 		if(!isset($allowed_filetypes[$file_ext]))
 		{

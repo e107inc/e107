@@ -1042,11 +1042,11 @@ class pageClass
 			{	// Need to strip html bbcode from wysiwyg on multi-page docs (handled automatically on single pages)
 				if (substr($this->pageText, -7, 7) == '[/html]')
 				{
-					$this->pageText = substr($this->pageText, 6, -7);
+					$this->pageText = (string) substr($this->pageText, 6, -7);
 				}
 				else
 				{
-					$this->pageText = substr($this->pageText, 6);
+					$this->pageText = (string) substr($this->pageText, 6);
 				}
 			}
 			$pages = e_parse::splitAtBBCodeTags($pageBreak, $this->pageText, PREG_SPLIT_NO_EMPTY);

@@ -96,7 +96,7 @@ class e_random
 			throw new e_random_exception('e_random::hex() requires a length of at least 1 character.');
 		}
 
-		return substr(bin2hex(self::bytes((int) ceil($length / 2))), 0, $length);
+		return (string) substr(bin2hex(self::bytes((int) ceil($length / 2))), 0, $length);
 	}
 
 	/**

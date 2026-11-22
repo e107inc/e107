@@ -157,7 +157,7 @@ class db_table_admin
 			$fv = str_replace('`', '', $fv);
 			if (substr($fv, -1) == ',')
 			{
-				$fv = trim(substr($fv, 0, -1));
+				$fv = trim((string) substr($fv, 0, -1));
 			}
 			//	  echo "Line: ".$fv."<br />";
 			if ($fv)
@@ -451,11 +451,11 @@ class db_table_admin
 							$t = $list2[0][$fi];
 							if (stripos($v, 'varchar') !== FALSE)
 							{
-								$v = substr($v, 3);
+								$v = (string) substr($v, 3);
 							} // Treat char, varchar the same
 							if (stripos($t, 'varchar') !== FALSE)
 							{
-								$t = substr($t, 3);
+								$t = (string) substr($t, 3);
 							} // Treat char, varchar the same
 							if (strcasecmp($t, $v) !== 0)
 							{

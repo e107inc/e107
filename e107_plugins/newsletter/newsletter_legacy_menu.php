@@ -51,7 +51,7 @@ foreach($_POST as $key => $value)
 			// remove the possible zero caused by function array_flip
 			if (substr($new_subscriber_list, 0, 1) == '0')
 			{	
-				$new_subscriber_list = substr($new_subscriber_list, 1);
+				$new_subscriber_list = (string) substr($new_subscriber_list, 1);
 			}
 			
 			$sql->update('newsletter', "newsletter_subscribers='".$new_subscriber_list."' WHERE newsletter_id='".intval($subid)."' ");

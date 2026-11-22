@@ -222,8 +222,6 @@ return static function (RectorConfig $rectorConfig): void {
         // those, by name, without touching the other 116.
         \Rector\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeWideningRector::class,
 
-        \Rector\DowngradePhp80\Rector\FuncCall\DowngradeSubstrFalsyRector::class,
-
         // e107 v2 commits its vendored dependencies and serves the tree as-is,
         // so every shipped package under e107_handlers/vendor must parse on PHP
         // 5.6 and is downgraded in place. (e107 v3's build chain, which does not

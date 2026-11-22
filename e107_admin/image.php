@@ -2460,7 +2460,7 @@ class media_admin_ui extends e_admin_ui
 		{
 			if(strpos($searchQry, 'video:') === 0 || strpos($searchQry, 'v=') === 0) // YouTube video code
 			{
-				$searchQry = (strpos($searchQry, 'v=') === 0) ? trim(substr($searchQry,2)) : trim(substr($searchQry,6));
+				$searchQry = (strpos($searchQry, 'v=') === 0) ? trim((string) substr($searchQry,2)) : trim((string) substr($searchQry,6));
 				$extension = 'youtube';
 			//	$feed = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=".urlencode($searchQry)."&key=".$apiKey;
 
@@ -2474,7 +2474,7 @@ class media_admin_ui extends e_admin_ui
 
 				if(empty($apiKey))
 				{
-					$playlistID = substr($searchQry,9);
+					$playlistID = (string) substr($searchQry,9);
 					$data = array();
 					$data['items'][0]['id']['videoId'] = $playlistID;
 					$data['items'][0]['snippet']['thumbnails']['medium']['url'] = e_IMAGE_ABS. 'generic/playlist_120.png'; // "http://i.ytimg.com/vi/".$playlistID."/mqdefault.jpg"; // not really possible, so it will show a generic grey image.
@@ -2482,7 +2482,7 @@ class media_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					$searchQry = trim(substr($searchQry,9));
+					$searchQry = trim((string) substr($searchQry,9));
 					$feed = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' .urlencode($searchQry). '&type=playlist&maxResults=1&key=' .$apiKey;
 				}
 
@@ -2490,7 +2490,7 @@ class media_admin_ui extends e_admin_ui
 			}
 			elseif(strpos($searchQry, 'channel:') === 0)
 			{
-				$searchQry = trim(substr($searchQry,8));
+				$searchQry = trim((string) substr($searchQry,8));
 				$extension = 'youtube';
 				$feed = 'https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=' .urlencode($searchQry). '&type=video&maxResults=20&key=' .$apiKey;
 			}
@@ -2701,13 +2701,13 @@ class media_admin_ui extends e_admin_ui
 					if(strpos($path, '-upload-') === 0)
 					{
 						$image_type = 1;
-						$path = substr($path, strlen('-upload-'));
+						$path = (string) substr($path, strlen('-upload-'));
 					}
 
 					//delete it from server
 					$deletePath = e_AVATAR.$tp->filter($path);
 					$folder = dirname($deletePath);
-					$fileName = ltrim(substr($deletePath, strlen($folder)), '/'.DIRECTORY_SEPARATOR);
+					$fileName = ltrim((string) substr($deletePath, strlen($folder)), '/'.DIRECTORY_SEPARATOR);
 					$avatarFolder = $this->folderInside($deletePath, e_AVATAR, defset('LAN_IMA_FILE_KEPT_OUTSIDE_AVATARS', '[x] lies outside the avatars folder, so it was kept.'), $path);
 
 					if($avatarFolder === false)

@@ -135,6 +135,6 @@ abstract class AbstractDriver
         $reflect = new \ReflectionClass($this);
         $namespace = $reflect->getNamespaceName();
 
-        return substr(strrchr($namespace, "\\"), 1);
+        return (string) substr(strrchr($namespace, "\\"), 1);
     }
 }

@@ -2119,7 +2119,7 @@ class e_db_pdo implements e_db
 			throw new PDOException('escape() requires a PDO driver that supports quoting');
 		}
 
-		return substr($quoted, 1, -1);
+		return (string) substr($quoted, 1, -1);
 	}
 
 

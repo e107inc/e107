@@ -412,7 +412,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	private function fixturePort()
 	{
-		return substr(self::$authority, strpos(self::$authority, ':'));
+		return (string) substr(self::$authority, strpos(self::$authority, ':'));
 	}
 
 	/**
