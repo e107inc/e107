@@ -374,7 +374,10 @@ sessions finish no sooner, and now and then one fails to start. Each test file
   fixtures into the overlay; the unit suite runs in a mount namespace with the
   overlay at `/var/www/html`, so paths are the worktree's own. The tests never
   write to the worktree; the runner itself writes only Codeception's generated
-  actor classes, once per run, and its results under `tests/_output/`.
+  actor classes, once per run, and its results under `tests/_output/`. Apache
+  serves the worktree itself, outside every sandbox, by every other name the
+  stack answers to (`web`, `localhost`, `127.0.0.1`), so a test reaches its
+  site only by the suite's URL, or through a server it starts itself.
 - a **database** of its own on the env's server, copied ahead of need from a
   template built once per run: the site the `@group site-template` test
   installs, for acceptance (whose sandboxes also start from the files that
