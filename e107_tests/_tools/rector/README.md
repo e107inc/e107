@@ -44,9 +44,6 @@ takes more passes than its cap (`RECTOR_MAX_PASSES`, default 5). A run that
 will not converge almost always means a non-idempotent rule is re-rewriting its
 own output; raise the cap only after investigating.
 
-`rector-downgrade` and the CI workflow that enforces this land together in
-their own commit; this directory is only the tooling they drive.
-
 ## When the idempotency gate fails
 
 CI runs the same downgrade and fails if it produces a diff. That failure means
@@ -85,13 +82,11 @@ and any real widening error surfaces at class load in the legacy unit cells
 anyway. A hint naming a class the floor does not *have* is a different problem,
 and `DowngradePostFloorParamTypeRector` takes those by name.
 
-**The substr casts are quarantined.** On PHP 5.6 `substr()` can return `false`
-where PHP 8 returns `''`, and `DowngradeSubstrFalsyRector` papers over that with
-casts at every call site. That is a real behavioural difference, but it is a
-large, noisy diff that deserves its own review, so the rule is skipped here. A
-later commit removes the skip entry and carries the resulting casts, which keeps
-that commit revertible on its own: revert it and the tree is back at a
-consistent fixed point instead of a half-cast one.
+**The substr casts.** On PHP 5.6 `substr()` can return `false` where PHP 8
+returns `''`, so `DowngradeSubstrFalsyRector` casts the result at every call
+site and every PHP gets `''`. Where a caller compares that result strictly with
+`false`, the cast changes what it decides, so a new cast is worth a look in
+review.
 
 ## The API floor
 
