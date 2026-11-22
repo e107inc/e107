@@ -146,6 +146,26 @@ None of these can be proved by parsing. Tests that execute the vendored
 packages on whichever interpreter the cell is running are the other half, and
 they live with the rest of the unit suite.
 
+## The newest PHP
+
+The same tree has to run quietly at the other end of the range, and a vendored
+package can lag behind a new PHP release the way it can outrun the floor. A
+hand patch for that is rolled back by the next re-vendor just the same, so
+`custom-rules/Php<version>/` rewrites what that PHP release deprecates into a
+form every PHP from 5.6 runs:
+
+- **`is_a()` of a string.** PHP 8.6 deprecates `is_a()` on a string unless
+  `$allow_string` is true, and intervention/image 2.7.2 asks it of whatever it
+  was handed, a file path included, on every decode.
+  `IsAOfAClassNameToInstanceofRector` writes `instanceof` instead, which gives
+  the same answer for a string or an object. It leaves alone a class name that
+  is not a literal, or that `instanceof` can't name because a segment of it is
+  a reserved word (`self`, or `List` below PHP 8.0); an `$allow_string` other
+  than a literal false; and a subject that is not a variable, property, array
+  element, method call or assignment, because below PHP 7.3 `instanceof`
+  refuses a left side the compiler folds into a constant, such as `null` or
+  `PHP_EOL`.
+
 ## Rule tests
 
 ```sh
@@ -204,7 +224,8 @@ PHP consumer can read it with `file()`. It mirrors the correctness path skips in
 - `rector.php`: the config. Sets, custom rule registrations, skips, PHP 5.6
   target, cache directory.
 - `custom-rules/`: the `E107\Rector` rule suite (vendored 7.1 → 5.6 rules, the
-  three re-implemented stock rules, and `FloorApi/` for the API floor).
+  three re-implemented stock rules, `FloorApi/` for the API floor, and
+  `Php<version>/` for the newest PHP).
 - `tests/` and `phpunit.xml`: the rule tests, described above.
 - `composer.json` / `composer.lock`: the pinned Rector version. The lock is
   committed on purpose, because the idempotency gate is only reproducible

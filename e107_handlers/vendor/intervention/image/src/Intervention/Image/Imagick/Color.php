@@ -78,7 +78,7 @@ class Color extends AbstractColor
      */
     public function initFromObject($value)
     {
-        if (is_a($value, '\ImagickPixel')) {
+        if ($value instanceof \ImagickPixel) {
             $this->pixel = $value;
         }
     }

@@ -57,6 +57,9 @@ use E107\Rector\FloorApi\Rector\ConstFetch\DowngradePostFloorConstantRector;
 use E107\Rector\FloorApi\Rector\FunctionLike\DowngradePostFloorParamTypeRector;
 use E107\Rector\FloorApi\Rector\FunctionLike\HoistLiteralByReferenceArgumentRector;
 
+// Newest-PHP rules: what a new PHP release deprecates, rewritten in a form the floor runs
+use E107\Rector\Php86\Rector\FuncCall\IsAOfAClassNameToInstanceofRector;
+
 return static function (RectorConfig $rectorConfig): void {
     $root = __DIR__ . '/../../..';
     $rectorConfig->paths([
@@ -190,6 +193,8 @@ return static function (RectorConfig $rectorConfig): void {
     // class it calls into. hybridauth's Apple adapter hands php-jwt 7.x a
     // literal where decode() now takes &$headers.
     $rectorConfig->rule(HoistLiteralByReferenceArgumentRector::class);
+
+    $rectorConfig->rule(IsAOfAClassNameToInstanceofRector::class);
 
     $rectorConfig->phpVersion(PhpVersion::PHP_56);
 
