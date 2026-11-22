@@ -1511,4 +1511,23 @@ class e107Test extends \Codeception\Test\Unit
 		$this->assertSame(array('new'), $output, 'the include after the write runs the file as it is now, not the copy OPcache compiled before');
 	}
 
+	public function testGetFileInspectorWarnsThatACorruptCoreImageLeavesItInoperative()
+	{
+		$this->assertFalse(file_exists('phar://core_image.phar/core_image.json'), 'PHP keeps a loaded phar for the life of the process, so once the real core image is loaded a corrupt copy goes unseen');
+		$path = e107::getFolder('system_base') . 'core_image.phar';
+		$this->getModule('\Helper\Unit')->writeAppFile($path, 'not a phar archive');
+		e107::getMessage()->reset(E_MESSAGE_WARNING, 'default', false);
+
+		e107::getFileInspector();
+
+		$warnings = e107::getMessage()->get(E_MESSAGE_WARNING, 'default', true);
+		$this->assertCount(1, $warnings);
+		$this->assertStringStartsWith(
+			"The core integrity image is corrupt. File Inspector will be inoperative. " .
+			"Resolve this issue by uploading a good copy of the core image to " . escapeshellarg(realpath($path)) . ". " .
+			"If uploading with FTP, use binary transfer mode. Error message: ",
+			$warnings[0]
+		);
+	}
+
 }
