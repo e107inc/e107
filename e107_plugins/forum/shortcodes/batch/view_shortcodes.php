@@ -1339,7 +1339,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2007 . "' class='btn btn-success button' />
 							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
 						</div>
-	
+
 						</form>";
 				}
 				else
@@ -1356,7 +1356,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2007 . "' class='btn btn-success button' />
 							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
 						</div>
-	
+
 						</form>";
 
 					return $text;

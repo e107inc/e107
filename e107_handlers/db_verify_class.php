@@ -58,7 +58,7 @@ class db_verify
 	 */
 	function __construct()
 	{
-				
+
 		$sql = e107::getDb();
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 
@@ -885,7 +885,7 @@ class db_verify
 			
 		foreach($fixArray as $j=>$file)
 		{
-						
+
 			foreach($file as $table=>$val)
 			{
 
@@ -910,12 +910,12 @@ class db_verify
 					{
 
 						$query = $this->getFixQuery($mode,$table,$field,$this->sqlFileTables[$j]['data'][$id],$this->sqlFileTables[$j]['engine'][$id]);
-						
-				
+
+
 						// $mes->addDebug("Query: ".$query);		
 						// continue;	
-						 
-						 
+
+
 						if(e107::getDb()->gen($query) !== false)
 						{
 							$log->addDebug(defset('LAN_UPDATED', 'Updated').'  ['.$query.']');
@@ -1158,7 +1158,7 @@ class db_verify
 			{
 				return FALSE;
 			}
-			
+
 			$prefix .= "lan_".$language."_";
 			// $mes->addDebug("<h2>Retrieving Language Table Data: ".$prefix . $tbl."</h2>"); 				
 		}

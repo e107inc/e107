@@ -56,7 +56,7 @@ class _blank_event // plugin-folder + '_event'
 			'name'		=> "_blank_customevent", // "plugin_event" where 'plugin' is the plugin folder name (in this case "_blank") and "event" is a unique event name (in this case "customevent")
 			'function'	=> "anotherfunction", // ..run this function (see below).
 		);
-	
+
 		return $event;
 	}
 

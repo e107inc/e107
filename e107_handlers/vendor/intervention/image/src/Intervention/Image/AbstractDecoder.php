@@ -141,7 +141,7 @@ abstract class AbstractDecoder
             return (get_resource_type($this->data) == 'gd');
         }
 
-        if ($this->data instanceof \GdImage) {
+        if (is_resource($this->data) || $this->data instanceof \GdImage) {
             return true;
         }
 
@@ -155,7 +155,7 @@ abstract class AbstractDecoder
      */
     public function isImagick()
     {
-        return is_a($this->data, 'Imagick');
+        return $this->data instanceof \Imagick;
     }
 
     /**
@@ -165,7 +165,7 @@ abstract class AbstractDecoder
      */
     public function isInterventionImage()
     {
-        return is_a($this->data, '\Intervention\Image\Image');
+        return $this->data instanceof \Intervention\Image\Image;
     }
 
     /**
@@ -175,7 +175,7 @@ abstract class AbstractDecoder
      */
     public function isSplFileInfo()
     {
-        return is_a($this->data, 'SplFileInfo');
+        return $this->data instanceof \SplFileInfo;
     }
 
     /**
@@ -185,7 +185,7 @@ abstract class AbstractDecoder
      */
     public function isSymfonyUpload()
     {
-        return is_a($this->data, 'Symfony\Component\HttpFoundation\File\UploadedFile');
+        return $this->data instanceof \Symfony\Component\HttpFoundation\File\UploadedFile;
     }
 
     /**

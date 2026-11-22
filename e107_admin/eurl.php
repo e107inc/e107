@@ -185,7 +185,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			{
 				$failed++;
 			}
-			
+
 			// echo $row[$input]." => ".$output ." = '".$sef."'  WHERE ".$primary. " = ".intval($row[$primary]). " LIMIT 1 <br />";
 
 		}
@@ -491,7 +491,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$config = is_array($_POST['eurl_config']) ? e107::getParser()->post_toForm($_POST['eurl_config']) : '';
 			$modules = eRouter::adminReadModules();
 			$locations = eRouter::adminBuildLocations($modules);
-			
+
 			$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config);
 
 			if(!empty($_POST['eurl_profile']))
@@ -522,7 +522,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		//	var_dump($_POST['eurl_config']);
 
-				
+
 			eRouter::clearCache();
 			e107::getCache()->clearAll('content'); // clear content - it may be using old url scheme.
 
@@ -1031,7 +1031,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		{
 			$cfg = $obj->config->config();
 			if(isset($cfg['config']['noSingleEntry']) && $cfg['config']['noSingleEntry']) continue;
-			
+
 			if($module == 'index')
 			{
 				$text .= "
@@ -1067,7 +1067,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$url = e107::getUrl()->create($module, '', array('full' => 1, 'encode' => 0));
 			$defVal = isset($currentAliases[$lan]) && in_array($module, $currentAliases[$lan]) ? array_search($module, $currentAliases[$lan]) : $module; 
 			$section = vartrue($admin['labels'], array());
-			
+
 			$text .= "
 				<tr>
 					<td>
@@ -1078,9 +1078,9 @@ class eurl_admin_form_ui extends e_admin_form_ui
 					</td>
 					<td>
 			";
-			
 
-			
+
+
 			// default language
 			$text .= "<table class='table table-striped table-bordered' style='margin-bottom:0'>
 <colgroup>
@@ -1156,7 +1156,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				</td></tr>";
 
 
-			
+
 			/*$text .= "
 					</td>
 					<td>

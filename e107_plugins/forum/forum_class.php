@@ -111,17 +111,17 @@ class e107forum
 		$tp = e107::getParser();
 		$this->userViewed = array();
 		$this->modArray = array();
-		
+
 		if($update === false)
 		{
 			$this->loadPermList();
 		}
-		
+
 		$this->prefs = e107::getPlugConfig('forum');
 		if(!$this->prefs->get('postspage')) {
 			$this->setDefaults();
 		}
-		
+
 		$this->getForumData();
 //		var_dump($this->prefs);
 
@@ -3244,7 +3244,7 @@ class e107forum
 			{
 				$sql->delete('polls', 'poll_datestamp='.$threadId);
 			} 
-	
+
 			// decrement user post counts
 			if ($postCount = $this->threadGetUserPostcount($threadId))
 			{
@@ -3281,7 +3281,7 @@ class e107forum
 			{	
 				$sql->delete('forum_track', 'track_thread='.$threadId);
 			}
-			
+
 			// update forum with correct thread/reply counts
 			$sql->update('forum', $this->decrementNotBelowZero('forum_threads').', '.$this->decrementNotBelowZero('forum_replies', $threadInfo['thread_total_replies']).' WHERE forum_id='.$threadInfo['thread_forum_id']);
 

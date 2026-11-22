@@ -88,7 +88,7 @@ class e_menu
 				$converted = $this->convertMenuTable();
 				e107::getConfig()->set('menu_layouts', $converted)->save();
 			}
-			
+
 			$eMenuArea = $this->getData(THEME_LAYOUT);
 			//print_a($eMenuArea);
 		}

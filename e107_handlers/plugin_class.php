@@ -1762,14 +1762,14 @@ class e107plugin
 				$mes->addWarning("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.");
 				continue;
 			}
-			
+
 			if(in_array($plugin_path, $this->disAllowed))
 			{
 				$mes->addWarning("Folder error: <i>{$p['path']}</i> is not permitted as an acceptable folder name.");
 				continue;	
 			}
-			
-			
+
+
 			$plug['plug_action'] = 'scan'; // Make sure plugin.php knows what we're up to
 
 			if (!$this->parse_plugin($p['path']))
@@ -1781,14 +1781,14 @@ class e107plugin
 
 			$plug_info = $this->plug_vars;
 			$eplug_addons = $this->getAddons($plugin_path);
-			
+
 			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml - no longer relevant. 
 			if ($plugin_path == $plug_info['folder'])
 			{
 				if (array_key_exists($plugin_path, $pluginDBList))
 				{ // Update the addons needed by the plugin
 					$pluginDBList[$plugin_path]['status'] = 'exists';
-					
+
 						// Check for name (lan) changes
 					if (vartrue($plug_info['@attributes']['lan']) && $pluginDBList[$plugin_path]['plugin_name'] != $plug_info['@attributes']['lan'])
 					{
@@ -1798,7 +1798,7 @@ class e107plugin
 						$this->plugFolder = $plugin_path;
 						$this->XmlLanguageFiles('upgrade');
 					}
-					
+
 					if ($mode == 'refresh')
 					{
 						if ($this->XmlLanguageFileCheck('_log', 'lan_log_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], FALSE, $plugin_path)) $sp = TRUE;
@@ -1849,10 +1849,10 @@ class e107plugin
 					if ($plug_info['@attributes']['name'])
 					{					
 						$pName = vartrue($plug_info['@attributes']['lan']) ? $plug_info['@attributes']['lan'] : $plug_info['@attributes']['name'] ;
-						
+
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1);
-						
-						
+
+
 						$pInsert = array(
 							'plugin_id' 			=> 0,
 							'plugin_name'			=> $tp->toDB($pName, true),
@@ -1862,7 +1862,7 @@ class e107plugin
 							'plugin_addons'			=> $eplug_addons,
 							'plugin_category'		=> $this->manage_category($plug_info['category'])
 						);
-						
+
 					//		if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."' "))
 							if (e107::getDb()->insert("plugin", $pInsert))
 							{
@@ -1872,7 +1872,7 @@ class e107plugin
 							{
 								$log->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
 							}
-							
+
 							$log->flushMessages("Updated Plugins table");
 						}
 					}
@@ -4378,19 +4378,19 @@ class e107plugin
 	function execute_function($path = null, $what = '', $when = '', $callbackData = null)
 	{
 		$mes = e107::getMessage();
-		
+
 		if($path == null)
 		{
 			$path = $this->plugFolder;	
 		}
-		
+
 		$class_name = $path."_setup"; // was using $this->pluginFolder; 
 		$method_name = $what."_".$when;
-		
-		
+
+
 			// {PLUGIN}_setup.php should ALWAYS be the name of the file.. 
-			
-			
+
+
 	//	if (varset($this->plug_vars['@attributes']['setupFile']))
 	//	{
 	//		$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plug_vars['@attributes']['setupFile'];
@@ -4418,9 +4418,9 @@ class e107plugin
 			{
 				$mes->addDebug("Found setup file <b>".$path."_setup.php</b> ");
 			}
-			
+
 			include_once($setup_file);
-			
+
 
 			if (class_exists($class_name))
 			{

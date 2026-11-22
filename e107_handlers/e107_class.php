@@ -1979,6 +1979,17 @@ class e107
                 "Error message: " .
                 $e->getMessage()
             );
+        } catch (\Exception $e) {
+            // TODO: LAN
+            self::getMessage()->addWarning(
+                "The core integrity image is corrupt. " .
+                "File Inspector will be inoperative. " .
+                "Resolve this issue by uploading a good copy of the core image to " .
+                escapeshellarg($fileInspectorPath) . ". " .
+                "If uploading with FTP, use binary transfer mode. " .
+                "Error message: " .
+                $e->getMessage()
+            );
         }
 
         return $fileInspector;

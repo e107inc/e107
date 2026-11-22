@@ -1434,7 +1434,7 @@ class eRouter
 					$ret[$module] = $current[$module];
 					continue;
 				}
-				
+
 				// in all other cases additional re-check will be made - see below
 			}
 			
@@ -3964,7 +3964,7 @@ class eRequest
 		$this->setModule($parts[0])
 			->setController(vartrue($parts[1], 'index'))
 			->setAction(vartrue($parts[2], 'index'));
-			
+
 		return $this;//->getRoute(true);
 	}
 

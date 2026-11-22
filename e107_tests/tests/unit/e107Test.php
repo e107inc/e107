@@ -125,20 +125,20 @@ class e107Test extends \Codeception\Test\Unit
 			        </div><!--/.navbar-collapse -->
 			      </div>
 			    </div>
-			
+
 			<!--- Optional custom header template controlled by theme_shortcodes -->
 			{---HEADER---}
-			
+
 			<!-- Page Content -->
 			{---LAYOUT---}
-			
+
 			<!-- Footer --> 
-			
+
 			{SETSTYLE=default}
 			<footer>
 				<div class="container">
 					<div class="row">
-			
+
 						<div>
 							<div class="col-lg-6">
 								{MENU=100}
@@ -147,23 +147,23 @@ class e107Test extends \Codeception\Test\Unit
 								{MENU=101}
 							</div>
 						</div>
-			
+
 						<div>
 							<div class="col-sm-12 col-lg-4">
 								{MENU=102}
 							</div>
-			
+
 							<div class="col-sm-12 col-lg-8">
 								{MENU=103}
 							</div>
 						</div>
-			
+
 						<div >
 							<div class="col-lg-12">
 								{MENU=104}
 							</div>
 						</div>
-			
+
 						<div>
 							<div class="col-lg-6">
 								{MENU=105}
@@ -174,28 +174,28 @@ class e107Test extends \Codeception\Test\Unit
 								{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
 							</div>
 						</div>
-			
+
 						<div>
 							<div class="col-lg-12">
-					
+
 							</div>
 						</div>
-			
+
 						<div>
 							<div id="sitedisclaimer" class="col-lg-12 text-center">
 								<small >{SITEDISCLAIMER}</small>
 							</div>
 						</div>
-			
+
 					</div>	 <!-- /row -->
 				</div> <!-- /container -->
 			</footer>
-			
+
 			{---MODAL---}
 			<!--- Optional custom footer template controlled by theme_shortcodes -->
 			{---FOOTER---}
-			
-			
+
+
 			<!-- Javascripts and other information are automatically added below here -->
 			</body> <!-- This tag is not necessary and is ignored and replaced. Left here only as a reference -->';
 

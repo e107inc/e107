@@ -142,13 +142,13 @@ class lancheck
 			{
 				$fullpath_orig = $tp->toDB($file);
 				$fullpath_trans = str_replace("English", $lan, $tp->toDB($file));
-		
+
 				$f1 = basename($fullpath_orig);
 				$f2 = basename($fullpath_trans);
 				$dir1 = dirname($fullpath_orig)."/";
 				$dir2 = dirname($fullpath_trans)."/";
 			}
-			
+
 			return $this->edit_lanfiles($dir1,$dir2,$f1,$f2,$lan, varset($_GET['type']));
 			// return true;
 		}	
@@ -685,7 +685,7 @@ class lancheck
 			echo "debug: ".__METHOD__." missing \$lan";
 			return false;
 		}
-			
+
 	//	$lan = key($_POST['language_sel']);
 
 		$_SESSION['lancheck'][$lan] = array();
@@ -694,14 +694,14 @@ class lancheck
 		$_SESSION['lancheck'][$lan]['bom']	= 0;
 		$_SESSION['lancheck'][$lan]['utf']	= 0;
 		$_SESSION['lancheck'][$lan]['total']	= 0;
-	
-	
+
+
 		$core_text 	= $this->check_core_lanfiles($lan);
 		$core_admin = $this->check_core_lanfiles($lan,"admin/");
 		$plug_text = "";
 		$theme_text = "";
-	
-	
+
+
 		// Plugins -------------
 		$plug_header = "<table class='table table-striped'>
 		<tr>
@@ -709,7 +709,7 @@ class lancheck
 		<td class='fcaption'>".LAN_CHECK_16."</td>
 		<td class='fcaption'>".$lan."</td>
 		<td class='fcaption'>".LAN_OPTIONS."</td></tr>";
-	
+
 		foreach($this->core_plugins as $plugs)
 		{
 			if(is_readable(e_PLUGIN.$plugs))
@@ -717,9 +717,9 @@ class lancheck
 				$plug_text .= $this->check_lanfiles('P',$plugs,"English",$lan);
 			}
 		}
-		
+
 		$plug_footer = "</table>";
-	
+
 		// Themes  -------------
 		$theme_header = "<table class='table table-striped'>
 		<tr>
@@ -735,32 +735,32 @@ class lancheck
 			}
 		}
 		$theme_footer = "</table>";
-		
-		// -------------------------
-		
 
-		
-		
+		// -------------------------
+
+
+
+
 		if($mode != 'render')
 		{
 			 return null;
 		}
-	
+
 		$message = "
 		<form id='lancheck' method='post' action='".e_ADMIN."language.php?mode=main&action=tools'>
 		<div>\n";
-		
+
 	//	$icon = ($_SESSION['lancheck'][$lan]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;
-		
-		
+
+
 		$errors_diz = (deftrue('LAN_CHECK_23')) ? LAN_CHECK_23 : "Errors Found";
 
 		$message .= $errors_diz.": ".$_SESSION['lancheck'][$lan]['total'];
-	
+
 		$just_go_diz = (deftrue('LAN_CHECK_20')) ? LAN_CHECK_20 : "Generate Language Pack";
 		$lang_sel_diz = (deftrue('LAN_CHECK_21')) ? LAN_CHECK_21 : "Verify Again";
 		$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ? LAN_PLEASEWAIT : "Please Wait";
-		
+
 		$message .= "
 		<br /><br />
 		<input type='hidden' name='language' value='".$lan."' />
@@ -769,16 +769,16 @@ class lancheck
 		</div>
 	    </form>
 		";
-		
+
 //	print_a($_SESSION['lancheck'][$lan]);
 
 		$plug_text = ($plug_text) ? $plug_header.$plug_text.$plug_footer : "<div class='alert alert-success'>".LAN_OK."</div>";
 		$theme_text = ($theme_text) ? $theme_header.$theme_text.$theme_footer : "<div class='alert alert-success'>".LAN_OK."</div>";
 
 		$mesStatus = ($_SESSION['lancheck'][$lan]['total']>0) ? E_MESSAGE_INFO : E_MESSAGE_SUCCESS;
-			
+
 		$mes->add($message, $mesStatus);	
-			
+
 	//	$ns -> tablerender(LAN_SUMMARY.": ".$lan,$message);
 
 
@@ -1653,7 +1653,7 @@ class lancheck
 			$dir1 = e_THEME.$dir1;
 			$dir2 = e_THEME.$dir2;
 		}
-		
+
 		if(!$this->withinLanRoots($dir1) || !$this->withinLanRoots($dir2))
 		{
 			e107::getMessage()->addError(LAN_ERROR);
@@ -1663,15 +1663,15 @@ class lancheck
 	//	$ns = e107::getRender();
 		$sql = e107::getDb();
 
-	
+
 		/*    echo "<br />dir1 = $dir1";
 		echo "<br />file1 = $f1";
-	
+
 		echo "<br />dir2 = $dir2";
 		echo "<br />file2 = $f2";*/
-		
-	
-	
+
+
+
 		if($dir2.$f2 == e_LANGUAGEDIR.$lan."/English.php") // it's a language config file.
 		{
 			$f2 = $lan.".php";
@@ -1681,7 +1681,7 @@ class lancheck
 		{
 			$root_file = $dir2.$f2;
 		}
-	
+
 		if($dir2.$f2 == e_LANGUAGEDIR.$lan."/English_custom.php") // it's a language config file.
 		{
 			$f2 = $lan."_custom.php";
@@ -1700,7 +1700,7 @@ class lancheck
 
 		$keys = array_keys($trans);
 		sort($keys);
-	
+
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='transform'>
 		<table class='table table-striped'>
@@ -1711,7 +1711,7 @@ class lancheck
 			<th>".$lan."</th>
 		</tr>
 		</thead><tbody>";
-	
+
 		$subkeys = array_keys($trans['orig']);
 		foreach($subkeys as $sk)
 		{
@@ -1746,39 +1746,39 @@ class lancheck
 			}
 			$text .="</td></tr>";
 		}
-	
+
 		unset($_SESSION['lancheck-edit-file']);
-	
+
 		//Check if directory is writable
-		
+
 		$text .= "</tbody></table>";
-		
+
 		if($writable)
 		{
 			$text .= '<div class="buttons-bar center">
 			<input type="hidden" name="lan" value="'.$lan.'" />
 			<button id="etrigger-submit" class="btn btn-warning" type="submit" name="saveLanguageFile" value="1" >'.LAN_SAVE.' '.str_replace($dir2,'',$root_file).'</button>
 			</div>';
-	
+
 			if($root_file)
 			{			
 				$_SESSION['lancheck-edit-file'] = $root_file;
 			}
-	
-			
+
+
 		}
-	
+
 		$text .= "
-		
+
 		</form>
 		</div>";
-	
+
 		$text .= "<form method='post' action='".e_SELF."?tools' id='select_lang'>
 		<div style='text-align:center'><br />";
 		$text .= (!$writable) ? "<br />".$dir2.$f2.LAN_NOTWRITABLE : "";
 	//	$text .= "<br /><br /><input class='btn' type='submit' name='language_sel[{$lan}]' value=\"".LAN_BACK."\" />";
 		$text .= "</div></form>";
-	
+
 		$capFile = str_replace("../","",$dir2.$f2);
 		$caption = LANG_LAN_21.SEP.$lan.SEP.LAN_CHECK_2.SEP.LAN_EDIT.SEP.$capFile;
 
@@ -1794,17 +1794,17 @@ class lancheck
 	function fill_phrases_array($data,$type)
 	{	
 		$retloc = array();
-		
+
 		if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',$data, $multiComment))
 		{
 			$data = str_replace($multiComment[1],'',$data);	// strip multi-line comments. 	
 		}
-					
+
 		if(preg_match('/^\s*?setlocale\s*?\(\s*?([\w]+)\s*?,\s*?(.+)\s*?\)\s*?;/im',$data,$locale)) // check for setlocale();
 		{
 			$retloc[$type][$locale[1]]= $locale[2];	
 		}
-				
+
 		$call = '/^\s*?define\s*?\(\s*?([\'"])([\w]+)\1\s*?,\s*?([\'"])%s\s*?\)\s*?;/imu';
 		$anyValue = sprintf($call, '([\s\S]*?)\s*?[\'"]');
 		$singleLiteral = sprintf($call, '((?:\\\\[\s\S]|(?!\3)[^\\\\])*)\3');
@@ -1819,14 +1819,14 @@ class lancheck
 				}
 			}
 		}
-			
+
 		return $retloc;
-		
+
 		/*
 		echo "<h2>Raw Data ".$type."</h2><pre>";
 		echo htmlentities($data);
 		echo "</pre>";	
-	
+
 		*/
 			
 	}

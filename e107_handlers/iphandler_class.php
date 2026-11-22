@@ -972,7 +972,7 @@ class eIPHandler
 
 				return true;
 			}
-			
+
 			// User is banned hereafter - just need to sort out the details.
 			// May need to retrigger ban period
 			if (!empty($pref['ban_retrigger']) && !empty($pref['ban_durations'][$row['banlist_bantype']]))

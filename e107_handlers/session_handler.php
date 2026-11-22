@@ -1165,7 +1165,7 @@ class e_session
 		{ 
 			$sessionData = $this->_data['_session_validate_data'];
 			$validateData = $this->getValidateData();
-			
+
 			$details = 'USER INFORMATION: '.(isset($_COOKIE[e_COOKIE]) ? $_COOKIE[e_COOKIE] : (isset($_SESSION[e_COOKIE]) ? $_SESSION[e_COOKIE] : 'n/a'))."\n";
 			$details .= "HOST: ".$_SERVER['HTTP_HOST']."\n";
 			$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";	
@@ -1179,16 +1179,16 @@ class e_session
 			$this->close(false);
 			$details .= "SESSION GLOBAL DATA:\n";
 			$details .= print_r($_SESSION, true);
-			
+
 			// delete cookie, destroy session
 			$this->cookieDelete()->destroy();
-			
+
 			// TODO event trigger
-			
+
 			// e107::getAdminLog()->add('Session validation failed!', $details, E_LOG_FATAL);
 			// TODO session exception, handle it proper on live site
 			// throw new Exception('');
-			
+
 			// just for now
 			$msg = 'Session validation failed! <a href="'.strip_tags($_SERVER['REQUEST_URI']).'">Go Back</a>';
 		//	die($msg); //FIXME not functioning as intended. 

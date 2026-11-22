@@ -295,18 +295,18 @@ class page_chapters_ui extends e_admin_ui
 			$sql = e107::getDb();
 			$sql->gen("SELECT chapter_id,chapter_name FROM #page_chapters WHERE chapter_parent =0");
 			$this->books[0] = CUSLAN_5;
-			
+
 			while($row = $sql->fetch())
 			{
 				$bk = $row['chapter_id'];
 				$this->books[$bk] = $row['chapter_name'];
 			}
-			
+
 			asort($this->books);
-			
+
 			$this->fields['chapter_parent']['writeParms'] = $this->books;	
-			
-			
+
+
 			$tmp = e107::getLayouts('', 'chapter', 'front', '', true, false);
 			$tmpl = array();
 			foreach($tmp as $key=>$val)
@@ -316,7 +316,7 @@ class page_chapters_ui extends e_admin_ui
 					$tmpl[$key] = $val;	
 				}	
 			}
-			
+
 			$this->fields['chapter_template']['writeParms'] = $tmpl; // e107::getLayouts('', 'chapter', 'front', '', true, false); // e107::getLayouts('', 'page', 'books', 'front', true, false); 
 			
 		}

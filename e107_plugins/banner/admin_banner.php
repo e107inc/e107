@@ -57,7 +57,7 @@ class banner_admin extends e_admin_dispatcher
 {
 
 	protected $modes = array(	
-	
+
 		'main'	=> array(
 			'controller' 	=> 'banner_ui',
 			'path' 			=> null,
@@ -67,8 +67,8 @@ class banner_admin extends e_admin_dispatcher
 
 
 	);	
-	
-	
+
+
 	protected $adminMenu = array(
 
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
@@ -82,7 +82,7 @@ class banner_admin extends e_admin_dispatcher
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'				
 	);	
-	
+
 	protected $menuTitle = LAN_PLUGIN_BANNER_NAME;
 }
 
@@ -92,7 +92,7 @@ class banner_admin extends e_admin_dispatcher
 
 class banner_ui extends e_admin_ui
 {
-			
+
 		protected $pluginTitle		= LAN_PLUGIN_BANNER_NAME;
 		protected $pluginName		= 'banner';
 		protected $table			= 'banner';
@@ -103,11 +103,11 @@ class banner_ui extends e_admin_ui
 	//	protected $sortField		= 'somefield_order';
 	//	protected $orderStep		= 10;
 		protected $tabs				= array(LAN_BASIC, LAN_ADVANCED); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
-		
+
 	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
-	
+
 		protected $listOrder		= 'banner_id DESC';
-	
+
 		protected $fields 		= array (
 		  'checkboxes'				=>   array ( 'title' => '', 		'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'banner_id' 				=>   array ( 'title' => LAN_ID, 	'type' => null, 'data' => 'int', 'width' => '2%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -135,9 +135,9 @@ class banner_ui extends e_admin_ui
 		  'banner_ip' 				=>   array ( 'title' => LAN_IP, 		'type' => 'hidden', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'options' 				=>   array ( 'title' => LAN_OPTIONS, 		'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);
-		
+
 		protected $fieldpref = array('banner_id', 'banner_campaign', 'banner_image', 'banner_clickurl', 'banner_clicks', 'banner_active', 'click_percentage', 'banner_impressions' );
-		
+
 		/*
 		protected $prefs = array(
 			'banner_caption'		=> array('title'=> 'Banner_caption', 'type'=>'text', 'data' => 'string','help'=>'Help Text goes here'),
@@ -145,7 +145,7 @@ class banner_ui extends e_admin_ui
 			'banner_amount'			=> array('title'=> 'Banner_amount', 'type'=>'number', 'data' => 'string','help'=>'Help Text goes here'),
 			'banner_rendertype'		=> array('title'=> 'Banner_rendertype', 'type'=>'text', 'data' => 'string','help'=>'Help Text goes here'),		); 
 	*/
-	
+
 		public function init()
 		{
 
@@ -155,33 +155,33 @@ class banner_ui extends e_admin_ui
 			}*/
 		}
 
-		
+
 		// ------- Customize Create --------
 
 		public function beforeCreate($new_data, $old_data)
 		{
 		//	e107::getMessage()->addDebug(print_a($new_data,true)); 
-			
+
 			if(!empty($new_data['banner_clientname_sel']))
 			{
 				$new_data['banner_clientname'] = $new_data['banner_clientname_sel'];
-					
+
 			}
 
 			if(!empty($new_data['banner_campaign_sel']) && $new_data['banner_campaign_sel'] != '_new_')
 			{
 				$new_data['banner_campaign'] = $new_data['banner_campaign_sel'];
-					
+
 			}
 
 			if(!empty($new_data['banner_image_remote']))
 			{
 				$new_data['banner_image'] = $new_data['banner_image_remote'];
 			}
-			
+
 			return $new_data;
 		}
-	
+
 		public function afterCreate($new_data, $old_data, $id)
 		{
 			// do something
@@ -193,17 +193,17 @@ class banner_ui extends e_admin_ui
 			exit;
 		}		
 
-		
+
 		// ------- Customize Update --------
-		
+
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
 			//	e107::getMessage()->addDebug(print_a($new_data,true));
-				
+
 			if(!empty($new_data['banner_clientname_sel']))
 			{
 				$new_data['banner_clientname'] = $new_data['banner_clientname_sel'];
-					
+
 			}
 
 			if(!empty($new_data['banner_campaign_sel']) && empty($new_data['banner_campaign']))
@@ -217,7 +217,7 @@ class banner_ui extends e_admin_ui
 			}
 
 			// e107::getMessage()->addDebug(print_a($new_data,true));
-				
+
 			return $new_data;
 		}
 
@@ -225,7 +225,7 @@ class banner_ui extends e_admin_ui
 		{
 			// do something	
 		}
-		
+
 		public function onUpdateError($new_data, $old_data, $id)
 		{
 			// do something		
@@ -284,8 +284,8 @@ class banner_ui extends e_admin_ui
 
 
 	}*/
-			
-	
+
+
 		public function menuPage()
 		{
 
@@ -297,19 +297,19 @@ class banner_ui extends e_admin_ui
 			$menu_pref = e107::getConfig('menu')->getPref('');
 			$frm = e107::getForm();
 			$mes = e107::getMessage();
-				
+
 			$in_catname = array();		// Notice removal
 			$all_catname = array();
-			
+
 			$array_cat_in = explode("|", $menu_pref['banner_campaign']);
-			
+
 			if (!$menu_pref['banner_caption'])
 			{
 				$menu_pref['banner_caption'] = BNRLAN_38;
 			}
-			
+
 			$category_total = $sql->select("banner", "DISTINCT(banner_campaign) as banner_campaign", "ORDER BY banner_campaign", "mode=no_where");
-			
+
 			while ($banner_row = $sql -> fetch())
 			{
 				$all_catname[] = $banner_row['banner_campaign'];
@@ -318,7 +318,7 @@ class banner_ui extends e_admin_ui
 					$in_catname[] = $banner_row['banner_campaign'];
 				}
 			}
-						
+
 			$text = "
 				<form method='post' action='".e_REQUEST_URI."' id='menu_conf_form'>
 					<fieldset id='core-banner-menu'>
@@ -339,7 +339,7 @@ class banner_ui extends e_admin_ui
 			";
 			if($all_catname)
 			{
-				
+
 				foreach($all_catname as $name)
 				{
 					$text .= "
@@ -348,7 +348,7 @@ class banner_ui extends e_admin_ui
 							</div>
 							";
 				}
-					
+
 				$text .= "
 						<div class='field-spacer control-group form-group'>
 						".$frm->admin_button('check_all', 'jstarget:multiaction_cat_active', 'checkall', LAN_CHECKALL)."
@@ -360,15 +360,15 @@ class banner_ui extends e_admin_ui
 			{
 				$text .= BNRLAN_40;
 			}
-			
-			
+
+
 			$renderTypes = array(BNRLAN_48,'1 - '.BNRLAN_45,'2 - '.BNRLAN_46);
-			
+
 				$renderTypes[3] = "3 - ".BNRLAN_47; //TODO 
-			
-			
+
+
 			$text .= "
-			
+
 										</td>
 									</tr>
 									<tr>
@@ -387,9 +387,9 @@ class banner_ui extends e_admin_ui
 						</fieldset>
 					</form>
 				";
-			
+
 				return $mes->render().$text; 
-			
+
 			//	$ns->tablerender(LAN_PLUGIN_BANNER_NAME.SEP.BNRLAN_36, $mes->render() . $text);
 			*/
 		}
@@ -399,9 +399,9 @@ class banner_ui extends e_admin_ui
 			$help_text = str_replace("[br]", "<br />", BNRLAN_HELP_02);
 			return array('caption' => LAN_HELP, 'text' => $help_text);
 		}
-			
+
 }
-				
+
 
 
 class banner_form_ui extends e_admin_form_ui
@@ -428,30 +428,30 @@ class banner_form_ui extends e_admin_form_ui
 					$campaignsplit = explode("^", $banner_row['banner_campaign']);
 					$banner_row['banner_campaign'] = $campaignsplit[0];
 				}
-		
+
 				if ($banner_row['banner_campaign']) 
 				{
 					$this->campaigns[$banner_row['banner_campaign']] = $banner_row['banner_campaign'];
 				}
-				
+
 				if ($banner_row['banner_clientname']) 
 				{
 					$this->clients[$banner_row['banner_clientname']] = $banner_row['banner_clientname'];
 				}
-		
+
 				if ($banner_row['banner_clientlogin']) 
 				{
 					$this->logins[] = $banner_row['banner_clientlogin'];
 				}
-				
+
 				if ($banner_row['banner_clientpassword']) 
 				{
 					$this->passwords[] = $banner_row['banner_clientpassword'];
 				}
 			}
 		}	
-		
-		
+
+
 	}
 
 
@@ -508,18 +508,18 @@ class banner_form_ui extends e_admin_form_ui
 		return null;
 	}
 
-	
+
 	// Custom Method/Function 
 	function banner_clientname($curVal,$mode)
 	{
 		$frm = e107::getForm();		
-		 		
+
 		switch($mode)
 		{
 			case 'read': // List Page
 				return $curVal;
 		//	break;
-			
+
 			case 'write': // Edit Page
 				$text = '';
 				if (count($this->clients)) 
@@ -529,15 +529,15 @@ class banner_form_ui extends e_admin_form_ui
 				}
 				else
 				{
-					
+
 					$text .= $frm->text('banner_clientname',$curVal);
 					$text .= "<span class='field-help'>".BNRLAN_29."</span>";
 				}
-				
+
 				return $text; 
 			//	return $frm->text('banner_clientname',$curVal);		
 			//break;
-			
+
 			case 'filter':
 			case 'batch':
 				return  $this->clients; 
@@ -547,22 +547,22 @@ class banner_form_ui extends e_admin_form_ui
 		return null;
 	}
 
-	
+
 	// Custom Method/Function 
 	function banner_clientlogin($curVal,$mode)
 	{
 		$frm = e107::getForm();		
-		 		
+
 		switch($mode)
 		{
 			case 'read': // List Page
 				return $curVal;
 			break;
-			
+
 			case 'write': // Edit Page
 				return $frm->text('banner_clientlogin',$curVal);		
 			break;
-			
+
 			case 'filter':
 			case 'batch':
 				return null;
@@ -576,7 +576,7 @@ class banner_form_ui extends e_admin_form_ui
 	function banner_impressions($curVal,$mode)
 	{
 		$frm = e107::getForm();		
-		 		
+
 		switch($mode)
 		{
 			case 'read': // List Page
@@ -585,11 +585,11 @@ class banner_form_ui extends e_admin_form_ui
 				$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
 				return $curVal .' / '.$impressions_purchased;
 			break;
-			
+
 			case 'write': // Edit Page
 				return $frm->text('banner_impressions',$curVal);		
 			break;
-			
+
 			case 'filter':
 			case 'batch':
 				return  array();
@@ -598,18 +598,18 @@ class banner_form_ui extends e_admin_form_ui
 
 		return null;
 	}
-	
+
 	// Custom Method/Function 
 	function banner_campaign($curVal,$mode)
 	{
 		$frm = e107::getForm();		
-		 		
+
 		switch($mode)
 		{
 			case 'read': // List Page
 				return $curVal;
 			break;
-			
+
 			case 'write': // Edit Page
 				if (count($this->campaigns)) 
 				{
@@ -622,7 +622,7 @@ class banner_form_ui extends e_admin_form_ui
 				}
 				return $text; // $frm->text('banner_campaign',$curVal);		
 			break;
-			
+
 			case 'filter':
 			case 'batch':
 				return  $this->campaigns; 
@@ -631,8 +631,8 @@ class banner_form_ui extends e_admin_form_ui
 
 		return null;
 	}
-	
-	
+
+
 	// Custom Method/Function 
 	function click_percentage($curVal,$mode)
 	{
@@ -644,7 +644,7 @@ class banner_form_ui extends e_admin_form_ui
 		unset($curVal); // keep inspector happy.
 
 		$banner_row = $this->getController()->getListModel()->getData(); 
-		 
+
 	//	 return print_a($banner_row,true); 		
 		return ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100,1)."%" : "-");
 
@@ -654,7 +654,7 @@ class banner_form_ui extends e_admin_form_ui
 
 
 }		
-		
+
 
 new banner_admin;
 

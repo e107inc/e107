@@ -872,7 +872,7 @@ class download_shortcodes extends e_shortcode
 		/*
       	require_once(e_HANDLER."rate_class.php");
       	$rater = new rater;
-      	
+
       	$text = "
       		<table style='width:100%'>
       		<tr>

@@ -13,17 +13,17 @@ require_once(__DIR__.'/../import_classes.php');
 
 class smf_import extends base_import_class
 {
-	
+
 	public $title			= 'SMF v2.x (Simple Machines Forum)';
 	public $description		= 'Currently does not import membergroups or more than 1 post attachment ';
 	public $supported		= array('users','forum','forumthread','forumpost');
 	public $mprefix			= 'smf_';
 	public $sourceType 		= 'db';		
-	
+
 	function init()
 	{
 
-		
+
 	}
 
 	function config()
@@ -40,7 +40,7 @@ class smf_import extends base_import_class
 		return $var;
 	}
 
-	
+
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
 	function setupQuery($task, $blank_user=FALSE)
@@ -50,17 +50,17 @@ class smf_import extends base_import_class
 			e107::getMessage()->addDebug("Unable to connext");
 		    return FALSE;
 		}
-		
+
 	    switch ($task)
 		{
 			case 'users' :
-				
+
 				// Set up Userclasses. 
 				if($this->ourDB && $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}membergroups WHERE group_name = 'Jr. Member' "))
 				{
 					e107::getMessage()->addDebug("Userclasses Found");	
 				}	
-				
+
 		    	$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}members WHERE `is_activated`=1");
 				if ($result === false)
 				{
@@ -69,8 +69,8 @@ class smf_import extends base_import_class
 					return false;
 				}
 			break;
-				
-				
+
+
  			case 'forum' :
  			    $qry = "SELECT f.*, m.id_member, m.poster_name, m.poster_time FROM {$this->DBPrefix}boards AS f LEFT JOIN {$this->DBPrefix}messages AS m ON f.id_last_msg = m.id_msg GROUP BY f.id_board ";
 
@@ -82,7 +82,7 @@ class smf_import extends base_import_class
 	  		        return false;
 				}
 			break;
-				
+
 			case 'forumthread' :
 
 				$qry = "SELECT t.*, m.poster_name, m.subject, m.poster_time, m.id_member, l.poster_name as lastpost_name, l.poster_time as lastpost_time, l.id_member as lastpost_user FROM {$this->DBPrefix}topics AS t
@@ -94,7 +94,7 @@ class smf_import extends base_import_class
 				if ($result === false) return false;
 
 			break;
-				
+
 			case 'forumpost' :
 
 				$qry = "SELECT m.*, a.filename, a.fileext, a.size FROM {$this->DBPrefix}messages AS m LEFT JOIN {$this->DBPrefix}attachments AS a ON m.id_msg = a.id_msg GROUP BY m.id_msg ORDER BY m.id_msg ASC ";
@@ -107,18 +107,18 @@ class smf_import extends base_import_class
 				//$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}forums_track`");
 				//if ($result === FALSE) return FALSE;	  
 			break;
-				
+
 			default :
 		    return FALSE;
 		}
-		
+
 		$this->copyUserInfo = false;
 		$this->currentTask = $task;
 		return TRUE;
 	}
 
-	
-	
+
+
 	function convertUserclass($data)
 	{
 		if(empty($data))
@@ -153,21 +153,21 @@ class smf_import extends base_import_class
 		8	Hero Member			500	0	5#star.gif	0	0	-2	
 		*/
 	}	
-	
+
 	function convertAdmin($data)
 	{
-		
+
 		if($data == 1)
 		{
 			return 1;	
 		}	
-		
+
 	}
 
   //------------------------------------
   //	Internal functions below here
   //------------------------------------
-  
+
   // Copy data read from the DB into the record to be returned.
 	function copyUserData(&$target, &$source)
 	{
@@ -175,7 +175,7 @@ class smf_import extends base_import_class
 		{
 			 $target['user_id'] = 0; // $source['id_member'];
 		}
-		
+
 		$target['user_name'] 		= $source['real_name'];
 		$target['user_login'] 		= $source['member_name'];
 		$target['user_loginname'] 	= $source['memberName'];
@@ -201,10 +201,10 @@ class smf_import extends base_import_class
 		$target['user_birthday']	= $source['birthdate'];
 		$target['user_admin']		= $this->convertAdmin($source['id_group']);
 		$target['user_class']		= $this->convertUserclass($source['id_group']);
-		
+
 		$target['user_plugin_forum_viewed'] = 0;
 		$target['user_plugin_forum_posts']	= $source['posts'];
-		
+
 	//    $target['user_language'] = $source['lngfile'];			// Guess to verify
 		return $target;
 		}
@@ -217,7 +217,7 @@ class smf_import extends base_import_class
 	 */
 	function copyForumData(&$target, &$source)
 	{
-		
+
 		$target['forum_id'] 				= $source['id_board'];
 		$target['forum_name'] 				= $source['name'];
 		$target['forum_description'] 		= $source['description'];
@@ -225,7 +225,7 @@ class smf_import extends base_import_class
 		$target['forum_sub']				= ($source['child_level'] > 1) ? $source['id_parent'] : 0;
 		$target['forum_datestamp']			= time();
 		$target['forum_moderators']			= "";
-	
+
 		$target['forum_threads'] 			= $source['num_topics'];
 		$target['forum_replies']			= $source['num_posts'];
 		$target['forum_lastpost_user']		= $source['id_member'];
@@ -237,20 +237,20 @@ class smf_import extends base_import_class
 		$target['forum_threadclass']	    = e_UC_MEMBER;
 		$target['forum_options']	        = e_UC_MEMBER;
 		$target['forum_sef']                = eHelper::title2sef($source['name'],'dashl');
-		
+
 		return $target;
 
-		
+
 	}
 
-	
+
 	/**
 	 * $target - e107 forum_threads
 	 * $source - smf topics. 
 	 */
 	function copyForumThreadData(&$target, &$source)
 	{
-		
+
 		$target['thread_id'] 				= (int) $source['id_topic'];
 		$target['thread_name'] 				= $source['subject'];
 		$target['thread_forum_id'] 			= (int) $source['id_board'];
@@ -265,12 +265,12 @@ class smf_import extends base_import_class
 		$target['thread_lastuser_anon'] 	= empty($source['lastpost_user']) ? $source['lastpost_name'] : null;
 		$target['thread_total_replies'] 	= (int) $source['num_replies'];
 		$target['thread_options'] 			= null;
-	
+
 		return $target;
-		
+
 	}
 
- 	
+
 	/**
 	 * $target - e107_forum_post table
 	 * $source -smf
@@ -293,7 +293,7 @@ class smf_import extends base_import_class
 
 
 		return $target;
-		
+
 
 	}
 
@@ -370,7 +370,7 @@ CREATE TABLE {$db_prefix}polls (
  * 
  * 
  * 
- 
+
 
  * 
  * INSERT INTO {$db_prefix}membergroups

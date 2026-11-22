@@ -76,14 +76,14 @@ class cpage_shortcodes extends e_shortcode
 			$pid = $this->var['page_chapter'];
 			$cid = isset($this->chapterData[$pid]['chapter_parent']) ?  $this->chapterData[$pid]['chapter_parent'] : 0;
 		}
-		
+
 		$row = isset($this->chapterData[$cid]) ? $this->chapterData[$cid] : array();
-		
+
 		if(!empty($row['chapter_id']) && $row['chapter_parent'] < 1)
 		{
 			return $row;	
 		}
-		
+
 		return false; // not a book.
 		
 	}
@@ -205,13 +205,13 @@ class cpage_shortcodes extends e_shortcode
 				}
 			}
 		}
-		
+
 		//if($parm && isset($com[$parm])) return $com[$parm];
 		if($comflag)
 		{
 			return e107::getComment()->parseLayout($com['comment'],$com['comment_form'],$com['moderate']);	
 		}
-		
+
 	//	return $com['comment'].$com['moderate'].$com['comment_form'];
 	}
 

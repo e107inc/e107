@@ -116,7 +116,7 @@ class Argument
                 $message = '%s accepts only array as argument %d.';
                 break;
             case 'closure':
-                $valid = is_a($value, '\Closure');
+                $valid = $value instanceof \Closure;
                 $message = '%s accepts only Closure as argument %d.';
                 break;
             case 'digit':
