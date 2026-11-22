@@ -374,7 +374,10 @@ sessions finish no sooner, and now and then one fails to start. Each test file
   fixtures into the overlay; the unit suite runs in a mount namespace with the
   overlay at `/var/www/html`, so paths are the worktree's own. The tests never
   write to the worktree; the runner itself writes only Codeception's generated
-  actor classes, once per run, and its results under `tests/_output/`.
+  actor classes, once per run, and its results under `tests/_output/`. Apache
+  serves the worktree itself, outside every sandbox, by every other name the
+  stack answers to (`web`, `localhost`, `127.0.0.1`), so a test reaches its
+  site only by the suite's URL, or through a server it starts itself.
 - a **database** of its own on the env's server, copied ahead of need from a
   template built once per run: the site the `@group site-template` test
   installs, for acceptance (whose sandboxes also start from the files that
@@ -436,8 +439,12 @@ its sandbox's name as usual and every other name to the same recorder, so a
 script, font or image a page loads from elsewhere is refused and recorded too.
 What stays inside: loopback, the networks the container reaches directly
 (the stack's own, which holds the database, the browser and every `sbN.web`),
-and name lookups at the stack's name servers. The rules go up when the run
-starts and down when it ends, however it ends, so `up`, composer and `graft`
+and name lookups at the stack's name servers. Where such a name server
+forwards from inside the container, as Docker's does on some hosts, a lookup
+of a name outside the stack reaches the recorder all the same, so a test that
+makes e107 look one up declares it. The web container has no search domain, so
+that name is all the lookup asks for. The rules go up when the run starts and
+down when it ends, however it ends, so `up`, composer and `graft`
 reach the Internet as before. They need `CAP_NET_ADMIN` in the web container,
 which `up` gives it, and an env from before them needs `up` again.
 

@@ -74,6 +74,7 @@ class AdminLoginCest
 	public function testAdminURLS(AcceptanceTester $I)
 	{
 		$I->expectOutboundRequest('e107.org');
+		$I->expectOutboundRequest('i1.ytimg.com');
 
 		$this->e107Login($I);
 
