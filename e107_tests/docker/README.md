@@ -381,8 +381,12 @@ alert, an SMTP 554 greeting, a REFUSED answer to a name lookup, otherwise a
 closed connection) and writes down where it was going.
 What stays inside: loopback, the networks the container reaches directly
 (the stack's own, which holds the database and every `sbN.web`),
-and name lookups at the stack's name servers. The rules go up when the run
-starts and down when it ends, however it ends, so `up`, composer and `graft`
+and name lookups at the stack's name servers. Where such a name server
+forwards from inside the container, as Docker's does on some hosts, a lookup
+of a name outside the stack reaches the recorder all the same, so a test that
+makes e107 look one up declares it. The web container has no search domain, so
+that name is all the lookup asks for. The rules go up when the run starts and
+down when it ends, however it ends, so `up`, composer and `graft`
 reach the Internet as before. They need `CAP_NET_ADMIN` in the web container,
 which `up` gives it, and an env from before them needs `up` again.
 
