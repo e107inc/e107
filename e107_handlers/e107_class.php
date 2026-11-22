@@ -2081,30 +2081,30 @@ class e107
         }
         catch (Throwable $e)
         {
-            // TODO: LAN
-            self::getMessage()->addWarning(
-                "The core integrity image is corrupt. " .
-                "File Inspector will be inoperative. " .
-                "Resolve this issue by uploading a good copy of the core image to " .
-                escapeshellarg($fileInspectorPath) . ". " .
-                "If uploading with FTP, use binary transfer mode. " .
-                "Error message: " .
-                $e->getMessage()
-            );
+            self::getMessage()->addWarning(self::corruptCoreImageWarning($fileInspectorPath, $e));
         } catch (\Exception $e) {
-            // TODO: LAN
-            self::getMessage()->addWarning(
-                "The core integrity image is corrupt. " .
-                "File Inspector will be inoperative. " .
-                "Resolve this issue by uploading a good copy of the core image to " .
-                escapeshellarg($fileInspectorPath) . ". " .
-                "If uploading with FTP, use binary transfer mode. " .
-                "Error message: " .
-                $e->getMessage()
-            );
+            self::getMessage()->addWarning(self::corruptCoreImageWarning($fileInspectorPath, $e));
         }
 
         return $fileInspector;
+	}
+
+	/**
+	 * The warning shown when the core integrity image at $path fails to load.
+	 * @param string $path
+	 * @param Throwable|Exception $e
+	 * @return string
+	 */
+	private static function corruptCoreImageWarning($path, $e)
+	{
+		// TODO: LAN
+		return "The core integrity image is corrupt. " .
+			"File Inspector will be inoperative. " .
+			"Resolve this issue by uploading a good copy of the core image to " .
+			escapeshellarg($path) . ". " .
+			"If uploading with FTP, use binary transfer mode. " .
+			"Error message: " .
+			$e->getMessage();
 	}
 
 	/**
