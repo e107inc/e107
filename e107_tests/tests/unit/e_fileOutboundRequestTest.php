@@ -947,6 +947,7 @@ class e_fileOutboundRequestTest extends \Test\Unit
 		// that the pin did the work.
 		$unpinned = new E107P3PinnedFile();
 		$unpinned->addresses = array();
+		$this->tester->expectOutboundRequest(self::UNPINNED_HOST);
 
 		self::assertFalse($unpinned->getRemoteContent($this->pinnedUrl(self::UNPINNED_HOST)));
 
@@ -1210,6 +1211,7 @@ class e_fileOutboundRequestTest extends \Test\Unit
 		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array(); ";
 		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
 		$body .= $this->reportResult();
+		$this->tester->expectOutboundRequest(self::PINNED_HOST);
 
 		self::assertSame('false', $this->resultOf($this->withoutCurl($body)),
 			'Negative control: with nothing to pin the name cannot be resolved at all.');
@@ -1339,6 +1341,7 @@ class e_fileOutboundRequestTest extends \Test\Unit
 
 		$unpinned = new E107P3PinnedFile();
 		$unpinned->addresses = array();
+		$this->tester->expectOutboundRequest(self::UNPINNED_HOST);
 
 		self::assertFalse($unpinned->isValidURL($this->pinnedUrl(self::UNPINNED_HOST)),
 			'Negative control: with nothing to pin the name cannot be resolved at all.');
