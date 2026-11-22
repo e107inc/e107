@@ -89,8 +89,9 @@ else
 fi
 
 if [ -d "$DOCROOT" ]; then
-    # The docroot itself must be writable: the acceptance test deployer
-    # creates and deletes e107_config.php in it directly.
+    # Writable by Apache, here and in every sandbox root, which takes its mode
+    # from this directory: e107's installer writes e107_config.php and renames
+    # e107.htaccess in the site root, for the install Cests and `up --install-site`.
     chmod a+rwx "$DOCROOT" 2>/dev/null || true
 
     # Directories e107 writes to at runtime (hash dirs under e107_system /
