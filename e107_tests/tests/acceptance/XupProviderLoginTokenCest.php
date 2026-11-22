@@ -266,13 +266,14 @@ class XupProviderLoginTokenCest
 
 		$this->clearStore($I);
 		preg_match('#^SITEURL:(.*)$#m', $I->probe('act=siteurl'), $match);
-		$identifier = 'http://127.0.0.1/<b>e107tests-identifier</b>';
+		$siteUrl = trim($match[1]);
+		$identifier = $siteUrl.'<b>e107tests-identifier</b>';
 		$I->amOnPage(self::ROUTE.'&provider='.self::OPENID_PROVIDER.'&'.http_build_query(array(
 			'openid.ns'           => 'http://specs.openid.net/auth/2.0',
 			'openid.mode'         => 'id_res',
 			'openid.claimed_id'   => $identifier,
 			'openid.identity'     => $identifier,
-			'openid.return_to'    => trim($match[1]).'index.php?route=system/xup/login&provider='.self::OPENID_PROVIDER,
+			'openid.return_to'    => $siteUrl.'index.php?route=system/xup/login&provider='.self::OPENID_PROVIDER,
 			'openid.assoc_handle' => 'e107tests',
 			'openid.signed'       => 'mode',
 			'openid.sig'          => 'e107tests',
