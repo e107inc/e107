@@ -114,6 +114,14 @@ final class StreamWrapper
     }
 
     /**
+     * @return bool
+     */
+    public function stream_flush()
+    {
+        return true;
+    }
+
+    /**
      * @return int
      */
     public function stream_tell()

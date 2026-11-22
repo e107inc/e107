@@ -27,8 +27,7 @@ class Key
     ) {
         $this->keyMaterial = $keyMaterial;
         $this->algorithm = $algorithm;
-        if (
-            !\is_string($keyMaterial)
+        if (!\is_string($keyMaterial)
             && !$keyMaterial instanceof OpenSSLAsymmetricKey
             && !(is_resource($keyMaterial) || $keyMaterial instanceof OpenSSLCertificate)
         ) {
