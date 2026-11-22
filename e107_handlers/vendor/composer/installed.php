@@ -7,7 +7,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
-        'dev' => false,
+        'dev' => true,
     ),
     'versions' => array(
         'e107inc/e107' => array(
@@ -101,9 +101,9 @@
             'dev_requirement' => false,
         ),
         'phpmailer/phpmailer' => array(
-            'pretty_version' => 'v6.12.0',
-            'version' => '6.12.0.0',
-            'reference' => 'd1ac35d784bf9f5e61b424901d5a014967f15b12',
+            'pretty_version' => 'v7.2.0',
+            'version' => '7.2.0.0',
+            'reference' => 'f5eb50148734d03bbbb81825c722c1889636d51a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpmailer/phpmailer',
             'aliases' => array(),
