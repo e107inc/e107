@@ -69,8 +69,13 @@ in a hand-edit that the next run will undo.
 Most of the work comes from upstream's `DowngradeSetList` sets. On top of those,
 `custom-rules/` vendors the PHP 7.1 → 5.6 rules that upstream deleted after
 Rector 0.15.1, plus three stock rules re-implemented because their upstream
-copies crash or are non-idempotent under Rector 2.x. Every skip in `rector.php`
-carries a comment explaining itself; two are worth repeating here.
+copies crash or are non-idempotent under Rector 2.x.
+`NameNullForSkippedNewInInitializerRector` runs ahead of the sets for a fourth:
+the stock `DowngradeNamedArgumentRector` throws when a named call skips a
+parameter whose default is a `new` expression, so the rule names null for it,
+which is the default `DowngradeNewInInitializerRector` gives that parameter.
+Every skip in `rector.php` carries a comment explaining itself; two are worth
+repeating here.
 
 **Parameter type widening is off.** PHP 5.6 parses an `array`, `callable` or
 class parameter hint whatever it names, so keeping them costs the floor
