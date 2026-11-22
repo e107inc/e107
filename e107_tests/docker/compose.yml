@@ -83,6 +83,9 @@ services:
     # may take over a port still in TIME_WAIT.
     sysctls:
       net.ipv4.tcp_tw_reuse: 1
+    # No search domain, so a lookup asks only for the name e107 gave, which a
+    # test can declare to the network boundary.
+    dns_search: "."
     networks:
       default:
         # Two names per sandbox, which Apache serves from that sandbox's overlay:

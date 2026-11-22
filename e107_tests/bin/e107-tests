@@ -1147,15 +1147,16 @@ cmd_clean() {
             _rm "$d" && removed=$((removed + 1))
         fi
     done
-    # Restore tracked files modified by acceptance installs.
-    # `git restore` is a no-op on files that aren't modified.
     if [ -e .git ]; then
         for f in e107.htaccess; do
-            if [ -f "$f" ] && ! git diff --quiet -- "$f" 2>/dev/null; then
-                git restore -- "$f" && removed=$((removed + 1))
+            if ! git diff --quiet -- "$f" 2>/dev/null && git restore -- "$f"; then
+                removed=$((removed + 1))
                 note "restored $f"
             fi
         done
+        if [ -f .htaccess ] && cmp -s .htaccess e107.htaccess; then
+            _rm .htaccess && removed=$((removed + 1))
+        fi
     fi
 
     note ">> Removed/restored $removed item(s)"

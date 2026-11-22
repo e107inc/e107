@@ -13,9 +13,9 @@
  * CURLOPT_FOLLOWLOCATION on, so libcurl re-issues the request at whatever the
  * server answers with. The validation is therefore one redirect deep. These
  * tests drive a real redirect chain against a real web server, so "every hop
- * is revalidated" is measured rather than asserted. The server is the docker
- * harness's own Apache where there is one, and PHP's built-in server started
- * over the prepared tree where there is not. @see locateFixtureServer()
+ * is revalidated" is measured rather than asserted. The server is PHP's
+ * built-in server started over the prepared tree.
+ * {@see e_fileOutboundRequestTest::locateFixtureServer()}
  *
  * COVERAGE GAPS left behind by this file, deliberately and knowingly:
  *
@@ -121,12 +121,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * Find something that serves the prepared tree over HTTP, once per process.
-	 *
-	 * Apache on 127.0.0.1 serves the tree where it is the tree under test.
-	 * Where it is not, as in the harness's sandboxes, PHP serves the tree
-	 * itself. Only the harness's Apache speaks TLS, by the host the suite's URL
-	 * names, whose certificate is the CA bundle.
+	 * Start PHP's own server over the prepared tree, and find the harness's HTTPS vhost for the TLS cases, once per process.
 	 *
 	 * @return void
 	 */
@@ -141,7 +136,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		$host = empty($params['url']) ? '' : (string) parse_url($params['url'], PHP_URL_HOST);
 		self::$tlsHost = ($host !== '' && is_file(self::CA_BUNDLE) && $this->fixtureAnswers($host, 'https')) ? $host : false;
 
-		self::$authority = $this->fixtureAnswers('127.0.0.1', 'http') ? '127.0.0.1' : $this->startBuiltInServer();
+		self::$authority = $this->startBuiltInServer();
 	}
 
 	/**
@@ -285,7 +280,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		if(self::$authority === false)
 		{
 			self::markTestSkipped(
-				'Nothing serves ' . APP_PATH . ' over HTTP and PHP\'s own server could not be started here, '
+				'PHP\'s own server could not be started over ' . APP_PATH . ' here, '
 				. 'so the redirect chain cannot be driven.');
 		}
 
@@ -407,19 +402,17 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	private function fixtureUrl($scheme = 'http')
 	{
 		// TLS is only ever the harness's vhost, which is on the default port.
-		$authority = ($scheme === 'https') ? self::$tlsHost : (self::$authority ?: '127.0.0.1');
+		$authority = ($scheme === 'https') ? self::$tlsHost : self::$authority;
 
 		return $scheme . '://' . $authority . '/' . self::HOP_FIXTURE;
 	}
 
 	/**
-	 * @return string ':port', or '' when the fixture is on the default port
+	 * @return string ':port'
 	 */
 	private function fixturePort()
 	{
-		$colon = strpos((string) self::$authority, ':');
-
-		return ($colon === false) ? '' : substr(self::$authority, $colon);
+		return substr(self::$authority, strpos(self::$authority, ':'));
 	}
 
 	/**
@@ -955,6 +948,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		// that the pin did the work.
 		$unpinned = new E107P3PinnedFile();
 		$unpinned->addresses = array();
+		$this->tester->expectOutboundRequest(self::UNPINNED_HOST);
 
 		self::assertFalse($unpinned->getRemoteContent($this->pinnedUrl(self::UNPINNED_HOST)));
 
@@ -1218,6 +1212,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array(); ";
 		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
 		$body .= $this->reportResult();
+		$this->tester->expectOutboundRequest(self::PINNED_HOST);
 
 		self::assertSame('false', $this->resultOf($this->withoutCurl($body)),
 			'Negative control: with nothing to pin the name cannot be resolved at all.');
@@ -1347,6 +1342,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 
 		$unpinned = new E107P3PinnedFile();
 		$unpinned->addresses = array();
+		$this->tester->expectOutboundRequest(self::UNPINNED_HOST);
 
 		self::assertFalse($unpinned->isValidURL($this->pinnedUrl(self::UNPINNED_HOST)),
 			'Negative control: with nothing to pin the name cannot be resolved at all.');
@@ -1424,12 +1420,6 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	private function resetFixtureHits()
 	{
 		@unlink($this->hitPath);
-
-		// Apache answers the fixture as its own user, not as the one running
-		// the suite, so the file it appends to has to exist and be writable
-		// first. PHP's built-in server needs neither, and neither minds.
-		@touch($this->hitPath);
-		@chmod($this->hitPath, 0666);
 	}
 
 	/**
