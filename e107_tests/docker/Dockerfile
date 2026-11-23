@@ -198,6 +198,12 @@ RUN for n in $(seq "$E107_SANDBOXES"); do \
         printf '<Directory /srv/sb/sb%s>\n    php_admin_value session.save_path /srv/sbstate/sessions/sb%s\n</Directory>\n' "$n" "$n"; \
     done > /etc/apache2/e107-sandbox-sessions.conf
 
+# While a suite runs, the network boundary keeps E107_BOUNDARY_UP, and Apache
+# refuses what it would serve from outside a sandbox and writes each refusal to
+# E107_REFUSED_LOG (apache-vhost.conf, lib/sandbox/Boundary.php).
+ENV E107_BOUNDARY_UP=/srv/sbstate/boundary-up \
+    E107_REFUSED_LOG=/var/log/apache2/refused.log
+
 COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY php-overrides.ini /usr/local/etc/php/conf.d/zz-e107-overrides.ini
 COPY entrypoint.sh    /usr/local/bin/e107-entrypoint

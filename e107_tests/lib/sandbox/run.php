@@ -38,7 +38,7 @@ if ($argv && $argv[0] === '--drop')
 }
 if ($argv && $argv[0] === '--record')
 {
-	$boundary = new Boundary($argv[1], new Shell(), new ProcNet());
+	$boundary = Boundary::fromImage($argv[1], new Shell(), new ProcNet());
 	$names = array($params['db']['host'], Runner::WEB);
 	for ($n = 1; $n <= (int) getenv('E107_SANDBOXES'); $n++)
 	{

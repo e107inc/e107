@@ -9,7 +9,7 @@
  */
 
 /**
- * How {@see \Sandbox\Boundary::account()} holds what the network boundary's recorder wrote against what each test declared.
+ * How {@see \Sandbox\Boundary::account()} holds what a run refused against what each test declared.
  */
 class outboundBoundaryTest extends \Codeception\Test\Unit
 {
@@ -30,6 +30,7 @@ class outboundBoundaryTest extends \Codeception\Test\Unit
 	protected function _after()
 	{
 		@unlink($this->dir.'/'.\Sandbox\Boundary::JOURNAL);
+		@unlink($this->dir.'/refused.log');
 		@unlink($this->dir.'/worker/'.\Sandbox\Boundary::TESTS);
 		@rmdir($this->dir.'/worker');
 		@rmdir($this->dir);
@@ -50,11 +51,19 @@ class outboundBoundaryTest extends \Codeception\Test\Unit
 		self::assertCount(1, $this->undeclared(array(array('protocol' => 'tcp', 'host' => '203.0.113.7'))));
 	}
 
+	public function testARequestApacheRefusedIsNeverDeclared()
+	{
+		self::assertSame(array(array('t' => 100.5, 'from' => '10.89.0.3', 'protocol' => 'https', 'host' => 'e107.org', 'port' => 443,
+			'request' => 'GET /LICENSE?x=1', 'site' => true, 'count' => 1, 'during' => array('tests/unit/aTest.php:testIt'))),
+			$this->undeclared(array(), "100.5\t10.89.0.3\t443\tE107.org:443\tGET /LICENSE?x=1\n"));
+	}
+
 	/**
 	 * @param array[] $attempts what the recorder wrote down, during a test that declared e107.org
+	 * @param string $refusals what Apache wrote down
 	 * @return array[] the attempts account() reports undeclared
 	 */
-	private function undeclared(array $attempts)
+	private function undeclared(array $attempts, $refusals = '')
 	{
 		$journal = '';
 		foreach ($attempts as $attempt)
@@ -62,10 +71,11 @@ class outboundBoundaryTest extends \Codeception\Test\Unit
 			$journal .= json_encode($attempt + array('t' => 100.5, 'from' => 'www-data', 'port' => 443, 'request' => null))."\n";
 		}
 		file_put_contents($this->dir.'/'.\Sandbox\Boundary::JOURNAL, $journal);
+		file_put_contents($this->dir.'/refused.log', $refusals);
 		file_put_contents($this->dir.'/worker/'.\Sandbox\Boundary::TESTS,
 			json_encode(array('name' => '/srv/tests/unit/aTest.php:testIt', 'start' => 100.0, 'expect' => array('e107.org')))."\n");
 
-		$boundary = new \Sandbox\Boundary($this->dir, new \Sandbox\Shell(), new \Sandbox\ProcNet());
+		$boundary = new \Sandbox\Boundary($this->dir, new \Sandbox\Shell(), new \Sandbox\ProcNet(), $this->dir.'/up', $this->dir.'/refused.log');
 
 		return $boundary->account(array($this->dir.'/worker' => 1), '/srv', true);
 	}
