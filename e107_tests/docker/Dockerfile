@@ -13,8 +13,8 @@
 #   * The image installs every PHP extension e107 needs to install and run.
 #   * Composer, git, rsync, and unzip are baked in so tests can be driven
 #     end-to-end inside the container.
-#   * nftables fences the container off the Internet while a suite runs
-#     (lib/sandbox/Boundary.php).
+#   * nftables fences the container off the Internet while a suite runs, and
+#     conntrack clears the flows it redirected (lib/sandbox/Boundary.php).
 #   * No source code is COPY'd in. The worktree is bind-mounted at runtime,
 #     which is what makes the image reusable across worktrees.
 #   * An image whose Debian release has moved to archive.debian.org gets its
@@ -40,6 +40,7 @@ RUN set -eux; \
     if [ "$PHPV" -ge 704 ]; then \
         apt-get install -y --no-install-recommends \
             ca-certificates \
+            conntrack \
             curl \
             git \
             imagemagick \
@@ -66,6 +67,7 @@ RUN set -eux; \
         # need; libvpx feeds PHP 5.6's gd. Mirrors release/v2.3.x CI.
         apt-get install -y --no-install-recommends \
             ca-certificates \
+            conntrack \
             curl \
             git \
             imagemagick \

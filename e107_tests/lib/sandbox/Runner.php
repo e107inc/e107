@@ -19,6 +19,9 @@ class Runner
 	/** Where Apache serves sandbox sbN.web from (see docker/apache-vhost.conf). */
 	const SANDBOXES = '/srv/sb';
 
+	/** The web container's own name in the stack, at which Apache serves the worktree itself. */
+	const WEB = 'web';
+
 	const APP = '/var/www/html';
 
 	/** The list Codeception's RunFailed extension keeps of the tests that failed, which `-g failed` runs again. */
@@ -89,6 +92,24 @@ class Runner
 		$this->suite = $suite;
 		$this->timings = $timings;
 		$this->settings = $settings;
+	}
+
+	/**
+	 * @param int $worker
+	 * @return string the worker's sandbox's own name, which the stack answers to as well
+	 */
+	public static function sandboxName($worker)
+	{
+		return "sb$worker";
+	}
+
+	/**
+	 * @param int $worker
+	 * @return string the name the worker's sandbox is served at
+	 */
+	public static function host($worker)
+	{
+		return self::sandboxName($worker).'.web';
 	}
 
 	/**
@@ -428,7 +449,7 @@ class Runner
 	/** @param int $worker 0 for the template's sandbox, which shares the first worker's host */
 	private function sandbox($worker)
 	{
-		$name = 'sb'.max(1, $worker);
+		$name = self::sandboxName(max(1, $worker));
 		$mountPoint = self::SANDBOXES."/$name";
 		if ($this->suite->servesHttp() && $this->settings['base_path'] !== '')
 		{
@@ -477,7 +498,7 @@ class Runner
 	{
 		$base = $this->suite->servesHttp() && $this->settings['base_path'] !== '' ? $this->settings['base_path'].'/' : '';
 		$params = array(
-			'url' => 'http://sb'.$batch->worker.".web/$base",
+			'url' => 'http://'.self::host($batch->worker)."/$base",
 			'db' => array('dbname' => $batch->database, 'populate' => false),
 			'sandbox' => array('upper' => $overlay->upper(), 'start' => $layers['start']),
 		);

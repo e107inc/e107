@@ -35,52 +35,37 @@ class outboundBoundaryTest extends \Codeception\Test\Unit
 		@rmdir($this->dir);
 	}
 
-	/**
-	 * A client that is slow to say where it is going, or gives up first, leaves the recorder only the address it went to.
-	 */
-	public function testADeclaredNameCoversAConnectionThatNamedNothingAndWentToItsAddress()
+	public function testADeclaredNameCoversAnAttemptThatCarriedIt()
 	{
-		self::assertSame(array(), $this->undeclared(array('protocol' => 'tcp', 'host' => '203.0.113.7')));
+		self::assertSame(array(), $this->undeclared(array(array('protocol' => 'dns', 'host' => 'e107.org'))));
 	}
 
 	public function testANameStillHasToBeTheOneDeclared()
 	{
-		self::assertCount(1, $this->undeclared(array('protocol' => 'tls', 'host' => 'example.org')));
+		self::assertCount(1, $this->undeclared(array(array('protocol' => 'tls', 'host' => 'example.org'))));
 	}
 
-	public function testAnAddressTheDeclaredNameDoesNotResolveToIsStillUndeclared()
+	public function testAConnectionThatNamedNothingIsNotCoveredByADeclaredName()
 	{
-		self::assertCount(1, $this->undeclared(array('protocol' => 'tcp', 'host' => '198.51.100.9')));
-	}
-
-	public function testAnAttemptWhoseProtocolCarriesANameIsNotCoveredByItsAddress()
-	{
-		self::assertCount(1, $this->undeclared(array('protocol' => 'tls', 'host' => '203.0.113.7')));
+		self::assertCount(1, $this->undeclared(array(array('protocol' => 'tcp', 'host' => '203.0.113.7'))));
 	}
 
 	/**
-	 * The recorder writes a datagram down as it arrives, so one that is not a name lookup never had a name to lose.
-	 */
-	public function testADatagramToTheDeclaredNamesAddressIsStillUndeclared()
-	{
-		self::assertCount(1, $this->undeclared(array('protocol' => 'udp', 'host' => '203.0.113.7')));
-	}
-
-	/**
-	 * @param array $attempt what the recorder wrote down, during a test that declared e107.org, which resolves to 203.0.113.7 here
+	 * @param array[] $attempts what the recorder wrote down, during a test that declared e107.org
 	 * @return array[] the attempts account() reports undeclared
 	 */
-	private function undeclared(array $attempt)
+	private function undeclared(array $attempts)
 	{
-		file_put_contents($this->dir.'/'.\Sandbox\Boundary::JOURNAL,
-			json_encode($attempt + array('t' => 100.5, 'from' => 'www-data', 'port' => 443, 'request' => null))."\n");
+		$journal = '';
+		foreach ($attempts as $attempt)
+		{
+			$journal .= json_encode($attempt + array('t' => 100.5, 'from' => 'www-data', 'port' => 443, 'request' => null))."\n";
+		}
+		file_put_contents($this->dir.'/'.\Sandbox\Boundary::JOURNAL, $journal);
 		file_put_contents($this->dir.'/worker/'.\Sandbox\Boundary::TESTS,
 			json_encode(array('name' => '/srv/tests/unit/aTest.php:testIt', 'start' => 100.0, 'expect' => array('e107.org')))."\n");
 
-		$boundary = new \Sandbox\Boundary($this->dir, new \Sandbox\Shell(), new \Sandbox\ProcNet(), function ($name)
-		{
-			return $name === 'e107.org' ? array('203.0.113.7') : array();
-		});
+		$boundary = new \Sandbox\Boundary($this->dir, new \Sandbox\Shell(), new \Sandbox\ProcNet());
 
 		return $boundary->account(array($this->dir.'/worker' => 1), '/srv', true);
 	}

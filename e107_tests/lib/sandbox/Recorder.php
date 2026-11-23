@@ -3,7 +3,7 @@
 namespace Sandbox;
 
 /**
- * Takes the connections the fence sends it, writes down where each was going, and fails it the way its protocol fails fastest:
+ * Takes what the fence sends it: answers a lookup of one of the stack's names, and writes down where anything else was going and fails it the way its protocol fails fastest:
  * HTTP gets a 503, TLS a handshake_failure alert, SMTP a 554 greeting, a name lookup REFUSED, and anything else a closed connection.
  *
  * Keep this class in PHP 5.6 syntax: the unit suite runs on 5.6.
@@ -24,11 +24,20 @@ class Recorder
 
 	const REFUSAL = 'Refused by the e107 test harness, whose suites do not reach the Internet: see "The network boundary" in e107_tests/docker/README.md';
 
+	/** The name a lookup of an empty host asks for: the root, which has no address anywhere. */
+	const ROOT = '';
+
+	/** The record types a name lookup answer carries addresses in, with the bytes of each address: A and AAAA. */
+	const ADDRESS_BYTES = array(1 => 4, 28 => 16);
+
 	/** @var ProcNet */
 	private $net;
 
 	/** @var string */
 	private $journal;
+
+	/** @var array<string,string[]> */
+	private $names;
 
 	/** @var array[] the open connections by socket id: socket, buffer, deadline, attempt, and whether it has been refused */
 	private $open = array();
@@ -36,11 +45,13 @@ class Recorder
 	/**
 	 * @param ProcNet $net
 	 * @param string $journal where each attempt is appended, one JSON object a line
+	 * @param array<string,string[]> $names the stack's names, in lower case, each with the addresses a lookup of it is answered with
 	 */
-	public function __construct(ProcNet $net, $journal)
+	public function __construct(ProcNet $net, $journal, array $names)
 	{
 		$this->net = $net;
 		$this->journal = $journal;
+		$this->names = $names + array(self::ROOT => array());
 	}
 
 	/**
@@ -208,14 +219,26 @@ class Recorder
 		{
 			return;
 		}
-		$attempt = $this->attempt('udp', $peer);
 		$question = self::question($data);
+		$name = $question === null ? null : strtolower($question[0]);
+		if ($name !== null && isset($this->names[$name]))
+		{
+			$this->send($udp, $peer, self::answer($data, $question[1], 0, $this->names[$name]));
+
+			return;
+		}
+		$attempt = $this->attempt('udp', $peer);
 		if ($question !== null)
 		{
-			$attempt = array('protocol' => 'dns', 'host' => strtolower($question[0]), 'request' => $attempt['host'] === '' ? null : 'to '.$attempt['host']) + $attempt;
-			stream_socket_sendto($udp, self::refused($data, $question[1]), 0, preg_match('/^[^\[].*:.*:/', $peer) ? '['.substr($peer, 0, strrpos($peer, ':')).']'.strrchr($peer, ':') : $peer);
+			$attempt = array('protocol' => 'dns', 'host' => $name, 'request' => $attempt['host'] === '' ? null : 'to '.$attempt['host']) + $attempt;
+			$this->send($udp, $peer, self::answer($data, $question[1], 5, array()));
 		}
 		$this->record($attempt);
+	}
+
+	private function send($udp, $peer, $datagram)
+	{
+		stream_socket_sendto($udp, $datagram, 0, preg_match('/^[^\[].*:.*:/', $peer) ? '['.substr($peer, 0, strrpos($peer, ':')).']'.strrchr($peer, ':') : $peer);
 	}
 
 	/**
@@ -299,10 +322,28 @@ class Recorder
 		return $at + 5 <= strlen($packet) ? array(implode('.', $labels), $at + 5) : null;
 	}
 
-	/** The query back with its question alone, marked as an answer that refuses it. */
-	private static function refused($query, $end)
+	/**
+	 * @param string $query
+	 * @param int $end where its question ends
+	 * @param int $code the answer's response code: 0 for an answer, 5 to refuse
+	 * @param string[] $addresses those of the type the question asks for are answered with
+	 * @return string the query back as the answer
+	 */
+	private static function answer($query, $end, $code, array $addresses)
 	{
-		return substr($query, 0, 2).chr(ord($query[2]) | 0x80).chr(0x80 | 5)."\x00\x01\x00\x00\x00\x00\x00\x00".substr($query, 12, $end - 12);
+		$type = self::u16($query, $end - 4);
+		$bytes = self::ADDRESS_BYTES;
+		$records = array();
+		foreach (isset($bytes[$type]) ? $addresses : array() as $address)
+		{
+			$packed = inet_pton($address);
+			if (strlen($packed) === $bytes[$type])
+			{
+				$records[] = "\xc0\x0c".pack('nnNn', $type, 1, 0, strlen($packed)).$packed;
+			}
+		}
+
+		return substr($query, 0, 2).chr(ord($query[2]) | 0x80).chr(0x80 | $code).pack('nnnn', 1, count($records), 0, 0).substr($query, 12, $end - 12).implode('', $records);
 	}
 
 	private static function u16($bytes, $at)
