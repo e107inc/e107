@@ -900,12 +900,12 @@ class eIPHandler
 				$vals = array();
 				if (e107::getPref('enable_rdns'))
 				{
-					$vals = array_merge($vals, $this->makeDomainQuery($this->get_host_name($ip), ''));
+					$vals = array_merge($vals, $this->makeDomainQuery($this->get_host_name($ip), '') ?: array());
 				}
 				if ((defined('USEREMAIL') && USEREMAIL))
 				{
 						// @todo is there point to this? Usually avoid a complete query if we skip it
-					$vals = array_merge($vals, $this->makeDomainQuery(USEREMAIL, ''));
+					$vals = array_merge($vals, $this->makeDomainQuery(USEREMAIL, '') ?: array());
 				}
 				if (count($vals))
 				{
