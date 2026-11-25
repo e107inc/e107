@@ -994,7 +994,7 @@ class eIPHandler
 
 				if (e107::getPref('enable_rdns'))
 				{
-					$vals = array_merge($vals, $this->makeDomainQuery($this->get_host_name($ip), ''));
+					$vals = array_merge($vals, $this->makeDomainQuery($this->get_host_name($ip), '') ?: []);
 				}
 				if(deftrue('USEREMAIL'))
 				{
