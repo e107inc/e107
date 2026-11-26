@@ -11,6 +11,7 @@
 	class eIPHandlerTest extends \Codeception\Test\Unit
 	{
 		use \Test\BanlistRows;
+		use \Test\BootedCli;
 		use \Test\CorePrefs;
 
 		const RETRIGGER_HOURS = 6;
@@ -18,6 +19,7 @@
 		const EXPIRED_IP = '203.0.113.78';
 		const LIVE_IP = '203.0.113.79';
 		const RACED_IP = '203.0.113.80';
+		const STRANGER = '203.0.113.9';
 		const REASON = 'eIPHandlerTest';
 
 		/** @var eIPHandler */
@@ -179,6 +181,61 @@
 
 			$this->assertFalse($this->ip->add_ban(2, self::REASON, $address, 0), 'checkBan() lets the whitelist entry win, so add_ban() has to answer the same way');
 			$this->assertCount(2, $this->rowsThisTestWrote());
+		}
+
+		/**
+		 * @return array<string, array{callable}>
+		 */
+		public function hostNamesWithNoDot()
+		{
+			return array(
+				'no PTR record, so gethostbyaddr() hands the address back' => array(function($address) { return $address; }),
+				'a single-label name' => array(function() { return 'localhost'; }),
+			);
+		}
+
+		/**
+		 * @dataProvider hostNamesWithNoDot
+		 * @param callable $hostNameOf the reverse-DNS answer for an address
+		 */
+		public function testAVisitorWithNoDottedHostNameIsLetThrough($hostNameOf)
+		{
+			$asked = array();
+			$handler = $this->make('eIPHandler', array(
+				'actionCount' => 1,
+				'get_host_name' => function($address) use (&$asked, $hostNameOf)
+				{
+					$asked[] = $address;
+
+					return $hostNameOf($address);
+				},
+			));
+			$handler->setIP(self::STRANGER);
+			$restorePrefs = $this->withCorePrefs(array('enable_rdns' => 1));
+
+			try
+			{
+				$handler->ban();
+			}
+			finally
+			{
+				$restorePrefs();
+			}
+
+			$this->assertSame(array($handler->getIP()), $asked, 'ban() has to ask for the host name and carry on without one');
+		}
+
+		public function testASignedInUserWithNoDotInTheirEmailIsLetThrough()
+		{
+			list($output) = $this->runInBootedCliDefining(array('USEREMAIL' => 'admin@localhost'),
+				"e107::getConfig()->set('enable_rdns', 0); ".
+				"\$handler = e107::getIPHandler(); ".
+				"\$count = new ReflectionProperty('eIPHandler', 'actionCount'); \$count->setAccessible(true); \$count->setValue(\$handler, 1); ".
+				"\$handler->ban(); echo '@@CHECKED@@';", self::buffered());
+			$page = implode("\n", $output);
+
+			$this->assertStringNotContainsString('array_merge', $page);
+			$this->assertStringContainsString('@@CHECKED@@', $page, "ban() stopped part way:\n".$page);
 		}
 
 
