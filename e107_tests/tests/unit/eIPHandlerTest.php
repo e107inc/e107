@@ -402,21 +402,36 @@ class eIPHandlerTest extends \Test\Unit
 	}
 
 	/**
+	 * @return array<string, array{callable}>
+	 */
+	public function reverseDnsAnswers()
+	{
+		return array(
+			'a dotted host name' => array(function() { return 'host.example.test'; }),
+			'no PTR record, so gethostbyaddr() hands the address back' => array(function($address) { return $address; }),
+			'a single-label name' => array(function() { return 'localhost'; }),
+		);
+	}
+
+	/**
 	 * A ban list holding only host patterns is still a ban list. ban() skips
 	 * the reverse-DNS check when it believes the list is empty, and the old
 	 * file counted only address rows, so a host-only list was never checked.
 	 * The table here holds one pattern and no address, which the old file
 	 * could not express at all.
+	 *
+	 * @dataProvider reverseDnsAnswers
+	 * @param callable $hostNameOf the reverse-DNS answer for an address
 	 */
-	public function testHostnameOnlyBanlistStillRunsTheDomainCheck()
+	public function testHostnameOnlyBanlistStillRunsTheDomainCheck($hostNameOf)
 	{
 		$asked = array();
 		$this->ip = $this->make('eIPHandler', array(
-			'get_host_name' => function($address) use (&$asked)
+			'get_host_name' => function($address) use (&$asked, $hostNameOf)
 			{
 				$asked[] = $address;
 
-				return 'host.example.test';
+				return $hostNameOf($address);
 			},
 		));
 		$dir = $this->haveTable(array(), 1);
@@ -426,7 +441,7 @@ class eIPHandlerTest extends \Test\Unit
 
 		$this->ip->ban();
 
-		self::assertSame(array($this->ip->getIP()), $asked, 'the reverse-DNS check has to run for a host-only list');
+		self::assertSame(array($this->ip->getIP()), $asked, 'the reverse-DNS check has to run for a host-only list, and carry on whatever name it gets');
 	}
 
 	/**
