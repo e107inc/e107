@@ -1861,6 +1861,8 @@ class themeHandler
 	}
 
 	/**
+	 * Includes the theme's theme_config.php once its admin language file, languages/[Language]/admin.php or languages/[Language]_admin.php, is loaded.
+	 *
 	 * @return void
 	 */
 	function loadThemeConfig()
@@ -1889,6 +1891,8 @@ class themeHandler
 		if(($this->themeConfigObj === null) )
 		{
 			e107::getDebug()->log("Loading : ".$confile);
+			e107::themeLan('admin', $this->id);
+			e107::themeLan('admin', $this->id, true);
 			include ($confile);
 			$className = 'theme_'.$this->id;
 

@@ -758,6 +758,65 @@
 			return $stored;
 		}
 
+		public function testLoadThemeConfigLoadsAFlatAdminLanguageFile()
+		{
+			$this->assertLoadThemeConfigDefinesFrom('languages/'.e_LANGUAGE.'_admin.php');
+		}
+
+		public function testLoadThemeConfigLoadsAFolderedAdminLanguageFile()
+		{
+			$this->assertLoadThemeConfigDefinesFrom('languages/'.e_LANGUAGE.'/admin.php');
+		}
+
+		public function testLoadThemeConfigLoadsTheFolderedAdminLanguageFileFirst()
+		{
+			$phrase = $this->loadThemeConfigOf("<?php\n", array(
+				'languages/'.e_LANGUAGE.'/admin.php' => "<?php\nreturn array('{PHRASE}' => 'foldered');\n",
+				'languages/'.e_LANGUAGE.'_admin.php' => "<?php\nreturn array('{PHRASE}' => 'flat');\n",
+			));
+
+			$this->assertSame('foldered', constant($phrase), 'of a phrase both layouts define, the foldered value stands');
+		}
+
+		/**
+		 * @param string $languageFile the admin language file, relative to the theme folder
+		 * @return void
+		 */
+		private function assertLoadThemeConfigDefinesFrom($languageFile)
+		{
+			$phrase = $this->loadThemeConfigOf(
+				"<?php\ndefine('{PHRASE}_AT_INCLUDE', defined('{PHRASE}'));\n",
+				array($languageFile => "<?php\ndefine('{PHRASE}', 'Label');\n")
+			);
+
+			$this->assertTrue(defined($phrase.'_AT_INCLUDE'), 'theme_config.php was included');
+			$this->assertTrue(constant($phrase.'_AT_INCLUDE'), $languageFile.' is loaded before theme_config.php is included');
+		}
+
+		/**
+		 * Runs loadThemeConfig() on a new theme made of the files given, each with {PHRASE} replaced by a name unique to it.
+		 *
+		 * @param string $config the theme_config.php
+		 * @param string[] $languageFiles content keyed by path relative to the theme folder
+		 * @return string the name {PHRASE} stood for
+		 */
+		private function loadThemeConfigOf($config, array $languageFiles)
+		{
+			$theme = 'thlantest'.uniqid();
+			$phrase = strtoupper($theme).'_PHRASE';
+
+			$this->writeAppFile('e107_themes/'.$theme.'/theme_config.php', str_replace('{PHRASE}', $phrase, $config));
+
+			foreach($languageFiles as $path => $content)
+			{
+				$this->writeAppFile('e107_themes/'.$theme.'/'.$path, str_replace('{PHRASE}', $phrase, $content));
+			}
+
+			$this->make('themeHandler', array('id' => $theme))->loadThemeConfig();
+
+			return $phrase;
+		}
+
 		public function testFindDefault()
 		{
 			$result = $this->th->findDefault('bootstrap3');
