@@ -13,7 +13,9 @@
 if (!defined('e107_INIT')) { exit; }
 
 $routedRequest = \e107\Http\Request::fromGlobals($_SERVER);
-$routeMatch = (new \e107\Routing\RouteTable(require(e_CORE.'routes.php')))->match($routedRequest);
+$routeTable = require(e_CORE.'route_table.php');
+$routeMatch = $routeTable->match($routedRequest);
+unset($routeTable);
 
 if($routeMatch !== null)
 {

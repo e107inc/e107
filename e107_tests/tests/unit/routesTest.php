@@ -12,7 +12,7 @@ use e107\Http\Request;
 use e107\Routing\RouteTable;
 
 /**
- * The core route list that index.php consults, as e107_core/routes.php returns it.
+ * The core route table that index.php consults, as e107_core/route_table.php composes it from e107_core/routes.php.
  */
 class routesTest extends \Test\Unit
 {
@@ -51,6 +51,6 @@ class routesTest extends \Test\Unit
 	 */
 	private function table()
 	{
-		return new RouteTable(require(e_CORE.'routes.php'));
+		return require(e_CORE.'route_table.php');
 	}
 }
