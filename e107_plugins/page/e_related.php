@@ -43,12 +43,10 @@ class page_related // replace 'e_' with 'plugin-folder_'
 			{
 				$row    = pageHelper::addSefFields($row);
 				
-				$id = $row['page_chapter'];
-				$title = (vartrue($this->chapterName[$id])) ? $this->chapterName[$id]." | ".$row['page_title'] : $row['page_title'];
 				$route = !empty($row['page_chapter']) ? 'page/view/index' : 'page/view/other';
 
 				$items[] = array(
-					'title'			=> $title,
+					'title'			=> $row['page_title'],
 					'url'			=> e107::getUrl()->create($route, $row), // '{e_BASE}news.php?extend.'.$row['news_id'],
 					'summary'		=> $row['page_metadscr'],
 					'image'			=> $row['menu_image']
