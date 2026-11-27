@@ -584,6 +584,20 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * The constants and seed that make a booted child's current user an administrator holding $perms instead of the main admin; pass both, or getperms() and the user model disagree.
+	 *
+	 * @param string $perms user_perms, e.g. '4.3.'
+	 * @return array the constants for {@see Unit::runInBootedCliDefining()} or {@see Unit::renderInBootedCli()}, then the PHP that goes in the seed
+	 */
+	protected function bootedAdminHolding($perms)
+	{
+		return array(
+			array('ADMINPERMS' => $perms),
+			"e107::getUser()->setData(array('user_perms' => ".var_export($perms, true).") + e107::user(USERID)); ",
+		);
+	}
+
+	/**
 	 * Runs $php in a booted CLI child that defined $constants before class2.php could, so the boot keeps the values given here.
 	 *
 	 * @param array $constants name => value
