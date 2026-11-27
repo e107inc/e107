@@ -622,4 +622,29 @@
 			return $matches[1];
 		}
 
+		public function testAdminMarksOnlyInPagePanelLinks()
+		{
+			$vars = array(
+				'panel-one'  => array('text' => 'Panel One', 'icon' => ''),
+				'panel-two'  => array('text' => 'Panel Two', 'icon' => ''),
+				'real-page'  => array('text' => 'Real Page', 'link' => '/e107_admin/users.php', 'icon' => ''),
+				'menu-style' => array('text' => 'Menu Style', 'link' => '#legacyDefault', 'link_class' => ' menuManagerSelect', 'icon' => ''),
+			);
+
+			$tmpl = array(
+				'start'         => '<ul>',
+				'button'        => '<li><a class="link{LINK_CLASS}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'button_active' => '<li><a class="link-active{LINK_CLASS}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'end'           => '</ul>',
+			);
+
+			$result = e107::getNav()->admin('', 'panel-one', $vars, $tmpl);
+
+			$this->assertStringContainsString('<a class="link-active e-nav-pane" href="#panel-one"', $result, 'an entry with no link gets an #anchor URL and the panel marker');
+			$this->assertStringContainsString('<a class="link e-nav-pane" href="#panel-two"', $result);
+			$this->assertStringContainsString('<a class="link" href="/e107_admin/users.php"', $result, 'an entry that brings its own link belongs to whichever handler owns it');
+			$this->assertStringContainsString('<a class="link menuManagerSelect" href="#legacyDefault"', $result);
+			$this->assertSame(2, substr_count($result, 'e-nav-pane'));
+		}
+
 	}

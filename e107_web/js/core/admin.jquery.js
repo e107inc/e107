@@ -778,21 +778,36 @@ $(document).ready(function()
 				
 		
 		
-		// Admin Prefs Navigation
+		// Admin panel navigation: entries that switch an in-page panel, marked by e_navigation::admin().
 		
-		 $(".plugin-navigation a").click(function () {
-		 	$(".plugin-navigation a").each(function(index) {
+		var panelLinks = ".plugin-navigation a.e-nav-pane";
+		
+		var showPanel = function (href) {
+			var panel = href ? document.getElementById(href.substring(1)) : null;
+		
+			if(panel) {
+				$(panel).removeClass('e-hideme').show();
+			}
+		};
+		
+		var highlightNavLink = function (links, link) {
+			$(links).closest("li").removeClass("active");
+			$(links).switchClass( "link-active", "link", 0 );
+			$(link).switchClass( "link", "link-active", 30 );
+			$(link).closest("li").addClass("active");
+		};
+		
+		 $(panelLinks).click(function () {
+		 	$(panelLinks).each(function(index) {
     			var ot = $(this).attr("href");
     			if (ot.split('#')[1]) {
                     $(ot).hide().removeClass('e-hideme');
                 }
-				$(this).closest("li").removeClass("active");
-				$(this).switchClass( "link-active", "link", 0 );
 			});
-	   		var id = $(this).attr("href"), hash = id.split('#')[1], form = $('.admin-menu')[0]; // FIXME - a better way to detect the page form
+
+	   		var id = $(this).attr("href"), hash = id.split('#')[1];
 	   		
-			$(this).switchClass( "link", "link-active", 30 );
-			$(this).closest("li").addClass("active");
+			highlightNavLink(panelLinks, this);
 
 			// 'remember' the active navigation pane
 			if(hash) {
@@ -800,17 +815,23 @@ $(document).ready(function()
                     effect: "slide"
                 });
 				window.location.hash = 'nav-' + hash;
-			  	if(form) {
-
-			  //  	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash); // breaks menu-manager nav.
-			    }
 			    return false; 
 			}
 		}); 
 		
 		// plugin navigation hash
-		if(/^#nav-+/.test(window.location.hash)) {
-			$("a[href='" + window.location.hash.replace('nav-', '') + "']").click();
+		var rememberedPanel = /^#nav-+/.test(window.location.hash)
+			? $(panelLinks + "[href='" + window.location.hash.replace('nav-', '') + "']").first()
+			: $();
+		
+		if(rememberedPanel.length) {
+			rememberedPanel.click();
+		}
+		else {
+			// Nothing remembered, or a fragment naming a panel this page does not have.
+			var declaredPanel = $(panelLinks + ".link-active").first();
+		
+			showPanel((declaredPanel.length ? declaredPanel : $(panelLinks).first()).attr("href"));
 		}
 		
 		// backend 
@@ -1101,7 +1122,9 @@ $(document).ready(function()
 
 
 
-		$("a.menuManagerSelect").click(function(e){
+		var layoutLinks = "a.menuManagerSelect";
+
+		$(layoutLinks).click(function(e){
 
 
 			var link = $(this).attr('data-url');
@@ -1110,6 +1133,7 @@ $(document).ready(function()
 			$('#curLayout').val(layout);
 			$('ul.e-mm-selector').hide();
 			$('form#e-mm-selector').attr('action',link);
+			highlightNavLink(layoutLinks, this);
 
 			var text = $(this).text();
 			$(this).html(text + ' <i class="e-mm-select-loading fa fa-spin fa-spinner"></i>');
