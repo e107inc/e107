@@ -262,10 +262,6 @@ JS;
 						->setAction('edit')
 						->setId($_POST['userid']);
 					$this->getController()->redirect();
-					
-					
-					//XXX Broken to the point of being unusable. //header('location:'.e107::getUrl()->create('user/profile/edit', 'id='.(int) $_POST['userid'], 'full=1&encode=0'));
-					// exit;
 				break;
 			}
 			
@@ -581,9 +577,16 @@ class users_admin_ui extends e_admin_ui
 		}
 
 		
-		if($this->getAction() == 'edit')
+		if($this->getAction() == 'edit' && !empty($_GET['readonly']))
 		{
 			$this->fields['user_class']['noedit'] = true;
+		}
+		elseif($this->getAction() == 'edit')
+		{
+			$this->fields['user_class']['type'] = 'method';
+			$this->fields['user_sess']['type'] = 'method';
+			$this->fields['user_sess']['noedit'] = false;
+			$this->fields['user_sess']['title'] = LAN_USER_06;
 		}
 
 
@@ -594,11 +597,13 @@ class users_admin_ui extends e_admin_ui
 		
 		// Extended fields - FIXME - better field types
 		
+		$categories = array();
+
 		if($rows = $sql->createQueryBuilder()
 			->select('*')->from('user_extended_struct')
-			->where('user_extended_struct_type', '>', 0)
 			->where('user_extended_struct_text', '!=', '_system_')
 			->orderBy('user_extended_struct_parent', 'ASC')
+			->addOrderBy('user_extended_struct_order', 'ASC')
 			->fetchAll())
 		{
 			// TODO FIXME use the handler to build fields and field attributes
@@ -609,6 +614,12 @@ class users_admin_ui extends e_admin_ui
 
 			foreach ($rows as $row)
 			{
+				if((int) $row['user_extended_struct_type'] === 0)
+				{
+					$categories[(int) $row['user_extended_struct_id']] = $row;
+					continue;
+				}
+
 				if((int) $row['user_extended_struct_type'] === 12) // EUF_ADDON
 				{
 					$attrib = e107::unserialize($row['user_extended_struct_values']);
@@ -633,6 +644,23 @@ class users_admin_ui extends e_admin_ui
 		if(empty($this->extended))
 		{
 			$this->tabs = false;
+		}
+		else
+		{
+			$heldCategories = array();
+
+			foreach($this->extended as $field)
+			{
+				$parent = (int) $this->extendedData[$field]['user_extended_struct_parent'];
+
+				if(isset($categories[$parent]))
+				{
+					$this->fields[$field]['tab'] = 'category'.$parent;
+					$heldCategories[$parent] = true;
+				}
+			}
+
+			$this->tabs = $this->extendedFieldTabs(array_intersect_key($categories, $heldCategories));
 		}
 
 
@@ -774,6 +802,11 @@ class users_admin_ui extends e_admin_ui
 			return false;
 		}
 
+		if(isset($new_data['user_class']) && is_array($new_data['user_class']))
+		{
+			$new_data['user_class'] = implode(',', $this->classesAfterTree(varset($old_data['user_class'], ''), $new_data['user_class']));
+		}
+
 		if(isset($new_data['user_class'])
 			&& $this->refusesClassChange($new_data['user_class'], varset($old_data['user_class'], '')))
 		{
@@ -821,6 +854,16 @@ class users_admin_ui extends e_admin_ui
 			$new_data['user_perms'] = varset($old_data['user_perms'], '');
 		}
 
+		if($this->getAction() === 'edit')
+		{
+			$keepsPhoto = empty($new_data['user_delete_photo']) || pathinfo(varset($old_data['user_sess'], ''), PATHINFO_EXTENSION) === '';
+			$new_data['user_sess'] = $keepsPhoto ? varset($old_data['user_sess'], '') : '';
+			if(!empty($this->extended))
+			{
+				$new_data['user_hidden_fields'] = $this->hiddenFieldsAfterForm(varset($old_data['user_hidden_fields'], ''), (array) varset($new_data['hide'], array()));
+			}
+		}
+
 		// Handle the Extended Fields.
 		$this->saveExtended($new_data);
 
@@ -838,6 +881,11 @@ class users_admin_ui extends e_admin_ui
 		foreach($this->extended as $key) // Grab Extended field data.
 		{
 			$update['data'][$key] = vartrue($new_data['ue'][$key],'_NULL_');
+		}
+
+		if(isset($new_data['user_hidden_fields']))
+		{
+			$update['data']['user_hidden_fields'] = $new_data['user_hidden_fields'];
 		}
 
 		e107::getMessage()->addDebug(print_a($update,true));
@@ -1799,6 +1847,74 @@ class users_admin_ui extends e_admin_ui
 		return true;
 	}
 	
+	/**
+	 * The classes a user holds once a {@see users_admin_ui::USERCLASS_TREE_OPTIONS} tree is posted: each class the tree does not offer stays as stored, and the ticked ones are added.
+	 *
+	 * @param string $stored user_class as stored.
+	 * @param array|null $posted the class ids the tree posted; 0 is ignored.
+	 * @return array
+	 */
+	private function classesAfterTree($stored, $posted)
+	{
+		$classes = array_diff_key($this->classIdsIn($stored), e107::getUserClass()->uc_required_class_list(self::USERCLASS_TREE_OPTIONS, true));
+
+		foreach((array) $posted as $id)
+		{
+			if((int) $id !== 0)
+			{
+				$classes[] = (int) $id;
+			}
+		}
+
+		return array_unique($classes);
+	}
+
+	/**
+	 * user_hidden_fields once the edit form is posted: the form decides the flag of every extended field it shows, and the rest stay as stored.
+	 *
+	 * @param string $stored user_hidden_fields as stored, '^user_a^user_b^'.
+	 * @param array $posted the form's hide boxes, keyed by field.
+	 * @return string
+	 */
+	private function hiddenFieldsAfterForm($stored, array $posted)
+	{
+		$flags = array_diff(array_filter(explode('^', (string) $stored)), $this->extended);
+
+		foreach($this->extended as $field)
+		{
+			if(!empty($posted[$field]))
+			{
+				$flags[] = $field;
+			}
+		}
+
+		return empty($flags) ? '' : '^'.implode('^', $flags).'^';
+	}
+
+	/**
+	 * @param array[] $categories struct rows of the extended field categories that hold a field, in order, keyed by id.
+	 * @return array the edit form's tabs: Basic, one per category, then each declared tab a field still uses.
+	 */
+	private function extendedFieldTabs(array $categories)
+	{
+		$tp = e107::getParser();
+		$tabs = array(0 => $this->tabs[0]);
+
+		foreach($categories as $id => $category)
+		{
+			$tabs['category'.$id] = $tp->toHTML(vartrue($category['user_extended_struct_text'], $category['user_extended_struct_name']), false, 'defs');
+		}
+
+		$used = array();
+
+		foreach($this->fields as $field)
+		{
+			$used[varset($field['tab'], 0)] = true;
+		}
+
+		return $tabs + array_intersect_key($this->tabs, $used);
+	}
+
 	protected function manageUserclass($userid, $uclass, $mode = false)
 	{
 		$request = $this->getRequest();
@@ -1822,21 +1938,20 @@ class users_admin_ui extends e_admin_ui
 
 		if($mode === 'update')
 		{
-			$curClass = array_diff_key($this->classIdsIn($stored),
-				$e_userclass->uc_required_class_list(self::USERCLASS_TREE_OPTIONS, true));
+			$curClass = $this->classesAfterTree($stored, $uclass);
 		}
 		else
 		{
 			$curClass = $stored ? explode(',', $stored) : array();
-		}
 
-    	foreach ((array) $uclass as $a)
-		{
-			$a = intval($a);
-
-			if($a != 0) // if 0 - then do not add.
+			foreach ((array) $uclass as $a)
 			{
-				$curClass[] = $a;
+				$a = intval($a);
+
+				if($a != 0)
+				{
+					$curClass[] = $a;
+				}
 			}
 		}
 
@@ -3098,6 +3213,49 @@ class users_admin_form_ui extends e_admin_form_ui
 
 	}
 
+	/**
+	 * The edit form's user class tree, the one Set user class renders; 0 posts the tree when nothing is ticked.
+	 *
+	 * @param string|array $curval user_class as stored, or the ids the tree posted when a save was refused.
+	 * @param string $mode
+	 * @return string|null
+	 */
+	function user_class($curval, $mode)
+	{
+		if($mode !== 'write')
+		{
+			return null;
+		}
+
+		$userclass = e107::getUserClass();
+		$current = is_array($curval) ? implode(',', array_filter(array_map('intval', $curval))) : $curval;
+
+		return $this->hidden('user_class[]', 0).$userclass->vetted_tree('user_class', array($userclass, 'checkbox_desc'), $current, users_admin_ui::USERCLASS_TREE_OPTIONS);
+	}
+
+	/**
+	 * The member's photo on the edit form, with the box that removes it; a user_sess with no file extension is an activation key or deletion hash, not a photo.
+	 *
+	 * @param string $curval user_sess as stored.
+	 * @param string $mode
+	 * @return string|null
+	 */
+	function user_sess($curval, $mode)
+	{
+		if($mode !== 'write')
+		{
+			return null;
+		}
+
+		if(pathinfo((string) $curval, PATHINFO_EXTENSION) === '')
+		{
+			return LAN_USER_42;
+		}
+
+		return e107::getParser()->toAvatar(array('user_image' => $curval), array('w' => 100, 'h' => 100, 'crop' => 1))
+			.$this->checkbox('user_delete_photo', 1, false, LAN_USER_43);
+	}
+
 	function user_admin($curval,$mode, $att)
 	{
 		$att['type'] = 'boolean';
@@ -3155,8 +3313,18 @@ class users_admin_form_ui extends e_admin_form_ui
 			$controller = $this->getController();
 			$extData = $controller->getExtended();
 			$extData[$field]['user_extended_struct_required'] = 0;
+			$parms = explode('^,^', $extData[$field]['user_extended_struct_parms']);
+			$hide = '';
 
-			return e107::getUserExt()->user_extended_edit($extData[$field],$curval);
+			if(!empty($parms[3]))
+			{
+				$posted = $controller->getPosted();
+				$hidden = (string) $controller->getModel()->get('user_hidden_fields');
+				$ticked = empty($posted) ? strpos($hidden, '^'.$field.'^') !== false : !empty($posted['hide'][$field]);
+				$hide = $this->checkbox('hide['.$field.']', 1, $ticked, UE_LAN_HIDE);
+			}
+
+			return e107::getUserExt()->user_extended_edit($extData[$field],$curval).$hide;
 
 		//	return print_a($att,true);
 		}
