@@ -219,10 +219,8 @@ $tmp = e_ROOT.$HANDLERS_DIRECTORY;
 e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
 
-/** @note compact() causes issues with PHP7.3 */
-$dirPaths = array('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
 $e107_paths = array();
-foreach($dirPaths as $v)
+foreach(array_keys(e107::getInstance()->overridableDirs()) as $v)
 {
 	if(isset($$v))
 	{
@@ -230,7 +228,6 @@ foreach($dirPaths as $v)
 	}
 }
 
-// $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
 $sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 if(isset($mySQLport))
 {
@@ -238,7 +235,7 @@ if(isset($mySQLport))
 }
 $e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));
 e107::getSingleton('eIPHandler');			// This auto-handles bans etc
-unset($dirPaths,$e107_paths);
+unset($e107_paths);
 
 /**
  * NEW - system security levels
