@@ -10,3 +10,4 @@ function tablestyle($caption, $text, $mode = '')
 
 $LAYOUT['default'] = '{---}';
 $LAYOUT['route'] = '{---}';
+$LAYOUT['notfound'] = '{---}';
