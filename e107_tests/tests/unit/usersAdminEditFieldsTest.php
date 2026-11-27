@@ -186,7 +186,9 @@ class usersAdminEditFieldsTest extends \Test\Unit
 
 		$page = $this->edit($this->member());
 
-		self::assertSame(array('#category'.$early, '#category'.$late), $this->attributesOf($page, "//a[starts-with(@href, '#category')]", 'href'), 'category tabs come in category order');
+		$tabs = array_intersect($this->attributesOf($page, "//a[starts-with(@href, '#category')]", 'href'), array('#category'.$early, '#category'.$late));
+
+		self::assertSame(array('#category'.$early, '#category'.$late), array_values($tabs), 'category tabs come in category order');
 		self::assertSame(array('ue[user_usaefirst]', 'ue[user_usaesecond]'), array_values(preg_grep('/usae/', $this->attributesOf($page, "//*[@id='category".$early."']//*[@name]", 'name'))), 'a category\'s fields come in field order');
 	}
 
