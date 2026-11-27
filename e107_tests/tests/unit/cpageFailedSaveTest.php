@@ -12,6 +12,8 @@
  */
 class cpageFailedSaveTest extends \Test\Unit
 {
+	use \Test\PageChapters;
+
 	const TITLE = 'cpageFailedSaveTest';
 
 	/** @var string the edit form the overview list opens, which saves a page and its menu alike */
@@ -38,15 +40,7 @@ class cpageFailedSaveTest extends \Test\Unit
 			}
 		}
 
-		$this->chapter = (int) e107::getDb()->createQueryBuilder()->insert('page_chapters')->insertGetId(array(
-			'chapter_parent'           => 1,
-			'chapter_name'             => self::TITLE,
-			'chapter_sef'              => strtolower(self::TITLE),
-			'chapter_meta_description' => '',
-			'chapter_fields'           => e107::serialize(array('typed' => array('title' => 'Typed', 'type' => 'text', 'writeParms' => '', 'help' => '')), 'json'),
-		));
-
-		self::assertGreaterThan(0, $this->chapter, 'the chapter was not seeded');
+		$this->chapter = $this->haveChapterWithField(self::TITLE, 'typed', 'text');
 	}
 
 	protected function _after()
@@ -55,7 +49,7 @@ class cpageFailedSaveTest extends \Test\Unit
 
 		$db = e107::getDb();
 		$db->createQueryBuilder()->delete('page')->whereLike('page_title', self::TITLE.'%')->execute();
-		$db->createQueryBuilder()->delete('page_chapters')->where('chapter_id', $this->chapter)->execute();
+		$this->dropChapters();
 		$db->createQueryBuilder()->delete('menus')->where('menu_name', self::TITLE)->execute();
 
 		foreach($this->addedColumns as $column)

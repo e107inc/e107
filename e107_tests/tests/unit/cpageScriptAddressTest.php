@@ -14,6 +14,7 @@
 class cpageScriptAddressTest extends \Test\Unit
 {
 	use \Test\ScriptClassPages;
+	use \Test\PageChapters;
 
 	const TITLE = 'cpageScriptAddressTest';
 
@@ -36,22 +37,14 @@ class cpageScriptAddressTest extends \Test\Unit
 			}
 		}
 
-		$this->chapter = (int) e107::getDb()->createQueryBuilder()->insert('page_chapters')->insertGetId(array(
-			'chapter_parent'           => 1,
-			'chapter_name'             => self::TITLE,
-			'chapter_sef'              => strtolower(self::TITLE),
-			'chapter_meta_description' => '',
-			'chapter_fields'           => e107::serialize(array('site' => array('title' => 'Site', 'type' => 'url', 'writeParms' => '', 'help' => '')), 'json'),
-		));
-
-		self::assertGreaterThan(0, $this->chapter, 'the chapter was not seeded');
+		$this->chapter = $this->haveChapterWithField(self::TITLE, 'site', 'url');
 	}
 
 	protected function _after()
 	{
 		$db = e107::getDb();
 		$db->createQueryBuilder()->delete('page')->whereLike('page_title', self::TITLE.'%')->execute();
-		$db->createQueryBuilder()->delete('page_chapters')->where('chapter_id', $this->chapter)->execute();
+		$this->dropChapters();
 		$db->createQueryBuilder()->delete('menus')->where('menu_name', self::TITLE)->execute();
 
 		foreach($this->addedColumns as $column)
