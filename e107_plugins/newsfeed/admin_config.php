@@ -19,9 +19,7 @@ if (!getperms('P') || !e107::isInstalled('newsfeed'))
 
 e107::lan('newsfeed',true);
 
-
-define('NEWSFEED_LIST_CACHE_TAG', 'newsfeeds'.e_LAN."_");
-define('NEWSFEED_NEWS_CACHE_TAG', 'newsfeeds_news_'.e_LAN."_");
+require_once(e_PLUGIN.'newsfeed/newsfeed_functions.php');
 
 
 class newsfeed_adminArea extends e_admin_dispatcher
@@ -132,9 +130,7 @@ class newsfeed_ui extends e_admin_ui
 
 		public function afterCreate($new_data, $old_data, $id)
 		{
-			// do something
-			e107::getCache()->clear(NEWSFEED_LIST_CACHE_TAG);
-			e107::getCache()->clear(NEWSFEED_NEWS_CACHE_TAG);
+			e107::getCache()->clear(NEWSFEED_CACHE_TAG);
 		}
 
 		public function onCreateError($new_data, $old_data)
@@ -153,7 +149,7 @@ class newsfeed_ui extends e_admin_ui
 
 			}
 
-			$new_data['newsfeed_timestamp'] = 0; // reset so the feed data refreshes.
+			$new_data['newsfeed_timestamp'] = 0;
 
 
 			return $new_data;
@@ -161,9 +157,25 @@ class newsfeed_ui extends e_admin_ui
 
 		public function afterUpdate($new_data, $old_data, $id)
 		{
-			// do something
-			e107::getCache()->clear(NEWSFEED_LIST_CACHE_TAG);
-			e107::getCache()->clear(NEWSFEED_NEWS_CACHE_TAG);
+			if($new_data['newsfeed_url'] !== $old_data['newsfeed_url'])
+			{
+				e107::getDb()->createQueryBuilder()->update('newsfeed')->set('newsfeed_data', '')
+					->where('newsfeed_id', (int) $id)->execute();
+			}
+
+			e107::getCache()->clear(NEWSFEED_CACHE_TAG);
+		}
+
+		public function afterDelete($deleted_data, $id, $deleted_check)
+		{
+			e107::getCache()->clear(NEWSFEED_CACHE_TAG);
+
+			return true;
+		}
+
+		public function afterCopy($result, $selected)
+		{
+			e107::getCache()->clear(NEWSFEED_CACHE_TAG);
 		}
 
 		public function onUpdateError($new_data, $old_data, $id)
