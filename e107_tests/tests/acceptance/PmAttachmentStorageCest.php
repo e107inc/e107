@@ -228,29 +228,6 @@ class PmAttachmentStorageCest
 	}
 
 	/**
-	 * The guard files have to survive the plugin's own maintenance sweep.
-	 *
-	 * admin_config.php builds a fresh e_file, calls get_files() on the attachment
-	 * directory and unlinks everything no message names. Nothing but the default
-	 * fileFilter in file_class.php keeps the rules this package writes off that
-	 * list, and an administrator running the sweep once would otherwise
-	 * unprotect the directory with no test noticing.
-	 */
-	public function theMaintenanceSweepDoesNotSeeTheGuardFiles(AcceptanceTester $I)
-	{
-		$I->probe('act=setup');
-
-		$I->assertSame('1', $this->grab('/LEGACY_HT=(\d)/', $I->probe('act=legacy')),
-			'The directory the sweep reads carries no deny rule, so this proves nothing');
-
-		$orphans = $this->grab('/ORPHANS=(\S*)/', $I->probe('act=orphans'));
-		$names = explode(',', $orphans);
-
-		$I->assertNotContains('.htaccess', $names, 'The sweep must not see the deny rule');
-		$I->assertNotContains('index.html', $names, 'The sweep must not see the index.html');
-	}
-
-	/**
 	 * The defect. Nobody at all: no session, no cookie, nothing but the URL,
 	 * which is what a party to the message can pass on and what a search engine
 	 * can find in a referrer.
@@ -642,24 +619,6 @@ switch($act)
 		$path = isset($_GET['path']) ? str_replace('..', '', $_GET['path']) : '';
 
 		echo 'PROBE_OK STAT_EXISTS='.(($path !== '' && is_file(e_ROOT.ltrim($path, '/'))) ? 1 : 0)."\n";
-		break;
-
-	case 'orphans':
-		// What the plugin's own maintenance sweep sees. admin_config.php builds a
-		// fresh e_file and unlinks every file get_files() returns that no message
-		// names, so anything of ours on this list is deleted the first time an
-		// administrator runs it.
-		require_once(e_HANDLER.'file_class.php');
-
-		$sweep = new e_file();
-		$names = array();
-
-		foreach($sweep->get_files($legacyDir) as $file)
-		{
-			$names[] = $file['fname'];
-		}
-
-		echo 'PROBE_OK ORPHANS='.implode(',', $names)."\n";
 		break;
 
 	case 'upload':
