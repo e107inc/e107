@@ -146,7 +146,7 @@ abstract class RFC4648
     public static function base32HexEncode(
         $str
     ) {
-        return Base32::encodeUpper($str);
+        return Base32Hex::encodeUpper($str);
     }
 
     /**
@@ -162,7 +162,7 @@ abstract class RFC4648
     public static function base32HexDecode(
         $str
     ) {
-        return Base32::decodeUpper($str, true);
+        return Base32Hex::decodeUpper($str, true);
     }
 
     /**
