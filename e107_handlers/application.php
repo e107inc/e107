@@ -54,7 +54,7 @@ class e_url
 
 	/**
 	 * @param array $get the route's query as parse_str() reads it
-	 * @param string $query the same query as text, which a page may also read with &amp; taken as &
+	 * @param string $query the query the page will read as e_QUERY, which it may also read with &amp; taken as &
 	 * @return bool whether any e-token it gives the page it includes is the one the request carried, which class2.php has judged
 	 */
 	private static function handsOverOnlyTheCarriedToken(array $get, $query)
@@ -75,9 +75,10 @@ class e_url
 
 	/**
 	 * Detect older e_url system.
+	 * @param string $request
 	 * @return bool
 	 */
-	private function isLegacy()
+	private function isLegacy($request)
 	{
 
 		$arr = (!empty($this->_legacyAliases[e_LAN])) ?  array_merge($this->_legacy,$this->_legacyAliases[e_LAN]) : $this->_legacy;
@@ -86,7 +87,7 @@ class e_url
 
 		foreach($list as $leg)
 		{
-			if(strpos($this->_request,$leg.'/') === 0 || $this->_request === $leg)
+			if(strpos($request,$leg.'/') === 0 || $request === $leg)
 			{
 				return true;
 			}
@@ -125,12 +126,13 @@ class e_url
 
 
 	/**
-	 * @return bool|void
+	 * Matches the request against the e_url routes, and if no route matches, its path alone, with the query string still handed to the page.
+	 *
+	 * @return bool whether a route matched and set the page {@see e_url::getInclude()} returns
 	 */
 	public function run()
 	{
-		$pref = e107::getPref();
-		$tp = e107::getParser();
+		list($path, $query) = array_pad(explode('?', (string) $this->_request, 2), 2, null);
 
 		if(empty($this->_request)) // likely 'index.php' ie. the home page.
 		{
@@ -138,11 +140,31 @@ class e_url
 			e107::canonical('_SITEURL_');
 		}
 
-		if(empty($this->_config) /*|| empty($this->_request) || $this->_request === 'index.php'*/ || $this->isLegacy() === true)
+		$routed = $this->routeRequest($this->_request);
+
+		if($routed === false && $query !== null && $path !== '')
+		{
+			$routed = $this->routeRequest($path, $query);
+		}
+
+		return $routed === true;
+	}
+
+	/**
+	 * @param string $request
+	 * @param string $asked the query string the request carried, when $request is its path alone
+	 * @return bool|null true once a route has set the page, null when a route matched but set none, false when none matched
+	 */
+	private function routeRequest($request, $asked = '')
+	{
+		$pref = e107::getPref();
+
+		if(empty($this->_config) || $this->isLegacy($request) === true)
 		{
 			return false;
 		}
 
+		$matched = false;
 		$replaceAlias = array('{alias}\/?','{alias}/?','{alias}\/','{alias}/',);
 
 		foreach($this->_config as $plug=>$cfg)
@@ -162,7 +184,7 @@ class e_url
 					continue;
 				}
 
-				if((empty($v['domain']) && (empty($this->_request) || $this->_request === 'index.php')) || (isset($v['domain']) && ($v['domain'] !== $_SERVER['HTTP_HOST'])))
+				if((empty($v['domain']) && (empty($request) || $request === 'index.php')) || (isset($v['domain']) && ($v['domain'] !== $_SERVER['HTTP_HOST'])))
 				{
 					continue;
 				}
@@ -191,10 +213,11 @@ class e_url
 				}
 
 
-				$newLocation = preg_replace($regex, $v['redirect'], $this->_request);
+				$newLocation = preg_replace($regex, $v['redirect'], $request);
 
-				if($newLocation != $this->_request)
+				if($newLocation != $request)
 				{
+					$matched = true;
 					$redirect = e107::getParser()->replaceConstants($newLocation);
 					list($file, $query) = array_pad(explode('?', $redirect, 2), 2, '');
 
@@ -206,7 +229,9 @@ class e_url
 						parse_str($query,$get);
 					}
 
-					if(!self::handsOverOnlyTheCarriedToken($get, $query))
+					$pageQuery = str_replace('&&', '&', implode('&', array_filter(array($query, $asked), 'strlen')));
+
+					if(!self::handsOverOnlyTheCarriedToken($get, $pageQuery))
 					{
 						continue;
 					}
@@ -221,7 +246,7 @@ class e_url
 					if(file_exists($file))
 					{
 						define('e_CURRENT_PLUGIN', $plug);
-						define('e_QUERY', str_replace('&&', '&', $query)); // do not add to e107_class.php
+						define('e_QUERY', $pageQuery); // do not add to e107_class.php
 						define('e_URL_LEGACY', $redirect);
 						if(!defined('e_PAGE'))
 						{
@@ -264,9 +289,7 @@ class e_url
 
 		}
 
-
-
-
+		return $matched ? null : false;
 	}
 
 
