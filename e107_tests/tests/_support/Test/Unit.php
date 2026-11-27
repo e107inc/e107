@@ -394,6 +394,24 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Empties the default debug message stack, so {@see Unit::debugMessages()} reads only what follows.
+	 *
+	 * @return void
+	 */
+	protected function resetDebugMessages()
+	{
+		\e107::getMessage()->reset(E_MESSAGE_DEBUG, 'default', false);
+	}
+
+	/**
+	 * @return string the default stack's debug lines since {@see Unit::resetDebugMessages()}, one per line; reading empties the stack
+	 */
+	protected function debugMessages()
+	{
+		return implode("\n", (array) \e107::getMessage()->get(E_MESSAGE_DEBUG, 'default', true, true));
+	}
+
+	/**
 	 * Adds user classes for one test and re-reads the shared class tree so they count; call what it returns in a finally block.
 	 *
 	 * @param array[] $classes userclass_classes rows, each with its userclass_id
