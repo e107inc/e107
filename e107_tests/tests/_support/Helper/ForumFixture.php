@@ -176,7 +176,7 @@ class ForumFixture extends AppFixture
 	 * Write a core preference for this test alone; {@see ForumFixture::restoreSitePrefs()}, called from the Cest's own teardown, puts back what it was before the test's first change.
 	 *
 	 * @param string $name
-	 * @param string|int|null $value null removes it
+	 * @param string|int|array|null $value null removes it
 	 * @return void
 	 */
 	public function haveSitePrefUntilAfter($name, $value)
@@ -189,7 +189,7 @@ class ForumFixture extends AppFixture
 	 *
 	 * @param string $plugin plugin folder name; empty for the core preferences
 	 * @param string $name
-	 * @param string|int|null $value null removes it
+	 * @param string|int|array|null $value null removes it
 	 * @return void
 	 */
 	public function havePluginPrefUntilAfter($plugin, $name, $value)
@@ -229,8 +229,8 @@ class ForumFixture extends AppFixture
 	 * profile the site was on before the call.
 	 *
 	 * @param string $name
-	 * @param string|int|null $value
-	 * @return string the replaced value, empty when the pref was unset
+	 * @param string|int|array|null $value
+	 * @return string|array the replaced value, empty when the pref was unset
 	 */
 	public function haveSitePref($name, $value = null)
 	{
@@ -244,13 +244,18 @@ class ForumFixture extends AppFixture
 	 *
 	 * @param string $plugin plugin folder name; empty for the core preferences
 	 * @param string $name
-	 * @param string|int|null $value
-	 * @return string the replaced value, empty when the setting was unset
+	 * @param string|int|array|null $value
+	 * @return string|array the replaced value, empty when the setting was unset
 	 */
 	public function havePluginPref($plugin, $name, $value = null)
 	{
 		$body = $this->probe('act=pref&plugin='.urlencode($plugin).'&name='.urlencode($name)
-			.'&value='.urlencode($value === null ? '' : (string) $value));
+			.(is_array($value) ? '&json='.urlencode(json_encode($value)) : '&value='.urlencode($value === null ? '' : (string) $value)));
+
+		if(preg_match('/^PROBE_PREF_WAS_JSON (.*)$/m', $body, $matches))
+		{
+			return json_decode($matches[1], true);
+		}
 
 		return preg_match('/^PROBE_PREF_WAS (.*)$/m', $body, $matches) ? $matches[1] : '';
 	}
@@ -896,8 +901,10 @@ switch($act)
 
 	case 'pref':
 		$config = empty($_GET['plugin']) ? e107::getConfig() : e107::getPlugConfig($_GET['plugin']);
-		echo "PROBE_PREF_WAS ".(string) $config->getPref($_GET['name'])."\n";
-		if($_GET['value'] === '') { $config->removePref($_GET['name']); }
+		$was = $config->getPref($_GET['name']);
+		echo is_array($was) ? "PROBE_PREF_WAS_JSON ".json_encode($was)."\n" : "PROBE_PREF_WAS ".(string) $was."\n";
+		if(isset($_GET['json'])) { $config->setPref($_GET['name'], json_decode($_GET['json'], true)); }
+		elseif($_GET['value'] === '') { $config->removePref($_GET['name']); }
 		else { $config->setPref($_GET['name'], $_GET['value']); }
 		$config->save(false, true, false);
 		if(strpos($_GET['name'], 'url_config/') === 0) { eRouter::clearCache(); }

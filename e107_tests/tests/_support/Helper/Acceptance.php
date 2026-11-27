@@ -254,6 +254,16 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * Assert the last response issued a Location redirect to the site's home page and nowhere below it.
+	 *
+	 * @return void
+	 */
+	public function seeRedirectToTheHomePage()
+	{
+		$this->seeHttpHeader('Location', rtrim((string) $this->getModule('PhpBrowser')->_getConfig('url'), '/').'/');
+	}
+
+	/**
 	 * Assert a table is absent from the schema.
 	 *
 	 * Codeception's Db module asserts about rows, so seeNumRecords(0, $table)

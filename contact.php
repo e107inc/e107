@@ -40,15 +40,16 @@ class contact_front
 		$pref = e107::pref();
 
 		$active = varset($pref['contact_visibility'], e_UC_PUBLIC);
-		$contactInfo = trim(SITECONTACTINFO);
 		$pref = e107::getPref();
 
-		if(!check_class($active) && empty($contactInfo) && empty($pref['contact_info']))
+		$offered = check_class($active) && isset($pref['sitecontacts']) && $pref['sitecontacts'] != e_UC_NOBODY;
+		$signupRequired = !$offered && $active == e_UC_MEMBER && ($pref['sitecontacts'] != e_UC_NOBODY);
+		$hasInfo = $this->hasContactInfo($pref);
+
+		if(!$offered && !$signupRequired && !$hasInfo)
 		{
 			e107::redirect();
 		}
-
-		$offered = check_class($active) && isset($pref['sitecontacts']) && $pref['sitecontacts'] != e_UC_NOBODY;
 
 		if($offered && isset($_POST['send-contactus']))
 		{
@@ -59,7 +60,7 @@ class contact_front
 		$form = '';
 		$info = '';
 
-		if(deftrue('SITECONTACTINFO') || !empty($pref['contact_info']))
+		if($hasInfo)
 		{
 			$info = $this->renderContactInfo();
 		}
@@ -67,7 +68,7 @@ class contact_front
 		{
 			$form = $this->renderContactForm();
 		}
-		elseif($active == e_UC_MEMBER && ($pref['sitecontacts'] != e_UC_NOBODY))
+		elseif($signupRequired)
 		{
 			$this->renderSignupRequired();
 		}
@@ -359,6 +360,53 @@ class contact_front
 	}
 
 	/**
+	 * Whether there are contact details to show: a contact field that is not blank, or an info template of the theme's own.
+	 *
+	 * @param array $pref the core preferences
+	 * @return bool
+	 */
+	private function hasContactInfo($pref)
+	{
+		if(trim(SITECONTACTINFO) !== '' || $this->themeInfoTemplate() !== null)
+		{
+			return true;
+		}
+
+		if(isset($pref['contact_info']) && is_array($pref['contact_info']))
+		{
+			foreach($pref['contact_info'] as $value)
+			{
+				if(is_scalar($value) && trim((string) $value) !== '')
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return string|null the info template the theme supplies, as $CONTACT_INFO or in a contact template of its own; null when it supplies none
+	 */
+	private function themeInfoTemplate()
+	{
+		if(!empty($GLOBALS['CONTACT_INFO']))
+		{
+			return $GLOBALS['CONTACT_INFO'];
+		}
+
+		if(e107::coreTemplatePath('contact') !== e107::coreTemplatePath('contact', false))
+		{
+			$template = e107::getCoreTemplate('contact', 'info');
+
+			return empty($template) ? null : $template;
+		}
+
+		return null;
+	}
+
+	/**
 	 * @return string html
 	 */
 	private function renderContactInfo()
@@ -366,9 +414,9 @@ class contact_front
 
 		$contact_shortcodes = e107::getScBatch('contact');
 
-		$CONTACT_INFO = varset($GLOBALS['CONTACT_INFO']);
+		$CONTACT_INFO = $this->themeInfoTemplate();
 
-		if(empty($CONTACT_INFO))
+		if($CONTACT_INFO === null)
 		{
 			$CONTACT_INFO = e107::getCoreTemplate('contact', 'info');
 		}
