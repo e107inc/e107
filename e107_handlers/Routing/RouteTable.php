@@ -59,4 +59,15 @@ final class RouteTable
 
 		return null;
 	}
+
+	/**
+	 * @param string $name
+	 * @return RouteMatch|null the route called $name, taken whatever the request; null when the table holds none
+	 */
+	public function named($name)
+	{
+		$name = (string) $name;
+
+		return isset($this->routes[$name]) ? $this->routes[$name]->toMatch() : null;
+	}
 }

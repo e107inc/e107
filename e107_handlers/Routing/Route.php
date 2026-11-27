@@ -28,7 +28,7 @@ final class Route
 
 	/**
 	 * @param string $name
-	 * @param string $queryWord
+	 * @param string $queryWord empty for a route no request reaches
 	 * @param callable $factory
 	 */
 	private function __construct($name, $queryWord, callable $factory)
@@ -37,9 +37,9 @@ final class Route
 		$this->queryWord = (string) $queryWord;
 		$this->factory = $factory;
 
-		if($this->name === '' || $this->queryWord === '')
+		if($this->name === '')
 		{
-			throw new \InvalidArgumentException('A route needs a name and something to match.');
+			throw new \InvalidArgumentException('A route needs a name.');
 		}
 	}
 
@@ -53,7 +53,26 @@ final class Route
 	 */
 	public static function queryWord($name, $word, callable $factory)
 	{
-		return new self($name, $word, $factory);
+		$route = new self($name, $word, $factory);
+
+		if($route->queryWord === '')
+		{
+			throw new \InvalidArgumentException('A query word route needs its word.');
+		}
+
+		return $route;
+	}
+
+	/**
+	 * A route no request reaches by its address: it answers only where code takes it by name, through {@see RouteTable::named()}.
+	 *
+	 * @param string $name as {@see e107::route()} names pages
+	 * @param callable $factory returns the RequestHandlerInterface, called only when the route is taken
+	 * @return Route
+	 */
+	public static function internal($name, callable $factory)
+	{
+		return new self($name, '', $factory);
 	}
 
 	/**
@@ -70,6 +89,15 @@ final class Route
 	 */
 	public function match(Request $request)
 	{
-		return $request->hasLeadingQueryWord($this->queryWord) ? new RouteMatch($this->name, array(), $this->factory) : null;
+		return $request->hasLeadingQueryWord($this->queryWord) ? $this->toMatch() : null;
+	}
+
+	/**
+	 * @internal Only {@see RouteTable::named()} calls it; it changes as the table needs.
+	 * @return RouteMatch the route taken whatever the request, with no captured parameters
+	 */
+	public function toMatch()
+	{
+		return new RouteMatch($this->name, array(), $this->factory);
 	}
 }

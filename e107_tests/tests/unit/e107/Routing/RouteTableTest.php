@@ -69,6 +69,63 @@ class RouteTableTest extends \Test\Unit
 		self::assertSame('user/logout', $table->match(new Request('GET', 'logout'))->getName());
 	}
 
+	public function testAnInternalRouteAnswersNoRequest()
+	{
+		$table = new RouteTable(array(Route::internal('system/error/notfound', $this->factory())));
+
+		foreach(array('', 'logout', 'route=system/error/notfound', 'system/error/notfound') as $query)
+		{
+			self::assertNull($table->match(new Request('GET', $query)), $query);
+		}
+	}
+
+	public function testARouteIsTakenByNameWithNoParameters()
+	{
+		$built = 0;
+		$table = new RouteTable(array(
+			$this->logoutRoute($this->factory()),
+			Route::internal('system/error/notfound', $this->factory($built)),
+		));
+
+		$match = $table->named('system/error/notfound');
+
+		self::assertInstanceOf(RouteMatch::class, $match);
+		self::assertSame('system/error/notfound', $match->getName());
+		self::assertSame(array(), $match->getParameters());
+		self::assertSame(0, $built);
+
+		self::assertInstanceOf(RequestHandlerInterface::class, $match->createHandler());
+		self::assertSame(1, $built);
+	}
+
+	public function testARouteWithAnAddressIsTakenByNameToo()
+	{
+		$match = $this->logoutTable($this->factory())->named('user/logout');
+
+		self::assertSame('user/logout', $match->getName());
+		self::assertInstanceOf(RequestHandlerInterface::class, $match->createHandler());
+	}
+
+	public function testANameTheTableDoesNotHoldIsNoRoute()
+	{
+		self::assertNull($this->logoutTable($this->factory())->named('user/login'));
+		self::assertNull($this->logoutTable($this->factory())->named(''));
+	}
+
+	public function testAnInternalRouteNeedsAName()
+	{
+		$this->expectException(\InvalidArgumentException::class);
+
+		Route::internal('', $this->factory());
+	}
+
+	public function testAQueryWordRouteStillNeedsItsWord()
+	{
+		$this->expectException(\InvalidArgumentException::class);
+
+		Route::queryWord('user/logout', '', $this->factory());
+	}
+
 	public function testAFactoryThatBuildsNoHandlerIsRefused()
 	{
 		$match = $this->logoutTable(function () { return new \stdClass(); })->match(new Request('GET', 'logout'));
