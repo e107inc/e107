@@ -102,7 +102,7 @@ i.ytimg.com:
     where: media_admin_ui::youtubeTab()
 
 i1.ytimg.com:
-  - url: http://i1.ytimg.com/vi/<id>/maxresdefault.jpg
+  - url: http://i1.ytimg.com/vi/<id>/maxresdefault.jpg, then https://i1.ytimg.com/vi/<id>/mqdefault.jpg when that fails
     purpose: a video's picture in HTML mail
     side: server
     trigger: mail carrying a YouTube item
