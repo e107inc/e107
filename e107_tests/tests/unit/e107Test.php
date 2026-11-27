@@ -489,6 +489,18 @@ class e107Test extends \Test\Unit
 		});
 	}
 
+	public function testGetPlugConfigLeavesAPluginsEPrefFolderUnread()
+	{
+		$this->writeAppFile('e107_plugins/e107help_override/e_pref/e107help_override_pref.php',
+			"<?php\nclass e_plugin_e107help_override_pref extends e_plugin_pref {}\n");
+
+		$this->withConfigRegistry('_plug_config_arr', function ()
+		{
+			$this::assertSame('e_plugin_pref', get_class(e107::getPlugConfig('e107help_override', '', false)));
+			$this::assertFalse(class_exists('e_plugin_e107help_override_pref', false), 'the e_pref/ file is not included');
+		});
+	}
+
 	public function testLoadAdminIcons()
 	{
 
