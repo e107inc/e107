@@ -406,13 +406,13 @@ class UsersettingsPasswordReauthCest
 		$field = strpos($body, "name='currentpassword'");
 		$I->assertNotFalse($field, 'the confirmation form is rendered');
 
-		$open = strrpos(substr($body, 0, $field), "<form method='post'");
+		$open = strrpos((string) substr($body, 0, $field), "<form method='post'");
 		$I->assertNotFalse($open, 'the current-password field sits inside a form');
 
 		$close = strpos($body, '</form>', $open);
 		$I->assertNotFalse($close, 'that form is closed');
 
-		return substr($body, $open, $close - $open);
+		return (string) substr($body, $open, $close - $open);
 	}
 
 	/**

@@ -2021,4 +2021,28 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$this->assertSame($before, $registered->getValue($this->scParser));
 	}
+
+	public function testALegacyShortcodeThatThrowsRaisesANoticeNamingItsLine()
+	{
+		$scList = new \e107\Reflection\ReflectionProperty('e_parse_shortcode', 'scList');
+		$scList->setValue($this->scParser, array('E107HELP_THROWS' => "\nthrow new Exception('broken');"));
+		$notices = array();
+		set_error_handler(function ($severity, $message) use (&$notices)
+		{
+			$notices[] = $message;
+
+			return true;
+		}, E_USER_NOTICE);
+
+		try
+		{
+			$this->scParser->parseCodes('{E107HELP_THROWS}');
+		}
+		finally
+		{
+			restore_error_handler();
+		}
+
+		$this->assertSame(array("Couldn't parse {E107HELP_THROWS} legacy shortcode at line 2.\nbroken"), $notices);
+	}
 }

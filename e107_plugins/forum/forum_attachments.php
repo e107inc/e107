@@ -504,7 +504,7 @@ class forum_attachments
 				continue;
 			}
 
-			$parts = explode('/', substr($path, strlen($real)));
+			$parts = explode('/', (string) substr($path, strlen($real)));
 
 			if(count($parts) !== 2)
 			{

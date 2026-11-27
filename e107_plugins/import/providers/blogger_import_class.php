@@ -33,11 +33,11 @@ class blogger_import extends rss_import
 	public $description	= 'Import up to 500 items from yourblog.blogspot.com';
 	public $supported	=  array('news');
 	public $mprefix		= false;
-	
+
 	public $cleanupHtml = false;
 	public $defaultClass = false;
 
-	
+
 	/*
 	 If the first 500 posts of your blog feed are here:
 
@@ -61,7 +61,7 @@ class blogger_import extends rss_import
 		{			
 			$this->feedUrl = rtrim($_POST['bloggerUrl'],"/")."/feeds/posts/default?max-results=999&alt=rss";	
 		}
-		
+
 		if(vartrue($_POST['bloggerCleanup']))
 		{
 			$this->cleanupHtml = true;
@@ -75,18 +75,18 @@ class blogger_import extends rss_import
 			return;
 		}
 	}
-		
-	
+
+
 	function config()
 	{
 		$var[0]['caption']	= "Blogger URL";
 		$var[0]['html'] 	= e107::getForm()->text('bloggerUrl', $_POST['bloggerUrl'],255, 'size=xxlarge'); //  "<input class='tbox' type='text' name='bloggerUrl' size='120' value='{$_POST['bloggerUrl']}' maxlength='250' />";
 		$var[0]['help']		= "eg. http://blogname.blogspot.com";
-		
+
 		$var[1]['caption']	= "Cleanup HTML in content";
 		$var[1]['html'] 	= e107::getForm()->checkbox('bloggerCleanup',1, $_POST['bloggerCleanup']); // "<input class='tbox' type='checkbox' name='bloggerCleanup' value='1' />";
 		$var[1]['help']		= "Tick to enable";
-		
+
 		return $var;
 	}
 
@@ -158,13 +158,13 @@ class blogger_import extends rss_import
 
 				return "";
 			break;
-			
+
 			default:
 				return $source[$type][0];
 			break;
 		}		
-		
-		
+
+
 	}
 
 

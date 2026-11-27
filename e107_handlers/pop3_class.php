@@ -206,7 +206,7 @@ class receiveMail
 				$ar=$ar.$name.",";
 			}
 		}
-		$ar=substr($ar,0,(strlen($ar)-1));
+		$ar=(string) substr($ar,0,(strlen($ar)-1));
 		return $ar;
 	}
 

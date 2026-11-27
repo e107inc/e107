@@ -425,7 +425,7 @@ class eIPHandler
 						fclose($tmp);
 					}
 				}
-				$line = trim(substr($line, strlen($search)));
+				$line = trim((string) substr($line, strlen($search)));
 				if ((strpos($line, 'http://') === 0) || (strpos($line, 'https://') === 0))
 				{	// Display a specific web page
 					if (strpos($line, '?') === FALSE)
@@ -800,7 +800,7 @@ class eIPHandler
 		$tp = e107::getParser();
 		if (($tv = strrpos('@', $email)) !== FALSE)
 		{
-			$email = substr($email, $tv+1);
+			$email = (string) substr($email, $tv+1);
 		}
 		$tmp = strtolower($tp -> toDB(trim($email)));
 		if ($tmp == '') return FALSE;
@@ -836,7 +836,7 @@ class eIPHandler
 	public function makeEmailQuery($email, $fieldname = 'banlist_ip')
 	{
 		$tp = e107::getParser();
-		$tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
+		$tmp = strtolower($tp -> toDB(trim((string) substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
 		if ($tmp == '') return FALSE;
 		if (strpos($tmp,'.') === FALSE) return FALSE;
 		$em = array_reverse(explode('.',$tmp));
@@ -972,7 +972,7 @@ class eIPHandler
 
 				return true;
 			}
-			
+
 			// User is banned hereafter - just need to sort out the details.
 			// May need to retrigger ban period
 			if (!empty($pref['ban_retrigger']) && !empty($pref['ban_durations'][$row['banlist_bantype']]))
@@ -2133,12 +2133,12 @@ class banlistManager
 		$temp = strpos($ip, 'x');
 		if ($temp !== FALSE) 
 		{
-			return substr($ip, 0, $temp);
+			return (string) substr($ip, 0, $temp);
 		}
 		$temp = strpos($ip, '*');
 		if ($temp !== FALSE) 
 		{
-			return substr($ip, 0, $temp);
+			return (string) substr($ip, 0, $temp);
 		}
 		return $ip;
 	}

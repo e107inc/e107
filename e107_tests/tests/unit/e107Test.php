@@ -125,20 +125,20 @@ class e107Test extends \Codeception\Test\Unit
 			        </div><!--/.navbar-collapse -->
 			      </div>
 			    </div>
-			
+
 			<!--- Optional custom header template controlled by theme_shortcodes -->
 			{---HEADER---}
-			
+
 			<!-- Page Content -->
 			{---LAYOUT---}
-			
+
 			<!-- Footer --> 
-			
+
 			{SETSTYLE=default}
 			<footer>
 				<div class="container">
 					<div class="row">
-			
+
 						<div>
 							<div class="col-lg-6">
 								{MENU=100}
@@ -147,23 +147,23 @@ class e107Test extends \Codeception\Test\Unit
 								{MENU=101}
 							</div>
 						</div>
-			
+
 						<div>
 							<div class="col-sm-12 col-lg-4">
 								{MENU=102}
 							</div>
-			
+
 							<div class="col-sm-12 col-lg-8">
 								{MENU=103}
 							</div>
 						</div>
-			
+
 						<div >
 							<div class="col-lg-12">
 								{MENU=104}
 							</div>
 						</div>
-			
+
 						<div>
 							<div class="col-lg-6">
 								{MENU=105}
@@ -174,28 +174,28 @@ class e107Test extends \Codeception\Test\Unit
 								{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
 							</div>
 						</div>
-			
+
 						<div>
 							<div class="col-lg-12">
-					
+
 							</div>
 						</div>
-			
+
 						<div>
 							<div id="sitedisclaimer" class="col-lg-12 text-center">
 								<small >{SITEDISCLAIMER}</small>
 							</div>
 						</div>
-			
+
 					</div>	 <!-- /row -->
 				</div> <!-- /container -->
 			</footer>
-			
+
 			{---MODAL---}
 			<!--- Optional custom footer template controlled by theme_shortcodes -->
 			{---FOOTER---}
-			
-			
+
+
 			<!-- Javascripts and other information are automatically added below here -->
 			</body> <!-- This tag is not necessary and is ignored and replaced. Left here only as a reference -->';
 
@@ -1509,6 +1509,25 @@ class e107Test extends \Codeception\Test\Unit
 
 		$this->assertSame(0, $status, implode("\n", $output));
 		$this->assertSame(array('new'), $output, 'the include after the write runs the file as it is now, not the copy OPcache compiled before');
+	}
+
+	public function testGetFileInspectorWarnsThatACorruptCoreImageLeavesItInoperative()
+	{
+		$this->assertFalse(file_exists('phar://core_image.phar/core_image.json'), 'PHP keeps a loaded phar for the life of the process, so once the real core image is loaded a corrupt copy goes unseen');
+		$path = e107::getFolder('system_base') . 'core_image.phar';
+		$this->getModule('\Helper\Unit')->writeAppFile($path, 'not a phar archive');
+		e107::getMessage()->reset(E_MESSAGE_WARNING, 'default', false);
+
+		e107::getFileInspector();
+
+		$warnings = e107::getMessage()->get(E_MESSAGE_WARNING, 'default', true);
+		$this->assertCount(1, $warnings);
+		$this->assertStringStartsWith(
+			"The core integrity image is corrupt. File Inspector will be inoperative. " .
+			"Resolve this issue by uploading a good copy of the core image to " . escapeshellarg(realpath($path)) . ". " .
+			"If uploading with FTP, use binary transfer mode. Error message: ",
+			$warnings[0]
+		);
 	}
 
 }

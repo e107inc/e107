@@ -70,12 +70,12 @@ class e_chart
 	function __construct()
 	{
 	//	e107::js('core','chart/Chart.min.js','jquery');	
-	
-	
-	
-		
-		
-	
+
+
+
+
+
+
 		// e107::css('inline','canvas.e-graph {  width: 100% !important;  max-width: 800px;  height: auto !important; 	}');	
 	}
 

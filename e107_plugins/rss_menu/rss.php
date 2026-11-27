@@ -158,11 +158,11 @@ if(!$sql->select('rss', '*', "rss_class != 2 AND rss_url='".$content_type."' ".$
 	if(!$sql->select('rss', '*', "rss_class != 2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit > 0 "))
 	{
 		require_once(HEADERF);
-		
+
 		$repl  		= array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
 		$message 	= str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
 		e107::getRender()->tablerender('', $message);
-		
+
 		require_once(FOOTERF);
 		exit;
 	}
@@ -325,14 +325,14 @@ class rssCreate
 				require_once($path);
 
 				$className = basename(dirname($path)).'_rss';
-				
+
 				// v2.x standard 
 				if($data = e107::callMethod($className,'data', array('url' => $content_type, 'id' => $this->topicid, 'limit' => $this->limit)))
 				{			
 					$eplug_rss_data = array(0 => $data);
 					unset($data);			
 				}
-								
+
 				foreach($eplug_rss_data as $key=>$rs)
 				{
 					foreach($rs as $k=>$row)
@@ -357,12 +357,12 @@ class rssCreate
 						$this -> rssItems[$k]['description'] = varset($row['description']);
 						$this -> rssItems[$k]['content_encoded'] = varset($row['content_encoded']);
 						$this -> rssItems[$k]['comment'] = varset($row['comment']);
-						
+
 						if(!empty($row['enc_url']))
 						{
 							$this -> rssItems[$k]['enc_url'] = SITEURLBASE.e_PLUGIN_ABS.$row['enc_url'].varset($row['item_id']);
 						}
-						
+
 						if(!empty($row['enc_leng']))
 						{
 							$this -> rssItems[$k]['enc_leng'] = $row['enc_leng'];
@@ -378,7 +378,7 @@ class rssCreate
 						}
 
 						$this -> rssItems[$k]['category_name'] = varset($row['category_name']);
-						
+
 						if(!empty($row['category_link']))
 						{
 							if(stripos($row['category_link'], 'http') !== FALSE)
@@ -390,7 +390,7 @@ class rssCreate
 								$this -> rssItems[$k]['category_link'] = SITEURLBASE.e_PLUGIN_ABS.$row['category_link'];
 							}
 						}
-						
+
 						if(!empty($row['datestamp']))
 						{
 							$this -> rssItems[$k]['pubdate'] = $row['datestamp'];

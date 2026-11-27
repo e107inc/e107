@@ -44,7 +44,10 @@ function thumbFail($status, $message)
 	echo $message;
 }
 
-function thumbExceptionHandler(Throwable $e)
+/**
+ * @param \Throwable $e
+ */
+function thumbExceptionHandler($e)
 {
 	error_log(sprintf(
 		'thumb.php: %s in %s on line %d%s%s',

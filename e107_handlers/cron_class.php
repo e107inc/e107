@@ -52,13 +52,13 @@ class _system_cron
 	{
 		$mes = e107::getMessage();
 		$fl = e107::getFile();
-		
+
 		if(is_dir(e_BASE.".git")) // Check it's a Git Repo
 		{
 			$return = $fl->gitPull();
 
 			$mes->addSuccess($return);
-			
+
 			if(unlink(e_BASE."install.php"))
 			{
 				$mes->addDebug("Removed install.php");	
@@ -76,7 +76,7 @@ class _system_cron
 		{
 			$mes->addError(LAN_CRON_66);
 		}
-		
+
 		$fl->chmod(e_BASE."cron.php",0755);
 		$fl->chmod(e_HANDLER."bounce_handler.php",0755);
 
@@ -168,7 +168,7 @@ class _system_cron
 			error_log('e107: Cron running _system_cron::sendEmail(); ', E_USER_NOTICE);
 		}
 
-		
+
 	  //  require_once(e_HANDLER.'mail.php');
 		$message = "Your Cron test worked correctly. Sent on ".date("r").".";
 

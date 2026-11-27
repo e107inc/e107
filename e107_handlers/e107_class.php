@@ -1969,19 +1969,30 @@ class e107
         }
         catch (Throwable $e)
         {
-            // TODO: LAN
-            self::getMessage()->addWarning(
-                "The core integrity image is corrupt. " .
-                "File Inspector will be inoperative. " .
-                "Resolve this issue by uploading a good copy of the core image to " .
-                escapeshellarg($fileInspectorPath) . ". " .
-                "If uploading with FTP, use binary transfer mode. " .
-                "Error message: " .
-                $e->getMessage()
-            );
+            self::getMessage()->addWarning(self::corruptCoreImageWarning($fileInspectorPath, $e));
+        } catch (\Exception $e) {
+            self::getMessage()->addWarning(self::corruptCoreImageWarning($fileInspectorPath, $e));
         }
 
         return $fileInspector;
+	}
+
+	/**
+	 * The warning shown when the core integrity image at $path fails to load.
+	 * @param string $path
+	 * @param Throwable|Exception $e
+	 * @return string
+	 */
+	private static function corruptCoreImageWarning($path, $e)
+	{
+		// TODO: LAN
+		return "The core integrity image is corrupt. " .
+			"File Inspector will be inoperative. " .
+			"Resolve this issue by uploading a good copy of the core image to " .
+			escapeshellarg($path) . ". " .
+			"If uploading with FTP, use binary transfer mode. " .
+			"Error message: " .
+			$e->getMessage();
 	}
 
 	/**
@@ -3045,7 +3056,7 @@ class e107
 		$filename = $addonName; // e.g. 'e_cron';
 		if(!$className)
 		{
-			$className = substr($filename, 2); // remove 'e_'
+			$className = (string) substr($filename, 2); // remove 'e_'
 		}
 
 		$elist = self::getPref($filename.'_list');
@@ -5203,7 +5214,7 @@ class e107
 		*/
 
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? (string) substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 
 		// Resolve the request host up front: prefer the client `Host` header so
 		// a non-standard port survives into every URL built from HTTP_HOST
@@ -5692,7 +5703,7 @@ class e107
 	function fix_windows_paths($path)
 	{
 		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
-		$fixed_path = (substr($fixed_path, 1, 2) === ":/" ? substr($fixed_path, 2) : $fixed_path);
+		$fixed_path = ((string) substr($fixed_path, 1, 2) === ":/" ? (string) substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;
 	}
 
@@ -5961,7 +5972,7 @@ class e107
 
 		if(!deftrue('e_SINGLE_ENTRY') && !deftrue('e_SELF_OVERRIDE') )
 		{
-			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
+			$page = (string) substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 
 			if(!empty($_SERVER['_']) && self::isCli())
 			{
@@ -5997,8 +6008,8 @@ class e107
 
 		if ($isPluginDir)
 		{
-			$temp = substr($e107Path, strpos($e107Path, '/') +1);
-			$plugDir = substr($temp, 0, strpos($temp, '/'));
+			$temp = (string) substr($e107Path, strpos($e107Path, '/') +1);
+			$plugDir = (string) substr($temp, 0, strpos($temp, '/'));
 			define('e_CURRENT_PLUGIN', rtrim($plugDir,'/'));
 			define('e_PLUGIN_DIR', e_PLUGIN.e_CURRENT_PLUGIN.'/');
 			define('e_PLUGIN_DIR_ABS', e_PLUGIN_ABS.e_CURRENT_PLUGIN.'/');
@@ -6181,7 +6192,7 @@ class e107
 			}
 
 			if($httpHost === $allowedHost
-				|| substr($httpHost, -strlen('.' . $allowedHost)) === '.' . $allowedHost)
+				|| (string) substr($httpHost, -strlen('.' . $allowedHost)) === '.' . $allowedHost)
 			{
 				return true;
 			}

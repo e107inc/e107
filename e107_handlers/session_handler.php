@@ -720,13 +720,13 @@ class e_session
 		{
 			// [::1]:8080
 			$end = strpos($host, ']');
-			$host = ($end === false) ? substr($host, 1) : substr($host, 1, $end - 1);
+			$host = ($end === false) ? (string) substr($host, 1) : (string) substr($host, 1, $end - 1);
 		}
 		elseif(substr_count($host, ':') === 1)
 		{
 			// host:port. More than one colon is a bare IPv6 literal, which
 			// cannot carry a port without brackets.
-			$host = substr($host, 0, strrpos($host, ':'));
+			$host = (string) substr($host, 0, strrpos($host, ':'));
 		}
 
 		if($host === 'localhost' || $host === '::1' || $host === '0:0:0:0:0:0:0:1')
@@ -1165,7 +1165,7 @@ class e_session
 		{ 
 			$sessionData = $this->_data['_session_validate_data'];
 			$validateData = $this->getValidateData();
-			
+
 			$details = 'USER INFORMATION: '.(isset($_COOKIE[e_COOKIE]) ? $_COOKIE[e_COOKIE] : (isset($_SESSION[e_COOKIE]) ? $_SESSION[e_COOKIE] : 'n/a'))."\n";
 			$details .= "HOST: ".$_SERVER['HTTP_HOST']."\n";
 			$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";	
@@ -1179,16 +1179,16 @@ class e_session
 			$this->close(false);
 			$details .= "SESSION GLOBAL DATA:\n";
 			$details .= print_r($_SESSION, true);
-			
+
 			// delete cookie, destroy session
 			$this->cookieDelete()->destroy();
-			
+
 			// TODO event trigger
-			
+
 			// e107::getAdminLog()->add('Session validation failed!', $details, E_LOG_FATAL);
 			// TODO session exception, handle it proper on live site
 			// throw new Exception('');
-			
+
 			// just for now
 			$msg = 'Session validation failed! <a href="'.strip_tags($_SERVER['REQUEST_URI']).'">Go Back</a>';
 		//	die($msg); //FIXME not functioning as intended. 

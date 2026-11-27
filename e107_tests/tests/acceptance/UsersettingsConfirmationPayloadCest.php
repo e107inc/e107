@@ -313,10 +313,10 @@ class UsersettingsConfirmationPayloadCest
 
 		$field = strpos($body, "name='currentpassword'");
 		$I->assertNotFalse($field, 'the confirmation form is rendered');
-		$open = strrpos(substr($body, 0, $field), "<form method='post'");
+		$open = strrpos((string) substr($body, 0, $field), "<form method='post'");
 		$I->assertNotFalse($open, 'the current-password field sits inside a form');
 		$close = strpos($body, '</form>', $open);
-		$body = substr($body, $open, $close - $open);
+		$body = (string) substr($body, $open, $close - $open);
 
 		$matches = array();
 		preg_match_all("#<input type='hidden' name='([^']+)' value='([^']*)' />#", $body, $matches, PREG_SET_ORDER);

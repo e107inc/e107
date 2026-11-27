@@ -334,13 +334,13 @@ class Mysqldump
         }
 
         $this->dsn = $dsn;
-        $this->dbType = strtolower(substr($dsn, 0, $pos)); // always returns a string
+        $this->dbType = strtolower((string) substr($dsn, 0, $pos)); // always returns a string
 
         if (empty($this->dbType)) {
             throw new Exception("Missing database type from DSN string");
         }
 
-        $dsn = substr($dsn, $pos + 1);
+        $dsn = (string) substr($dsn, $pos + 1);
 
         foreach (explode(";", $dsn) as $kvp) {
             $kvpArr = explode("=", $kvp);
@@ -2301,8 +2301,8 @@ class TypeAdapterMysql extends TypeAdapterFactory
         $colParts = explode(" ", $colType['Type']);
 
         if ($fparen = strpos($colParts[0], "(")) {
-            $colInfo['type'] = substr($colParts[0], 0, $fparen);
-            $colInfo['length'] = str_replace(")", "", substr($colParts[0], $fparen + 1));
+            $colInfo['type'] = (string) substr($colParts[0], 0, $fparen);
+            $colInfo['length'] = str_replace(")", "", (string) substr($colParts[0], $fparen + 1));
             $colInfo['attributes'] = isset($colParts[1]) ? $colParts[1] : null;
         } else {
             $colInfo['type'] = $colParts[0];

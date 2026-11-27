@@ -2393,7 +2393,7 @@ class e_install
 		{
 			$this->previous_steps['language'] = $_POST['language'];
 		}		
-		
+
 		if(!isset($this->previous_steps['language']))
 		{
 			$this->previous_steps['language'] = "English";

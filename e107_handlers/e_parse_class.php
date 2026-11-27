@@ -1183,7 +1183,7 @@ class e_parse
 			{
 				// We are within an HTML tag
 				// Create a lowercase copy of this tag's contents
-				$lvalue = strtolower(substr($value, 1, -1));
+				$lvalue = strtolower((string) substr($value, 1, -1));
 				if ($lvalue)
 				{
 					// Tag of non-zero length
@@ -1279,7 +1279,7 @@ class e_parse
 									}
 									else
 									{
-										$pulled = substr($sp, 0, $i + 1);
+										$pulled = (string) substr($sp, 0, $i + 1);
 									}
 								}
 								$loopCount++;
@@ -1303,18 +1303,18 @@ class e_parse
 								if ($i == 0)
 								{
 									// No 'special' break boundary character found - break at the word boundary
-									$pulled = substr($sp, 0, $width);
+									$pulled = (string) substr($sp, 0, $width);
 								}
 								else
 								{
-									$pulled = substr($sp, 0, $i);
+									$pulled = (string) substr($sp, 0, $i);
 								}
 							}
 							if ($pulled)
 							{
 								$value .= $pulled . $break;
 								// Shorten $sp by whatever we've processed (will work even for utf-8)
-								$sp = substr($sp, strlen($pulled));
+								$sp = (string) substr($sp, strlen($pulled));
 							}
 						}
 						// Add in any residue
@@ -1785,7 +1785,7 @@ class e_parse
 			$parm .= '<' . $tag . '>';
 		}
 
-		return strip_tags($html, $parm);
+		return strip_tags($html, $parm !== null && is_array($parm) ? '<' . implode('><', $parm) . '>' : $parm);
 	}
 
 	/**
@@ -3762,7 +3762,7 @@ class e_parse
 		{
 			if (!empty($unprepend) && substr($key, 0, strlen($unprepend)) == $unprepend)
 			{
-				$key = substr($key, strlen($unprepend));
+				$key = (string) substr($key, strlen($unprepend));
 			}
 			$parts = explode('/', $key);
 			$nested = &$output;
@@ -3922,8 +3922,8 @@ class e_parse
 		}
 
 		return (float) (
-			preg_replace('/[^-0-9]/', '', substr($value, 0, $sep)) . '.' .
-			preg_replace('/[^0-9]/', '', substr($value, $sep + 1, strlen($value)))
+			preg_replace('/[^-0-9]/', '', (string) substr($value, 0, $sep)) . '.' .
+			preg_replace('/[^0-9]/', '', (string) substr($value, $sep + 1, strlen($value)))
 		);
 	}
 
@@ -4112,7 +4112,7 @@ class e_parse
 		$tmp = explode('.', $filename);
 		$ext = end($tmp);
 		$len = strlen($ext) + 1;
-		$start = substr($filename, 0, -$len);
+		$start = (string) substr($filename, 0, -$len);
 
 		// cleanup.
 		$newOpts = array(
@@ -7019,7 +7019,7 @@ class e_parse
 		{
 			if (strpos($k, 'youtube_') === 0)
 			{
-				$key = substr($k, 8);
+				$key = (string) substr($k, 8);
 				$ytpref[$key] = $v;
 			}
 		}

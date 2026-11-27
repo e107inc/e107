@@ -731,10 +731,10 @@ class e107_user_extended
 		$sql = e107::getDb('ue');
 
 		$ret = array();
-		
+
 		$more = ($cat != '') ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		$sys = ($system == false) ? " AND user_extended_struct_text != '_system_' " : "";
-		
+
 		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 {$sys} {$more} ORDER BY user_extended_struct_order ASC"))
 		{
 			while($row = $sql->fetch())

@@ -72,7 +72,7 @@ class coppermine_import extends base_import_class
 	$target['user_email'] 		= $source['user_email'];
 	$target['user_join'] 		= strtotime($source['user_regdate']);
 	$target['user_lastvisit'] 	= strtotime($source['user_lastvisit']);
-	
+
 	switch ($source['user_group'])
 	{
 	  case 1 : 		// Admin
@@ -85,7 +85,7 @@ class coppermine_import extends base_import_class
 		$target['user_ban'] = 2;
 		break;
 	}
-	
+
 	return $target;
 
 	/* Unused fields:

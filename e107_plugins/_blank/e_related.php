@@ -23,11 +23,11 @@ class _blank_related // include plugin-folder in the name.
 	{
 		$sql = e107::getDb();
 		$items = array();
-			
+
 		$tag_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
-		
+
 		$query = "SELECT * FROM `#_blank` WHERE _blank_id != ".$parm['current']." AND _blank_keywords REGEXP ".$tag_regexp."  ORDER BY _blank_datestamp DESC LIMIT ".$parm['limit'];
-			
+
 		if($sql->gen($query))
 		{		
 			while($row = $sql->fetch())
@@ -40,7 +40,7 @@ class _blank_related // include plugin-folder in the name.
 					'image'			=> '{e_PLUGIN}_blank/images/image.png'
 				);
 			}
-			
+
 			return $items;
 	    }
 	//	elseif(ADMIN)

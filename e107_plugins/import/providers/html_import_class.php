@@ -327,7 +327,7 @@ class html_import extends base_import_class
 	 */
 	function copyNewsData(&$target, &$source)
 	{
-		
+
 		if(!$content = $this->process('content_encoded',$source))
 		{
 			$body = $this->process('description',$source);	
@@ -336,11 +336,11 @@ class html_import extends base_import_class
 		{
 			$body = $content;
 		}
-				
+
 		$body 								= $this->saveImages($body,'news');
 		$keywords 							= $this->process('category',$source);
-			
-				
+
+
 		if(!vartrue($source['title'][0]))
 		{
 			list($title,$newbody) = explode("<br />",$body,2);
@@ -354,7 +354,7 @@ class html_import extends base_import_class
 		{
 			$title = $source['title'][0];
 		}
-		
+
 		$target['news_title']					= $title;
 		//	$target['news_sef']					= $source['post_name'];
 		$target['news_body']					= "[html]".$body."[/html]";
@@ -374,11 +374,11 @@ class html_import extends base_import_class
 		//	$target['news_thumbnail']			= '';
 		//	$target['news_sticky']				= '';
 
-		
+
 		return $target;  // comment out to debug 
-		
+
 		$this->renderDebug($source,$target);
-		
+
 		// DEBUG INFO BELOW. 		
 		
 	}

@@ -94,7 +94,7 @@ class bootstrap3_admintheme implements e_theme_render
 		// global $style;
 
 		$style = $data['setStyle'];
-		
+
 	//	echo "Style: ".$style;
 
 		echo "\n\n<!-- UniqueID: ".$data['uniqueId']." -->\n\n";
@@ -159,7 +159,7 @@ class bootstrap3_admintheme implements e_theme_render
 
 
 
-		
+
 		switch(varset($style, 'admin_content'))
 		{
 			case 'flexpanel':
