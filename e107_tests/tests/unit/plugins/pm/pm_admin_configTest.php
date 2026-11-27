@@ -12,7 +12,7 @@ require_once(__DIR__.'/pm_limit_fixture.php');
 /**
  * @group plugins
  *
- * What the Update button on the Limits page of the private messaging plugin's admin area stores, pressed with the limit mode at its plugin.xml default.
+ * The private messaging plugin's admin area: what the Limits page's Update button stores, pressed with the limit mode at its plugin.xml default, and which pages it offers.
  */
 class pm_admin_configTest extends pm_limit_fixture
 {
@@ -50,6 +50,22 @@ class pm_admin_configTest extends pm_limit_fixture
 		self::assertEquals(array('gen_user_id' => 10, 'gen_ip' => 20, 'gen_intdata' => 30, 'gen_chardata' => 40), $row, "The update did not store the class limits:\n".$page);
 	}
 
+	public function testTheAdminMenuNoLongerOffersMaintenance()
+	{
+		$page = $this->renderAdmin('mode=main&action=prefs');
+
+		self::assertStringContainsString('action=limits"', $page, "The admin menu did not render, so its entries cannot be read:\n".$page);
+		self::assertStringNotContainsString('action=maint"', $page, "The admin menu still links to the Maintenance page:\n".$page);
+	}
+
+	public function testTheMaintenanceAddressDrawsNoMaintenanceForm()
+	{
+		$page = $this->renderAdmin('mode=main&action=maint');
+
+		self::assertStringNotContainsString("id='plugin-pm-maint'", $page, "The Maintenance page still renders:\n".$page);
+		self::assertStringNotContainsString('pm_maint_execute', $page, "The Maintenance button still renders:\n".$page);
+	}
+
 	/**
 	 * Presses Update on the Limits page.
 	 *
@@ -58,8 +74,17 @@ class pm_admin_configTest extends pm_limit_fixture
 	 */
 	private function update(array $post)
 	{
-		return $this->renderPage('e107_plugins/pm/admin_config.php', 'mode=main&action=limits',
-			self::posting(array('updatelimits' => 'no-value') + $post), array('e_ADMIN_AREA' => true));
+		return $this->renderAdmin('mode=main&action=limits', self::posting(array('updatelimits' => 'no-value') + $post));
+	}
+
+	/**
+	 * @param string $query the admin page's query string
+	 * @param string $seed PHP to run before the page, e.g. setting $_POST
+	 * @return string everything the page wrote
+	 */
+	private function renderAdmin($query, $seed = '')
+	{
+		return $this->renderPage('e107_plugins/pm/admin_config.php', $query, $seed, array('e_ADMIN_AREA' => true));
 	}
 
 	/**
