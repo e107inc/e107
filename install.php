@@ -433,6 +433,10 @@ function include_lan($path, $force = false)
 
 	}
 
+	if(defined('e_HANDLER'))
+	{
+		e107::getLanguageFallback()->fill($path, false, is_array($result));
+	}
 }
 //obsolete $e107->e107_dirs['INSTALLER'] = "{$installer_folder_name}/";
 
