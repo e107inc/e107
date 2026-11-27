@@ -121,6 +121,18 @@ trait CorePrefs
 	}
 
 	/**
+	 * @param string $name the row's e107_name, e.g. 'plugin_pm'
+	 * @param string $key
+	 * @return mixed one preference as the database holds it, null when the row or the preference is missing
+	 */
+	protected static function storedPref($name, $key)
+	{
+		$prefs = \e107::unserialize((string) self::storedPrefsValue($name));
+
+		return isset($prefs[$key]) ? $prefs[$key] : null;
+	}
+
+	/**
 	 * Sets one core preference, or removes it when $value is null.
 	 *
 	 * @param \e_pref $config
