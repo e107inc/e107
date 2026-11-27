@@ -360,6 +360,16 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * Assert the last response issued a Location redirect to the site's home page and nowhere below it.
+	 *
+	 * @return void
+	 */
+	public function seeRedirectToTheHomePage()
+	{
+		$this->seeHttpHeader('Location', rtrim((string) $this->getModule('PhpBrowser')->_getConfig('url'), '/').'/');
+	}
+
+	/**
 	 * @return string the folder the suite's site is served from, without slashes, or '' at the docroot
 	 */
 	private function siteDirectory()
