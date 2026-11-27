@@ -4460,7 +4460,7 @@ class e107
 	 *
 	 * @param string $fname filename without the extension part (e.g. 'common' for common.php)
 	 * @param string $theme theme name, if null current theme will be used
-	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
+	 * @param boolean $flat false: languages/[Language]/[fname].php; true: languages/[Language]_[fname].php
 	 * @return bool|null
 	 */
 	public static function themeLan($fname = '', $theme = null, $flat = false)
