@@ -100,6 +100,14 @@ class SitelinkFixture extends AppFixture
 	}
 
 	/**
+	 * @return void
+	 */
+	public function dontSeeTheDemandToCompleteTheProfile()
+	{
+		$this->browser()->dontSeeInCurrentUrl(self::SETTINGS_PAGE);
+	}
+
+	/**
 	 * @return \Helper\AdminLogin
 	 */
 	private function login()
