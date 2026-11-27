@@ -845,9 +845,8 @@ class news_shortcodes extends e_shortcode
 		{
 			$tp = e107::getParser();
 			$text = $tp->toHTML($this->news_item['news_body'],true);
-			$breaks = array('<br />','<br>');
-			$text = str_replace($breaks,"\n",$text);
-			$text = strip_tags($text);	
+			$text = preg_replace('#(?=<(?:br|hr|/?(?:p|pre|div|h[1-6]|blockquote|li|dt|dd|td|th))\b)#i', "\n", $text);
+			$text = preg_replace('/(?:^|(?<=\.))(?:\s|&nbsp;|&#160;|&#[xX][aA]0;|\xC2\xA0)+/', ' ', strip_tags($text));
 			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text), 2, PREG_SPLIT_DELIM_CAPTURE);
 			$tmp = array_filter($tmp);
 
