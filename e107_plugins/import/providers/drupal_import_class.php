@@ -192,7 +192,7 @@ class drupal_import extends base_import_class
 				);
 
 				$query = "SELECT " . implode(',', $fields) . " FROM " . $this->DBPrefix . "users AS u ";
-				$query .= "LEFT JOIN " . $this->DBPrefix . "users_field_data AS ufd ON u.uid = ufd.uid";
+				$query .= "LEFT JOIN " . $this->DBPrefix . "users_field_data AS ufd ON u.uid = ufd.uid ";
 				$query .= "WHERE ufd.status = 1 AND ufd.uid > 1 ";
 
 				// Foreign Drupal DB: $this->DBPrefix is a dynamic cross-database table identifier validated fail-closed in base_import_class::database(); WHERE values are static literals (no request input). The builder cannot map a foreign cross-DB/custom-prefix table, so use bound execute() (result consumed statefully via getNext()->fetch()).
