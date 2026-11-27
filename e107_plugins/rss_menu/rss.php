@@ -452,6 +452,7 @@ class rssCreate
 		global $pref;
 
 		$tp = e107::getParser();
+		$siteAddress = e107::primarySiteUrl();
 
 		header('Content-type: application/xml');
 
@@ -468,7 +469,7 @@ class rssCreate
 						<rss version=\"0.92\">
 						<channel>
 						<title>".$tp->toRss($rss_title)."</title>
-						<link>".$pref['siteurl']."</link>
+						<link>".$siteAddress."</link>
 						<description>".$tp->toRss($pref['sitedescription'])."</description>
 						<lastBuildDate>".$itemdate = date("r", ($time))."</lastBuildDate>
 						<docs>http://backend.userland.com/rss092</docs>\n";
@@ -505,7 +506,7 @@ class rssCreate
 				>
 				<channel>
 				<title>".$tp->toRss($rss_title)."</title>
-				<link>".$pref['siteurl']."</link>
+				<link>".$siteAddress."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>\n";
 
 				echo $tp->toHTML($rss_custom_channel)."\n"; // must not convert to CDATA.
@@ -534,7 +535,7 @@ class rssCreate
 					<image>
 					<title>".$tp->toRss($rss_title)."</title>
 					<url>" . $imgPath . "</url>
-					<link>".$pref['siteurl']."</link>
+					<link>".$siteAddress."</link>
 					<width>88</width>
 					<height>31</height>
 					<description>".$tp->toRss($pref['sitedescription'])."</description>
@@ -635,9 +636,9 @@ class rssCreate
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rdf:RDF xmlns=\"http://purl.org/rss/1.0/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\" xmlns:admin=\"http://webns.net/mvcb/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
-				<channel rdf:about=\"".$pref['siteurl']."\">
+				<channel rdf:about=\"".$siteAddress."\">
 				<title>".$tp->toRss($rss_title)."</title>
-				<link>".$pref['siteurl']."</link>
+				<link>".$siteAddress."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<dc:language>".defset('CORE_LC').(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</dc:language>
 				<dc:date>".$this->get_iso_8601_date($time). "</dc:date>
@@ -695,7 +696,7 @@ class rssCreate
 				*/
 					// Required
 					echo "
-					<id>".$pref['siteurl']."</id>\n
+					<id>".$siteAddress."</id>\n
 					<title type='text'>".$tp->toRss($rss_title)."</title>\n
 					<updated>".$this->get_iso_8601_date($time)."</updated>\n";
 

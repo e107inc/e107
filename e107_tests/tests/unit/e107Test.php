@@ -1200,6 +1200,23 @@ class e107Test extends \Test\Unit
 		}
 	}
 
+	/**
+	 * @dataProvider canonicalSiteUrlProvider
+	 */
+	public function testThePrimarySiteUrlIsWhatCanonicalSwapsIn($siteurl, $expected)
+	{
+		$restore = $this->withCorePrefs(array('siteurl' => $siteurl));
+
+		try
+		{
+			self::assertSame($expected, e107::primarySiteUrl().'news');
+		}
+		finally
+		{
+			$restore();
+		}
+	}
+
 	public function canonicalSiteUrlProvider()
 	{
 		return array(
