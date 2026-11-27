@@ -13,8 +13,8 @@
 #   * The image installs every PHP extension e107 needs to install and run.
 #   * Composer, git, rsync, and unzip are baked in so tests can be driven
 #     end-to-end inside the container.
-#   * nftables fences the container off the Internet while a suite runs
-#     (lib/sandbox/Boundary.php).
+#   * nftables fences the container off the Internet while a suite runs, and
+#     conntrack clears the flows it redirected (lib/sandbox/Boundary.php).
 #   * No source code is COPY'd in. The worktree is bind-mounted at runtime,
 #     which is what makes the image reusable across worktrees.
 #   * An image whose Debian release has moved to archive.debian.org gets its
@@ -40,6 +40,7 @@ RUN set -eux; \
     if [ "$PHPV" -ge 704 ]; then \
         apt-get install -y --no-install-recommends \
             ca-certificates \
+            conntrack \
             curl \
             git \
             imagemagick \
@@ -66,6 +67,7 @@ RUN set -eux; \
         # need; libvpx feeds PHP 5.6's gd. Mirrors release/v2.3.x CI.
         apt-get install -y --no-install-recommends \
             ca-certificates \
+            conntrack \
             curl \
             git \
             imagemagick \
@@ -196,6 +198,12 @@ RUN set -eux; \
 RUN for n in $(seq "$E107_SANDBOXES"); do \
         printf '<Directory /srv/sb/sb%s>\n    php_admin_value session.save_path /srv/sbstate/sessions/sb%s\n</Directory>\n' "$n" "$n"; \
     done > /etc/apache2/e107-sandbox-sessions.conf
+
+# While a suite runs, the network boundary keeps E107_BOUNDARY_UP, and Apache
+# refuses what it would serve from outside a sandbox and writes each refusal to
+# E107_REFUSED_LOG (apache-vhost.conf, lib/sandbox/Boundary.php).
+ENV E107_BOUNDARY_UP=/srv/sbstate/boundary-up \
+    E107_REFUSED_LOG=/var/log/apache2/refused.log
 
 COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY php-overrides.ini /usr/local/etc/php/conf.d/zz-e107-overrides.ini

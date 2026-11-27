@@ -19,6 +19,9 @@ class Runner
 	/** Where Apache serves sandbox sbN.web from (see docker/apache-vhost.conf). */
 	const SANDBOXES = '/srv/sb';
 
+	/** The web container's own name in the stack, at which Apache serves the worktree itself. */
+	const WEB = 'web';
+
 	const APP = '/var/www/html';
 
 	/** The list Codeception's RunFailed extension keeps of the tests that failed, which `-g failed` runs again. */
@@ -63,7 +66,7 @@ class Runner
 	/** @var Boundary|null */
 	private $boundary;
 
-	/** @var array[] attempts to reach past the stack that no test running at the time declared, as {@see Boundary::account()} gives them */
+	/** @var array[] attempts to reach past the sandbox that no test running at the time declared, as {@see Boundary::account()} gives them */
 	private $undeclared = array();
 
 	/** @var bool whether the boundary's recorder stopped before the run did */
@@ -92,6 +95,24 @@ class Runner
 	}
 
 	/**
+	 * @param int $worker
+	 * @return string the worker's sandbox's own name, which the stack answers to as well
+	 */
+	public static function sandboxName($worker)
+	{
+		return "sb$worker";
+	}
+
+	/**
+	 * @param int $worker
+	 * @return string the name the worker's sandbox is served at
+	 */
+	public static function host($worker)
+	{
+		return self::sandboxName($worker).'.web';
+	}
+
+	/**
 	 * @param int $jobs workers
 	 * @param string[] $args codecept arguments; any naming a test file or directory narrows the run to it
 	 * @return int exit status
@@ -112,7 +133,7 @@ class Runner
 
 		$this->databases->grantPrefix('e107_s');
 		$pool = new Pool("$scratch/pool-$run");
-		$this->boundary = new Boundary("$scratch/boundary", $this->shell, new ProcNet());
+		$this->boundary = Boundary::fromImage("$scratch/boundary", $this->shell, new ProcNet());
 		try
 		{
 			return $this->boundary->raise($this->settings['loops']) ? $this->runWith($pool, $run, $scratch, $jobs, $args, $started) : 2;
@@ -180,7 +201,7 @@ class Runner
 			}
 			if ($this->undeclared)
 			{
-				echo "!! while it was built, e107 tried to reach past the stack, which the run refused:\n";
+				echo "!! while it was built, e107 tried to reach past its sandbox, which the run refused:\n";
 				$this->listUndeclared(1);
 			}
 
@@ -428,7 +449,7 @@ class Runner
 	/** @param int $worker 0 for the template's sandbox, which shares the first worker's host */
 	private function sandbox($worker)
 	{
-		$name = 'sb'.max(1, $worker);
+		$name = self::sandboxName(max(1, $worker));
 		$mountPoint = self::SANDBOXES."/$name";
 		if ($this->suite->servesHttp() && $this->settings['base_path'] !== '')
 		{
@@ -477,7 +498,7 @@ class Runner
 	{
 		$base = $this->suite->servesHttp() && $this->settings['base_path'] !== '' ? $this->settings['base_path'].'/' : '';
 		$params = array(
-			'url' => 'http://sb'.$batch->worker.".web/$base",
+			'url' => 'http://'.self::host($batch->worker)."/$base",
 			'db' => array('dbname' => $batch->database, 'populate' => false),
 			'sandbox' => array('upper' => $overlay->upper(), 'start' => $layers['start']),
 		);
@@ -616,7 +637,7 @@ class Runner
 				: "OK, but incomplete, skipped, or useless tests!\nTests: {$t['tests']}, Assertions: {$t['assertions']}, Skipped: {$t['skipped']}.\n";
 			if ($this->undeclared)
 			{
-				echo "!! e107 tried to reach past the stack, which the run refused; this tree's suites predate declaring it, so it fails nothing:\n";
+				echo "!! e107 tried to reach past its sandbox, which the run refused; this tree's suites predate declaring it, so it fails nothing:\n";
 				$this->listUndeclared($jobs);
 			}
 
@@ -642,9 +663,9 @@ class Runner
 		}
 		if ($this->undeclared)
 		{
-			echo "  e107 tried to reach past the stack, which a run refuses, and no test running at the time declared it:\n";
+			echo "  e107 tried to reach past its sandbox, which a run refuses, and no test running at the time declared it:\n";
 			$this->listUndeclared($jobs);
-			echo "  If e107 should try, the test that makes it declares the host with \$I->expectOutboundRequest('<host>'); if not, find what made it try.\n";
+			echo "  A test reaches its site at its sandbox's URL alone, never at the worktree's own. If e107 should reach past the stack, the test that makes it declares the host with \$I->expectOutboundRequest('<host>'); if not, find what made it try.\n";
 			if ($jobs > 1)
 			{
 				echo "  The tests running at the time are on the failed list; to see which of them made each attempt, run them on one worker:\n"

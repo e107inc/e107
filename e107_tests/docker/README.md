@@ -321,8 +321,9 @@ container's CPU count, at most the 16 sandboxes the stack names (`sb1.web` to
   the worktree; the runner itself writes only Codeception's generated actor
   classes, once per run, and its results under `tests/_output/`. Apache serves
   the worktree itself, outside every sandbox, by every other name the stack
-  answers to (`web`, `localhost`, `127.0.0.1`), so a test reaches its site only
-  by the suite's URL, or through a server it starts itself.
+  answers to (`web`, `localhost`, `127.0.0.1`), and refuses it while a run
+  lasts (see the network boundary), so a test reaches its site only by the
+  suite's URL, or through a server it starts itself.
 - a **database** of its own on the env's server, copied ahead of need from a
   template built once per run: the site the `@group site-template` test
   installs, for acceptance (whose sandboxes also start from the files that
@@ -374,36 +375,46 @@ and mtime of the file it replaces.
 
 ## The network boundary
 
-For as long as `run` lasts, nothing a suite does reaches the Internet over TCP
-or UDP. Rules in the web container (nftables) send every connection and
-datagram that would leave the stack to a recorder there (`lib/sandbox/Boundary.php`), which refuses it the
-quickest way its protocol allows (an HTTP 503, a TLS `handshake_failure`
-alert, an SMTP 554 greeting, a REFUSED answer to a name lookup, otherwise a
-closed connection) and writes down where it was going.
-What stays inside: loopback, the networks the container reaches directly
-(the stack's own, which holds the database and every `sbN.web`),
-and name lookups at the stack's name servers. Where such a name server
-forwards from inside the container, as Docker's does on some hosts, a lookup
-of a name outside the stack reaches the recorder all the same, so a test that
-makes e107 look one up declares it. The web container has no search domain, so
-that name is all the lookup asks for. The rules go up when the run starts and
-down when it ends, however it ends, so `up`, composer and `graft`
-reach the Internet as before. They need `CAP_NET_ADMIN` in the web container,
-which `up` gives it, and an env from before them needs `up` again.
+For as long as `run` lasts, nothing a suite does reaches the Internet, nor the
+worktree's own site. Rules in the web container (nftables) send every name
+lookup, and every connection and datagram that would leave the stack, to a
+recorder there (`lib/sandbox/Boundary.php`). The recorder answers a lookup over
+UDP, as every client in the stack makes them, of one of the stack's own names
+(the database's, `web`, and each sandbox's `sbN` and `sbN.web`) with the
+addresses that name had when the run started, and a lookup of no name at all,
+the root, with none. Anything else it refuses the quickest way its protocol
+allows (an HTTP 503, a TLS `handshake_failure` alert, an SMTP 554 greeting, a
+REFUSED answer to a name lookup, otherwise a closed connection), and writes
+down where it was going. A name outside the stack therefore never resolves
+during a run, declared or not, whichever way the host's Docker or podman
+forwards lookups. The web container has no search domain, so a lookup asks for
+the name e107 gave and no other. What stays inside: loopback, and the networks
+the container reaches directly (the stack's own, which holds the database and
+every `sbN.web`). The rules go up when the run starts and down when it ends,
+however it ends, so `up`, composer and `graft` reach the Internet as before.
+They need `CAP_NET_ADMIN` in the web container, which `up` gives it, and an env
+from before them needs `up` again.
 
-An attempt fails the run unless the test running at the time declared it:
+While the rules are up, Apache serves the sandboxes alone
+(`docker/apache-vhost.conf`). A request for the worktree's own site, by any
+name but a sandbox's (`web`, `localhost`, `127.0.0.1`), gets a 403 and is
+written down, and so is any other request Apache would serve from outside a
+sandbox. Between runs the worktree is served as before, for `up --install-site`
+and a browser on the env's published port; a request from that browser during a
+run is refused too, and fails the run.
+
+An attempt to reach past the stack fails the run unless the test running at the
+time declared it:
 
 ```php
 $I->expectOutboundRequest('e107.org');           // a Cest
 $this->tester->expectOutboundRequest('e107.org'); // a unit test
 ```
 
-The host is what the attempt carried: the HTTP `Host`, the TLS server name, the
-name a lookup asked for, or the address it went to when it carried none of
-these. A client that is slow to say where it is going, or gives up first,
-leaves only that address, so a declared name also covers a connection that
-named nothing and went to one of the name's addresses, as the name resolves
-when the run ends.
+The host is what the attempt carried: the name a lookup asked for, the HTTP
+`Host`, the TLS server name, or the address it went to when it carried none of
+these. A request for the worktree's own site fails the run whatever its test
+declared.
 A declared attempt is still refused, so the test sees what a site with
 no route to that host sees, and a declaration permits without demanding:
 whether a test makes an attempt can depend on what e107 cached before it. A
@@ -415,8 +426,9 @@ declared its host; with one, only its own test's declaration counts.
 
 When a run fails on an attempt, its summary lists each one with its protocol,
 host, port where known, the request line of an HTTP request, and who made it:
-`www-data` is e107 serving a request, and `root` the test process itself. With
-one worker it also names the test. With more, the
+`www-data` is e107 serving a request, and `root` the test process itself; a
+request for the worktree's own site gives the address it came from. With one
+worker it also names the test. With more, the
 tests that were running at the time are put on the failed list, and
 
 ```sh
