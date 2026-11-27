@@ -201,7 +201,7 @@ class page_admin_form_ui extends e_admin_form_ui
 
 			if($controller->getMode() === 'overview' && $controller->getDispatcher()->hasRouteAccess('overview/delete'))
 			{
-				$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-danger'));
+				$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-danger'));
 			}
 			return $text;
 		}
@@ -655,18 +655,6 @@ class page_admin_ui extends e_admin_ui
 			}
 
 			
-			if($mode === 'overview' && $this->getAction() === 'list' && !empty($_POST['menu_delete']) && $this->hasModeRouteAccess('delete')) // Delete a Page/Menu combination (or rather, remove it's data )
-			{
-				$key = key($_POST['menu_delete']);
-				
-				if($key)
-				{
-					//e107::getDb()->update('page',"menu_name = '' WHERE page_id=".intval($key)." LIMIT 1");
-					e107::getDb()->createQueryBuilder()->delete('page')
-						->where('page_id', (int) $key)->execute();
-				}
-			}
-
 			// USED IN Menu LIST/INLINE-EDIT MODE ONLY. 
 			if($this->getMode() === 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline' || $this->getAction() == 'grid'))
 			{
@@ -1579,6 +1567,11 @@ class page_admin_ui extends e_admin_ui
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
+			if(!$deleted_check)
+			{
+				return true;
+			}
+
 			if (e107::getDb()->createQueryBuilder()->from('menus')
 				->where('menu_path', $id)->count())
 			{
@@ -1591,10 +1584,11 @@ class page_admin_ui extends e_admin_ui
 				else
 				{
 					e107::getMessage()->addDebug(CUSLAN_78." ".$id.".");
+					return false;
 				}
 			}
 
-
+			return true;
 		}
 
 
