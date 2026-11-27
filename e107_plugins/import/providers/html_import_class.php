@@ -261,12 +261,9 @@ class html_import extends base_import_class
 			mkdir(e_TEMP.$path,0755);
 		}
 				
-		if(!file_exists(e_TEMP.$local_file))
-		{
-			 e107::getFile()->getRemoteFile($url, $local_file); // downloads to e107_system/.../temp
-		}		
-		
-		if($this->useTidy)
+		$fetched = file_exists(e_TEMP.$local_file) || e107::getFile()->getRemoteFile($url, $local_file);
+
+		if($fetched && $this->useTidy)
 		{
 			$tidy 		= new tidy();
 			$options 	= array("output-xhtml" => true, "clean" => true);
@@ -274,7 +271,7 @@ class html_import extends base_import_class
 
 			return $parsed->value;
 		}
-		elseif(!$html = file_get_contents(e_TEMP.$local_file))
+		elseif(!$fetched || !$html = file_get_contents(e_TEMP.$local_file))
 		{
 			return "Couldn't read file";
 		}	
