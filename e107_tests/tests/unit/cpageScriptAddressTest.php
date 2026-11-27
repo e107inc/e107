@@ -15,6 +15,7 @@ class cpageScriptAddressTest extends \Codeception\Test\Unit
 {
 	use \Test\BootedCli;
 	use \Test\ScriptClassPages;
+	use \Test\PageChapters;
 
 	const TITLE = 'cpageScriptAddressTest';
 
@@ -37,21 +38,13 @@ class cpageScriptAddressTest extends \Codeception\Test\Unit
 			}
 		}
 
-		$this->chapter = (int) e107::getDb()->insert('page_chapters', array(
-			'chapter_parent'           => 1,
-			'chapter_name'             => self::TITLE,
-			'chapter_sef'              => strtolower(self::TITLE),
-			'chapter_meta_description' => '',
-			'chapter_fields'           => e107::serialize(array('site' => array('title' => 'Site', 'type' => 'url', 'writeParms' => '', 'help' => '')), 'json'),
-		));
-
-		self::assertGreaterThan(0, $this->chapter, 'the chapter was not seeded');
+		$this->chapter = $this->haveChapterWithField(self::TITLE, 'site', 'url');
 	}
 
 	protected function _after()
 	{
 		e107::getDb()->delete('page', "page_title LIKE '".self::TITLE."%'");
-		e107::getDb()->delete('page_chapters', 'chapter_id='.(int) $this->chapter);
+		$this->dropChapters();
 		e107::getDb()->delete('menus', "menu_name = '".self::TITLE."'");
 
 		foreach($this->addedColumns as $column)
