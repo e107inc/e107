@@ -7350,14 +7350,15 @@ class e_parse
 
 			if ($thumb === 'email')
 			{
+				$smaller = $thumbSrc;
 				$thumbSrc = 'http://i1.ytimg.com/vi/' . $id . '/maxresdefault.jpg'; // 640 x 480
 				$filename = 'temp/yt-thumb-' . md5($id) . '.jpg';
 				$filepath = e_MEDIA . $filename;
 
 
-				if (!file_exists($filepath))
+				if (!file_exists($filepath) && !e107::getFile()->getRemoteFile($thumbSrc, $filename, 'media'))
 				{
-					e107::getFile()->getRemoteFile($thumbSrc, $filename, 'media');
+					e107::getFile()->getRemoteFile($smaller, $filename, 'media');
 				}
 
 				return "<a href='" . $url . "'><img class='video-responsive video-thumbnail' src='{e_MEDIA}" . $filename . "' alt='" . LAN_YOUTUBE_VIDEO . "' title='" . LAN_CLICK_TO_VIEW . "' />
