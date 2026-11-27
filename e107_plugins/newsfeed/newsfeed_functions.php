@@ -29,13 +29,15 @@ if (!e107::isInstalled('newsfeed'))
 	return;
 }
 
+define('NEWSFEED_CACHE_TAG', 'nomd5_newsfeeds');
+
 if(!defined('NEWSFEED_LIST_CACHE_TAG'))
 {
-	define('NEWSFEED_LIST_CACHE_TAG', 'newsfeeds'.e_LAN."_");
+	define('NEWSFEED_LIST_CACHE_TAG', NEWSFEED_CACHE_TAG.e_LAN."_");
 }
 if(!defined('NEWSFEED_NEWS_CACHE_TAG'))
 {
-	define('NEWSFEED_NEWS_CACHE_TAG', 'newsfeeds_news_'.e_LAN."_");
+	define('NEWSFEED_NEWS_CACHE_TAG', NEWSFEED_CACHE_TAG.'_news_'.e_LAN."_");
 }
 
 define('NEWSFEED_DEBUG', false);
@@ -80,6 +82,7 @@ class newsfeedClass
 			if (!$force && $temp = e107::getCache()->retrieve(NEWSFEED_LIST_CACHE_TAG))
 			{
 				$this->feedList = e107::unserialize($temp);
+				$this->validFeedList = TRUE;
 				return;
 			}
 		}
@@ -142,7 +145,7 @@ class newsfeedClass
 
 		$cachedData  = e107::getCache()->retrieve(NEWSFEED_NEWS_CACHE_TAG.$feedID,$maxAge, true);
 
-		if(empty($this->newsList[$feedID]['newsfeed_timestamp']) || empty($cachedData) || (!empty($this->newsList[$feedID]['newsfeed_data']) && strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS'))) //BC Fix to update newsfeed_data from v1 to v2 spec.
+		if($cachedData === false)
 		{
 			$force = true;
 			// e107::getDebug()->log("NewsFeed Force");
@@ -163,15 +166,21 @@ class newsfeedClass
 					 e107::getLog()->addEvent(10,debug_backtrace(),"DEBUG","Newsfeed update","Refresh item: ".$feedID,FALSE,LOG_TO_ROLLING);
 				}
 				
-				require_once(e_HANDLER.'xml_class.php');
-				$xml = new xmlClass;
+				$lastGood = (string) $sql->retrieve('newsfeed', 'newsfeed_data', 'newsfeed_id = '.(int) $feedID);
+
+				$this->newsList[$feedID]['newsfeed_data'] = $lastGood;
+				e107::getCache()->set(NEWSFEED_NEWS_CACHE_TAG.$feedID, $lastGood, true);
+
+				$xml = e107::getXml();
 				require_once(e_HANDLER.'magpie_rss.php');
 				
 				$dbData = array();		// In case we need to update DB
 				
-				if($rawData = $xml->getRemoteFile($this->feedList[$feedID]['newsfeed_url'])) // Need to update feed
+				$rawData = $xml->getRemoteFile($this->feedList[$feedID]['newsfeed_url']);
+				$rss = $rawData ? new MagpieRSS($rawData) : null;
+
+				if($rss !== null && $rss->feed_type !== null && ($rss->ERROR === '' || $rss->items !== array()))
 				{	
-					$rss = new MagpieRSS( $rawData );
 					list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $this->feedList[$feedID]['newsfeed_image']);
 					
 					$temp['channel'] = $rss->channel;
@@ -252,9 +261,14 @@ class newsfeedClass
 				}
 				else
 				{
-					if (NEWSFEED_DEBUG) echo $xml -> error;
-					return FALSE;
+					$reason = ($rss === null) ? $xml->getLastErrorMessage() : $rss->ERROR;
+					e107::getDebug()->log("NewsFeed Update Failed: Item #".$feedID." ".(($reason === '') ? 'The answer has no RSS or Atom root.' : $reason));
 				}
+		}
+
+		if (empty($this->newsList[$feedID]['newsfeed_data']))
+		{
+			return FALSE;
 		}
 
 		return  e107::unserialize($this->newsList[$feedID]['newsfeed_data']);
