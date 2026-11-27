@@ -1827,7 +1827,7 @@ class eRouter
 			$rules = $this->getRuleSet($module);
 			$config = $this->getConfig($module);
 			$this->_parsedRules[$module] = array();
-			$map = array('urlSuffix' => 'urlSuffix', 'legacy' => 'legacy', 'legacyQuery' => 'legacyQuery', 'mapVars' => 'mapVars', 'allowVars' => 'allowVars', 'matchValue' => 'matchValue');
+			$map = array('urlSuffix' => 'urlSuffix', 'legacy' => 'legacy', 'legacyQuery' => 'legacyQuery', 'mapVars' => 'mapVars', 'allowVars' => 'allowVars', 'matchValue' => 'matchValue', 'varTemplates' => 'varTemplates');
 			foreach ($rules as $pattern => $set) 
 			{
 				foreach ($map as $key => $value) 
