@@ -15,6 +15,8 @@ class cpageScriptAddressTest extends \Test\Unit
 {
 	use \Test\ScriptClassPages;
 	use \Test\PageChapters;
+	use \Test\CoreColumns;
+	use \Test\PageRows;
 
 	const TITLE = 'cpageScriptAddressTest';
 
@@ -24,18 +26,9 @@ class cpageScriptAddressTest extends \Test\Unit
 	/** @var int the chapter whose pages carry a custom field of type url named site */
 	private $chapter = 0;
 
-	/** @var string[] the page columns the suite's database predates and cpage.php saves, which this test added */
-	private $addedColumns = array();
-
 	protected function _before()
 	{
-		foreach(array('page_subtitle', 'page_metatitle', 'page_metaimage') as $column)
-		{
-			if(!e107::getDb()->field('page', $column) && e107::getDb()->gen('ALTER TABLE `#page` ADD `'.$column."` varchar(250) NOT NULL default ''"))
-			{
-				$this->addedColumns[] = $column;
-			}
-		}
+		$this->haveCoreColumns('page', array('page_subtitle', 'page_metatitle', 'page_metaimage'));
 
 		$this->chapter = $this->haveChapterWithField(self::TITLE, 'site', 'url');
 	}
@@ -43,14 +36,12 @@ class cpageScriptAddressTest extends \Test\Unit
 	protected function _after()
 	{
 		$db = e107::getDb();
+		$this->removePages();
 		$db->createQueryBuilder()->delete('page')->whereLike('page_title', self::TITLE.'%')->execute();
 		$this->dropChapters();
 		$db->createQueryBuilder()->delete('menus')->where('menu_name', self::TITLE)->execute();
 
-		foreach($this->addedColumns as $column)
-		{
-			$db->gen('ALTER TABLE `#page` DROP `'.$column.'`');
-		}
+		$this->dropCoreColumns();
 	}
 
 	public function testAButtonAddressThatRunsScriptIsRefusedOutsideThePostScriptClass()
@@ -296,19 +287,13 @@ class cpageScriptAddressTest extends \Test\Unit
 	 */
 	private function seedPage($address, array $fields)
 	{
-		$id = (int) e107::getDb()->createQueryBuilder()->insert('page')->insertGetId(array(
-			'page_title'      => self::TITLE,
-			'page_sef'        => strtolower(self::TITLE),
+		return $this->havePage(self::TITLE, array(
 			'page_chapter'    => $fields ? $this->chapter : 0,
 			'page_text'       => 'Text',
 			'page_fields'     => $fields ? e107::serialize($fields, 'json') : '',
 			'menu_name'       => self::TITLE,
 			'menu_button_url' => $address,
 		));
-
-		self::assertGreaterThan(0, $id, 'the page was not seeded');
-
-		return $id;
 	}
 
 	/**

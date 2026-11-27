@@ -15,10 +15,9 @@
  */
 class linksAdminScriptAddressTest extends \Test\Unit
 {
-	const NAME = 'linksAdminScriptAddressTest';
+	use \Test\CoreColumns;
 
-	/** @var bool whether this test added the link_rel column the suite's database predates and links.php saves */
-	private $addedRel = false;
+	const NAME = 'linksAdminScriptAddressTest';
 
 	/** @var callable puts back the stored core preferences, which a page a child opens may save with its classes */
 	private $restorePrefs;
@@ -29,10 +28,7 @@ class linksAdminScriptAddressTest extends \Test\Unit
 
 		\Test\CoreTable::create('admin_history');
 
-		if(!e107::getDb()->field('links', 'link_rel'))
-		{
-			$this->addedRel = (bool) e107::getDb()->gen("ALTER TABLE `#links` ADD `link_rel` varchar(200) NOT NULL default ''");
-		}
+		$this->haveCoreColumns('links', array('link_rel'));
 	}
 
 	protected function _after()
@@ -42,10 +38,7 @@ class linksAdminScriptAddressTest extends \Test\Unit
 
 		e107::getDb()->createQueryBuilder()->delete('links')->whereLike('link_name', self::NAME.'%')->execute();
 
-		if($this->addedRel)
-		{
-			e107::getDb()->gen('ALTER TABLE `#links` DROP `link_rel`');
-		}
+		$this->dropCoreColumns();
 
 		\Test\CoreTable::drop('admin_history');
 
