@@ -615,7 +615,7 @@ class users_admin_ui extends e_admin_ui
 		{
 			if(!empty($new_data['perms']))
 			{
-				$new_data['user_perms']	= implode(".",$new_data['perms']);
+				$new_data['user_perms']	= e_userperms::serializePerms($new_data['perms'], e107::getUser()->isMainAdmin(), e107::getParser());
 			}
 		}
 		else
@@ -2011,7 +2011,7 @@ class users_admin_ui extends e_admin_ui
 			if($this->canGrantAdmin())
 			{
 				$allData['data']['user_admin'] = 1;
-				$allData['data']['user_perms'] = implode('.',$_POST['perms']);
+				$allData['data']['user_perms'] = e_userperms::serializePerms($_POST['perms'], e107::getUser()->isMainAdmin(), e107::getParser());
 			}
 			else
 			{

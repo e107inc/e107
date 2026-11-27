@@ -634,7 +634,7 @@ class AdminRoutePermsCest
 
 		$I->seeInDatabase('e107_user', array(
 			'user_loginname' => self::CREATED_USER,
-			'user_perms'     => self::GRANTED_PERMS,
+			'user_perms'     => self::GRANTED_PERMS.'.',
 			'user_admin'     => 1,
 		));
 
@@ -647,7 +647,7 @@ class AdminRoutePermsCest
 
 		$I->sendPostRequest(self::ROUTE_EDIT.$victimId, $payload);
 
-		$I->assertSame(self::GRANTED_PERMS,
+		$I->assertSame(self::GRANTED_PERMS.'.',
 			(string) $I->grabFromDatabase('e107_user', 'user_perms', array('user_id' => $victimId)),
 			'An administrator holding 3 ("Modify Admin perms") can no longer set user_perms through the '
 			.'user edit route, so the refusals asserted elsewhere in this Cest are a broken feature '
@@ -657,6 +657,35 @@ class AdminRoutePermsCest
 			(string) $I->grabFromDatabase('e107_user', 'user_admin', array('user_id' => $victimId)),
 			'An administrator holding 3 can no longer set user_admin through the user edit route, which '
 			.'is the only way the product has of making someone an administrator by hand.');
+	}
+
+	/** A delegated administrator holding 3 grants every posted code but main administrator, which only a crafted post carries from that account (#6808). */
+	public function anAdministratorWhoMayModifyAdminPermsCannotGrantMainAdmin(AcceptanceTester $I)
+	{
+		$I->wantTo('Have a delegated administrator holding 3 grant every posted code but main admin');
+
+		$victimId = $this->seedVictim($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rpPermsadmin');
+
+		$I->amOnPage(self::ROUTE_ADD);
+		$payload = $this->quickAddPayload($I);
+		$payload['perms'] = array(self::ESCALATED_PERMS, '&#48;', "0\x01", '0&#32;', "0\f", '0..', '0[h]<x></x>[/h]', self::GRANTED_PERMS);
+		$I->sendPostRequest(self::ROUTE_ADD, $payload);
+
+		$I->seeInDatabase('e107_user', array(
+			'user_loginname' => self::CREATED_USER,
+			'user_perms'     => self::GRANTED_PERMS.'.',
+		));
+
+		$I->amOnPage(self::ROUTE_EDIT.$victimId);
+		$payload = $this->editPayload($I, $victimId, self::VICTIM_USER);
+		$payload['perms'] = array(self::ESCALATED_PERMS, '&#48;', "0\x01", '0&#32;', "0\f", '0..', '0[h]<x></x>[/h]', self::GRANTED_PERMS);
+		$payload['user_admin'] = 1;
+		$I->sendPostRequest(self::ROUTE_EDIT.$victimId, $payload);
+
+		$I->assertSame(self::GRANTED_PERMS.'.',
+			(string) $I->grabFromDatabase('e107_user', 'user_perms', array('user_id' => $victimId)),
+			'The edit route must grant the codes beside a posted main-administrator code and drop that code.');
 	}
 
 	// -----------------------------------------------------------------
