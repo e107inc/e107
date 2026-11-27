@@ -31,7 +31,9 @@ if((e107::wysiwyg(null, true) === 'tinymce4' && check_class($pref['post_html']))
 		 * Issue #3136
 		 */
 	//	e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.9/tinymce.min.js');
-		e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js');
+		$mceEngine = e_PLUGIN_ABS.'tinymce4/engines/tinymce4';
+		e107::js('footer', $mceEngine.'/tinymce.min.js', null, null,
+			'<script>window.tinyMCEPreInit = '.e107::getParser()->toJSON(array('base' => $mceEngine, 'suffix' => '.min')).';</script>');
 
 
 	//	e107::js('footer', "//cdn.tinymce.com/4/tinymce.min.js");
