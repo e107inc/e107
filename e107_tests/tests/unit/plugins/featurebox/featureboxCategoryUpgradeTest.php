@@ -20,6 +20,8 @@
  */
 class featureboxCategoryUpgradeTest extends \Test\Unit
 {
+	use \Test\FeatureboxColumns;
+
 	/** @var db_verify */
 	private $dbv;
 
@@ -45,7 +47,7 @@ class featureboxCategoryUpgradeTest extends \Test\Unit
 		}
 
 		$this->rows = (array) $sql->createQueryBuilder()->select('*')->from('featurebox_category')->fetchAll();
-		$this->hadSefColumn = $this->hasColumn('fb_category_sef');
+		$this->hadSefColumn = self::featureboxHasColumn('featurebox_category', 'fb_category_sef');
 		$this->hadTemplateKey = $this->hasIndex('fb_category_template');
 
 		$this->beUpgradedFrom();
@@ -73,7 +75,7 @@ class featureboxCategoryUpgradeTest extends \Test\Unit
 
 		if(!$this->hadSefColumn)
 		{
-			if($this->hasColumn('fb_category_sef'))
+			if(self::featureboxHasColumn('featurebox_category', 'fb_category_sef'))
 			{
 				$schema->dropColumn('featurebox_category', 'fb_category_sef');
 			}
@@ -81,7 +83,7 @@ class featureboxCategoryUpgradeTest extends \Test\Unit
 			return;
 		}
 
-		if(!$this->hasColumn('fb_category_sef'))
+		if(!self::featureboxHasColumn('featurebox_category', 'fb_category_sef'))
 		{
 			$schema->addColumn('featurebox_category', 'fb_category_sef',
 				\e107\Database\Schema\Column::define('VARCHAR', 200)->notNull()->defaultValue(''), 'fb_category_title');
@@ -106,7 +108,7 @@ class featureboxCategoryUpgradeTest extends \Test\Unit
 	{
 		$schema = e107::getDb()->schema();
 
-		if($this->hasColumn('fb_category_sef'))
+		if(self::featureboxHasColumn('featurebox_category', 'fb_category_sef'))
 		{
 			$schema->dropColumn('featurebox_category', 'fb_category_sef');
 		}
@@ -115,23 +117,6 @@ class featureboxCategoryUpgradeTest extends \Test\Unit
 		{
 			$schema->addIndex('featurebox_category', \e107\Database\Schema\Index::unique('fb_category_template', 'fb_category_template'));
 		}
-	}
-
-	/**
-	 * @param string $name
-	 * @return bool
-	 */
-	private function hasColumn($name)
-	{
-		foreach((array) e107::getDb()->schema()->getColumns('featurebox_category') as $column)
-		{
-			if(isset($column['Field']) && $column['Field'] === $name)
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -186,7 +171,7 @@ class featureboxCategoryUpgradeTest extends \Test\Unit
 
 	public function testDatabaseVerifyReportsTheSefColumnAsMissingAndAddsIt()
 	{
-		self::assertFalse($this->hasColumn('fb_category_sef'), 'precondition: the site has not got the column yet');
+		self::assertFalse(self::featureboxHasColumn('featurebox_category', 'fb_category_sef'), 'precondition: the site has not got the column yet');
 
 		$this->dbv->compare('featurebox');
 		$this->dbv->compileResults();
@@ -199,7 +184,7 @@ class featureboxCategoryUpgradeTest extends \Test\Unit
 			'fb_category_sef' => $this->dbv->fixList['featurebox']['featurebox_category']['fb_category_sef'],
 		))));
 
-		self::assertTrue($this->hasColumn('fb_category_sef'));
+		self::assertTrue(self::featureboxHasColumn('featurebox_category', 'fb_category_sef'));
 	}
 
 	/**
@@ -224,7 +209,7 @@ class featureboxCategoryUpgradeTest extends \Test\Unit
 	{
 		$this->runPluginUpgrade();
 
-		self::assertTrue($this->hasColumn('fb_category_sef'));
+		self::assertTrue(self::featureboxHasColumn('featurebox_category', 'fb_category_sef'));
 		self::assertFalse($this->hasIndex('fb_category_template'),
 			'db_verify never drops an index the sql file stopped declaring, so upgrade_post has to');
 
