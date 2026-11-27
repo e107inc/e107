@@ -1222,6 +1222,33 @@ class e107Test extends \Test\Unit
 		);
 	}
 
+	/**
+	 * @dataProvider basePathStrips
+	 * @param string $path
+	 * @param string $basePath
+	 * @param string $expected
+	 */
+	public function testStripBasePathTakesTheBasePathOffTheStartOnly($path, $basePath, $expected)
+	{
+		self::assertSame($expected, e107::stripBasePath($path, $basePath));
+	}
+
+	/**
+	 * @return array[] what {@see e107Test::testStripBasePathTakesTheBasePathOffTheStartOnly()} takes
+	 */
+	public function basePathStrips()
+	{
+		return array(
+			'the root off an address'            => array('/download/', '/', 'download/'),
+			'the root, a path that lacks it'     => array('{e_PLUGIN}newsfeed/newsfeed.php', '/', '{e_PLUGIN}newsfeed/newsfeed.php'),
+			'a folder off an address'            => array('/e107/download/', '/e107/', 'download/'),
+			'a folder named again further in'    => array('/e107/news/e107/', '/e107/', 'news/e107/'),
+			'a folder, an address outside it'    => array('/other/download/', '/e107/', '/other/download/'),
+			'the root off itself'                => array('/', '/', ''),
+			'an empty base path'                 => array('download/', '', 'download/'),
+		);
+	}
+
 
 	public function testUrl()
 	{
