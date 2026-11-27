@@ -12,13 +12,20 @@
  */
 class featurebox_adminScriptAddressTest extends \Test\Unit
 {
-	use \Test\ScriptClassPages;
+	use \Test\FeatureboxItems;
+	use \Test\FeatureboxColumns;
 
 	const TITLE = 'featurebox_adminScriptAddressTest';
+
+	protected function _before()
+	{
+		$this->addFeatureboxColumns();
+	}
 
 	protected function _after()
 	{
 		e107::getDb()->createQueryBuilder()->delete('featurebox')->whereLike('fb_title', self::TITLE.'%')->execute();
+		$this->restoreFeatureboxColumns();
 	}
 
 	public function testAnImageLinkThatRunsScriptIsRefusedOutsideThePostScriptClass()
@@ -92,8 +99,7 @@ class featurebox_adminScriptAddressTest extends \Test\Unit
 	 */
 	private function create($scriptClass, $link)
 	{
-		return $this->openAsScriptClass($scriptClass, 'e107_plugins/featurebox/admin_config.php', 'mode=main&action=create',
-			$this->item($link, 'Text') + array('etrigger_submit' => 'create'));
+		return $this->saveFeatureboxItem($scriptClass, 0, self::featureboxItemForm(array('fb_imageurl' => $link)));
 	}
 
 	/**
@@ -104,27 +110,7 @@ class featurebox_adminScriptAddressTest extends \Test\Unit
 	 */
 	private function update($id, $link, $text)
 	{
-		return $this->openAsScriptClass(e_UC_NOBODY, 'e107_plugins/featurebox/admin_config.php', 'mode=main&action=edit&id='.$id,
-			$this->item($link, $text) + array('etrigger_submit' => 'update'));
-	}
-
-	/**
-	 * @param string $link
-	 * @param string $text
-	 * @return array the form an item posts
-	 */
-	private function item($link, $text)
-	{
-		return array(
-			'fb_category' => 1,
-			'fb_title'    => self::TITLE,
-			'fb_image'    => '',
-			'fb_text'     => $text,
-			'fb_template' => 'default',
-			'fb_imageurl' => $link,
-			'fb_class'    => e_UC_PUBLIC,
-			'fb_order'    => 1,
-		);
+		return $this->saveFeatureboxItem(e_UC_NOBODY, $id, self::featureboxItemForm(array('fb_imageurl' => $link, 'fb_text' => $text)));
 	}
 
 	/**
@@ -133,17 +119,7 @@ class featurebox_adminScriptAddressTest extends \Test\Unit
 	 */
 	private function seedItem($link)
 	{
-		$id = (int) e107::getDb()->createQueryBuilder()->insert('featurebox')->insertGetId(array(
-			'fb_title'    => self::TITLE,
-			'fb_text'     => 'Text',
-			'fb_template' => 'default',
-			'fb_imageurl' => $link,
-			'fb_category' => 1,
-		));
-
-		self::assertGreaterThan(0, $id, 'the item was not seeded');
-
-		return $id;
+		return self::seedFeatureboxItem(array('fb_imageurl' => $link));
 	}
 
 	/**
@@ -151,8 +127,6 @@ class featurebox_adminScriptAddressTest extends \Test\Unit
 	 */
 	private function storedLinks()
 	{
-		$rows = e107::getDb()->createQueryBuilder()->select('fb_imageurl')->from('featurebox')->whereLike('fb_title', self::TITLE.'%')->fetchAll();
-
-		return array_map(function ($row) { return $row['fb_imageurl']; }, $rows);
+		return self::featureboxItemsColumn('fb_imageurl');
 	}
 }

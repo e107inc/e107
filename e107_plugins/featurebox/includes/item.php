@@ -119,6 +119,60 @@ class plugin_featurebox_item extends e_model
 	}
 
 	/**
+	 * One of the custom fields the item's category defines.
+	 * Parameter list:
+	 * - name: the field's key
+	 * - mode: raw for the bare value: escaped to sit in an HTML attribute, an address for an image, video, file or url field; a textarea or bbarea field gives its markup
+	 * Other parameters reach the field type's renderer, such as w and h for an image.
+	 * A url field prints nothing in either mode when what it would print reads as an address whose scheme a link may not carry, such as javascript:; only the raw mode of a url, image, video or file field belongs in an href or src.
+	 *
+	 * @param array|string|null $parm
+	 * @return mixed as {@see e_customfields::getFieldValue()} renders it; '' when the category defines no such field or the item holds no single value for it
+	 */
+	public function sc_featurebox_field($parm = null)
+	{
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
+
+		if(empty($parm['name']) || !is_string($parm['name']))
+		{
+			return '';
+		}
+
+		$fields = e107::getCustomFields()->loadConfig($this->getCategory()->get('fb_category_fields'))->loadData($this->get('fb_fields'));
+		$config = $fields->getConfig();
+		$values = $fields->getData();
+		$name = $parm['name'];
+
+		if(!array_key_exists($name, $config) || !isset($values[$name]) || !is_scalar($values[$name]))
+		{
+			return '';
+		}
+
+		$printed = $fields->getFieldValue($name, $parm);
+
+		if(varset($config[$name]['type']) === 'url' && !$this->isLinkable($printed))
+		{
+			return '';
+		}
+
+		return $printed;
+	}
+
+	/**
+	 * @param mixed $printed what a url field prints
+	 * @return bool whether it is empty or an address a link may carry, with no numeric reference left once decoded
+	 */
+	private function isLinkable($printed)
+	{
+		$address = trim(html_entity_decode(strip_tags((string) $printed), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+		return $address === '' || (strpos($address, '&#') === false && e107::getParser()->toUrlAttribute($address) !== '');
+	}
+
+	/**
 	 * Parameter list (GET string format):
 	 * - src: return image src URL only
 	 * - nourl: force no url tag

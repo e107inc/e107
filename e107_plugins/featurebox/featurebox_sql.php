@@ -11,6 +11,7 @@ CREATE TABLE featurebox (
   `fb_image` varchar(255) NOT NULL DEFAULT '',
   `fb_imageurl` text NOT NULL,
   `fb_category` tinyint(3) unsigned NOT NULL,
+  `fb_fields` mediumtext,
   PRIMARY KEY (`fb_id`),
   KEY `fb_category` (`fb_category`)
 ) ENGINE=MyISAM;
@@ -25,5 +26,6 @@ CREATE TABLE featurebox_category (
   `fb_category_class` smallint(5) NOT NULL DEFAULT '0',
   `fb_category_limit` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `fb_category_parms` text NOT NULL,
+  `fb_category_fields` mediumtext,
   PRIMARY KEY (`fb_category_id`)
 ) ENGINE=MyISAM;

@@ -46,4 +46,5 @@ return [
     'LAN_FEATUREBOX_SEF_EMPTY' => "Please give this category a shortcode name containing letters, numbers, - or _.",
     'LAN_FEATUREBOX_SEF_TAKEN' => "Another category already uses that shortcode name. Please choose a different one.",
     'LAN_FEATUREBOX_LAYOUT_RESERVED' => "The Unassigned layout belongs to the system category. Please choose a different layout.",
+    'LAN_FEATUREBOX_CUSTOM_FIELDS' => "Custom Fields",
 ];

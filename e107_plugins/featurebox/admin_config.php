@@ -62,6 +62,7 @@ class fb_category_ui extends e_admin_ui
 	protected $table 		= "featurebox_category";
 	protected $pid			= "fb_category_id";
 	protected $perPage 		= 0; //no limit
+	protected $tabs			= array(LAN_GENERAL, LAN_FEATUREBOX_CUSTOM_FIELDS);
 
  	 	 	
 	protected $fields = array(
@@ -75,7 +76,8 @@ class fb_category_ui extends e_admin_ui
 		'fb_category_class' 	=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',	'data' => 'int', 	'inline'=>true, 'width' => 'auto', 'filter' => true, 'batch' => true),
 		'fb_category_limit' 	=> array('title'=> LAN_LIMIT,			'type' => 'number',		'data' => 'int', 	'width' => '5%', 'thclass' => 'left', 'help' => 'number of items to be shown, 0 - show all'),
 		'fb_category_parms' 	=> array('title'=> FBLAN_32,		    'type' => 'textarea',	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'class' => 'left','writeParms' => array('expand'=>LAN_ADVANCED), 'help'=>FBLAN_33),
-		
+		'fb_category_fields' 	=> array('title'=> LAN_FEATUREBOX_CUSTOM_FIELDS, 'type' => 'method',	'data' => 'json',	'tab' => 1, 'nolist' => true, 'writeParms' => array('nolabel' => 2)),
+
 		'options' 				=> array('title'=> LAN_OPTIONS,			'type' => null,								'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 	);
 	
@@ -163,8 +165,9 @@ class fb_category_ui extends e_admin_ui
 	}
 
 	/**
-	 * Guard what the dropped UNIQUE KEY fb_category_template used to guard, then
-	 * settle the sef. Returning false abandons the save.
+	 * Gather the posted custom field definitions, guard what the dropped UNIQUE KEY
+	 * fb_category_template used to guard, then settle the sef. Returning false
+	 * abandons the save.
 	 *
 	 * @param array $new_data
 	 * @param array $old_data empty while creating
@@ -173,6 +176,8 @@ class fb_category_ui extends e_admin_ui
 	 */
 	protected function beforeSave($new_data, $old_data, $id)
 	{
+		$new_data = e107::getCustomFields()->loadConfig(varset($old_data['fb_category_fields']))->processConfigPost('fb_category_fields', $new_data);
+
 		if(!$this->allowTemplate($new_data, $old_data))
 		{
 			e107::getMessage()->addError(LAN_FEATUREBOX_LAYOUT_RESERVED);
@@ -248,9 +253,26 @@ class fb_category_ui extends e_admin_ui
 	}
 }
 
-/*class fb_cat_form_ui extends e_admin_form_ui
+class fb_cat_form_ui extends e_admin_form_ui
 {
-}*/
+	/**
+	 * The definitions of the custom fields every item in the category carries.
+	 *
+	 * @param array|string|null $curVal fb_category_fields, decoded or as stored
+	 * @param string $mode
+	 * @param array $parm
+	 * @return string|null
+	 */
+	public function fb_category_fields($curVal, $mode, $parm)
+	{
+		if($mode !== 'write')
+		{
+			return null;
+		}
+
+		return e107::getCustomFields()->loadConfig($curVal)->renderConfigForm('fb_category_fields');
+	}
+}
 
 class fb_main_ui extends e_admin_ui
 {
@@ -265,6 +287,19 @@ class fb_main_ui extends e_admin_ui
 	protected $sortField		= 'fb_order';
 	protected $orderStep 		= 1;
 	protected $listOrder 		= 'fb_order asc';
+	protected $tabs				= array(LAN_GENERAL);
+
+	/** @var string[] category id => its fb_category_fields, for the categories that define any */
+	private $categoryFields = array();
+
+	/** @var string[] category id => title, for every category */
+	private $categories = array();
+
+	/** @var int the category the create form's dropdown opens on */
+	private $firstCategory = 0;
+
+	/** @var array|null the custom field values of the item the edit form holds, as stored */
+	private $storedFields;
 	
 	protected $fields = array(
 		'checkboxes'		=> array('title'=> '',					'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center first', 'class'=>'center'),
@@ -280,6 +315,7 @@ class fb_main_ui extends e_admin_ui
 		'fb_imageurl' 		=> array('title'=> FBLAN_27,		'type' => 'url',			'linkAddress' => true, 'width' => 'auto','writeParms'=>'size=xxlarge'),
 		'fb_class' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'data' => 'int', 'inline'=>true, 'width' => 'auto', 'filter' => true, 'batch' => true),	// User id
 		'fb_order' 			=> array('title'=> LAN_ORDER,			'type' => 'number',			'data'=> 'int','width' => '5%' ),
+		'fb_fields' 		=> array('title'=> LAN_FEATUREBOX_CUSTOM_FIELDS,	'type' => 'hidden',	'data' => 'json', 'nolist' => true),
 		'options' 			=> array('title'=> LAN_OPTIONS,			'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center', 'readParms'=>'sort=1')
 	);
 	 
@@ -305,6 +341,11 @@ class fb_main_ui extends e_admin_ui
 			$id = $row['fb_category_id'];
 			$categories[$id] = $row['fb_category_title'];
 			$menuCat[plugin_featurebox_category::address($row)] = $row['fb_category_title'];
+
+			if(!empty($row['fb_category_fields']))
+			{
+				$this->categoryFields[$id] = $row['fb_category_fields'];
+			}
 		}
 
 		$this->fields['fb_category']['writeParms'] 		= $categories;	
@@ -315,8 +356,274 @@ class fb_main_ui extends e_admin_ui
 		$this->prefs['menu_category']['writeParms']['optArray'] 	= $menuCat;
 		$this->prefs['menu_category']['readParms']['optArray'] 		= $menuCat;
 
+		$this->categories = $categories;
+		$this->firstCategory = (int) key($categories);
+		$request = $this->getRequest();
+		$action = $request->canonicalizeAction($this->getAction());
+
+		if($action === $request->canonicalizeAction('create'))
+		{
+			$this->fields['fb_category']['writeParms'] = array(
+				'optArray' => $categories,
+				'ajax'     => array('src' => e_SELF.'?mode=main&action=category-change', 'target' => e107::getCustomFields()->getTabId()),
+			);
+		}
+
+		if(e_AJAX_REQUEST && isset($_POST['fb_category']) && $action === $request->canonicalizeAction('category-change'))
+		{
+			$this->sendCustomFieldsTab((int) $_POST['fb_category']);
+		}
 	}
-		
+
+	public function CreateObserver()
+	{
+		parent::CreateObserver();
+
+		$this->initCustomFields((int) $this->getPosted('fb_category', $this->firstCategory));
+	}
+
+	public function EditObserver()
+	{
+		parent::EditObserver();
+
+		if($this->getModel()->getId())
+		{
+			$this->storedFields = self::valuesOf($this->getModel()->get('fb_fields'));
+			$this->initCustomFields((int) $this->getModel()->get('fb_category'));
+			e107::getCustomFields()->loadData($this->getModel()->get('fb_fields'))->setAdminUIData('fb_fields', $this);
+		}
+	}
+
+	public function beforeCreate($new_data, $old_data)
+	{
+		return $this->withCustomFields($new_data, 0, array());
+	}
+
+	public function beforeUpdate($new_data, $old_data, $id)
+	{
+		$stored = ($this->storedFields !== null) ? $this->storedFields : self::valuesOf(varset($old_data['fb_fields']));
+
+		return $this->withCustomFields($new_data, (int) varset($old_data['fb_category']), $stored);
+	}
+
+	/**
+	 * A batch sets fb_category only through its own dropdown, which {@see fb_main_ui::handleListBatch()} judges; a typed command naming it, such as attach or bool, is refused.
+	 */
+	protected function _handleListBatch($batch_trigger)
+	{
+		$segments = (array) e107::getParser()->toDB(explode('__', (string) $batch_trigger));
+
+		if($segments[0] !== 'fb_category' && in_array('fb_category', array_slice($segments, 1, 2), true))
+		{
+			e107::getMessage()->addError(LAN_NO_PERMISSIONS);
+
+			return $this;
+		}
+
+		return parent::_handleListBatch($batch_trigger);
+	}
+
+	/**
+	 * A batch move is refused unless it names a category, and refused whole when an item would carry an address that runs script into one of that category's url fields.
+	 *
+	 * @param string $field
+	 * @param mixed $value
+	 */
+	protected function handleListBatch($selected, $field, $value)
+	{
+		if($field === 'fb_category' && !$this->mayMoveInBatch((array) $selected, $value))
+		{
+			return null;
+		}
+
+		return parent::handleListBatch($selected, $field, $value);
+	}
+
+	/**
+	 * Put the custom fields of a category on the form, on their own tab, which is hidden when the category defines none.
+	 *
+	 * @param int $category
+	 * @return void
+	 */
+	private function initCustomFields($category)
+	{
+		$fields = e107::getCustomFields()->loadConfig(varset($this->categoryFields[$category]));
+
+		if(empty($fields->getConfig()))
+		{
+			e107::css('inline', '.nav-tabs li a[href="#'.$fields->getTabId().'"] { display: none; }');
+		}
+
+		$fields->setAdminUIConfig('fb_fields', $this);
+	}
+
+	/**
+	 * Answer the create form's category dropdown with the custom fields of the category chosen, and end the request.
+	 *
+	 * @param int $category
+	 * @return void
+	 */
+	private function sendCustomFieldsTab($category)
+	{
+		$this->initCustomFields($category);
+
+		$fields = e107::getCustomFields();
+		$tab = '#'.$fields->getTabId();
+		$text = (string) $this->getUI()->renderCreateFieldset('create', array('tabs' => $this->getTabs(), 'legend' => '', 'fields' => $this->getFields()), $this->getModel(), $fields->getTabId());
+
+		$ajax = e107::getAjax();
+		$ajax->response(array(
+			$ajax->commandInvoke('a[href="'.$tab.'"]', empty($fields->getConfig()) ? 'fadeOut' : 'fadeInAdminTab'),
+			$ajax->commandInvoke('a[href="'.$tab.'"]', 'html', array($fields->getTabLabel())),
+			$ajax->commandInvoke($tab, 'html', array($text)),
+		));
+		exit;
+	}
+
+	/**
+	 * Gather the posted custom fields into fb_fields.
+	 *
+	 * @param array $posted the item as posted, or the one field an inline edit sends
+	 * @param int $from the category the item is stored in, 0 for a new one
+	 * @param array $stored its custom field values as stored, by key
+	 * @return array|false|null the item as it is saved; false when a url field would hold an address this administrator may not save
+	 */
+	private function withCustomFields($posted, $from, array $stored)
+	{
+		$item = e107::getCustomFields()->processDataPost('fb_fields', $posted);
+
+		if(!is_array($item))
+		{
+			return $item;
+		}
+
+		$category = isset($item['fb_category']) ? (int) $item['fb_category'] : $from;
+
+		$this->initCustomFields($category);
+
+		if(array_key_exists('fb_fields', $item))
+		{
+			$values = (array) $item['fb_fields'];
+		}
+		else
+		{
+			$values = $category !== $from ? $stored : array();
+		}
+
+		return $this->mayHoldLinks($category, $values, $from, $stored) ? $item : false;
+	}
+
+	/**
+	 * @param array $selected the ids of the items to move
+	 * @param mixed $category the category to move them into, as the batch posts it
+	 * @return bool
+	 */
+	private function mayMoveInBatch(array $selected, $category)
+	{
+		if(!is_scalar($category) || !array_key_exists((string) $category, $this->categories))
+		{
+			e107::getMessage()->addError(LAN_NO_PERMISSIONS);
+
+			return false;
+		}
+
+		$items = e107::getDb()->createQueryBuilder()->select('fb_title', 'fb_category', 'fb_fields')->from('featurebox')
+			->whereIn('fb_id', array_map('intval', $selected))->fetchAll();
+
+		foreach($items as $item)
+		{
+			$stored = self::valuesOf($item['fb_fields']);
+
+			if((int) $item['fb_category'] !== (int) $category && !$this->mayHoldLinks((int) $category, $stored, (int) $item['fb_category'], $stored, $item['fb_title']))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * A value passes unjudged only where it is unchanged and the category it comes from held it in a url field too.
+	 *
+	 * @param int $category the category the item is saved in
+	 * @param array $values custom field values by key, as they would be stored
+	 * @param int $from the category the item is stored in, 0 for a new one
+	 * @param array $stored its custom field values as stored, by key
+	 * @param string|null $item the item's title, for a refusal to name it by; null when the form names it already
+	 * @return bool whether this administrator may save the values going into the category's url fields
+	 */
+	private function mayHoldLinks($category, array $values, $from, array $stored, $item = null)
+	{
+		$before = array_intersect_key($stored, $this->urlFields($from));
+		$fields = $this->fields;
+		$names = array();
+		$new = array();
+		$old = array();
+
+		foreach($this->urlFields($category) as $key => $title)
+		{
+			$name = 'fb_fields__'.$key;
+			$names[] = $name;
+
+			if($item !== null)
+			{
+				$this->fields[$name]['title'] = $title.' ('.$item.')';
+			}
+
+			if(isset($values[$key]))
+			{
+				$new[$name] = $values[$key];
+			}
+
+			if(isset($before[$key]))
+			{
+				$old[$name] = $before[$key];
+			}
+		}
+
+		$allowed = $this->maySaveLinkAddresses($names, $new, $old);
+		$this->fields = $fields;
+
+		return $allowed;
+	}
+
+	/**
+	 * @param int $category
+	 * @return string[] key => title of each of the category's url fields
+	 */
+	private function urlFields($category)
+	{
+		$titles = array();
+
+		foreach(e107::getCustomFields()->loadConfig(varset($this->categoryFields[$category]))->getConfig() as $key => $field)
+		{
+			if(varset($field['type']) === 'url')
+			{
+				$titles[$key] = varset($field['title'], $key);
+			}
+		}
+
+		return $titles;
+	}
+
+	/**
+	 * @param string|array|null $stored an item's fb_fields as stored
+	 * @return array its custom field values by key
+	 */
+	private static function valuesOf($stored)
+	{
+		$values = is_array($stored) ? $stored : e107::unserialize($stored);
+
+		if(!is_array($values))
+		{
+			return array();
+		}
+
+		unset($values['__trust__']);
+
+		return $values;
+	}
 }
 
 class fb_admin_form_ui extends e_admin_form_ui
