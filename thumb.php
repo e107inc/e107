@@ -145,24 +145,14 @@ class e_thumbpage
 		//e107 class
 		@require($tmp.DIRECTORY_SEPARATOR.'e107_class.php');
 
-		$e107_paths = compact(
-			'ADMIN_DIRECTORY',
-			'FILES_DIRECTORY',
-			'IMAGES_DIRECTORY',
-			'THEMES_DIRECTORY',
-			'PLUGINS_DIRECTORY',
-			'HANDLERS_DIRECTORY',
-			'LANGUAGES_DIRECTORY',
-			'HELP_DIRECTORY',
-			'DOWNLOADS_DIRECTORY',
-			'UPLOADS_DIRECTORY',
-			'MEDIA_DIRECTORY',
-			'CACHE_DIRECTORY',
-			'LOGS_DIRECTORY',
-			'WEB_DIRECTORY',
-			'SYSTEM_DIRECTORY',
-			'CORE_DIRECTORY'
-		);
+		$e107_paths = array();
+		foreach(array_keys(e107::getInstance()->overridableDirs()) as $name)
+		{
+			if(isset($$name))
+			{
+				$e107_paths[$name] = $$name;
+			}
+		}
 
 		$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
 		if(isset($mySQLport))

@@ -754,6 +754,34 @@ class e107
 	}
 
 	/**
+	 * The *_DIRECTORY names e107_config.php may set, each with its default before the site path is appended.
+	 *
+	 * @return array<string, string>
+	 */
+	public function overridableDirs()
+	{
+		return array(
+			'ADMIN_DIRECTORY'     => 'e107_admin/',
+			'FILES_DIRECTORY'     => 'e107_files/',
+			'IMAGES_DIRECTORY'    => 'e107_images/',
+			'THEMES_DIRECTORY'    => 'e107_themes/',
+			'PLUGINS_DIRECTORY'   => 'e107_plugins/',
+			'HANDLERS_DIRECTORY'  => 'e107_handlers/',
+			'LANGUAGES_DIRECTORY' => 'e107_languages/',
+			'DOCS_DIRECTORY'      => 'e107_docs/',
+			'HELP_DIRECTORY'      => 'e107_docs/help/',
+			'DOWNLOADS_DIRECTORY' => 'e107_media/files/',
+			'UPLOADS_DIRECTORY'   => 'e107_system/temp/',
+			'SYSTEM_DIRECTORY'    => 'e107_system/',
+			'MEDIA_DIRECTORY'     => 'e107_media/',
+			'CACHE_DIRECTORY'     => 'e107_system/cache/',
+			'LOGS_DIRECTORY'      => 'e107_system/logs/',
+			'CORE_DIRECTORY'      => 'e107_core/',
+			'WEB_DIRECTORY'       => 'e107_web/',
+		);
+	}
+
+	/**
 	 * Get default e107 folders, root folders can be overridden by passed override array
 	 *
 	 * @param array $override_root

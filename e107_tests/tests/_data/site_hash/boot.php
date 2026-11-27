@@ -32,7 +32,7 @@ require $e107BootApp . $e107BootHandlers . 'core_functions.php';
 require $e107BootApp . $e107BootHandlers . 'e107_class.php';
 
 $e107BootPaths = array();
-foreach(array('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY', 'CACHE_DIRECTORY', 'LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY') as $e107BootName)
+foreach(array_keys(e107::getInstance()->overridableDirs()) as $e107BootName)
 {
 	if(isset($$e107BootName))
 	{
