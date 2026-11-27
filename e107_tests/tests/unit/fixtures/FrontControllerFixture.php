@@ -67,6 +67,32 @@ class core_frontfixture_lifecycle_controller extends FrontControllerFixture
 
 		throw new eException('The fixture gave up');
 	}
+
+	public function actionBuffered()
+	{
+		echo 'half a page';
+		ob_start();
+		echo 'and a buffer left open';
+
+		throw new eException('The fixture gave up');
+	}
+
+	public function actionStubborn()
+	{
+		ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS & ~PHP_OUTPUT_HANDLER_REMOVABLE);
+
+		throw new eException('The fixture gave up');
+	}
+
+	public function actionMarkup()
+	{
+		throw new eException('<b>gave</b> "up"');
+	}
+
+	public function actionGone()
+	{
+		throw new eException('The fixture has no such item', 404);
+	}
 }
 
 class core_frontfixture_forward_controller extends FrontControllerFixture
@@ -167,5 +193,19 @@ class FrontRedirectionFixture extends redirection
 	{
 		echo "\nREDIRECT=", json_encode($url), "\n";
 		exit;
+	}
+}
+
+/**
+ * A router whose url config names a legacy script and then throws while it routes, leaving the request unrouted.
+ */
+class FrontThrowingRouterFixture extends eRouter
+{
+	public function route(eRequest $request, $checkOnly = false)
+	{
+		$request->routed = false;
+		eFront::isLegacy('{e_BASE}news.php');
+
+		throw new eException('The url config gave up');
 	}
 }
