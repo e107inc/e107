@@ -16,10 +16,10 @@ if (!e107::isInstalled('newsletter'))
 	return;
 }
 
+require_once(e_PLUGIN.'newsletter/handlers/newsletter_subscribers_class.php');
+
 /**
- * Fetch all top-level newsletters, keyed exactly like the legacy
- * $sql->db_getList(): a sequential counter starting at 1 (preserving the
- * historical 1-based indexing the menu relies on below).
+ * Fetch all top-level newsletters, keyed by newsletter_id.
  *
  * @return array
  */
@@ -30,10 +30,8 @@ $nlGetTopLevel = static function () use ($sql) {
 		->fetchAll();
 
 	$list = array();
-	$counter = 1;
 	foreach ($rows as $row) {
-		$list[$counter] = $row;
-		$counter++;
+		$list[(int) $row['newsletter_id']] = $row;
 	}
 
 	return $list;
@@ -55,40 +53,32 @@ $requery = false;
 
 foreach($_POST as $key => $value)
 {
-	if(strpos($key, 'nlUnsubscribe_') === 0)
+	$joining = strpos($key, 'nlSubscribe_') === 0;
+	if(!$joining && strpos($key, 'nlUnsubscribe_') !== 0)
 	{
-		$subid = str_replace('nlUnsubscribe_', '', $key);
-		$newsletterArray[$subid]['newsletter_subscribers'] = str_replace(chr(1).USERID, "", $newsletterArray[$subid]['newsletter_subscribers']);
-		$sql->createQueryBuilder()->update('newsletter')
-			->set('newsletter_subscribers', $newsletterArray[$subid]['newsletter_subscribers'])
-			->where('newsletter_id', intval($subid))->execute();
-		$requery = true;
+		continue;
 	}
-	elseif(strpos($key, 'nlSubscribe_') === 0)
-	{
-		$subid = str_replace("nlSubscribe_", "", $key);
-		$nl_subscriber_array = $newsletterArray[$subid]['newsletter_subscribers'];
 
-		// prevent double entry of same user id
-		if (!array_key_exists(USERID, $nl_subscriber_array))
-		{	
-			$newsletterArray[$subid]['newsletter_subscribers'] .= chr(1).USERID;
-			$subscribers_list = array_flip(explode(chr(1), $newsletterArray[$subid]['newsletter_subscribers']));
-			sort($subscribers_list);
-			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
-			
-			// remove the possible zero caused by function array_flip
-			if (substr($new_subscriber_list, 0, 1) == '0')
-			{	
-				$new_subscriber_list = (string) substr($new_subscriber_list, 1);
-			}
-			
-			$sql->createQueryBuilder()->update('newsletter')
-				->set('newsletter_subscribers', $new_subscriber_list)
-				->where('newsletter_id', intval($subid))->execute();
-			$requery = true;
-		}
+	$subid = (int) substr($key, strpos($key, '_') + 1);
+	if(!isset($newsletterArray[$subid]))
+	{
+		continue;
 	}
+
+	$subscribers = new newsletter_subscribers($newsletterArray[$subid]['newsletter_subscribers']);
+	if($joining)
+	{
+		$subscribers->add(USERID);
+	}
+	else
+	{
+		$subscribers->remove(USERID);
+	}
+
+	$sql->createQueryBuilder()->update('newsletter')
+		->set('newsletter_subscribers', $subscribers->toStoredString())
+		->where('newsletter_id', $subid)->execute();
+	$requery = true;
 }
 
 //global $tp;
@@ -113,7 +103,8 @@ foreach($newsletterArray as $nl)
 	$tp->toHTML($nl['newsletter_text'], TRUE)."</span><br /><br />
 	";
 
-	if(preg_match("#".chr(1).USERID."(".chr(1)."|$)#si", $nl['newsletter_subscribers']))
+	$subscribers = new newsletter_subscribers($nl['newsletter_subscribers']);
+	if($subscribers->has(USERID))
 	{
 		$text .= NLLAN_48."<br /><br />
 		<input class='btn btn-sm btn-primary button' type='submit' name='nlUnsubscribe_".$nl['newsletter_id']."' value='".NLLAN_51."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_49)).") \" />
@@ -122,7 +113,7 @@ foreach($newsletterArray as $nl)
 	else
 	{
 		$text .= NLLAN_50." <b>".USEREMAIL."</b>)<br /><br />
-		<input class='btn btn-sm btn-primary button' type='submit' name='nlSubscribe_".$nl['newsletter_id']."' value='".NLLAN_52."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_53))."') \" />
+		<input class='btn btn-sm btn-primary button' type='submit' name='nlSubscribe_".$nl['newsletter_id']."' value='".NLLAN_52."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_53)).") \" />
 		";
 	}
 	$nl_count = $sql->createQueryBuilder()->from('newsletter')
