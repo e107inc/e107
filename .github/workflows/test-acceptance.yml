@@ -14,7 +14,7 @@ concurrency:
 # The acceptance suite runs on the same harness developers use locally
 # (e107_tests/bin/e107-tests), so a CI failure reproduces with two commands:
 #
-#   e107_tests/bin/e107-tests up --php 8.5 --db mariadb:12.3 --no-browser
+#   e107_tests/bin/e107-tests up --php 8.6 --db mariadb:12.3 --no-browser
 #   e107_tests/bin/e107-tests run acceptance
 #
 # Add --base-path e107 for the subdirectory layout. That flag is not
@@ -24,7 +24,7 @@ concurrency:
 #
 # Each job runs both layouts at once, one env each on the same runner, each in
 # its own copy of the tree (see .github/actions/harness-stack/cells.sh). A
-# failed layout is named, as "PHP 8.5, mariadb:12.3, subdirectory", in an
+# failed layout is named, as "PHP 8.6, mariadb:12.3, subdirectory", in an
 # annotation and in the job summary, and its output is the log group of that
 # name in the step that failed.
 #
@@ -60,7 +60,7 @@ jobs:
         include:
           - php: '8.1'
             db: 'mysql:5.5'
-          - php: '8.5'
+          - php: '8.6'
             db: 'mariadb:12.3'
 
     runs-on: ubuntu-latest

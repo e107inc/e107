@@ -47,7 +47,7 @@ class e107RequestUrlEncodingTest extends \Test\Unit
 	 */
 	public function testEncodeRequestUrl($url, $no_cbrace, $expected, $scenario)
 	{
-		$result = $this->encodeRequestUrl->invoke($this->e107, $url, $no_cbrace);
+		$result = $this->encodeRequestUrl->invoke(null, $url, $no_cbrace);
 		$this->assertSame($expected, $result, "Failed scenario: $scenario");
 	}
 

@@ -44,9 +44,6 @@ takes more passes than its cap (`RECTOR_MAX_PASSES`, default 5). A run that
 will not converge almost always means a non-idempotent rule is re-rewriting its
 own output; raise the cap only after investigating.
 
-`rector-downgrade` and the CI workflow that enforces this land together in
-their own commit; this directory is only the tooling they drive.
-
 ## When the idempotency gate fails
 
 CI runs the same downgrade and fails if it produces a diff. That failure means
@@ -69,8 +66,13 @@ in a hand-edit that the next run will undo.
 Most of the work comes from upstream's `DowngradeSetList` sets. On top of those,
 `custom-rules/` vendors the PHP 7.1 → 5.6 rules that upstream deleted after
 Rector 0.15.1, plus three stock rules re-implemented because their upstream
-copies crash or are non-idempotent under Rector 2.x. Every skip in `rector.php`
-carries a comment explaining itself; two are worth repeating here.
+copies crash or are non-idempotent under Rector 2.x.
+`NameNullForSkippedNewInInitializerRector` runs ahead of the sets for a fourth:
+the stock `DowngradeNamedArgumentRector` throws when a named call skips a
+parameter whose default is a `new` expression, so the rule names null for it,
+which is the default `DowngradeNewInInitializerRector` gives that parameter.
+Every skip in `rector.php` carries a comment explaining itself; two are worth
+repeating here.
 
 **Parameter type widening is off.** PHP 5.6 parses an `array`, `callable` or
 class parameter hint whatever it names, so keeping them costs the floor
@@ -80,13 +82,11 @@ and any real widening error surfaces at class load in the legacy unit cells
 anyway. A hint naming a class the floor does not *have* is a different problem,
 and `DowngradePostFloorParamTypeRector` takes those by name.
 
-**The substr casts are quarantined.** On PHP 5.6 `substr()` can return `false`
-where PHP 8 returns `''`, and `DowngradeSubstrFalsyRector` papers over that with
-casts at every call site. That is a real behavioural difference, but it is a
-large, noisy diff that deserves its own review, so the rule is skipped here. A
-later commit removes the skip entry and carries the resulting casts, which keeps
-that commit revertible on its own: revert it and the tree is back at a
-consistent fixed point instead of a half-cast one.
+**The substr casts.** On PHP 5.6 `substr()` can return `false` where PHP 8
+returns `''`, so `DowngradeSubstrFalsyRector` casts the result at every call
+site and every PHP gets `''`. Where a caller compares that result strictly with
+`false`, the cast changes what it decides, so a new cast is worth a look in
+review.
 
 ## The API floor
 
@@ -140,6 +140,26 @@ and `DowngradeConflictingUseImportRector` own all five instead:
 None of these can be proved by parsing. Tests that execute the vendored
 packages on whichever interpreter the cell is running are the other half, and
 they live with the rest of the unit suite.
+
+## The newest PHP
+
+The same tree has to run quietly at the other end of the range, and a vendored
+package can lag behind a new PHP release the way it can outrun the floor. A
+hand patch for that is rolled back by the next re-vendor just the same, so
+`custom-rules/Php<version>/` rewrites what that PHP release deprecates into a
+form every PHP from 5.6 runs:
+
+- **`is_a()` of a string.** PHP 8.6 deprecates `is_a()` on a string unless
+  `$allow_string` is true, and intervention/image 2.7.2 asks it of whatever it
+  was handed, a file path included, on every decode.
+  `IsAOfAClassNameToInstanceofRector` writes `instanceof` instead, which gives
+  the same answer for a string or an object. It leaves alone a class name that
+  is not a literal, or that `instanceof` can't name because a segment of it is
+  a reserved word (`self`, or `List` below PHP 8.0); an `$allow_string` other
+  than a literal false; and a subject that is not a variable, property, array
+  element, method call or assignment, because below PHP 7.3 `instanceof`
+  refuses a left side the compiler folds into a constant, such as `null` or
+  `PHP_EOL`.
 
 ## Rule tests
 
@@ -199,7 +219,8 @@ PHP consumer can read it with `file()`. It mirrors the correctness path skips in
 - `rector.php`: the config. Sets, custom rule registrations, skips, PHP 5.6
   target, cache directory.
 - `custom-rules/`: the `E107\Rector` rule suite (vendored 7.1 → 5.6 rules, the
-  three re-implemented stock rules, and `FloorApi/` for the API floor).
+  three re-implemented stock rules, `FloorApi/` for the API floor, and
+  `Php<version>/` for the newest PHP).
 - `tests/` and `phpunit.xml`: the rule tests, described above.
 - `composer.json` / `composer.lock`: the pinned Rector version. The lock is
   committed on purpose, because the idempotency gate is only reproducible

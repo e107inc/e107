@@ -17,6 +17,8 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 {
 	const ID = 'nonblockingtest0123456789abcdef';
 
+	const MADE_UP_ID = 'madeup0123456789abcdef0123456789';
+
 	/** @var string */
 	private $dir;
 
@@ -67,6 +69,14 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 		return new NonblockingFilesSessionHandler(null === $savePath ? $this->dir : $savePath);
 	}
 
+	/**
+	 * @return string PHP that constructs a handler on this test's directory, for a child to run
+	 */
+	private function handlerInChild()
+	{
+		return 'new \\e107\\SessionHandlers\\NonblockingFilesSessionHandler('.var_export($this->dir, true).')';
+	}
+
 	public function testAWriteLeavesTheDataWholeAndReadableOnlyByItsOwner()
 	{
 		$this->assertTrue($this->handler()->write(self::ID, 'a|s:1:"b";'));
@@ -85,7 +95,7 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 
 	public function testASessionPhpsOwnModuleWroteIsRead()
 	{
-		$native = "ini_set('session.use_cookies', '0'); session_save_path(".var_export($this->dir, true)."); ";
+		$native = "ini_set('session.use_cookies', '0'); ini_set('session.use_strict_mode', '0'); session_save_path(".var_export($this->dir, true)."); ";
 		$native .= "session_id('".self::ID."'); session_start(); \$_SESSION['written_by'] = 'module'; session_write_close();";
 		$this->runInCli($native);
 
@@ -104,6 +114,40 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 		$this->assertFalse($handler->read('../escape'));
 		$this->assertFalse($handler->write('../escape', 'x'));
 		$this->assertFalse(file_exists(dirname($this->dir).'/sess_escape'));
+	}
+
+	public function testOnlyASessionThisProcessWroteIsAValidId()
+	{
+		$handler = $this->handler();
+		$this->assertFalse($handler->validateId(self::ID), 'nobody wrote it');
+
+		$handler->write(self::ID, 'x|i:1;');
+
+		$this->assertTrue($handler->validateId(self::ID));
+		$this->assertFalse($handler->validateId('../escape'));
+	}
+
+	public function testAPlantedSessionFileIsNotAValidId()
+	{
+		$file = $this->dir.'/sess_'.self::ID;
+		file_put_contents($file, 'planted|s:3:"yes";');
+		$this->ownedByAnotherAccount($file);
+
+		$this->assertFalse($this->handler()->validateId(self::ID));
+	}
+
+	/**
+	 * Strict mode, on by default from PHP 8.6, keeps the id of a session that exists and gives an id nobody wrote a new one.
+	 */
+	public function testStrictModeKeepsALiveSessionAndReplacesAMadeUpOne()
+	{
+		$this->handler()->write(self::ID, 'x|i:1;');
+
+		$this->assertSame(self::ID, $this->idAfterStrictStart($this->handlerInChild(), self::ID));
+
+		$given = $this->idAfterStrictStart($this->handlerInChild(), self::MADE_UP_ID);
+		$this->assertNotSame(self::MADE_UP_ID, $given);
+		$this->assertTrue(SessionId::isWellFormed($given), $given);
 	}
 
 	public function testDestroyRemovesTheSession()
@@ -177,7 +221,7 @@ class NonblockingFilesSessionHandlerTest extends \Test\Unit
 		$running = $this->handler();
 		$running->read(self::ID);
 
-		$this->runInBootedCli("\$store = new \\e107\\SessionHandlers\\NonblockingFilesSessionHandler(".var_export($this->dir, true)."); \$store->destroy('".self::ID."');");
+		$this->runInBootedCli("\$store = ".$this->handlerInChild()."; \$store->destroy('".self::ID."');");
 
 		$this->assertTrue($running->write(self::ID, 'token|s:3:"7.x";page|s:5:"later";'));
 		$this->assertFalse(file_exists($this->dir.'/sess_'.self::ID));

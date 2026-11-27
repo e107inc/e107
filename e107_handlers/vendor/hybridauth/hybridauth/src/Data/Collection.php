@@ -78,7 +78,7 @@ final class Collection
         if ($this->exists($property)) {
             $data = $this->get($property);
 
-            if (!is_a($data, 'Collection')) {
+            if (!$data instanceof \Collection) {
                 $data = new Collection($data);
             }
 

@@ -21,6 +21,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\NodeAnalyzer\ClassAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector;
 use E107\Rector\DowngradePhp70\NodeFactory\ClassFromAnonymousFactory;
@@ -190,6 +191,7 @@ CODE_SAMPLE
             );
 
             $new->class = new Name($className);
+            $new->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
         array_splice($node->stmts, $this->insertionIndex($node->stmts), 0, $registrations);

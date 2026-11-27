@@ -54,7 +54,7 @@ class Response
         $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $data);
         $length = strlen($data);
 
-        if (function_exists('app') && is_a($app = app(), 'Illuminate\Foundation\Application')) {
+        if (function_exists('app') && ($app = app()) instanceof \Illuminate\Foundation\Application) {
 
             $response = IlluminateResponse::make($data);
             $response->header('Content-Type', $mime);

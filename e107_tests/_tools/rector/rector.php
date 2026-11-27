@@ -48,17 +48,25 @@ use E107\Rector\DowngradePhp72\Rector\FuncCall\DowngradeStreamIsattyRector;
 use E107\Rector\DowngradePhp74\Rector\FuncCall\DowngradeProcOpenArrayCommandArgRector;
 use E107\Rector\DowngradePhp81\Rector\FuncCall\DowngradeHashAlgorithmXxHashRector;
 
+// Our own rules that run ahead of the sets
+use E107\Rector\DowngradePhp81\Rector\FunctionLike\NameNullForSkippedNewInInitializerRector;
+
 // API-floor rules: what the floor *has*, where the sets above only rewrite syntax
 use E107\Rector\FloorApi\Rector\ClassMethod\DowngradeTentativeReturnTypeRector;
 use E107\Rector\FloorApi\Rector\ConstFetch\DowngradePostFloorConstantRector;
 use E107\Rector\FloorApi\Rector\FunctionLike\DowngradePostFloorParamTypeRector;
 use E107\Rector\FloorApi\Rector\FunctionLike\HoistLiteralByReferenceArgumentRector;
 
+// Newest-PHP rules: what a new PHP release deprecates, rewritten in a form the floor runs
+use E107\Rector\Php86\Rector\FuncCall\IsAOfAClassNameToInstanceofRector;
+
 return static function (RectorConfig $rectorConfig): void {
     $root = __DIR__ . '/../../..';
     $rectorConfig->paths([
         $root,
     ]);
+
+    $rectorConfig->rule(NameNullForSkippedNewInInitializerRector::class);
 
     // 8.x → 7.2 from upstream rector/rector-downgrade-php 0.15.1.
     // We deliberately omit PHP_71 here; our vendored Php71 rules handle that step.
@@ -185,6 +193,8 @@ return static function (RectorConfig $rectorConfig): void {
     // class it calls into. hybridauth's Apple adapter hands php-jwt 7.x a
     // literal where decode() now takes &$headers.
     $rectorConfig->rule(HoistLiteralByReferenceArgumentRector::class);
+
+    $rectorConfig->rule(IsAOfAClassNameToInstanceofRector::class);
 
     $rectorConfig->phpVersion(PhpVersion::PHP_56);
 
