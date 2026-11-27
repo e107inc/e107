@@ -213,21 +213,19 @@
 		}
 
 		/**
-		 * signin (the plugin reported in #5738) plus navigation and faqs ship in
-		 * e107_plugins/ with a plugin.xml, but were missing from the bundled
-		 * core-plugin list, so getCorePluginList() reported them as third-party.
+		 * The core plugins are the plugin folders in the repository, so a folder added or removed without the list following it fails here.
 		 *
 		 * @see https://github.com/e107inc/e107/issues/5738
+		 * @see https://github.com/e107inc/e107/issues/6580
 		 */
-		public function testCorePluginListContainsBundledPlugins()
+		public function testCorePluginListIsEveryPluginFolderInTheTree()
 		{
+			$folders = e107::getFile()->get_dirs(e_PLUGIN);
 			$core = e107::getPlug()->getCorePluginList();
+			sort($folders);
+			sort($core);
 
-			foreach(['signin', 'navigation', 'faqs'] as $plug)
-			{
-				$this->assertContains($plug, $core, "'{$plug}' is a bundled plugin but is missing from getCorePluginList().");
-				$this->assertFileExists(e107::getFolder('plugins') . $plug . '/plugin.xml', "'{$plug}' should ship a plugin.xml.");
-			}
+			$this->assertSame($folders, $core, 'Plugin folders missing from the list: '.implode(', ', array_diff($folders, $core)).'. Listed but not in the tree: '.implode(', ', array_diff($core, $folders)).'.');
 		}
 
 		/**
