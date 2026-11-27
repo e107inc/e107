@@ -26,22 +26,27 @@ define('e_CAPTCHA_FONTCOLOR','#F9A533');
 
 // Required for a clean v1.x -> v2 upgrade. 
 $core = e107::getConfig();
+$adminSkinRepaired = false;
+
 $adminTheme = $core->get('admintheme');
 if($adminTheme !== 'bootstrap3' /*&& $adminTheme !== 'bootstrap5'*/)
 {
-	$core->update('admintheme','bootstrap3');
-	$core->update('adminstyle','infopanel');
-	$core->update('admincss','css/modern-light.css');
+	$core->set('admintheme','bootstrap3');
+	$core->set('adminstyle','infopanel');
+	$core->set('admincss','css/modern-light.css');
 	$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
-	$core->save();	
-	e107::getRedirect()->redirect(e_SELF);		
+	$adminSkinRepaired = true;
 }
 
-$admincss = trim($core->get('admincss'));
+$admincss = trim($core->get('admincss', ''));
 if(empty($admincss) || $admincss === 'style.css'|| $admincss === 'admin_dark.css' || $admincss === 'admin_light.css')
 {
-	$core->update('admincss','css/modern-light.css');
-	$core->save(false,true);
+	$core->set('admincss','css/modern-light.css');
+	$adminSkinRepaired = true;
+}
+
+if($adminSkinRepaired && $core->save(false, true, false) === true)
+{
 	e107::getRedirect()->redirect(e_SELF);
 }
 

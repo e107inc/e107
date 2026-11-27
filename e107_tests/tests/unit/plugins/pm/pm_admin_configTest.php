@@ -67,8 +67,6 @@ class pm_admin_configTest extends pm_limit_fixture
 	 */
 	private function storedMode()
 	{
-		$prefs = e107::unserialize((string) self::storedPrefsValue('plugin_pm'));
-
-		return isset($prefs['pm_limits']) ? $prefs['pm_limits'] : null;
+		return self::storedPref('plugin_pm', 'pm_limits');
 	}
 }
