@@ -13,6 +13,88 @@
 if (!defined('e107_INIT')) { exit; }
 
 /**
+ * The optArray unwrap the edit form {@see e_form::renderElement()}, the list {@see e_form::renderValue()}, the batch dispatcher and the batch and filter menus {@see e_admin_form_ui::renderBatchFilter()} share.
+ */
+trait e_admin_optarray
+{
+	/**
+	 * A field's writeParms with its optArray promoted to the option list and the rest left under __options, or false where the declaration offers no option list at all.
+	 *
+	 * @param mixed $parms parsed writeParms of one field; anything but an array offers no option list
+	 * @param string $field field name, named in a debug line where the declaration is unusable
+	 * @param bool $multiple true for a dropdown taking multiple values, which the menu reads as a comma field over the optArray alone
+	 * @param bool $dropEmpty true where an empty optArray offers nothing, as in the batch and filter menus; false where it is an empty control, as on the edit form
+	 * @return array|false
+	 */
+	private function unwrapOptArray($parms, $field, $multiple = false, $dropEmpty = true)
+	{
+		if(!$this->hasUsableOptArray($parms, $field))
+		{
+			return false;
+		}
+
+		if(!isset($parms['optArray']))
+		{
+			return $parms;
+		}
+
+		if($dropEmpty && empty($parms['optArray']))
+		{
+			$this->debugNoOptArray($field);
+
+			return false;
+		}
+
+		$options = $parms['optArray'];
+		unset($parms['optArray']);
+
+		if(!$multiple)
+		{
+			$options['__options'] = $parms;
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Whether a field's writeParms are an array declaring either no optArray or one that is an array; a debug line names the field where they are not.
+	 *
+	 * @param mixed $parms parsed writeParms of one field
+	 * @param string $field field name
+	 * @return bool
+	 */
+	private function hasUsableOptArray($parms, $field)
+	{
+		if(is_array($parms) && (!isset($parms['optArray']) || is_array($parms['optArray'])))
+		{
+			return true;
+		}
+
+		$this->debugNoOptArray($field);
+
+		return false;
+	}
+
+	/**
+	 * Names the field in a debug line, once however many rows render it.
+	 *
+	 * @param string $field
+	 * @return void
+	 */
+	private function debugNoOptArray($field)
+	{
+		$message = "Field '" . $field . "' offers no batch or filter options: its writeParms declare no optArray that is an array.";
+		$messages = e107::getMessage();
+
+		if(!in_array($message, (array) $messages->get(E_MESSAGE_DEBUG, 'default', true, false), true))
+		{
+			$messages->addDebug($message);
+		}
+	}
+}
+
+
+/**
  * 
  * @package e107
  * @subpackage e107_handlers
@@ -63,6 +145,8 @@ if (!defined('e107_INIT')) { exit; }
  */
 class e_form
 {
+	use e_admin_optarray;
+
 	protected   $_tabindex_counter = 0;
 	protected   $_tabindex_enabled = true;
 	protected   $_cached_attributes = array();
@@ -5827,12 +5911,12 @@ var_dump($select_options);*/
 					parse_str((string) $wparms['__options'], $wparms['__options']);
 				}
 
-				if(!empty($wparms['optArray']))
+				$wparms = $this->unwrapOptArray($wparms, $field, false, false);
+
+				if($wparms === false)
 				{
-					$fopts = $wparms;
-					$wparms = $fopts['optArray'];
-					unset($fopts['optArray']);
-					$wparms['__options'] = $fopts;
+					$value = $this->storedValueAsText($value);
+					break;
 				}
 
 
@@ -5895,7 +5979,11 @@ var_dump($select_options);*/
 					parse_str($attributes['writeParms'], $attributes['writeParms']);
 				}
 
-				if(!empty($attributes['writeParms']['optArray']))
+				if(!$this->hasUsableOptArray($attributes['writeParms'], $field))
+				{
+					$radioValue = $this->storedValueAsText($value);
+				}
+				elseif(!empty($attributes['writeParms']['optArray']))
 				{
 					$radioValue = $attributes['writeParms']['optArray'][$value];
 
@@ -6740,6 +6828,48 @@ var_dump($select_options);*/
 	}
 
 	/**
+	 * A field as {@see e_form::renderValue()} shows it, with hidden inputs posting its value back, an array element by element; its writeParms stand in for its readParms.
+	 *
+	 * @param string $key
+	 * @param mixed $stored the value as stored
+	 * @param mixed $value the value as the form posts it
+	 * @param array $attributes field attributes
+	 * @return string
+	 */
+	private function renderReadonlyElement($key, $stored, $value, $attributes)
+	{
+		if(!empty($attributes['writeParms']))
+		{
+			$attributes['readParms'] = $attributes['writeParms'];
+		}
+
+		$ret = $this->renderValue($key, $stored, $attributes);
+
+		if(!is_array($value))
+		{
+			return $ret . $this->hidden($key, $value);
+		}
+
+		$hidden = '';
+
+		foreach($value as $index => $item)
+		{
+			$hidden .= $this->hidden($key . '[' . $index . ']', $item);
+		}
+
+		return $ret . $hidden;
+	}
+
+	/**
+	 * @param mixed $value a stored value; an array of them is shown comma separated
+	 * @return mixed the value as {@see e_form::storedTextAsHtml()} shows it
+	 */
+	private function storedValueAsText($value)
+	{
+		return $this->storedTextAsHtml(is_array($value) ? implode(', ', $value) : $value);
+	}
+
+	/**
 	 * Auto-render Form Element
 	 * @param string $key
 	 * @param mixed $value
@@ -6816,19 +6946,7 @@ var_dump($select_options);*/
 		// Two modes of read-only. 1 = read-only, but only when there is a value, 2 = read-only regardless.
 		if(!empty($attributes['readonly']) && (!empty($value) || vartrue($attributes['readonly'])===2)) // quick fix (maybe 'noedit'=>'readonly'?)
 		{
-			if(!empty($attributes['writeParms'])) // eg. different size thumbnail on the edit page.
-			{
-				$attributes['readParms'] = $attributes['writeParms'];
-			}
-
-			$ret = $this->renderValue($key, $stored, $attributes);
-
-		//	if(!is_array($value)) // avoid value of 'Array'
-			{
-				$ret .= $this->hidden($key, $value);  // subject to removal - in most cases, there's no point posting fields that don't need to be saved.
-			}
-
-			return $ret;
+			return $this->renderReadonlyElement($key, $stored, $value, $attributes);
 		}
 
 		// FIXME standard - writeParams['__options'] is introduced for list elements, bundle adding to writeParms is non reliable way
@@ -6866,12 +6984,14 @@ var_dump($select_options);*/
 
 
 		// XXX Fixes For the above.  - use optArray variable. eg. $field['key']['writeParms']['optArray'] = array('one','two','three');
-		if(($attributes['type'] === 'dropdown' || $attributes['type'] === 'radio' || $attributes['type'] === 'checkboxes') && isset($parms['optArray']))
+		if(in_array($attributes['type'], array('dropdown', 'radio', 'checkboxes', 'comma', 'image', 'video'), true) && !$this->hasUsableOptArray($parms, $key))
 		{
-			$fopts = $parms;
-			$parms = $fopts['optArray'];
-			unset($fopts['optArray']);
-			$parms['__options'] = $fopts;
+			return $this->renderReadonlyElement($key, $stored, $value, $attributes);
+		}
+
+		if($attributes['type'] === 'dropdown' || $attributes['type'] === 'radio' || $attributes['type'] === 'checkboxes')
+		{
+			$parms = $this->unwrapOptArray($parms, $key, false, false);
 		}
 
 		$this->renderElementTrigger($key, $value, $parms, $required_data, $id);

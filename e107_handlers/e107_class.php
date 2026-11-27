@@ -195,6 +195,7 @@ class e107
 		'e_admin_log'                    => '{e_HANDLER}admin_log_class.php',
 		'e_front_model'                  => '{e_HANDLER}model_class.php',
 		'e_admin_model'                  => '{e_HANDLER}model_class.php',
+		'e_admin_optarray'               => '{e_HANDLER}form_handler.php',
 		'e_admin_request'                => '{e_HANDLER}admin_ui.php',
 		'e_admin_response'               => '{e_HANDLER}admin_ui.php',
 		'e_admin_ui'                     => '{e_HANDLER}admin_ui.php',

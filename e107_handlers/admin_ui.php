@@ -3146,46 +3146,6 @@ class e_admin_controller
 
 
 /**
- * The optArray unwrap the batch dispatcher and the batch and filter menus {@see e_admin_form_ui::renderBatchFilter()} share.
- */
-trait e_admin_optarray
-{
-	/**
-	 * A field's writeParms with its optArray promoted to the option list and the rest left under __options, or false where the declaration offers no option list at all.
-	 *
-	 * @param mixed $parms parsed writeParms of one field; anything but an array offers no option list
-	 * @param string $field field name, named in a debug line where the declaration is unusable
-	 * @param bool $multiple true for a dropdown taking multiple values, which the menu reads as a comma field over the optArray alone
-	 * @return array|false
-	 */
-	private function unwrapOptArray($parms, $field, $multiple = false)
-	{
-		if(is_array($parms) && !isset($parms['optArray']))
-		{
-			return $parms;
-		}
-
-		if(is_array($parms) && is_array($parms['optArray']) && !empty($parms['optArray']))
-		{
-			$options = $parms['optArray'];
-			unset($parms['optArray']);
-
-			if(!$multiple)
-			{
-				$options['__options'] = $parms;
-			}
-
-			return $options;
-		}
-
-		e107::getMessage()->addDebug("Field '" . $field . "' offers no batch or filter options: its writeParms declare no optArray that is an array.");
-
-		return false;
-	}
-}
-
-
-/**
  *
  */
 class e_admin_controller_ui extends e_admin_controller
