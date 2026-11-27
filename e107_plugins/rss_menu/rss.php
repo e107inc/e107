@@ -687,7 +687,7 @@ class rssCreate
 			// Atom
 			case 4:
 				echo "<?xml version='1.0' encoding='utf-8'?".">\n
-				<feed xmlns='https://www.w3.org/2005/Atom'>\n";
+				<feed xmlns='http://www.w3.org/2005/Atom'>\n";
 				/*
 				<feed version='0.3'
 				xmlns='http://purl.org/atom/ns#'
