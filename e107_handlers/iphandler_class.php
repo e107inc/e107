@@ -1310,7 +1310,7 @@ class banlistManager
 	const DELETE_GUARD_LAPSED = 'lapsed';
 
 	private $ourConfigDir = '';
-	private $replaceLockHeld = false;
+	private $importLockHeld = false;
 	public $banTypes = array();
 
 	public function __construct()
@@ -1535,19 +1535,14 @@ class banlistManager
 
 		$replacedIds = array();
 
-		if($replaceImported)
+		$lock = $this->takeImportLock();
+
+		if($lock !== true)
 		{
-			$lock = $this->takeReplaceLock();
+			fclose($fh);
+			$result['fatal'] = ($lock === null) ? BANLAN_IMPORT_LOCK_FAILED : BANLAN_IMPORT_BUSY;
 
-			if($lock !== true)
-			{
-				fclose($fh);
-				$result['fatal'] = ($lock === null)
-					? defset('BANLAN_IMPORT_REPLACE_LOCK_FAILED', "CSV import: Nothing was imported. The database did not say whether another import is running, so this one stopped rather than risk deleting entries it could not account for. Try again, and look in the database error log if it keeps happening.")
-					: defset('BANLAN_IMPORT_REPLACE_BUSY', "CSV import: Nothing was imported. Another import that replaces the existing imported bans is already running, and two of those at once delete each other's entries. Import again once it has finished.");
-
-				return $result;
-			}
+			return $result;
 		}
 
 		try
@@ -1731,40 +1726,40 @@ class banlistManager
 		}
 		finally
 		{
-			$this->releaseReplaceLock();
+			$this->releaseImportLock();
 		}
 	}
 
 	/**
-	 *	Take the lock that holds a replace-import's snapshot and delete together, without waiting for a run that already has it.
+	 *	Take the lock that keeps one ban-list import running at a time, without waiting for a run that already has it.
 	 *
 	 *	@return bool|null true where this run has the lock, false where another run holds it, null where the server did not say.
 	 */
-	private function takeReplaceLock()
+	private function takeImportLock()
 	{
 		$row = $this->lockQuery('SELECT GET_LOCK(:name, 0) AS locked');
 		$locked = (is_array($row) && isset($row['locked'])) ? (string) $row['locked'] : null;
-		$this->replaceLockHeld = ($locked === '1');
+		$this->importLockHeld = ($locked === '1');
 
-		return ($locked === null) ? null : $this->replaceLockHeld;
+		return ($locked === null) ? null : $this->importLockHeld;
 	}
 
 	/**
-	 *	Release the replace-import lock where this run took it.
+	 *	Release the import lock where this run took it.
 	 */
-	private function releaseReplaceLock()
+	private function releaseImportLock()
 	{
-		if(!$this->replaceLockHeld)
+		if(!$this->importLockHeld)
 		{
 			return;
 		}
 
-		$this->replaceLockHeld = false;
+		$this->importLockHeld = false;
 		$this->lockQuery('SELECT RELEASE_LOCK(:name)');
 	}
 
 	/**
-	 *	Run one statement about the replace-import lock, which names it as :name.
+	 *	Run one statement about the import lock, which names it as :name.
 	 *
 	 *	@param string $statement
 	 *	@return array|false the row the server answered with.
@@ -1774,20 +1769,20 @@ class banlistManager
 		$sql = e107::getDb();
 		$sql->db_Query(array(
 			'PREPARE' => $statement,
-			'BIND'    => array('name' => array('value' => $this->replaceLockName(), 'type' => PDO::PARAM_STR)),
+			'BIND'    => array('name' => array('value' => $this->importLockName(), 'type' => PDO::PARAM_STR)),
 		), null, 'db_Select');
 
 		return $sql->fetch();
 	}
 
 	/**
-	 *	The name of the replace-import lock, which is this install's database and table prefix hashed.
+	 *	The name of the import lock, which is this install's database and table prefix hashed.
 	 *
-	 *	@return string 60 bytes, inside the server's 64-byte limit.
+	 *	@return string 52 bytes, inside the server's 64-byte limit.
 	 */
-	private function replaceLockName()
+	private function importLockName()
 	{
-		return 'e107_banlist_replace_import_'
+		return 'e107_banlist_import_'
 			. md5(e107::getMySQLConfig('defaultdb').'/'.e107::getMySQLConfig('prefix'));
 	}
 

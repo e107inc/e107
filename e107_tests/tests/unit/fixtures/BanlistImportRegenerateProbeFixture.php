@@ -2,8 +2,8 @@
 
 /**
  * Stands in front of the eIPHandler singleton so a test can look at the ban-list
- * table and the replace-import lock at the one moment the importer hands control
- * back out, which is after it has deleted the batch it replaced.
+ * table and the import lock at the one moment the importer hands control back
+ * out, which is after it has written its rows and deleted any batch it replaced.
  *
  * See AdminUiBatchProbeFixture for why the fixture lives in its own file.
  */
