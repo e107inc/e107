@@ -402,6 +402,16 @@ class eFrontTest extends \Test\Unit
 		}
 	}
 
+	public function testTheErrorControllerWritesToTheResponseItWasGiven()
+	{
+		$report = $this->dispatchInChild("\$class = new ReflectionClass('eFront'); \$own = \$class->newInstanceWithoutConstructor(); "
+			."\$response = new eResponse(); \$own->setRouter(\$front->getRouter())->setRequest(new eRequest('system/error/forbidden'))->setResponse(\$response); "
+			."\$own->dispatch(); echo \"\\nOWN=\", json_encode(array(\$response->getTitle(), \$response->getRenderMod(), strpos(\$response->getBody(), LAN_ERROR_4) !== false)), \"\\n\";");
+
+		self::assertSame(array($report['LAN_ERROR'], 'error_page_403', true), self::reportedAfter($report['printed'], 'OWN=', 'the child with a front controller of its own'));
+		self::assertSame(403, $report['status']);
+	}
+
 	public function testAnAddressNoModuleAnswersIsRoutedToTheNotFoundPage()
 	{
 		$report = $this->runUnansweredAddressInChild();
@@ -448,6 +458,7 @@ class eFrontTest extends \Test\Unit
 			'404 forwards to not found' => array('system/error/404', 'system/error/notfound', 404, 'LAN_ERROR_7'),
 			'forbidden' => array('system/error/forbidden', 'system/error/forbidden', 403, 'LAN_ERROR_4'),
 			'403 forwards to forbidden' => array('system/error/403', 'system/error/forbidden', 403, 'LAN_ERROR_4'),
+			'server error' => array('system/error/servererror', 'system/error/servererror', 500, 'LAN_ERROR_10'),
 		);
 	}
 
@@ -536,7 +547,7 @@ class eFrontTest extends \Test\Unit
 			."echo \"\\n".self::REPORT."\", json_encode(array('returned' => \$returned, 'status' => http_response_code(), "
 			."'route' => \$request->getRoute(), 'history' => \$request->getRouteHistory(), 'title' => \$response->getTitle(), "
 			."'mode' => \$response->getRenderMod(), 'body' => \$response->getBody(), 'legacy' => eFront::isLegacy(), "
-			."'e_ADMIN' => e_ADMIN, 'LAN_ERROR' => LAN_ERROR, 'LAN_ERROR_4' => LAN_ERROR_4, 'LAN_ERROR_7' => LAN_ERROR_7)), \"\\n\"; }); "
+			."'e_ADMIN' => e_ADMIN, 'LAN_ERROR' => LAN_ERROR, 'LAN_ERROR_4' => LAN_ERROR_4, 'LAN_ERROR_7' => LAN_ERROR_7, 'LAN_ERROR_10' => LAN_ERROR_10)), \"\\n\"; }); "
 			."echo \"\\n\"; "
 			.$act
 			." \$returned = true;";

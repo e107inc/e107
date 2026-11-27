@@ -7,6 +7,7 @@ class FrontControllerStatusCest
 {
 	const NOT_FOUND = 'Error 404 - Document Not Found';
 	const FORBIDDEN = 'Error 403 - Access forbidden';
+	const SERVER_ERROR = 'Error 500 - Internal server error';
 
 	const ROUTE_THEME = 'routelayout';
 	const NOT_FOUND_BOX_IN_ITS_LAYOUT = "div.route-box[data-layout='notfound'][data-mode='error_page_404'][data-caption='Error']";
@@ -27,6 +28,7 @@ class FrontControllerStatusCest
 	{
 		$this->seeErrorPageAtEach($I, array('/system/error/notfound', '/system/error/404', '/index.php?route=system/error/notfound'), 404, self::NOT_FOUND);
 		$this->seeErrorPageAtEach($I, array('/system/error/forbidden', '/system/error/403', '/index.php?route=system/error/forbidden'), 403, self::FORBIDDEN);
+		$this->seeErrorPageAtEach($I, array('/system/error/servererror', '/index.php?route=system/error/servererror'), 500, self::SERVER_ERROR);
 	}
 
 	public function withPathInfoOnTheRouteIsReadFromBehindTheEntryScript(AcceptanceTester $I)
@@ -107,7 +109,7 @@ class FrontControllerStatusCest
 			'/error.php?401' => array(401, 'Error 401 - Authentication Failed'),
 			'/error.php?403' => array(403, self::FORBIDDEN),
 			'/error.php?404' => array(404, self::NOT_FOUND),
-			'/error.php?500' => array(500, 'Error 500 - Internal server error'),
+			'/error.php?500' => array(500, self::SERVER_ERROR),
 			'/error.php?999' => array(501, 'Error - Unknown (999)'),
 		);
 

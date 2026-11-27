@@ -14,6 +14,12 @@ if (!defined('e107_INIT')) { exit; }
 
 return call_user_func(function ()
 {
+	$errorBody = function ($statusCode) { return e107::getError()->render($statusCode); };
+	$errorPage = function ($statusCode) use ($errorBody)
+	{
+		return function () use ($statusCode, $errorBody) { return new \e107\System\ErrorPage($statusCode, LAN_ERROR, $errorBody); };
+	};
+
 	return array(
 		\e107\Routing\Route::queryWord('user/logout', \e107\User\LogoutConfirmation::QUERY_WORD, function ()
 		{
@@ -30,5 +36,8 @@ return call_user_func(function ()
 				function ($markup, array $vars) use ($tp) { return $tp->parseTemplate($markup, true, null, new e_vars($vars)); }
 			);
 		}),
+		\e107\Routing\Route::internal('system/error/notfound', $errorPage(404)),
+		\e107\Routing\Route::internal('system/error/forbidden', $errorPage(403)),
+		\e107\Routing\Route::internal('system/error/servererror', $errorPage(500)),
 	);
 });

@@ -27,10 +27,41 @@ class routesTest extends \Test\Unit
 
 	public function testEverythingElseIsLeftToTheLegacyPath()
 	{
-		foreach(array('', 'news', 'logoutx', 'x&logout') as $query)
+		foreach(array('', 'news', 'logoutx', 'x&logout', 'route=system/error/notfound') as $query)
 		{
 			self::assertNull($this->table()->match(new Request('GET', $query)), $query);
 		}
+	}
+
+	/**
+	 * @dataProvider errorRoutes
+	 * @param string $name
+	 * @param int $status
+	 */
+	public function testAnErrorRouteIsTakenByNameAndAnswersWithItsStatus($name, $status)
+	{
+		$match = $this->table()->named($name);
+
+		self::assertNotNull($match);
+		self::assertInstanceOf(\e107\System\ErrorPage::class, $match->createHandler());
+
+		$response = $match->createHandler()->handle(new Request('GET', ''));
+
+		self::assertSame($status, $response->getStatusCode());
+		self::assertSame(LAN_ERROR, $response->getPage()->getCaption());
+		self::assertSame('error_page_'.$status, $response->getPage()->getMode());
+	}
+
+	/**
+	 * @return array
+	 */
+	public function errorRoutes()
+	{
+		return array(
+			'not found' => array('system/error/notfound', 404),
+			'forbidden' => array('system/error/forbidden', 403),
+			'server error' => array('system/error/servererror', 500),
+		);
 	}
 
 	public function testTheLogoutRouteBuildsTheLogoutConfirmation()
