@@ -36,5 +36,7 @@ return [
     'LDAPLAN_12' => "Server Type",
     'LDAPLAN_13' => "Update settings",
     'LDAPLAN_14' => "OU for AD (e.g. ou=itdept)",
+    'SHOW_COPY_HELP' => true,
+    'SHOW_CONVERSION_HELP' => true,
     'LAN_AUTHENTICATE_HELP' => "This method can be used to authenticate against most LDAP servers, including Novell's eDirectory and Microsoft's Active Directory. It requires that PHP's LDAP extension is loaded. Refer to the wiki for further information.",
 ];
