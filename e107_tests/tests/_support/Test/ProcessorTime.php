@@ -23,15 +23,41 @@ trait ProcessorTime
 	 */
 	protected static function leastProcessorTimes($run, array $inputs)
 	{
-		$took = array_fill_keys(array_keys($inputs), INF);
+		return self::leastProcessorTimesOver($run, $inputs, 3);
+	}
 
-		for($round = 0; $round < 3; $round++)
+	/**
+	 * The least processor time $run takes on each of $inputs, over $rounds rounds that visit every input in turn.
+	 *
+	 * @param callable $run called with one input
+	 * @param array    $inputs keyed by name
+	 * @param int      $rounds how many rounds visit every input in turn, at least one
+	 * @return float[] seconds, keyed as $inputs
+	 */
+	protected static function leastProcessorTimesOver($run, array $inputs, $rounds)
+	{
+		return array_map('min', self::processorTimesByRound($run, $inputs, $rounds));
+	}
+
+	/**
+	 * The processor time $run takes on each of $inputs in each of $rounds rounds that visit every input in turn.
+	 *
+	 * @param callable $run called with one input
+	 * @param array    $inputs keyed by name
+	 * @param int      $rounds how many rounds visit every input in turn, at least one
+	 * @return float[][] seconds by round, keyed as $inputs
+	 */
+	protected static function processorTimesByRound($run, array $inputs, $rounds)
+	{
+		$took = array_fill_keys(array_keys($inputs), array());
+
+		for($round = 0; $round < $rounds; $round++)
 		{
 			foreach($inputs as $name => $input)
 			{
 				$start = self::processorTime();
 				$run($input);
-				$took[$name] = min($took[$name], self::processorTime() - $start);
+				$took[$name][] = self::processorTime() - $start;
 			}
 		}
 

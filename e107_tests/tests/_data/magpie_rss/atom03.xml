@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed version="0.3" xmlns="http://purl.org/atom/ns#" xml:lang="en">
+  <title>Atom 0.3 Feed</title>
+  <link rel="alternate" type="text/html" href="https://example.test/"/>
+  <tagline>Atom 0.3 tagline</tagline>
+  <modified>2026-11-07T10:00:00Z</modified>
+  <copyright>Copyright Atom</copyright>
+  <author><name>Feed Author</name></author>
+  <entry>
+    <title>Atom 0.3 entry</title>
+    <link rel="alternate" type="text/html" href="https://example.test/a1"/>
+    <id>tag:example.test,2026:a1</id>
+    <issued>2026-11-06T09:30:00+01:00</issued>
+    <modified>2026-11-06T10:00:00Z</modified>
+    <summary>Entry summary</summary>
+    <content type="application/xhtml+xml" mode="xml"><div xmlns="http://www.w3.org/1999/xhtml"><p>Hello <b>bold</b> <a href="https://example.test/?a=1&amp;b=2">link</a><br/>line</p></div></content>
+  </entry>
+  <entry>
+    <title>Atom 0.3 escaped</title>
+    <link rel="related" href="https://example.test/rel"/>
+    <id>tag:example.test,2026:a2</id>
+    <modified>2026-11-05T10:00</modified>
+    <content type="text/html" mode="escaped">&lt;p&gt;Escaped content&lt;/p&gt;</content>
+  </entry>
+</feed>

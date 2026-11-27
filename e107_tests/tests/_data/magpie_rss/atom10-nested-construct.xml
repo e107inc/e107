@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Nested construct</title>
+  <entry>
+    <title>Outer title</title>
+    <content type="xhtml"><div><title>Inner &amp; title</title><p>After <summary>inner summary</summary></p></div></content>
+    <summary>Outer summary</summary>
+  </entry>
+</feed>
