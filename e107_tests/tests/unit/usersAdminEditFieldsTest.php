@@ -27,6 +27,8 @@ class usersAdminEditFieldsTest extends \Test\Unit
 
 	protected function _after()
 	{
+		putenv('QUERY_STRING');
+
 		$db = e107::getDb();
 
 		foreach($this->members as $id)
