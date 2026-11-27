@@ -1374,33 +1374,16 @@ class e_parse_shortcode
 			{
 			    $ret = @eval($scCode);
 			}
-			catch (Throwable $t) {    // Executed only in PHP 7, will not match in PHP 5.x
-
-				$error              = $this->debug_legacy;
-				$error['code']      = $code;
-				$error['problem']   = $scCode;
-
-                e107::getDebug()->logCode(-2, $code, null, print_a($error,true));
-                trigger_error("Couldn't parse {".$code."} legacy shortcode at line ".$t->getLine().".\n". $t->getMessage(), E_USER_NOTICE);
+			catch (Throwable $t)
+			{
+				$this->legacyThrew($code, $scCode, $t);
 			} catch (\Exception $t) {
-                // Executed only in PHP 7, will not match in PHP 5.x
-                $error              = $this->debug_legacy;
-                $error['code']      = $code;
-                $error['problem']   = $scCode;
-                e107::getDebug()->logCode(-2, $code, null, print_a($error,true));
-                trigger_error("Couldn't parse {".$code."} legacy shortcode at line ".$t->getLine().".\n". $t->getMessage(), E_USER_NOTICE);
+                $this->legacyThrew($code, $scCode, $t);
             }
 
 			if($ret === false && E107_DEBUG_LEVEL > 0 ) // Error in Code.
 			{
-
-				$error              = $this->debug_legacy;
-				$error['code']      = $code;
-				$error['problem']   = $scCode;
-				$error['error']     = error_get_last();
-
-                e107::getDebug()->logCode(-2, $code, null, print_a($error,true));
-
+				$this->logLegacyFailure($code, $scCode, array('error' => error_get_last()));
 			}
 		}
 
@@ -1510,6 +1493,34 @@ class e_parse_shortcode
 		$this->mode = (string) $mode;
 	}
 
+
+	/**
+	 * Logs a legacy shortcode that failed to the debug panel, with $detail after its code.
+	 * @param string $code
+	 * @param string $scCode
+	 * @param array $detail
+	 * @return void
+	 */
+	private function logLegacyFailure($code, $scCode, $detail = array())
+	{
+		$error = $this->debug_legacy;
+		$error['code'] = $code;
+		$error['problem'] = $scCode;
+		e107::getDebug()->logCode(-2, $code, null, print_a($error + $detail, true));
+	}
+
+	/**
+	 * Logs a legacy shortcode whose code threw $t, and raises a notice naming the line.
+	 * @param string $code
+	 * @param string $scCode
+	 * @param Throwable|Exception $t
+	 * @return void
+	 */
+	private function legacyThrew($code, $scCode, $t)
+	{
+		$this->logLegacyFailure($code, $scCode);
+		trigger_error("Couldn't parse {".$code."} legacy shortcode at line ".$t->getLine().".\n". $t->getMessage(), E_USER_NOTICE);
+	}
 
 	/**
 	 * Add Wrapper to Shortcode (when detected)
