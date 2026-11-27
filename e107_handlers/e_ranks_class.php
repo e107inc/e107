@@ -67,11 +67,12 @@ class e_ranks
 			$ecache->set_sys('nomd5_user_ranks', e107::serialize($this->ranks, false));
 		}
 
-		// defaults
 		if(empty($this->ranks))
 		{
 			$this->setDefaultRankData();
 		}
+
+		$this->fillMissingSpecialRanks();
 	}
 
 	/**
@@ -79,101 +80,52 @@ class e_ranks
 	 */
 	protected function setDefaultRankData()
 	{
+		$this->ranks = $this->defaultRankData();
+	}
+
+	/**
+	 * @return void
+	 */
+	private function fillMissingSpecialRanks()
+	{
+		$special = varset($this->ranks['special'], array());
+
+		if(isset($special[1], $special[2], $special[3]))
+		{
+			return;
+		}
+
+		$defaults = $this->defaultRankData();
+		$this->ranks['special'] = $special + $defaults['special'];
+	}
+
+	/**
+	 * @return array{data: array<int, array<string, mixed>>, special: array<int, array<string, mixed>>}
+	 */
+	private function defaultRankData()
+	{
 		e107::coreLan('userclass');
 
-			$this->ranks = array('data' => array(), 'special' => array());
-			$this->ranks['data'][1] = array(
-				'name' => '',
-				'thresh' => 20,
-				'image' => 'lev1.png',
-				'lan_pfx' => '',
-				'id' => 1,
-			);
-			$this->ranks['data'][2] = array(
-				'name' => '',
-				'thresh' => 100,
-				'image' => 'lev2.png',
-				'lan_pfx' => '',
-				'id' => 2,
-			);
-			$this->ranks['data'][3] = array(
-				'name' => '',
-				'thresh' => 250,
-				'image' => 'lev3.png',
-				'lan_pfx' => '',
-				'id' => 3,
-			);
-			$this->ranks['data'][4] = array(
-				'name' => '',
-				'thresh' => 410,
-				'image' => 'lev4.png',
-				'lan_pfx' => '',
-				'id' => 4,
-			);
-			$this->ranks['data'][5] = array(
-				'name' => '',
-				'thresh' => 580,
-				'image' => 'lev5.png',
-				'lan_pfx' => '',
-				'id' => 5,
-			);
-			$this->ranks['data'][6] = array(
-				'name' => '',
-				'thresh' => 760,
-				'image' => 'lev6.png',
-				'lan_pfx' => '',
-				'id' => 6,
-			);
-			$this->ranks['data'][7] = array(
-				'name' => '',
-				'thresh' => 950,
-				'image' => 'lev7.png',
-				'lan_pfx' => '',
-				'id' => 7,
-			);
-			$this->ranks['data'][8] = array(
-				'name' => '',
-				'thresh' => 1150,
-				'image' => 'lev8.png',
-				'lan_pfx' => '',
-				'id' => 8,
-			);
-			$this->ranks['data'][9] = array(
-				'name' => '',
-				'thresh' => 1370,
-				'image' => 'lev9.png',
-				'lan_pfx' => '',
-				'id' => 9,
-			);
-			$this->ranks['data'][10] = array(
-				'name' => '',
-				'thresh' => 1371,
-				'image' => 'lev10.png',
-				'lan_pfx' => '',
-				'id' => 10,
-			);
-			// special
-			$this->ranks['special'][1] = array(
-				'name' => UC_LAN_6,
-				'thresh' => 1,
-				'image' => 'English_main_admin.png',
-				'lan_pfx' => '1',
-				'id' => 11,
-			);
-			$this->ranks['special'][2] = array(
-				'name' => UC_LAN_5,
-				'thresh' => 2,
-				'image' => 'English_admin.png',
-				'lan_pfx' => '1',
-				'id' => 12,
-			);
-			$this->ranks['special'][3] = array(
-				'name' => UC_LAN_7,
-				'thresh' => 3,
-				'image' => 'English_moderator.png',
-				'lan_pfx' => '1',
-				'id' => 13,
-			);
+		$ranks = array('data' => array(), 'special' => array());
+
+		foreach(array(20, 100, 250, 410, 580, 760, 950, 1150, 1370, 1371) as $index => $thresh)
+		{
+			$level = $index + 1;
+			$ranks['data'][$level] = array('name' => '', 'thresh' => $thresh, 'image' => 'lev'.$level.'.png', 'lan_pfx' => '', 'id' => $level);
+		}
+
+		$specials = array(
+			1 => array(UC_LAN_6, 'English_main_admin.png'),
+			2 => array(UC_LAN_5, 'English_admin.png'),
+			3 => array(UC_LAN_7, 'English_moderator.png'),
+		);
+
+		foreach($specials as $special => $rank)
+		{
+			$ranks['special'][$special] = array('name' => $rank[0], 'thresh' => $special, 'image' => $rank[1], 'lan_pfx' => '1', 'id' => $special + 10);
+		}
+
+		return $ranks;
 	}
 
 
