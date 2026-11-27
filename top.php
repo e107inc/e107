@@ -30,10 +30,10 @@ $view = 10;
 if (e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
-	$from = intval(varset($tmp[0], 0));
+	$from = max(0, intval(varset($tmp[0], 0)));
 	$action = varset($tmp[1], 'top');
 	$subaction = varset($tmp[2], 'all');
-	$view = (isset($tmp[3]) ? intval($tmp[3]) : 10);
+	$view = (isset($tmp[3]) ? max(0, intval($tmp[3])) : 10);
 }
 if ($action == 'top')
 {

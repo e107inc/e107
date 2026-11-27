@@ -39,6 +39,21 @@ class topPageTest extends \Codeception\Test\Unit
 		self::assertLeftNoQueryError($page, "the most active topics query failed:\n".$page);
 	}
 
+	public function testANegativeOffsetOrPageSizeSendsNoFailingQuery()
+	{
+		$this->haveForum('e107help top probe forum', $this->haveForum('e107help top probe category'));
+
+		foreach(array('-1.active', '0.active.forum.-1') as $query)
+		{
+			$page = $this->renderActiveTopics($query);
+
+			self::assertGreaterThan(0, $this->viewableForums($page),
+				"the visitor may read no forum, so on the unfixed page the empty IN () list, not the paging, would fail the query:\n".$page);
+
+			self::assertLeftNoQueryError($page, "the most active topics query for top.php?".$query." failed:\n".$page);
+		}
+	}
+
 	/**
 	 * @param string $query the query string top.php is opened with
 	 * @return string the page, with the number of forums the child may view and the error its last query left behind
