@@ -14,6 +14,8 @@
  */
 class pageVisibilityTest extends \Test\Unit
 {
+	use \Test\PageRows;
+
 	const PREFIX = 'uc_probe_';
 
 	/** @var int a userclass the runtime user is not a member of */
@@ -34,7 +36,6 @@ class pageVisibilityTest extends \Test\Unit
 		$this->assertNotContains((string) $this->absentClass, explode(',', USERCLASS_LIST), 'This test needs a userclass the runtime user is outside of.');
 		$this->assertSame('0', (string) e107::getDb()->retrieve('page_chapters', 'chapter_visibility', 'chapter_id = '.self::CHAPTER), 'This test needs a chapter everybody may see.');
 
-		$this->removeProbeRows();
 		$this->addPage('public', 0);
 		$this->addPage('restricted', $this->absentClass);
 		$this->addPage('inverted', -$this->absentClass);
@@ -42,7 +43,7 @@ class pageVisibilityTest extends \Test\Unit
 
 	protected function _after()
 	{
-		$this->removeProbeRows();
+		$this->removePages();
 	}
 
 	public function testTheChapterPageListKeepsAPageHiddenFromAnotherClass()
@@ -62,19 +63,6 @@ class pageVisibilityTest extends \Test\Unit
 	 */
 	private function addPage($name, $class)
 	{
-		return (int) e107::getDb()->insert('page', array(
-			'page_title'     => self::PREFIX.$name,
-			'page_sef'       => self::PREFIX.$name,
-			'page_chapter'   => self::CHAPTER,
-			'page_class'     => (string) $class,
-			'page_text'      => 'probe',
-			'page_datestamp' => time(),
-			'page_order'     => 1,
-		));
-	}
-
-	private function removeProbeRows()
-	{
-		e107::getDb()->delete('page', "page_title LIKE '".self::PREFIX."%'");
+		return $this->havePage(self::PREFIX.$name, array('page_chapter' => self::CHAPTER, 'page_class' => (string) $class));
 	}
 }

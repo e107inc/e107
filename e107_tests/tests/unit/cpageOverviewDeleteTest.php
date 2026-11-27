@@ -15,6 +15,7 @@
 class cpageOverviewDeleteTest extends \Test\Unit
 {
 	use \Test\ScriptClassPages;
+	use \Test\PageRows;
 
 	const TITLE = 'cpageOverviewDeleteTest';
 
@@ -33,22 +34,16 @@ class cpageOverviewDeleteTest extends \Test\Unit
 	{
 		\Test\CoreTable::create('admin_history');
 
-		$this->page = (int) e107::getDb()->createQueryBuilder()->insert('page')->insertGetId(array(
-			'page_title' => self::TITLE,
-			'page_sef'   => strtolower(self::TITLE),
-			'page_text'  => 'The page body the delete takes.',
-			'page_class' => '0',
-			'menu_name'  => self::TITLE,
+		$this->page = $this->havePage(self::TITLE, array(
+			'page_text' => 'The page body the delete takes.',
+			'menu_name' => self::TITLE,
 		));
-
-		self::assertGreaterThan(0, $this->page, 'the page was not seeded');
 	}
 
 	protected function _after()
 	{
-		$db = e107::getDb();
-		$db->createQueryBuilder()->delete('page')->where('page_title', self::TITLE)->execute();
-		$db->createQueryBuilder()->delete('menus')->where('menu_name', self::TITLE)->execute();
+		$this->removePages();
+		e107::getDb()->createQueryBuilder()->delete('menus')->where('menu_name', self::TITLE)->execute();
 
 		\Test\CoreTable::drop('admin_history');
 	}

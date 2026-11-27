@@ -16,6 +16,7 @@ class cpageScriptAddressTest extends \Test\Unit
 	use \Test\ScriptClassPages;
 	use \Test\PageChapters;
 	use \Test\CoreColumns;
+	use \Test\PageRows;
 
 	const TITLE = 'cpageScriptAddressTest';
 
@@ -35,6 +36,7 @@ class cpageScriptAddressTest extends \Test\Unit
 	protected function _after()
 	{
 		$db = e107::getDb();
+		$this->removePages();
 		$db->createQueryBuilder()->delete('page')->whereLike('page_title', self::TITLE.'%')->execute();
 		$this->dropChapters();
 		$db->createQueryBuilder()->delete('menus')->where('menu_name', self::TITLE)->execute();
@@ -285,19 +287,13 @@ class cpageScriptAddressTest extends \Test\Unit
 	 */
 	private function seedPage($address, array $fields)
 	{
-		$id = (int) e107::getDb()->createQueryBuilder()->insert('page')->insertGetId(array(
-			'page_title'      => self::TITLE,
-			'page_sef'        => strtolower(self::TITLE),
+		return $this->havePage(self::TITLE, array(
 			'page_chapter'    => $fields ? $this->chapter : 0,
 			'page_text'       => 'Text',
 			'page_fields'     => $fields ? e107::serialize($fields, 'json') : '',
 			'menu_name'       => self::TITLE,
 			'menu_button_url' => $address,
 		));
-
-		self::assertGreaterThan(0, $id, 'the page was not seeded');
-
-		return $id;
 	}
 
 	/**
