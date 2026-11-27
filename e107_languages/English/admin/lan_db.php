@@ -144,4 +144,8 @@ return [
     'DBLAN_SITE_FOLDER_REMOVED' => "The folder [x] was removed.",
     'DBLAN_SITE_FOLDER_REMOVE_FAILED' => "The folder [x] still holds files and was not removed.",
     'DBLAN_OPTIMIZE_TABLE_FAILED' => "Table [x] was not optimized: [y]",
+    'DBLAN_HTTP_CONTENT' => "Content over http://",
+    'DBLAN_HTTP_CONTENT_HELP' => "List the tables whose content still embeds this site's own address over http://, which browsers block or warn about on an HTTPS site. Nothing is changed.",
+    'DBLAN_HTTP_CONTENT_FOUND' => "Content still embeds one of [y] in: [x]. Those entries need editing by hand to use https:// or a relative address.",
+    'DBLAN_HTTP_CONTENT_NONE' => "No content in [x] embeds this site's own address over http://. Other plugin tables and theme files were not checked.",
 ];

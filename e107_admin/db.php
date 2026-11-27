@@ -182,6 +182,18 @@ class system_tools
 	/** @var db_verify|null */
 	private $dbv;
 
+	/** @var array<string, string[]> the columns of stored content that can spell out an address, by table */
+	private static $contentColumns = array(
+		'news' => array('news_body', 'news_extended'),
+		'page' => array('page_text'),
+		'comments' => array('comment_comment'),
+		'core' => array('e107_value'),
+		'forum_post' => array('post_entry'),
+		'private_msg' => array('pm_text'),
+		'generic' => array('gen_chardata'),
+		'user' => array('user_signature'),
+	);
+
 
 	function __construct()
 	{
@@ -198,6 +210,7 @@ class system_tools
 			'importForm'			=> array('diz'=>DBLAN_59, 'label'=> DBLAN_59, 'icon'=>'fas-file-import.glyph'),
 			'exportForm'			=> array('diz'=>DBLAN_58, 'label'=> DBLAN_58, 'icon'=>'fas-file-export.glyph'),
 			'sc_override_scan'		=> array('diz'=>DBLAN_55, 'label'=> DBLAN_56, 'icon'=>'fas-search.glyph'),
+			'http_content'			=> array('diz'=>DBLAN_HTTP_CONTENT_HELP, 'label'=> DBLAN_HTTP_CONTENT, 'icon'=>'fas-unlock.glyph'),
 			'convert_to_utf8'		=> array('diz'=>DBLAN_64,'label'=>DBLAN_65, 'icon'=>'fas-language.glyph'),
 			'correct_perms'			=> array('diz'=>DBLAN_66,'label'=>DBLAN_67, 'icon'=>'fas-folder.glyph'),
 			'backup'				=> array('diz'=>DBLAN_68,'label'=>DBLAN_69, 'icon'=>'fas-archive.glyph')
@@ -362,6 +375,12 @@ class system_tools
 		if(varset($_GET['mode'])=='multisite')
 		{
 			$this->multiSite();	
+			return;
+		}
+
+		if(varset($_GET['mode']) == 'http_content')
+		{
+			$this->httpContent();
 			return;
 		}
 
@@ -831,7 +850,7 @@ class system_tools
 			$mes->addError(defset('DBLAN_SITE_FOLDER_FAILED', "These files could not be moved:")."<ul><li>".implode("</li><li>", $failed)."</li></ul>");
 		}
 
-		$references = $this->siteFolderReferences($hash);
+		$references = self::tablesWithRows($this->contentRowsContaining(array(e107::getFolder('media_base').$hash.'/', e107::getFolder('system_base').$hash.'/')));
 
 		if(!empty($references))
 		{
@@ -867,24 +886,68 @@ class system_tools
 	}
 
 	/**
-	 * @param string $hash
-	 * @return string[] 'table (rows)' for every content table with rows that still spell out a path under that hash
+	 * Lists the content tables that still embed this site's own address over http://; it changes nothing.
+	 *
+	 * @return void
 	 */
-	private function siteFolderReferences($hash)
+	private function httpContent()
 	{
-		$sql = e107::getDb();
-		$columns = array(
-			'news' => array('news_body', 'news_extended'),
-			'page' => array('page_text'),
-			'comments' => array('comment_comment'),
-			'core' => array('e107_value'),
-			'forum_post' => array('post_entry'),
-			'private_msg' => array('pm_text'),
-		);
-		$needles = array(e107::getFolder('media_base').$hash.'/', e107::getFolder('system_base').$hash.'/');
+		$mes = e107::getMessage();
+		$tp = e107::getParser();
+		$needles = array();
+
+		foreach(e107::normaliseTrustedHostList(array_merge(array(SITEURL, (string) e107::getPref('siteurl')), e107::normaliseTrustedHostList(e107::getPref('trusted_hosts')))) as $host)
+		{
+			$needles[] = 'http://'.$host.'/';
+			$needles[] = 'http://www.'.$host.'/';
+		}
+
+		$rows = $this->contentRowsContaining($needles);
+		$found = self::tablesWithRows($rows);
+
+		if(empty($found))
+		{
+			$mes->addSuccess($tp->lanVars(DBLAN_HTTP_CONTENT_NONE, array('x' => implode(', ', array_keys($rows)))));
+		}
+		else
+		{
+			$mes->addWarning($tp->lanVars(DBLAN_HTTP_CONTENT_FOUND, array('x' => implode(', ', $found), 'y' => implode(', ', $needles))));
+		}
+
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_HTTP_CONTENT, $mes->render());
+	}
+
+	/**
+	 * @param array<string, int> $rows matching rows by table
+	 * @return string[] 'table (rows)' for every table with a matching row
+	 */
+	private static function tablesWithRows(array $rows)
+	{
 		$found = array();
 
-		foreach($columns as $table => $names)
+		foreach($rows as $table => $count)
+		{
+			if($count > 0)
+			{
+				$found[] = $table.' ('.$count.')';
+			}
+		}
+
+		return $found;
+	}
+
+	/**
+	 * Leaves out the core preferences' backup rows.
+	 *
+	 * @param string[] $needles
+	 * @return array<string, int> how many rows of each content table this site has hold any of the needles, none when there are no needles
+	 */
+	private function contentRowsContaining(array $needles)
+	{
+		$sql = e107::getDb();
+		$rows = array();
+
+		foreach(self::$contentColumns as $table => $names)
 		{
 			if(!$sql->isTable($table))
 			{
@@ -892,27 +955,34 @@ class system_tools
 			}
 
 			$query = $sql->createQueryBuilder()->from($table);
-			$first = true;
+			$expr = $query->expr();
+			$matches = array();
 
 			foreach($names as $column)
 			{
 				foreach($needles as $needle)
 				{
-					$condition = $query->expr()->contains($column, $needle);
-					$first ? $query->where($condition) : $query->orWhere($condition);
-					$first = false;
+					$matches[] = $expr->contains($column, $needle);
 				}
 			}
 
-			$rows = $query->count();
-
-			if($rows > 0)
+			if(empty($matches))
 			{
-				$found[] = $table.' ('.$rows.')';
+				$rows[$table] = 0;
+				continue;
 			}
+
+			$query->where($expr->anyOf(...$matches));
+
+			if($table === 'core')
+			{
+				$query->andWhere($expr->not($expr->endsWith('e107_name', '_Backup')));
+			}
+
+			$rows[$table] = (int) $query->count();
 		}
 
-		return $found;
+		return $rows;
 	}
 
 	/**
