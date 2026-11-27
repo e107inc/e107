@@ -388,7 +388,6 @@ class e_parse
 		// initialise the type of UTF-8 processing methods depending on PHP version and mb string extension
 		$this->domObj = new DOMDocument('1.0', 'utf-8');
 		$this->init();
-		$this->compileAttributeDefaults();
 
 	}
 
@@ -5822,6 +5821,7 @@ class e_parse
 			'default' => array()
 		);
 
+		$this->compileAttributeDefaults();
 	}
 
 	/**

@@ -35,6 +35,14 @@ class e_parseTest extends \Test\Unit
 		$this->tp->init();
 	}
 
+	public function testInitPutsBackTheDefaultAttributesOfEveryTag()
+	{
+		$this->tp->setAllowedAttributes(array('default' => array()));
+		$this->tp->init();
+
+		self::assertSame((new e_parse())->getAllowedAttributes(), $this->tp->getAllowedAttributes());
+	}
+
 	public function testToRoute()
 	{
 
