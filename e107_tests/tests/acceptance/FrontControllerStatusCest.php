@@ -82,6 +82,7 @@ class FrontControllerStatusCest
 	{
 		$preferences = array(
 			'route:index/index/index' => array(500, self::SERVER_ERROR, array('Infinite loop')),
+			'e107-tests-gone.php' => array(404, self::NOT_FOUND, array('destination unreachable', 'e107-tests-gone.php')),
 			'url:e107-tests-no-such-module/thing' => array(404, self::NOT_FOUND, array()),
 		);
 
@@ -91,13 +92,6 @@ class FrontControllerStatusCest
 
 			$this->seeErrorPageAtEach($I, array('/'), $page[0], $page[1], $page[2]);
 		}
-	}
-
-	public function aFrontPageThatPointsAtAMissingScriptIsAnsweredInPlainTextWithStatus200(AcceptanceTester $I)
-	{
-		$I->haveSitePrefUntilAfter('frontpage/0', 'e107-tests-gone.php');
-
-		$this->seePlainTextAtEach($I, array('/'), 'Bad request - destination unreachable - ./e107-tests-gone.php');
 	}
 
 	public function theErrorScriptAnswersWithTheStatusItIsAskedFor(AcceptanceTester $I)
@@ -139,23 +133,6 @@ class FrontControllerStatusCest
 			{
 				$I->dontSeeInSource($text);
 			}
-		}
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string[] $addresses
-	 * @param string $text the whole body
-	 * @return void
-	 */
-	private function seePlainTextAtEach(AcceptanceTester $I, array $addresses, $text)
-	{
-		foreach($addresses as $address)
-		{
-			$I->amOnPage($address);
-
-			$I->seeResponseCodeIs(200);
-			$I->assertSame($text, $I->grabResponseBody());
 		}
 	}
 }

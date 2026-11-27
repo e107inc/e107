@@ -11,6 +11,9 @@ abstract class FrontControllerFixture extends eController
 	/** @var string where the forward controller's to action forwards */
 	public static $forwardTo = '';
 
+	/** @var string the legacy script the lifecycle controller's legacy action names */
+	public static $legacyScript = '';
+
 	public function init()
 	{
 		$this->record('init');
@@ -92,6 +95,11 @@ class core_frontfixture_lifecycle_controller extends FrontControllerFixture
 	public function actionGone()
 	{
 		throw new eException('The fixture has no such item', 404);
+	}
+
+	public function actionLegacy()
+	{
+		eFront::isLegacy(self::$legacyScript);
 	}
 }
 

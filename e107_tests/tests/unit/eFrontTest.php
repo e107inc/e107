@@ -400,6 +400,30 @@ class eFrontTest extends \Test\Unit
 		$this->assertErrorPage($report, 500, 'LAN_ERROR_10');
 	}
 
+	public function testALegacyScriptThatIsNotThereIsForwardedToTheNotFoundPage()
+	{
+		$report = $this->runRouteInChild('frontfixture/lifecycle/legacy', "FrontControllerFixture::\$legacyScript = '{e_BASE}e107-tests-gone.php'; ");
+
+		self::assertTrue($report['returned']);
+		self::assertSame('system/error/notfound', $report['route']);
+		self::assertSame('', $report['legacy']);
+		$this->assertErrorPage($report, 404, 'LAN_ERROR_7');
+		self::assertCount(1, $report['debug']);
+		self::assertStringEndsWith('e107-tests-gone.php', $report['debug'][0]);
+		self::assertStringNotContainsString('e107-tests-gone.php', $this->printedBesidesTheReport($report));
+	}
+
+	public function testALegacyScriptThatIsThereIsLeftToTheCaller()
+	{
+		$report = $this->runRouteInChild('frontfixture/lifecycle/legacy', "FrontControllerFixture::\$legacyScript = '{e_BASE}news.php'; ");
+
+		self::assertTrue($report['returned']);
+		self::assertSame('frontfixture/lifecycle/legacy', $report['route']);
+		self::assertStringEndsWith('news.php', $report['legacy']);
+		self::assertFalse($report['status']);
+		self::assertSame(array(), $report['debug']);
+	}
+
 	public function testANotFoundRouteThatCannotBeDispatchedIsAServerError()
 	{
 		$report = $this->runRouteInChild('frontfixture/lifecycle/missing', "\$front->getRouter()->notFoundRoute = 'frontfixture/missing/index'; ");

@@ -510,6 +510,7 @@ class eFront
 		try 
 		{
 			$this->dispatch();
+			$this->refuseAMissingLegacyScript();
 		}
 		catch(eException $e)
 		{
@@ -519,6 +520,20 @@ class eFront
 		
 	}
 
+	/**
+	 * @return void
+	 * @throws eException when the route's legacy script is not a readable file, which index.php would otherwise include
+	 */
+	private function refuseAMissingLegacyScript()
+	{
+		$legacy = self::isLegacy();
+
+		if($legacy && (!is_file($legacy) || !is_readable($legacy)))
+		{
+			throw new eException('Bad request - destination unreachable - '.$legacy, 404);
+		}
+	}
+	
 	/**
 	 * Application instance (e107 class)
 	 * @return e107
