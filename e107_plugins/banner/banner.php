@@ -76,7 +76,7 @@ if (isset($_POST['clientsubmit']))
 	// TODO: massive clean-up (integrate e107 users, proper login handling, password encryption for new and existing records)
 	if (!$sql->select("banner", "*", "`banner_clientlogin` = '{$clean_login}' AND `banner_clientpassword` = '{$clean_password}'")) {
 		$mes->addError(BANNERLAN_20);
-		$ns->tablerender(PAGE_NAME, $mes->render());
+		$ns->tablerender(LAN_PLUGIN_BANNER_NAME, $mes->render());
 		require_once(FOOTERF);
 		exit;
 	}
@@ -88,7 +88,7 @@ if (isset($_POST['clientsubmit']))
 	if(!$banner_total) 
 	{	
 		$mes->addInfo(LAN_NO_RECORDS_FOUND.": ".LAN_PLUGIN_BANNER_NAME); 
-		$ns->tablerender(PAGE_NAME, $mes->render());
+		$ns->tablerender(LAN_PLUGIN_BANNER_NAME, $mes->render());
 		require_once(FOOTERF);
 		exit;
 	} 
@@ -130,7 +130,7 @@ if (isset($_POST['clientsubmit']))
 	$textend = $tp->parseTemplate($BANNER_TABLE_END, true, $scArray);
 	$text = $textstart.$textstring.$textend;
 	 
-	$ns->tablerender(PAGE_NAME, $text);
+	$ns->tablerender(LAN_PLUGIN_BANNER_NAME, $text);
 	 
 	require_once(FOOTERF);
 	exit;
