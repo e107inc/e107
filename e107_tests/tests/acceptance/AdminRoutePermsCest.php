@@ -1997,16 +1997,16 @@ class AdminRoutePermsCest
 		$I->dontSeeInDatabase('e107_featurebox', array('fb_title' => 'p7rp both'));
 	}
 
-	/** The overview's delete key deletes nothing on any route but the overview list, even for an administrator who may delete. */
-	public function theOverviewDeleteKeyDeletesNothingOnAnyOtherRoute(AcceptanceTester $I)
+	/** The key the overview's delete button used to post deletes nothing on any route, the overview list included, even for an administrator who may delete. */
+	public function theRetiredOverviewDeleteKeyDeletesNothingOnAnyRoute(AcceptanceTester $I)
 	{
-		$I->wantTo('Delete nothing for the overview delete key posted to any route but the overview list');
+		$I->wantTo('Delete nothing for the retired overview delete key posted to any route');
 
 		$page = $this->seedPageRow($I, 'p7rp page', 'p7rp menu');
 
 		$this->loginAsDelegatedAdmin($I, 'p7rp5J1admin');
 
-		foreach(array(self::ROUTE_PAGE_LIST, self::ROUTE_PAGE_EDIT.$page, self::ROUTE_OVERVIEW_EDIT.$page, self::ROUTE_MENU_LIST) as $route)
+		foreach(array(self::ROUTE_OVERVIEW_LIST, self::ROUTE_PAGE_LIST, self::ROUTE_PAGE_EDIT.$page, self::ROUTE_OVERVIEW_EDIT.$page, self::ROUTE_MENU_LIST) as $route)
 		{
 			$I->sendPostRequest($route, array(
 				'menu_delete' => array($page => $page),
@@ -2026,10 +2026,10 @@ class AdminRoutePermsCest
 
 		$this->loginAsDelegatedAdmin($I, 'p7rp5admin');
 		$I->amOnPage(self::ROUTE_OVERVIEW_LIST);
-		$I->dontSeeElement("button[name='menu_delete[{$page}]']");
+		$I->dontSeeElement("button[name='etrigger_delete[{$page}]']");
 
 		$I->sendPostRequest(self::ROUTE_OVERVIEW_LIST, array(
-			'menu_delete' => array($page => $page),
+			'etrigger_delete' => array($page => $page),
 			'e-token'     => $I->grabToken(),
 		));
 
