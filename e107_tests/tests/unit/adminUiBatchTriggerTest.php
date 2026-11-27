@@ -25,6 +25,8 @@
  */
 class adminUiBatchTriggerTest extends \Codeception\Test\Unit
 {
+	use \Test\DebugMessages;
+
 	/** @var array|null registry entries replaced by stubUserRegistry() */
 	private $savedUserRegistry;
 
@@ -346,11 +348,11 @@ class adminUiBatchTriggerTest extends \Codeception\Test\Unit
 	 */
 	public function testAFieldWithNoUsableOptionListLeavesTheMenuAndIsNamedInDebug($field)
 	{
-		e107::getMessage()->reset(E_MESSAGE_DEBUG, 'default', false);
+		$this->resetDebugMessages();
 
 		$form = new e_admin_form_ui($this->makeProbe(array()));
 		$markup = $form->renderBatchFilter('batch');
-		$named = implode("\n", (array) e107::getMessage()->get(E_MESSAGE_DEBUG, 'default', true, true));
+		$named = $this->debugMessages();
 
 		$this->assertStringContainsString('attach_all__gen_options', $markup,
 			'A field that offers no option list must not take the rest of the batch menu down with it.');
