@@ -35,7 +35,7 @@ class core_user_url extends eUrlConfig
 	 * - profile/view?id=xxx -> user.php?id.xxx
 	 * - profile/list?page=xxx&records=yyy&order=zzz -> user.php?xxx.yyy.zzz
 	 * - myprofile/view -> user.php
-	 * - profile/edit?id=xxx -> usersettings.php?xxx
+	 * - profile/edit?id=xxx -> e107_admin/users.php?mode=main&action=edit&id=xxx
 	 * - myprofile/edit -> usersettings.php
 	 * - login/index (or just 'login') -> login.php
 	 * - register/index (or just 'register') -> signup.php
@@ -73,8 +73,7 @@ class core_user_url extends eUrlConfig
 				break;
 				
 				case 'edit':
-					//$url = e_ADMIN_ABS."user.php?mode=main&action=edit&id=".$params['id'];// 'usersettings.php?'.$params['id'];
-					$url = e_ADMIN."users.php?mode=main&action=edit&id=".$params['id'];// 'usersettings.php?'.$params['id'];
+					$url = e_ADMIN."users.php?mode=main&action=edit&id=".$params['id'];
 				break;
 			}
 		}
