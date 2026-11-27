@@ -71,6 +71,23 @@ class e_ranksTest extends \Codeception\Test\Unit
 		$this::assertSame('Helper', $rank['name']);
 	}
 
+	public function testAMemberPassedAsARowIsRanked()
+	{
+		$this->seedLevels();
+
+		$rank = (new e_ranks(true))->getRanks(array(
+			'user_id'       => 990001,
+			'user_admin'    => 0,
+			'user_join'     => 0,
+			'user_comments' => 0,
+			'user_chats'    => 0,
+			'user_visits'   => 0,
+		));
+
+		$this::assertSame(1, $rank['value']);
+		$this::assertStringContainsString("lev1.png'", $rank['pic']);
+	}
+
 	/**
 	 * @param int $special 1 main admin, 2 admin, 3 moderator, 0 a level
 	 * @param string $name
