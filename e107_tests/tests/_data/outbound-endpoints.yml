@@ -50,11 +50,6 @@ e107.org:
     trigger: opening Language > Tools, and a download; no pref, not cached
     where: lancheck::getOnlineLanguagePacks(), language_ui (e107_admin/language.php)
     seen: [acceptance]
-  - url: https://e107.org/e-install/<base64 of site name, theme, language, URL, version, PHP version>
-    purpose: install and upgrade statistics, as an image
-    side: browser
-    trigger: the installer's last page and its table-creation error page; the footer of a core update; no pref
-    where: e_install::stats() (install.php), theme_foot() (e107_admin/update_routines.php)
 
 feed and catalogue images:
   - url: thumbnail, icon and screenshot URLs from the add-on feed and the catalogue

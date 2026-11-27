@@ -2021,7 +2021,6 @@ return [
 			$page = $errors."<br />";
 			$alertType = 'error';
 
-			$this->stats();
 			$this->finish_form();
 		}
 		else
@@ -2056,8 +2055,6 @@ return [
 
 			$this->add_finish_link(LAN_CONTINUE);
 
-			$this->stats();
-
 			// The install is over, so there is no state left to resume. Dropping
 			// the cookie also takes the installer's ambient authority off the
 			// browser instead of leaving it to be sent to the new site.
@@ -2082,19 +2079,6 @@ return [
 </e107Filetypes>';
 
 		return file_put_contents($this->e107->e107_dirs['SYSTEM_DIRECTORY']."filetypes.xml",$data);
-
-	}
-
-
-
-	protected function stats()
-	{
-		global $e_forms;
-
-		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>varset($_SERVER['SCRIPT_URL']),'version'=> defset('e_VERSION'), 'php'=>defset('PHP_VERSION'));
-		$base = base64_encode(http_build_query($data, '','&'));
-		$url = "https://e107.org/e-install/".$base;
-		$e_forms->add_plain_html("<img src='".$url."' style='width:1px; height:1px' />");
 
 	}
 

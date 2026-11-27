@@ -25,6 +25,9 @@ class AdminLogin extends AppFixture
 	const ADMIN_USER = 'admin';
 	const ADMIN_PASS = 'x107';
 	const LOGIN_PATH = '/e107_admin/admin.php';
+	const CORE_UPDATE_PATH = '/e107_admin/e107_update.php';
+	/** An admin page whose form carries the session's token. */
+	const TOKEN_FORM_PATH = '/e107_admin/db.php?mode=importForm';
 	// The dashboard greets "<DisplayName>'s Control Panel"; match the suffix so
 	// the marker is independent of the logged-in account's display name.
 	const CONTROL_PANEL_MARKER = "'s Control Panel";
@@ -170,6 +173,18 @@ class AdminLogin extends AppFixture
 		$this->browser()->amOnPage($adminPagePath);
 
 		return $this->grabToken();
+	}
+
+	/**
+	 * Open the core update page as the signed-in main administrator, with the session's token in the address: the page refuses a GET that brings none.
+	 *
+	 * @return void
+	 */
+	public function amOnCoreUpdatePage()
+	{
+		$token = $this->grabFreshAdminToken(self::TOKEN_FORM_PATH);
+
+		$this->browser()->amOnPage(self::CORE_UPDATE_PATH.'?e-token='.$token);
 	}
 
 	/**

@@ -187,9 +187,8 @@ class DbUtilitiesCsrfCest
 	public function theTokenisedUpdateLinkStillListsTheCoreUpdate(AcceptanceTester $I)
 	{
 		$I->expectOutboundRequest('e107.org');
-		$token = $I->grabFreshAdminToken(self::MENU . '?mode=importForm');
 
-		$I->amOnPage(self::UPDATE_PAGE . '?e-token=' . $token);
+		$I->amOnCoreUpdatePage();
 
 		$I->seeInSource(self::UPDATE_LISTED);
 		$I->dontSeeInSource(self::REFUSED);
