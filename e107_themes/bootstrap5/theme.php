@@ -39,7 +39,6 @@ if(!defined('e107_INIT'))
 		{
 			e107::css('theme', THEME_STYLE);
 			e107::css('theme', 'style.css'); // always load style.css last.
-			e107::css('inline', '#carousel-hero.carousel {   margin-bottom: 80px; }');
 
 		}
 		/**
