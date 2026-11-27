@@ -57,8 +57,6 @@ if ($action == 'active')
 	require_once (e_PLUGIN.'forum/forum_class.php');
 	$forum = new e107forum();
 
-	$forumList = implode(',', $forum->getForumPermList('view'));
-
 	$qry = "
 	SELECT
 		t.*, u.user_name, ul.user_name AS user_last, f.forum_name
@@ -66,7 +64,7 @@ if ($action == 'active')
 	LEFT JOIN `#forum` AS f ON f.forum_id = t.thread_forum_id
 	LEFT JOIN `#user` AS u ON u.user_id = t.thread_user
 	LEFT JOIN `#user` AS ul ON ul.user_id = t.thread_lastuser
-	WHERE t.thread_forum_id IN ({$forumList})
+	WHERE ".e107forum::threadVisibleSql('t')."
 	ORDER BY t.thread_views DESC
 	LIMIT
 		{$from}, {$view}

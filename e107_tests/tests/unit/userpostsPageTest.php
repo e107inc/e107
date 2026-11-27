@@ -57,12 +57,12 @@ class userpostsPageTest extends \Codeception\Test\Unit
 
 	/**
 	 * @param string $search what the visitor searched their posts for, '' for no search
-	 * @return string the page, then the error the posts query left behind as @@QUERY-ERROR=...@@
+	 * @return string the page, then the error the posts query left behind, as {@see \Test\BootedCli::queryErrorProbe()} prints it
 	 */
 	private function renderForumPosts($search)
 	{
 		$seed = "error_reporting(E_ALL); ";
-		$seed .= "register_shutdown_function(function() { echo \"\\n@@QUERY-ERROR=\", e107::getDb('posts')->getLastErrorText(), \"@@\\n\"; }); ";
+		$seed .= self::queryErrorProbe('posts');
 
 		if($search !== '')
 		{
@@ -81,8 +81,7 @@ class userpostsPageTest extends \Codeception\Test\Unit
 		self::assertStringContainsString("<span class='mediumtext'>".UP_LAN_8.'</span>', $page,
 			"the page never reached the branch for an empty result, so nothing was measured:\n".$page);
 
-		self::assertStringContainsString('@@QUERY-ERROR=@@', $page,
-			"the posts query failed rather than found nothing:\n".$page);
+		self::assertLeftNoQueryError($page, "the posts query failed rather than found nothing:\n".$page);
 
 		self::assertReadNoUndefinedVariable('ftext', $page,
 			"the empty result is appended to a variable nothing set:\n".$page);

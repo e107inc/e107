@@ -164,6 +164,29 @@ trait BootedCli
 	}
 
 	/**
+	 * Seed PHP that prints the last error on one database handle as the child exits, for {@see BootedCli::assertLeftNoQueryError()} to read.
+	 *
+	 * @param string $instance the {@see e107::getDb()} instance, '' for the default handle
+	 * @return string
+	 */
+	protected static function queryErrorProbe($instance = '')
+	{
+		return "register_shutdown_function(function() { echo \"\\n@@QUERY-ERROR=\", e107::getDb(".var_export($instance, true).")->getLastErrorText(), \"@@\\n\"; }); ";
+	}
+
+	/**
+	 * Asserts that the last statement on the handle {@see BootedCli::queryErrorProbe()} watched did not fail.
+	 *
+	 * @param string $printed what the child wrote
+	 * @param string $message
+	 * @return void
+	 */
+	protected static function assertLeftNoQueryError($printed, $message)
+	{
+		self::assertStringContainsString('@@QUERY-ERROR=@@', $printed, $message);
+	}
+
+	/**
 	 * Asserts that a child's output reports no read of a missing array key, in the wording of any PHP the suite runs on.
 	 *
 	 * @param string $keys the keys, as a regular expression alternation
