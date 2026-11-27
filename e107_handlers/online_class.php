@@ -306,13 +306,12 @@ class e_online
 						$ip = e107::getIPHandler()->ipDecode($ip);
 						e107::getEvent()->trigger('flood', $ip); //BC
 						e107::getEvent()->trigger('user_ban_flood', $ip);
-						exit;
+						e107::getIPHandler()->refuseRequest(429, '');
 					}
 				}
 				elseif ($row['online_pagecount'] >= $online_warncount)
 				{
-					echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>".LAN_WARNING."</b><br /><br />".CORE_LAN6."<br /></div>";
-					exit;
+					e107::getIPHandler()->refuseRequest(429, "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>".LAN_WARNING."</b><br /><br />".CORE_LAN6."<br /></div>");
 				}
 			}
 

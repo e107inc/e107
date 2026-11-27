@@ -1,7 +1,8 @@
 <?php
 
 /**
- * The flood check adds a ban only from the request that flags the address, once per counting window.
+ * The flood check adds a ban only from the request that flags the address, once per counting window, and answers 429;
+ * a banned address is answered 403, and a feed fetched through its SEF address is not counted.
  */
 class FloodBanCest
 {
@@ -23,9 +24,55 @@ class FloodBanCest
 
 		$this->requestAsGuestFrom($I, '203.0.113.84');
 
+		$I->seeResponseCodeIs(429);
 		$I->assertSame('', trim($I->grabPageSource()));
 		$I->seeNumRecords(1, 'e107_banlist', array('banlist_ip' => $stored));
 		$I->seeInDatabase('e107_online', array('online_ip' => $stored, 'online_flag' => 1));
+	}
+
+	public function aRequestNearTheThresholdIsWarnedWith429(AcceptanceTester $I)
+	{
+		$stored = '0000:0000:0000:0000:0000:ffff:cb00:715a';
+		$this->haveOnlineRow($I, '0', $stored, 95, 0, time());
+
+		$this->requestAsGuestFrom($I, '203.0.113.90');
+
+		$I->seeResponseCodeIs(429);
+		$I->see('The flood protection on this site has been activated');
+		$I->seeNumRecords(0, 'e107_banlist', array('banlist_ip' => $stored));
+	}
+
+	public function theNextRequestFromABannedAddressIsRefusedWith403(AcceptanceTester $I)
+	{
+		$this->haveOnlineRow($I, '0', '0000:0000:0000:0000:0000:ffff:cb00:715b', 150, 0, time());
+		$this->requestAsGuestFrom($I, '203.0.113.91');
+
+		$this->requestAsGuestFrom($I, '203.0.113.91');
+
+		$I->seeResponseCodeIs(403);
+	}
+
+	public function aFeedFetchedThroughItsSefAddressIsNotCounted(AcceptanceTester $I)
+	{
+		$stored = '0000:0000:0000:0000:0000:ffff:cb00:715c';
+		$this->haveOnlineRow($I, '0', $stored, 150, 0, time());
+
+		$this->requestAsGuestFrom($I, '203.0.113.92', '/feed/news/rss');
+
+		$I->seeResponseCodeIs(200);
+		$I->seeInSource('<rss');
+		$I->seeInDatabase('e107_online', array('online_ip' => $stored, 'online_pagecount' => 150));
+		$I->seeNumRecords(0, 'e107_banlist', array('banlist_ip' => $stored));
+	}
+
+	public function aSefPageWithoutTheExemptionIsStillCounted(AcceptanceTester $I)
+	{
+		$stored = '0000:0000:0000:0000:0000:ffff:cb00:715d';
+		$this->haveOnlineRow($I, '0', $stored, 10, 0, time());
+
+		$this->requestAsGuestFrom($I, '203.0.113.93', '/feed');
+
+		$I->seeInDatabase('e107_online', array('online_ip' => $stored, 'online_pagecount' => 11));
 	}
 
 	public function aNewCountingWindowClearsTheFlag(AcceptanceTester $I)
@@ -120,23 +167,25 @@ class FloodBanCest
 	/**
 	 * @param AcceptanceTester $I
 	 * @param string $address the address the harness forwards the request for
+	 * @param string $page
 	 * @return void
 	 */
-	private function requestAsGuestFrom(AcceptanceTester $I, $address)
+	private function requestAsGuestFrom(AcceptanceTester $I, $address, $page = '/index.php')
 	{
 		$I->resetAllCookies();
-		$this->requestFrom($I, $address);
+		$this->requestFrom($I, $address, $page);
 	}
 
 	/**
 	 * @param AcceptanceTester $I
 	 * @param string $address the address the harness forwards the request for
+	 * @param string $page
 	 * @return void
 	 */
-	private function requestFrom(AcceptanceTester $I, $address)
+	private function requestFrom(AcceptanceTester $I, $address, $page = '/index.php')
 	{
 		$I->haveHttpHeader('X-Forwarded-For', $address);
-		$I->amOnPage('/index.php');
+		$I->amOnPage($page);
 		$I->deleteHeader('X-Forwarded-For');
 	}
 }

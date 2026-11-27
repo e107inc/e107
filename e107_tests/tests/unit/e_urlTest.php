@@ -32,7 +32,7 @@ class e_urlTest extends \Codeception\Test\Unit
 		try
 		{
 			$isLegacy = new ReflectionMethod('e_url', 'isLegacy');
-			self::assertFalse($isLegacy->invoke(new e_url()));
+			self::assertFalse($isLegacy->invoke(new e_url(), 'news/list'));
 		}
 		finally
 		{
@@ -46,12 +46,8 @@ class e_urlTest extends \Codeception\Test\Unit
 
 		try
 		{
-			$url = new e_url();
-			$request = new ReflectionProperty('e_url', '_request');
-			$request->setValue($url, 'news/list');
-
 			$isLegacy = new ReflectionMethod('e_url', 'isLegacy');
-			self::assertTrue($isLegacy->invoke($url));
+			self::assertTrue($isLegacy->invoke(new e_url(), 'news/list'));
 		}
 		finally
 		{
@@ -234,9 +230,42 @@ class e_urlTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * @return array $_GET after {@see e_url::run()} has routed $request to $redirect, a page that is not on disk, from $carried, failing the test on any error raised on the way
+	 * class2.php asks which route a request takes before it counts the visit, so the answer may not route the request.
+	 */
+	public function testMatchRouteNamesTheRouteAndItsConfigWithoutRoutingTheRequest()
+	{
+		$matchRoute = function (e_url $url)
+		{
+			return array($url->matchRoute(), $_GET);
+		};
+
+		list($route, $routed) = $this->withRouteProbe('probe/cat=news', array(), '{e_PLUGIN}rss_menu/rss.php?$1', $matchRoute);
+		list($missing) = $this->withRouteProbe('probe/cat=news', array(), '{e_PLUGIN}routeprobe/absent.php?$1', $matchRoute);
+
+		self::assertSame(array('plug', 'key', 'config', 'file', 'query'), array_keys($route));
+		self::assertSame(array('routeprobe', 'probe', true), array($route['plug'], $route['key'], $route['config']['noOnline']));
+		self::assertSame(array(), $routed, 'matching the route left $_GET alone');
+		self::assertNull($missing, 'a route whose page is not on disk is no route');
+	}
+
+	/**
+	 * @return array $_GET after {@see e_url::run()} has routed $request to $redirect, a page that is not on disk, from $carried
 	 */
 	private function routedGet($request, array $carried, $redirect = '{e_PLUGIN}routeprobe/absent.php?$1')
+	{
+		return $this->withRouteProbe($request, $carried, $redirect, function (e_url $url)
+		{
+			$url->run();
+
+			return $_GET;
+		});
+	}
+
+	/**
+	 * @param callable $act given the e_url that routes $request to $redirect through one route, routeprobe/probe, which leaves the visit out of Who's Online
+	 * @return mixed what $act returned, with $_GET set to $carried meanwhile, failing the test on any error raised on the way
+	 */
+	private function withRouteProbe($request, array $carried, $redirect, callable $act)
 	{
 		$restore = $this->withCorePrefs(array('url_config' => null, 'url_aliases' => null, 'e_url_list' => array('routeprobe' => 1)));
 		$get = $_GET;
@@ -256,9 +285,9 @@ class e_urlTest extends \Codeception\Test\Unit
 			(new ReflectionProperty('e_url', '_config'))->setValue($url, array('routeprobe' => array('probe' => array(
 				'regex'    => '^probe/(.*)',
 				'redirect' => $redirect,
+				'noOnline' => true,
 			))));
-			$url->run();
-			$routed = $_GET;
+			$result = $act($url);
 		}
 		finally
 		{
@@ -269,6 +298,6 @@ class e_urlTest extends \Codeception\Test\Unit
 
 		self::assertSame(array(), $raised, 'Routing '.$request.' to '.$redirect.' raised these.');
 
-		return $routed;
+		return $result;
 	}
 }
