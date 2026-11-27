@@ -222,20 +222,21 @@ class drupal_import extends base_import_class
 		if ($this->copyUserInfo)
 		{
 			$target['user_id'] = $source['uid'];
-			$target['user_name'] = $source['name'];
-			$target['user_loginname'] = $source['name'];
-			$target['user_password'] = $source['pass'];
-			$target['user_email'] = $source['mail'];
-			$target['user_signature'] = $source['signature'];
-			$target['user_join'] = (int) $source['created'];
-			$target['user_lastvisit'] = (int) $source['login'];
-			$target['user_timezone'] = $source['timezone'];
-			$target['user_language'] = $source['language'];
-			$user_image = $this->fileSaveAvatar($source);
-			$target['user_image'] = $user_image;
-
-			return $target;
 		}
+
+		$target['user_name'] = $source['name'];
+		$target['user_loginname'] = $source['name'];
+		$target['user_password'] = $source['pass'];
+		$target['user_email'] = $source['mail'];
+		$target['user_signature'] = $source['signature'];
+		$target['user_join'] = (int) $source['created'];
+		$target['user_lastvisit'] = (int) $source['login'];
+		$target['user_timezone'] = $source['timezone'];
+		$target['user_language'] = $source['language'];
+		$user_image = $this->fileSaveAvatar($source);
+		$target['user_image'] = $user_image;
+
+		return $target;
 	}
 
 

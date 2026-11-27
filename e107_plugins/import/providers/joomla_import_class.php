@@ -72,25 +72,25 @@ class joomla_import extends base_import_class
 		if ($this->copyUserInfo) 
 		{
 			$target['user_id'] = $source['id'];
-			$target['user_name'] 		= $source['name'];
-			$target['user_loginname'] 	= $source['username'];
-			$target['user_password'] 	= $source['password'];
-			$target['user_email'] 		= $source['email'];
-		//	$target['user_hideemail'] = $source['user_viewemail'];
-			$target['user_join'] 		= $source['registerDate'];
-			$target['user_admin'] 		= ($source['usertype'] == 'superadministrator') ? 1 : 0;
-			
-			if ($target['user_admin'] != 0) 
-			{
-				$target['user_perms'] = '0.';
-			}
-				
-			$target['user_lastvisit']	= $source['lastvisitDate'];
-			$target['user_login'] 		= $source['name'];
-			$target['user_ban']			= ($source['block'] ? 2 : 0);
-			
-			return $target;
 		}
+
+		$target['user_name'] 		= $source['name'];
+		$target['user_loginname'] 	= $source['username'];
+		$target['user_password'] 	= $source['password'];
+		$target['user_email'] 		= $source['email'];
+		$target['user_join'] 		= $source['registerDate'];
+		$target['user_admin'] 		= ($source['usertype'] == 'superadministrator') ? 1 : 0;
+
+		if ($target['user_admin'] != 0)
+		{
+			$target['user_perms'] = '0.';
+		}
+
+		$target['user_lastvisit']	= $source['lastvisitDate'];
+		$target['user_login'] 		= $source['name'];
+		$target['user_ban']			= ($source['block'] ? 2 : 0);
+
+		return $target;
 	}
 
 }
