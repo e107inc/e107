@@ -13,6 +13,7 @@
 class cpageFailedSaveTest extends \Codeception\Test\Unit
 {
 	use \Test\BootedCli;
+	use \Test\PageChapters;
 
 	const TITLE = 'cpageFailedSaveTest';
 
@@ -38,15 +39,7 @@ class cpageFailedSaveTest extends \Codeception\Test\Unit
 			}
 		}
 
-		$this->chapter = (int) e107::getDb()->insert('page_chapters', array(
-			'chapter_parent'           => 1,
-			'chapter_name'             => self::TITLE,
-			'chapter_sef'              => strtolower(self::TITLE),
-			'chapter_meta_description' => '',
-			'chapter_fields'           => e107::serialize(array('typed' => array('title' => 'Typed', 'type' => 'text', 'writeParms' => '', 'help' => '')), 'json'),
-		));
-
-		self::assertGreaterThan(0, $this->chapter, 'the chapter was not seeded');
+		$this->chapter = $this->haveChapterWithField(self::TITLE, 'typed', 'text');
 	}
 
 	protected function _after()
@@ -55,7 +48,7 @@ class cpageFailedSaveTest extends \Codeception\Test\Unit
 
 		$db = e107::getDb();
 		$db->delete('page', "page_title LIKE '".self::TITLE."%'");
-		$db->delete('page_chapters', 'chapter_id = '.(int) $this->chapter);
+		$this->dropChapters();
 		$db->delete('menus', "menu_name = '".self::TITLE."'");
 
 		foreach($this->addedColumns as $column)
