@@ -98,6 +98,11 @@
 				// Still red after #6376, which #6424 has yet to catch up with:
 				// faqs_shortcodes.php line 354 reads submit_question raw.
 				'faqs/faqs.php',
+				// Warn on PHP 8 until their settings are saved: #6958.
+				'alt_auth/e107db_conf.php',
+				'alt_auth/importdb_conf.php',
+				'alt_auth/ldap_conf.php',
+				'alt_auth/otherdb_conf.php',
 			);
 
 			$paths = array();

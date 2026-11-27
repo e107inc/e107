@@ -87,11 +87,11 @@ class e_plugin
 	);
 
 	/**
-	 * Folder names of the plugins bundled with the core distribution.
+	 * Folder names of every plugin in the repository; what a release package leaves out does not change it.
 	 * Single source of truth, also used by e107plugin::$core_plugins.
 	 */
 	const CORE_PLUGINS = array(
-		"_blank","admin_menu","banner","blogcalendar_menu",
+		"_blank","admin_menu","alt_auth","banner","blogcalendar_menu",
 		"chatbox_menu", "comment_menu",
 		"contact", "download", "faqs", "featurebox", "forum","gallery",
 		"gsitemap", "hero", "import", "linkwords", "list_new",  "login_menu",
