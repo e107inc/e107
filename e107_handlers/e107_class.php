@@ -4564,12 +4564,7 @@ class e107
 
 			if(!empty($url))
 			{
-				$primarySiteUrl = self::getPref('siteurl');
-
-				if(self::normaliseUrlHost($primarySiteUrl) !== '')
-				{
-					$url = str_replace(SITEURL, $primarySiteUrl, $url);
-				}
+				$url = str_replace(SITEURL, self::primarySiteUrl(), $url);
 
 				self::getJs()->addLink(array('rel'=>"canonical", "href" => $url));
 				self::meta('og:url', $url);
@@ -4590,6 +4585,18 @@ class e107
 		{
 			self::getMessage()->addInfo($message);
 		}
+	}
+
+	/**
+	 * The site's primary address: the Site URL preference when it names a host, else SITEURL, which is the request's address on the web but the stored preference itself under CLI.
+	 *
+	 * @return string
+	 */
+	public static function primarySiteUrl()
+	{
+		$siteUrl = (string) self::getPref('siteurl');
+
+		return self::normaliseUrlHost($siteUrl) !== '' ? $siteUrl : SITEURL;
 	}
 
 	/**
