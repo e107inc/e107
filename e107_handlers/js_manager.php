@@ -1727,7 +1727,7 @@ class e_jsmanager
 	 */
 	private function addCache($type,$path)
 	{
-		if($this->_cache_enabled != true  || $this->isInAdmin() || strpos($path, '//') === 0 || strpos($path, 'wysiwyg.php')!==false )
+		if($this->_cache_enabled != true  || $this->isInAdmin() || strpos($path, '//') === 0 || strpos($path, 'wysiwyg.php')!==false || strpos($path, 'tinymce4/engines/')!==false )
 		{
 			return false;
 		}

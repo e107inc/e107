@@ -166,6 +166,22 @@ class e_jsmanagerTest extends \Test\Unit
 
 	}
 
+	public function testTheEditorEngineKeepsItsTagAheadOfItsConfigurationWhenScriptsAreCombined()
+	{
+		$js = $this->make('e_jsmanager', array('_cache_enabled' => true));
+		$js->footerFile('{e_PLUGIN}forum/js/forum.js', 5);
+		$js->footerFile('{e_PLUGIN}tinymce4/engines/tinymce4/tinymce.min.js', 5, '<script>var before;</script>');
+		$js->footerFile('{e_PLUGIN}tinymce4/wysiwyg.php', 5);
+
+		$result = $js->renderJs('footer', 5, true, true);
+
+		self::assertStringNotContainsString('forum.js', $result, 'control: a script that is combined leaves no tag of its own');
+		self::assertMatchesRegularExpression(
+			'#<script>var before;</script>\s*<script src="[^"]*/tinymce4/engines/tinymce4/tinymce\.min\.js[^"]*"></script>\s*<script src="[^"]*/tinymce4/wysiwyg\.php[^"]*"></script>#',
+			$result
+		);
+	}
+
 	public function testAddLink()
 	{
 		$tests = array(
