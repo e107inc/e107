@@ -855,14 +855,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	{
 		$this->requireFixtureServer();
 
-		$fl = new E107P3RecordingFile();
-
-		$result = $fl->getRemoteFile($this->hopUrl(0, 2), basename($this->downloadPath), 'temp');
-
 		// Positive control: the download still lands, and lands complete.
-		self::assertTrue($result, 'A legitimate chain must still download.');
-		self::assertSame(self::FINAL_SENTINEL, file_get_contents($this->downloadPath),
-			'Only the body of the final hop belongs in the file.');
+		$fl = $this->assertDownloadLands(2, 'A legitimate chain must still download.');
 
 		self::assertSame($this->hopChain(2), $fl->uniqueSeen());
 	}
@@ -877,9 +871,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 
 		// Positive control: the same chain lands, and lands complete, when the
 		// policy allows every hop.
-		$permissive = new E107P3RecordingFile();
-		self::assertTrue($permissive->getRemoteFile($this->hopUrl(0, 2), basename($this->downloadPath), 'temp'));
-		self::assertSame(self::FINAL_SENTINEL, file_get_contents($this->downloadPath));
+		$this->assertDownloadLands(2, 'The chain must download when every hop is allowed.');
 
 		$fl = new E107P3RecordingFile();
 		$fl->allowHops = 2;
@@ -889,6 +881,57 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 			'The download was opened before the walk began, so "refused" has to mean truncated rather than absent.');
 		self::assertSame('', file_get_contents($this->downloadPath),
 			'The bodies of the 3xx answers are not the download.');
+	}
+
+	/**
+	 * An error page or an empty answer is not the file, so the installers that unzip it need a failure (#6538).
+	 *
+	 * @dataProvider unusableDownloads
+	 * @param string $extra  fixture parameters that spoil the answer
+	 * @param string $reason what the error message has to name
+	 */
+	public function testGetRemoteFileRefusesAnAnswerItCannotUse($extra, $reason)
+	{
+		$this->requireFixtureServer();
+
+		$ok = $this->assertDownloadLands(0, 'Positive control: the same address downloads with a 200 and a body.');
+		self::assertSame('', $ok->getErrorMessage(), 'A download that worked must report nothing.');
+
+		$fl = new E107P3RecordingFile();
+
+		self::assertFalse($fl->getRemoteFile($this->hopUrl(0, 0, 'http', $extra), basename($this->downloadPath), 'temp'),
+			'An answer that is not the file has to fail the download.');
+		self::assertStringContainsString($reason, $fl->getErrorMessage());
+		self::assertFalse(is_file($this->downloadPath), 'What the server sent instead of the file must not be left on disk.');
+	}
+
+	/**
+	 * @return array<string, array{string, string}>
+	 */
+	public function unusableDownloads()
+	{
+		return array(
+			'status 404' => array('&final=404', 'HTTP 404'),
+			'status 500' => array('&final=500', 'HTTP 500'),
+			'empty 200'  => array('&nobody=1', 'Empty answer'),
+		);
+	}
+
+	/**
+	 * Downloads through a chain of $stop redirects and asserts the final body landed whole.
+	 *
+	 * @param int    $stop
+	 * @param string $message
+	 * @return E107P3RecordingFile the instance that downloaded, for what it saw
+	 */
+	private function assertDownloadLands($stop, $message)
+	{
+		$fl = new E107P3RecordingFile();
+
+		self::assertTrue($fl->getRemoteFile($this->hopUrl(0, $stop), basename($this->downloadPath), 'temp'), $message);
+		self::assertSame(self::FINAL_SENTINEL, file_get_contents($this->downloadPath), 'Only the body of the final hop belongs in the file.');
+
+		return $fl;
 	}
 
 	/**

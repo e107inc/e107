@@ -329,9 +329,7 @@ class rss_import extends base_import_class
 					continue;
 				}
 
-				$fl->getRemoteFile($att['src'], $relPath."/".$filename, 'media');
-
-				if(filesize(e_MEDIA.$relPath."/".$filename) > 0)
+				if($fl->getRemoteFile($att['src'], $relPath."/".$filename, 'media'))
 				{
 					$search[] = $att['src'];
 					$src = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);
