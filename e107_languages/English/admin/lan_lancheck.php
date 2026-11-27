@@ -15,6 +15,8 @@ define("LAN_CHECK_16", "Original File");
 define("LAN_CHECK_17", "A write problem occured while trying to save the file.");
 define("LAN_CHECK_18", "Language files in the standard format are NOT available for this plugin/theme.");
 define("LAN_CHECK_19", "Non-UTF-8 characters found!");
+define("LAN_CHECK_PARSE_ERROR", "PHP cannot parse this file, so e107 cannot load it as written: [x]");
+define("LAN_CHECK_PARSE_UNCHECKED", "Verify could not check whether PHP can parse these files, because PHP [x] on this server cannot tell.");
 define("LAN_CHECK_20", "Generate Language Pack");
 define("LAN_CHECK_21", "Verify Again");
 //define("LAN_CHECK_22", "Theme");//LAN_THEME
