@@ -17,6 +17,7 @@ namespace e107\Shims;
 trait InternalShimsTrait
 {
 	use Internal\GetParentClassTrait;
+	use Internal\ParseErrorTrait;
 	use Internal\ReadfileTrait;
 	use Internal\SessionCreateIdTrait;
 	use Internal\SetcookieTrait;

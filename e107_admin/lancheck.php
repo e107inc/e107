@@ -348,6 +348,7 @@ class lancheck
 				'def'  => deftrue('LANG_LAN_157') ? LANG_LAN_157 : "[x] missing/invalid phrase(s)",
 				'bom'  => deftrue('LANG_LAN_158') ? LANG_LAN_158 : "[x] file(s) with BOM/illegal characters",
 				'utf'  => deftrue('LANG_LAN_159') ? LANG_LAN_159 : "[x] non-UTF8 phrase(s)",
+				'parse' => LANG_LAN_PARSE_ERRORS,
 			);
 			$parts = array();
 			foreach($counts as $key => $lan)
@@ -763,6 +764,7 @@ class lancheck
 		$_SESSION['lancheck'][$lan]['def']	= 0;
 		$_SESSION['lancheck'][$lan]['bom']	= 0;
 		$_SESSION['lancheck'][$lan]['utf']	= 0;
+		$_SESSION['lancheck'][$lan]['parse']	= 0;
 		$_SESSION['lancheck'][$lan]['total']	= 0;
 
 
@@ -848,6 +850,11 @@ class lancheck
 		$mesStatus = ($_SESSION['lancheck'][$lan]['total']>0) ? E_MESSAGE_INFO : E_MESSAGE_SUCCESS;
 
 		$mes->add($message, $mesStatus);	
+
+		if(eShims::parse_error('') === null)
+		{
+			$mes->addWarning($tp->lanVars(LAN_CHECK_PARSE_UNCHECKED, PHP_VERSION));
+		}
 
 	//	$ns -> tablerender(LAN_SUMMARY.": ".$lan,$message);
 
@@ -1147,7 +1154,6 @@ class lancheck
 		
 	function check_core_lanfiles($checklan,$subdir='')
 	{
-		$tp = e107::getParser();
 	//	$sql->db_Mark_Time('Start Get Core Lan Phrases English');
 		$English = $this->get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,"English");
 		
@@ -1172,7 +1178,7 @@ class lancheck
 		foreach($keys as $k)
 		{
 
-			if($k == 'bom')
+			if($k == 'bom' || $k == 'parse')
 			{
 				continue;
 			}
@@ -1186,29 +1192,10 @@ class lancheck
 					$subkeys = array_keys($English[$k]);
 	
 					$er="";
-					$utf_error = "";
-	
-					$bomkey = str_replace(".php","",$k_check);
-
-	
-					if(!empty($check['bom'][$bomkey]))
-					{
-						$bom_error = "<i>".$tp->lanVars(LAN_CHECK_15,array("'&lt;?php'","'?&gt;'"))."</i><br />";  // illegal chars
-						$this->checkLog('bom',1);
-					}
-					else
-					{
-						$bom_error = "";	
-					}
+					$notices = $this->fileNotices($check, $k_check, $check[$k], $subkeys);
 	
 					foreach($subkeys as $sk)
 					{
-						if($utf_error == "" && !empty($check[$k][$sk]) && !$this->is_utf8($check[$k][$sk]))
-						{
-							$utf_error = "<i>".LAN_CHECK_19."</i><br />";
-							$this->checkLog('utf',1);
-						}
-	
 						if($sk == "LC_ALL"){
 							$check[$k][$sk] = str_replace(chr(34).chr(34),"",$check[$k][$sk]);
 						}
@@ -1216,7 +1203,7 @@ class lancheck
 						$er .= $this->check_lan_errors($English[$k],$check[$k],$sk);
 					}
 					
-					if($this->errorsOnly == TRUE && !$er && !$utf_error && !$bom_error)
+					if($this->errorsOnly == TRUE && !$er && !$notices)
 					{
 						continue;		
 					}
@@ -1224,8 +1211,8 @@ class lancheck
 					$text .= "<tr><td class='forumheader3' style='width:45%'>{$lnk}</td>";
 					$style = ($er) ? "forumheader2" : "forumheader3";
 					$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
-					$text .= $bom_error . $utf_error;
-					$text .= (!$er && !$bom_error && !$utf_error) ? defset('ADMIN_TRUE_ICON') : $er."<br />";
+					$text .= $notices;
+					$text .= (!$er && !$notices) ? defset('ADMIN_TRUE_ICON') : $er."<br />";
 					$text .= "</div></td>";
 				}
 				else
@@ -1343,6 +1330,53 @@ class lancheck
 		$lan = $this->transLanguage;
 		$_SESSION['lancheck'][$lan][$type] += $count;
 		$_SESSION['lancheck'][$lan]['total'] += $count;
+	}
+
+	/**
+	 * The notices Verify prints in a translated file's row before its phrase errors, each one counted.
+	 *
+	 * @param array $check what {@see lancheck::get_comp_lan_phrases()} read from the translation
+	 * @param string $file the file's key there, .php included
+	 * @param array $phrases the file's translated phrases
+	 * @param array $englishKeys the phrase keys English has, the only ones whose encoding is checked
+	 * @return string
+	 */
+	private function fileNotices($check, $file, $phrases, $englishKeys)
+	{
+		$tp = e107::getParser();
+		$key = str_replace(".php", "", $file);
+		$notices = array();
+
+		if(!empty($check['bom'][$key]))
+		{
+			$notices[] = $tp->lanVars(LAN_CHECK_15,array("'&lt;?php'","'?&gt;'"));
+			$this->checkLog('bom',1);
+		}
+
+		if(!empty($check['parse'][$key]))
+		{
+			$notices[] = $tp->lanVars(LAN_CHECK_PARSE_ERROR, htmlspecialchars($check['parse'][$key], ENT_QUOTES, 'UTF-8'));
+			$this->checkLog('parse',1);
+		}
+
+		foreach($englishKeys as $sk)
+		{
+			if(!empty($phrases[$sk]) && !$this->is_utf8($phrases[$sk]))
+			{
+				$notices[] = LAN_CHECK_19;
+				$this->checkLog('utf',1);
+				break;
+			}
+		}
+
+		$text = '';
+
+		foreach($notices as $notice)
+		{
+			$text .= "<i>".$notice."</i><br />";
+		}
+
+		return $text;
 	}
 	
 	
@@ -1468,6 +1502,13 @@ class lancheck
 					
 					$ret['bom'][$key] = $f['fname'];
 				}
+
+				$parseError = eShims::parse_error($allData);
+
+				if(!empty($parseError))
+				{
+					$ret['parse'][$key] = $parseError;
+				}
 						
 				$end_of_file = 0;
 							
@@ -1516,8 +1557,6 @@ class lancheck
 	{
 		if (empty($target_lan)) throw new RuntimeException(__METHOD__ . ' requires non-empty $target_lan');
 
-		$tp = e107::getParser();
-
 		$folder['P'] = e_PLUGIN.$comp_name;
 		$folder['T'] = e_THEME.$comp_name;
 		$comp_dir = $folder[$mode];
@@ -1535,7 +1574,7 @@ class lancheck
 		foreach($keys as $k)
 		{
 			
-			if($k == 'bom')
+			if($k == 'bom' || $k == 'parse')
 			{
 				continue;
 			}
@@ -1549,27 +1588,10 @@ class lancheck
 	
 				$subkeys = array_keys($baselang[$k]);
 				$er="";
-				$utf_error = "";
-	
-				$bomkey = str_replace(".php","",$k_check);
-				if(!empty($check['bom'][$bomkey]))
-				{
-					$bom_error = "<i>".$tp->lanVars(LAN_CHECK_15,array("'&lt;?php'","'?&gt;'"))."</i><br />";
-					$this->checkLog('bom',1);
-				}
-				else
-				{
-					$bom_error = "";	
-				}
+				$notices = $this->fileNotices($check, $k_check, $check[$k_check], $subkeys);
 			
 				foreach($subkeys as $sk)
 				{
-					if($utf_error == "" && !empty($check[$k_check][$sk]) && !$this->is_utf8($check[$k_check][$sk]))
-					{
-						$utf_error = "<i>".LAN_CHECK_19."</i><br />";
-						$this->checkLog('utf',1);
-					}
-					
 					/*
 					if(!array_key_exists($sk,$check[$k_check]) || (trim($check[$k_check][$sk]) == "" && $baselang[$k][$sk] != ""))
 					{
@@ -1580,7 +1602,7 @@ class lancheck
 					$er .= $this->check_lan_errors($baselang[$k],$check[$k_check],$sk);
 				}
 	
-				if($this->errorsOnly == TRUE && !$er && !$utf_error && !$bom_error)
+				if($this->errorsOnly == TRUE && !$er && !$notices)
 				{
 					continue;		
 				}
@@ -1591,8 +1613,8 @@ class lancheck
 	
 				$style = ($er) ? "forumheader2" : "forumheader3";
 				$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
-				$text .= $bom_error . $utf_error;
-				$text .= (!$er && !$bom_error && !$utf_error) ? defset('ADMIN_TRUE_ICON') : $er."<br />";
+				$text .= $notices;
+				$text .= (!$er && !$notices) ? defset('ADMIN_TRUE_ICON') : $er."<br />";
 				$text .= "</div></td>";
 			}
 			else
