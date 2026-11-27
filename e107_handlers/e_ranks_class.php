@@ -174,18 +174,21 @@ class e_ranks
 	{
 		$e107 = e107::getInstance();
 		if(!$userId && USER) { $userId = USERID; }
+
+		$userData = null;
+		if(is_array($userId))
+		{
+			$userData = $userId;
+			$userId = $userData['user_id'];
+		}
+
 		if(isset($this->userRanks[$userId]))
 		{
 			return $this->userRanks[$userId];
 		}
 
 		$ret = array();
-		if(is_array($userId))
-		{
-			$userData = $userId;
-			$userId = $userData['user_id'];
-		}
-		else
+		if($userData === null)
 		{
 			$userData = e107::getSystemUser($userId)->getData(); //get_usXer_data($userId);
 		}
