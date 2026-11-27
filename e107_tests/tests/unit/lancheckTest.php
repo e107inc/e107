@@ -688,7 +688,7 @@
 			$transLanguage->setAccessible(true);
 			$transLanguage->setValue($this->lan, $language);
 
-			$_SESSION['lancheck'][$language] = array('file' => 0, 'def' => 0, 'bom' => 0, 'utf' => 0, 'total' => 0);
+			$_SESSION['lancheck'][$language] = array('file' => 0, 'def' => 0, 'bom' => 0, 'utf' => 0, 'parse' => 0, 'total' => 0);
 		}
 
 		/** A pack with no BOM and no trailing content never gets a 'bom' entry. */
@@ -724,6 +724,55 @@
 			$text = $this->lan->check_lanfiles('P', $plugin, 'English', 'Dutch');
 
 			$this->assertStringContainsString("data-modal-submit='true'", $text);
+		}
+
+		public function testVerifyListsATranslationFileThatDoesNotParse()
+		{
+			if(!defined('TOKEN_PARSE'))
+			{
+				$this->markTestSkipped('PHP '.PHP_VERSION.' cannot tell whether a file parses.');
+			}
+
+			$plugin = $this->writeScratchPlugin(array(
+				'English.php' => "define('LAN_TEST_FLAT', 'flat');\n",
+				'Dutch.php'   => "define(\"LAN_TEST_FLAT\", \"a \"b\" c\");\n",
+			));
+
+			$this->startVerifying('Dutch');
+			$this->lan->errorsOnly(true);
+
+			$text = $this->lan->check_lanfiles('P', $plugin, 'English', 'Dutch');
+
+			$this->assertStringContainsString($plugin, $text, 'errors-only mode lists the file');
+			$this->assertMatchesRegularExpression('/syntax error.* on line 2/', $text);
+			$this->assertSame(1, $_SESSION['lancheck']['Dutch']['total'], 'the file counts as an error, so no pack is built from it');
+		}
+
+		public function testVerifySaysOnceThatThisPhpCannotTellWhetherFilesParse()
+		{
+			if(defined('TOKEN_PARSE'))
+			{
+				$this->markTestSkipped('PHP '.PHP_VERSION.' can tell whether a file parses.');
+			}
+
+			$plugin = $this->writeScratchPlugin(array(
+				'English.php' => "define('LAN_TEST_FLAT', 'flat');\n",
+				'Dutch.php'   => "define('LAN_TEST_FLAT', 'plat');\n",
+			));
+
+			$this->startVerifying('Dutch');
+			$this->lan->errorsOnly(true);
+
+			$this->assertSame('', $this->lan->check_lanfiles('P', $plugin, 'English', 'Dutch'), 'errors-only mode still hides a clean file');
+			$this->assertSame(0, $_SESSION['lancheck']['Dutch']['total'], 'a file nobody could check is not an error, so a pack can still be built');
+
+			e107::coreLan('admin', true);
+			$this->loadEditScreenLans();
+			$this->lan->core_plugins = array($plugin);
+			$this->lan->core_themes = array();
+			$page = $this->lan->check_all('render', 'Dutch');
+
+			$this->assertSame(1, substr_count($page['text'], PHP_VERSION), 'the page says once that this PHP cannot tell');
 		}
 
 	}
