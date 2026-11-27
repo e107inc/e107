@@ -32,6 +32,9 @@ class e_url
 
 	private $_legacyAliases = array();
 
+	/** @var array[]|null|false what {@see e_url::matches()} found, false until it has looked */
+	private $_matches = false;
+
 
 	/**
 	 * e_url constructor.
@@ -75,9 +78,10 @@ class e_url
 
 	/**
 	 * Detect older e_url system.
+	 * @param string $request
 	 * @return bool
 	 */
-	private function isLegacy()
+	private function isLegacy($request)
 	{
 
 		$arr = (!empty($this->_legacyAliases[e_LAN])) ?  array_merge($this->_legacy,$this->_legacyAliases[e_LAN]) : $this->_legacy;
@@ -86,7 +90,7 @@ class e_url
 
 		foreach($list as $leg)
 		{
-			if(strpos($this->_request,$leg.'/') === 0 || $this->_request === $leg)
+			if(strpos($request,$leg.'/') === 0 || $request === $leg)
 			{
 				return true;
 			}
@@ -125,25 +129,38 @@ class e_url
 
 
 	/**
-	 * @return bool|void
+	 * The e_url.php route this request matches, found without acting on it; {@see e_url::run()} acts on the same match.
+	 *
+	 * @return array|null the route's plugin ('plug'), key ('key'), config entry ('config'), 'file' and 'query', or null when none matches
 	 */
-	public function run()
+	public function matchRoute()
 	{
+		$matches = $this->matches();
+		$last = empty($matches) ? null : end($matches);
+
+		return ($last !== null && $last['exists']) ? array_intersect_key($last, array_flip(array('plug', 'key', 'config', 'file', 'query'))) : null;
+	}
+
+	/**
+	 * @return array[]|null in order, each route whose pattern the request matched, up to the first whose file exists; null when the e_url.php routes do not apply to the request
+	 */
+	private function matches()
+	{
+		if($this->_matches !== false)
+		{
+			return $this->_matches;
+		}
+
+		$request = empty($this->_request) ? e107::getFrontPage() : $this->_request;
+
+		if(empty($this->_config) || $this->isLegacy($request) === true)
+		{
+			return $this->_matches = null;
+		}
+
 		$pref = e107::getPref();
-		$tp = e107::getParser();
-
-		if(empty($this->_request)) // likely 'index.php' ie. the home page.
-		{
-			$this->_request = e107::getFrontPage();
-			e107::canonical('_SITEURL_');
-		}
-
-		if(empty($this->_config) /*|| empty($this->_request) || $this->_request === 'index.php'*/ || $this->isLegacy() === true)
-		{
-			return false;
-		}
-
 		$replaceAlias = array('{alias}\/?','{alias}/?','{alias}\/','{alias}/',);
+		$this->_matches = array();
 
 		foreach($this->_config as $plug=>$cfg)
 		{
@@ -162,7 +179,7 @@ class e_url
 					continue;
 				}
 
-				if((empty($v['domain']) && (empty($this->_request) || $this->_request === 'index.php')) || (isset($v['domain']) && ($v['domain'] !== $_SERVER['HTTP_HOST'])))
+				if((empty($v['domain']) && (empty($request) || $request === 'index.php')) || (isset($v['domain']) && ($v['domain'] !== $_SERVER['HTTP_HOST'])))
 				{
 					continue;
 				}
@@ -191,9 +208,9 @@ class e_url
 				}
 
 
-				$newLocation = preg_replace($regex, $v['redirect'], $this->_request);
+				$newLocation = preg_replace($regex, $v['redirect'], $request);
 
-				if($newLocation != $this->_request)
+				if($newLocation != $request)
 				{
 					$redirect = e107::getParser()->replaceConstants($newLocation);
 					list($file, $query) = array_pad(explode('?', $redirect, 2), 2, '');
@@ -211,62 +228,81 @@ class e_url
 						continue;
 					}
 
-					foreach($get as $gk=>$gv)
+					$exists = file_exists($file);
+					$this->_matches[] = array('plug' => $plug, 'key' => $k, 'config' => $v, 'file' => $file, 'query' => $query, 'get' => $get, 'redirect' => $redirect, 'exists' => $exists);
+
+					if($exists)
 					{
-						$_GET[$gk] = $gv;
+						return $this->_matches;
 					}
-
-					e107::getDebug()->log('e_URL in <b>'.$plug.'</b> with key: <b>'.$k.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true),1);
-
-					if(file_exists($file))
-					{
-						define('e_CURRENT_PLUGIN', $plug);
-						define('e_QUERY', str_replace('&&', '&', $query)); // do not add to e107_class.php
-						define('e_URL_LEGACY', $redirect);
-						if(!defined('e_PAGE'))
-						{
-							define('e_PAGE', basename($file));
-						}
-
-						if(!e107::route()) // subject to removal at any time.
-						{
-							e107::route($plug.'/'.$k);
-						}
-
-						$fpUrl = str_replace(SITEURL, '', rtrim(e_REQUEST_URL, '?/'));
-						$fpPref = e107::getFrontpage();
-
-						if($fpUrl === $fpPref)
-						{
-
-						}
-						unset($fpUrl, $fpPref);
-
-
-						$this->_include= $file;
-						return true;
-					//	exit;
-					}
-					elseif(getperms('0'))
-					{
-
-						echo "<div class='alert alert-warning'>";
-						echo "<h3>SEF Debug Info</h3>";
-						echo "File missing: ".$file;
-						echo "<br />Matched key: <b>".$k."</b>";
-						print_a($v);
-						echo "</div>";
-
-					}
-
 				}
 			}
 
 		}
 
+		return $this->_matches;
+	}
 
 
+	/**
+	 * @return bool|null
+	 */
+	public function run()
+	{
+		if(empty($this->_request)) // likely 'index.php' ie. the home page.
+		{
+			e107::canonical('_SITEURL_');
+		}
 
+		$matches = $this->matches();
+
+		if($matches === null)
+		{
+			return false;
+		}
+
+		foreach($matches as $match)
+		{
+			foreach($match['get'] as $gk=>$gv)
+			{
+				$_GET[$gk] = $gv;
+			}
+
+			e107::getDebug()->log('e_URL in <b>'.$match['plug'].'</b> with key: <b>'.$match['key'].'</b> matched <b>'.$match['config']['regex'].'</b> and included: <b>'.$match['file'].'</b> with $_GET: '.print_a($_GET,true),1);
+
+			if($match['exists'])
+			{
+				define('e_CURRENT_PLUGIN', $match['plug']);
+				define('e_QUERY', str_replace('&&', '&', $match['query'])); // do not add to e107_class.php
+				define('e_URL_LEGACY', $match['redirect']);
+				if(!defined('e_PAGE'))
+				{
+					define('e_PAGE', basename($match['file']));
+				}
+
+				if(!e107::route()) // subject to removal at any time.
+				{
+					e107::route($match['plug'].'/'.$match['key']);
+				}
+
+				$this->_include = $match['file'];
+				return true;
+			}
+
+			if(getperms('0'))
+			{
+
+				echo "<div class='alert alert-warning'>";
+				echo "<h3>SEF Debug Info</h3>";
+				echo "File missing: ".$match['file'];
+				echo "<br />Matched key: <b>".$match['key']."</b>";
+				print_a($match['config']);
+				echo "</div>";
+
+			}
+		}
+
+		return null;
 	}
 
 

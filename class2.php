@@ -1764,6 +1764,18 @@ function init_session()
 
 $dbg->logTime('Go online');
 
+if(!isset($_E107['no_online']) && !empty($_E107['single_entry']))
+{
+	$route = e_url::instance()->matchRoute();
+
+	if(!empty($route['config']['noOnline']))
+	{
+		$_E107['no_online'] = true;
+	}
+
+	unset($route);
+}
+
 if(!isset($_E107['no_online']))
 {
 	e107::getOnline()->goOnline($pref['track_online'], $pref['antiflood1']);

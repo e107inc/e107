@@ -22,14 +22,16 @@ class rss_menu_url // plugin-folder + '_url'
 			'alias'			=> 'feed',
 			'regex'			=> '^{alias}/(.*)/rss/?([\d]*)?$',
 			'sef'			=> '{alias}/{rss_url}/rss/{rss_topicid}',
-			'redirect'		=> '{e_PLUGIN}rss_menu/rss.php?cat=$1&type=2&topic=$2'
+			'redirect'		=> '{e_PLUGIN}rss_menu/rss.php?cat=$1&type=2&topic=$2',
+			'noOnline'		=> true,
 		);
 
 		$config['atom'] = array(
 			'alias'			=> 'feed',
 			'regex'			=> '^{alias}/(.*)/atom/?([\d]*)?$',
 			'sef'			=> '{alias}/{rss_url}/atom/{rss_topicid}',
-			'redirect'		=> '{e_PLUGIN}rss_menu/rss.php?cat=$1&type=4&topic=$2'
+			'redirect'		=> '{e_PLUGIN}rss_menu/rss.php?cat=$1&type=4&topic=$2',
+			'noOnline'		=> true,
 		);
 	
 		$config['index'] = array(

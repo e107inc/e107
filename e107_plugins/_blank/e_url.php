@@ -30,6 +30,7 @@ class _blank_url // plugin-folder + '_url'
 			'regex'			=> '^{alias}/other/?$', 						// matched against url, and if true, redirected to 'redirect' below.
 			'sef'			=> '{alias}/other/', 							// used by e107::url(); to create a url from the db table.
 			'redirect'		=> '{e_PLUGIN}_blank/_blank.php?other=1', 		// file-path of what to load when the regex returns true.
+			'noOnline'		=> false,										// true: a request on this route is left out of Who's Online and flood protection, as a feed polled by readers is.
 
 		);
 
