@@ -279,8 +279,10 @@ class cpage_shortcodes extends e_shortcode
 		if(substr($path, 0, 2) === 'e_') $path = str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $path);
 		elseif($path[0] !== '{') $path = '{e_MEDIA}'.$path;
 		
-		$thumb = $tp->thumbUrl($path);
-		$dimensions = $tp->thumbDimensions('double');
+		$sizes = array_filter(array_map('intval', array_intersect_key((array) varset($parms[2], array()), array('w' => 0, 'aw' => 0, 'ah' => 0))), function ($size) { return $size > 0; });
+		if(!isset($sizes['aw'])) unset($sizes['ah']);
+		$thumb = $tp->thumbUrl($path, $sizes);
+		$dimensions = empty($sizes) ? $tp->thumbDimensions('double') : '';
 		$type = varset($parms[2]['type'], 'tag');
 		$alt = $tp->toAttribute(varset($parms[2]['alt']));
 
