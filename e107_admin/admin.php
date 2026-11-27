@@ -275,9 +275,7 @@ class admin_start
 
 	private function checkSiteUrl()
 	{
-		$host = parse_url((string) e107::pref('core', 'siteurl'), PHP_URL_HOST);
-
-		if((string) $host !== '')
+		if(e107::primarySiteUrl() === (string) e107::pref('core', 'siteurl'))
 		{
 			return;
 		}
