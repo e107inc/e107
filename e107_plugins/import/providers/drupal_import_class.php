@@ -190,7 +190,7 @@ class drupal_import extends base_import_class
 				);
 
 				$query = "SELECT " . implode(',', $fields) . " FROM " . $this->DBPrefix . "users AS u ";
-				$query .= "LEFT JOIN " . $this->DBPrefix . "users_field_data AS ufd ON u.uid = ufd.uid";
+				$query .= "LEFT JOIN " . $this->DBPrefix . "users_field_data AS ufd ON u.uid = ufd.uid ";
 				$query .= "WHERE ufd.status = 1 AND ufd.uid > 1 ";
 
 				return $this->ourDB->gen($query);
