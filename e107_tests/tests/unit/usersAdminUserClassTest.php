@@ -8,10 +8,9 @@
  */
 
 /**
- * e107_admin/users.php is an entry point that cannot be included from a test, so the user_class
- * controls are held to their structural obligations against the source: the option lists are put
- * through the builder the controls are rendered from, and the two routes that write the column
- * are read for the rule they apply.
+ * The user_class controls of e107_admin/users.php are held to their structural obligations against
+ * the source: the option lists are put through the builder the controls are rendered from, and the
+ * routes that write the column are read for the rule they apply.
  *
  * A list that does not name a built-in class renders no control for it, and the save that follows
  * writes the column without it.
@@ -36,7 +35,7 @@ class usersAdminUserClassTest extends \Test\Unit
 		$this->userclass = e107::getUserClass();
 	}
 
-	public function testTheEditFormOffersTheBuiltInMemberClass()
+	public function testTheListControlsOfferTheBuiltInMemberClass()
 	{
 		$parms = $this->stringPairs($this->arguments($this->fieldDefinition('user_class')));
 
@@ -51,7 +50,7 @@ class usersAdminUserClassTest extends \Test\Unit
 			$this->assertArrayHasKey('classlist', $parsed,
 				$parm . ' must name the classes the control offers.');
 			$this->assertArrayHasKey(e_UC_MEMBER, $this->offered($parsed['classlist']),
-				$parm . ' must offer the built-in Members class, or editing a user drops it.');
+				$parm . ' must offer the built-in Members class, or an inline edit in the list drops it.');
 		}
 	}
 
@@ -60,7 +59,7 @@ class usersAdminUserClassTest extends \Test\Unit
 		$optlists = $this->vettedTreeOptlists();
 
 		$this->assertNotEmpty($optlists,
-			'Set user class and Create User both render a user class tree in ' . $this->page . '.');
+			'Set user class, Create User and the edit form each render a user class tree in ' . $this->page . '.');
 
 		foreach($optlists as $optlist)
 		{
@@ -81,8 +80,10 @@ class usersAdminUserClassTest extends \Test\Unit
 
 	public function testSetUserClassKeepsTheClassesItsFormNeverOffered()
 	{
-		$this->assertContains('uc_required_class_list', $this->namesIn($this->page, 'manageUserclass'),
-			'Set user class must read the list it rendered from, or the save discards every class it did not show.');
+		$this->assertContains('classesAfterTree', $this->namesIn($this->page, 'manageUserclass'),
+			'Set user class must save through the rule the edit form shares.');
+		$this->assertContains('uc_required_class_list', $this->namesIn($this->page, 'classesAfterTree'),
+			'The rule must read the list the tree rendered from, or the save discards every class it did not show.');
 	}
 
 	public function testCreateUserStoresTheClassesItsFormPosted()

@@ -155,7 +155,6 @@ class ProviderLoginChainCest
 	private function saveProfile(AcceptanceTester $I, $userId, array $extra)
 	{
 		$I->sendPostRequest('/usersettings.php', $extra + array(
-			'_uid'           => $userId,
 			'email'          => $I->grabFromDatabase('e107_user', 'user_email', array('user_id' => $userId)),
 			'loginname'      => $I->grabFromDatabase('e107_user', 'user_loginname', array('user_id' => $userId)),
 			'username'       => $I->grabFromDatabase('e107_user', 'user_name', array('user_id' => $userId)),

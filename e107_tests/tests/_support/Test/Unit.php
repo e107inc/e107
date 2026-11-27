@@ -103,6 +103,79 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * What the form holding a control named $field posts when nobody touches it, parsed as PHP parses a request body.
+	 *
+	 * @param string $page
+	 * @param string $field
+	 * @return array|null null when no form on the page holds the control
+	 */
+	protected function untouchedSubmission($page, $field)
+	{
+		$document = new \DOMDocument();
+		$errors = libxml_use_internal_errors(true);
+		$document->loadHTML('<?xml encoding="utf-8"?>'.$page);
+		libxml_clear_errors();
+		libxml_use_internal_errors($errors);
+
+		$path = new \DOMXPath($document);
+		$form = $path->query("//form[.//*[@name=".var_export((string) $field, true)."]]")->item(0);
+
+		if($form === null)
+		{
+			return null;
+		}
+
+		$body = array();
+
+		foreach($path->query('.//input[@name and not(@disabled)] | .//select[@name and not(@disabled)] | .//textarea[@name and not(@disabled)]', $form) as $control)
+		{
+			foreach(self::submittedValues($path, $control) as $value)
+			{
+				$body[] = rawurlencode($control->getAttribute('name')).'='.rawurlencode($value);
+			}
+		}
+
+		parse_str(implode('&', $body), $posted);
+
+		return $posted;
+	}
+
+	/**
+	 * @param \DOMXPath $path
+	 * @param \DOMElement $control an enabled input, select or text area
+	 * @return string[] the values it submits
+	 */
+	private static function submittedValues(\DOMXPath $path, \DOMElement $control)
+	{
+		if($control->nodeName === 'textarea')
+		{
+			return array($control->textContent);
+		}
+
+		if($control->nodeName === 'select')
+		{
+			$selected = $path->query('.//option[@selected]', $control);
+			$option = $selected->length ? $selected->item($selected->length - 1) : $path->query('.//option', $control)->item(0);
+
+			return $option ? array($option->getAttribute('value')) : array();
+		}
+
+		$type = strtolower($control->getAttribute('type'));
+
+		if(in_array($type, array('submit', 'button', 'image', 'reset', 'file'), true))
+		{
+			return array();
+		}
+
+		if(in_array($type, array('checkbox', 'radio'), true))
+		{
+			return $control->hasAttribute('checked') ? array($control->getAttribute('value')) : array();
+		}
+
+		return array($control->getAttribute('value'));
+	}
+
+	/**
 	 * Writes $contents into the app through the deployer, journaled so the run takes it back out.
 	 *
 	 * @param string $path relative to the app root, or the absolute or ./ form e107's path constants give

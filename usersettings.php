@@ -21,13 +21,9 @@ use e107\Database\SqlFragment;
 /*
 Notes:
 Uses $udata initially, later curVal to hold current user data
-Admin log events:
-USET_01 - admin changed user data
 */
 
 require_once ('class2.php');
-
-// TODO - Remove all the adminEdit stuff. 
 
 define("US_DEBUG",FALSE);
 //define('US_DEBUG', false);
@@ -39,7 +35,13 @@ if (!USER)
 	exit();
 }
 
-if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" && substr(e_QUERY, 0, 4) !== 'del=')
+if (is_numeric(e_QUERY) && e107::getUser()->checkAdminPerms('4'))
+{
+	e107::redirect(e_ADMIN_ABS.'users.php?mode=main&action=edit&id='.(int) e_QUERY);
+	exit();
+}
+
+if (e_QUERY && e_QUERY != "update" && substr(e_QUERY, 0, 4) !== 'del=')
 {
 	header('location:'.e_BASE.'usersettings.php');
 	exit();
@@ -363,10 +365,8 @@ class usersettings_front // Begin Usersettings rewrite.
 		$allData            = array();
 		$message            = '';
 		$changedEUFData     = array();
+		$memberId           = (int) e107::getUser()->getId();
 
-		$inp                = USERID;			// Initially assume that user is modifying their own data.
-		$_uid               = false;			// FALSE if user modifying their own data; otherwise ID of data being modified
-		$adminEdit          = false; // @deprecated		// FALSE if editing own data. TRUE if admin edit
 
 
 		if(!empty($_POST['delete_account'])) // button clicked.
@@ -389,54 +389,13 @@ class usersettings_front // Begin Usersettings rewrite.
 			return null;
 		}
 
-		/* todo subject of removal */
-		if(is_numeric(e_QUERY))
-		{	// Trying to edit specific user record
-			if (ADMIN)
-			{	// Admin edit of specific record
-				/*
-				$_usersettings_matches = Array
-				(
-				    [0] => /e107/usersettings.php?# OR /e107/edit/user/#
-				    [1] => e107
-				    [2] => usersettings.php OR edit/user
-				    [3] => ? OR /
-				    [4] => #
-				)
-				*/
-				$inp = intval(e_QUERY);
-
-			//	$usersettings_form_action = strstr('?', $_usersettings_matches[3]) ? e_SELF.'?'.e_QUERY : e_SELF;
-
-				$_uid = $inp;
-				$info = e107::user($inp);
-						//Only site admin is able to change setting for other admins
-				if(!is_array($info) || ($info['user_admin'] == 1 && (!defined('ADMINPERMS') || ADMINPERMS !== '0')) || ((!defined('ADMINPERMS') || ADMINPERMS !== '0') && !getperms('4')))
-				{
-					e107::redirect();
-					exit();
-				}
-				$adminEdit = TRUE;		// Flag to indicate admin edit
-			}
-			else
-			{
-				//Non admin attempting to edit another user's ID
-				e107::redirect();
-				exit();
-			}
-
-		}
-
-
-
 		// Save user settings (changes only)
 		//-----------------------------------
 
 		if (isset($_POST['updatesettings']) || isset($_POST['SaveValidatedInfo']))
 		{
-		//	$udata = e107::user($inp);	//@deprecated			// Get all the existing user data, including any extended fields
 
-			$udata = e107::user($inp); // Get all the existing user data, including any extended fields
+			$udata = e107::user($memberId);
 			$udata['user_classlist'] = $userMethods->addCommonClasses($udata, FALSE);
 		}
 
@@ -512,7 +471,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 			// Now validate everything - just check everything that's been entered
 			$allData = validatorClass::validateFields($_POST,$userMethods->userVettingInfo, TRUE);		// Do basic validation
-			validatorClass::dbValidateArray($allData, $userMethods->userVettingInfo, 'user', $inp);		// Do basic DB-related checks
+			validatorClass::dbValidateArray($allData, $userMethods->userVettingInfo, 'user', $memberId);
 			$userMethods->userValidation($allData);														// Do user-specific DB checks
 
 			$savePassword = '';
@@ -547,7 +506,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			{
 				if (ADMIN && getperms('4'))
 				{
-					if (!check_class($pref['displayname_class'], $udata['user_classlist'], $adminEdit))
+					if (!check_class($pref['displayname_class'], $udata['user_classlist']))
 					{	// Display name and login name must be the same
 						$changedUserData['user_name'] = $changedUserData['user_loginname'];
 					}
@@ -595,29 +554,24 @@ class usersettings_front // Begin Usersettings rewrite.
 			$error = ((isset($allData['errors']) && count($allData['errors'])) || (isset($eufVals['errors']) && count($eufVals['errors'])) || count($extraErrors));
 
 
-			// Update Userclass - only if its the user changing their own data (admins can do it another way)
 			if (isset($allData['data']['user_class']))
 			{
 				unset($changedUserData['user_class']);		// We always recalculate this
-				if (FALSE === $adminEdit) // Make sure admin can't edit another's user classes
-				{
 
-					$e_userclass = e107::getUserClass();
-					$ucList = $e_userclass->get_editable_classes(USERCLASS_LIST,TRUE);	 // List of classes which this user can edit
-					if (count($ucList))
+				$e_userclass = e107::getUserClass();
+				$ucList = $e_userclass->get_editable_classes(USERCLASS_LIST,TRUE);
+				if (count($ucList))
+				{
+					$nid = $e_userclass->mergeClassLists($udata['user_class'], $ucList, $allData['data']['user_class'], TRUE);
+					$nid = $e_userclass->stripFixedClasses($nid);
+					$nid = implode(',',$nid);
+					if ($nid != $udata['user_baseclasslist'])
 					{
-						$nid = $e_userclass->mergeClassLists($udata['user_class'], $ucList, $allData['data']['user_class'], TRUE);
-						$nid = $e_userclass->stripFixedClasses($nid);
-						$nid = implode(',',$nid);
-						//	echo "Userclass data - new: {$nid}, old: {$udata['user_baseclasslist']}, editable: ".implode(',',$ucList).", entered: {$allData['data']['user_class']}<br />";
-						if ($nid != $udata['user_baseclasslist'])
+						if (US_DEBUG)
 						{
-							if (US_DEBUG)
-							{
-								e107::getLog()->addEvent(10, debug_backtrace(), "DEBUG", "Usersettings test", "Write back classes; old list: {$udata['user_class']}; new list: ".$nid, false, LOG_TO_ROLLING);
-							}
-							$changedUserData['user_class'] = $nid;
+							e107::getLog()->addEvent(10, debug_backtrace(), "DEBUG", "Usersettings test", "Write back classes; old list: {$udata['user_class']}; new list: ".$nid, false, LOG_TO_ROLLING);
 						}
+						$changedUserData['user_class'] = $nid;
 					}
 				}
 			}
@@ -628,11 +582,9 @@ class usersettings_front // Begin Usersettings rewrite.
 
 			// All key fields validated here
 			// -----------------------------
-			// $inp - UID of user whose data is being changed (may not be the currently logged in user)
-			$inp = intval($inp);
 			if (!$error && count($changedUserData) || count($changedEUFData))
 			{
-				$_POST['user_id'] = $inp;
+				$_POST['user_id'] = $memberId;
 				$ret =e107::getEvent()->trigger('preuserset', $_POST);
 
 				if ($ret == '')
@@ -652,11 +604,11 @@ class usersettings_front // Begin Usersettings rewrite.
 				}
 			}
 		}  // End - update setttings
-		elseif(isset($_POST['SaveValidatedInfo'])) // Next bit only valid if user editing their own data
+		elseif(isset($_POST['SaveValidatedInfo']))
 		{
 				$pendingChange = $this->pendingChange(isset($_POST['pending']) ? $_POST['pending'] : '');
 
-				if (!$pendingChange || (int) $inp !== (int) $pendingChange['user_id'])
+				if (!$pendingChange || $memberId !== (int) $pendingChange['user_id'])
 				{  // Nothing is waiting on this account, so this confirmation has nothing to apply
 
 					$mes->addError("<p>".defset('LAN_USET_CHANGE_NOT_COMPLETED', "Your changes were not completed. Please try again.")."</p>");
@@ -741,17 +693,12 @@ class usersettings_front // Begin Usersettings rewrite.
 			}
 
 			$needsConfirmation = $mustConfirm && !$reauthenticated;
-			$ownRecord         = (int) $inp === (int) USERID;
 
-			if (!$needsConfirmation || !$ownRecord)
+			if (!$needsConfirmation)
 			{
 				if ($savePassword)
 				{
 					$changedUserData = $this->withPasswordHashes($changedUserData, $udata, $newHashes);
-				}
-				elseif ($needsConfirmation)
-				{
-					$extraErrors[] = LAN_USET_20;
 				}
 			}
 			elseif ($error)
@@ -767,7 +714,6 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if ($dataToSave && !$promptPassword)
 		{
-			$inp = intval($inp);
 
 
 			// We can update the basic user record now - can just update fields from $changedUserData
@@ -775,7 +721,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			if (isset($changedUserData) && count($changedUserData))
 			{
 				$changedData['data'] = $changedUserData;
-				$changedData['WHERE'] = 'user_id='.$inp;
+				$changedData['WHERE'] = 'user_id='.$memberId;
 				validatorClass::addFieldTypes($userMethods->userVettingInfo,$changedData);
 
 				// Field-typed array update: valuesTyped() applies the same per-column storage
@@ -784,7 +730,7 @@ class usersettings_front // Begin Usersettings rewrite.
 				// print_a($changedData);
 				$updated = $sql->createQueryBuilder()->update('user')
 					->valuesTyped($changedData['data'], $changedData['_FIELD_TYPES'])
-					->where('user_id', (int) $inp)
+					->where('user_id', $memberId)
 					->execute();
 				if (FALSE === $updated)
 				{
@@ -794,7 +740,7 @@ class usersettings_front // Begin Usersettings rewrite.
 				else
 				{
 					$message = LAN_USET_41;
-					if (isset($changedUserData['user_password']) && !$adminEdit)
+					if (isset($changedUserData['user_password']))
 					{
 						//	echo "Make new cookie<br />";
 						$userMethods->makeUserCookie(array('user_id' => $udata['user_id'],'user_password' => $changedUserData['user_password']), FALSE);		// Can't handle autologin ATM
@@ -809,7 +755,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 				$ue->addFieldTypes($changedEUFData);				// Add in the data types for storage
 
-				$changedEUFData['data']['user_extended_id'] = $inp;
+				$changedEUFData['data']['user_extended_id'] = $memberId;
 
 				// Field-typed upsert: insert the extended-field values, refreshing them on a
 				// user_extended_id collision. upsertTyped() applies the same per-column
@@ -830,23 +776,14 @@ class usersettings_front // Begin Usersettings rewrite.
 			$user_logging_opts = e107::getConfig()->get('user_audit_opts');
 			$do_log = array();
 			$log_action = '';
-			if ($_uid)
-			{		// Its an admin changing someone elses data - make an admin log entry here
-				e107::getLog()->add('USET_01', "UID: {$udata['user_id']}. UName: {$udata['user_name']}", E_LOG_INFORMATIVE);
-				// Check against the class of the target user, not the admin!
-				if (!check_class(varset($pref['user_audit_class'], ''), $udata['user_class'])) { $user_logging_opts = array(); }
-			}
-			else
-			{
-				if (!check_class(varset($pref['user_audit_class'], ''))) { $user_logging_opts = array(); }
-			}
+			if (!check_class(varset($pref['user_audit_class'], ''))) { $user_logging_opts = array(); }
 
 			$triggerData = array();
 			if (count($changedUserData))
 			{
 				$triggerData = $changedUserData;		// Create record for changed user data trigger
 				$triggerData['user_id'] = $udata['user_id'];
-				$triggerData['_CHANGED_BY_UID'] = USERID;		// May be admin changing data
+				$triggerData['_CHANGED_BY_UID'] = USERID;
 				$triggerData['_CHANGED_BY_UNAME'] = USERNAME;
 				if (!isset($triggerData['user_name'])) { $triggerData['user_name'] = $udata['user_name']; }
 			}
@@ -897,18 +834,8 @@ class usersettings_front // Begin Usersettings rewrite.
 				if (count($do_log))
 				{  // Got some changes to audit
 					//			echo "Adding to audit log<br />";
-					if ($_uid)
-					{
-						$log_action = USER_AUDIT_ADMIN;						// If an admin did the mod, different heading
-						// Embed a message saying who changed the data
-						$changedUserData['message'] = str_replace(array('[x]', '[y]'), array(USERID, USERNAME), LAN_USET_18);
-						e107::getLog()->user_audit($log_action, $do_log, $udata['user_id'], $udata['user_loginname']);
-					}
-					else
-					{
-						if (count($do_log) > 1) { $log_action = USER_AUDIT_NEW_SET; } // Log multiple entries to one record
-						e107::getLog()->user_audit($log_action, $do_log);
-					}
+					if (count($do_log) > 1) { $log_action = USER_AUDIT_NEW_SET; }
+					e107::getLog()->user_audit($log_action, $do_log);
 				}
 			}	// End of audit logging
 
@@ -924,7 +851,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			}
 
 				// If user has changed display name, update the record in the online table
-			if (isset($changedUserData['user_name']) && !$_uid)
+			if (isset($changedUserData['user_name']))
 			{
 				e107::getDb()->createQueryBuilder()->update('online')
 					->set('online_user_id', USERID.'.'.$changedUserData['user_name'])
@@ -946,12 +873,6 @@ class usersettings_front // Begin Usersettings rewrite.
 			{
 				e107::redirect();
 			}
-
-			if($adminEdit && $message)
-			{
-				$mes->addSuccess($message);
-			}
-
 
 			$USERSETTINGS_MESSAGE =$this->getTemplate('message');
 			$USERSETTINGS_MESSAGE_CAPTION = $this->getTemplate('message_caption');
@@ -977,7 +898,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			{
 				$redirect = e107::getRedirect();
 				$url = e107::getUrl();
-				$to = $_uid ? $url->create('user/profile/edit', array('id' => $_uid, 'name' => $changedUserData['user_name'])) : $url->create('user/myprofile/edit');
+				$to = $url->create('user/myprofile/edit');
 				if($message) e107::getMessage()->addSuccess($message, 'default', true);
 				$redirect->redirect($to);
 			}
@@ -1236,8 +1157,7 @@ class usersettings_front // Begin Usersettings rewrite.
 		$text .= $tp->parseTemplate($USERSETTINGS_EDIT, true, $this->sc); //ParseSC must be set to true so that custom plugin -shortcodes can be utilized.
 
 
-		$text .= "<div><input type='hidden' name='_uid' value='{$uuid}' /></div>
-				<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
+		$text .= "<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 		</form>
 		";
 

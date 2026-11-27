@@ -41,10 +41,8 @@ class core_user_rewrite_url extends eUrlConfig
 				
 				// Regex involved next
 				//'<id:[\d]+>' 		=> array('profile/view', 'legacyQuery' => 'id.{id}'),
-			//	'edit/<id:[\d]+>' 	=> array('profile/edit', 'legacy' => '{e_ADMIN}users.php', 'legacyQuery' => 'mode=main&action=edit&id={id}'),
 				
 				// Named requests - important to be in the end in this order!
-			//	'edit/<name:[\w\pL.\-\s]+>' 	=> array('profile/edit','legacy' => '{e_ADMIN}users.php', 'legacyQuery' => 'mode=main&action=edit&id={id}', 'parseCallback' => 'idByName'),
 				// Last one - close to catch all!
 				'<name:[\w\pL.\-\s\|]+>' 	=> array('profile/view', 'legacyQuery' => 'id.{id}', 'parseCallback' => 'idByName'),
 			) 
@@ -75,7 +73,7 @@ class core_user_rewrite_url extends eUrlConfig
 	### CUSTOM METHODS ###
 	
 	/**
-	 * profile/edit & profile/view callback
+	 * profile/view callback
 	 * @param eRequest $request
 	 */
 	public function idByName(eRequest $request)

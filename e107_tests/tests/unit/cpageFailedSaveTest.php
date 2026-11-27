@@ -97,13 +97,13 @@ class cpageFailedSaveTest extends \Test\Unit
 		self::assertNotNull($written, 'the page was not saved');
 
 		$id = (int) $written['page_id'];
-		$shown = $this->posted($this->open(self::EDIT.$id));
+		$shown = $this->untouchedSubmission($this->open(self::EDIT.$id), 'page_title');
 		self::assertStringContainsString('&lt;i id=cfx&gt;', $shown['page_fields__typed'], 'the edit form has to show the value with an entity in it');
 
 		$refused = $this->open(self::EDIT.$id, array('page_title' => '', 'menu_name' => '') + $shown);
 		self::assertSame($written, $this->stored(), "the save was meant to be refused:\n".$refused);
 
-		$back = $this->posted($refused);
+		$back = $this->untouchedSubmission($refused, 'page_title');
 		self::assertNotNull($back, "the edit form did not come back:\n".$refused);
 		self::assertSame($shown['page_fields__typed'], $back['page_fields__typed'], 'the form that comes back must show exactly what was posted');
 
@@ -143,75 +143,5 @@ class cpageFailedSaveTest extends \Test\Unit
 		$row = e107::getDb()->createQueryBuilder()->select('*')->from('page')->whereLike('page_title', self::TITLE.'%')->fetchRow();
 
 		return $row ?: null;
-	}
-
-	/**
-	 * @param string $page
-	 * @return array|null what the page form on the page posts when nobody touches it, parsed as PHP parses a request body
-	 */
-	private function posted($page)
-	{
-		$document = new DOMDocument();
-		$errors = libxml_use_internal_errors(true);
-		$document->loadHTML('<?xml encoding="utf-8"?>'.$page);
-		libxml_clear_errors();
-		libxml_use_internal_errors($errors);
-
-		$path = new DOMXPath($document);
-		$form = $path->query("//form[.//*[@name='page_title']]")->item(0);
-
-		if($form === null)
-		{
-			return null;
-		}
-
-		$body = array();
-
-		foreach($path->query('.//input[@name and not(@disabled)] | .//select[@name and not(@disabled)] | .//textarea[@name and not(@disabled)]', $form) as $control)
-		{
-			foreach($this->values($path, $control) as $value)
-			{
-				$body[] = rawurlencode($control->getAttribute('name')).'='.rawurlencode($value);
-			}
-		}
-
-		parse_str(implode('&', $body), $posted);
-
-		return $posted;
-	}
-
-	/**
-	 * @param DOMXPath $path
-	 * @param DOMElement $control an enabled input, select or text area
-	 * @return string[] the values it submits
-	 */
-	private function values(DOMXPath $path, DOMElement $control)
-	{
-		if($control->nodeName === 'textarea')
-		{
-			return array($control->textContent);
-		}
-
-		if($control->nodeName === 'select')
-		{
-			$selected = $path->query('.//option[@selected]', $control);
-			$option = $selected->length ? $selected->item($selected->length - 1) : $path->query('.//option', $control)->item(0);
-
-			return $option ? array($option->getAttribute('value')) : array();
-		}
-
-		$type = strtolower($control->getAttribute('type'));
-
-		if(in_array($type, array('submit', 'button', 'image', 'reset', 'file'), true))
-		{
-			return array();
-		}
-
-		if(in_array($type, array('checkbox', 'radio'), true))
-		{
-			return $control->hasAttribute('checked') ? array($control->getAttribute('value')) : array();
-		}
-
-		return array($control->getAttribute('value'));
 	}
 }
