@@ -20,10 +20,10 @@ class e_urlTest extends \Codeception\Test\Unit
 	 * and index.php runs e_url before anything else, so a missing preference used
 	 * to take the front end down with array_keys() on null.
 	 *
-	 * Worth knowing when reaching for an acceptance test instead: e_url::run()
-	 * guards the isLegacy() call with three short-circuiting conditions, so '/'
-	 * and '/index.php' never reach it. Only a request with a path, which is any
-	 * SEF address, gets there.
+	 * Worth knowing when reaching for an acceptance test instead:
+	 * {@see e_url::routeRequest()} guards the isLegacy() call with three
+	 * short-circuiting conditions, so '/index.php' never reaches it and '/'
+	 * reaches it only as the front page's address.
 	 */
 	public function testIsLegacyTreatsMissingLegacyPreferencesAsNoLegacyMappings()
 	{
@@ -32,7 +32,7 @@ class e_urlTest extends \Codeception\Test\Unit
 		try
 		{
 			$isLegacy = new ReflectionMethod('e_url', 'isLegacy');
-			self::assertFalse($isLegacy->invoke(new e_url()));
+			self::assertFalse($isLegacy->invoke(new e_url(), 'news/list'));
 		}
 		finally
 		{
@@ -46,12 +46,8 @@ class e_urlTest extends \Codeception\Test\Unit
 
 		try
 		{
-			$url = new e_url();
-			$request = new ReflectionProperty('e_url', '_request');
-			$request->setValue($url, 'news/list');
-
 			$isLegacy = new ReflectionMethod('e_url', 'isLegacy');
-			self::assertTrue($isLegacy->invoke($url));
+			self::assertTrue($isLegacy->invoke(new e_url(), 'news/list'));
 		}
 		finally
 		{
@@ -238,37 +234,152 @@ class e_urlTest extends \Codeception\Test\Unit
 	 */
 	private function routedGet($request, array $carried, $redirect = '{e_PLUGIN}routeprobe/absent.php?$1')
 	{
-		$restore = $this->withCorePrefs(array('url_config' => null, 'url_aliases' => null, 'e_url_list' => array('routeprobe' => 1)));
-		$get = $_GET;
-		$_GET = $carried;
-		$raised = array();
-		set_error_handler(function ($severity, $message) use (&$raised)
-		{
-			$raised[] = $message;
+		$routed = $this->route($request, $carried, array('probe' => array('regex' => '^probe/(.*)', 'redirect' => $redirect)));
 
-			return true;
-		});
+		self::assertSame(array(), $routed['raised'], 'Routing '.$request.' to '.$redirect.' raised these.');
 
-		try
+		return $routed['get'];
+	}
+
+	public function testAnAddressWithAQueryStringReachesTheRouteForItsPath()
+	{
+		$routed = $this->route('probe?foo=1', array('foo' => '1'), array(
+			'path' => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php'),
+		));
+
+		self::assertSame(array('routed' => true, 'include' => APP_PATH.'/page.php', 'query' => 'foo=1', 'get' => array('foo' => '1'), 'raised' => array()), $routed);
+	}
+
+	public function testARetriedRouteHandsThePageItsOwnQueryAndTheRequestsInEQuery()
+	{
+		$routed = $this->route('probe?news.2', array('news_2' => ''), array(
+			'path' => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php?from=route'),
+		));
+
+		self::assertSame(array('routed' => true, 'include' => APP_PATH.'/page.php', 'query' => 'from=route&news.2', 'get' => array('news_2' => '', 'from' => 'route'), 'raised' => array()), $routed);
+	}
+
+	public function testARouteWhosePatternReadsTheQueryStringStillWins()
+	{
+		$routed = $this->route('probe?id=2', array('id' => '2'), array(
+			'path'  => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php'),
+			'query' => array('regex' => '^probe\?id=(\d+)$', 'redirect' => APP_PATH.'/news.php?item=$1'),
+		));
+
+		self::assertSame(array('routed' => true, 'include' => APP_PATH.'/news.php', 'query' => 'item=2', 'get' => array('id' => '2', 'item' => '2'), 'raised' => array()), $routed);
+	}
+
+	public function testAMatchTheTokenGuardRefusesIsNotRetriedAgainstThePath()
+	{
+		$routed = $this->route('probe?id=2', array('id' => '2'), array(
+			'path'  => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php'),
+			'query' => array('regex' => '^probe\?id=(\d+)$', 'redirect' => APP_PATH.'/news.php?item=$1&e-token=routed'),
+		));
+
+		self::assertSame(array('routed' => false, 'include' => null, 'query' => null, 'get' => array('id' => '2'), 'raised' => array()), $routed);
+	}
+
+	public function testAMatchWhosePageIsMissingIsNotRetriedAgainstThePath()
+	{
+		$routed = $this->route('probe?id=2', array('id' => '2'), array(
+			'path'  => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php'),
+			'query' => array('regex' => '^probe\?id=(\d+)$', 'redirect' => '{e_PLUGIN}routeprobe/absent.php?item=$1'),
+		));
+
+		self::assertSame(array('routed' => false, 'include' => null, 'query' => null, 'get' => array('id' => '2', 'item' => '2'), 'raised' => array()), $routed);
+	}
+
+	public function testTheFrontPagesOwnQueryStringIsNotRetriedAgainstItsPath()
+	{
+		$routed = $this->route('', array(), array(
+			'path' => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php'),
+		), array('frontpage' => array('all' => 'probe?cat=1')));
+
+		self::assertSame(array('routed' => false, 'include' => null, 'query' => null, 'get' => array(), 'raised' => array()), $routed);
+	}
+
+	public function testAnAddressWithNoPathOrTheIndexPathIsNotRetried()
+	{
+		$routes = array(
+			'home'  => array('regex' => '^$', 'redirect' => APP_PATH.'/page.php'),
+			'index' => array('regex' => '^index\.php$', 'redirect' => APP_PATH.'/page.php'),
+		);
+
+		foreach(array('?foo=1', 'index.php?foo=1') as $request)
 		{
-			$url = new e_url();
-			(new ReflectionProperty('e_url', '_request'))->setValue($url, $request);
-			(new ReflectionProperty('e_url', '_config'))->setValue($url, array('routeprobe' => array('probe' => array(
-				'regex'    => '^probe/(.*)',
-				'redirect' => $redirect,
-			))));
-			$url->run();
-			$routed = $_GET;
+			self::assertSame(array('routed' => false, 'include' => null, 'query' => null, 'get' => array('foo' => '1'), 'raised' => array()), $this->route($request, array('foo' => '1'), $routes), $request);
 		}
-		finally
+	}
+
+	public function testALegacyAddressIsLeftToTheLegacyRouterWithOrWithoutAQueryString()
+	{
+		foreach(array('probe' => array(), 'probe?foo=1' => array('foo' => '1')) as $request => $get)
 		{
-			restore_error_handler();
-			$_GET = $get;
-			$restore();
+			$routed = $this->route($request, $get, array(
+				'path' => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php'),
+			), array('url_config' => array('probe' => 'core/sef')));
+
+			self::assertSame(array('routed' => false, 'include' => null, 'query' => null, 'get' => $get, 'raised' => array()), $routed, $request);
 		}
+	}
 
-		self::assertSame(array(), $raised, 'Routing '.$request.' to '.$redirect.' raised these.');
+	public function testAnAddressNoRouteMatchesIsLeftToTheLegacyRouter()
+	{
+		$routed = $this->route('elsewhere?foo=1', array('foo' => '1'), array(
+			'path' => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php'),
+		));
 
-		return $routed;
+		self::assertSame(array('routed' => false, 'include' => null, 'query' => null, 'get' => array('foo' => '1'), 'raised' => array()), $routed);
+	}
+
+	public function testTheRetryStillRefusesATokenTheRequestDidNotCarry()
+	{
+		$routed = $this->route('probe?foo=1', array('foo' => '1'), array(
+			'path' => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php?e-token=routed'),
+		));
+
+		self::assertSame(array('routed' => false, 'include' => null, 'query' => null, 'get' => array('foo' => '1'), 'raised' => array()), $routed);
+	}
+
+	public function testTheRetryRefusesATokenOnlyTheAddressCarries()
+	{
+		$routes = array(
+			'path' => array('regex' => '^probe\/?$', 'redirect' => APP_PATH.'/page.php'),
+		);
+
+		foreach(array('probe?e-token=forged' => array(), 'probe?a=1&amp;e-token=forged' => array('a' => '1', 'amp;e-token' => 'forged')) as $request => $get)
+		{
+			self::assertSame(array('routed' => false, 'include' => null, 'query' => null, 'get' => $get, 'raised' => array()), $this->route($request, $get, $routes), $request);
+		}
+	}
+
+	/**
+	 * Runs {@see e_url::run()} in a booted single-entry child, which may define the constants a route that sets its page defines.
+	 *
+	 * @param string $request the address less the site's web path, as the router reads it
+	 * @param array<string, string> $get the request's own query string, as $_GET holds it
+	 * @param array<string, array<string, string>> $routes route key => regex and redirect, all of one enabled plugin
+	 * @param array<string, mixed> $prefs core preferences over the defaults here, which enable that plugin and map nothing to the legacy router
+	 * @return array<string, mixed> what run() returned, the page it set, e_QUERY, $_GET afterwards and every error raised on the way
+	 */
+	private function route($request, array $get, array $routes, array $prefs = array())
+	{
+		$prefs += array('url_config' => array(), 'url_aliases' => array(), 'e_url_alias' => array(), 'e_url_list' => array('routeprobe' => 1));
+		$marker = 'E_URL_ROUTED=';
+
+		$php = "foreach(".var_export($prefs, true)." as \$pref => \$value) { e107::getConfig()->set(\$pref, \$value); } ";
+		$php .= "\$url = new e_url(); ";
+		$php .= "(new e107\\Reflection\\ReflectionProperty('e_url', '_request'))->setValue(\$url, ".var_export($request, true)."); ";
+		$php .= "(new e107\\Reflection\\ReflectionProperty('e_url', '_config'))->setValue(\$url, array('routeprobe' => ".var_export($routes, true).")); ";
+		$php .= "\$_GET = ".var_export($get, true)."; ";
+		$php .= "\$raised = array(); ";
+		$php .= "set_error_handler(function (\$severity, \$message) use (&\$raised) { \$raised[] = \$message; return true; }); ";
+		$php .= "\$routed = \$url->run(); ";
+		$php .= "restore_error_handler(); ";
+		$php .= "echo \"\\n".$marker."\", json_encode(array('routed' => \$routed, 'include' => \$url->getInclude(), 'query' => defined('e_QUERY') ? e_QUERY : null, 'get' => \$_GET, 'raised' => \$raised)), \"\\n\"; ";
+
+		list($output) = $this->runInBootedCliDefining(array('e_SINGLE_ENTRY' => true), $php, self::buffered());
+
+		return self::reportedAfter($output, $marker, 'the child routing '.$request);
 	}
 }
