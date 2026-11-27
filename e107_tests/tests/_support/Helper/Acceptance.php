@@ -44,6 +44,9 @@ class Acceptance extends E107Base
 	const INSTALL_SITETHEME     = 'bootstrap5';
 	const INSTALL_SITE_PATH     = '000000test';
 
+	/** The address at e107.org that no installer page and no core update page may name. */
+	const STATISTICS_ADDRESS = 'e107.org/e-install';
+
 	/** @var bool */
 	private $pluginProbeWritten = false;
 

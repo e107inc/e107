@@ -3,6 +3,12 @@
 
 class InstallCest
 {
+	/** The first line of LANINS_061, which the last step answers with when a core table cannot be created. */
+	const TABLES_NOT_CREATED = 'e107 was unable to create all of the required database tables.';
+
+	/** The first table core_sql.php creates, under the installer's default prefix. */
+	const FIRST_CORE_TABLE = 'e107_admin_log';
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->unlinkE107ConfigFromTestEnvironment();
@@ -154,7 +160,34 @@ class InstallCest
 		$I->dontSeeInSource(':e_install:private');  // print_r() private-property marker
 	}
 
-	private function installe107(AcceptanceTester $I, $params = array())
+	public function installTableCreationErrorPageNamesNoStatisticsAddress(AcceptanceTester $I)
+	{
+		$I->wantTo("See the installer's table-creation error page ask the browser for nothing at e107.org");
+
+		$dbh = $I->getDbModule()->_getDbh();
+		$this->plantAViewTheInstallerCannotDrop($dbh);
+
+		try
+		{
+			$this->reachInstallConfirmation($I);
+			$I->click('submit');
+
+			$I->see(self::TABLES_NOT_CREATED);
+			$I->dontSeeInSource(\Helper\Acceptance::STATISTICS_ADDRESS);
+		}
+		finally
+		{
+			$dbh->exec('DROP VIEW `'.self::FIRST_CORE_TABLE.'`');
+		}
+	}
+
+	private function plantAViewTheInstallerCannotDrop(\PDO $dbh)
+	{
+		$dbh->exec('DROP TABLE IF EXISTS `'.self::FIRST_CORE_TABLE.'`');
+		$dbh->exec('CREATE VIEW `'.self::FIRST_CORE_TABLE.'` AS SELECT 1 AS one');
+	}
+
+	private function reachInstallConfirmation(AcceptanceTester $I, $params = array())
 	{
 		// Step 1
 
@@ -232,12 +265,18 @@ class InstallCest
 		// Step 7
 
 		$I->see("Install Confirmation", 'h3');
+	}
+
+	private function installe107(AcceptanceTester $I, $params = array())
+	{
+		$this->reachInstallConfirmation($I, $params);
 
 		$I->click('submit');
 
 		// Step 8
 
 		$I->see("Installation Complete", 'h3');
+		$I->dontSeeInSource(\Helper\Acceptance::STATISTICS_ADDRESS);
 
 		// Leave the installer the way a visitor does, by operating its own
 		// control. This step used to jump straight to /index.php with
