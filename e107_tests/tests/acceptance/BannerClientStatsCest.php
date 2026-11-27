@@ -42,6 +42,19 @@ PHP
 		$I->dontSee('PAGE_NAME');
 	}
 
+	public function aSignedInClientSeesTheStatisticsLabels(AcceptanceTester $I)
+	{
+		$this->signIn($I, self::PASSWORD);
+
+		$I->see('Visibility Yes');
+		$I->see('Start Not applicable');
+		$I->see('End Not applicable');
+		$I->dontSee('LAN_VISIBILITY');
+		$I->dontSee('LAN_START');
+		$I->dontSee('LAN_END');
+		$I->dontSee('PAGE_NAME');
+	}
+
 	private function signIn(AcceptanceTester $I, $password)
 	{
 		$I->resetAllCookies();
