@@ -15,6 +15,7 @@ class cpageScriptAddressTest extends \Test\Unit
 {
 	use \Test\ScriptClassPages;
 	use \Test\PageChapters;
+	use \Test\CoreColumns;
 
 	const TITLE = 'cpageScriptAddressTest';
 
@@ -24,18 +25,9 @@ class cpageScriptAddressTest extends \Test\Unit
 	/** @var int the chapter whose pages carry a custom field of type url named site */
 	private $chapter = 0;
 
-	/** @var string[] the page columns the suite's database predates and cpage.php saves, which this test added */
-	private $addedColumns = array();
-
 	protected function _before()
 	{
-		foreach(array('page_subtitle', 'page_metatitle', 'page_metaimage') as $column)
-		{
-			if(!e107::getDb()->field('page', $column) && e107::getDb()->gen('ALTER TABLE `#page` ADD `'.$column."` varchar(250) NOT NULL default ''"))
-			{
-				$this->addedColumns[] = $column;
-			}
-		}
+		$this->haveCoreColumns('page', array('page_subtitle', 'page_metatitle', 'page_metaimage'));
 
 		$this->chapter = $this->haveChapterWithField(self::TITLE, 'site', 'url');
 	}
@@ -47,10 +39,7 @@ class cpageScriptAddressTest extends \Test\Unit
 		$this->dropChapters();
 		$db->createQueryBuilder()->delete('menus')->where('menu_name', self::TITLE)->execute();
 
-		foreach($this->addedColumns as $column)
-		{
-			$db->gen('ALTER TABLE `#page` DROP `'.$column.'`');
-		}
+		$this->dropCoreColumns();
 	}
 
 	public function testAButtonAddressThatRunsScriptIsRefusedOutsideThePostScriptClass()

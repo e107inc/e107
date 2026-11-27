@@ -13,6 +13,7 @@
 class cpageFailedSaveTest extends \Test\Unit
 {
 	use \Test\PageChapters;
+	use \Test\CoreColumns;
 
 	const TITLE = 'cpageFailedSaveTest';
 
@@ -25,20 +26,11 @@ class cpageFailedSaveTest extends \Test\Unit
 	/** @var int the chapter whose pages carry a custom text field named typed */
 	private $chapter = 0;
 
-	/** @var string[] the page columns the suite's database predates and cpage.php saves, which this test added */
-	private $addedColumns = array();
-
 	protected function _before()
 	{
 		\Test\CoreTable::create('admin_history');
 
-		foreach(array('page_subtitle', 'page_metatitle', 'page_metaimage') as $column)
-		{
-			if(!e107::getDb()->field('page', $column) && e107::getDb()->execute('ALTER TABLE `#page` ADD `'.$column."` varchar(250) NOT NULL default ''"))
-			{
-				$this->addedColumns[] = $column;
-			}
-		}
+		$this->haveCoreColumns('page', array('page_subtitle', 'page_metatitle', 'page_metaimage'));
 
 		$this->chapter = $this->haveChapterWithField(self::TITLE, 'typed', 'text');
 	}
@@ -52,10 +44,7 @@ class cpageFailedSaveTest extends \Test\Unit
 		$this->dropChapters();
 		$db->createQueryBuilder()->delete('menus')->where('menu_name', self::TITLE)->execute();
 
-		foreach($this->addedColumns as $column)
-		{
-			$db->execute('ALTER TABLE `#page` DROP `'.$column.'`');
-		}
+		$this->dropCoreColumns();
 
 		\Test\CoreTable::drop('admin_history');
 	}
