@@ -582,7 +582,7 @@ class newsletter
 
 
 	/**
-	 * Delete a newsletter
+	 * Delete the posted newsletter or issue; a newsletter that still has issues is kept, with an error saying how many.
 	 *
 	 * @return null
 	 */
@@ -596,21 +596,25 @@ class newsletter
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 
-		$tmp = (string) key($_POST['delete']);
-		if(strpos($tmp, 'newsletter') === 0)
+		$id = intval(str_replace(array('newsletter_', 'issue_'), '', (string) key($_POST['delete'])));
+
+		if($id < 1)
 		{
-			$id = intval(str_replace('newsletter_', '', $tmp));
-			$sql->createQueryBuilder()->delete('newsletter')->where('newsletter_id', $id)->execute();
-			//$this -> message = NLLAN_42;
-			$mes->addSuccess(LAN_DELETED);
+			return null;
 		}
-		else
+
+		$issues = $sql->createQueryBuilder()->from('newsletter')->where('newsletter_parent', $id)->count();
+
+		if($issues > 0)
 		{
-			$id = intval(str_replace('issue_', '', $tmp));
-			$sql->createQueryBuilder()->delete('newsletter')->where('newsletter_id', $id)->execute();
-			//$this -> message = NLLAN_43;
-			$mes->addSuccess(LAN_DELETED);
+			$mes->addError(e107::getParser()->lanVars(NLLAN_DELETE_REFUSED_ISSUES_REMAIN, array('x' => $issues)));
+			return null;
 		}
+
+		$sql->createQueryBuilder()->delete('newsletter')->where('newsletter_id', $id)->execute();
+		$mes->addSuccess(LAN_DELETED);
+
+		return null;
 	}
 
 

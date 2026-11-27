@@ -58,6 +58,39 @@ class newsletter_admin_configTest extends \Test\Unit
 		self::assertNull($this->storedSubscribers($id), "the newsletter is still there:\n".$page);
 	}
 
+	/**
+	 * @dataProvider deleteButtonPrefixes
+	 * @param string $prefix the delete button's key, which names a newsletter whatever it says
+	 */
+	public function testDeletingANewsletterThatStillHasIssuesKeepsItAndSaysHowMany($prefix)
+	{
+		$newsletter = $this->haveNewsletter(0, array());
+		$issues = array($this->haveNewsletter($newsletter, array()), $this->haveNewsletter($newsletter, array()));
+		$this->haveNewsletter($this->haveNewsletter(0, array()), array());
+
+		$page = $this->open('', array('delete' => array($prefix.$newsletter => 'Delete')));
+
+		self::assertSame('', $this->storedSubscribers($newsletter), "the newsletter went while it still had issues:\n".$page);
+
+		foreach($issues as $issue)
+		{
+			self::assertSame('', $this->storedSubscribers($issue), 'issue '.$issue.' went with the refused delete');
+		}
+
+		self::assertSame(1, substr_count($page, 'Issues remaining: 2.'), "the page does not say how many issues remain:\n".$page);
+	}
+
+	/**
+	 * @return array<string, array{string}>
+	 */
+	public function deleteButtonPrefixes()
+	{
+		return array(
+			'newsletter button' => array('newsletter_'),
+			'issue button'      => array('issue_'),
+		);
+	}
+
 	public function testDeletingAnIssueRemovesItAndKeepsItsNewsletter()
 	{
 		$newsletter = $this->haveNewsletter(0, array());
