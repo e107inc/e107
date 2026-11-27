@@ -421,7 +421,10 @@ e107::getSession(); // starts session, creates default namespace
 function include_lan($path, $force = false)
 {
 	unset($force);
-	return include($path);
+	$result = include($path);
+	e107::getLanguageFallback()->fill($path, false, false);
+
+	return $result;
 }
 //obsolete $e107->e107_dirs['INSTALLER'] = "{$installer_folder_name}/";
 
