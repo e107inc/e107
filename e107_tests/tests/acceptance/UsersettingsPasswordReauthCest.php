@@ -284,25 +284,13 @@ class UsersettingsPasswordReauthCest
 
 		$I->loginAsAdmin();
 		$I->amOnPage('/usersettings.php?' . $userId);
-		$I->sendPostRequest('/usersettings.php?' . $userId, array(
-			'email'          => 'adminset@example.test',
-			'hideemail'      => '1',
-			'password1'      => self::ADMIN_SET_PASS,
-			'password2'      => self::ADMIN_SET_PASS,
-			'e-token'        => $this->grabToken($I, '/usersettings.php?' . $userId),
-			'updatesettings' => 'Update Settings',
-		));
+		$I->seeInCurrentUrl('/e107_admin/users.php?mode=main&action=edit&id=' . $userId);
+		$I->submitForm("//form[.//input[@name='user_loginname']]", array('user_password_' . $userId => self::ADMIN_SET_PASS), 'etrigger_submit');
 
 		$I->assertTrue(password_verify(self::ADMIN_SET_PASS, $this->grabHash($I, $userId)),
 			'the administrator-supplied password is the stored credential');
 	}
 
-	/**
-	 * The exemption above is for an administrator who cannot know the password they
-	 * are setting. Their own account is not that case, and the guard tested the query
-	 * string rather than the record being written, so the main administrator editing
-	 * itself at its own id took the exemption.
-	 */
 	public function anAdministratorSettingTheirOwnPasswordIsStillAsked(AcceptanceTester $I)
 	{
 		$I->wantTo('Ask an administrator to confirm a password change to their own account');
@@ -312,13 +300,10 @@ class UsersettingsPasswordReauthCest
 		$adminId = $I->grabFromDatabase('e107_user', 'user_id', array('user_loginname' => 'admin'));
 		$before  = $this->grabHash($I, $adminId);
 
-		$I->sendPostRequest('/usersettings.php?' . $adminId, array(
-			'email'          => $this->grabEmail($I, $adminId),
-			'hideemail'      => '1',
-			'password1'      => self::ADMIN_SET_PASS,
-			'password2'      => self::ADMIN_SET_PASS,
-			'e-token'        => $this->grabToken($I, '/usersettings.php?' . $adminId),
-			'updatesettings' => 'Update Settings',
+		$this->postSettings($I, 'admin', array(
+			'email'     => $this->grabEmail($I, $adminId),
+			'password1' => self::ADMIN_SET_PASS,
+			'password2' => self::ADMIN_SET_PASS,
 		));
 
 		$I->assertSame($before, $this->grabHash($I, $adminId), 'the stored password is untouched');

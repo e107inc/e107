@@ -228,9 +228,7 @@ class UsersettingsConfirmationPayloadCest
 
 
 	/**
-	 * The change is held for one row and the write took its target from the query
-	 * string, so an administrator confirming their own stashed change at somebody
-	 * else's id put it on that record instead.
+	 * An administrator's numeric link opens the admin user editor before usersettings.php reads the post.
 	 */
 	public function aConfirmationCannotBeRedirectedAtAnotherRow(AcceptanceTester $I)
 	{
@@ -246,6 +244,7 @@ class UsersettingsConfirmationPayloadCest
 
 		$I->sendPostRequest('/usersettings.php?' . $otherId, $fields);
 
+		$I->seeInCurrentUrl('/e107_admin/users.php?mode=main&action=edit&id=' . $otherId);
 		$I->assertSame('bystander@example.test',
 			$I->grabFromDatabase('e107_user', 'user_email', array('user_id' => $otherId)),
 			'the change stashed for the administrator did not land on another member');
