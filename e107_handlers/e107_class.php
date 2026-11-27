@@ -1409,14 +1409,6 @@ class e107
 	/**
 	 * Retrieve plugin config handlers.
 	 * Multiple plugin preference DB rows are supported
-	 * Class overload is supported.
-	 * Examples:
-	 * - <code>e107::getPluginConfig('myplug');</code>
-	 * 	 will search for e107_plugins/myplug/e_pref/myplug_pref.php which
-	 * 	 should contain class 'e_plugin_myplug_pref' class (child of e_plugin_pref)
-	 * - <code>e107::getPluginConfig('myplug', 'row2');</code>
-	 * 	 will search for e107_plugins/myplug/e_pref/myplug_row2_pref.php which
-	 * 	 should contain class 'e_plugin_myplug_row2_pref' class (child of e_plugin_pref)
 	 *
 	 * @param string $plug_name
 	 * @param string $multi_row
@@ -1430,21 +1422,6 @@ class e107
 		if(!isset(self::$_plug_config_arr[$key]))
 		{
 			e107_require_once(e_HANDLER.'pref_class.php');
-			$override_id = $plug_name.($multi_row ? "_$multi_row" : '');
-
-			//check (once) for custom plugin pref handler
-			if(is_readable(e_PLUGIN.$plug_name.'/e_pref/'.$override_id.'_pref.php'))
-			{
-				require_once(e_PLUGIN.$plug_name.'/e_pref/'.$override_id.'_pref.php');
-				$class_name = 'e_plugin_'.$override_id.'_pref';
-
-				//PHPVER: string parameter for is_subclass_of require PHP 5.0.3+
-				if(class_exists($class_name, false) && is_subclass_of('e_plugin_pref', $class_name)) //or e_pref ?
-				{
-					self::$_plug_config_arr[$key] = new $class_name($load);
-					return self::$_plug_config_arr[$key];
-				}
-			}
 
 			self::$_plug_config_arr[$key] = new e_plugin_pref($plug_name, $multi_row, $load);
 		}
@@ -1517,19 +1494,11 @@ class e107
 	/**
 	 * Retrieve theme config handlers.
 	 * Multiple theme preference DB rows are supported
-	 * Class overload is supported.
-	 * Examples:
-	 * - <code>e107::getTHemeConfig('mytheme');</code>
-	 * 	 will search for e107_plugins/myplug/e_pref/myplug_pref.php which
-	 * 	 should contain class 'e_plugin_myplug_pref' class (child of e_plugin_pref)
-	 * - <code>e107::getPluginConfig('myplug', 'row2');</code>
-	 * 	 will search for e107_plugins/myplug/e_pref/myplug_row2_pref.php which
-	 * 	 should contain class 'e_plugin_myplug_row2_pref' class (child of e_plugin_pref)
 	 *
 	 * @param string $theme_name
 	 * @param string $multi_row
 	 * @param boolean $load load from DB on startup
-	 * @return e_plugin_pref
+	 * @return e_theme_pref
 	 */
 	public static function getThemeConfig($theme_name=null, $multi_row = '', $load = true)
 	{
