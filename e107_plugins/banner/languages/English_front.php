@@ -28,4 +28,7 @@ return [
     'BANNERLAN_31' => "Not applicable",
     'BANNERLAN_35' => "Clickthrough IP addresses",
     'BANNERLAN_39' => "No image assigned to this banner.",
+    'BANNERLAN_STATS_VISIBILITY' => "Visibility",
+    'BANNERLAN_STATS_START' => "Start",
+    'BANNERLAN_STATS_END' => "End",
 ];

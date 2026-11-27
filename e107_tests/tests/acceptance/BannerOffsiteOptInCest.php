@@ -35,22 +35,13 @@ class BannerOffsiteOptInCest
 	{
 		$I->havePluginInstalled('banner');
 
-		$this->bannerId = (int) $I->haveInDatabase('e107_banner', array(
-			'banner_clientname'  => 'P19 canary',
-			'banner_image'       => 'canary.png',
-			'banner_clickurl'    => self::OFFSITE,
-			'banner_impurchased' => 0,
-			'banner_startdate'   => 0,
-			'banner_enddate'     => 0,
-			'banner_active'      => 1,
-			'banner_clicks'      => 0,
-			'banner_impressions' => 0,
-			'banner_ip'          => '',
-			'banner_tooltip'     => '',
-			'banner_description' => '',
-			'banner_campaign'    => 'p19',
-			'banner_keywords'    => '',
-		));
+		$this->bannerId = (int) $I->haveInDatabase('e107_banner', \Test\Rows::banner(array(
+			'banner_clientname' => 'P19 canary',
+			'banner_image'      => 'canary.png',
+			'banner_clickurl'   => self::OFFSITE,
+			'banner_active'     => 1,
+			'banner_campaign'   => 'p19',
+		)));
 
 		$I->stopFollowingRedirects();
 	}
