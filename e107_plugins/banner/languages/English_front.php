@@ -33,6 +33,9 @@ define("BANNERLAN_35", "Clickthrough IP addresses");
 //define("BANNERLAN_37", "Starts:");//LAN_START
 //define("BANNERLAN_38", "Error"); // English LAN_ERROR
 define("BANNERLAN_39", "No image assigned to this banner.");
+define("BANNERLAN_STATS_VISIBILITY", "Visibility");
+define("BANNERLAN_STATS_START", "Start");
+define("BANNERLAN_STATS_END", "End");
 
 
 

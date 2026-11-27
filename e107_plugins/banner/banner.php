@@ -76,7 +76,7 @@ if (isset($_POST['clientsubmit']))
 	// TODO: massive clean-up (integrate e107 users, proper login handling, password encryption for new and existing records)
 	if (!$sql->select("banner", "*", "`banner_clientlogin` = '{$clean_login}' AND `banner_clientpassword` = '{$clean_password}'")) {
 		$mes->addError(BANNERLAN_20);
-		$ns->tablerender(PAGE_NAME, $mes->render());
+		$ns->tablerender(LAN_PLUGIN_BANNER_NAME, $mes->render());
 		require_once(FOOTERF);
 		exit;
 	}
@@ -88,12 +88,13 @@ if (isset($_POST['clientsubmit']))
 	if(!$banner_total) 
 	{	
 		$mes->addInfo(LAN_NO_RECORDS_FOUND.": ".LAN_PLUGIN_BANNER_NAME); 
-		$ns->tablerender(PAGE_NAME, $mes->render());
+		$ns->tablerender(LAN_PLUGIN_BANNER_NAME, $mes->render());
 		require_once(FOOTERF);
 		exit;
 	} 
 	else 
 	{
+		$textstring = '';
 		while ($row = $sql->fetch()) 
 		{			 
 			$start_date = ($row['banner_startdate'] ? $tp->toDate($row['banner_startdate'], "%d %B %Y") : BANNERLAN_31);
@@ -107,14 +108,15 @@ if (isset($_POST['clientsubmit']))
 			$scArray['BANNER_TABLE_BANNER_ID']			    = $row['banner_id'];
 			$scArray['BANNER_TABLE_BANNER_CLICKS'] 		    = $row['banner_clicks'];
 			$scArray['BANNER_TABLE_BANNER_IMPRESSIONS'] 	= $row['banner_impressions'];
-			$scArray['BANNER_TABLE_ACTIVE'] 				= LAN_VISIBILITY." ".($row['banner_active'] != "255" ? LAN_YES : "<b>".LAN_NO."</b>");
-			$scArray['BANNER_TABLE_STARTDATE']				= LAN_START." ".$start_date;
-			$scArray['BANNER_TABLE_ENDDATE']				= LAN_END." ".$end_date;
+			$scArray['BANNER_TABLE_ACTIVE'] 				= BANNERLAN_STATS_VISIBILITY." ".($row['banner_active'] != "255" ? LAN_YES : "<b>".LAN_NO."</b>");
+			$scArray['BANNER_TABLE_STARTDATE']				= BANNERLAN_STATS_START." ".$start_date;
+			$scArray['BANNER_TABLE_ENDDATE']				= BANNERLAN_STATS_END." ".$end_date;
 			
 			if ($row['banner_ip']) 
 			{
 				$tmp = explode("^", $row['banner_ip']);
 				$scArray['BANNER_TABLE_IP_LAN'] = (count($tmp)-1);
+				$scArray['BANNER_TABLE_IP'] = '';
 				
 				for($a = 0; $a <= (count($tmp)-2); $a++) {
 					$scArray['BANNER_TABLE_IP'] .= $tmp[$a]."<br />";
@@ -130,7 +132,7 @@ if (isset($_POST['clientsubmit']))
 	$textend = $tp->parseTemplate($BANNER_TABLE_END, true, $scArray);
 	$text = $textstart.$textstring.$textend;
 	 
-	$ns->tablerender(PAGE_NAME, $text);
+	$ns->tablerender(LAN_PLUGIN_BANNER_NAME, $text);
 	 
 	require_once(FOOTERF);
 	exit;

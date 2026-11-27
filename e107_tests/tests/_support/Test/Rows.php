@@ -7,6 +7,32 @@ namespace Test;
 final class Rows
 {
 	/**
+	 * @param array $columns the columns this banner is about
+	 * @return array an e107_banner row, every other column empty or at its default
+	 */
+	public static function banner(array $columns)
+	{
+		return array_merge(array(
+			'banner_clientname'     => '',
+			'banner_clientlogin'    => '',
+			'banner_clientpassword' => '',
+			'banner_image'          => '',
+			'banner_clickurl'       => '',
+			'banner_impurchased'    => 0,
+			'banner_startdate'      => 0,
+			'banner_enddate'        => 0,
+			'banner_active'         => 0,
+			'banner_clicks'         => 0,
+			'banner_impressions'    => 0,
+			'banner_ip'             => '',
+			'banner_tooltip'        => '',
+			'banner_description'    => '',
+			'banner_campaign'       => '',
+			'banner_keywords'       => '',
+		), $columns);
+	}
+
+	/**
 	 * @param array $columns the columns this comment is about
 	 * @return array an e107_comments row, every other column at its default
 	 */
