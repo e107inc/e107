@@ -5814,6 +5814,21 @@ class e107
 	}
 
 	/**
+	 * Takes $basePath off the start of $path; a $path that does not start with it, and the same text further in, are left as they are.
+	 *
+	 * @param string $path a path or address, such as e_REQUEST_URI or a page a plugin offers
+	 * @param string $basePath a web path, such as e_HTTP
+	 * @return string
+	 */
+	public static function stripBasePath($path, $basePath)
+	{
+		$path = (string) $path;
+		$basePath = (string) $basePath;
+
+		return (strncmp($path, $basePath, strlen($basePath)) === 0) ? (string) substr($path, strlen($basePath)) : $path;
+	}
+
+	/**
 	 * Convert two absolute paths to a relative path between them
 	 * @license https://creativecommons.org/licenses/by-sa/3.0/ CC BY-SA 3.0
 	 * @see https://stackoverflow.com/a/2638272

@@ -352,8 +352,7 @@ class userlogin
 					{
 						if (strpos($fp, 'http') === FALSE)
 						{
-							$fp = str_replace(e_HTTP, '', $fp);		// This handles sites in a subdirectory properly (normally, will replace nothing)
-							$fp = SITEURL.$fp;
+							$fp = SITEURL.e107::stripBasePath($fp, e_HTTP);
 						}
 						//$redir = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$tp->replaceConstants($fp, TRUE, FALSE);
 						$redir = e107::getParser()->replaceConstants($fp, TRUE, FALSE);

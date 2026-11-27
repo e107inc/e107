@@ -66,14 +66,12 @@ foreach($front_page as &$front_value)
 	{ // Its a URL with multiple options
 		foreach($front_value['page'] as &$multipage)
 		{
-			$multipage = str_replace(e_HTTP, '', $multipage);
-			//if (substr($multipage, 0, 1) != '/') $multipage = '/'.$multipage;
+			$multipage['page'] = e107::stripBasePath($multipage['page'], e_HTTP);
 		}
 	}
 	else
 	{
-		$front_value = str_replace(e_HTTP, '', $front_value);
-		//if (substr($front_value, 0, 1) != '/') $front_value = '/'.$front_value;
+		$front_value['page'] = e107::stripBasePath($front_value['page'], e_HTTP);
 	}
 }
 
