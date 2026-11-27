@@ -93,4 +93,26 @@ final class Rows
 			'menu_button_text'  => '',
 		), $columns);
 	}
+
+	/**
+	 * @param array $columns the columns this member is about
+	 * @return array an e107_user row, every other column empty or at its default
+	 */
+	public static function user(array $columns)
+	{
+		return array_merge(array(
+			'user_name'      => '',
+			'user_loginname' => '',
+			'user_password'  => '',
+			'user_email'     => '',
+			'user_join'      => 0,
+			'user_ban'       => 0,
+			'user_class'     => '',
+			'user_admin'     => 0,
+			'user_perms'     => '',
+			'user_prefs'     => '',
+			'user_signature' => '',
+			'user_realm'     => '',
+		), $columns);
+	}
 }

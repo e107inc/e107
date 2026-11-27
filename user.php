@@ -146,7 +146,7 @@ if (isset($_POST['records']))
 {
 	$records = intval($_POST['records']);
 	$order = ($_POST['order'] == 'ASC' ? 'ASC' : 'DESC');
-	$from = 0;
+	$from = max(0, intval(varset($_POST['from'], 0)));
 }
 else if(!e_QUERY)
 {
@@ -168,7 +168,7 @@ else
 		}
 		else
 		{
-			$from = intval($qs[0]);
+			$from = max(0, intval($qs[0]));
 			$records = isset($qs[1]) ? intval($qs[1]) : 0;
 			$order = (varset($qs[2]) === 'ASC' ? 'ASC' : 'DESC');
 		}
@@ -183,6 +183,11 @@ if ($records < 1)
 elseif ($records > $user_list_max)
 {
 	$records = $user_list_max;
+}
+
+if (isset($_POST['records']))
+{
+	$from -= $from % $records;
 }
 
 if (isset($id))
