@@ -1050,7 +1050,7 @@ class e_file
 	 * @param string $remote_url
 	 * @param string $local_file string filename to save as
 	 * @param string $type       media, temp, or import
-	 * @return boolean TRUE on success, FALSE on failure (which includes absence of CURL functions)
+	 * @return boolean TRUE on success, FALSE on failure (which includes absence of CURL functions); an answer outside 2xx or an empty one is a failure and leaves no file, and {@see e_file::getErrorMessage()} says why
 	 */
 	function getRemoteFile($remote_url, $local_file, $type = 'temp', $timeout = 40)
 	{
@@ -1079,11 +1079,12 @@ class e_file
 			return false;
 		}
 
-		$fp = fopen($this->remoteFilePath($type) . $local_file, 'w'); // media-directory or temp directory is the root.
+		$path = $this->remoteFilePath($type) . $local_file;
+		$fp = fopen($path, 'w');
 
 		if($fp === false)
 		{
-			$this->error = 'Could not open ' . $this->remoteFilePath($type) . $local_file . ' for writing';
+			$this->error = 'Could not open ' . $path . ' for writing';
 			error_log($this->error);
 
 			return false;
@@ -1118,6 +1119,22 @@ class e_file
 		);
 
 		fclose($fp);
+
+		if($buffer === true && $this->error === '')
+		{
+			clearstatcache(true, $path);
+
+			if(filesize($path) === 0)
+			{
+				$this->recordOutboundAnswer($remote_url, 0, '');
+			}
+		}
+
+		if($buffer === true && $this->error !== '')
+		{
+			unlink($path);
+			$buffer = false;
+		}
 
 		if($buffer === false && !empty($this->error)) // Fixes curl_error output - here see #1936
 		{
@@ -1477,17 +1494,12 @@ class e_file
 	 * Names an answer a caller cannot use, so {@see e_file::getErrorMessage()} has a reason to report.
 	 *
 	 * @param string $url    the address the answer came from
-	 * @param int    $status the HTTP status of the final hop
+	 * @param int    $status the HTTP status of the final hop, or 0 where none is known
 	 * @param mixed  $body   the final hop's body, or true where the transport wrote it straight to disk
 	 * @return void
 	 */
 	private function recordOutboundAnswer($url, $status, $body)
 	{
-
-		if(!is_string($body))
-		{
-			return;
-		}
 
 		if($status > 0 && ($status < 200 || $status > 299))
 		{
