@@ -106,14 +106,8 @@ class ForcedLogoutCsrfCest
 	/** Docroot fixture; see staleIndexProbeSource(). */
 	const STALE_INDEX_PROBE = 'e107_tests_stale_index_probe.php';
 
-	/** @var bool whether this test switched the social plugin's test page on */
-	private $xupOpened = false;
-
 	/** @var bool whether this test wrote NO_TOKEN_PROBE into the docroot */
 	private $probeWritten = false;
-
-	/** @var array preference name => the value it held before this test changed it */
-	private $changedPrefs = array();
 
 	/**
 	 * The restore throws where it fails, so a lowered level never passes for the next test's.
@@ -134,25 +128,9 @@ class ForcedLogoutCsrfCest
 		{
 			$this->probeWritten = false;
 
-			if($this->xupOpened)
-			{
-				$I->haveSitePref('social_login_active', null);
-				$I->dropForumProbe();
-				$this->xupOpened = false;
-			}
-
-			if($this->changedPrefs)
-			{
-				$I->resetAllCookies();
-
-				foreach($this->changedPrefs as $name => $was)
-				{
-					$I->haveSitePref($name, $was);
-				}
-
-				$I->dropForumProbe();
-				$this->changedPrefs = array();
-			}
+			$I->resetAllCookies();
+			$I->restoreSitePrefs();
+			$I->dropForumProbe();
 
 			$I->dropThemeFixtures();
 		}
@@ -204,7 +182,7 @@ class ForcedLogoutCsrfCest
 	 */
 	public function aTokenlessPostLeavesTheSessionStandingWhereMissingTokensAreOnlyLogged(AcceptanceTester $I)
 	{
-		$this->changeSitePref($I, 'csrf_enforce', 1);
+		$I->haveSitePrefUntilAfter('csrf_enforce', 1);
 		$I->loginAsAdmin();
 
 		$I->sendPostRequest(self::CONFIRM_PAGE, array());
@@ -217,14 +195,12 @@ class ForcedLogoutCsrfCest
 	 */
 	public function aMemberWithAnIncompleteProfileIsStillAsked(AcceptanceTester $I)
 	{
-		$this->changeSitePref($I, 'signup_option_signature', 2);
-		$this->changeSitePref($I, 'force_userupdate', 1);
-		$I->loginAsAdmin();
+		$I->amSignedInWithAnIncompleteProfile();
 
 		$I->amOnPage(self::CONFIRM_PAGE);
 
 		$I->seeInSource(self::CONFIRM);
-		$I->dontSeeInCurrentUrl(self::SETTINGS_PAGE);
+		$I->dontSeeTheDemandToCompleteTheProfile();
 	}
 
 	/**
@@ -246,7 +222,7 @@ class ForcedLogoutCsrfCest
 	 */
 	public function aMembersOnlySiteDoesNotKeepTheQuestionForAfterLogin(AcceptanceTester $I)
 	{
-		$this->changeSitePref($I, 'membersonly_enabled', 1);
+		$I->haveSitePrefUntilAfter('membersonly_enabled', 1);
 
 		$I->amOnPage(self::CONFIRM_PAGE);
 		$I->amOnPage('/login.php');
@@ -277,7 +253,7 @@ class ForcedLogoutCsrfCest
 	 */
 	public function theQuestionRendersWherePageAccessesAreLogged(AcceptanceTester $I)
 	{
-		$this->changeSitePref($I, 'log_page_accesses', 1);
+		$I->haveSitePrefUntilAfter('log_page_accesses', 1);
 		$I->loginAsAdmin();
 
 		$I->amOnPage(self::CONFIRM_PAGE);
@@ -489,25 +465,6 @@ class ForcedLogoutCsrfCest
 	}
 
 	/**
-	 * Signs the browser out first, as _after() does before it puts every preference back, so that force_userupdate cannot bounce the probe.
-	 *
-	 * @param AcceptanceTester $I
-	 * @param string $name
-	 * @param mixed $value
-	 * @return void
-	 */
-	private function changeSitePref(AcceptanceTester $I, $name, $value)
-	{
-		$I->resetAllCookies();
-		$was = $I->haveSitePref($name, $value);
-
-		if(!array_key_exists($name, $this->changedPrefs))
-		{
-			$this->changedPrefs[$name] = $was;
-		}
-	}
-
-	/**
 	 * Sign in as a member and switch the social plugin's test page on, which is
 	 * everything actionTest() needs before it reads ?logout. Bits 0 and 1 of
 	 * social_login_active are the global switch and the test page; isFlagActive()
@@ -518,8 +475,7 @@ class ForcedLogoutCsrfCest
 	 */
 	private function xupTestPageIsOpen(AcceptanceTester $I)
 	{
-		$I->haveSitePref('social_login_active', 3);
-		$this->xupOpened = true;
+		$I->haveSitePrefUntilAfter('social_login_active', 3);
 
 		$I->haveForumMember(self::MEMBER);
 		$I->loginToForum(self::MEMBER);
