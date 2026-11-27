@@ -82,7 +82,7 @@ if (isset($_POST['clientsubmit']))
 		->fetchRow();
 	if (!$row) {
 		$mes->addError(BANNERLAN_20);
-		$ns->tablerender(PAGE_NAME, $mes->render());
+		$ns->tablerender(LAN_PLUGIN_BANNER_NAME, $mes->render());
 		require_once(FOOTERF);
 		exit;
 	}
@@ -93,7 +93,7 @@ if (isset($_POST['clientsubmit']))
 	if(!$banner_total) 
 	{	
 		$mes->addInfo(LAN_NO_RECORDS_FOUND.": ".LAN_PLUGIN_BANNER_NAME); 
-		$ns->tablerender(PAGE_NAME, $mes->render());
+		$ns->tablerender(LAN_PLUGIN_BANNER_NAME, $mes->render());
 		require_once(FOOTERF);
 		exit;
 	} 
@@ -135,7 +135,7 @@ if (isset($_POST['clientsubmit']))
 	$textend = $tp->parseTemplate($BANNER_TABLE_END, true, $scArray);
 	$text = $textstart.$textstring.$textend;
 	 
-	$ns->tablerender(PAGE_NAME, $text);
+	$ns->tablerender(LAN_PLUGIN_BANNER_NAME, $text);
 	 
 	require_once(FOOTERF);
 	exit;
