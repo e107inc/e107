@@ -49,7 +49,7 @@ class page_related // replace 'e_' with 'plugin-folder_'
 					'title'			=> $row['page_title'],
 					'url'			=> e107::getUrl()->create($route, $row), // '{e_BASE}news.php?extend.'.$row['news_id'],
 					'summary'		=> $row['page_metadscr'],
-					'image'			=> $row['menu_image']
+					'image'			=> (!empty($row['menu_image']) && !e107::getParser()->isVideo($row['menu_image'])) ? $row['menu_image'] : $row['page_metaimage']
 				);
 			}
 			
