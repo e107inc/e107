@@ -1804,7 +1804,7 @@ class AdminRoutePermsCest
 		$I->seeInSource('p7rppagebody');
 
 		$I->sendPostRequest(self::ROUTE_PAGE_CHAPTER_CHANGE, array('page_chapter' => '0', 'e-token' => $this->grabTokenFrom($I, self::ROUTE_PAGE_CREATE)));
-		$I->seeInSource('#tab');
+		$I->seeInSource('"command":"invoke"');
 	}
 
 	/** Positive control: the chapter list's inline editor and sort still answer a custom-pages administrator. */

@@ -795,7 +795,7 @@ class page_admin_ui extends e_admin_ui
 
 			if($this->getAction() === 'create' && $this->savedHalves()['page_'])
 			{
-				$this->fields['page_chapter']['writeParms']['ajax'] = array('src'=>e_SELF."?mode=page&action=chapter-change",'target'=>'tabadditional');
+				$this->fields['page_chapter']['writeParms']['ajax'] = array('src'=>e_SELF."?mode=page&action=chapter-change",'target'=>$this->customFieldsTabPane());
 			}
 
 			$this->holdFieldsToSavedHalves();
@@ -818,6 +818,7 @@ class page_admin_ui extends e_admin_ui
 				$model = $this->getModel();
 				$tabId = e107::getCustomFields()->getTabId();
 				$tabLabel = e107::getCustomFields()->getTabLabel();
+				$tabLink = $this->customFieldsTabLink();
 
 				$data = array(
 					'tabs'   => $this->getTabs(),
@@ -833,15 +834,15 @@ class page_admin_ui extends e_admin_ui
 				if(empty($text))
 				{
 					$text = ""; // There are no additional fields for the selected chapter.
-					$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'fadeOut');
+					$commands[] = $ajax->commandInvoke($tabLink, 'fadeOut');
 				}
 				else
 				{
-					$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'fadeInAdminTab');
+					$commands[] = $ajax->commandInvoke($tabLink, 'fadeInAdminTab');
 				}
 
-				$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'html', array($tabLabel));
-				$commands[] = $ajax->commandInvoke('#tab' . $tabId, 'html', array($text));
+				$commands[] = $ajax->commandInvoke($tabLink, 'html', array($tabLabel));
+				$commands[] = $ajax->commandInvoke($this->customFieldsTabPane(), 'html', array($text));
 
 				$ajax->response($commands);
 				exit;
@@ -861,11 +862,26 @@ class page_admin_ui extends e_admin_ui
 			}
 			else
 			{
-				$tabId = e107::getCustomFields()->getTabId();
-				e107::css('inline', '.nav-tabs li a[href="#tab' . $tabId . '"] { display: none; }');
+				e107::css('inline', '.nav-tabs li ' . $this->customFieldsTabLink() . ' { display: none; }');
 			}
 
 			e107::getCustomFields()->setAdminUIConfig('page_fields',$this);
+		}
+
+		/**
+		 * @return string the selector of the custom fields tab's pane
+		 */
+		private function customFieldsTabPane()
+		{
+			return '#' . e107::getCustomFields()->getTabId();
+		}
+
+		/**
+		 * @return string the selector of the link that opens the custom fields tab
+		 */
+		private function customFieldsTabLink()
+		{
+			return 'a[href="' . $this->customFieldsTabPane() . '"]';
 		}
 
 		/**
