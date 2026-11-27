@@ -24,6 +24,7 @@ if (!defined('e107_INIT')) { exit; }
 
 
 e107::plugLan('newsletter', 'global');
+require_once(e_PLUGIN.'newsletter/handlers/newsletter_subscribers_class.php');
 
 /* 
 Class for newsletter mailout function
@@ -138,7 +139,7 @@ class newsletter_mailout
 					$this->selectorActive = FALSE;
 					return FALSE;		// Run out of DB records
 				}
-				$this->targets = explode(chr(1), $row['newsletter_subscribers']);
+				$this->targets = (new newsletter_subscribers($row['newsletter_subscribers']))->ids();
 				unset($row);
 			}
 			foreach ($this->targets as $k => $v)
