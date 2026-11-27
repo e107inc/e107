@@ -3,7 +3,7 @@
 namespace Sandbox;
 
 /**
- * The network boundary round a run: while it lasts, every connection that would leave the stack is refused and recorded, so each of e107's attempts to reach the Internet is accounted for.
+ * The boundary round a run: while it lasts, every connection that would leave the stack, every lookup of a name outside it, and every request Apache would serve from outside a sandbox is refused and recorded, so each of them is accounted for.
  *
  * A recorder process of its own raises the fence once it listens, and lowers it when the run ends or its runner is gone.
  * Keep this class in PHP 5.6 syntax: the unit suite runs on 5.6.
@@ -34,33 +34,37 @@ class Boundary
 	/** @var bool whether the recorder has had the fence up */
 	private $raised = false;
 
-	/** @var callable a host's name to the addresses it resolves to */
-	private $resolve;
+	/** @var string kept while the fence is up; while it is there, Apache refuses what it would serve from outside a sandbox */
+	private $up;
 
-	/** @var array<string,string[]> each declared host's addresses, looked up at most once a run, and only for a connection that named nothing */
-	private $addresses = array();
+	/** @var string where Apache writes down each request it refuses, one tab-separated line a request */
+	private $refusals;
 
 	/**
 	 * @param string $dir where the recorder keeps its journal, log and rules: a directory of the run's own
 	 * @param Shell $shell
 	 * @param ProcNet $net
-	 * @param callable|null $resolve a host's name to the addresses it resolves to, as the recorder writes an address down; the name servers unless a test says otherwise
+	 * @param string $up
+	 * @param string $refusals
 	 */
-	public function __construct($dir, Shell $shell, ProcNet $net, $resolve = null)
+	public function __construct($dir, Shell $shell, ProcNet $net, $up, $refusals)
 	{
 		$this->dir = $dir;
 		$this->shell = $shell;
 		$this->net = $net;
-		$this->resolve = $resolve ?: function ($name)
-		{
-			$addresses = gethostbynamel($name) ?: array();
-			foreach (@dns_get_record($name, DNS_AAAA) ?: array() as $record)
-			{
-				$addresses[] = inet_ntop(inet_pton($record['ipv6']));
-			}
+		$this->up = $up;
+		$this->refusals = $refusals;
+	}
 
-			return $addresses;
-		};
+	/**
+	 * @param string $dir
+	 * @param Shell $shell
+	 * @param ProcNet $net
+	 * @return self the boundary in this env, with Apache's marker and log where the image names them
+	 */
+	public static function fromImage($dir, Shell $shell, ProcNet $net)
+	{
+		return new self($dir, $shell, $net, (string) getenv('E107_BOUNDARY_UP'), (string) getenv('E107_REFUSED_LOG'));
 	}
 
 	/**
@@ -72,9 +76,10 @@ class Boundary
 	public function raise($command)
 	{
 		@mkdir($this->dir, 0777, true);
+		@unlink($this->up);
 		$log = $this->log();
 		$this->recorder = Loop::start("$command --record ".escapeshellarg($this->dir), $log);
-		for ($waited = 0; !file_exists("{$this->dir}/ready"); $waited++)
+		for ($waited = 0; !file_exists($this->up); $waited++)
 		{
 			$status = proc_get_status($this->recorder);
 			if (!$status['running'] || $waited > 3000)
@@ -103,7 +108,7 @@ class Boundary
 		}
 		if ($this->raised)
 		{
-			$this->fence()->lower();
+			$this->takeDown($this->fence());
 			$this->raised = false;
 		}
 	}
@@ -136,7 +141,7 @@ class Boundary
 	}
 
 	/**
-	 * Hold what the recorder wrote against what the tests declared, in what each suite process wrote down (Extension\OutboundLedger).
+	 * Hold what the run refused against what the tests declared, in what each suite process wrote down (Extension\OutboundLedger); a request for a site outside the sandboxes is never declared.
 	 *
 	 * A test answers for what happens from its start until the next test on its worker starts, or the run ends: a page it left open in the browser can still make e107 reach out, and Apache finishes a request after the browser that sent it is gone.
 	 *
@@ -158,14 +163,14 @@ class Boundary
 				if ($test['start'] <= $attempt['t'] && $attempt['t'] <= $test['end'])
 				{
 					$during[] = $test['name'];
-					$declared = $declared || $this->declares($test['expect'], $attempt);
+					$declared = $declared || (empty($attempt['site']) && in_array($attempt['host'], $test['expect'], true));
 				}
 			}
 			if ($declared)
 			{
 				continue;
 			}
-			$key = json_encode(array($attempt['from'], $attempt['protocol'], $attempt['host'], $attempt['port'], $attempt['request'], $byTest ? $during : null));
+			$key = json_encode(array(array_diff_key($attempt, array('t' => 0)), $byTest ? $during : null));
 			if (!isset($undeclared[$key]))
 			{
 				$undeclared[$key] = $attempt + array('count' => 0, 'during' => array());
@@ -175,36 +180,6 @@ class Boundary
 		}
 
 		return array_values($undeclared);
-	}
-
-	/**
-	 * @param string[] $expect the hosts a test declared
-	 * @param array $attempt what the recorder wrote down
-	 * @return bool whether a declared host is the name the attempt carried or, for a connection the recorder closed before it named anything, one of the addresses the name resolves to when the run ends
-	 */
-	private function declares(array $expect, array $attempt)
-	{
-		if (in_array($attempt['host'], $expect, true))
-		{
-			return true;
-		}
-		if ($attempt['protocol'] !== 'tcp' || filter_var($attempt['host'], FILTER_VALIDATE_IP) === false)
-		{
-			return false;
-		}
-		foreach ($expect as $name)
-		{
-			if (!isset($this->addresses[$name]))
-			{
-				$this->addresses[$name] = call_user_func($this->resolve, $name);
-			}
-			if (in_array($attempt['host'], $this->addresses[$name], true))
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -242,13 +217,19 @@ class Boundary
 		return $tests;
 	}
 
-	/** @return array[] every attempt the recorder wrote down this run */
+	/** @return array[] every attempt the run refused: what the recorder wrote down, and the requests Apache refused, which are marked site */
 	public function attempts()
 	{
 		$attempts = array();
 		foreach (@file("{$this->dir}/".self::JOURNAL, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: array() as $line)
 		{
 			$attempts[] = json_decode($line, true);
+		}
+		foreach (@file($this->refusals, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: array() as $line)
+		{
+			list($t, $from, $port, $host, $request) = array_pad(explode("\t", $line, 5), 5, '');
+			$attempts[] = array('t' => (float) $t, 'from' => $from, 'protocol' => $port === '443' ? 'https' : 'http',
+				'host' => strtolower(trim(preg_replace('/:\d+$/', '', $host), '[]')), 'port' => (int) $port, 'request' => $request, 'site' => true);
 		}
 
 		return $attempts;
@@ -268,18 +249,27 @@ class Boundary
 
 		return $attempt['protocol'].' '.$where.($attempt['port'] !== null ? ':'.$attempt['port'] : '')
 			.($attempt['request'] !== null ? ' '.$attempt['request'] : '')
+			.(empty($attempt['site']) ? '' : ', served from outside every sandbox,')
 			.' from '.($attempt['from'] === 'browser' ? 'the browser' : $attempt['from'])
 			.($attempt['count'] > 1 ? ', '.$attempt['count'].' times' : '');
 	}
 
 	/**
-	 * The recorder process: listen, raise the fence, record until the run ends or its runner is gone, and lower the fence.
+	 * The recorder process: look up the stack's names, listen, raise the fence, record until the run ends or its runner is gone, and lower the fence.
 	 *
+	 * @param string[] $names the stack's own names, whose lookups the recorder answers with the addresses they have before the fence goes up
 	 * @return void
 	 */
-	public function record()
+	public function record(array $names)
 	{
+		if ($this->up === '' || !is_file($this->refusals))
+		{
+			throw new \RuntimeException("Apache in this env would serve the worktree's own site during the run; an env from before that needs `e107-tests up` again");
+		}
 		$runner = posix_getppid();
+		$fence = $this->fence();
+		$fence->lower();
+		$stack = self::lookUp($names);
 		$port = self::PORT;
 		$tcp = @stream_socket_server("tcp://[::]:$port", $errno, $error) ?: stream_socket_server("tcp://0.0.0.0:$port", $errno, $error);
 		$udp = array(stream_socket_server("udp://127.0.0.1:$port", $errno, $error, STREAM_SERVER_BIND));
@@ -291,13 +281,13 @@ class Boundary
 		{
 			throw new \RuntimeException("the recorder cannot listen on port $port: $error");
 		}
-		$fence = $this->fence();
-		$fence->raise($port);
+		file_put_contents($this->refusals, '');
 		try
 		{
-			touch("{$this->dir}/ready");
+			$fence->raise();
+			touch($this->up);
 			$dir = $this->dir;
-			$recorder = new Recorder($this->net, "$dir/".self::JOURNAL);
+			$recorder = new Recorder($this->net, "$dir/".self::JOURNAL, $stack);
 			$recorder->serve($tcp, $udp, function () use ($dir, $runner)
 			{
 				return Loop::ended($dir, $runner);
@@ -305,13 +295,42 @@ class Boundary
 		}
 		finally
 		{
-			$fence->lower();
+			$this->takeDown($fence);
 		}
+	}
+
+	/**
+	 * @param string[] $names
+	 * @return array<string,string[]> each of the names that resolves, in lower case, with its addresses
+	 */
+	private static function lookUp(array $names)
+	{
+		$found = array();
+		foreach ($names as $name)
+		{
+			$addresses = gethostbynamel($name) ?: array();
+			foreach (@dns_get_record($name, DNS_AAAA) ?: array() as $record)
+			{
+				$addresses[] = inet_ntop(inet_pton($record['ipv6']));
+			}
+			if ($addresses)
+			{
+				$found[strtolower($name)] = $addresses;
+			}
+		}
+
+		return $found;
 	}
 
 	/** @return Fence */
 	private function fence()
 	{
-		return new Fence($this->shell, $this->net, '/etc/resolv.conf', "{$this->dir}/rules.nft");
+		return new Fence($this->shell, $this->net, "{$this->dir}/rules.nft", self::PORT);
+	}
+
+	private function takeDown(Fence $fence)
+	{
+		@unlink($this->up);
+		$fence->lower();
 	}
 }

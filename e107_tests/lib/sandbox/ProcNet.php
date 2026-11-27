@@ -76,7 +76,7 @@ class ProcNet
 	 *
 	 * @param string $protocol tcp or udp
 	 * @param string $address the socket's own address, as a peer sees it ("1.2.3.4:5", "[::ffff:1.2.3.4]:5", "[::1]:5")
-	 * @return array{0: string|null, 1: int|null, 2: int}|null the remote address and port, null for a datagram socket that names none, and the socket owner's uid; null when no socket here has that address
+	 * @return array{0: string|null, 1: int|null, 2: int}|null the remote address and port, null for a datagram socket that names none outside the stack, and the socket owner's uid; null when no socket here has that address
 	 */
 	public function remoteOf($protocol, $address)
 	{
@@ -85,7 +85,7 @@ class ProcNet
 		$port = sprintf('%04X', (int) substr($address, $colon + 1));
 		$inside = array('ip' => $this->inside('ip'), 'ip6' => $this->inside('ip6'));
 		$found = null;
-		$unconnected = null;
+		$owned = null;
 		foreach (strpos($ip, ':') === false ? array($protocol => $ip, $protocol.'6' => "::ffff:$ip") : array($protocol.'6' => $ip) as $table => $own)
 		{
 			$packed = inet_pton($own);
@@ -104,14 +104,14 @@ class ProcNet
 					}
 					$found = $found ?: $candidate;
 				}
-				elseif ($protocol === 'udp' && ($row[1] === $local || $row[1] === $anywhere) && hexdec($remotePort) === 0)
+				elseif ($protocol === 'udp' && ($row[1] === $local || $row[1] === $anywhere))
 				{
-					$unconnected = $unconnected ?: array(null, null, (int) $row[7]);
+					$owned = $owned ?: array(null, null, (int) $row[7]);
 				}
 			}
 		}
 
-		return $found ?: $unconnected;
+		return $found ?: $owned;
 	}
 
 	/** An IPv4 address an IPv6 socket names in its mapped form (::ffff:a.b.c.d), as the address it is. */

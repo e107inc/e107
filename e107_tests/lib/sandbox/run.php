@@ -38,10 +38,16 @@ if ($argv && $argv[0] === '--drop')
 }
 if ($argv && $argv[0] === '--record')
 {
-	$boundary = new Boundary($argv[1], new Shell(), new ProcNet());
+	$boundary = Boundary::fromImage($argv[1], new Shell(), new ProcNet());
+	$names = array($params['db']['host'], Runner::WEB, $params['browser']['host']);
+	for ($n = 1; $n <= (int) getenv('E107_SANDBOXES'); $n++)
+	{
+		$names[] = Runner::sandboxName($n);
+		$names[] = Runner::host($n);
+	}
 	try
 	{
-		$boundary->record();
+		$boundary->record($names);
 	}
 	catch (\RuntimeException $e)
 	{
@@ -110,7 +116,7 @@ if (getenv('E107_SANDBOXES') === false)
 	exit(2);
 }
 $sandboxes = 0;
-while ($sandboxes < (int) getenv('E107_SANDBOXES') && gethostbyname('sb'.($sandboxes + 1).'.web') === gethostbyname('web'))
+while ($sandboxes < (int) getenv('E107_SANDBOXES') && gethostbyname(Runner::host($sandboxes + 1)) === gethostbyname(Runner::WEB))
 {
 	$sandboxes++;
 }
