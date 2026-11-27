@@ -36,6 +36,22 @@ trait BootedCli
 	}
 
 	/**
+	 * Runs $php in a booted child and returns what it wrote between @@ marks, failing unless there are $count of them.
+	 *
+	 * @param string $php statements that write each value they report as '@@'.$value.'@@'
+	 * @param int $count
+	 * @return string[]
+	 */
+	protected function marksFromBootedCli($php, $count)
+	{
+		list($output) = $this->runInBootedCli($php, self::buffered());
+		$printed = implode("\n", $output);
+		$this->assertSame($count, preg_match_all('/@@([^@]*)@@/', $printed, $matches), $printed);
+
+		return $matches[1];
+	}
+
+	/**
 	 * Runs $php in a booted CLI child that defined $constants before class2.php could, so the boot keeps the values given here.
 	 *
 	 * @param array $constants name => value

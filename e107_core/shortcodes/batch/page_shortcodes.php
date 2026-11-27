@@ -282,6 +282,7 @@ class cpage_shortcodes extends e_shortcode
 		$thumb = $tp->thumbUrl($path);
 		$dimensions = $tp->thumbDimensions('double');
 		$type = varset($parms[2]['type'], 'tag');
+		$alt = $tp->toAttribute(varset($parms[2]['alt']));
 
 		switch($type)
 		{
@@ -290,12 +291,12 @@ class cpage_shortcodes extends e_shortcode
 			break;
 
 			case 'link':
-				return '<a href="'.$tp->replaceConstants($path, 'abs').'" class="cpage-image" rel="external image"><img class="cpage-image" src="'.$thumb.'" alt="'.varset($parms[1]['alt']).'" '.$dimensions.' /></a>';
+				return '<a href="'.$tp->replaceConstants($path, 'abs').'" class="cpage-image" rel="external image"><img class="cpage-image" src="'.$thumb.'" alt="'.$alt.'" '.$dimensions.' /></a>';
 			break;
 
 			case 'tag':
 			default:
-				return '<img class="cpage-image" src="'.$thumb.'" alt="'.varset($parms[1]['alt']).'" '.$dimensions.' />';
+				return '<img class="cpage-image" src="'.$thumb.'" alt="'.$alt.'" '.$dimensions.' />';
 			break;
 		}
 	}
