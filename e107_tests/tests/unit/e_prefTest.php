@@ -550,17 +550,76 @@
 			$pref = $this->openPref($id, 'e_pref_conflict_probe');
 			$pref->set('ours', 'lost');
 
-			$mes = e107::getMessage();
-			$mes->reset(false, false, true);
-
-			$saved = $pref->save(false, true, false);
-
-			$displayed = $mes->hasMessage(E_MESSAGE_ERROR, 'default', true) || $mes->hasMessage(E_MESSAGE_ERROR, $id, true);
-			$mes->reset(false, false, true);
+			$saved = null;
+			$displayed = $this->leavesMessage(E_MESSAGE_ERROR, $id, function() use ($pref, &$saved)
+			{
+				$saved = $pref->save(false, true, false);
+			});
 
 			$this->assertFalse($saved);
 			$this->assertSame(3, $pref->rivals, 'every attempt should have lost its race');
 			$this->assertFalse($displayed, 'a caller asking for no messages should not get a red block');
+		}
+
+		public function testANoLogsSaveWritesNoAdminLogRow()
+		{
+			$id = 'test_pref_nologs';
+
+			$this->assertTrue($this->savingWritesAnAdminLogRow($this->openPref($id)->set('probe', 'logged')),
+				'a save that allows logs should write a row, or the next assertion measures nothing');
+			$this->assertFalse($this->savingWritesAnAdminLogRow($this->openPref($id)->setParam('nologs', true)->set('probe', 'unlogged')),
+				'a save that asked for no logs should leave the admin log alone');
+			$this->assertSame('unlogged', $this->readStored($id)['probe']);
+		}
+
+		public function testANoLogsSaveStillSaysTheSettingsWereSaved()
+		{
+			$id = 'test_pref_nologs_message';
+			$pref = $this->openPref($id)->setParam('nologs', true)->set('probe', uniqid('', true));
+
+			$saved = null;
+			$shown = $this->leavesMessage(E_MESSAGE_SUCCESS, $id, function() use ($pref, &$saved)
+			{
+				$saved = $pref->save(false, true);
+			});
+
+			$this->assertTrue($saved);
+			$this->assertTrue($shown, 'nologs is about the admin log, not the screen');
+		}
+
+		/**
+		 * @param e_pref $pref
+		 * @return bool whether saving $pref, with no messages asked for, wrote an admin log row
+		 */
+		private function savingWritesAnAdminLogRow($pref)
+		{
+			$log = e107::getLog();
+			$before = $log->getLastLog();
+
+			$pref->save(false, true, false);
+
+			return $before !== $log->getLastLog();
+		}
+
+		/**
+		 * Runs $act with every message stack emptied before and after it, so nothing another test left is read and nothing is left behind.
+		 *
+		 * @param int $type an E_MESSAGE_* type
+		 * @param string $prefid the saving object's own stack, read beside the default one
+		 * @param callable $act
+		 * @return bool whether $act left a $type message on either stack, session messages included
+		 */
+		private function leavesMessage($type, $prefid, callable $act)
+		{
+			$mes = e107::getMessage();
+			$mes->reset(false, false, true);
+
+			$act();
+
+			$shown = $mes->hasMessage($type, 'default', true) || $mes->hasMessage($type, $prefid, true);
+			$mes->reset(false, false, true);
+
+			return $shown;
 		}
 
 		/**
