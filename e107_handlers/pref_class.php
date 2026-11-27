@@ -593,7 +593,7 @@ class e_pref extends e_front_model
 					//	trigger_error("Performing a pref backup", E_USER_NOTICE);
 						if(!$disallow_logs) $log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
 						e107::getCache()->clear_sys('Config_'.$this->alias.'_backup');
-						if(deftrue('e_DEBUG_PREFS'))
+						if(!$disallow_logs && deftrue('e_DEBUG_PREFS'))
 						{
 							$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
 							$log->logMessage(print_a($backtrace,true),  E_MESSAGE_DEBUG);
@@ -617,21 +617,28 @@ class e_pref extends e_front_model
 					$logId = 'PREFS_01';	
 				}
 
-				$log->addSuccess(defset('LAN_SETSAVED', 'Your settings have been saved'), $display);
-			//	$debug = debug_backtrace(null,2);
-			//	e107::getMessage()->addDebug(print_a($debug,true));
-				$uid = USERID;
+				$savedMessage = defset('LAN_SETSAVED', 'Your settings have been saved');
 
-				if(empty($uid)) // Log extra details of any pref changes made by a non-user.
+				if($disallow_logs)
 				{
-					$log->addWarning(print_r(debug_backtrace(0, 2), true), false);
+					if($display)
+					{
+						e107::getMessage()->addSuccess($savedMessage);
+					}
+				}
+				else
+				{
+					$log->addSuccess($savedMessage, $display);
+					$uid = USERID;
+
+					if(empty($uid)) // Log extra details of any pref changes made by a non-user.
+					{
+						$log->addWarning(print_r(debug_backtrace(0, 2), true), false);
+					}
+
+					$log->save($logId);
 				}
 
-				$log->save($logId);
-
-			//	if(!$disallow_logs) $log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages($logId, E_LOG_INFORMATIVE, '', $this->prefid);
-				
-				
 				//BC
 				if($this->alias === 'core')
 				{
