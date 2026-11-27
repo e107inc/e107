@@ -724,6 +724,25 @@ class Unit extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Asserts that $object holds no property its class does not declare, which PHP 8.2 deprecates creating.
+	 *
+	 * @param object $object
+	 * @return void
+	 */
+	protected static function assertHoldsOnlyDeclaredProperties($object)
+	{
+		$declared = array();
+
+		foreach((new \ReflectionClass($object))->getProperties() as $property)
+		{
+			$declared[] = $property->getName();
+		}
+
+		self::assertSame(array(), array_values(array_diff(array_keys(get_object_vars($object)), $declared)),
+			get_class($object).' holds a property its class does not declare');
+	}
+
+	/**
 	 * Asserts that a child's output reports no read of a missing array key, in the wording of any PHP the suite runs on.
 	 *
 	 * @param string $keys the keys, as a regular expression alternation

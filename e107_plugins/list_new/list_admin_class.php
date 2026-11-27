@@ -20,6 +20,8 @@ if (!defined('e107_INIT')) { exit; }
 class list_admin
 {
 	var $row;
+	public $e107;
+	public $parent;
 
 	/**
 	 * constructor
