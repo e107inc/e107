@@ -8,11 +8,14 @@
  *
  */
 
+use e107\Database\SqlFragment;
 use e107\Reflection\ReflectionMethod;
 use e107\Reflection\ReflectionProperty;
 
 class db_verifyTest extends \Test\Unit
 {
+	/** @var string what the last {@see db_verifyTest::verifiedExtendedFields()} printed */
+	private $verifiedPage = '';
 
 	/** @var db_verify */
 	private $dbv;
@@ -1740,6 +1743,300 @@ DATA;
 		{
 			$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
 		}
+	}
+
+	/**
+	 * A field copied in with its struct row and no column is what #5728 reported Database check calling sound.
+	 */
+	public function testVerifyReportsAMissingExtendedFieldColumn()
+	{
+
+		$this->givenExtendedField('dbvtest_missing', 1);
+
+		try
+		{
+			$results = $this->verifiedExtendedFields(array('verify_table' => array('core')))->getResults();
+
+			self::assertArrayHasKey('user_dbvtest_missing', $results['user_extended'], 'the struct defines the field, so its column is declared');
+			self::assertSame('missing_field', $results['user_extended']['user_dbvtest_missing']['_status']);
+		}
+		finally
+		{
+			$this->removeExtendedField('dbvtest_missing');
+		}
+	}
+
+	public function testVerifyReportsAnExtendedFieldTypeMismatch()
+	{
+
+		$this->givenExtendedField('dbvtest_typed', 6, 'VARCHAR(255)');
+
+		try
+		{
+			$results = $this->verifiedExtendedFields(array('verify_table' => array('core')))->getResults();
+
+			self::assertArrayHasKey('user_dbvtest_typed', $results['user_extended']);
+			self::assertSame('mismatch', $results['user_extended']['user_dbvtest_typed']['_status'], 'an integer field saves an INT(11) column');
+		}
+		finally
+		{
+			$this->removeExtendedField('dbvtest_typed');
+		}
+	}
+
+	public function testVerifyReportsTheOtherExtendedFieldsWhenTheServerRefusesOne()
+	{
+
+		$this->givenExtendedField('dbvtest_refused', 6, null, 'abc');
+		$this->givenExtendedField('dbvtest_missing', 1);
+
+		try
+		{
+			$results = $this->verifiedExtendedFields(array('verify_table' => array('core')))->getResults();
+
+			self::assertArrayHasKey('user_dbvtest_missing', $results['user_extended'], 'a field the server refuses does not hide the others');
+			self::assertArrayNotHasKey('user_dbvtest_refused', $results['user_extended']);
+			self::assertStringContainsString('user_dbvtest_refused', $this->verifiedPage, 'the refused field is named');
+		}
+		finally
+		{
+			$this->removeExtendedField('dbvtest_refused');
+			$this->removeExtendedField('dbvtest_missing');
+		}
+	}
+
+	public function testVerifyComparesUserExtendedWhenAFieldNameFoldsOntoADeclaredColumn()
+	{
+
+		$this->givenExtendedField('Hidden_Fields', 1);
+		$this->givenExtendedField('dbvtest_missing', 1);
+
+		try
+		{
+			$results = $this->verifiedExtendedFields(array('verify_table' => array('core')))->getResults();
+
+			self::assertArrayHasKey('user_dbvtest_missing', $results['user_extended'], 'a field named like user_hidden_fields does not hide the others');
+			self::assertStringNotContainsString('user_Hidden_Fields', $this->verifiedPage, 'it has no column of its own to check, so nothing is refused');
+		}
+		finally
+		{
+			$this->removeExtendedField('Hidden_Fields');
+			$this->removeExtendedField('dbvtest_missing');
+		}
+	}
+
+	public function testVerifyRepairAddsTheMissingExtendedFieldColumn()
+	{
+
+		$this->givenExtendedField('dbvtest_repair', 1);
+
+		try
+		{
+			$this->verifiedExtendedFields(array(
+				'runfix' => 1,
+				'fix'    => array('core' => array('user_extended' => array('user_dbvtest_repair' => array('insert')))),
+			));
+
+			self::assertNotFalse(e107::getDb()->field('user_extended', 'user_dbvtest_repair'), 'the ticked fix adds the column');
+		}
+		finally
+		{
+			$this->removeExtendedField('dbvtest_repair');
+		}
+	}
+
+	public function testVerifyLeavesCategoryAndAddonFieldsOut()
+	{
+
+		$this->givenExtendedField('dbvtest_category', 0);
+		$this->givenExtendedField('dbvtest_addon', 12);
+
+		try
+		{
+			$results = $this->verifiedExtendedFields(array('verify_table' => array('core')))->getResults();
+
+			self::assertArrayNotHasKey('user_dbvtest_category', $results['user_extended'], 'a category has no column');
+			self::assertArrayNotHasKey('user_dbvtest_addon', $results['user_extended'], 'an add-on field is typed by its plugin, not by the struct');
+		}
+		finally
+		{
+			$this->removeExtendedField('dbvtest_category');
+			$this->removeExtendedField('dbvtest_addon');
+		}
+	}
+
+	public function testVerifyRepairAddsOneOfTwoMissingExtendedFieldColumnsOnItsOwn()
+	{
+
+		$this->givenExtendedField('dbvtest_first', 1);
+		$this->givenExtendedField('dbvtest_second', 1);
+
+		try
+		{
+			$this->verifiedExtendedFields(array(
+				'runfix' => 1,
+				'fix'    => array('core' => array('user_extended' => array('user_dbvtest_second' => array('insert')))),
+			));
+
+			$sql = e107::getDb();
+			self::assertNotFalse($sql->field('user_extended', 'user_dbvtest_second'), 'the ticked fix adds its column while the one declared before it is still missing');
+			self::assertFalse($sql->field('user_extended', 'user_dbvtest_first'), 'the unticked fix is not run');
+		}
+		finally
+		{
+			$this->removeExtendedField('dbvtest_first');
+			$this->removeExtendedField('dbvtest_second');
+		}
+	}
+
+	public function testVerifyRepairCreatesATickedMissingTable()
+	{
+
+		$sql = e107::getDb();
+		\Test\CoreTable::drop('rate');
+
+		try
+		{
+			$this->verifiedExtendedFields(array(
+				'runfix' => 1,
+				'fix'    => array('core' => array('rate' => array('all' => array('create')))),
+			), new db_verify());
+
+			self::assertTrue($sql->isTable('rate'), 'the ticked create builds the table');
+		}
+		finally
+		{
+			if(!$sql->isTable('rate'))
+			{
+				\Test\CoreTable::create('rate');
+			}
+		}
+	}
+
+	/**
+	 * The update routine applies every planned change unasked, so a struct-derived MODIFY must never reach it.
+	 */
+	public function testCompareAllLeavesExtendedFieldColumnsAlone()
+	{
+
+		$this->givenExtendedField('dbvtest_update', 6, 'VARCHAR(255)');
+
+		try
+		{
+			$dbv = $this->extendedFieldVerifier();
+			$dbv->compareAll();
+			$results = $dbv->getResults();
+
+			self::assertArrayNotHasKey('user_dbvtest_update', $results['user_extended']);
+		}
+		finally
+		{
+			$this->removeExtendedField('dbvtest_update');
+		}
+	}
+
+	/**
+	 * @param string $name field name without its user_ prefix.
+	 * @param int $type EUF_* type.
+	 * @param string|null $column the live column to build for it, or null for none.
+	 * @param string $default
+	 * @return void
+	 */
+	private function givenExtendedField($name, $type, $column = null, $default = '')
+	{
+
+		$sql = e107::getDb();
+
+		self::assertGreaterThan(0, (int) $sql->createQueryBuilder()->insert('user_extended_struct')->insertGetId(array(
+			'user_extended_struct_name'    => $name,
+			'user_extended_struct_text'    => $name,
+			'user_extended_struct_type'    => $type,
+			'user_extended_struct_values'  => '',
+			'user_extended_struct_default' => $default,
+		)), $sql->getLastErrorText());
+
+		if($column !== null)
+		{
+			$sql->schema()->addColumn('user_extended', 'user_' . $name, SqlFragment::raw($column));
+		}
+
+		e107::setRegistry('core/userextended/structure');
+	}
+
+	/**
+	 * @param string $name
+	 * @return void
+	 */
+	private function removeExtendedField($name)
+	{
+
+		$sql = e107::getDb();
+		$sql->createQueryBuilder()->delete('user_extended_struct')->where('user_extended_struct_name', $name)->execute();
+
+		if($sql->field('user_extended', 'user_' . $name) !== false)
+		{
+			$sql->schema()->dropColumn('user_extended', 'user_' . $name);
+		}
+
+		e107::setRegistry('core/userextended/structure');
+	}
+
+	/**
+	 * A db_verify that declares only core's user_extended, so the comparison and any repair stay on that table.
+	 *
+	 * @return db_verify
+	 */
+	private function extendedFieldVerifier()
+	{
+
+		$dbv = new db_verify();
+		$file = $dbv->sqlFileTables['core'];
+		$key = array_search('user_extended', $file['tables'], true);
+
+		self::assertNotFalse($key, 'core_sql.php declares user_extended');
+
+		$dbv->sqlFileTables = array('core' => array(
+			'tables'  => array($key => 'user_extended'),
+			'data'    => array($key => $file['data'][$key]),
+			'engine'  => array($key => $file['engine'][$key]),
+			'charset' => array($key => $file['charset'][$key]),
+		));
+
+		return $dbv;
+	}
+
+	/**
+	 * Database check as the admin page runs it, with the form fields given posted.
+	 *
+	 * @param array $post
+	 * @param db_verify|null $dbv null for one that declares only user_extended.
+	 * @return db_verify
+	 */
+	private function verifiedExtendedFields(array $post, $dbv = null)
+	{
+
+		if(!defined('SEP'))
+		{
+			define('SEP', ' &raquo; ');
+		}
+
+		$dbv = ($dbv === null) ? $this->extendedFieldVerifier() : $dbv;
+		$saved = $_POST;
+		$_POST = $post;
+
+		ob_start();
+
+		try
+		{
+			$dbv->verify();
+		}
+		finally
+		{
+			$this->verifiedPage = (string) ob_get_clean();
+			$_POST = $saved;
+		}
+
+		return $dbv;
 	}
 
 	private function givenServerCapabilities($version, $largePrefix)

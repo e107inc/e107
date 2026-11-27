@@ -35,6 +35,7 @@ use e107\Database\Schema\Plan\Change\ModifyColumn;
 use e107\Database\Schema\Plan\ChangeInterface;
 use e107\Database\Schema\Plan\FixPlan;
 use e107\Database\Schema\Plan\PlanBuilder;
+use e107\Database\Schema\SchemaBuilder;
 use e107\Database\SqlFragment;
 
 if(!defined('e107_INIT'))
@@ -124,7 +125,7 @@ class db_verify implements EngineCharsetResolverInterface
 	/** @var FixPlan|null every change {@see compileResults()} has planned */
 	private $fixPlan = null;
 
-	/** @var TableSchema[] materialised declarations, keyed by file, table, engine and charset */
+	/** @var TableSchema[] materialised declarations, keyed by file, table, engine, charset and body */
 	private $expectedSchemas = array();
 
 	/** @var TableSchema[] the same declarations without their derived indexes, keyed alike */
@@ -132,6 +133,12 @@ class db_verify implements EngineCharsetResolverInterface
 
 	/** @var array logical table name => names of the derived indexes the declaration covers */
 	private $disownedIndexes = array();
+
+	/** @var bool whether user_extended declares a column per user_extended_struct field; set only by {@see db_verify::verify()} */
+	private $declaresExtendedFields = false;
+
+	/** @var true[] user_extended columns already reported as refused by the server, keyed by name */
+	private $refusedExtendedFields = array();
 
 	var $fieldTypes = array('time', 'timestamp', 'datetime', 'year', 'tinyblob', 'blob',
 		'mediumblob', 'longblob', 'tinytext', 'mediumtext', 'longtext', 'text', 'date', 'json');
@@ -333,6 +340,8 @@ class db_verify implements EngineCharsetResolverInterface
 	 */
 	function verify()
 	{
+
+		$this->declaresExtendedFields = true;
 
 		if(!empty($_POST['runfix']))
 		{
@@ -545,13 +554,129 @@ class db_verify implements EngineCharsetResolverInterface
 			return null;
 		}
 
-		return new DeclaredTable(
+		$table = new DeclaredTable(
 			$sqlFile,
 			$file['tables'][$key],
 			$file['data'][$key],
 			isset($file['engine'][$key]) ? $file['engine'][$key] : null,
 			isset($file['charset'][$key]) ? $file['charset'][$key] : null
 		);
+
+		if($this->declaresExtendedFields && $sqlFile === 'core' && $file['tables'][$key] === 'user_extended')
+		{
+			return $this->withExtendedFieldColumns($table);
+		}
+
+		return $table;
+	}
+
+
+	/**
+	 * The user_extended body with a column for every field user_extended_struct defines, typed by {@see e107_user_extended::user_extended_type_text()} as saving the field types it.
+	 *
+	 * Categories, add-on fields, names that are not plain identifiers and columns the server refuses to build are left out.
+	 *
+	 * @param DeclaredTable $table user_extended as core_sql.php declares it.
+	 * @return DeclaredTable
+	 */
+	private function withExtendedFieldColumns(DeclaredTable $table)
+	{
+
+		$ue = e107::getUserExt();
+		$declared = array_change_key_case($this->getFields($table->getBody()));
+		$columns = array();
+
+		foreach($ue->getStructure() as $row)
+		{
+			$name = 'user_' . $row['user_extended_struct_name'];
+			$type = (int) $row['user_extended_struct_type'];
+
+			if($type === EUF_ADDON || isset($declared[strtolower($name)]) || !preg_match('/^[A-Za-z0-9_]+$/D', $name))
+			{
+				continue;
+			}
+
+			$definition = $ue->user_extended_type_text($type, $row['user_extended_struct_default']);
+
+			if(is_string($definition) && $definition !== '')
+			{
+				$columns[$name] = '`' . $name . '` ' . $definition;
+			}
+		}
+
+		if(empty($columns))
+		{
+			return $table;
+		}
+
+		$extended = $this->withLines($table, $columns);
+
+		if($this->builds($extended))
+		{
+			return $extended;
+		}
+
+		$kept = array();
+
+		foreach($columns as $name => $line)
+		{
+			if($this->builds($this->withLines($table, $kept + array($name => $line))))
+			{
+				$kept[$name] = $line;
+			}
+			elseif(!isset($this->refusedExtendedFields[$name]))
+			{
+				$this->refusedExtendedFields[$name] = true;
+				$message = defset('DBVLAN_EXTENDED_FIELD_REFUSED', 'Column [x] was not checked: Database check could not build user_extended with it added.');
+				e107::getMessage()->add(str_replace('[x]', $name, $message), E_MESSAGE_WARNING);
+			}
+		}
+
+		return empty($kept) ? $table : $this->withLines($table, $kept);
+	}
+
+
+	/**
+	 * @param DeclaredTable $table
+	 * @param string[] $lines further column or index definitions.
+	 * @return DeclaredTable
+	 */
+	private function withLines(DeclaredTable $table, array $lines)
+	{
+
+		return new DeclaredTable(
+			$table->getSqlFile(),
+			$table->getName(),
+			rtrim(rtrim($table->getBody()), ',') . ",\n  " . implode(",\n  ", $lines),
+			$table->getDeclaredEngine(),
+			$table->getDeclaredCharset()
+		);
+	}
+
+
+	/**
+	 * @param DeclaredTable $table
+	 * @return bool false only when the server refuses to build it.
+	 */
+	private function builds(DeclaredTable $table)
+	{
+
+		try
+		{
+			$intended = $this->resolve($table);
+
+			$this->materialiser()->materialise($table, $intended['engine'], $intended['charset']);
+		}
+		catch(QueryException $e)
+		{
+			return false;
+		}
+		catch(Exception $e)
+		{
+			return true;
+		}
+
+		return true;
 	}
 
 
@@ -795,7 +920,7 @@ class db_verify implements EngineCharsetResolverInterface
 		$engine = isset($intended['engine']) ? $intended['engine'] : null;
 		$charset = isset($intended['charset']) ? $intended['charset'] : null;
 
-		return $table->getSqlFile() . "\0" . $table->getName() . "\0" . $engine . "\0" . $charset;
+		return $table->getSqlFile() . "\0" . $table->getName() . "\0" . $engine . "\0" . $charset . "\0" . md5($table->getBody());
 	}
 
 
@@ -937,15 +1062,7 @@ class db_verify implements EngineCharsetResolverInterface
 			return $table;
 		}
 
-		$body = rtrim(rtrim($table->getBody()), ',') . ",\n  " . implode(",\n  ", $extra);
-
-		return new DeclaredTable(
-			$table->getSqlFile(),
-			$table->getName(),
-			$body,
-			$table->getDeclaredEngine(),
-			$table->getDeclaredCharset()
-		);
+		return $this->withLines($table, $extra);
 	}
 
 
@@ -1487,23 +1604,7 @@ class db_verify implements EngineCharsetResolverInterface
 			return false;
 		}
 
-		try
-		{
-			$table = new DeclaredTable('core', 'dbvsyntaxcheck', $sqlFileData);
-			$intended = $this->resolve($table);
-
-			$this->materialiser()->materialise($table, $intended['engine'], $intended['charset']);
-		}
-		catch(QueryException $e)
-		{
-			return true;
-		}
-		catch(Exception $e)
-		{
-			return false;
-		}
-
-		return false;
+		return !$this->builds(new DeclaredTable('core', 'dbvsyntaxcheck', $sqlFileData));
 	}
 
 	/**
@@ -2359,7 +2460,59 @@ class db_verify implements EngineCharsetResolverInterface
 			}
 		}
 
-		return new FixPlan($matched);
+		return new FixPlan($this->placedAfterPresentColumns($matched, $diff, $actual));
+	}
+
+
+	/**
+	 * Places each added column after the nearest declared column before it that the table has or that an earlier change adds.
+	 *
+	 * @param ChangeInterface[] $changes part of a plan, in plan order.
+	 * @param TableDiff $diff
+	 * @param TableSchema|null $actual null when the table is missing.
+	 * @return ChangeInterface[]
+	 */
+	private function placedAfterPresentColumns(array $changes, TableDiff $diff, $actual)
+	{
+
+		$expected = $diff->getExpectedTable();
+
+		if(!$actual instanceof TableSchema || !$expected instanceof TableSchema)
+		{
+			return $changes;
+		}
+
+		$present = array_fill_keys(array_keys($actual->getColumns()), true);
+		$order = array_keys($expected->getColumns());
+
+		foreach($changes as $i => $change)
+		{
+			if(!$change instanceof AddColumn || $change->getAfter() === null)
+			{
+				continue;
+			}
+
+			$name = $change->getColumn()->getName();
+			$after = SchemaBuilder::FIRST;
+
+			foreach($order as $candidate)
+			{
+				if($candidate === $name)
+				{
+					break;
+				}
+
+				if(isset($present[$candidate]))
+				{
+					$after = $candidate;
+				}
+			}
+
+			$changes[$i] = new AddColumn($change->getSqlFile(), $change->getTable(), $change->getColumn(), $after);
+			$present[$name] = true;
+		}
+
+		return $changes;
 	}
 
 
