@@ -24,6 +24,8 @@ class cpageOverviewDeleteTest extends \Test\Unit
 
 	const LISTENER = "function cpageOverviewDeleteProbe(\$data, \$event) { echo '@@'.\$event.'@@'; } e107::getEvent()->register('admin_page_deleted', 'cpageOverviewDeleteProbe'); ";
 
+	const FAILING_DELETE = "function cpageOverviewDeleteFailure(\$data, \$event) { e107::getAdminUI()->getController()->getTreeModel()->setModelTable('cpageOverviewDeleteTest_missing'); } e107::getEvent()->register('admin_page_delete', 'cpageOverviewDeleteFailure'); ";
+
 	/** @var int */
 	private $page = 0;
 
@@ -71,6 +73,25 @@ class cpageOverviewDeleteTest extends \Test\Unit
 		self::assertSame(1, (int) e107::getDb()->createQueryBuilder()->from('admin_history')
 			->where('history_table', 'page')->where('history_record_id', $this->page)->where('history_action', 'delete')->count());
 		self::assertStringContainsString('@@admin_page_deleted@@', $out);
+	}
+
+	public function testDeletingAPageWithNoMenuPlacementStillReportsTheDelete()
+	{
+		$out = $this->deleteThroughTheOverview(self::LISTENER);
+
+		self::assertFalse($this->pageExists(), "the page is still there:\n" . $out);
+		self::assertStringContainsString('@@admin_page_deleted@@', $out);
+	}
+
+	public function testADeleteThatFailsLeavesThePageInItsMenu()
+	{
+		$this->placeInAMenu();
+
+		$out = $this->deleteThroughTheOverview(self::FAILING_DELETE);
+
+		self::assertTrue($this->pageExists(), "the delete did not fail:\n" . $out);
+		self::assertSame(1, $this->placements());
+		self::assertStringContainsString('SQL Delete Error', $out, 'the delete error is shown');
 	}
 
 	/**

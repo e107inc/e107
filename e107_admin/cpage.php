@@ -1551,6 +1551,11 @@ class page_admin_ui extends e_admin_ui
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
+			if(!$deleted_check)
+			{
+				return true;
+			}
+
 			if (e107::getDb()->createQueryBuilder()->from('menus')
 				->where('menu_path', $id)->count())
 			{
@@ -1563,10 +1568,11 @@ class page_admin_ui extends e_admin_ui
 				else
 				{
 					e107::getMessage()->addDebug(CUSLAN_78." ".$id.".");
+					return false;
 				}
 			}
 
-
+			return true;
 		}
 
 
