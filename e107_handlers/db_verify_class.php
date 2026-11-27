@@ -35,6 +35,7 @@ use e107\Database\Schema\Plan\Change\ModifyColumn;
 use e107\Database\Schema\Plan\ChangeInterface;
 use e107\Database\Schema\Plan\FixPlan;
 use e107\Database\Schema\Plan\PlanBuilder;
+use e107\Database\Schema\SchemaBuilder;
 use e107\Database\SqlFragment;
 
 if(!defined('e107_INIT'))
@@ -2459,7 +2460,59 @@ class db_verify implements EngineCharsetResolverInterface
 			}
 		}
 
-		return new FixPlan($matched);
+		return new FixPlan($this->placedAfterPresentColumns($matched, $diff, $actual));
+	}
+
+
+	/**
+	 * Places each added column after the nearest declared column before it that the table has or that an earlier change adds.
+	 *
+	 * @param ChangeInterface[] $changes part of a plan, in plan order.
+	 * @param TableDiff $diff
+	 * @param TableSchema|null $actual null when the table is missing.
+	 * @return ChangeInterface[]
+	 */
+	private function placedAfterPresentColumns(array $changes, TableDiff $diff, $actual)
+	{
+
+		$expected = $diff->getExpectedTable();
+
+		if(!$actual instanceof TableSchema || !$expected instanceof TableSchema)
+		{
+			return $changes;
+		}
+
+		$present = array_fill_keys(array_keys($actual->getColumns()), true);
+		$order = array_keys($expected->getColumns());
+
+		foreach($changes as $i => $change)
+		{
+			if(!$change instanceof AddColumn || $change->getAfter() === null)
+			{
+				continue;
+			}
+
+			$name = $change->getColumn()->getName();
+			$after = SchemaBuilder::FIRST;
+
+			foreach($order as $candidate)
+			{
+				if($candidate === $name)
+				{
+					break;
+				}
+
+				if(isset($present[$candidate]))
+				{
+					$after = $candidate;
+				}
+			}
+
+			$changes[$i] = new AddColumn($change->getSqlFile(), $change->getTable(), $change->getColumn(), $after);
+			$present[$name] = true;
+		}
+
+		return $changes;
 	}
 
 

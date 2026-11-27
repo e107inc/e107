@@ -1865,6 +1865,54 @@ DATA;
 		}
 	}
 
+	public function testVerifyRepairAddsOneOfTwoMissingExtendedFieldColumnsOnItsOwn()
+	{
+
+		$this->givenExtendedField('dbvtest_first', 1);
+		$this->givenExtendedField('dbvtest_second', 1);
+
+		try
+		{
+			$this->verifiedExtendedFields(array(
+				'runfix' => 1,
+				'fix'    => array('core' => array('user_extended' => array('user_dbvtest_second' => array('insert')))),
+			));
+
+			$sql = e107::getDb();
+			self::assertNotFalse($sql->field('user_extended', 'user_dbvtest_second'), 'the ticked fix adds its column while the one declared before it is still missing');
+			self::assertFalse($sql->field('user_extended', 'user_dbvtest_first'), 'the unticked fix is not run');
+		}
+		finally
+		{
+			$this->removeExtendedField('dbvtest_first');
+			$this->removeExtendedField('dbvtest_second');
+		}
+	}
+
+	public function testVerifyRepairCreatesATickedMissingTable()
+	{
+
+		$sql = e107::getDb();
+		\Test\CoreTable::drop('rate');
+
+		try
+		{
+			$this->verifiedExtendedFields(array(
+				'runfix' => 1,
+				'fix'    => array('core' => array('rate' => array('all' => array('create')))),
+			), new db_verify());
+
+			self::assertTrue($sql->isTable('rate'), 'the ticked create builds the table');
+		}
+		finally
+		{
+			if(!$sql->isTable('rate'))
+			{
+				\Test\CoreTable::create('rate');
+			}
+		}
+	}
+
 	/**
 	 * The update routine applies every planned change unasked, so a struct-derived MODIFY must never reach it.
 	 */
@@ -1961,9 +2009,10 @@ DATA;
 	 * Database check as the admin page runs it, with the form fields given posted.
 	 *
 	 * @param array $post
+	 * @param db_verify|null $dbv null for one that declares only user_extended.
 	 * @return db_verify
 	 */
-	private function verifiedExtendedFields(array $post)
+	private function verifiedExtendedFields(array $post, $dbv = null)
 	{
 
 		if(!defined('SEP'))
@@ -1971,7 +2020,7 @@ DATA;
 			define('SEP', ' &raquo; ');
 		}
 
-		$dbv = $this->extendedFieldVerifier();
+		$dbv = ($dbv === null) ? $this->extendedFieldVerifier() : $dbv;
 		$saved = $_POST;
 		$_POST = $post;
 
