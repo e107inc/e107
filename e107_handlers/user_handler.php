@@ -2838,22 +2838,7 @@ class e_userperms
 		$row = $sysuser->getData();
 		$a_name = $row['user_name'];
 
-		$perm = "";
-
-		foreach($permArray as $value)
-		{
-			$value = $tp->toDB($value);
-			if ($value == "0")
-			{
-				if (!getperms('0')) { $value = ""; break; }
-				$perm = "0"; break;
-			}
-
-			if ($value)
-			{
-				$perm .= $value.".";
-			}
-	 	}
+		$perm = self::serializePerms((array) $permArray, getperms('0'), $tp);
 
 		//$sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' ") 
 		if(!$sysuser->isAdmin())
@@ -2876,6 +2861,7 @@ class e_userperms
 	 *                                 codes are in the admin user's admin permissions.
 	 *                                 This is a pipe-delimited (`|`) list of access codes.
 	 *                                 Example: `C|4`
+	 *                                 An empty code asks for no particular permission: any admin holding one passes.
 	 * @param string $adminPermissions The serialized admin user's admin permissions.
 	 *                                 This is a dot-delimited (`.`) list of access codes.
 	 *                                 Example: `C.F.G.L.T.1.X.I.8.K.3.4.U0.U1.U2.U3.6.A.A1.A2.TMP.2.Z.P3.P4.English`
@@ -2898,26 +2884,62 @@ class e_userperms
 			return true;
 		}
 
-		$adminPermissionsArray = explode('.', $adminPermissions);
+		$adminPermissionsArray = array_diff(explode('.', $adminPermissions), array(''));
 
-		if(in_array($requestedAccess, $adminPermissionsArray, false))
+		foreach(explode('|', $requestedAccess) as $requestedAccessCode)
 		{
-			return true;
-		}
-
-		if(strpos($requestedAccess, '|'))
-		{
-			$requestedAccessCodes = explode('|', $requestedAccess);
-			foreach($requestedAccessCodes as $requestedAccessCode)
+			if($requestedAccessCode === '' ? !empty($adminPermissionsArray) : in_array($requestedAccessCode, $adminPermissionsArray))
 			{
-				if(in_array($requestedAccessCode, $adminPermissionsArray))
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * The stored form of admin permission codes, which {@see e_userperms::simulateHasAdminPerms()} reads.
+	 *
+	 * @param array $permCodes eg. array('A', 'K', '1'), as posted; each is encoded by {@see e_parse::toDB()}, dropped if encoding it again would change it, then split on the dot and trimmed, as the check reads it, before it is judged
+	 * @param bool $mayGrantMainAdmin whether the saver is a main admin; if not, a '0' is dropped
+	 * @param e_parse $tp the parser that encodes each code
+	 * @return string every code followed by a dot (`A.K.1.`), or `0` alone for a main admin
+	 */
+	public static function serializePerms(array $permCodes, $mayGrantMainAdmin, e_parse $tp)
+	{
+		$perms = '';
+
+		foreach($permCodes as $posted)
+		{
+			$encoded = $tp->toDB($posted);
+
+			if($tp->toDB($encoded) !== $encoded)
+			{
+				continue;
+			}
+
+			foreach(explode('.', $encoded) as $code)
+			{
+				$code = trim($code);
+
+				if($code == '0')
+				{
+					if($mayGrantMainAdmin)
+					{
+						return '0';
+					}
+
+					continue;
+				}
+
+				if($code)
+				{
+					$perms .= $code.'.';
+				}
+			}
+		}
+
+		return $perms;
 	}
 
 	/**

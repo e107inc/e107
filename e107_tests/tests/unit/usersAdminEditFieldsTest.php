@@ -105,6 +105,28 @@ class usersAdminEditFieldsTest extends \Test\Unit
 		self::assertSame((string) e_UC_MEMBER, $this->stored($id, 'user_class'));
 	}
 
+	public function testTheEditFormSavesAdminPermissionsAsAdministratorsDoes()
+	{
+		$id = $this->member(array('user_admin' => 1, 'user_perms' => 'I.'));
+		$form = $this->editForm($id);
+		$form['perms'] = array('I', '5');
+
+		$this->save($id, $form);
+
+		self::assertSame('I.5.', $this->stored($id, 'user_perms'));
+	}
+
+	public function testTheEditFormDropsAMainAdminCodeItsSaverCannotGrant()
+	{
+		$id = $this->member(array('user_admin' => 1, 'user_perms' => 'J.'));
+		$form = $this->editForm($id);
+		$form['perms'] = array('0', 'I');
+
+		$this->save($id, $form, $this->bootedAdminHolding('4.3.'));
+
+		self::assertSame('I.', $this->stored($id, 'user_perms'), 'an administrator who may grant permissions but is not a main admin cannot grant main admin');
+	}
+
 	public function testTheEditFormRemovesThePhotoOnlyWhenAsked()
 	{
 		$id = $this->member(array('user_sess' => '-upload-ap_usaephoto.jpg'));
@@ -328,29 +350,31 @@ class usersAdminEditFieldsTest extends \Test\Unit
 	 *
 	 * @param int $id
 	 * @param array $post
+	 * @param array $saver who saves, as {@see \Test\Unit::bootedAdminHolding()} gives it; the main admin when empty
 	 * @return string the page
 	 */
-	private function save($id, array $post)
+	private function save($id, array $post, array $saver = array(array(), ''))
 	{
 		$post['etrigger_submit'] = 'update';
 		$post['__after_submit_action'] = 'edit';
 
-		return $this->usersPage($id, '$_POST = '.var_export($post, true)." + array('e-token' => defset('e_TOKEN')); ");
+		return $this->usersPage($id, $saver[1].'$_POST = '.var_export($post, true)." + array('e-token' => defset('e_TOKEN')); ", array(), $saver[0]);
 	}
 
 	/**
 	 * @param int $id
 	 * @param string $seed
 	 * @param array $query further query parameters
+	 * @param array $constants name => value, defined in the child before class2.php could
 	 * @return string
 	 */
-	private function usersPage($id, $seed, array $query = array())
+	private function usersPage($id, $seed, array $query = array(), array $constants = array())
 	{
 		$get = array('mode' => 'main', 'action' => 'edit', 'id' => $id) + $query;
 		putenv('QUERY_STRING='.http_build_query($get));
 
 		$seed = "define('SEP', ' &raquo; '); \$_GET = ".var_export($get, true).'; e107::getUser()->setData(e107::user(USERID)); '.$seed;
-		$page = $this->renderInBootedCli('e107_admin/users.php', $seed);
+		$page = $this->renderInBootedCli('e107_admin/users.php', $seed, '', $constants);
 
 		self::assertStringNotContainsString('Fatal error', $page, "the page died:\n".$page);
 
