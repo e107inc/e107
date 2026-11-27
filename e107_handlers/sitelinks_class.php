@@ -1390,7 +1390,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$func_list[] = $temp[$key]['text'];
 			}
 	
-			usort($func_list, 'strcmp');
+			usort($func_list, array('eShims', 'strcoll'));
 
 			$func_list = array_unique($func_list);
 
