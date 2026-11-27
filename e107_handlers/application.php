@@ -324,6 +324,11 @@ class eFront
 	 * @var string path to file to include - the old deprecated way of delivering content
 	 */
 	protected static $_legacy = '';
+
+	/**
+	 * @var string the route that answers a failure the not-found route does not
+	 */
+	private static $_serverErrorRoute = 'system/error/servererror';
 	
 	/**
 	 * Constructor
@@ -433,12 +438,40 @@ class eFront
 			}
 			catch(eException $e)
 			{
-				echo $request->getRoute().' - '.$e->getMessage();
-				exit;
+				$this->forwardFailure($request, $e);
 			}
 
 			
 		} while (!$request->isDispatched());
+	}
+
+	/**
+	 * Hands a failed request to the route that answers the failure, for the next dispatch; a request that has been through the server error route already is ended in plain text with a 500.
+	 *
+	 * @param eRequest $request
+	 * @param eException $e code 404 when the route names nothing, which the router's not-found route answers once
+	 * @return void
+	 */
+	private function forwardFailure(eRequest $request, eException $e)
+	{
+		$failure = $request->getRoute().' - '.$e->getMessage();
+		$request->addRouteHistory($request->getRoute());
+		$tried = $request->getRouteHistory();
+
+		if(in_array(self::$_serverErrorRoute, $tried, true))
+		{
+			http_response_code(500);
+			echo $failure;
+			exit;
+		}
+
+		$notFound = new eRequest($this->getRouter()->notFoundRoute);
+		$answersNotFound = $e->getCode() === 404 && !in_array($notFound->getRoute(), $tried, true);
+
+		e107::getMessage()->addDebug(htmlspecialchars($failure, ENT_QUOTES, 'UTF-8'));
+		self::isLegacy('');
+		$request->setRoute($answersNotFound ? $notFound->getRoute() : self::$_serverErrorRoute)->setDispatched(false);
+		$request->routed = true;
 	}
 	
 	/**
@@ -477,13 +510,28 @@ class eFront
 		try 
 		{
 			$this->dispatch();
+			$this->refuseAMissingLegacyScript();
 		}
 		catch(eException $e)
 		{
-			echo $e->getMessage();
-			exit;
+			$this->forwardFailure($this->getRequest(), $e);
+			$this->run();
 		}
 		
+	}
+
+	/**
+	 * @return void
+	 * @throws eException when the route's legacy script is not a readable file, which index.php would otherwise include
+	 */
+	private function refuseAMissingLegacyScript()
+	{
+		$legacy = self::isLegacy();
+
+		if($legacy && (!is_file($legacy) || !is_readable($legacy)))
+		{
+			throw new eException('Bad request - destination unreachable - '.$legacy, 404);
+		}
 	}
 	
 	/**
@@ -621,20 +669,36 @@ class eDispatcher
 				e107::getRedirect()->redirect(e_ADMIN."admin.php");	
 			}
 			
-			throw new eException("Invalid controller '".$controllerName."'");
+			throw new eException("Invalid controller '".$controllerName."'", 404);
 		}
 		
 		$controller = new $className($request, $response);
 		if(!($controller instanceof eController))
 		{
-			throw new eException("Controller $controller is not an instance of eController");
+			throw new eException("Controller $className is not an instance of eController");
 		}
 		
 		$actionName = $request->getActionMethodName();
 		
+		$buffers = ob_get_level();
 		ob_start();
 		
-		$controller->dispatch($actionName);
+		try
+		{
+			$controller->dispatch($actionName);
+		}
+		catch(eException $e)
+		{
+			while(ob_get_level() > $buffers)
+			{
+				if(!ob_end_clean())
+				{
+					break;
+				}
+			}
+
+			throw $e;
+		}
 		
 		$content = ob_get_clean();
 
@@ -3218,7 +3282,7 @@ class eController
 			{
 				//TODO not found method by controller or default one
 				$action = (string) substr($actionMethodName, 6);
-				throw new eException('Action "'.$action.'" does not exist');
+				throw new eException('Action "'.$action.'" does not exist', 404);
 			}
 		}
 		$this->shutdown();

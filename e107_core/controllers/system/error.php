@@ -48,7 +48,7 @@ class core_system_error_controller extends eController
 	 */
 	public function actionForbidden()
 	{
-		e107::getError()->render(403);
+		$this->answerWithRoute('system/error/forbidden');
 	}
 
 	/**
@@ -56,7 +56,31 @@ class core_system_error_controller extends eController
 	 */
 	public function actionNotfound()
 	{
-		e107::getError()->render(404);
+		$this->answerWithRoute('system/error/notfound');
+	}
+
+	/**
+	 * Error 500.
+	 *
+	 * @deprecated v2.4.0 Avoid in new code and migrate existing call sites when refactoring: the page is the route system/error/servererror, which {@see \e107\Routing\RouteTable::named()} takes from the table e107_core/route_table.php returns; this action remains supported and tested, with no removal planned.
+	 */
+	public function actionServererror()
+	{
+		$this->answerWithRoute('system/error/servererror');
+	}
+
+	/**
+	 * @param string $name a route of the core route table that answers with a themed page
+	 * @return void
+	 */
+	private function answerWithRoute($name)
+	{
+		$routeTable = require(e_CORE.'route_table.php');
+		$answer = $routeTable->named($name)->createHandler()->handle(\e107\Http\Request::fromGlobals($_SERVER));
+		$page = $answer->getPage();
+
+		http_response_code($answer->getStatusCode());
+		$this->getResponse()->setTitle($page->getCaption())->setRenderMod($page->getMode())->setBody($page->render());
 	}
 
 }

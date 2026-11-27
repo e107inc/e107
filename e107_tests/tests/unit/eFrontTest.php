@@ -15,6 +15,9 @@ class eFrontTest extends \Test\Unit
 {
 	const REPORT = 'E_FRONT=';
 
+	/** @var string statements that define an error controller in the override location, with a not-found action and no other */
+	private static $override = "class override_system_error_controller extends eController { public function actionNotfound() { return 'the not-found page of an override'; } } ";
+
 	/** @var callable */
 	private $restoreUrlConfig;
 
@@ -343,15 +346,27 @@ class eFrontTest extends \Test\Unit
 	/**
 	 * @dataProvider failures
 	 * @param string $route
-	 * @param string $printed the line the request ends on
+	 * @param string $text what the front controller used to print in place of a page
+	 * @param string[] $printed what the action printed before it failed
+	 * @param string $landed the error route the request ends on
+	 * @param int $status
+	 * @param string $subtitle the LAN constant the page's subtitle comes from
 	 */
-	public function testAFailedDispatchIsAnsweredInPlainTextWithNoStatus($route, $printed)
+	public function testAFailedDispatchIsForwardedToAnErrorPageAndWhatItPrintedIsDropped($route, $text, array $printed, $landed, $status, $subtitle)
 	{
 		$report = $this->runRouteInChild($route);
 
-		self::assertContains($printed, $report['printed']);
-		self::assertFalse($report['status']);
-		self::assertFalse($report['returned']);
+		self::assertTrue($report['returned']);
+		self::assertSame($landed, $report['route']);
+		self::assertSame($route, end($report['history']));
+		$this->assertErrorPage($report, $status, $subtitle);
+		self::assertSame(array(htmlspecialchars($route.' - '.$text, ENT_QUOTES, 'UTF-8')), $report['debug']);
+
+		foreach(array_merge(array($text), $printed) as $dropped)
+		{
+			self::assertStringNotContainsString($dropped, $this->printedBesidesTheReport($report));
+			self::assertStringNotContainsString($dropped, $report['body']);
+		}
 	}
 
 	/**
@@ -359,12 +374,142 @@ class eFrontTest extends \Test\Unit
 	 */
 	public function failures()
 	{
+		$notFound = array('system/error/notfound', 404, 'LAN_ERROR_7');
+		$serverError = array('system/error/servererror', 500, 'LAN_ERROR_10');
+
 		return array(
-			'an unknown controller' => array('frontfixture/missing/index', "frontfixture/missing/index - Invalid controller 'missing'"),
-			'an unknown action' => array('frontfixture/lifecycle/missing', 'frontfixture/lifecycle/missing - Action "Missing" does not exist'),
-			'an action that throws, after what it printed' => array('frontfixture/lifecycle/giveup', 'half a pagefrontfixture/lifecycle/giveup - The fixture gave up'),
-			'a loop without end, which run() prints without the route' => array('frontfixture/forward/loop', 'Too much dispatch loops'),
+			'an unknown controller' => array_merge(array('frontfixture/missing/index', "Invalid controller 'missing'", array()), $notFound),
+			'an unknown action' => array_merge(array('frontfixture/lifecycle/missing', 'Action "Missing" does not exist', array()), $notFound),
+			'an action that throws with the code 404' => array_merge(array('frontfixture/lifecycle/gone', 'The fixture has no such item', array()), $notFound),
+			'an action that throws after printing' => array_merge(array('frontfixture/lifecycle/giveup', 'The fixture gave up', array('half a page')), $serverError),
+			'an action that throws with a buffer of its own left open' => array_merge(array('frontfixture/lifecycle/buffered', 'The fixture gave up', array('half a page', 'and a buffer left open')), $serverError),
+			'an action that throws with a buffer PHP will not remove left open' => array_merge(array('frontfixture/lifecycle/stubborn', 'The fixture gave up', array()), $serverError),
+			'an action that throws markup, kept as text' => array_merge(array('frontfixture/lifecycle/markup', '<b>gave</b> "up"', array()), $serverError),
+			'a loop without end' => array_merge(array('frontfixture/forward/loop', 'Too much dispatch loops', array()), $serverError),
+			'a class that is not a controller' => array_merge(array('frontfixture/stranger/index', 'Controller core_frontfixture_stranger_controller is not an instance of eController', array()), $serverError),
 		);
+	}
+
+	public function testAFailureWhileTheAddressIsRoutedIsForwardedToTheServerErrorPageAndNotToItsLegacyScript()
+	{
+		$report = $this->dispatchInChild("\$front->setRouter(new FrontThrowingRouterFixture()); ".self::running('new eRequest()'));
+
+		self::assertTrue($report['returned']);
+		self::assertSame('system/error/servererror', $report['route']);
+		self::assertSame('', $report['legacy']);
+		$this->assertErrorPage($report, 500, 'LAN_ERROR_10');
+	}
+
+	public function testALegacyScriptThatIsNotThereIsForwardedToTheNotFoundPage()
+	{
+		$report = $this->runRouteInChild('frontfixture/lifecycle/legacy', "FrontControllerFixture::\$legacyScript = '{e_BASE}e107-tests-gone.php'; ");
+
+		self::assertTrue($report['returned']);
+		self::assertSame('system/error/notfound', $report['route']);
+		self::assertSame('', $report['legacy']);
+		$this->assertErrorPage($report, 404, 'LAN_ERROR_7');
+		self::assertCount(1, $report['debug']);
+		self::assertStringEndsWith('e107-tests-gone.php', $report['debug'][0]);
+		self::assertStringNotContainsString('e107-tests-gone.php', $this->printedBesidesTheReport($report));
+	}
+
+	public function testALegacyScriptThatIsThereIsLeftToTheCaller()
+	{
+		$report = $this->runRouteInChild('frontfixture/lifecycle/legacy', "FrontControllerFixture::\$legacyScript = '{e_BASE}news.php'; ");
+
+		self::assertTrue($report['returned']);
+		self::assertSame('frontfixture/lifecycle/legacy', $report['route']);
+		self::assertStringEndsWith('news.php', $report['legacy']);
+		self::assertFalse($report['status']);
+		self::assertSame(array(), $report['debug']);
+	}
+
+	public function testANotFoundRouteThatCannotBeDispatchedIsAServerError()
+	{
+		$report = $this->runRouteInChild('frontfixture/lifecycle/missing', "\$front->getRouter()->notFoundRoute = 'frontfixture/missing/index'; ");
+
+		self::assertTrue($report['returned']);
+		self::assertSame('system/error/servererror', $report['route']);
+		self::assertSame(array('frontfixture/lifecycle/missing', 'frontfixture/missing/index'), $report['history']);
+		$this->assertErrorPage($report, 500, 'LAN_ERROR_10');
+	}
+
+	public function testANotFoundRouteTheRouterChoseIsNotTriedASecondTimeWhenItFails()
+	{
+		$report = $this->runUnansweredAddressInChild("e107::getConfig()->setPref('url_config/system', ''); ");
+
+		self::assertFalse($report['returned']);
+		self::assertSame(500, $report['status']);
+		self::assertSame(array('system/error/notfound', 'system/error/notfound', 'system/error/servererror'), $report['history']);
+		self::assertSame(array(htmlspecialchars("system/error/notfound - Invalid controller 'error'", ENT_QUOTES, 'UTF-8')), $report['debug']);
+	}
+
+	public function testAServerErrorPageThatFailsEndsTheRequestInPlainTextAndIsNotAnsweredWithTheNotFoundPage()
+	{
+		$report = $this->runRouteInChild('frontfixture/lifecycle/giveup',
+			"\$front->getRouter()->notFoundRoute = 'frontfixture/lifecycle/index'; e107::getConfig()->setPref('url_config/system', ''); ");
+
+		self::assertFalse($report['returned']);
+		self::assertSame(500, $report['status']);
+		self::assertContains("system/error/servererror - Invalid controller 'error'", $report['printed']);
+		self::assertSame('system/error/servererror', $report['route']);
+		self::assertSame('', $report['body']);
+		self::assertSame(array('frontfixture/lifecycle/giveup - The fixture gave up'), $report['debug']);
+	}
+
+	public function testAnotherRequestOnTheSameFrontControllerStartsAfresh()
+	{
+		$report = $this->runRouteInChild('frontfixture/lifecycle/missing',
+			"\$front->getRouter()->notFoundRoute = 'frontfixture/lifecycle/index'; ".self::running("new eRequest('frontfixture/missing/index')"));
+
+		self::assertTrue($report['returned']);
+		self::assertSame('frontfixture/lifecycle/index', $report['route']);
+		self::assertSame(array('frontfixture/lifecycle/missing'), $report['history']);
+		self::assertFalse($report['status']);
+	}
+
+	public function testAnOverrideErrorControllerStillAnswersForARouteThatNamesNothing()
+	{
+		$report = $this->runRouteInChild('frontfixture/missing/index', self::$override);
+
+		self::assertTrue($report['returned']);
+		self::assertSame('system/error/notfound', $report['route']);
+		self::assertSame('the not-found page of an override', $report['body']);
+		self::assertFalse($report['status']);
+	}
+
+	/**
+	 * @dataProvider routesToTheServerErrorPage
+	 * @param string $route
+	 */
+	public function testAnOverrideErrorControllerWithNoServerErrorActionLeavesTheLastResort($route)
+	{
+		$report = $this->runRouteInChild($route, self::$override);
+
+		self::assertFalse($report['returned']);
+		self::assertSame(500, $report['status']);
+		self::assertContains('system/error/servererror - Action "Servererror" does not exist', $report['printed']);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function routesToTheServerErrorPage()
+	{
+		return array(
+			'an action that throws' => array('frontfixture/lifecycle/giveup'),
+			'the page\'s own route' => array('system/error/servererror'),
+		);
+	}
+
+	public function testTheErrorControllerWritesToTheResponseItWasGiven()
+	{
+		$report = $this->dispatchInChild("\$class = new ReflectionClass('eFront'); \$own = \$class->newInstanceWithoutConstructor(); "
+			."\$response = new eResponse(); \$own->setRouter(\$front->getRouter())->setRequest(new eRequest('system/error/forbidden'))->setResponse(\$response); "
+			."\$own->dispatch(); echo \"\\nOWN=\", json_encode(array(\$response->getTitle(), \$response->getRenderMod(), strpos(\$response->getBody(), LAN_ERROR_4) !== false)), \"\\n\";");
+
+		self::assertSame(array($report['LAN_ERROR'], 'error_page_403', true), self::reportedAfter($report['printed'], 'OWN=', 'the child with a front controller of its own'));
+		self::assertSame(403, $report['status']);
 	}
 
 	public function testAModuleWithNoIndexControllerIsRedirectedToTheAdminScriptByItsRelativePath()
@@ -379,29 +524,6 @@ class eFrontTest extends \Test\Unit
 		self::assertStringNotContainsString('Invalid controller', implode("\n", $report['printed']));
 	}
 
-	/**
-	 * Recorded, not endorsed: the exception for this case puts the object into its message, which is an Error from PHP 7.4 on and an empty name before it.
-	 */
-	public function testAClassThatIsNotAControllerIsAnErrorOrAnExceptionWithoutItsNameByPhpVersion()
-	{
-		$report = $this->runRouteInChild('frontfixture/stranger/index',
-			"error_reporting(E_ERROR | E_PARSE); set_error_handler(array(\$GLOBALS['error_handler'], 'handle_error')); ");
-		$printed = implode("\n", $report['printed']);
-
-		self::assertFalse($report['returned']);
-		self::assertFalse($report['status']);
-
-		if(PHP_VERSION_ID < 70400)
-		{
-			self::assertContains('frontfixture/stranger/index - Controller  is not an instance of eController', $report['printed']);
-		}
-		else
-		{
-			self::assertStringContainsString('could not be converted to string', $printed);
-			self::assertStringNotContainsString('is not an instance of eController', $printed);
-		}
-	}
-
 	public function testAnAddressNoModuleAnswersIsRoutedToTheNotFoundPage()
 	{
 		$report = $this->runUnansweredAddressInChild();
@@ -411,15 +533,32 @@ class eFrontTest extends \Test\Unit
 		self::assertSame(array('system/error/notfound'), $report['history']);
 		$this->assertErrorPage($report, 404, 'LAN_ERROR_7');
 		self::assertSame('', $report['legacy']);
+		self::assertSame(array(), $report['debug']);
 	}
 
-	public function testTheNotFoundRouteIsTheRoutersToRename()
+	/**
+	 * @dataProvider requestsNothingAnswers
+	 * @param string|null $route null for an address no module answers
+	 */
+	public function testTheNotFoundRouteIsTheRoutersToRename($route)
 	{
-		$report = $this->runUnansweredAddressInChild("\$front->getRouter()->notFoundRoute = 'frontfixture/lifecycle/index'; ");
+		$rename = "\$front->getRouter()->notFoundRoute = 'frontfixture/lifecycle/index'; ";
+		$report = $route === null ? $this->runUnansweredAddressInChild($rename) : $this->runRouteInChild($route, $rename);
 
 		self::assertSame('frontfixture/lifecycle/index', $report['route']);
 		self::assertSame('returnedprinted', $report['body']);
 		self::assertFalse($report['status']);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function requestsNothingAnswers()
+	{
+		return array(
+			'an address no module answers' => array(null),
+			'an unknown controller' => array('frontfixture/missing/index'),
+		);
 	}
 
 	/**
@@ -448,7 +587,17 @@ class eFrontTest extends \Test\Unit
 			'404 forwards to not found' => array('system/error/404', 'system/error/notfound', 404, 'LAN_ERROR_7'),
 			'forbidden' => array('system/error/forbidden', 'system/error/forbidden', 403, 'LAN_ERROR_4'),
 			'403 forwards to forbidden' => array('system/error/403', 'system/error/forbidden', 403, 'LAN_ERROR_4'),
+			'server error' => array('system/error/servererror', 'system/error/servererror', 500, 'LAN_ERROR_10'),
 		);
+	}
+
+	/**
+	 * @param array $report as {@see eFrontTest::dispatchInChild()} returns it
+	 * @return string what the child wrote, less the report line, which repeats the debug messages
+	 */
+	private function printedBesidesTheReport(array $report)
+	{
+		return implode("\n", preg_grep('/^'.preg_quote(self::REPORT, '/').'/', $report['printed'], PREG_GREP_INVERT));
 	}
 
 	/**
@@ -521,7 +670,7 @@ class eFrontTest extends \Test\Unit
 	 * Runs $act on the site's front controller in a booted child, where the dispatcher may end the request, and reports what was left behind.
 	 *
 	 * @param string $act statements run on $front once it is initialised and the frontfixture module is routable
-	 * @return array printed (the lines written), returned (whether $act came back), status (false when none was set), route, history, title, mode, body, legacy, e_ADMIN and the error page's LAN strings
+	 * @return array printed (the lines written), returned (whether $act came back), status (false when none was set), route, history, title, mode, body, legacy, debug (the debug system messages), e_ADMIN and the error page's LAN strings
 	 */
 	private function dispatchInChild($act)
 	{
@@ -536,7 +685,8 @@ class eFrontTest extends \Test\Unit
 			."echo \"\\n".self::REPORT."\", json_encode(array('returned' => \$returned, 'status' => http_response_code(), "
 			."'route' => \$request->getRoute(), 'history' => \$request->getRouteHistory(), 'title' => \$response->getTitle(), "
 			."'mode' => \$response->getRenderMod(), 'body' => \$response->getBody(), 'legacy' => eFront::isLegacy(), "
-			."'e_ADMIN' => e_ADMIN, 'LAN_ERROR' => LAN_ERROR, 'LAN_ERROR_4' => LAN_ERROR_4, 'LAN_ERROR_7' => LAN_ERROR_7)), \"\\n\"; }); "
+			."'debug' => e107::getMessage()->get('debug', 'default', true) ?: array(), "
+			."'e_ADMIN' => e_ADMIN, 'LAN_ERROR' => LAN_ERROR, 'LAN_ERROR_4' => LAN_ERROR_4, 'LAN_ERROR_7' => LAN_ERROR_7, 'LAN_ERROR_10' => LAN_ERROR_10)), \"\\n\"; }); "
 			."echo \"\\n\"; "
 			.$act
 			." \$returned = true;";

@@ -13,7 +13,7 @@ namespace e107\Routing;
 use e107\Http\RequestHandlerInterface;
 
 /**
- * The route a request was matched to, with the parameters the match captured.
+ * The route taken to answer, by the request it matched or by its name, with the parameters the match captured.
  */
 final class RouteMatch
 {
