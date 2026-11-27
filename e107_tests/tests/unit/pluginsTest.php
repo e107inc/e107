@@ -195,12 +195,40 @@
 			$this->assertEquals($expected, $input);
 		}
 
+		/**
+		 * The core plugins are the plugin folders in the repository, so a folder added or removed without the list following it fails here.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/5738
+		 * @see https://github.com/e107inc/e107/issues/6580
+		 */
+		public function testCorePluginListIsEveryPluginFolderInTheTree()
+		{
+			$folders = e107::getFile()->get_dirs(e_PLUGIN);
+			$core = e107::getPlug()->getCorePluginList();
+			sort($folders);
+			sort($core);
+
+			$this->assertSame($folders, $core, 'Plugin folders missing from the list: '.implode(', ', array_diff($folders, $core)).'. Listed but not in the tree: '.implode(', ', array_diff($core, $folders)).'.');
+		}
+
 		public function testPluginScripts()
 		{
 
 			$core = e107::getPlug()->getCorePluginList();
 
 			$exclude = array(
+				'alt_auth/e107db_conf.php', // #6958; defines ALT_AUTH_ACTION, as alt_auth_conf.php does: a request opens one page.
+				'alt_auth/importdb_conf.php', // the same
+				'alt_auth/ldap_conf.php', // the same
+				'alt_auth/otherdb_conf.php', // the same, and declares alt_auth_otherdb, as importdb_conf.php does.
+				'alt_auth/radius_conf.php', // defines ALT_AUTH_ACTION, as alt_auth_conf.php does: a request opens one page.
+				'alt_auth/e_help.php', // help for alt_auth's own pages; loads the language file named after e_PAGE.
+				'alt_auth/importdb_auth.php', // #6966: declares auth_login, as e107db_auth.php does.
+				'alt_auth/ldap_auth.php', // the same
+				'alt_auth/otherdb_auth.php', // the same
+				'alt_auth/radius_auth.php', // the same
+				'faqs/admin_config.php', // left out of master's sweep too (#6424).
+				'faqs/faqs.php', // left out of master's sweep too (#6376, #6424).
 				'forum/forum_post.php',
 				'forum/forum_viewtopic.php',   // needs a major cleanup.
 				'forum/index.php',
@@ -220,6 +248,7 @@
 			{
 				$parm = null; //
 				e107::plugLan($plug, 'global'); // load global language (usually done in class2.php)
+				e107::plugLan($plug, 'global', true); // the same, from languages/<language>/ where a plugin keeps it there.
 				e107::getConfig()->setPref('plug_installed/'.$plug, 1); // simulate installed.
 
 				$path = e_PLUGIN.$plug;
