@@ -36,6 +36,14 @@ class e_parseTest extends \Codeception\Test\Unit
 		$this->tp->init();
 	}
 
+	public function testInitPutsBackTheDefaultAttributesOfEveryTag()
+	{
+		$this->tp->setAllowedAttributes(array('default' => array()));
+		$this->tp->init();
+
+		self::assertSame((new e_parse())->getAllowedAttributes(), $this->tp->getAllowedAttributes());
+	}
+
 	public function testToRoute()
 	{
 
@@ -2425,7 +2433,7 @@ EXPECTED;
 	{
 		$text = "<di style='width:100%'>Test</di>"; // invalid html.
 		$result = $this->tp->post_toHTML($text);
-		$this->assertEmpty($result);
+		$this->assertSame('Test', $result);
 
 		$text = "<div style='width:100%'>Test</div>"; // valid html.
 		$cleaned = '<div style="width:100%">Test</div>'; // valid and cleaned html.
@@ -3835,8 +3843,8 @@ Your browser does not support the audio tag.
 	 */
 	public function testCleanHtmlDoesNotReuseNodesOfThePreviousDocument()
 	{
-		$first = $this->tp->cleanHtml('<center><pre>kept</pre></center>');
-		self::assertSame('', $first, 'the stripped tag takes its <pre> child with it');
+		$first = $this->tp->cleanHtml('<svg><pre>kept</pre></svg>');
+		self::assertSame('', $first, 'the removed element takes its <pre> child with it');
 
 		self::assertSame('<p>plain</p>', $this->tp->cleanHtml('<p>plain</p>'), 'second call on a reused parser');
 		self::assertSame('<pre>later</pre>', $this->tp->cleanHtml('<pre>later</pre>'), 'third call on a reused parser');
