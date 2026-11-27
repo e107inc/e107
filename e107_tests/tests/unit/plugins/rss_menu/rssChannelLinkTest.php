@@ -37,6 +37,13 @@ class rssChannelLinkTest extends \Codeception\Test\Unit
 		}
 	}
 
+	public function testTheAtomFeedDeclaresTheAtomNamespace()
+	{
+		$feed = $this->feed(4, 'https://example.test/');
+
+		self::assertSame('http://www.w3.org/2005/Atom', $feed['document']->documentElement->namespaceURI);
+	}
+
 	/**
 	 * @param string $siteUrl the siteurl preference the feeds are built under
 	 * @return array feed type => array('site' => every address the channel names the site by, 'SITEURL' => SITEURL in the child)
