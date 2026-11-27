@@ -38,11 +38,18 @@ class e_parse
 	private $pref; // core prefs used in toHTML.
 
 	/**
+	 * The elements whose content a browser does not read as HTML, as a pattern alternation.
+	 *
+	 * @internal shared by the readers of bbcode tags and {@see e_parse::cleanHtml()}, not part of the parser API
+	 */
+	const ELEMENTS_NOT_READ_AS_HTML = 'iframe|math|noembed|noframes|noscript|plaintext|script|style|svg|textarea|title|xmp';
+
+	/**
 	 * A start or end tag that a bbcode tag may hold, read to its first > outside a quoted value: not one of an element whose content a browser does not read as HTML.
 	 *
 	 * @internal shared by the readers of bbcode tags, not part of the parser API
 	 */
-	const HTML_TAG_A_BBCODE_TAG_MAY_HOLD = '<(?!\/?(?i:iframe|math|noembed|noframes|noscript|plaintext|script|style|svg|textarea|title|xmp)(?![^\t\n\f\r \/>]))(?=\/?[a-zA-Z])(?:[^<>"\'\]]++|"[^"\]]*+"|\'[^\'\]]*+\')*+>';
+	const HTML_TAG_A_BBCODE_TAG_MAY_HOLD = '<(?!\/?(?i:' . self::ELEMENTS_NOT_READ_AS_HTML . ')(?![^\t\n\f\r \/>]))(?=\/?[a-zA-Z])(?:[^<>"\'\]]++|"[^"\]]*+"|\'[^\'\]]*+\')*+>';
 
 	/**
 	 * A lookahead holding where the text up to the next ] leaves no HTML tag or comment open and holds no tag of an element whose content a browser does not read as HTML.
@@ -365,6 +372,9 @@ class e_parse
 	private $allowedTags = array();
 	private $scriptTags  = array();
 
+	/** @var string[] the tags {@see e_parse::init()} allows only an author with script access, and which {@see e_parse::cleanHtml()} removes from anyone else's */
+	private static $postScriptTags = array('script', 'applet', 'form', 'input', 'button', 'embed', 'object', 'ins', 'select', 'textarea');
+
 	private $scriptAttributes = array();
 
 	private $blockTags = array();
@@ -388,7 +398,6 @@ class e_parse
 		// initialise the type of UTF-8 processing methods depending on PHP version and mb string extension
 		$this->domObj = new DOMDocument('1.0', 'utf-8');
 		$this->init();
-		$this->compileAttributeDefaults();
 
 	}
 
@@ -5786,7 +5795,7 @@ class e_parse
 			'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode', 'label', 'dl', 'dt', 'dd',
 		);
 
-		$this->scriptTags = array('script', 'applet', 'form', 'input', 'button', 'embed', 'object', 'ins', 'select', 'textarea'); //allowed when $pref['post_script'] is enabled.
+		$this->scriptTags = self::$postScriptTags;
 
 		$this->allowedAttributes = array(
 			'default'  => array('id', 'style', 'class', 'title', 'lang', 'accesskey'),
@@ -5822,6 +5831,7 @@ class e_parse
 			'default' => array()
 		);
 
+		$this->compileAttributeDefaults();
 	}
 
 	/**
@@ -7689,6 +7699,7 @@ class e_parse
 
 	/**
 	 * Process and clean HTML from user input.
+	 * A tag off the allow list is dropped and its content kept. It goes whole when it is a script tag or an element a browser does not read as HTML, unless it is void, or when it is the root of a document that brings its own <body>.
 	 * TODO Html5 tag support.
 	 *
 	 * @param string  $html raw HTML
@@ -7839,9 +7850,15 @@ class e_parse
 
 		}
 
-		// Remove some stuff.
+		$removedWhole = array_flip(array_diff(array_merge(self::$postScriptTags, explode('|', self::ELEMENTS_NOT_READ_AS_HTML)), self::$voidTags));
+
 		foreach ($this->nodesToDelete as $node)
 		{
+			if (!isset($removedWhole[$node->nodeName]) && $node->parentNode instanceof DOMElement)
+			{
+				self::moveChildrenOut($node);
+			}
+
 			$node->parentNode->removeChild($node);
 		}
 
@@ -8016,21 +8033,34 @@ class e_parse
 
 			foreach ($toFix as $node)
 			{
-				$parent = $node->parentNode;
-				$after = $node->nextSibling;
-				while ($node->hasChildNodes())
-				{
-					$child = $node->firstChild;
-					$node->removeChild($child);
-					if ($after === null)
-					{
-						$parent->appendChild($child);
-					}
-					else
-					{
-						$parent->insertBefore($child, $after);
-					}
-				}
+				self::moveChildrenOut($node);
+			}
+		}
+	}
+
+	/**
+	 * Move the children of $node out to follow it in its parent, in order.
+	 *
+	 * @param DOMNode $node
+	 * @return void
+	 */
+	private static function moveChildrenOut($node)
+	{
+		$parent = $node->parentNode;
+		$after = $node->nextSibling;
+
+		while ($node->hasChildNodes())
+		{
+			$child = $node->firstChild;
+			$node->removeChild($child);
+
+			if ($after === null)
+			{
+				$parent->appendChild($child);
+			}
+			else
+			{
+				$parent->insertBefore($child, $after);
 			}
 		}
 	}
