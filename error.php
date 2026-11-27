@@ -12,11 +12,9 @@
 
 define("ERR_PAGE_ACTIVE", 'error');
 
-//We need minimal mod.
 $_E107 = array(
-	'no_forceuserupdate',
-	'no_online',
-	'no_prunetmp',
+	'no_forceuserupdate' => true,
+	'no_prunetmp'        => true,
 );
 define('e_TOKEN_DISABLE', true);
 require_once("class2.php");

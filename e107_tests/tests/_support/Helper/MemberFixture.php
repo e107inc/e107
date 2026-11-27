@@ -76,4 +76,20 @@ class MemberFixture extends AppFixture
 		$browser->amOnPage('/usersettings.php');
 		$browser->seeInSource($name);
 	}
+
+	/**
+	 * Sign in as the administrator, whose signature is empty, while the signature is required and force_userupdate is on; sign the browser out before {@see ForumFixture::restoreSitePrefs()}, or the demand to complete the profile bounces the restore.
+	 *
+	 * @return void
+	 */
+	public function amSignedInWithAnIncompleteProfile()
+	{
+		$this->app()->resetAllCookies();
+
+		$prefs = $this->getModule('\Helper\ForumFixture');
+		$prefs->haveSitePrefUntilAfter('signup_option_signature', 2);
+		$prefs->haveSitePrefUntilAfter('force_userupdate', 1);
+
+		$this->getModule('\Helper\AdminLogin')->loginAsAdmin();
+	}
 }
