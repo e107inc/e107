@@ -394,21 +394,14 @@ class eIPHandler
 
 		if(!is_readable($fileName)) // Note readable, but the IP is still banned, so half further script execution.
 		{
-			if($this->debug === true || defset('e_DEBUG') === true)
-			{
-				echo "Your IP is banned!";
-			}
-
-			die();
-		    // return;		//
+			$this->refuseRequest(403, ($this->debug === true || defset('e_DEBUG') === true) ? 'Your IP is banned!' : '');
 		}
 
 		$vals  = file($fileName);
 		if ($vals === FALSE || count($vals) == 0) return;
 		if (strpos($vals[0], '<?php') !== 0)
 		{
-			echo 'Invalid message file';
-			die();
+			$this->refuseRequest(403, 'Invalid message file');
 		}
 		unset($vals[0]);
 		foreach ($vals as $line)
@@ -441,12 +434,25 @@ class eIPHandler
 					print_a("User Banned");
 				}
 
-				echo $line;
-
-				die();
+				$this->refuseRequest(403, $line);
 			}
 		}
 		$this->logBanItem($code, 'Unmatched action: '.$search.' - no block implemented');
+	}
+
+	/**
+	 * End the request with HTTP status $status and $body: 403 for a banned address, 429 for a flooding one.
+	 *
+	 * @internal the ban and flood exits of core, not part of the IP handler's API
+	 * @param int    $status
+	 * @param string $body
+	 * @return void
+	 */
+	public function refuseRequest($status, $body)
+	{
+		http_response_code($status);
+		echo $body;
+		die();
 	}
 
 
