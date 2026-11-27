@@ -163,7 +163,7 @@ class banlistCsvImportTest extends \Test\Unit
 		if($this->lockProbe === null)
 		{
 			$config = e107::getMySQLConfig();
-			$this->lockProbe = e107::getDb('banlistReplaceLockProbe');
+			$this->lockProbe = e107::getDb('banlistImportLockProbe');
 			self::assertTrue($this->lockProbe->connect($config['mySQLserver'], $config['mySQLuser'], $config['mySQLpassword'], true)
 				&& $this->lockProbe->database($config['mySQLdefaultdb'], $config['mySQLprefix']), 'the probe needs a session of its own');
 			$probeConnectionId = $this->connectionId($this->lockProbe);
@@ -218,7 +218,7 @@ class banlistCsvImportTest extends \Test\Unit
 	}
 
 	/**
-	 * Hold the replace-import lock on a connection of its own.
+	 * Hold the import lock on a connection of its own.
 	 */
 	private function takeProbeLock()
 	{
@@ -283,7 +283,7 @@ class banlistCsvImportTest extends \Test\Unit
 	 */
 	private function lockName()
 	{
-		return 'e107_banlist_replace_import_'
+		return 'e107_banlist_import_'
 			. md5(e107::getMySQLConfig('defaultdb').'/'.e107::getMySQLConfig('prefix'));
 	}
 
@@ -373,7 +373,22 @@ class banlistCsvImportTest extends \Test\Unit
 		self::assertNotEmpty($this->rowFor(self::IP_B));
 	}
 
-	public function testAReplaceImportIsRefusedWhileAnotherRunIsReplacing()
+	/**
+	 * @return array[] the options of a replace-import and of a plain one
+	 */
+	public function importModes()
+	{
+		return array(
+			'replace' => array(array('replaceImported' => true)),
+			'plain'   => array(array()),
+		);
+	}
+
+	/**
+	 * @dataProvider importModes
+	 * @param array $options
+	 */
+	public function testAnImportIsRefusedWhileAnotherRunHoldsTheLock($options)
 	{
 		$this->haveRow('imported-test-old', eIPHandler::BAN_TYPE_IMPORTED, 0, 'written by the run that is still going');
 
@@ -382,8 +397,7 @@ class banlistCsvImportTest extends \Test\Unit
 
 		try
 		{
-			$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_B . "\n"),
-				array('replaceImported' => true));
+			$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_B . "\n"), $options);
 			$queriesDuring = e107::getDb()->queryCount() - $queriesBefore;
 		}
 		finally
@@ -396,18 +410,34 @@ class banlistCsvImportTest extends \Test\Unit
 			"a refused run deletes none of the running import's rows");
 		self::assertEmpty($this->rowFor(self::IP_B),
 			'and writes none of its own, so the file can be imported again as it stands');
-		self::assertSame(BANLAN_IMPORT_REPLACE_BUSY, $result['fatal'],
-			'the second replace-import is refused and told why, rather than snapshotting rows the first run is still writing');
+		self::assertSame(BANLAN_IMPORT_BUSY, $result['fatal'],
+			'a second import of either kind is refused and told why, rather than writing or snapshotting rows beside the run that is still going');
 		self::assertSame(1, $queriesDuring,
 			'one statement runs in that window and it is the lock: the run asks before it reads, where a run that snapshots first is the run that deletes rows the standing one has just written');
 	}
 
-	public function testTheReplaceLockIsStillHeldWhenTheReplacedRowsHaveGone()
+	/**
+	 * @return array[] the options of each kind of import, and how many rows of the batch before it are left when it regenerates its files
+	 */
+	public function importModesAndSurvivors()
 	{
-		$this->haveRow('imported-test-old', eIPHandler::BAN_TYPE_IMPORTED, 0, 'the batch the run is replacing');
+		return array(
+			'replace' => array(array('replaceImported' => true), 0),
+			'plain'   => array(array(), 1),
+		);
+	}
+
+	/**
+	 * @dataProvider importModesAndSurvivors
+	 * @param array $options
+	 * @param int $survivors
+	 */
+	public function testTheImportLockIsStillHeldWhenTheRunRegeneratesItsFiles($options, $survivors)
+	{
+		$this->haveRow('imported-test-old', eIPHandler::BAN_TYPE_IMPORTED, 0, 'the batch before this run');
 
 		self::assertSame(1, $this->countRows($this->probeDb(), 'imported-test-old'),
-			'the batch this run replaces has to be there to start with, so that a count of none later reads as the delete rather than as a read that answered nothing');
+			'the batch before this run has to be there to start with, so that the count taken later is a reading of the table and not a read that answered nothing');
 
 		$written = e107::getIPHandler()->ipEncode(self::IP_B);
 		$seen = array();
@@ -421,13 +451,12 @@ class banlistCsvImportTest extends \Test\Unit
 			}
 
 			$seen['written'] = $this->countRows($this->probeDb(), $written);
-			$seen['replaced'] = $this->countRows($this->probeDb(), 'imported-test-old');
+			$seen['survivors'] = $this->countRows($this->probeDb(), 'imported-test-old');
 		});
 
 		try
 		{
-			$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_B . "\n"),
-				array('replaceImported' => true));
+			$result = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_B . "\n"), $options);
 		}
 		finally
 		{
@@ -439,13 +468,13 @@ class banlistCsvImportTest extends \Test\Unit
 			'the run has to reach the point where it regenerates the files, or this test looks at nothing');
 		self::assertSame(1, $seen['written'],
 			"the probe has to be reading the table at that moment, which the run's own new row proves, so that the count below is an absence and not a failed read");
-		self::assertSame(0, $seen['replaced'],
-			'the replaced batch has to be gone by then, so what follows is a reading taken after the delete');
+		self::assertSame($survivors, $seen['survivors'],
+			'a replace has deleted the batch before it by then and a plain import has left it, so what follows is a reading taken after any delete');
 		self::assertSame(0, $seen['lock'],
-			'and the lock has to be refused there, because a run that lets go before its delete leaves the window this lock closes');
+			'and the lock has to be refused there, because a run that lets go before it has finished leaves the window this lock closes');
 	}
 
-	public function testTheReplaceLockIsGivenBackWhetherTheImportFinishedOrAborted()
+	public function testTheImportLockIsGivenBackWhetherTheImportFinishedOrAborted()
 	{
 		$finished = $this->mgr->importBanlistCsv($this->haveCsv(self::IP_B . "\n"), array('replaceImported' => true));
 
@@ -466,7 +495,7 @@ class banlistCsvImportTest extends \Test\Unit
 
 	public function testTheImporterTakesTheLockNameThisInstallDerives()
 	{
-		$method = new ReflectionMethod('banlistManager', 'replaceLockName');
+		$method = new ReflectionMethod('banlistManager', 'importLockName');
 		$method->setAccessible(true);
 
 		self::assertSame($this->lockName(), $method->invoke($this->mgr),
