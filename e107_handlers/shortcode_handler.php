@@ -1185,6 +1185,11 @@ class e_parse_shortcode
 				$_path = "(direct to parser)";
 				$ret = $this->addedCodes[$code];
 
+				if($ret instanceof \e107\Shortcode\DeferredValue)
+				{
+					$ret = $ret->render($parm, $sc_mode);
+				}
+
 			}
 
 
