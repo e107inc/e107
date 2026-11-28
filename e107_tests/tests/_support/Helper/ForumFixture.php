@@ -730,6 +730,7 @@ class ForumFixture extends AppFixture
 <?php
 // Fixture for the forum Cests. Written per suite, removed in _after().
 $_E107['allow_guest'] = true;
+define('e_SSL_DISABLE', true);
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');

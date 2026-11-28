@@ -448,6 +448,8 @@ if(empty($_E107['cli']) && e107::getPref('ssl_enabled') &&  !deftrue('e_SSL_DISA
 		e107::redirect($url);
 		exit;
 	}
+
+	header('Content-Security-Policy: upgrade-insecure-requests', false);
 }
 
 // $dbg->logTime('(Extracting Core Prefs Done)');
