@@ -146,11 +146,6 @@ cdnjs.cloudflare.com:
     side: browser
     trigger: theme pref bootswatch
     where: theme::init() (e107_themes/bootstrap3/theme.php)
-  - url: /ajax/libs/tinymce/4.9.11/tinymce.min.js
-    purpose: the TinyMCE editor
-    side: browser
-    trigger: any page with an editor area, for users in pref post_html, with the tinymce4 plugin; not e_jslib_cdn
-    where: e107_plugins/tinymce4/e_footer.php
   - url: /ajax/libs/html5shiv/3.7.3/html5shiv.js
     purpose: the installer's IE 8 fallback
     side: browser

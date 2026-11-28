@@ -499,7 +499,7 @@
 			  'plugnav-tinymce4' =>
 			  array (
 			    'text' => 'TinyMce4',
-			    'description' => 'TinyMce4 CDN version',
+			    'description' => 'TinyMce4 visual editor',
 			    'link' => '/e107_plugins/tinymce4/admin_config.php',
 			    'image' => '<img src=\'./e107_plugins/tinymce4/images/icon_16.png\' alt="TinyMce4"  class=\'icon S16\'  />',
 			    'image_large' => '<img src=\'./e107_plugins/tinymce4/images/icon_32.png\' alt="TinyMce4"  class=\'icon S32\'  />',

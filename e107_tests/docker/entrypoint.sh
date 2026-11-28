@@ -95,10 +95,11 @@ if [ -d "$DOCROOT" ]; then
     chmod a+rwx "$DOCROOT" 2>/dev/null || true
 
     # Directories e107 writes to at runtime (hash dirs under e107_system /
-    # e107_media, media uploads, theme/plugin installs). Capital X only
+    # e107_media, media uploads, theme/plugin installs, the combined script
+    # and style files of pref jscsscachestatus). Capital X only
     # adds execute on dirs and already-executable files, which is what
     # we want for traversal.
-    for dir in e107_media e107_system e107_languages e107_themes e107_plugins; do
+    for dir in e107_media e107_system e107_languages e107_themes e107_plugins e107_web/cache; do
         if [ -d "$DOCROOT/$dir" ]; then
             chmod -R a+rwX "$DOCROOT/$dir" 2>/dev/null || true
         fi
