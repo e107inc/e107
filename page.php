@@ -425,7 +425,7 @@ class pageClass
 					'CHAPTER_NAME' 			=> $tp->toHTML($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
-					'CHAPTER_IMAGE'			=> $tp->toImage($row['chapter_image']),
+					'CHAPTER_IMAGE'			=> new \e107\Pages\ChapterImage($tp, $row['chapter_image']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHTML($row['chapter_meta_description'],true,'BODY'),
 					'PAGES'					=> $tmp['text'],
 					'CHAPTER_URL'			=> e107::getUrl()->create('page/chapter/index', $row,'allow=chapter_id,chapter_sef,book_sef') 
@@ -604,7 +604,7 @@ class pageClass
 					'CHAPTER_NAME' 			=> $tp->toHTML($row['chapter_name']),
 					'CHAPTER_ANCHOR'		=> $frm->name2id($row['chapter_name']),
 					'CHAPTER_ICON'			=> $this->chapterIcon($row['chapter_icon']),
-					'CHAPTER_IMAGE'			=> $tp->toImage($row['chapter_image']),
+					'CHAPTER_IMAGE'			=> new \e107\Pages\ChapterImage($tp, $row['chapter_image']),
 					'CHAPTER_DESCRIPTION'	=> $tp->toHTML($row['chapter_meta_description'], true,'BODY'),
 					'CHAPTER_BREADCRUMB'	=> !empty($_GET['ch']) ? $frm->breadcrumb($bread) : ''
 		);		
